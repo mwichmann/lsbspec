@@ -62,6 +62,7 @@ include(dyntag.sgml)
 <SECT1 ID=globaloffettable>
 <TITLE>Global Offset Table</TITLE>
 <PARA>
+The Global Offset Table is defined in Chapter 5 of <XREF LINKEND="std.x86.64.ABI">.
 </PARA>
 </SECT1>
 

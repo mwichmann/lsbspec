@@ -14,9 +14,9 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mksecttypestable -a x86-64 -s 'x86-64-ABI-1' -t 'ELF Section Types' >elfsecttypes.sgml
+	../../../mksecttypestable -a x86-64 -s 'x86-64-ABI' -t 'ELF Section Types' >elfsecttypes.sgml
 	../../../mksecttypestable -a x86-64 -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
-	../../../mksectiontable -a x86-64 -s 'IA32-ABI-1' -t 'ELF Special Sections' >elfsect.sgml
+	../../../mksectiontable -a x86-64 -s 'x86-64-ABI' -t 'ELF Special Sections' >elfsect.sgml
 	../../../mksectiontable -a x86-64 -s 'LSB' -t 'Additional Special Sections' >linuxsect.sgml
 
 clean:
