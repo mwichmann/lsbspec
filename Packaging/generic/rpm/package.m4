@@ -328,7 +328,7 @@ sections.
 include(privtags.sgml)
 <PARA>
 Not all Index records defined here will be present in all packages. Each tag
-value has a status which indicated is defined here.
+value has a status which is defined here.
 </PARA>
 <VARIABLELIST>
 <VARLISTENTRY>
@@ -397,9 +397,40 @@ The Header section is implemented using the Header structure. The Header
 section defines the following additional tag values which may be used in
 the Index structures.
 </PARA>
-include(hdrtags.sgml)
 <SECT3>
-<TITLE>Package Dependencies</TITLE>
+<TITLE>Package Information</TITLE>
+<PARA>
+The following tag values are used to indicate information that describes the
+package as a whole.
+</PARA>
+include(pkgtags.sgml)
+</SECT3>
+<SECT3>
+<TITLE>Installation Information</TITLE>
+<PARA>
+The following tag values are used to provide information needed during the
+installation of the package.
+</PARA>
+include(insttags.sgml)
+</SECT3>
+<SECT3>
+<TITLE>File Information</TITLE>
+<PARA>
+The following tag values are used to provide information about the files
+in the payload. This information is provided in the header to allow more
+efficient access of the information.
+</PARA>
+include(filetags.sgml)
+</SECT3>
+<SECT3>
+<TITLE>Dependency Information</TITLE>
+<PARA>
+The following tag values are used to provide information about
+interdependencies between packages.
+</PARA>
+include(deptags.sgml)
+<SECT4>
+<TITLE>Package Dependency Values</TITLE>
 <PARA>
 The package dependencies are stored in the
 <VARNAME>RPMTAG_REQUIRENAME</VARNAME> and
@@ -407,8 +438,8 @@ The package dependencies are stored in the
 index records. The following values may be used.
 </PARA>
 include(rpmdeps.sgml)
-</SECT3>
-<SECT3>
+</SECT4>
+<SECT4>
 <TITLE>Package Dependencies Attributes</TITLE>
 <PARA>
 The package dependency attributes are stored in the
@@ -418,6 +449,14 @@ The package dependency attributes are stored in the
 index records. The following values may be used.
 </PARA>
 include(rpmdepsattr.sgml)
+</SECT4>
+</SECT3>
+<SECT3>
+<TITLE>Other Information</TITLE>
+<PARA>
+The following tag values are also found in the Header section.
+</PARA>
+include(othtags.sgml)
 </SECT3>
 </SECT2>
 

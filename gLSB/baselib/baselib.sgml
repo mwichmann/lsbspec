@@ -13,7 +13,7 @@ hardware in the system.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 15:22:46 2002 -->
+<!--    at Tue Oct 22 22:29:31 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2649,6 +2649,18 @@ regmatch_t;
 
 
 
+
+
+
+enum auth_stat
+{
+  AUTH_OK, AUTH_BADCRED = 1, AUTH_REJECTEDCRED = 2, AUTH_BADVERF =
+    3, AUTH_REJECTEDVERF = 4, AUTH_TOOWEAK = 5, AUTH_INVALIDRESP =
+    6, AUTH_FAILED = 7
+}
+ ;
+
+
 union des_block
 {
   struct
@@ -2657,18 +2669,40 @@ union des_block
     u_int32_t low;
   }
   key;
-  char c;
+  char c[8];
 }
  ;
+
+
+struct opaque_auth
+{
+  enum_t oa_flavor;
+  caddr_t oa_base;
+  u_int oa_length;
+}
+ ;
+
+
 struct auth_ops
 {
-  void (*ah_nextverf) (void);
-  int (*ah_marshal) (void);
-  int (*ah_validate) (void);
-  int (*ah_refresh) (void);
-  void (*ah_destroy) (void);
+  void (*ah_nextverf) (AUTH *);
+  int (*ah_marshal) (AUTH *, struct XDR *);
+  int (*ah_validate) (AUTH *, struct opaque_auth *);
+  int (*ah_refresh) (AUTH *);
+  void (*ah_destroy) (AUTH *);
 }
  ;
+
+
+typedef struct AUTH
+{
+  struct opaque_auth ah_cred;
+  struct opaque_auth ah_verf;
+  union des_block ah_key;
+  struct auth_ops ah_ops;
+  caddr_t ah_private;
+}
+AUTH;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2677,85 +2711,51 @@ struct auth_ops
 </PARA>
 <SCREEN>
 
+#define NULLPROC	((u_long)0)
+#define CLSET_TIMEOUT	1
+#define CLGET_XID	10
+#define CLSET_XID	11
+#define CLGET_VERS	12
+#define CLSET_VERS	13
+#define CLGET_PROG	14
+#define CLSET_PROG	15
+#define CLGET_TIMEOUT	2
+#define CLGET_SERVER_ADDR	3
+#define CLSET_RETRY_TIMEOUT	4
+#define CLGET_RETRY_TIMEOUT	5
+#define CLGET_FD	6
+#define CLGET_SVC_ADDR	7
+#define CLSET_FD_CLOSE	8
+#define CLSET_FD_NCLOSE	9
+
+
+enum clnt_stat
+{
+  RPC_SUCCESS, RPC_CANTENCODEARGS = 1, RPC_CANTDECODERES = 2, RPC_CANTSEND =
+    3, RPC_CANTRECV = 4, RPC_TIMEDOUT = 5, RPC_VERSMISMATCH =
+    6, RPC_AUTHERROR = 7, RPC_PROGUNAVAIL = 8, RPC_PROGVERSMISMATCH =
+    9, RPC_PROCUNAVAIL = 10, RPC_CANTDECODEARGS = 11, RPC_SYSTEMERROR =
+    12, RPC_NOBROADCAST = 21, RPC_UNKNOWNHOST = 13, RPC_UNKNOWNPROTO =
+    17, RPC_UNKNOWNADDR = 19, RPC_RPCBFAILURE = 14, RPC_PROGNOTREGISTERED =
+    15, RPC_N2AXLATEFAILURE = 22, RPC_FAILED = 16, RPC_INTR =
+    18, RPC_TLIERROR = 20, RPC_UDERROR = 23, RPC_INPROGRESS =
+    24, RPC_STALERACHANDLE = 25
+}
+ ;
+
+
+
 
 
 struct clnt_ops
 {
-  enum clnt_stat (*cl_call) (void);
+  enum clnt_stat (*cl_call) (CLIENT *, u_long, xdrproc_t, caddr_t, xdrproc_t,
+			     caddr_t, struct timeval);
   void (*cl_abort) (void);
-  void (*cl_geterr) (void);
-    bool_t (*cl_freeres) (void);
-  void (*cl_destroy) (void);
-    bool_t (*cl_control) (void);
-}
- ;
-</SCREEN>
-</SECT2>
-<SECT2>
-<TITLE>rpc/rpc.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-
-
-typedef int bool_t;
-struct opaque_auth
-{
-  enum_t oa_flavor;
-  caddr_t oa_base;
-  u_int oa_length;
-}
- ;
-typedef int enum_t;
-struct AUTH
-{
-  struct opaque_auth ah_cred;
-  struct opaque_auth ah_verf;
-  union des_block ah_key;
-  struct auth_ops ah_ops;
-  caddr_t ah_private;
-}
- ;
-enum clnt_stat
-{
-  RPC_SUCCESS, RPC_CANTENCODEARGS, RPC_CANTDECODERES, RPC_CANTSEND,
-    RPC_CANTRECV, RPC_TIMEDOUT, RPC_VERSMISMATCH, RPC_AUTHERROR,
-    RPC_PROGUNAVAIL, RPC_PROGVERSMISMATCH, RPC_PROCUNAVAIL,
-    RPC_CANTDECODEARGS, RPC_SYSTEMERROR, RPC_NOBROADCAST, RPC_UNKNOWNHOST,
-    RPC_UNKNOWNPROTO, RPC_UNKNOWNADDR, RPC_RPCBFAILURE, RPC_PROGNOTREGISTERED,
-    RPC_N2AXLATEFAILURE, RPC_FAILED, RPC_INTR, RPC_TLIERROR, RPC_UDERROR,
-    RPC_INPROGRESS, RPC_STALERACHANDLE
-}
- ;
-struct CLIENT
-{
-  struct AUTH *cl_auth;
-  struct clnt_ops cl_ops;
-  caddr_t cl_private;
-}
- ;
-struct XDR
-{
-  enum xdr_op x_op;
-  struct xdr_ops x_ops;
-  caddr_t x_public;
-  caddr_t x_private;
-  caddr_t x_base;
-  int x_handy;
-}
- ;
-struct SVCXPRT
-{
-  int xp_sock;
-  u_short xp_port;
-  struct xp_ops xp_ops;
-  int xp_addrlen;
-  struct sockaddr_in xp_raddr;
-  struct opaque_auth xp_verf;
-  caddr_t xp_p1;
-  caddr_t xp_p2;
-  char xp_pad;
+  void (*cl_geterr) (CLIENT *, struct rpc_err *);
+    bool_t (*cl_freeres) (CLIENT *, xdrproc_t, caddr_t);
+  void (*cl_destroy) (CLIENT *);
+    bool_t (*cl_control) (CLIENT *, int, char *);
 }
  ;
 </SCREEN>
@@ -2765,6 +2765,9 @@ struct SVCXPRT
 <PARA>
 </PARA>
 <SCREEN>
+
+
+
 
 
 
@@ -2783,6 +2786,18 @@ struct xp_ops
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>rpc/types.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef int bool_t;
+typedef int enum_t;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>rpc/xdr.h</TITLE>
 <PARA>
 </PARA>
@@ -2793,6 +2808,16 @@ struct xp_ops
 enum xdr_op
 {
   XDR_ENCODE, XDR_DECODE, XDR_FREE
+}
+ ;
+struct XDR
+{
+  enum xdr_op x_op;
+  struct xdr_ops x_ops;
+  caddr_t x_public;
+  caddr_t x_private;
+  caddr_t x_base;
+  int x_handy;
 }
  ;
 struct xdr_ops
@@ -5642,7 +5667,8 @@ it is only in the binary standard.
   <PARAMETER><REPLACEABLE>version</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>char 
   <PARAMETER><REPLACEABLE>*__path</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct stat *__statbuf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat</STRUCTNAME> 
+  <PARAMETER>*__statbuf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -6735,7 +6761,8 @@ it is only in the binary standard.
   <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct stat *__stat_buf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat</STRUCTNAME> 
+  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
@@ -6744,7 +6771,8 @@ it is only in the binary standard.
   <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct stat *__stat_buf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat</STRUCTNAME> 
+  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
@@ -6753,7 +6781,8 @@ it is only in the binary standard.
   <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>__filedesc</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct stat *__stat_buf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat</STRUCTNAME> 
+  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -6850,7 +6879,8 @@ they are only in the source standard.
   <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct stat64 *__stat_buf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
+  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
@@ -6859,7 +6889,8 @@ they are only in the source standard.
   <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct stat64 *__stat_buf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
+  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
@@ -6868,7 +6899,8 @@ they are only in the source standard.
   <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>__filedesc</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct stat64 *__stat_buf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
+  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -6914,10 +6946,6 @@ behavior of these functions is undefined.
 <FUNCTION>fstat64(<PARAMETER>__filedesc</PARAMETER>, 
 <PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by the 
 <EMPHASIS>Large File Summit</EMPHASIS>.
-</PARA>
-<PARA>
-Note that the struct <STRUCTNAME>stat</STRUCTNAME> used by these 
-functions is not the one that the kernel uses.
 </PARA>
 <PARA>
 <FUNCTION>__xstat64</FUNCTION>, <FUNCTION>__lxstat64</FUNCTION>, and 
@@ -7316,8 +7344,10 @@ correct the time to allow synchronization of the system clock
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>adjtime</FUNCTION></FUNCDEF>
- <PARAMDEF>const struct timeval *delta</PARAMDEF>
- <PARAMDEF>struct timeval *olddelta</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>timeval</STRUCTNAME> 
+  <PARAMETER>*delta</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>timeval</STRUCTNAME> 
+  <PARAMETER>*olddelta</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -7328,16 +7358,16 @@ correct the time to allow synchronization of the system clock
 <PARA>
 <FUNCTION>adjtime</FUNCTION> makes small adjustments to the system time 
 as returned by <FUNCTION>gettimeofday</FUNCTION>(2), advancing or retarding 
-it by the time specified by the timeval <STRUCTNAME>delta</STRUCTNAME>. 
-If <STRUCTNAME>delta</STRUCTNAME> is negative, the clock is slowed down 
+it by the time specified by the timeval <PARAMETER>delta</PARAMETER>. 
+If <PARAMETER>delta</PARAMETER> is negative, the clock is slowed down 
 by incrementing it more slowly than normal until the correction is complete. 
-If <STRUCTNAME>delta</STRUCTNAME> is positive, a larger increment than
+If <PARAMETER>delta</PARAMETER> is positive, a larger increment than
 normal is used. The skew used to perform the correction is generally a
 fraction of one percent. Thus, the time is always a monotonically
 increasing function. A time correction from an earlier call to
 <FUNCTION>adjtime</FUNCTION> may not be finished when 
 <FUNCTION>adjtime</FUNCTION> is called again. If
-<STRUCTNAME>olddelta</STRUCTNAME> is non-<LITERAL>NULL</LITERAL>, the 
+<PARAMETER>olddelta</PARAMETER> is non-<LITERAL>NULL</LITERAL>, the 
 structure pointed to will contain, upon return, the number of microseconds 
 still to be corrected from the earlier call.
 </PARA>
@@ -7417,7 +7447,8 @@ tune kernel clock
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>adjtimex</FUNCTION></FUNCDEF>
- <PARAMDEF>struct timex *buf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>timex</STRUCTNAME> 
+  <PARAMETER>*buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -7470,7 +7501,7 @@ combination of zero or more of the following bits:
 </PARA>
 <PARA>
 Ordinary users are restricted to a <LITERAL>0</LITERAL> value for 
-<STRUCTFIELD>mode</STRUCTFIELD>. Only the superuser may set any 
+<STRUCTFIELD>modes</STRUCTFIELD>. Only the superuser may set any 
 parameters.
 </PARA>
 </REFSECT1>
@@ -7569,8 +7600,10 @@ compare two directory entries alphabetically (LSB deprecated)
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>alphasort</FUNCTION></FUNCDEF>
- <PARAMDEF>const struct dirent **a</PARAMDEF>
- <PARAMDEF>const struct dirent **b</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>dirent</STRUCTNAME> 
+  <PARAMETER>**a</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>dirent</STRUCTNAME> 
+  <PARAMETER>**b</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -7591,7 +7624,7 @@ The <ACRONYM>LSB</ACRONYM> never has contained <FUNCTION>scandir</FUNCTION>.
 <FUNCTION>alphasort</FUNCTION> can be used as the comparison function 
 for the <FUNCTION>scandir</FUNCTION> function to sort directory entries 
 into alphabetical order. Its parameters are the two directory entries, 
-<STRUCTNAME>a</STRUCTNAME> and <STRUCTNAME>b</STRUCTNAME>, to compare.
+<PARAMETER>a</PARAMETER> and <PARAMETER>b</PARAMETER>, to compare.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -7644,8 +7677,10 @@ compare two directory entries alphabetically (LSB deprecated)
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>alphasort64</FUNCTION></FUNCDEF>
- <PARAMDEF>const struct dirent64 **a</PARAMDEF>
- <PARAMDEF>const struct dirent64 **b</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>dirent64</STRUCTNAME> 
+  <PARAMETER>**a</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>dirent64</STRUCTNAME> 
+  <PARAMETER>**b</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -7666,7 +7701,7 @@ is customarily used with it.
 </PARA>
 <PARA>
 <FUNCTION>alphasort</FUNCTION> compares two 
-<EMPHASIS>struct</EMPHASIS> <STRUCTNAME>dirent64</STRUCTNAME>s 
+<LITERAL>struct</LITERAL> <STRUCTNAME>dirent64</STRUCTNAME>s 
 alphabetically. This function is like <FUNCTION>alphasort</FUNCTION> 
 but it uses the 64-bit <STRUCTNAME>dirent</STRUCTNAME> structure.
 </PARA>
@@ -8203,19 +8238,29 @@ specified for the library functions <FUNCTION>fork</FUNCTION>(2) and
 <REFNAMEDIV>
 <REFNAME>dcgettext</REFNAME>
 <REFPURPOSE>
-look up MSGID in the current default message catalog for the current LC_MESSAGES locale
+perform lookup in message catalog for the current LC_MESSAGES locale
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
 <DATE>16 September 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;libintl.h>
-#include &lt;locale.h>
-
-extern char *dcgettext(const char * domainname, const char *msgid, int category);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;libintl.h&gt;
+#include &lt;locale.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern char 
+  <FUNCTION>*dcgettext</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*msgid</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>category</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -8224,8 +8269,8 @@ extern char *dcgettext(const char * domainname, const char *msgid, int category)
 <TITLE>Description
 </TITLE>
 <PARA>
-The <emphasis>dcgettext</emphasis> function is a domain specified version 
-of <emphasis>gettext</emphasis>.
+<FUNCTION>dcgettext</FUNCTION> is a domain specified version 
+of <FUNCTION>gettext</FUNCTION>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -8239,12 +8284,13 @@ domainname
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>domainname</emphasis> argument is applied to the currently 
-active LC_MESSAGE locale.  It is equivalent in syntax and meaning to
-the <emphasis>domainname</emphasis> argument 
-to <emphasis>textdomain()</emphasis>, except that the selection of the 
-domain is valid only for the furation of
-the call.
+<FUNCTION>dcgettext</FUNCTION> applies 
+<PARAMETER>domainname</PARAMETER> to the currently active 
+<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
+syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
+application of <PARAMETER>domainname</PARAMETER>, except that the 
+selection of the domain in <FUNCTION>dcgettext</FUNCTION> 
+is valid only for the duration of the call.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8255,8 +8301,8 @@ msgid
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>msgid</emphasis> is a null-terminated string to be matched 
-in the catalogue with respect to a specific domain and the current locale.
+a <LITERAL>NULL</LITERAL>-terminated string to be matched in the 
+catalogue with respect to a specific domain and the current locale.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8267,14 +8313,21 @@ category
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>category</emphasis> argument is used for retrieving messages 
-string for other than LC_MESSAGES category.  Available value for the
-category argument are LC_CTYPE, LC_COLLATE, LC_MESSAGES, LC_MONETARY,
-LC_NUMERIC, and LC_TIME.  The call of 
-<emphasis>dcgettext(domainname, msgid, LC_MESSAGES)</emphasis>
-is equivalent to
-<emphasis>dgettext(doamainname, msgid)</emphasis>.
-Note that LC_ALL must not be used.
+<PARAMETER>category</PARAMETER> is used for retrieving messages 
+string for other than <VARNAME>LC_MESSAGES</VARNAME> category. Available 
+value for <PARAMETER>category</PARAMETER> are <VARNAME>LC_CTYPE</VARNAME>, 
+<VARNAME>LC_COLLATE</VARNAME>, <VARNAME>LC_MESSAGES</VARNAME>, 
+<VARNAME>LC_MONETARY</VARNAME>,<VARNAME>LC_NUMERIC</VARNAME>, and 
+<VARNAME>LC_TIME</VARNAME>.
+</PARA>
+<PARA>
+<FUNCTION>dcgettext(<PARAMETER>domainname</PARAMETER>, 
+<PARAMETER>msgid</PARAMETER>, 
+<VARNAME>LC_MESSAGES</VARNAME>)</FUNCTION> 
+has the same specification as 
+<FUNCTION>dgettext(<PARAMETER>domainname</PARAMETER>, 
+<PARAMETER>msgid</PARAMETER>)</FUNCTION>. 
+Note that <VARNAME>LC_ALL</VARNAME> must not be used.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8283,18 +8336,18 @@ Note that LC_ALL must not be used.
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Return</TITLE>
+<TITLE>Return Value</TITLE>
 <PARA>
-If the function query above succeeds, the translated null-terminated
-string is returned.  If the search fails, then <emphasis>msgid</emphasis>
-is returned.
+On success, the translated <LITERAL>NULL</LITERAL>-terminated 
+string is returned. On error, <PARAMETER>msgid</PARAMETER> is returned.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Errors</TITLE>
 <PARA>
-The function will not modify the external <emphasis>errno</emphasis> variable.
+<FUNCTION>dcgettext</FUNCTION> will not modify the 
+<VARNAME>errno</VARNAME> global variable.
 </PARA>
 </REFSECT1>
 
@@ -8317,19 +8370,33 @@ bindtextdomain, bind_textdomain_codeset
 <REFNAMEDIV>
 <REFNAME>dcngettext</REFNAME>
 <REFPURPOSE>
-look up MSGID in the current default message catalog for the current LC_MESSAGES locale
+perform lookup in message catalog for the current LC_MESSAGES locale
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
 <DATE>16 September 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;libintl.h>
-#include &lt;locale.h>
-
-extern char *dcngettext(const char * domainname, const char *msgid1, const char *msgid2, unsigned long int n, int category);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;libintl.h&gt;
+#include &lt;locale.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern char 
+  <FUNCTION>*dcngettext</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*msgid1</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*msgid2</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>unsigned long int 
+  <PARAMETER><REPLACEABLE>n</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>category</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -8338,9 +8405,9 @@ extern char *dcngettext(const char * domainname, const char *msgid1, const char 
 <TITLE>Description
 </TITLE>
 <PARA>
-The <emphasis>dcngettext</emphasis> function is a plural version 
-of <emphasis>dcgettext</emphasis>.  See <emphasis>dcgettext</emphasis>
-for more information.
+<FUNCTION>dcngettext</FUNCTION> is a plural version of 
+<FUNCTION>dcgettext</FUNCTION>. (See <FUNCTION>dcgettext</FUNCTION>
+for more information.)
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -8354,12 +8421,13 @@ domainname
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>domainname</emphasis> argument is applied to the currently 
-active LC_MESSAGE locale.  It is equivalent in syntax and meaning to
-the <emphasis>domainname</emphasis> argument 
-to <emphasis>textdomain()</emphasis>, except that the selection of the 
-domain is valid only for the furation of
-the call.
+<FUNCTION>dcngettext</FUNCTION> applies 
+<PARAMETER>domainname</PARAMETER> to the currently active 
+<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
+syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
+application of <PARAMETER>domainname</PARAMETER>, except that the 
+selection of the domain in <FUNCTION>dcngettext</FUNCTION> 
+is valid only for the duration of the call.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8370,11 +8438,12 @@ msgid1
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>msgid1</emphasis> is a null-terminated string to be 
-matched in the catalogue with respect to a specific domain and the 
-current locale.  If no message catalogs containing a translation
-for <emphasis>msgid1</emphasis> are found, 
-<emphasis>msgid1</emphasis> is returned if <emphasis>n == 1</emphasis>.
+a <LITERAL>NULL</LITERAL>-terminated string to be matched in the 
+catalogue with respect to a specific domain and the current locale. 
+If the value of <PARAMETER>n</PARAMETER> is <LITERAL>1</LITERAL> 
+and no message catalogs containing a translation for 
+<PARAMETER>msgid1</PARAMETER> are found, <PARAMETER>msgid1</PARAMETER> 
+is returned.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8385,8 +8454,9 @@ msgid2
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>msgid2</emphasis> is a null-terminated string to be returned 
-if no message catalogs are found and <emphasis>n != 1</emphasis>.
+a <LITERAL>NULL</LITERAL>-terminated string to be returned if the 
+value of <PARAMETER>n</PARAMETER> is not <LITERAL>1</LITERAL> and 
+no message catalogs are found.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8409,14 +8479,22 @@ category
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>category</emphasis> argument is used for retrieving messages 
-string for other than LC_MESSAGES category.  Availalbe value for the
-category argument are LC_CTYPE, LC_COLLATE, LC_MESSAGES, LC_MONETARY,
-LC_NUMERIC, and LC_TIME.  The call of 
-<emphasis>dcngettext(doamainname, msgid1, msgid2, n, LC_MESSAGES)</emphasis>
-is equivalent to
-<emphasis>dngettext(doamainname, msgid1, msgid2, n)</emphasis>.
-Note that LC_ALL must not be used.
+<PARAMETER>category</PARAMETER> is used for retrieving messages 
+string for other than <VARNAME>LC_MESSAGES</VARNAME> category. Available 
+value for <PARAMETER>category</PARAMETER> are <VARNAME>LC_CTYPE</VARNAME>, 
+<VARNAME>LC_COLLATE</VARNAME>, <VARNAME>LC_MESSAGES</VARNAME>, 
+<VARNAME>LC_MONETARY</VARNAME>,<VARNAME>LC_NUMERIC</VARNAME>, and 
+<VARNAME>LC_TIME</VARNAME>.
+</PARA>
+<PARA>
+<FUNCTION>dcngettext(<PARAMETER>domainname</PARAMETER>, 
+<PARAMETER>msgid1</PARAMETER>, <PARAMETER>msgid2</PARAMETER>, 
+<PARAMETER>n</PARAMETER>, <VARNAME>LC_MESSAGES</VARNAME>)</FUNCTION> 
+has the same specification as 
+<FUNCTION>dngettext(<PARAMETER>domainname</PARAMETER>, 
+<PARAMETER>msgid1</PARAMETER>, <PARAMETER>msgid2</PARAMETER>, 
+<PARAMETER>n</PARAMETER>)</FUNCTION>. 
+Note that <VARNAME>LC_ALL</VARNAME> must not be used.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8425,19 +8503,20 @@ Note that LC_ALL must not be used.
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Return</TITLE>
+<TITLE>Return Value</TITLE>
 <PARA>
-If the function query above succeeds with <emphasis>msgid1</emphasis>, then a 
-translated null-terminated string is returned.  If the search fails,
-then the original <emphasis>msgid1</emphasis> 
-or <emphasis>msgid2</emphasis> is returned according to <emphasis>n</emphasis>.
+On success of a <PARAMETER>msgid1</PARAMETER> query, the translated 
+<LITERAL>NULL</LITERAL>-terminated string is returned. On error, the 
+original <PARAMETER>msgid1</PARAMETER> or <PARAMETER>msgid2</PARAMETER> 
+is returned, according to <PARAMETER>n</PARAMETER>.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Errors</TITLE>
 <PARA>
-The function will not modify the external <emphasis>errno</emphasis> variable.
+<FUNCTION>dcngettext</FUNCTION> will not modify the 
+<VARNAME>errno</VARNAME> global variable.
 </PARA>
 </REFSECT1>
 
@@ -8460,18 +8539,26 @@ bindtextdomain, bind_textdomain_codeset
 <REFNAMEDIV>
 <REFNAME>dgettext</REFNAME>
 <REFPURPOSE>
-look up MSGID in the current default message catalog for the current LC_MESSAGES locale
+perform lookup in message catalog for the current LC_MESSAGES locale
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
 <DATE>16 September 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;libintl.h>
-
-extern char *dgettext(const char * domainname, const char *msgid);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;libintl.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern char 
+  <FUNCTION>*dgettext</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*msgid</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -8480,8 +8567,8 @@ extern char *dgettext(const char * domainname, const char *msgid);
 <TITLE>Description
 </TITLE>
 <PARA>
-The <emphasis>dgettext</emphasis> function is a domain specified version 
-of <emphasis>gettext</emphasis>.
+<FUNCTION>dgettext</FUNCTION> is a domain specified version of 
+<FUNCTION>gettext</FUNCTION>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -8495,12 +8582,13 @@ domainname
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>domainname</emphasis> argument is applied to the currently 
-active LC_MESSAGE locale.  It is equivalent in syntax and meaning to
-the <emphasis>domainname</emphasis> argument 
-to <emphasis>textdomain()</emphasis>, except that the selection of the 
-domain is valid only for the furation of
-the call.
+<FUNCTION>dgettext</FUNCTION> applies 
+<PARAMETER>domainname</PARAMETER> to the currently active 
+<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
+syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
+application of <PARAMETER>domainname</PARAMETER>, except that the 
+selection of the domain in <FUNCTION>dgettext</FUNCTION> 
+is valid only for the duration of the call.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8511,8 +8599,8 @@ msgid
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>msgid</emphasis> is a null-terminated string to be matched 
-in the catalogue with respect to a specific domain and the current locale.
+a <LITERAL>NULL</LITERAL>-terminated string to be matched in the 
+catalogue with respect to a specific domain and the current locale.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8521,19 +8609,21 @@ in the catalogue with respect to a specific domain and the current locale.
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Return</TITLE>
+<TITLE>Return Value</TITLE>
 <PARA>
-If the function query above succeeds with <emphasis>msgid</emphasis>, then a 
-translated null-terminated string is returned.  If the search fails,
-then the original <emphasis>msgid</emphasis> is returned.
-The length of the string returned is undetermined until the function is called. 
+On success of a <PARAMETER>msgid</PARAMETER> query, the translated 
+<LITERAL>NULL</LITERAL>-terminated string is returned. On error, the 
+original <PARAMETER>msgid</PARAMETER> is returned. The length of the
+string returned is undetermined until <FUNCTION>dgettext</FUNCTION>
+is called.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Errors</TITLE>
 <PARA>
-The function will not modify the external <emphasis>errno</emphasis> variable.
+<FUNCTION>dgettext</FUNCTION> will not modify the 
+<VARNAME>errno</VARNAME> global variable.
 </PARA>
 </REFSECT1>
 
@@ -8556,18 +8646,30 @@ bindtextdomain, bind_textdomain_codeset
 <REFNAMEDIV>
 <REFNAME>dngettext</REFNAME>
 <REFPURPOSE>
-look up MSGID in the current default message catalog for the current LC_MESSAGES locale
+perform lookup in message catalog for the current LC_MESSAGES locale
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
 <DATE>16 September 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;libintl.h>
-
-extern char *dngettext(const char * domainname, const char *msgid1, const char *msgid2, unsigned long int n);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;libintl.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern char 
+  <FUNCTION>*dngettext</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*msgid1</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*msgid2</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>unsigned long int 
+  <PARAMETER><REPLACEABLE>n</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -8576,9 +8678,9 @@ extern char *dngettext(const char * domainname, const char *msgid1, const char *
 <TITLE>Description
 </TITLE>
 <PARA>
-The <emphasis>dngettext</emphasis> function is a plural version 
-of <emphasis>dgettext</emphasis>.  See <emphasis>dgettext</emphasis>
-for more information.
+<FUNCTION>dngettext</FUNCTION> is a plural version of 
+<FUNCTION>dgettext</FUNCTION>. (See <FUNCTION>dgettext</FUNCTION>
+for more information.)
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -8592,12 +8694,13 @@ domainname
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>domainname</emphasis> argument is applied to the currently 
-active LC_MESSAGE locale.  It is equivalent in syntax and meaning to
-the <emphasis>domainname</emphasis> argument 
-to <emphasis>textdomain()</emphasis>, except that the selection of the 
-domain is valid only for the furation of
-the call.
+<FUNCTION>dngettext</FUNCTION> applies 
+<PARAMETER>domainname</PARAMETER> to the currently active 
+<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
+syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
+application of <PARAMETER>domainname</PARAMETER>, except that the 
+selection of the domain in <FUNCTION>dngettext</FUNCTION> 
+is valid only for the duration of the call.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8608,11 +8711,12 @@ msgid1
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>msgid1</emphasis> is a null-terminated string to be 
-matched in the catalogue with respect to a specific domain and the 
-current locale.  If no message catalogs containing a translation
-for <emphasis>msgid1</emphasis> are found, 
-<emphasis>msgid1</emphasis> is returned if <emphasis>n == 1</emphasis>.
+a <LITERAL>NULL</LITERAL>-terminated string to be matched in the 
+catalogue with respect to a specific domain and the current locale. 
+If the value of <PARAMETER>n</PARAMETER> is <LITERAL>1</LITERAL> 
+and no message catalogs containing a translation for 
+<PARAMETER>msgid1</PARAMETER> are found, <PARAMETER>msgid1</PARAMETER> 
+is returned.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8623,8 +8727,9 @@ msgid2
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>msgid2</emphasis> is a null-terminated string to be returned 
-if no message catalogs are found and <emphasis>n != 1</emphasis>.
+a <LITERAL>NULL</LITERAL>-terminated string to be returned if the 
+value of <PARAMETER>n</PARAMETER> is not <LITERAL>1</LITERAL> and
+no message catalogs are found.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8635,7 +8740,7 @@ n
 </TERM>
 <LISTITEM>
 <PARA>
-determines which plural form is returned, in a languae and
+determines which plural form is returned, in a language and
 message catalog dependent way.
 </PARA>
 </LISTITEM>
@@ -8645,19 +8750,20 @@ message catalog dependent way.
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Return</TITLE>
+<TITLE>Return Value</TITLE>
 <PARA>
-If the function query above succeeds with <emphasis>msgid1</emphasis>, then a 
-translated null-terminated string is returned.  If the search fails,
-then the original <emphasis>msgid1</emphasis> 
-or <emphasis>msgid2</emphasis> is returned according to <emphasis>n</emphasis>.
+On success of a <PARAMETER>msgid1</PARAMETER> query, the translated 
+<LITERAL>NULL</LITERAL>-terminated string is returned. On error, the 
+original <PARAMETER>msgid1</PARAMETER> or <PARAMETER>msgid2</PARAMETER> 
+is returned, according to <PARAMETER>n</PARAMETER>.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Errors</TITLE>
 <PARA>
-The function will not modify the external <emphasis>errno</emphasis> variable.
+<FUNCTION>dcngettext</FUNCTION> will not modify the 
+<VARNAME>errno</VARNAME> global variable.
 </PARA>
 </REFSECT1>
 
@@ -8688,11 +8794,20 @@ bindtextdomain, bind_textdomain_codeset
 <REFSYNOPSISDIVINFO>
 <DATE>4 March 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;err.h>
-
-void err(int eval, const char *fmt, ...);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;err.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>void 
+  <FUNCTION>err</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>eval</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*fmt</REPLACEABLE></PARAMETER>
+  <PARAMETER>...</PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -8702,9 +8817,17 @@ void err(int eval, const char *fmt, ...);
 <TITLE>Description
 </TITLE>
 <PARA>
-The err() function displays a formatted error message on the standard error output. The last component of the program name, a colon character, and a space are output. If the fmt argument is not NULL, the formatted error message, a colon character, and a space are output. The error message string affiliated with the current value of the global variable errno is output. The output is followed by a newline character.
-</PARA><PARA>
-The err() function does not return, but exits with the value of the argument eval.
+<FUNCTION>err</FUNCTION> displays a formatted error message on the 
+standard error output. The last component of the program name, a colon 
+character, and a space are output. If <PARAMETER>fmt</PARAMETER> is 
+non-<LITERAL>NULL</LITERAL>, the formatted error message, a colon 
+character, and a space are output. The error message string affiliated 
+with the current value of the global variable <VARNAME>errno</VARNAME> 
+is output. The output is followed by a <TOKEN>newline</TOKEN> character.
+</PARA>
+<PARA>
+<FUNCTION>err</FUNCTION> does not return, but exits with the value of 
+<PARAMETER>eval</PARAMETER>.
 </PARA>
 </REFSECT1>
 <!--      4th Berkeley Distribution        June 9, 1993           -->
@@ -8774,11 +8897,20 @@ means and whether it would be bad in an Asian locale -->
 <REFSYNOPSISDIVINFO>
 <DATE>4 March 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;err.h>
-
-void errx(int eval, const char *fmt, ...);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;err.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>void 
+  <FUNCTION>errx</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>eval</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*fmt</REPLACEABLE></PARAMETER>
+  <PARAMETER>...</PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -8788,9 +8920,16 @@ void errx(int eval, const char *fmt, ...);
 <TITLE>Description
 </TITLE>
 <PARA>
-The errx() function displays a formatted error message on the standard error output. The last component of the program name, a colon character, and a space are output. If the fmt argument is not NULL, the formatted error message, a colon character, and a space are output. The output is followed by a newline character.
-</PARA><PARA>
-The errx() function does not return, but exits with the value of the argument eval.
+<FUNCTION>errx</FUNCTION> displays a formatted error message on the 
+standard error output. The last component of the program name, a colon 
+character, and a space are output. If <PARAMETER>fmt</PARAMETER> is 
+non-<LITERAL>NULL</LITERAL>, the formatted error message, a colon 
+character, and a space are output. The output is followed by a 
+<TOKEN>newline</TOKEN> character.
+</PARA>
+<PARA>
+<FUNCTION>errx</FUNCTION> does not return, but exits with the value of 
+<PARAMETER>eval</PARAMETER>.
 </PARA>
 </REFSECT1>
 <!--      4th Berkeley Distribution        June 9, 1993           -->
@@ -8814,21 +8953,30 @@ file control
 <TITLE>Description
 </TITLE>
 <PARA>
-The specification for "fcntl" is as specified in the Single UNIX
-Specification but with the following differences as listed below.
+<FUNCTION>fcntl</FUNCTION> is as specified in the
+<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
+Version 3</CITETITLE>, but with differences as listed below.
 </PARA>
 
 <REFSECT2>
 <TITLE>Implementation may set O_LARGEFILE
 </TITLE>
 <PARA>
-According to the Single UNIX Specification, only an application sets
-fcntl flags, for example O_LARGEFILE.  However, this specification
-also allows implementations to set O_LARGEFILE in a case in which the
-default behavior matches the O_LARGEFILE behavior.<footnote><para>For
-example, if off_t is 64 bits</para></footnote>  Or in other words,
-calling fcntl with the F_GETFL command may return O_LARGEFILE as well
-as flags explicitly set by the application.
+According to the <CITETITLE PUBWORK="BOOK">Single UNIX 
+Specification</CITETITLE>, only an application sets
+<FUNCTION>fcntl</FUNCTION> flags, for example 
+<EMPHASIS>O_LARGEFILE</EMPHASIS>. However, this specification
+also allows implementations to set <EMPHASIS>O_LARGEFILE</EMPHASIS> 
+in a case in which the default behavior matches the 
+<EMPHASIS>O_LARGEFILE</EMPHASIS> behavior.
+<FOOTNOTE>
+<PARA>For example, if <PARAMETER>off_t</PARAMETER> is 64 bits.
+</PARA>
+</FOOTNOTE>
+Or in other words, calling <FUNCTION>fcntl</FUNCTION> with the 
+<COMMAND>F_GETFL</COMMAND> command may return 
+<EMPHASIS>O_LARGEFILE</EMPHASIS> as well as flags explicitly 
+set by the application.
 </PARA>
 </REFSECT2>
 
@@ -8849,9 +8997,16 @@ apply or remove an advisory lock on an open file
 <REFSYNOPSISDIVINFO>
 <DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int flock(int fd, int operation);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>flock</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>fd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>operation</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -8860,7 +9015,9 @@ int flock(int fd, int operation);
 <TITLE>Description
 </TITLE>
 <PARA>
-Apply or remove an advisory lock on an open file. The file is specified by fd. Valid operations are given below:
+<FUNCTION>flock</FUNCTION> applies or removes an advisory 
+lock on the open file <PARAMETER>fd</PARAMETER>. Valid 
+<PARAMETER>operation</PARAMETER> types are:
 </PARA>
 <VARIABLELIST>
 
@@ -8903,7 +9060,9 @@ LOCK_NB
 </TERM>
 <LISTITEM>
 <PARA>
-Don't block when locking. May be specified (by or'ing) along with one of the other operations.
+Don't block when locking. May be specified (by 
+<EMPHASIS>or</EMPHASIS>ing) along with one of 
+the other operations.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8916,7 +9075,9 @@ A single file may not simultaneously have both shared and exclusive locks.
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
+On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
+the global variable <VARNAME>errno</VARNAME> is set appropriately.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -8929,7 +9090,7 @@ EWOULDBLOCK
 </TERM>
 <LISTITEM>
 <PARA>
-The file is locked and the LOCK_NB flag was selected.
+The file is locked and the <LITERAL>LOCK_NB</LITERAL> flag was selected.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -8951,66 +9112,60 @@ The file is locked and the LOCK_NB flag was selected.
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-#include &lt;sys/vfs.h>
-
-int fstatfs(int fd, struct statfs *buf);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/vfs.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>fstatfs</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>fd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>struct statfs *buf</PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <TITLE>
 Description
 </TITLE>
-<para>
-The <function>fstatfs</function> interface is expected to disappear
-from a future version of the LSB; applications should call the
-<function>fstatvfs</function> interface.
-</para>
 <PARA>
-fstatfs returns information about a mounted file system. fd is the open file descriptor of any file within the mounted filesystem. buf is a pointer to a statfs structure defined as follows:
+<FUNCTION>fstatfs</FUNCTION> is expected to disappear from a future 
+version of the <ACRONYM>LSB</ACRONYM>; applications should call the
+<FUNCTION>fstatvfs</FUNCTION> interface.
 </PARA>
-
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-struct statfs {
-</TERM>
-<LISTITEM>
 <PARA>
-                 long    f_type;     /* type of filesystem (see below) */
-</PARA><PARA>
-                 long    f_bsize;    /* optimal transfer block size */
-</PARA><PARA>
-                 long    f_blocks;   /* total data blocks in file system */
-</PARA><PARA>
-                 long    f_bfree;    /* free blocks in fs */
-</PARA><PARA>
-                 long    f_bavail;   /* free blocks avail to non-superuser */
-</PARA><PARA>
-                 long    f_files;    /* total file nodes in file system */
-</PARA><PARA>
-                 long    f_ffree;    /* free file nodes in fs */
-</PARA><PARA>
-                 fsid_t  f_fsid;     /* file system id */
-</PARA><PARA>
-                 long    f_namelen;  /* maximum length of filenames */
-</PARA><PARA>
-                 long    f_spare[6]; /* spare for later */
-</PARA><PARA>
-              };
+<FUNCTION>fstatfs</FUNCTION> returns information about a mounted file 
+system. <PARAMETER>fd</PARAMETER> is the open file descriptor of any 
+file within the mounted filesystem. <PARAMETER>buf</PARAMETER> is a 
+pointer to a <STRUCTNAME>statfs</STRUCTNAME> structure defined as follows:
+<SYNOPSIS>
+  struct statfs {
+             long   f_type;      /* type of filesystem (see below) */
+             long   f_bsize;     /* optimal transfer block size */
+             long   f_blocks;    /* total data blocks in file system */
+             long   f_bfree;     /* free blocks in fs */
+             long   f_bavail;    /* free blocks avail to non-superuser */
+             long   f_files;     /* total file nodes in file system */
+             long   f_ffree;     /* free file nodes in fs */
+             fsid_t f_fsid;      /* file system id */
+             long   f_namelen;   /* maximum length of filenames */
+             long   f_spare[6];  /* spare for later */
+  };
+</SYNOPSIS>
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
 <PARA>
-Fields that are undefined for a particular file system are set to 0.
+Fields that are undefined for a particular file system are set to 
+<LITERAL>0</LITERAL>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
+On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
+the global variable <VARNAME>errno</VARNAME> is set appropriately.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -9024,7 +9179,7 @@ EBADF
 </TERM>
 <LISTITEM>
 <PARA>
-fd is not a valid open file descriptor.
+<PARAMETER>fd</PARAMETER> is not a valid open file descriptor.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -9035,7 +9190,7 @@ EFAULT
 </TERM>
 <LISTITEM>
 <PARA>
-buf points to an invalid address.
+<PARAMETER>buf</PARAMETER> points to an invalid address.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -9057,7 +9212,8 @@ ENOSYS
 </TERM>
 <LISTITEM>
 <PARA>
-The filesystem fd is open on does not support statfs.
+The filesystem <PARAMETER>fd</PARAMETER> is open on does not support 
+<FUNCTION>statfs</FUNCTION>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -9183,11 +9339,18 @@ get network host entry
 <REFSYNOPSISDIVINFO>
 <DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;netdb.h>
-
-struct hostent *gethostbyname(const char *name);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;netdb.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>struct 
+  <FUNCTION><STRUCTNAME>hostent</STRUCTNAME> 
+  *gethostbyname</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>name</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -9196,44 +9359,58 @@ struct hostent *gethostbyname(const char *name);
 <TITLE>Description
 </TITLE>
 <PARA>
-The gethostbyname() function returns a structure of type hostent for the given host name. Here name is either a host name, or an IPv4 address in standard dot notation, or an IPv6 address in colon (and possibly dot) notation. (See RFC 1884 for the description of IPv6 addresses.) If name is an IPv4 or IPv6 address, no lookup is performed and gethostbyname() simply copies name into the h_name field and its struct in_addr equivalent into the h_addr_list[0] field of the returned hostent structure. If name doesn't end in a dot and the environment variable HOSTALIASES is set, the alias file pointed to by HOSTALIASES will first be searched for name (see hostname(7) for the file format). The current domain and its parents are searched unless name ends in a dot.
-</PARA><PARA>
-The domain name queries carried out by gethostbyname() use a combination of any or all of the name server named(8), a broken out line from /etc/hosts, and the Network Information Service (NIS or YP), depending upon the contents of the order line in /etc/host.conf. (See resolv+(8)). The default action is to query named(8), followed by /etc/hosts.
-</PARA><PARA>
-The hostent structure is defined in &lt;netdb.h> as follows:
+<FUNCTION>gethostbyname</FUNCTION> returns a 
+<STRUCTNAME>hostent</STRUCTNAME> structure for the given host name. Here, 
+<PARAMETER>name</PARAMETER> is either a host name, or an IPv4 address 
+in standard dot notation, or an IPv6 address in colon (and possibly dot) 
+notation. (See <CITETITLE PUBWORK="ARTICLE">RFC 1884</CITETITLE> for the 
+description of IPv6 addresses.) If <PARAMETER>name</PARAMETER> is an 
+IPv4 or IPv6 address, no lookup is performed and 
+<FUNCTION>gethostbyname</FUNCTION> simply copies 
+<PARAMETER>name</PARAMETER> into the <STRUCTFIELD>h_name</STRUCTFIELD> 
+field and its struct <STRUCTFIELD>in_addr</STRUCTFIELD> equivalent into the 
+<STRUCTFIELD>h_addr_list</STRUCTFIELD>[0] field of the returned 
+<STRUCTNAME>hostent</STRUCTNAME> structure. If 
+<PARAMETER>name</PARAMETER> doesn't end in a dot and the environment 
+variable <VARNAME>HOSTALIASES</VARNAME> is set, the alias file pointed to 
+by <VARNAME>HOSTALIASES</VARNAME> will first be searched for 
+<PARAMETER>name</PARAMETER> (see <FUNCTION>hostname</FUNCTION>(7) for 
+the file format). The current domain and its parents are searched unless 
+<PARAMETER>name</PARAMETER> ends in a dot.
 </PARA>
+<PARA>
+The domain name queries carried out by <FUNCTION>gethostbyname</FUNCTION> 
+use a combination of any or all of the name server 
+<FUNCTION>named</FUNCTION>(8), a broken out line from 
+<FILENAME>/etc/hosts</FILENAME>, and the <EMPHASIS>Network Information 
+Service</EMPHASIS> (NIS or YP), depending upon the contents of the order 
+line in <FILENAME>/etc/host.conf</FILENAME>. (See 
+<FUNCTION>resolv</FUNCTION>+(8)). The default action is to query 
+<FUNCTION>named</FUNCTION>(8), followed by <FILENAME>/etc/hosts</FILENAME>.
+</PARA><PARA>
+The <STRUCTNAME>hostent</STRUCTNAME> structure is defined in 
+<FILENAME>netdb.h</FILENAME> as follows:
+<SYNOPSIS>
+  struct hostent {
+              char  *h_name;        /* official name of host */
+              char  **h_aliases;    /* alias list */
+              int   h_addrtype;     /* host address type */
+              int   h_length;       /* length of address */
+              char  **h_addr_list;  /* list of addresses */
+  }
 
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-struct hostent {
-</TERM>
-<LISTITEM>
-<PARA>
-       char    *h_name;        /* official name of host */
-</PARA><PARA>
-       char    **h_aliases;    /* alias list */
-</PARA><PARA>
-       int     h_addrtype;     /* host address type */
-</PARA><PARA>
-       int     h_length;       /* length of address */
-</PARA><PARA>
-       char    **h_addr_list;  /* list of addresses */
-</PARA><PARA>
-              }
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
-<PARA>
-#define h_addr  h_addr_list[0]  /* for backward compatibility */
+  #define  h_addr  h_addr_list[0]   /* for backward compatibility */
+</SYNOPSIS>
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-The gethostbyname()) functions return the hostent structure or a NULL pointer if an error occurs. On error, the h_errno variable holds an error number.
+<FUNCTION>gethostbyname</FUNCTION> returns the 
+<STRUCTNAME>hostent</STRUCTNAME> structure or a <LITERAL>NULL</LITERAL> 
+pointer if an error occurs. On error, the <VARNAME>h_errno</VARNAME> 
+variable holds an error number.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -9275,13 +9452,24 @@ find network host database entry matching host name
 <REFSYNOPSISDIVINFO>
 <DATE>29 May 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-extern int gethostbyname_r(__const char *__restrict __name,
-                           struct hostent *__restrict __result_buf,
-                           char *__restrict __buf, size_t __buflen,
-                           struct hostent **__restrict __result,
-                           int *__restrict __h_errnop);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern int 
+  <FUNCTION>gethostbyname_r</FUNCTION></FUNCDEF>
+ <PARAMDEF>__const char *__restrict 
+  <PARAMETER><REPLACEABLE>__name</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>hostent</STRUCTNAME> *__restrict 
+  <PARAMETER>__result_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF>char *__restrict  
+  <PARAMETER><REPLACEABLE>__buf</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>size_t 
+  <PARAMETER><REPLACEABLE>__buflen</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>hostent</STRUCTNAME>
+  **__restrict <PARAMETER>__result</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF>int *__restrict 
+  <PARAMETER><REPLACEABLE>__h_errnop</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -9291,8 +9479,9 @@ extern int gethostbyname_r(__const char *__restrict __name,
 <TITLE>Description
 </TITLE>
 <PARA>
-The gethostbyname_r() function is a reentrant version of the gethostbyname
-function that searches the network host database for a host name match.
+<FUNCTION>gethostbyname_r</FUNCTION> is a reentrant version of 
+<FUNCTION>gethostbyname</FUNCTION> that searches the network host 
+database for a host name match.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -9313,11 +9502,19 @@ get system load averages
 <REFSYNOPSISDIVINFO>
 <DATE>4 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;stdlib.h>
-
-int getloadavg(double loadavg[], int nelem);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;stdlib.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>getloadavg</FUNCTION></FUNCDEF>
+ <PARAMDEF>double 
+  <PARAMETER><REPLACEABLE>loadavg</REPLACEABLE>[]</PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>nelem</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -9327,7 +9524,13 @@ int getloadavg(double loadavg[], int nelem);
 <TITLE>Description
 </TITLE>
 <PARA>
-The getloadavg() function returns the number of processes in the system run queue averaged over various periods of time. Up to nelem samples are retrieved and assigned to successive elements of loadavg[]. The system imposes a maximum of 3 samples, representing averages over the last 1, 5, and 15 minutes, respectively.
+<FUNCTION>getloadavg</FUNCTION> returns the number of processes in 
+the system run queue averaged over various periods of time. Up to 
+<PARAMETER>nelem</PARAMETER> samples are retrieved and assigned to 
+successive elements of <PARAMETER>loadavg</PARAMETER>[]. The system 
+imposes a maximum of <LITERAL>3</LITERAL> samples, representing 
+averages over the last <LITERAL>1</LITERAL>, <LITERAL>5</LITERAL>, 
+and <LITERAL>15</LITERAL> minutes, respectively.
 </PARA>
 </REFSECT1>
 <!--     BSDI BSD/OS                      June 4, 1993       -->
@@ -9351,23 +9554,57 @@ parse command line options
 <REFSYNOPSISDIVINFO>
 <DATE>20 March 2001</DATE>
 </REFSYNOPSISDIVINFO>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>getopt</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>argc</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char * const 
+  <PARAMETER><REPLACEABLE>argv</REPLACEABLE>[]</PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*opstring</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 <SYNOPSIS>
-int getopt(int argc, char * const argv[], const char *optstring);
-extern char *optarg;
-extern int optind, opterr, optopt;
+extern char <VARNAME>*optarg</VARNAME>;
+extern int <VARNAME>optind</VARNAME>, <VARNAME>opterr</VARNAME>, <VARNAME>optopt</VARNAME>;
 </SYNOPSIS>
 <PARA>
-GNU supports the following extensions of getopt:
+GNU supports the following extensions of <FUNCTION>getopt</FUNCTION>:
 </PARA>
-<SYNOPSIS>
-int getopt_long(int argc, char * const argv[],
-               const char *optstring,
-               const struct option *longopts, int *longindex);
-
-int getopt_long_only(int argc, char * const argv[],
-                    const char *optstring,
-                    const struct option *longopts, int *longindex);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>getopt_long</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>argc</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char * const 
+  <PARAMETER><REPLACEABLE>argv</REPLACEABLE>[]</PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*opstring</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>option</STRUCTNAME> 
+  <PARAMETER>*longopts</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>*longindex</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>getopt_long_only</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>argc</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char * const 
+  <PARAMETER><REPLACEABLE>argv</REPLACEABLE>[]</PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*opstring</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>option</STRUCTNAME> 
+  <PARAMETER>*longopts</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>*longindex</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -9376,21 +9613,26 @@ int getopt_long_only(int argc, char * const argv[],
 <TITLE>Description
 </TITLE>
 <PARA>
-The getopt() function parses command line arguments.  GNU and POSIX specifications for this function vary in the following areas.
+<FUNCTION>getopt</FUNCTION> parses command line arguments. 
+<EMPHASIS>GNU</EMPHASIS> and <EMPHASIS>POSIX</EMPHASIS> specifications 
+for this function vary in the following areas.
 </PARA>
 <REFSECT2>
 <TITLE>Option Characteristics</TITLE>
 <PARA>
-GNU specifies that:
+<EMPHASIS>GNU</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-an element of argv that starts with "-" (and is not exactly "-" or "--") is an option element.
+an element of <PARAMETER>argv</PARAMETER> that starts with 
+"<TOKEN>-</TOKEN>" (and is not exactly "<TOKEN>-</TOKEN>" or 
+"<TOKEN>--</TOKEN>") is an option element.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-characters of an option element, aside from the initial "-", are option characters.
+characters of an option element, aside from the initial 
+"<TOKEN>-</TOKEN>", are option characters.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -9400,7 +9642,8 @@ POSIX specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-applications using getopt() must obey the following syntax guidelines:
+applications using <FUNCTION>getopt</FUNCTION> must obey the following 
+syntax guidelines:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -9409,12 +9652,13 @@ option name is a single alphanumeric character from the portable character set
 </LISTITEM>
 <LISTITEM>
 <PARA>
-option is preceded by the "-" delimiter character
+option is preceded by the "<TOKEN>-</TOKEN>" delimiter character
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-options without option-arguments should be accepted when grouped behind one "-" delimiter
+options without option-arguments should be accepted when grouped behind 
+one "<TOKEN>-</TOKEN>" delimiter
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -9434,7 +9678,9 @@ all options should precede operands on the command line
 </LISTITEM>
 <LISTITEM>
 <PARA>
-the argument "--" is accepted as a delimiter indicating the end of options and the consideration of subsequent arguments, if any, as operands
+the argument "<TOKEN>--</TOKEN>" is accepted as a delimiter 
+indicating the end of options and the consideration of subsequent 
+arguments, if any, as operands
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -9442,17 +9688,24 @@ the argument "--" is accepted as a delimiter indicating the end of options and t
 </LISTITEM>
 <LISTITEM>
 <PARA>
-historical implementations of getopt() support other characters as options as an allowed extension, but applications that use extensions are not maximally portable.
+historical implementations of <FUNCTION>getopt</FUNCTION> support 
+other characters as options as an allowed extension, but applications 
+that use extensions are not maximally portable.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-support for multi-byte option characters is only possible when such characters can be represented as type int.
+support for multi-byte option characters is only possible when such 
+characters can be represented as type <LITERAL>int</LITERAL>.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-applications that call any utility with a first operand starting with "-" should usually specify "--" to mark the end of the options.  Standard utilities that do not support this guideline indicate that fact in the OPTIONS section of the utility description.
+applications that call any utility with a first operand starting with 
+"<TOKEN>-</TOKEN>" should usually specify "<TOKEN>--</TOKEN>" 
+to mark the end of the options. Standard utilities that do not support 
+this guideline indicate that fact in the OPTIONS section of the utility 
+description.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -9461,46 +9714,62 @@ applications that call any utility with a first operand starting with "-" should
 <REFSECT2>
 <TITLE>Extensions</TITLE>
 <PARA>
-GNU specifies that:
+<EMPHASIS>GNU</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-if a character is followed by two colons, the option takes an optional arg; if there is text in the current argv-element, it is returned in optarg, otherwise optarg is set to zero.
+if a character is followed by two colons, the option takes an optional 
+arg; if there is text in the current <PARAMETER>argv</PARAMETER> element, 
+it is returned in <PARAMETER>optarg</PARAMETER>, otherwise 
+<PARAMETER>optarg</PARAMETER> is set to <LITERAL>0</LITERAL>.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-if optstring contains W followed by a semi-colon, then -W foo is treated as the long option --foo.  (Not available with libraries before GNU libc 2.)
+if <PARAMETER>optstring</PARAMETER> contains <LITERAL>W</LITERAL> followed 
+by a <TOKEN>;</TOKEN>, then <LITERAL>-W foo</LITERAL> is treated as the 
+long option <LITERAL>--foo</LITERAL>. (Not available with libraries before 
+<EMPHASIS>GNU libc 2</EMPHASIS>.)
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-getopt_long() works like getopt() except that it also accepts "long options", or, options that are preface with two dashes instead of one.
+<FUNCTION>getopt_long</FUNCTION> works like <FUNCTION>getopt</FUNCTION> 
+except that <FUNCTION>getopt_long</FUNCTION> also accepts "long options", 
+or, options that are prefaced with two dashes instead of one.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-long option names may be abbreviated if the abbreviation is unique or an exact match for some defined option.
+long option names may be abbreviated if the abbreviation is unique or an 
+exact match for some defined option.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-a long option may take a parameter, of the form  --arg=param or --arg param.
+a long option may take a parameter, of the form 
+<LITERAL>--arg=param</LITERAL> or <LITERAL>--arg param</LITERAL>.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-getopt_long_only() works like getopt_long(), except that both "-" and "--" indicate long option.  If an option that starts with "-" (not "--") doesn't match a long option, but does match a short option, it is parsed instead as a short option.
+<FUNCTION>getopt_long_only</FUNCTION> works like 
+<FUNCTION>getopt_long</FUNCTION>, except that both 
+"<TOKEN>-</TOKEN>" and "<TOKEN>--</TOKEN>" indicate long 
+option. If an option that starts with "<TOKEN>-</TOKEN>" 
+(not "<TOKEN>--</TOKEN>") doesn't match a long option, 
+but does match a short option, it is parsed instead as 
+a short option.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
 </PARA>
 <PARA>
-POSIX specifies that:
+<EMPHASIS>POSIX</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-the -W option is reserved for implementation extensions.
+the <OPTION>-W</OPTION> option is reserved for implementation extensions.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -9509,7 +9778,8 @@ the -W option is reserved for implementation extensions.
 <REFSECT2>
 <TITLE>Return Values</TITLE>
 <PARA>
-GNU specifies the following getopt() return values:
+<EMPHASIS>GNU</EMPHASIS> specifies the following 
+<FUNCTION>getopt</FUNCTION> return values:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -9518,23 +9788,27 @@ the next option character is returned, if found successfully.
 </LISTITEM>
 <LISTITEM>
 <PARA>
-colon character (":") is returned if a parameter is missing for one of the options.
+"<RETURNVALUE>:</RETURNVALUE>" is returned if a parameter is 
+missing for one of the options.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-question mark ("?") is returned if an unknown option character is encountered.
+"<RETURNVALUE>?</RETURNVALUE>" is returned if an unknown option 
+character is encountered.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-"-1" is returned for the end of the option list.
+<RETURNVALUE>-1</RETURNVALUE> is returned for the end of the option list.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
 </PARA>
 <PARA>
-GNU specifies the following getopt_long() and getopt_long_only() return values:
+<EMPHASIS>GNU</EMPHASIS> specifies the following 
+<FUNCTION>getopt_long</FUNCTION> and 
+<FUNCTION>getopt_long_only</FUNCTION> return values:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -9543,23 +9817,27 @@ when short option is recognized, the option character is returned.
 </LISTITEM>
 <LISTITEM>
 <PARA>
-when long option is recognized, val is returned if flag is NULL, otherwise, 0 is returned.
+when long option is recognized, val is returned if flag is 
+<LITERAL>NULL</LITERAL>, otherwise, <RETURNVALUE>0</RETURNVALUE> is returned.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-error and -1 returns are the same as for getopt().
+error and <RETURNVALUE>-1</RETURNVALUE> returns are the same as for 
+<FUNCTION>getopt</FUNCTION>.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-question mark ("?") is returned for an ambiguous match or an extraneous parameter.
+"<RETURNVALUE>?</RETURNVALUE>" is returned for an ambiguous match or an 
+extraneous parameter.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
 </PARA>
 <PARA>
-POSIX specifies the following getopt() return values:
+<EMPHASIS>POSIX</EMPHASIS> specifies the following 
+<FUNCTION>getopt</FUNCTION> return values:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -9568,17 +9846,22 @@ the next option character is returned, if found successfully.
 </LISTITEM>
 <LISTITEM>
 <PARA>
-colon character (":") is returned if a parameter is missing for one of the options and the first character of opstring is ":".
+"<RETURNVALUE>:</RETURNVALUE>" is returned if a parameter is missing for 
+one of the options and the first character of <VARNAME>opstring</VARNAME> is 
+"<TOKEN>:</TOKEN>".
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-question mark ("?") is returned if an unknown option character not in optstring is encountered, or if getopt() detects a missing argument and the first character of optstring is not ":".
+"<RETURNVALUE>?</RETURNVALUE>" is returned if an unknown option 
+character not in <VARNAME>optstring</VARNAME> is encountered, or if 
+<FUNCTION>getopt</FUNCTION> detects a missing argument and the first 
+character of <VARNAME>optstring</VARNAME> is not "<TOKEN>:</TOKEN>".
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-"-1" is returned for the end of the option list.
+<RETURNVALUE>-1</RETURNVALUE> is returned for the end of the option list.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -9587,21 +9870,27 @@ question mark ("?") is returned if an unknown option character not in optstring 
 <REFSECT2>
 <TITLE>Environmental Variables</TITLE>
 <PARA>
-GNU specifies that:
+<EMPHASIS>GNU</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-if the variable POSIXLY_CORRECT is set, option processing stops as soon as a non-option argument is encountered.
+if the variable <VARNAME>POSIXLY_CORRECT</VARNAME> is set, option 
+processing stops as soon as a non-option argument is encountered.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-if POSIXLY_CORRECT is set, GNU getopt() conforms to POSIX.2.
+if <VARNAME>POSIXLY_CORRECT</VARNAME> is set, <EMPHASIS>GNU</EMPHASIS> 
+<FUNCTION>getopt</FUNCTION> conforms to <EMPHASIS>POSIX.2</EMPHASIS>.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-the variable _[PID]_GNU_nonoption_argv_flags_ was used by bash 2.0 to communicate to GNU libc which arguments resulted from wildcard expansion and so should not be considered as options.  This behavior was removed in bash version 2.01, but the support remains in GNU libc.
+the variable <VARNAME>_[PID]_GNU_nonoption_argv_flags_</VARNAME> was 
+used by bash 2.0 to communicate to <EMPHASIS>GNU</EMPHASIS> libc which 
+arguments resulted from wildcard expansion and so should not be 
+considered as options. This behavior was removed in bash version 
+2.01, but the support remains in <EMPHASIS>GNU</EMPHASIS> libc.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -9610,7 +9899,10 @@ the variable _[PID]_GNU_nonoption_argv_flags_ was used by bash 2.0 to communicat
 <REFSECT2>
 <TITLE>Environmental Variables</TITLE>
 <PARA>
-POSIX.2 Interpretation 150 reports a technical error in the function of getopt().  GNU implements the correct behavior of getopt().
+<EMPHASIS>POSIX.2 Interpretation 150</EMPHASIS> reports a 
+technical error in the function of <FUNCTION>getopt</FUNCTION>. 
+<EMPHASIS>GNU</EMPHASIS> implements the correct behavior of 
+<FUNCTION>getopt</FUNCTION>.
 </PARA>
 </REFSECT2>
 </REFSECT1>
@@ -9630,15 +9922,26 @@ parse command line options
 <REFSYNOPSISDIVINFO>
 <DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
 #define _GNU_SOURCE
-#include &lt;getopt.h>
-
-int getopt_long(int argc, char * const argv[],
-           const char *optstring,
-           const struct option *longopts, int *longindex);
-
-</SYNOPSIS>
+#include &lt;getopt.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>getopt_long</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>argc</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char * const 
+  <PARAMETER><REPLACEABLE>argv</REPLACEABLE>[]</PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*opstring</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>option</STRUCTNAME> 
+  <PARAMETER>*longopts</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>*longindex</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -9647,40 +9950,45 @@ int getopt_long(int argc, char * const argv[],
 <TITLE>Description
 </TITLE>
 <PARA>
-The getopt_long() function works like getopt() except that it also accepts long options, started out by two dashes. Long option names may be abbreviated if the abbreviation is unique or is an exact match for some defined option. A long option may take a parameter, of the form --arg=param or --arg param.
-</PARA><PARA>
-longopts  is a pointer to the first element of an array of struct option declared in &lt;getopt.h> as
+<FUNCTION>getopt_long</FUNCTION> works like <FUNCTION>getopt</FUNCTION> 
+except that it also accepts long options, started out by two dashes. 
+Long option names may be abbreviated if the abbreviation is unique or 
+is an exact match for some defined option. A long option may take a 
+parameter, of the form <LITERAL>--arg=param</LITERAL> or 
+<LITERAL>--arg param</LITERAL>.
 </PARA>
-
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-          struct option {
-</TERM>
-<LISTITEM>
 <PARA>
-              const char *name;
-</PARA><PARA>
-              int *flag;
-</PARA><PARA>
-              int has_arg;
-</PARA><PARA>
-              int val;
-</PARA><PARA>
-          };
+<PARAMETER>longopts</PARAMETER> is a pointer to the first element of an 
+array of struct <STRUCTNAME>option</STRUCTNAME> declared in 
+<FILENAME>getopt.h</FILENAME> as:
+<SYNOPSIS>
+  struct option {
+             const char *name;
+             int *flag;
+             int has_arg;
+             int val;
+  };
+</SYNOPSIS>
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
-
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-The getopt_long() function returns the option character if the option was found successfully, : if there was a missing parameter for one of the options, ?  for an unknown option character, or -1 for the end of the option list.
-</PARA><PARA>
-getopt_long() also returns the option character when a short option is recognized. For a long option, they return val if flag is NULL, and 0 otherwise. Error and -1 returns are the same as for getopt(), plus ? for an ambiguous match or an extraneous parameter.
+<FUNCTION>getopt_long</FUNCTION> returns the option character if the 
+option was found successfully, or "<RETURNVALUE>:</RETURNVALUE>" if 
+there was a missing parameter for one of the options, or 
+"<RETURNVALUE>?</RETURNVALUE>" for an unknown option character, or 
+<RETURNVALUE>-1</RETURNVALUE> for the end of the option list.
+</PARA>
+<PARA>
+<FUNCTION>getopt_long</FUNCTION> also returns the option character 
+when a short option is recognized. For a long option, they return val 
+if flag is <LITERAL>NULL</LITERAL>, and <RETURNVALUE>0</RETURNVALUE> 
+otherwise. Error and <RETURNVALUE>-1</RETURNVALUE> returns are the 
+same as for <FUNCTION>getopt</FUNCTION>, plus 
+"<RETURNVALUE>?</RETURNVALUE>" for an ambiguous match or an 
+extraneous parameter.
 </PARA>
 
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -9704,15 +10012,26 @@ parse command line options
 <REFSYNOPSISDIVINFO>
 <DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
 #define _GNU_SOURCE
-#include &lt;getopt.h>
-
-int getopt_long_only(int argc, char * const argv[],
-           const char *optstring,
-           const struct option *longopts, int *longindex);
-
-</SYNOPSIS>
+#include &lt;getopt.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>getopt_long_only</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>argc</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char * const 
+  <PARAMETER><REPLACEABLE>argv</REPLACEABLE>[]</PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*opstring</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>option</STRUCTNAME> 
+  <PARAMETER>*longopts</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>*longindex</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -9721,14 +10040,32 @@ int getopt_long_only(int argc, char * const argv[],
 <TITLE>Description
 </TITLE>
 <PARA>
-getopt_long_only() is like getopt_long(), but - as well as -- can indicate a long option. If an option that starts with - (not --) doesn't match a long option, but does match a short option, it is parsed as a short option instead.
+<FUNCTION>getopt_long_only</FUNCTION> is like 
+<FUNCTION>getopt_long</FUNCTION>, but "<TOKEN>-</TOKEN>" as well as 
+"<TOKEN>--</TOKEN>" can indicate a long option. If an option that 
+starts with "<TOKEN>-</TOKEN>" (not "<TOKEN>--</TOKEN>") doesn't 
+match a long option, but does match a short option, it is parsed as 
+a short option instead.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-The function getopt_long_only() returns the option character if the option was found successfully, : if there was a missing parameter for one of the options, ? for an unknown option character, or -1 for the end of the option list. getopt_long_only() also returns the option character when a short option is recognized. For a long option, they return val if flag is NULL, and 0 otherwise. Error and -1 returns are the same as for getopt(), plus ? for an ambiguous match or an extraneous parameter.
+<FUNCTION>getopt_long_only</FUNCTION> returns the option character if the 
+option was found successfully, or "<RETURNVALUE>:</RETURNVALUE>" if 
+there was a missing parameter for one of the options, or 
+"<RETURNVALUE>?</RETURNVALUE>" for an unknown option character, or 
+<RETURNVALUE>-1</RETURNVALUE> for the end of the option list.
+</PARA>
+<PARA>
+<FUNCTION>getopt_long_only</FUNCTION> also returns the option character 
+when a short option is recognized. For a long option, they return val 
+if flag is <LITERAL>NULL</LITERAL>, and <RETURNVALUE>0</RETURNVALUE> 
+otherwise. Error and <RETURNVALUE>-1</RETURNVALUE> returns are the 
+same as for <FUNCTION>getopt</FUNCTION>, plus 
+"<RETURNVALUE>?</RETURNVALUE>" for an ambiguous match or an 
+extraneous parameter.
 </PARA>
 
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -9753,9 +10090,15 @@ get protocol entry
 <REFSYNOPSISDIVINFO>
 <DATE>4 Arpil 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-struct protoent *getprotobynumber(int proto);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>struct 
+  <FUNCTION>
+  <STRUCTNAME>protoent</STRUCTNAME> *getprotobynumber</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>proto</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -9764,44 +10107,37 @@ struct protoent *getprotobynumber(int proto);
 <TITLE>Description
 </TITLE>
 <PARA>
-The getprotobyname() function returns a protoent structure for the line from /etc/protocols that matches the protocol name name.
+<FUNCTION>getprotobyname</FUNCTION> returns a 
+<STRUCTNAME>protoent</STRUCTNAME> structure for the line from 
+<FILENAME>/etc/protocols</FILENAME> that matches the protocol name name.
 </PARA>
 <PARA>
-The protoent structure is defined in &lt;netdb.h&gt; as follows:
+<STRUCTNAME>protoent</STRUCTNAME> is defined in 
+<FILENAME>netdb.h</FILENAME> as follows:
+<SYNOPSIS>
+  struct protoent {
+               char  *p_name;      /* official protocol name */
+               char  **p_aliases;  /* alias list */
+               int   p_proto;      /* protocol number */
+  }
+</SYNOPSIS>
 </PARA>
-
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-              struct protoent {
-</TERM>
-<LISTITEM>
-<PARA>
-                      char    *p_name;        /* official protocol name */
-</PARA><PARA>
-                      char    **p_aliases;    /* alias list */
-</PARA><PARA>
-                      int     p_proto;        /* protocol number */
-</PARA><PARA>
-              }
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-The getprotobyname() function returns the protoent structure, or a NULL pointer if an error occurs or the end of the file is reached.
+<FUNCTION>getprotobyname</FUNCTION> returns the 
+<STRUCTNAME>protoent</STRUCTNAME> structure, or a <LITERAL>NULL</LITERAL> 
+pointer if an error occurs or the end of the file is reached.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Files
 </TITLE>
 <PARA>
-/etc/protocols protocol database file
+<FILENAME>/etc/protocols</FILENAME> protocol database file
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -9823,9 +10159,14 @@ get protocol entry
 <REFSYNOPSISDIVINFO>
 <DATE>4 Arpil 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-struct protoent *getprotoent(void);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>struct 
+  <FUNCTION><STRUCTNAME>protoent</STRUCTNAME> 
+  *getprotoent</FUNCTION></FUNCDEF>
+ <VOID> 
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -9834,29 +10175,22 @@ struct protoent *getprotoent(void);
 <TITLE>Description
 </TITLE>
 <PARA>
-The getprotoent() function reads the next line from the file /etc/protocols and returns a structure protoent containing the broken out fields from the line. The /etc/protocols file is opened if necessary.
-</PARA><PARA>
-The protoent structure is defined in &lt;netdb.h&gt; as follows:
+<FUNCTION>getprotoent</FUNCTION> reads the next line from the file 
+<FILENAME>/etc/protocols</FILENAME> and returns a structure 
+<STRUCTNAME>protoent</STRUCTNAME> containing the broken out fields 
+from the line. <FILENAME>/etc/protocols</FILENAME> is opened if necessary.
 </PARA>
-
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-              struct protoent {
-</TERM>
-<LISTITEM>
 <PARA>
-                      char    *p_name;        /* official protocol name */
-</PARA><PARA>
-                      char    **p_aliases;    /* alias list */
-</PARA><PARA>
-                      int     p_proto;        /* protocol number */
-</PARA><PARA>
-              }
+The <STRUCTNAME>protoent</STRUCTNAME> structure is defined in 
+<FILENAME>netdb.h</FILENAME> as follows:
+<SYNOPSIS>
+  struct protoent {
+               char  *p_name;      /* official protocol name */
+               char  **p_aliases;  /* alias list */
+               int   p_proto;      /* protocol number */
+  }
+</SYNOPSIS>
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
@@ -9864,7 +10198,10 @@ The protoent structure is defined in &lt;netdb.h&gt; as follows:
 Return Value
 </TITLE>
 <PARA>
-The getprotoent() function returns the protoent structure, or a NULL pointer if an error occurs or the end of the file is reached.
+<FUNCTION>getprotoent</FUNCTION> returns the 
+<STRUCTNAME>protoent</STRUCTNAME> structure, or a 
+<LITERAL>NULL</LITERAL> pointer if an error occurs 
+or the end of the file is reached.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -9872,7 +10209,7 @@ The getprotoent() function returns the protoent structure, or a NULL pointer if 
 Files
 </TITLE>
 <PARA>
-/etc/protocols protocol database file
+<FILENAME>/etc/protocols</FILENAME> protocol database file
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -9893,16 +10230,25 @@ reentrant version of getpwnam
 <REFSYNOPSISDIVINFO>
 <DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;string.h>
-
-extern int getpwnam_r (const char *name,
-                       struct passwd *resultbuf,
-                       char *buffer, 
-                       size_t buflen,
-                       struct passwd **result)
-
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;string.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern int 
+  <FUNCTION>getpwnam_r</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*name</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>passwd</STRUCTNAME> 
+  <PARAMETER>*resultbuf</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF>char 
+  <PARAMETER><REPLACEABLE>*buffer</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>size_t 
+  <PARAMETER><REPLACEABLE>buflen</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>passwd</STRUCTNAME> 
+  <PARAMETER>**result</PARAMETER></FUNCPARAMS></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -9911,9 +10257,12 @@ extern int getpwnam_r (const char *name,
 <TITLE>Description
 </TITLE>
 <PARA>
-Reentrant version of getpwnam. The additional arguments resultsbuf
-and buffer are for internal storage, buflen the size of the buffer, and
-result is the password structure used to return the requested information.
+<FUNCTION>getpwnam_r</FUNCTION>is a reentrant version of 
+<FUNCTION>getpwnam</FUNCTION>. The additional arguments 
+<PARAMETER>resultsbuf</PARAMETER> and <PARAMETER>buffer</PARAMETER> 
+are for internal storage, <PARAMETER>buflen</PARAMETER> 
+the size of the buffer, and <PARAMETER>result</PARAMETER> 
+is the password structure used to return the requested information.
 </PARA>
 
 </REFSECT1>
@@ -9933,16 +10282,22 @@ get a line of input (deprecated)
 <REFSECT1>
 <TITLE>Description
 </TITLE>
-<para>
-The gets function is expected to disappear from a future version
-of the LSB; applications should call fgets instead.<footnote><para>
-Programs which use gets are almost always vulnerable to overflowing
-the buffer supplied to gets.
-</para></footnote>
-</para>
-<para>
-The gets function is as specified in the Single UNIX Specification.
-</para>
+<PARA>
+<FUNCTION>gets</FUNCTION> is expected to disappear from a future 
+version of the <ACRONYM>LSB</ACRONYM>; applications should call the
+<FUNCTION>fgets</FUNCTION> interface.
+<FOOTNOTE>
+<PARA>
+Programs that use <FUNCTION>gets</FUNCTION> are almost always 
+vulnerable to overflowing the buffer supplied to 
+<FUNCTION>gets</FUNCTION>.
+</PARA>
+</FOOTNOTE>
+</PARA>
+<PARA>
+<FUNCTION>gets</FUNCTION> is as specified in the
+<CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -9962,11 +10317,20 @@ get service entry by name
 <REFSYNOPSISDIVINFO>
 <DATE>13 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;netdb.h>
-
-struct servent *getservbyname(const char *name, const char *proto);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;netdb.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>struct 
+  <FUNCTION><STRUCTNAME>servent</STRUCTNAME> 
+  *getservbyname</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*name</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*proto</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -9976,37 +10340,33 @@ struct servent *getservbyname(const char *name, const char *proto);
 <TITLE>Description
 </TITLE>
 <PARA>
-The getservbyname() function returns a servent structure for the line from /etc/services that matches the service name using protocol proto.
-</PARA><PARA>
-The servent structure is defined in &lt;netdb.h> as follows:
+<FUNCTION>getservbyname</FUNCTION> returns a 
+<STRUCTNAME>servent</STRUCTNAME> structure for the line from 
+<FILENAME>/etc/services</FILENAME> that matches the service name 
+using protocol <PARAMETER>proto</PARAMETER>.
 </PARA>
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-              struct servent {
-</TERM>
-<LISTITEM>
 <PARA>
-                      char    *s_name;        /* official service name */
-</PARA><PARA>
-                      char    **s_aliases;    /* alias list */
-</PARA><PARA>
-                      int     s_port;         /* port number */
-</PARA><PARA>
-                      char    *s_proto;       /* protocol to use */
-</PARA><PARA>
-              }
+The <STRUCTNAME>servent</STRUCTNAME> structure is defined in 
+<FILENAME>netdb.h</FILENAME> as follows:
+<SYNOPSIS>
+  struct servent {
+              char  *s_name;      /* official service name */
+              char  **s_aliases;  /* alias list */
+              int   s_port;       /* port number */
+              char  *s_proto;     /* protocol to use */
+  }
+</SYNOPSIS>
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-getservbyname() returns the servent structure, or a NULL pointer if an error occurs or the end of the file is reached.
+<FUNCTION>getservbyname</FUNCTION> returns the 
+<STRUCTNAME>servent</STRUCTNAME> structure, or a 
+<LITERAL>NULL</LITERAL> pointer if an error occurs 
+or the end of the file is reached.
 </PARA>
 </REFSECT1>
 
@@ -10015,7 +10375,7 @@ getservbyname() returns the servent structure, or a NULL pointer if an error occ
 Files
 </TITLE>
 <PARA>
-/etc/services services database file
+<FILENAME>/etc/services</FILENAME> services database file
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -10038,11 +10398,17 @@ get service entry
 <REFSYNOPSISDIVINFO>
 <DATE>13 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;netdb.h>
-
-struct servent *getservent(void);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;netdb.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>struct 
+  <FUNCTION><STRUCTNAME>servent</STRUCTNAME> 
+  *getservent</FUNCTION></FUNCDEF>
+ <VOID> 
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -10052,37 +10418,34 @@ struct servent *getservent(void);
 <TITLE>Description
 </TITLE>
 <PARA>
-The getservent() function reads the next line from the file /etc/services and returns a structure servent containing the broken out fields from the line. The /etc/services file is opened if necessary.
-</PARA><PARA>
-The servent structure is defined in &lt;netdb.h> as follows:
+<FUNCTION>getservent</FUNCTION> reads the next line from the file 
+<FILENAME>/etc/services</FILENAME> and returns a structure 
+<STRUCTNAME>servent</STRUCTNAME> containing the broken out fields 
+from the line. The <FILENAME>/etc/services</FILENAME> file is opened 
+if necessary.
 </PARA>
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-              struct servent {
-</TERM>
-<LISTITEM>
 <PARA>
-                      char    *s_name;        /* official service name */
-</PARA><PARA>
-                      char    **s_aliases;    /* alias list */
-</PARA><PARA>
-                      int     s_port;         /* port number */
-</PARA><PARA>
-                      char    *s_proto;       /* protocol to use */
-</PARA><PARA>
-              }
+The <STRUCTNAME>servent</STRUCTNAME> structure is defined in 
+<FILENAME>netdb.h</FILENAME> as follows:
+<SYNOPSIS>
+  struct servent {
+              char  *s_name;      /* official service name */
+              char  **s_aliases;  /* alias list */
+              int   s_port;       /* port number */
+              char  *s_proto;     /* protocol to use */
+  }
+</SYNOPSIS>
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-getservent() returns the servent structure, or a NULL pointer if an error occurs or the end of the file is reached.
+<FUNCTION>getservent</FUNCTION> returns the 
+<STRUCTNAME>servent</STRUCTNAME> structure, or a 
+<LITERAL>NULL</LITERAL> pointer if an error occurs 
+or the end of the file is reached.
 </PARA>
 </REFSECT1>
 
@@ -10091,7 +10454,7 @@ getservent() returns the servent structure, or a NULL pointer if an error occurs
 Files
 </TITLE>
 <PARA>
-/etc/services services database file
+<FILENAME>/etc/services</FILENAME> services database file
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -10105,18 +10468,24 @@ Files
 <REFNAMEDIV>
 <REFNAME>gettext</REFNAME>
 <REFPURPOSE>
-look up MSGID in the current default message catalog for the current LC_MESSAGES locale
+perform lookup in message catalog for the current LC_MESSAGES locale
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
 <DATE>16 September 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;libintl.h>
-
-extern char *gettext(const char *msgid);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;libintl.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern char 
+  <FUNCTION>*gettext</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*msgid</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -10125,35 +10494,39 @@ extern char *gettext(const char *msgid);
 <TITLE>Description
 </TITLE>
 <PARA>
-The <emphasis>gettext</emphasis> function attempts to retrieve a target 
-string based on the specified key from the <emphasis>msgid</emphasis> 
-argument within the context of a specific domain and the current locale.  
+<FUNCTION>gettext</FUNCTION> attempts to retrieve a target 
+string based on the specified key from <PARAMETER>msgid</PARAMETER> 
+within the context of a specific domain and the current locale.  
 </PARA>
 <PARA>
-The LANGUAGE environment variable is examined first to determine the
-message catalogs to be used.  The value of the LANGUAGE environment variable
-is a list of locale names separated by colon (:) character.  If the
-LANGUAGE environment variable is defined, each locale name is tried
-in the specified order and if a message catalog containing the requested
-message is found, the message is returned.  If the LANGUAGE environment
-varialbe is defined but failed to locate a message catalog, 
-the <emphasis>msgid</emphasis> string will be returned.
-If the LANGUAGE environment variable is not defined, LC_ALL, LC_xxx, and
-LANG environment varialbes are examined to locate the message catalog,
-forllowing the convention used by the <emphasis>setlocale()</emphasis> function.
+The <VARNAME>LANGUAGE</VARNAME> environment variable is examined 
+first to determine the message catalogs to be used. 
+<VARNAME>LANGUAGE</VARNAME> is a list of locale names separated 
+by "<TOKEN>:</TOKEN>" character. If <VARNAME>LANGUAGE</VARNAME> 
+is defined, each locale name is tried in the specified order and 
+if a message catalog containing the requested message is found, 
+the message is returned. If <VARNAME>LANGUAGE</VARNAME> is defined 
+but failed to locate a message catalog, the <PARAMETER>msgid</PARAMETER> 
+string is returned. If <VARNAME>LANGUAGE</VARNAME> is not defined, 
+the <VARNAME>LC_ALL</VARNAME>, <VARNAME>LC_xxx</VARNAME>, and
+<VARNAME>LANG</VARNAME> environment variables are examined to 
+locate the message catalog, following the convention used by the 
+<FUNCTION>setlocale</FUNCTION> function.
 </PARA>
 <PARA>
 The pathname used to locate the message catalog is 
-<emphasis>dirname/locale/category/domainname.mo</emphasis>, 
-where <emphasis>dirname</emphasis> is the directory specified 
-by <emphasis>bindtextdomain()</emphasis>, <emphasis>locale</emphasis>
-is a locale name determined by the definition of environment variables, 
-<emphasis>category</emphasis> is LC_MESSAGES.
+<EMPHASIS><LITERAL>dirname</LITERAL></EMPHASIS>/<EMPHASIS><LITERAL>locale</LITERAL></EMPHASIS>/<EMPHASIS><LITERAL>category</LITERAL></EMPHASIS><LITERAL>/domainname.mo</LITERAL>, 
+where <EMPHASIS><LITERAL>dirname</LITERAL></EMPHASIS> is the directory 
+specified by the <FUNCTION>bindtextdomain</FUNCTION> function, 
+<EMPHASIS><LITERAL>locale</LITERAL></EMPHASIS> is a locale name 
+determined by the definition of environment variables, and 
+<EMPHASIS><LITERAL>category</LITERAL></EMPHASIS> is 
+<VARNAME>LC_MESSAGES</VARNAME>.
 </PARA>
 <PARA>
-If the LC_MESSAGES locale category of the current locale is the
-standard "C" locale or the standard "POSIX" locale, the 
-<emphasis>gettext</emphasis> function returns <emphasis>msgid</emphasis>
+If the <VARNAME>LC_MESSAGES</VARNAME> locale category of the current 
+locale is the standard C locale or the standard POSIX locale, 
+<FUNCTION>gettext</FUNCTION> returns <PARAMETER>msgid</PARAMETER>
 without looking in any message catalog.
 </PARA>
 </REFSECT1>
@@ -10167,7 +10540,7 @@ msgid
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>msgid</emphasis> is a null-terminated string to be 
+A <LITERAL>NULL</LITERAL>-terminated string to be 
 matched in the catalogue with respect to a specific domain and the 
 current locale.  
 </PARA>
@@ -10178,19 +10551,21 @@ current locale.
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Return</TITLE>
+<TITLE>Return Value</TITLE>
 <PARA>
-If the function query above succeeds with <emphasis>msgid</emphasis>, then a 
-translated null-terminated string is returned.  If the search fails,
-then the original <emphasis>msgid</emphasis> is returned.
-The length of the string returned is undetermined until the function is called. 
+If the function query above succeeds with <PARAMETER>msgid</PARAMETER>, 
+then a translated <LITERAL>NULL</LITERAL>-terminated string is returned. 
+If the search fails, then the original <PARAMETER>msgid</PARAMETER> is 
+returned. The length of the string returned is undetermined until the 
+function is called. 
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Errors</TITLE>
 <PARA>
-The function will not modify the external <emphasis>errno</emphasis> variable.
+<FUNCTION>gettext</FUNCTION> does not modify the global variable 
+<VARNAME>errno</VARNAME>.
 </PARA>
 </REFSECT1>
 
@@ -10222,11 +10597,17 @@ access utmp file entries
 <REFSYNOPSISDIVINFO>
 <DATE>13 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;utmp.h>
-
-struct utmp *getutent(void);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;utmp.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>struct 
+  <FUNCTION><STRUCTNAME>utmp</STRUCTNAME> 
+  *getutent</FUNCTION></FUNCDEF>
+ <VOID> 
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -10236,7 +10617,9 @@ struct utmp *getutent(void);
 <TITLE>Description
 </TITLE>
 <PARA>
-getutent() reads a line from the current file position in the utmp file. It returns a pointer to a structure containing the fields of the line.
+<FUNCTION>getutent</FUNCTION> reads a line from the current file 
+position in the <FILENAME>utmp</FILENAME> file. It returns a 
+pointer to a structure containing the fields of the line.
 </PARA>
 </REFSECT1>
 
@@ -10244,7 +10627,8 @@ getutent() reads a line from the current file position in the utmp file. It retu
 <TITLE>Return Value
 </TITLE>
 <PARA>
-getutent() returns a pointer to a static struct utmp.
+<FUNCTION>getutent</FUNCTION> returns a pointer to a static struct 
+<STRUCTNAME>utmp</STRUCTNAME>.
 </PARA>
 </REFSECT1>
 
@@ -10252,7 +10636,8 @@ getutent() returns a pointer to a static struct utmp.
 <TITLE>Errors
 </TITLE>
 <PARA>
-On error, (struct utmp*)0 will be returned.
+On error, <EMPHASIS>(struct utmp*)</EMPHASIS><LITERAL>0</LITERAL> 
+is returned.
 </PARA>
 </REFSECT1>
 
@@ -10261,9 +10646,10 @@ On error, (struct utmp*)0 will be returned.
 Files
 </TITLE>
 <PARA>
-/var/run/utmp database of currently logged-in users
-</PARA><PARA>
-/var/log/wtmp database of past user logins
+<FILENAME>/var/run/utmp</FILENAME> database of currently logged-in users
+</PARA>
+<PARA>
+<FILENAME>/var/log/wtmp</FILENAME> database of past user logins
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -10286,10 +10672,16 @@ access utmp file entries
 <REFSYNOPSISDIVINFO>
 <DATE>29 May 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-extern int getutent_r(struct utmp *__buffer,
-                      struct utmp **__result);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern int 
+  <FUNCTION>getutent_r</FUNCTION></FUNCDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>utmp</STRUCTNAME> 
+  <PARAMETER>*__buffer</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>utmp</STRUCTNAME> 
+  <PARAMETER>**__result</PARAMETER></FUNCPARAMS></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -10299,8 +10691,9 @@ extern int getutent_r(struct utmp *__buffer,
 <TITLE>Description
 </TITLE>
 <PARA>
-The getutent_r() function is a reentrant version of the getutent
-utmp file handler.
+<FUNCTION>getutent_r</FUNCTION> is a reentrant version of the 
+<FUNCTION>getutent</FUNCTION> <STRUCTNAME>utmp</STRUCTNAME> 
+file handler.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -12576,7 +12969,8 @@ The filesystem path is on does not support statfs.
   <FUNCTION>statfs64</FUNCTION></FUNCDEF>
  <PARAMDEF>__const char 
   <PARAMETER><REPLACEABLE>*__file</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct statfs64 *__buf</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>statfs64</STRUCTNAME> 
+  <PARAMETER>*__buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -14622,7 +15016,7 @@ Convert initial portion of wide string NPTR to unsigned long long int representa
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 15:23:55 2002 -->
+<!--    at Tue Oct 22 22:30:41 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -15121,7 +15515,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 15:24:23 2002 -->
+<!--    at Tue Oct 22 22:31:10 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -15557,7 +15951,8 @@ operation on semaphore
   <FUNCTION>sem_timedwait</FUNCTION></FUNCDEF>
  <PARAMDEF>sem_t *__restrict 
   <PARAMETER><REPLACEABLE>__sem</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>__const struct timespec *__restrict __abstime</PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>__const struct <STRUCTNAME>timespec</STRUCTNAME> 
+  *__restrict <PARAMETER>__abstime</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -15586,7 +15981,7 @@ is similar to <FUNCTION>sem_wait</FUNCTION> but waits only until
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 15:24:40 2002 -->
+<!--    at Tue Oct 22 22:31:27 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -15826,7 +16221,7 @@ directory search-path for object files
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 15:24:53 2002 -->
+<!--    at Tue Oct 22 22:31:39 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -15891,7 +16286,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 15:25:05 2002 -->
+<!--    at Tue Oct 22 22:31:51 2002 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>

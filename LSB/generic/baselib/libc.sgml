@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 15:22:46 2002 -->
+<!--    at Tue Oct 22 22:29:31 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2637,6 +2637,18 @@ regmatch_t;
 
 
 
+
+
+
+enum auth_stat
+{
+  AUTH_OK, AUTH_BADCRED = 1, AUTH_REJECTEDCRED = 2, AUTH_BADVERF =
+    3, AUTH_REJECTEDVERF = 4, AUTH_TOOWEAK = 5, AUTH_INVALIDRESP =
+    6, AUTH_FAILED = 7
+}
+ ;
+
+
 union des_block
 {
   struct
@@ -2645,18 +2657,40 @@ union des_block
     u_int32_t low;
   }
   key;
-  char c;
+  char c[8];
 }
  ;
+
+
+struct opaque_auth
+{
+  enum_t oa_flavor;
+  caddr_t oa_base;
+  u_int oa_length;
+}
+ ;
+
+
 struct auth_ops
 {
-  void (*ah_nextverf) (void);
-  int (*ah_marshal) (void);
-  int (*ah_validate) (void);
-  int (*ah_refresh) (void);
-  void (*ah_destroy) (void);
+  void (*ah_nextverf) (AUTH *);
+  int (*ah_marshal) (AUTH *, struct XDR *);
+  int (*ah_validate) (AUTH *, struct opaque_auth *);
+  int (*ah_refresh) (AUTH *);
+  void (*ah_destroy) (AUTH *);
 }
  ;
+
+
+typedef struct AUTH
+{
+  struct opaque_auth ah_cred;
+  struct opaque_auth ah_verf;
+  union des_block ah_key;
+  struct auth_ops ah_ops;
+  caddr_t ah_private;
+}
+AUTH;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2665,85 +2699,51 @@ struct auth_ops
 </PARA>
 <SCREEN>
 
+#define NULLPROC	((u_long)0)
+#define CLSET_TIMEOUT	1
+#define CLGET_XID	10
+#define CLSET_XID	11
+#define CLGET_VERS	12
+#define CLSET_VERS	13
+#define CLGET_PROG	14
+#define CLSET_PROG	15
+#define CLGET_TIMEOUT	2
+#define CLGET_SERVER_ADDR	3
+#define CLSET_RETRY_TIMEOUT	4
+#define CLGET_RETRY_TIMEOUT	5
+#define CLGET_FD	6
+#define CLGET_SVC_ADDR	7
+#define CLSET_FD_CLOSE	8
+#define CLSET_FD_NCLOSE	9
+
+
+enum clnt_stat
+{
+  RPC_SUCCESS, RPC_CANTENCODEARGS = 1, RPC_CANTDECODERES = 2, RPC_CANTSEND =
+    3, RPC_CANTRECV = 4, RPC_TIMEDOUT = 5, RPC_VERSMISMATCH =
+    6, RPC_AUTHERROR = 7, RPC_PROGUNAVAIL = 8, RPC_PROGVERSMISMATCH =
+    9, RPC_PROCUNAVAIL = 10, RPC_CANTDECODEARGS = 11, RPC_SYSTEMERROR =
+    12, RPC_NOBROADCAST = 21, RPC_UNKNOWNHOST = 13, RPC_UNKNOWNPROTO =
+    17, RPC_UNKNOWNADDR = 19, RPC_RPCBFAILURE = 14, RPC_PROGNOTREGISTERED =
+    15, RPC_N2AXLATEFAILURE = 22, RPC_FAILED = 16, RPC_INTR =
+    18, RPC_TLIERROR = 20, RPC_UDERROR = 23, RPC_INPROGRESS =
+    24, RPC_STALERACHANDLE = 25
+}
+ ;
+
+
+
 
 
 struct clnt_ops
 {
-  enum clnt_stat (*cl_call) (void);
+  enum clnt_stat (*cl_call) (CLIENT *, u_long, xdrproc_t, caddr_t, xdrproc_t,
+			     caddr_t, struct timeval);
   void (*cl_abort) (void);
-  void (*cl_geterr) (void);
-    bool_t (*cl_freeres) (void);
-  void (*cl_destroy) (void);
-    bool_t (*cl_control) (void);
-}
- ;
-</SCREEN>
-</SECT2>
-<SECT2>
-<TITLE>rpc/rpc.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-
-
-typedef int bool_t;
-struct opaque_auth
-{
-  enum_t oa_flavor;
-  caddr_t oa_base;
-  u_int oa_length;
-}
- ;
-typedef int enum_t;
-struct AUTH
-{
-  struct opaque_auth ah_cred;
-  struct opaque_auth ah_verf;
-  union des_block ah_key;
-  struct auth_ops ah_ops;
-  caddr_t ah_private;
-}
- ;
-enum clnt_stat
-{
-  RPC_SUCCESS, RPC_CANTENCODEARGS, RPC_CANTDECODERES, RPC_CANTSEND,
-    RPC_CANTRECV, RPC_TIMEDOUT, RPC_VERSMISMATCH, RPC_AUTHERROR,
-    RPC_PROGUNAVAIL, RPC_PROGVERSMISMATCH, RPC_PROCUNAVAIL,
-    RPC_CANTDECODEARGS, RPC_SYSTEMERROR, RPC_NOBROADCAST, RPC_UNKNOWNHOST,
-    RPC_UNKNOWNPROTO, RPC_UNKNOWNADDR, RPC_RPCBFAILURE, RPC_PROGNOTREGISTERED,
-    RPC_N2AXLATEFAILURE, RPC_FAILED, RPC_INTR, RPC_TLIERROR, RPC_UDERROR,
-    RPC_INPROGRESS, RPC_STALERACHANDLE
-}
- ;
-struct CLIENT
-{
-  struct AUTH *cl_auth;
-  struct clnt_ops cl_ops;
-  caddr_t cl_private;
-}
- ;
-struct XDR
-{
-  enum xdr_op x_op;
-  struct xdr_ops x_ops;
-  caddr_t x_public;
-  caddr_t x_private;
-  caddr_t x_base;
-  int x_handy;
-}
- ;
-struct SVCXPRT
-{
-  int xp_sock;
-  u_short xp_port;
-  struct xp_ops xp_ops;
-  int xp_addrlen;
-  struct sockaddr_in xp_raddr;
-  struct opaque_auth xp_verf;
-  caddr_t xp_p1;
-  caddr_t xp_p2;
-  char xp_pad;
+  void (*cl_geterr) (CLIENT *, struct rpc_err *);
+    bool_t (*cl_freeres) (CLIENT *, xdrproc_t, caddr_t);
+  void (*cl_destroy) (CLIENT *);
+    bool_t (*cl_control) (CLIENT *, int, char *);
 }
  ;
 </SCREEN>
@@ -2753,6 +2753,9 @@ struct SVCXPRT
 <PARA>
 </PARA>
 <SCREEN>
+
+
+
 
 
 
@@ -2771,6 +2774,18 @@ struct xp_ops
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>rpc/types.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef int bool_t;
+typedef int enum_t;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>rpc/xdr.h</TITLE>
 <PARA>
 </PARA>
@@ -2781,6 +2796,16 @@ struct xp_ops
 enum xdr_op
 {
   XDR_ENCODE, XDR_DECODE, XDR_FREE
+}
+ ;
+struct XDR
+{
+  enum xdr_op x_op;
+  struct xdr_ops x_ops;
+  caddr_t x_public;
+  caddr_t x_private;
+  caddr_t x_base;
+  int x_handy;
 }
  ;
 struct xdr_ops
