@@ -204,6 +204,358 @@ Some unyet specified standard for zlib</PARA>
 </SECT1>
 
 
+<SECT1 ID=libutilman>
+<TITLE>Interface Definitions for libutil</TITLE>
+<PARA>
+</PARA>
+<REFENTRY ID="libutil-openpty-3"> <REFMETA>
+<REFENTRYTITLE>openpty</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>openpty
+</REFNAME>
+<REFPURPOSE>find and open an available pseudo-tty
+</REFPURPOSE>
+<INDEXTERM ID="ix-libutil-openpty-3"><PRIMARY>openpty</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 February 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int openpty (int *<replaceable class="parameter" >amaster</replaceable>, 
+	int *<replaceable class="parameter" >aslave</replaceable>, 
+	char *<replaceable class="parameter" >name</replaceable>,
+	struct termios *<replaceable class="parameter" >termp</replaceable>,
+	struct winsize *<replaceable class="parameter" >winp</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>08 February 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The openpty() function finds an available pseudo-tty and returns file 
+descriptors for the amaster and aslave.  The filename of the slave is 
+returned in name, otherwise a null.  The terminal parameters of the slave 
+will be set to the values in termp, otherwise a null.  The window size of 
+the slave will be set to the values in winp, otherwise a null.
+</PARA>
+</REFSECT1>
+<refsect1>
+<title>
+Return value
+</title>
+<para>
+0         Success.
+</para>
+<para>
+[ENOENT]  There are no available ttys.
+</para>
+</refsect1>
+<refsect1>
+<title>
+Errors
+</title>
+<para>
+-1        Not successful, see errno.
+</para>
+</refsect1>
+</REFENTRY>
+
+<REFENTRY ID="libutil-forkpty-3"> <REFMETA>
+<REFENTRYTITLE>forkpty</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>forkpty
+</REFNAME>
+<REFPURPOSE>find and open an available pseudo-tty
+</REFPURPOSE>
+<INDEXTERM ID="ix-libutil-forkpty-3"><PRIMARY>forkpty</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 February 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int forkpty (int *<replaceable class="parameter" >amaster</replaceable>, 
+	char *<replaceable class="parameter" >name</replaceable>,
+	struct termios *<replaceable class="parameter" >termp</replaceable>,
+	struct winsize *<replaceable class="parameter" >winp</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>08 February 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The forkpty() function joins openpty(), fork(), and login_tty() to
+create a new process operating on a pseudo-tty.  The file descriptor of
+the master side of the pseudo-tty is returned in amaster, and null or the 
+filename of the slave in name.  If non-null, the termp and winp 
+parameters will determine the terminal attributes and window size
+of the slave side of the pseudo-tty.
+</PARA>
+</REFSECT1>
+<refsect1>
+<title>
+Return value
+</title>
+<para>
+0         Success for the child process.
+</para>
+<para>
+pid       Parent process receives the PID of its child process.
+</para>
+</refsect1>
+<refsect1>
+<title>
+Errors
+</title>
+<para>
+-1        Not successful, see errno.
+</para>
+</refsect1>
+</REFENTRY>
+
+<REFENTRY ID="libutil-login-tty-3"> <REFMETA>
+<REFENTRYTITLE>login_tty</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>login_tty
+</REFNAME>
+<REFPURPOSE>find and open an available pseudo-tty
+</REFPURPOSE>
+<INDEXTERM ID="ix-libutil-login-tty-3"><PRIMARY>login_tty</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 February 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int login_tty(int <replaceable class="parameter" >fdr</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>08 February 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The login_tty() function sets up for a login on the tty referenced by the
+file descriptor fd:  create a new session, make the tty for the current
+process the controlling terminal, set the standard input, output, and error
+streams of the current process, and closing fd.
+</PARA>
+</REFSECT1>
+<refsect1>
+<title>
+Return value
+</title>
+<para>
+0         Success.
+</para>
+</refsect1>
+<refsect1>
+<title>
+Errors
+</title>
+<para>
+-1        Not successful, see errno.
+</para>
+</refsect1>
+</REFENTRY>
+
+<REFENTRY ID="libutil-login-3"> <REFMETA>
+<REFENTRYTITLE>login</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>login
+</REFNAME>
+<REFPURPOSE>login utility function
+</REFPURPOSE>
+<INDEXTERM ID="ix-libutil-login-3"><PRIMARY>login</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 February 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+void login(struct utmp *<replaceable class="parameter" >ut</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>08 February 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The login() function updates the /var/run/utmp and /var/log/wtmp files
+with user information contained in ut.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="libutil-logout-3"> <REFMETA>
+<REFENTRYTITLE>logout</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>logout
+</REFNAME>
+<REFPURPOSE>logout utility function
+</REFPURPOSE>
+<INDEXTERM ID="ix-libutil-logout-3"><PRIMARY>logout</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 February 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int logout(const char *<replaceable class="parameter" >line</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>08 February 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Given the device line, the logout() function removes the entry from the
+corresponding /var/run/utmp system file.
+</PARA>
+</REFSECT1>
+<refsect1>
+<title>
+Return Values
+</title>
+<para>
+non-zero  Successful.
+</para>
+<para>
+0 If there was not entry to remove.
+</para>
+</refsect1>
+</REFENTRY>
+
+<REFENTRY ID="libutil-getutent-r-3"> <REFMETA>
+<REFENTRYTITLE>getutent_r</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getutent_r
+</REFNAME>
+<REFPURPOSE>find and open an available pseudo-tty
+</REFPURPOSE>
+<INDEXTERM ID="ix-libutil-getutent-r-3"><PRIMARY>getutent_r</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 February 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int getutent_r (
+struct utmp *<replaceable class="parameter" >buffer</replaceable>, 
+struct utmp **<replaceable class="parameter" >result</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>08 February 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Same at described in getutent(3), but storing information in a
+user provided buffer.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="libutil-getutid-r-3"> <REFMETA>
+<REFENTRYTITLE>getutid_r</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getutid_r
+</REFNAME>
+<REFPURPOSE>find and open an available pseudo-tty
+</REFPURPOSE>
+<INDEXTERM ID="ix-libutil-getutid-r-3"><PRIMARY>getutid_r</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 February 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int getutid_r (
+const struct utmp *<replaceable class="parameter" >id</replaceable>,
+struct utmp *<replaceable class="parameter" >buffer</replaceable>, 
+struct utmp **<replaceable class="parameter" >result</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>08 February 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Same at described in getutent(3), but storing information in a
+user provided buffer.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="libutil-getutline-r-3"> <REFMETA>
+<REFENTRYTITLE>getutline_r</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getutline_r
+</REFNAME>
+<REFPURPOSE>find and open an available pseudo-tty
+</REFPURPOSE>
+<INDEXTERM ID="ix-libutil-getutline-r-3"><PRIMARY>getutline_r</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 February 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int getutline_r (
+const struct utmp *<replaceable class="parameter" >id</replaceable>,
+struct utmp *<replaceable class="parameter" >buffer</replaceable>, 
+struct utmp **<replaceable class="parameter" >result</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>08 February 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Same at described in getutent(3), but storing information in a
+user provided buffer.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+</SECT1>
+
+
 </CHAPTER>
 
 </PART>
