@@ -20,9 +20,9 @@ complete specification for a platform consists of the common specification plus
 one of the architecture specifications.</p>
 </blockquote>
 
-<H1>LSB 2.0 Release Candiate 1 has been published </H1>
+<H1>LSB 2.0 Release Candiate 2 has been published </H1>
 <p>
-Release Candidate 1 of LSB 2.0 can be found <A HREF="specs.php">HERE</A>.
+Release Candidate 2 of LSB 2.0 can be found <A HREF="specs.php">HERE</A>.
 Contributors are encouraged to use this version to verify that all issues
 have been satisfactorily resolved. 
 This will be the final specification unless a major issue is discovered in
