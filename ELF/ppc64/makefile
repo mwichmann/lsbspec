@@ -52,7 +52,7 @@ clean:
 	rm -f *.html *.pdf *.ps *.rtf *.log *.dvi *.aux
 	rm -rf lsELF
 
-PPC-elf64abi.pdf: PPC-elf64abi.sgml
-PPC-elf64abi.rtf: PPC-elf64abi.sgml
-PPC-elf64abi/book1.html: lzsabi0_zSeries.sgml
-PPC-elf64abi.html: PPC-elf64abi.sgml
+PPC-elf64abi.pdf: PPC-elf64abi.sgml chap1-elf64abi.sgml chap2-elf64abi.sgml chap3-elf64abi.sgml chap4-elf64abi.sgml chap5-elf64abi.sgml chap6-elf64abi.sgml 
+PPC-elf64abi.rtf: PPC-elf64abi.sgml chap1-elf64abi.sgml chap2-elf64abi.sgml chap3-elf64abi.sgml chap4-elf64abi.sgml chap5-elf64abi.sgml chap6-elf64abi.sgml 
+spec/book1.html:  PPC-elf64abi.sgml chap1-elf64abi.sgml chap2-elf64abi.sgml chap3-elf64abi.sgml chap4-elf64abi.sgml chap5-elf64abi.sgml chap6-elf64abi.sgml 
+PPC-elf64abi.html: PPC-elf64abi.sgml chap1-elf64abi.sgml chap2-elf64abi.sgml chap3-elf64abi.sgml chap4-elf64abi.sgml chap5-elf64abi.sgml chap6-elf64abi.sgml 
