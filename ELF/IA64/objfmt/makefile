@@ -14,9 +14,9 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mksectiontable -a IA64 -s 'IA64-ABI-4' -c 4 >elfsect.sgml
+	../../../mksectiontable -a IA64 -s 'IA64 ABI' -c 4 >elfsect.sgml
 	../../../mksectiontable -a IA64 -s 'LSB' -d >linuxsect.sgml
-	../../../mksecttypestable -a IA64 -s 'IA64-ABI-4' -c 4 >elfsecttypes.sgml
+	../../../mksecttypestable -a IA64 -s 'IA64 ABI' -c 4 >elfsecttypes.sgml
 	../../../mksecttypestable -a IA64 -s 'LSB' -d >linuxsecttypes.sgml
 
 clean:
