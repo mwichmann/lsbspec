@@ -270,7 +270,8 @@ sub getinterfaces($$$$)
 
 	if ($type eq "functions" || $type eq "methods") {
 		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
-		$where.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
+		# $where.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
+		$where.= "AND ( Istatus='Included' ) ";
 		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 		$name  = "ints";
 		$table_title = "$Lname - $LGname Function Interfaces";
@@ -284,7 +285,8 @@ sub getinterfaces($$$$)
 		}
 	elsif ($type eq "data interfaces") {
 		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-		$where.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
+		# $where.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
+		$where.= "AND ( Istatus='Included' ) ";
 		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 		$name  = "data";
 		$table_title = "$Lname - $LGname Data Interfaces";
@@ -407,7 +409,7 @@ $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.58 2004-07-08 13:53:11 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.59 2004-07-08 19:02:30 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -487,17 +489,10 @@ if( $lsh->numrows) {
 	for(1..$lsh->numrows) {
 		local(*entry);
 		%entry=$lsh->fetchhash;
-		# NB: Footnotes must be unique across the entire document
+		# Footnotes removed from here ... in line references are now used
+		# should add a link or xref back to the normative refs table here ...
 		print "<MEMBER>\n";
 		print $entry{'Sfull'};
-		if( $entry{'Sid'} != 0 ) {
-			printf "<FOOTNOTE ID=\"std-%d-%d\">\n",
-					$Lid, $entry{'Sid'};
-			print "<PARA>\n";
-			print $entry{'Sfull'};
-			print "</PARA>\n";
-			print "</FOOTNOTE>\n";
-		}
 		print "</MEMBER>\n";
 		}
 	print "</SIMPLELIST>\n";
@@ -581,16 +576,21 @@ $select.= "ORDER BY Hname";
 $hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $hdh->numrows ) {
 	print "<SECT1 ID=", $safelibname, "-ddefs>\n";
-	print "<TITLE>Data Definitions for ", $Lname, "</TITLE>\n";
+	print "<TITLE>Data Definitions for $Lname</TITLE>\n";
 	print "<PARA>\n";
-	print "This section contains standard data definitions that describe ";
-	print "system data. These definitions are organized into groups that ";
+	print "This section defines global identifiers and their values that are associated ";
+	print "with interfaces contained in $Lname.\n";
+	print "These definitions are organized into groups that ";
 	print "correspond to system headers. This convention is used as a ";
 	print "convenience for the reader, and does not imply the existence ";
 	print "of these headers, or their content.";
 	print "</PARA>\n";
 	print "<PARA>\n";
-	print "ISO/IEC 9899 C Language serves as the LSB reference programming ";
+	print "These definitions are intended to supplement those provided ";
+	print "in the referenced underlying specifications.\n";
+	print "</PARA>\n";
+	print "<PARA>\n";
+	print "This specification uses ISO/IEC 9899 C Language as the reference programming ";
 	print "language, and ";
 	print "data definitions are specified in ISO C format. The C language ";
 	print "is used here as a convenient notation. Using a C language ";
@@ -601,16 +601,25 @@ if( $hdh->numrows ) {
 		local(*entry);
 		%entry=$hdh->fetchhash;
 		$Hname=$entry{'Hname'};
-		$headname="../../../src/include/$archname/".$Hname.".defs";
-		open(HEADER,"<".$headname) ||
-			open(HEADER,"<../".$headname) ||
+		$headroot="../../../build_env/headers/$archname/".$Hname;
+		$headname=$headroot.".defs";
+		if (!open(HEADER,"<".$headname) &&
+			!open(HEADER,"<../".$headname)) {
+			print "<!-- missing header file $archname/$Hname -->\n";
 			next;
+		}
 		if( -s HEADER ) { # Make sure it's not empty
 			print "<SECT2>\n";
 			print "<TITLE>";
 			print $entry{'Hname'};
 			print "</TITLE>\n";
 			print "<PARA>\n";
+			$headnote=$headroot.".notes";
+			if (open(HEADNOTE, "<$headnote") || 
+				open(HEADNOTE,"<../$headnote")) {
+				print $_ while (<HEADNOTE>);
+				close(HEADNOTE);
+			}
 			print "</PARA>\n";
 			print "<SCREEN>\n";
 			while(<HEADER>) {
@@ -619,6 +628,13 @@ if( $hdh->numrows ) {
 				}
 			print "</SCREEN>\n";
 			print "</SECT2>\n";
+		} else {
+			print "<!-- empty header file $archname/$Hname -->\n";
+			#
+			# perhaps we should print a :
+			# "No additional data interfaces are defined for $Hname" 
+			# message here ??
+			#
 		}
 	}
 	print "</SECT1>\n";
@@ -641,6 +657,14 @@ if($sth->numrows) {
 	print "<SECT1 ID=", $safelibname, "man>\n";
 	print "<TITLE>Interface Definitions for ", $libname, "</TITLE>\n";
 	print "<PARA>\n";
+	print "The following interfaces are included in $libname and are defined\n";
+	print "by this specification.\n";
+	print "Unless otherwise noted, these interfaces shall be included\n";
+	print "in the source standard.\n";
+	print "</PARA>\n";
+	print "<PARA>\n";
+	print "Other interfaces listed above for $libname shall behave as described\n";
+	print "in the referenced base document.\n";
 	print "</PARA>\n";
 
 	for(1..$sth->numrows) {
@@ -662,4 +686,4 @@ if($sth->numrows) {
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.58 2004-07-08 13:53:11 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.59 2004-07-08 19:02:30 nick Exp $- -->\n");
