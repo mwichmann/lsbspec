@@ -1,0 +1,111 @@
+<refentry id="zlib-deflateSetDictionary-1">
+
+<refmeta>
+<refentrytitle>deflateSetDictionary</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>deflateSetDictionary</refname>
+<refpurpose>initialize compression dictionary</refpurpose>
+<indexterm id="ix-utillib-deflateSetDictionary-1">
+  <primary>deflateSetDictionary</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>deflateSetDictionary</function>
+</funcdef>
+<paramdef>z_streamp
+<parameter>stream</parameter>
+</paramdef>
+<paramdef>const Bytef *
+<parameter>dictionary</parameter>
+</paramdef>
+<paramdef>uInt
+<parameter>dictlen</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>deflateSetDictionary</function> function shall initialize the
+compression dictionary associated with <parameter>stream</parameter>
+using the <parameter>dictlen</parameter> bytes referenced by
+<parameter>dictionary</parameter>.
+</para>
+<para>
+The implementation may silently use a subset of the provided dictionary
+if the dictionary cannot fit in the current window associated with
+<parameter>stream</parameter> (see <function>deflateInit2_</function>).
+The application should ensure that the dictionary is sorted such that
+the most commonly used strings occur at the end of the dictionary.
+</para>
+<para>
+If the dictionary is successfully set, the Adler32 checksum of the entire
+provided dictionary
+shall be stored in the <structfield>adler</structfield> member of 
+<parameter>stream</parameter>. This value may be used by the decompression
+system to select the correct dictionary. The compression and decompression 
+systems must use the same dictionary.
+</para>
+<para>
+<parameter>stream</parameter> shall reference an initialized compression
+stream, with <structfield>total_in</structfield> zero (i.e. no data
+has been compressed since the stream was initialized).
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>deflateSetDictionary</function> shall return  
+<returnvalue>Z_OK</returnvalue>.
+Otherwise it shall return <returnvalue>Z_STREAM_ERROR</returnvalue>
+to indicate an error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>deflateSetDictionary</function> shall return a value as described 
+below:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The state in <parameter>stream</parameter> is inconsistent, or
+<parameter>stream</parameter> 
+was <constant>NULL</constant>.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+<refsect1>
+<title>Application Usage (informative)</title>
+<para>
+The application should provide a dictionary consisting of strings
+{{{ed note: do we really mean "strings"? Null terminated?}}}
+that are likely to be encountered in the data to be compressed.
+The application should ensure that the dictionary is sorted such that
+the most commonly used strings occur at the end of the dictionary.
+</para>
+<para>
+The use of a dictionary is optional; however if the data
+to be compressed is relatively short and has a predictable structure,
+the use of a dictionary can substantially improve the compression
+ratio.
+</para>
+</refsect1>
+</refentry>
+

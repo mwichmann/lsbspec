@@ -1,0 +1,184 @@
+<refentry id="zlib-deflateParams-1">
+
+<refmeta>
+<refentrytitle>deflateParams</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>deflateParams</refname>
+<refpurpose>set compression parameters</refpurpose>
+<indexterm id="ix-utillib-deflateParams-1">
+  <primary>deflateParams</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>deflateParams</function>
+</funcdef>
+<paramdef>z_streamp
+<parameter>stream</parameter>
+</paramdef>
+<paramdef>int
+<parameter>level</parameter>
+</paramdef>
+<paramdef>int
+<parameter>strategy</parameter>
+</paramdef>
+ 
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>deflateParams</function> function shall dynamically
+alter the compression parameters for the compression stream object
+<parameter>stream</parameter>.
+On entry, <parameter>stream</parameter> shall refer to a user supplied <type>z_stream</type>
+object (a <structname>z_stream_s</structname> structure), already initialized
+via a call to <function>deflateInit_</function> or
+<function>deflateInit2_</function>.
+</para>
+<para>
+The <parameter>level</parameter> supplied shall be a value between
+<constant>0</constant> and <constant>9</constant>, or the value
+<constant>Z_DEFAULT_COMPRESSION</constant>. A <parameter>level</parameter>
+of <constant>1</constant> requests the highest speed, while a <parameter>level</parameter>
+of <constant>9</constant> requests the highest compression.
+A <parameter>level</parameter> of <constant>0</constant> indicates that no
+compression should be used, and the output shall be the same as the input.
+If the compression level is altered by <function>deflateParams</function>,
+and some data has already been compressed with this <parameter>stream</parameter>
+(i.e. <structfield>total_in</structfield> is not zero),
+and the new <parameter>level</parameter> requires a different
+underlying compression method, then <parameter>stream</parameter>
+shall be flushed by a call to <function>deflate</function>.
+</para>
+<para>
+The <parameter>strategy</parameter> parameter selects the compression strategy to use:
+<variablelist>
+<varlistentry>
+<term><constant>Z_DEFAULT_STRATEGY</constant></term>
+<listitem><para>
+use the system default compression strategy. <constant>Z_DEFAULT_STRATEGY</constant>
+is particularly appropriate for text data.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_FILTERED</constant></term>
+<listitem><para>
+use a compression strategy tuned for data consisting largely of small values with a
+fairly random distribution. <constant>Z_FILTERED</constant> uses more Huffman encoding
+and less string matching than <constant>Z_DEFAULT_STRATEGY</constant>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_HUFFMAN_ONLY</constant></term>
+<listitem><para>
+force Huffman encoding only, with no string match.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, the <function>deflateParams</function> function shall return 
+<constant>Z_OK</constant>. 
+Otherwise, <function>deflateParams</function> shall return
+a value as described below to indicate the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>deflateParams</function> shall return one
+of the following error indicators:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+Invalid parameter.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+Insufficient space in <parameter>stream</parameter> 
+to flush the current output.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+In addition, the <structfield>msg</structfield> field of the <parameter>strm</parameter>
+may be set to an error message.
+</para>
+</refsect1>
+<refsect1>
+<title>Application Usage (Informative)</title>
+<para>
+Applications should ensure that the <parameter>stream</parameter> is flushed,
+e.g. by a call to <userinput>deflate(stream, Z_SYNC_FLUSH)</userinput>
+before calling <function>deflateParams</function>, or ensure that there is
+sufficient space in <structfield>next_out</structfield> (as identified by
+<structfield>avail_out</structfield>) to ensure that all pending output and
+all uncompressed input can be flushed in a single call to
+<function>deflate</function>.
+<note><title>Rationale</title>
+<para>
+Although the <function>deflateParams</function> function should flush pending output
+and compress all pending input, the result is unspecified if there is insufficient
+space in the output buffer. Applications should only call <function>deflateParams</function>
+when the <parameter>stream</parameter> is effectively empty (flushed).
+</para>
+<para>
+The <function>deflateParams</function> can be used to switch between
+compression and straight copy of the
+input data, or to switch to a different kind of input data requiring a
+different strategy.
+</para>
+</note>
+</para>
+</refsect1>
+</refentry>
+<!--
+ Copyright (C) 1995-2002 Jean-loup Gailly and Mark Adler
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+   1. The origin of this software must not be misrepresented ; you
+   must not claim that you wrote the original software. If you use this
+   software in a product, an acknowledgment in the product documentation
+   would be appreciated but is not required.  2. Altered source versions
+   must be plainly marked as such, and must not be misrepresented as
+   being the original software.  3. This notice may not be removed or
+   altered from any source distribution.
+
+Jean-loup Gailly
+    jloup@gzip.org
+Mark Adler
+    madler@alumni.caltech.edu  
+-->

@@ -34,9 +34,13 @@ utillib.sgml:  libz.sgml libcurses.sgml libutil.sgml \
 	gzputc.sgml gzputs.sgml gzgets.sgml gzgetc.sgml \
 	gzeof.sgml gztell.sgml gzflush.sgml gzseek.sgml \
 	gzrewind.sgml \
-	compress.sgml compress2.sgml \
-	deflate.sgml inflate.sgml \
+	compress.sgml compress2.sgml uncompress.sgml \
+	deflate.sgml inflate.sgml deflateParams.sgml \
 	adler32.sgml crc32.sgml get_crc_table.sgml \
 	deflateInit2_.sgml inflateInit2_.sgml zlibVersion.sgml \
-	deflateCopy.sgml deflateEnd.sgml inflateEnd.sgml zError.sgml
+	deflateCopy.sgml deflateEnd.sgml inflateEnd.sgml zError.sgml \
+	deflateSetDictionary.sgml inflateSetDictionary.sgml \
+	inflateSync.sgml inflateSyncPoint.sgml \
+	deflateBound.sgml compressBound.sgml
+
 

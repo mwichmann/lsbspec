@@ -1,0 +1,91 @@
+<refentry id="zlib-inflateSync-1">
+
+<refmeta>
+<refentrytitle>inflateSync</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>inflateSync</refname>
+<refpurpose>advance compression stream to next sync point</refpurpose>
+<indexterm id="ix-utillib-inflateSync-1">
+  <primary>inflateSync</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>inflateSync</function>
+</funcdef>
+<paramdef>z_streamp
+<parameter>stream</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>inflateSync</function> function shall advance through the
+compressed data in <parameter>stream</parameter>, skipping any invalid
+compressed data, until the next full flush point is reached, or all
+input is exhausted. See the
+description for <function>deflate</function> with flush level
+<constant>Z_FULL_FLUSH</constant>.
+No output is placed in <structfield>next_out</structfield>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>inflateSync</function> shall return  
+<returnvalue>Z_OK</returnvalue>, and update the
+<simplelist type=inline>
+<member><structfield>next_in</structfield>,</member>
+<member><structfield>avail_in</structfield>, and</member>
+<member><structfield>total_in</structfield></member>
+</simplelist>
+fields of <parameter>stream</parameter> to reflect the number
+of bytes of compressed data that have been skipped.
+Otherwise, <function>inflateSync</function>
+shall return a value as described below to indicate the
+error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>inflateSync</function> shall return a value
+as described below:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The state (as represented in <parameter>stream</parameter>) is inconsistent, or
+<parameter>stream</parameter> was <constant>NULL</constant>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+There is no data available to skip over.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_DATA_ERROR</constant></term>
+<listitem><para>
+No sync point was found.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+

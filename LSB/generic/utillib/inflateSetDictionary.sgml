@@ -1,0 +1,110 @@
+<refentry id="zlib-inflateSetDictionary-1">
+
+<refmeta>
+<refentrytitle>inflateSetDictionary</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>inflateSetDictionary</refname>
+<refpurpose>initialize decompression dictionary</refpurpose>
+<indexterm id="ix-utillib-inflateSetDictionary-1">
+  <primary>inflateSetDictionary</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>inflateSetDictionary</function>
+</funcdef>
+<paramdef>z_streamp
+<parameter>stream</parameter>
+</paramdef>
+<paramdef>const Bytef *
+<parameter>dictionary</parameter>
+</paramdef>
+<paramdef>uInt
+<parameter>dictlen</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>inflateSetDictionary</function> function shall initialize the
+decompression dictionary associated with <parameter>stream</parameter>
+using the <parameter>dictlen</parameter> bytes referenced by
+<parameter>dictionary</parameter>.
+</para>
+<para>
+The <function>inflateSetDictionary</function> function should be called
+immediately after a call to <function>inflate</function> has failed
+with return value <returnvalue>Z_NEED_DICT</returnvalue>. The 
+<parameter>dictionary</parameter> must have the same Adler-32
+checksum as the dictionary used for
+the compression (see <function>deflateSetDictionary</function>).
+</para>
+<para>
+<parameter>stream</parameter> shall reference an initialized decompression
+stream, with <structfield>total_in</structfield> zero (i.e. no data
+has been decompressed since the stream was initialized).
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>inflateSetDictionary</function> shall return  
+<returnvalue>Z_OK</returnvalue>.
+Otherwise it shall return a value as indicated below.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>inflateSetDictionary</function> shall return a value as described 
+below:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The state in <parameter>stream</parameter> is inconsistent, or
+<parameter>stream</parameter> 
+was <constant>NULL</constant>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_DATA_ERROR</constant></term>
+<listitem><para>
+The Adler-32 checksum of the supplied dictionary does not match that used
+for the compression.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+<refsect1>
+<title>Application Usage (informative)</title>
+<para>
+The application should provide a dictionary consisting of strings
+{{{ed note: do we really mean "strings"? Null terminated?}}}
+that are likely to be encountered in the data to be compressed.
+The application should ensure that the dictionary is sorted such that
+the most commonly used strings occur at the end of the dictionary.
+</para>
+<para>
+The use of a dictionary is optional; however if the data
+to be compressed is relatively short and has a predictable structure,
+the use of a dictionary can substantially improve the compression
+ratio.
+</para>
+</refsect1>
+</refentry>
+
