@@ -229,8 +229,10 @@ Systems based on other SGML/XML computer programs can use this
 layout as well.
 </para>
 
+<para>
 The lower level directories are package-related. They are
 also version-numbered.
+</para>
 
 <variablelist>
   <varlistentry>
@@ -272,7 +274,6 @@ also version-numbered.
   </varlistentry>
 </variablelist>
 
-</para>
 </sect1>
 
 <sect1 id="sgmlR003">
