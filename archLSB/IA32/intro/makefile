@@ -13,9 +13,9 @@ TABLES=standards.sgml libraries.sgml refimpls.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	./mkstandardsgmltable >standards.sgml
-	./mkstandardsgmltable -r >refimpls.sgml
-	./mklibsgmltable >libraries.sgml
+	../../../mkstandardsgmltable >standards.sgml
+	../../../mkstandardsgmltable -r >refimpls.sgml
+	../../../mklibsgmltable -a IA32 >libraries.sgml
 
 clean:
 	rm -f $(FILES)
@@ -25,5 +25,3 @@ spotless: clean
 
 
 intro.sgml: standards.sgml libraries.sgml
-standards.sgml: mkstandardsgmltable
-libraries.sgml: mklibsgmltable
