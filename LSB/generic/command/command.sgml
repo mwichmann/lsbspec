@@ -932,8 +932,7 @@ change user name and information
 
 <REFSYNOPSISDIV>
 <SYNOPSIS>
-chfn [-f full_name] [-o office] [-p office-phone]
-     [-h hone-phone] [user]
+chfn [-f full_name] [-h home-phone] [user]
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 
@@ -941,8 +940,8 @@ chfn [-f full_name] [-o office] [-p office-phone]
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>chfn</COMMAND> changes user fullname, office, office phone,
-and home phone number information for a user's account.  This
+<COMMAND>chfn</COMMAND> changes user fullname and other
+information for a user's account.  This
 information is typically printed by finger and similar programs.  A
 normal user may only change the fields for their own account, the
 super user may change the fields for any account.</PARA>
@@ -981,6 +980,24 @@ sets the user's full name.
 </varlistentry>
 
 <varlistentry>
+<term>-h home-phone</term>
+<listitem>
+<para>
+sets the user's home phone number.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
+<footnote>
+<para>The following two options are expected to be added in a future
+version of the LSB:</para>
+
+<variablelist>
+
+<varlistentry>
 <term>-o office</term>
 <listitem>
 <para>
@@ -998,17 +1015,35 @@ sets the user's office phone number.
 </listitem>
 </varlistentry>
 
-<varlistentry>
-<term>-h home-phone</term>
-<listitem>
-<para>
-sets the user's home phone number.
-</para>
-</listitem>
-</varlistentry>
-
 </variablelist>
-</REFSECT1>
+
+<para>
+Note that some implementations contain a "-o other" option which
+specifies an additional field called "other".  Traditionally, this
+field is not subject to the constraints about legitimate characters in
+fields.  Also, one traditionally must have appropriate privileges to
+change the other field.  At this point there is no consensus about
+whether it is desirable to specify the other field; applications may
+wish to avoid using it.
+</para>
+
+<para>
+The "-w work_phone" field found in some implementations should be
+replaced by the "-p office_phone" field.  The "-r room_number" field
+found in some implementations is the equivalent of the "-o office"
+option mentioned above; which one of these two options to specify will
+depend on implementation experience and the decision regarding the
+other field.
+</para>
+
+<para>
+The intention is for chfn to match the behavior of finger; some
+historical implementations have been broken in the sense that finger
+and chfn do not agree on what the fields are.
+</para>
+</footnote>
+
+</sect1>
 
 </REFENTRY>
 
@@ -1984,9 +2019,8 @@ following differences.
 </PARA>
 
 <PARA>
-Disk space is shown in 1K blocks by default, unless the environment
-variable POSIXLY_CORRECT is set, in which case 512-byte blocks are
-used.
+If the -k option is not specified, disk space is shown in unspecified
+units.  Applications should specify -k.
 </PARA>
 
 <PARA>
@@ -2508,6 +2542,14 @@ differences as listed below.
 </PARA>
 
 </REFSECT1>
+
+<refsect1>
+<title>Differences</title>
+<PARA>
+If the -k option is not specified, disk space is shown in unspecified
+units.  Applications should specify -k.
+</PARA>
+</refsect1>
 
 <REFSECT1>
 <title>LSB Deprecated Differences</title>
@@ -6048,94 +6090,6 @@ suppresses all notifications and warnings, and reports only fatal errors.
 
 </REFENTRY>
 
-<REFENTRY id="login">
-<REFMETA><REFENTRYTITLE>login</REFENTRYTITLE></REFMETA>
-
-<REFNAMEDIV>
-<REFNAME>login</REFNAME>
-
-<REFPURPOSE>
-begin session on the system (LSB DEPRECATED)
-</REFPURPOSE>
-
-</REFNAMEDIV>
-
-<REFSYNOPSISDIV>
-<SYNOPSIS>
-login [-p] [username] [ENV=VAR ...]
-login [-p] [-h host] [-f username]
-login [-p] -r host
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-
-
-<REFSECT1>
-<TITLE>Description</TITLE>
-<PARA>
-<COMMAND>login</COMMAND> is used to establish a new session with the 
-system. It is normally invoked automatically by responding to the 
-login: prompt on the user's terminal. <COMMAND>login</COMMAND> may be 
-special to the shell and may not be invoked as a sub-process. Typically, 
-<COMMAND>login</COMMAND> is treated by the shell as exec login which 
-causes the user to exit from the current shell. Attempting to execute 
-<COMMAND>login</COMMAND> from any shell but the login shell will
-produce an error message.
-</PARA>
-
-<PARA>
-When invoked from the login: prompt, the user may enter environmental
-variables after the username.  These variables are entered in the form
-NAME=VALUE.  Not all variables may be set in the fashion, notably
-PATH, HOME and SHELL.  Additionally, IFS may be inhibited if the
-user's login shell is /bin/sh.
-</PARA>
-
-</REFSECT1>
-
-<REFSECT1>
-<title>Standard Options</title>
-<variablelist>
-
-<varlistentry>
-<term>-p </term>
-<listitem>
-<para>
-preserves environment.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>-f</term>
-<listitem>
-<para>
-does not perform authentication, user is preauthenticated.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>-h</term>
-<listitem>
-<para>
-specifies the name of the remote host for this login.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>-r</term>
-<listitem>
-<para>
-performs autologin protocol for rlogin.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</REFSECT1>
-
-</REFENTRY>
 
 <REFENTRY id="lpr">
 <REFMETA><REFENTRYTITLE>lpr</REFENTRYTITLE></REFMETA>
@@ -6276,8 +6230,8 @@ differences listed below.
 <TERM>-p</TERM>
 <LISTITEM>
 <PARA>
-displays the *, @, and | characters for executables, links, and FIFOs, 
-respectively (in addition to the slash declared by the SUS).
+in addition to the SUS behavior of printing a slash for a directory,
+ls -p may display other characters for other file types.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10642,12 +10596,15 @@ sum
 <REFNAMEDIV>
 <REFNAME>sum</REFNAME>
 <REFPURPOSE>
-print checksum and block count of a file
+print checksum and block count of a file (deprecated)
 </REFPURPOSE>
 </REFNAMEDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
+<para>The <command>sum</command> command is deprecated and is expected to
+disappear from a future version of the LSB; applications should use
+<command>cksum</command> or <command>md5sum</command> instead.</para>
 <PARA>
 <COMMAND>sum</COMMAND> is as specified in the SUS but with
 differences as listed below.

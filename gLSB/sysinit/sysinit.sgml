@@ -97,22 +97,6 @@ These filenames may be assigned using one of the following methods:
 </SECT1>
 
 
-<SECT1 ID=runlevels>
-<TITLE>Run Levels</TITLE>
-<PARA>
-</PARA>
-<SIMPLELIST type=horiz columns=2>
-<MEMBER>0</MEMBER><MEMBER>halt</MEMBER>
-<MEMBER>1</MEMBER><MEMBER>single user mode</MEMBER>
-<MEMBER>2</MEMBER><MEMBER>multiuser with no network services exported</MEMBER>
-<MEMBER>3</MEMBER><MEMBER>normal/full multiuser</MEMBER>
-<MEMBER>4</MEMBER><MEMBER>reserved for local use, default is normal/full multiuser</MEMBER>
-<MEMBER>5</MEMBER><MEMBER>multiuser with xdm or equivalent</MEMBER>
-<MEMBER>6</MEMBER><MEMBER>reboot</MEMBER>
-</SIMPLELIST>
-</SECT1>
-
-
 <SECT1 ID=iniscrptact>
 <TITLE>Init Script Actions</TITLE>
 <PARA>
@@ -237,6 +221,7 @@ are needed.
 
 <SECT1 ID=initscrcomconv>
 <TITLE>Comment conventions for init scripts</TITLE>
+<TITLEABBREV ID="initscriptsShort">Comment conventions for init scripts</TITLEABBREV>
 
 <PARA>
 LSB applications which need to execute script(s) at bootup and/or
@@ -321,8 +306,25 @@ description is terminated by the first line that does not match this
 criteria.
 </PARA>
 
-</SECT1>
+<PARA>
+The comment conventions described in this session are only required for
+use by LSB-compliant applications; system init scripts as provided by
+LSB-compliant run-time environments are <emphasis>not</emphasis> 
+required to use the scheme outlined here.
+<FOOTNOTE><PARA>
+While these comment conventions do not prohibited in system
+init scripts, they do not provide sufficient functionality for most
+distributions' needs.  Extensions which would addressed these needs (for 
+example, "Should-Start:" and "Should-Stop:") would have substantially
+complicated the design of the install_initd script, which is why they
+were not included in this specification.  Future versions of this
+specification may extend these comment conventions to add this
+functionality, if and when reference implementations which implement
+these extensions become available for use by distributions.
+</PARA></FOOTNOTE>
+</PARA>
 
+</SECT1>
 
 
 
@@ -375,6 +377,36 @@ however.
 </SECT1>
 
 
+<SECT1 ID=runlevels>
+<TITLE>Run Levels</TITLE>
+<PARA>
+
+The following run levels are specified for use by the "Default-Start:"
+and "Default-Stop:" specifiers as defined by the section <xref
+linkend="initscrcomconv" endterm="initscriptsShort"/>.  Many LSB
+run-time environments commonly use these run level definitions, and in
+the absence of other considerations, providers of run-time
+environments are strongly encouraged to follow this convention to
+provide consistency for system administrators who need to work with
+multiple distributions.  However, it is not required that
+LSB-compliant run-time environments use these run levels; the
+distribution-provided install_initd script may map the run levels
+specified below to whatever distribution-specified run levels are most
+appropriate.
+
+</PARA>
+<SIMPLELIST type=horiz columns=2>
+<MEMBER>0</MEMBER><MEMBER>halt</MEMBER>
+<MEMBER>1</MEMBER><MEMBER>single user mode</MEMBER>
+<MEMBER>2</MEMBER><MEMBER>multiuser with no network services exported</MEMBER>
+<MEMBER>3</MEMBER><MEMBER>normal/full multiuser</MEMBER>
+<MEMBER>4</MEMBER><MEMBER>reserved for local use, default is normal/full multiuser</MEMBER>
+<MEMBER>5</MEMBER><MEMBER>multiuser with xdm or equivalent</MEMBER>
+<MEMBER>6</MEMBER><MEMBER>reboot</MEMBER>
+</SIMPLELIST>
+</SECT1>
+
+
 <SECT1 ID=facilname>
 
 <TITLE>Facility names</TITLE>
@@ -397,19 +429,31 @@ facility names:
 imply PCMCIA running)</MEMBER>
 
 <MEMBER>$named</MEMBER>  	
-<MEMBER>named is operational</MEMBER>
+<MEMBER>daemons which may provide hostname resolution (if present) are
+running</MEMBER>
+
+<MEMBER>$portmap</MEMBER>
+<MEMBER>daemons providing SunRPC/ONCRPC portmapping 
+service<FOOTNOTE><PARA>as defined in RFC 1833<PARA></FOOTNOTE> 
+(if present) are running
+</MEMBER>
 
 <MEMBER>$remote_fs</MEMBER>	
-<MEMBER>all remote filesystems are mounted (note
-in some cases /usr may be remote.  Most
-applications that care will probably require
-both $local_fs and $remote_fs)</MEMBER>
+<MEMBER>all remote filesystems are mounted<FOOTNOTE><PARA>In some
+LSB run-time environments, filesystems such as /usr may be remote.  Many
+applications that require $local_fs will probably require
+also require $remote_fs</PARA></FOOTNOTE>.</MEMBER>
 
 <MEMBER>$syslog</MEMBER>
 <MEMBER>system logger is operational</MEMBER>
 
-<MEMBER>$netdaemons</MEMBER>
-<MEMBER>all network daemons are running</MEMBER>
+<MEMBER>$time</MEMBER>  	
+<MEMBER>the system time has been set 
+<FOOTNOTE><PARA>
+i.e., using a network-based time program such as ntp or rdate, or 
+via the hardware Real Time Clock
+</PARA></FOOTNOTE>
+</MEMBER>
 
 </SIMPLELIST>
 
@@ -513,6 +557,7 @@ distributions may use all of these script names.
 <LISTITEM><PARA>gpm</PARA></LISTITEM>
 <LISTITEM><PARA>exim</PARA></LISTITEM>
 <LISTITEM><PARA>halt</PARA></LISTITEM>
+<LISTITEM><PARA>hotplug</PARA></LISTITEM>
 <LISTITEM><PARA>identd</PARA></LISTITEM>
 <LISTITEM><PARA>inet</PARA></LISTITEM>
 <LISTITEM><PARA>httpd</PARA></LISTITEM>
