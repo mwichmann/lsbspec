@@ -67,13 +67,15 @@ document as is the information explicitly included here.
 <TITLE>Related Standards</TITLE>
 <PARA>
 The specifications listed below are referenced in whole or in part by
-the Linux Standard Base.  Such references may be normative or
-non-normative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The LSB
-may make normative references to a portion of these
-specifications (that is, to define a specific function or group of
-functions); in such cases, only the explicitly referenced portion of
-the specification is to be considered normative.
+the Linux Standard Base.  When a specification is referenced in a way
+that imposes a requirement (for example, "foo must behave as specified
+in the XyzzySpec"), then the relevant requirements of that
+specification apply as if they were part of the LSB itself.  However,
+if the LSB refers to a specification without imposing a requirement,
+then it is merely a reference and does not add additional requirements.
+The LSB may refer to a portion of a specification (for example,
+to define a specific function or group of functions); in such cases,
+only the explicitly referenced portion of the specification applies.
 </PARA>
 <TABLE>
 <TITLE>Related Standards</TITLE>
