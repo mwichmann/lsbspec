@@ -104,6 +104,7 @@ class Document {
 	var $rtflink;
 	var $txtlink;
 	var $txt1link;
+	var $html1link;
 	var $lastmod;
 
 	function Document($dir, $file, $specversion)
@@ -123,6 +124,7 @@ class Document {
 		$this->rtflink = ereg_replace($removeroot, $addroot, $dir)."/".$file."/".$file.".rtf";
 		$this->txtlink = ereg_replace($removeroot, $addroot, $dir)."/".$file."/".$file.".txt";
 		$this->txt1link = ereg_replace($removeroot, $addroot, $dir)."/".$file."/".$file."_lines.txt";
+		$this->html1link = ereg_replace($removeroot, $addroot, $dir)."/".$file."/".$file.".html";
 		$this->lastmod = date("r", filemtime($dir."/buildversion"));
 	}
 
