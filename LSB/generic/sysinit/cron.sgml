@@ -1,56 +1,72 @@
 <SECT1 ID=cronjobs>
 <TITLE>Cron Jobs</TITLE>
 <PARA>
-Packages may not touch the configuration file <FILENAME>/etc/crontab</FILENAME>,
-nor may they modify the files in <FILENAME>/var/spool/cron/crontabs</FILENAME>.
+In addition to the individual user <filename>crontab</filename> files specified
+by <xref linkend=std.susv3> stored under <filename>/var/spool/cron</filename>,
+the process that executes scheduled commands shall also process the following
+additional <filename>crontab</filename> files:
+<SIMPLELIST type=inline>
+<MEMBER><FILENAME>/etc/crontab</FILENAME></MEMBER>
+<MEMBER><FILENAME>/etc/cron.d/*</FILENAME></MEMBER>
+</SIMPLELIST>
+The installation of a package shall not modify
+the configuration file <FILENAME>/etc/crontab</FILENAME>.
+<!--nor shall it modify the files in <FILENAME>/var/spool/cron/crontabs</FILENAME>.-->
 </PARA>
 <PARA>
-If a package wants to install a job that has to be executed via cron,
+If a package wishes to install a job that has to be executed periodically,
 it shall place a file in one of the
 following directories:
 </PARA>
-<PROGRAMLISTING>
-/etc/cron.daily
-/etc/cron.weekly
-/etc/cron.monthly
-</PROGRAMLISTING>
+<SIMPLELIST>
+<MEMBER><FILENAME>/etc/cron.daily</FILENAME></MEMBER>
+<MEMBER><FILENAME>/etc/cron.weekly</FILENAME></MEMBER>
+<MEMBER><FILENAME>/etc/cron.monthly</FILENAME></MEMBER>
+</SIMPLELIST>
 <PARA>
-As these directory names say, the files within them are executed on a
-daily, weekly, or monthly basis, respectively.
-See below for the rules concerning the names of these files.
+As these directory names suggest, the files within them are executed on a
+daily, weekly, or monthly basis, respectively, under the control of an
+entry in one of the system <filename>crontab</filename> files.
+See below for the rules concerning the names of files in these directories.
 </PARA>
-<PARA>
 
-If a certain job has to be executed more frequently than `daily,' the
-package shall install a file
-<FILENAME>/etc/cron.d/<replaceable>cron-name</replaceable></FILENAME>
-tagged as configuration file. This file uses the same syntax as
-<FILENAME>/etc/crontab</FILENAME> and is processed by cron automatically.
-</PARA>
 <PARA>
 It is recommended that files installed in any of these directories be
-scripts (shell scripts, Perl scripts, etc.) so that they may be
-modified by the local system administrator. In addition, they shall be
-registered as configuration file.
+scripts (e.g. shell scripts, Perl scripts, etc.) so that they may be
+modified by the local system administrator. 
 </PARA>
 <PARA>
-The scripts in these directories have to check, if all necessary
+The scripts in these directories should check if all necessary
 programs are installed before they try to execute them. Otherwise,
-problems will arise when a package was removed (but not purged), since
+problems will arise if a package is removed (but not purged), since
 the configuration files are kept on the system in this situation.
+</PARA>
+<PARA>
+If a certain job has to be executed at a different frequency (e.g. more
+frequently than daily), the
+package shall install a file
+<FILENAME>/etc/cron.d/<replaceable>cron-name</replaceable></FILENAME>
+tagged as a configuration file. This file uses the same syntax as
+<FILENAME>/etc/crontab</FILENAME> and is processed by the system automatically.
 </PARA>
 
 <PARA>
-To avoid namespace conflicts in the /etc/cron.* directories, the filenames
-used by LSB-compliant packages in /etc/cron.daily, /etc/cron.weekly, 
-/etc/cron.monthly, or /etc/cron.d shall come from a managed namespace.
+To avoid namespace conflicts in the <filename>/etc/cron.*</filename> directories, the filenames
+used by LSB-compliant packages in 
+<SIMPLELIST type=inline>
+<MEMBER><FILENAME>/etc/cron.daily</FILENAME></MEMBER>
+<MEMBER><FILENAME>/etc/cron.weekly</FILENAME></MEMBER>
+<MEMBER><FILENAME>/etc/cron.monthly</FILENAME></MEMBER>
+<MEMBER>or <FILENAME>/etc/cron.d</FILENAME></MEMBER>
+</SIMPLELIST>
+shall come from a managed namespace.
 These filenames may be assigned using one of the following methods:
 </PARA>
 
 <ITEMIZEDLIST MARK="bullet">
 <LISTITEM><PARA>
 	Assigned namespace.  This namespace consists of names which
-		only use the character set [a-z0-9].  
+		only use the character set <literal>[a-z0-9]</literal>.
 		In order to avoid conflicts these cron script
 		names shall be reserved
 		through the Linux Assigned Names and Numbers
@@ -63,29 +79,29 @@ These filenames may be assigned using one of the following methods:
 	<PARA>
 		Commonly used names shall be reserved in advance; 
 		developers for projects should be encouraged reserve names
-		from LANA, so that each distribution can use the same
+		from LANANA, so that each distribution can use the same
 		name, and to avoid conflicts with other projects.
 </PARA></LISTITEM>
 
 <LISTITEM><PARA>
-	Hierarchical namespace.  This namespace consists of scripts
-		names which look like this: [hier1]-[hier2]-...-[name],
-		where name is again taken the character set [a-z0-9], 
-		and where there may be one or more [hier-n] components.  
-		[hier1] may either be an LSB provider name assigned
+	Hierarchical namespace.  This namespace consists of script
+		names of the form: <filename>[hier1]-[hier2]-...-[name]</>,
+		where name is again taken from the character set <literal>[a-z0-9],</> 
+		and where there may be one or more <filename>[hier-n]</> components.  
+		<filename>[hier1]</> may either be an LSB provider name assigned
 		by the LANANA, or
 		it may be owners' DNS name in lower case, with at
-		least one '.'.  I.e., "debian.org", "staroffice.sun.com", etc.
+		least one <literal>'.'</>.  
+	e.g.  "<literal>debian.org</>", "<literal>staroffice.sun.com</>", etc.
 		The LSB provider name assigned by LANANA 
-		shall only consist of the ASCII characters [a-z0-9].
+		shall only consist of the ASCII characters <literal>[a-z0-9]</>.
 </PARA></LISTITEM>
 
 <LISTITEM><PARA>
 	Reserved namespace.  This namespace consists of script names
-		which begin with the character '_', and is reserved for
+		which begin with the character '<literal>_</>', and is reserved for
 		distribution use only.  This namespace should be used
-		for core packages only, and in general use of this
-		namespace is highly discouraged.  
+		for core packages only.
 </PARA></LISTITEM>
 </ITEMIZEDLIST>
 
