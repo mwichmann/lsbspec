@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.64 2005/02/25 13:34:04 anderson Exp 0 -->
-<!--    at Wed Mar  2 19:57:28 2005 -->
+<!--    at Tue Mar  8 17:32:53 2005 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2321,9 +2321,35 @@ typedef int64_t ssize_t;
 </PARA>
 <SCREEN>
 
+typedef struct _libc_vrstate
+{
+  unsigned int vrregs[32][4];
+  vscr_t vscr;
+  unsigned int vrsave;
+  unsigned int __pad;
+}
+vrregset_t __attribute__ ((__aligned__ (16)));
+
 #define NGREG	48
 
-typedef struct sigcontext mcontext_t;
+typedef unsigned long gregset_t[48];
+
+typedef double fpregset_t[33];
+
+typedef struct
+{
+  unsigned long __unused;
+  int signal;
+  int pad0;
+  unsigned long handler;
+  unsigned long oldmask;
+  struct pt_regs *regs;
+  gregset_t gp_regs;
+  fpregset_t fp_regs;
+  vrregset_t *v_regs;
+  long vmx_reserve;
+}
+mcontext_t;
 
 typedef struct ucontext
 {
