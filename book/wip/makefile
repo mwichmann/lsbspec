@@ -1,5 +1,5 @@
 
-SUBDIRS=intro lowlevle baselib sysinit
+SUBDIRS=intro lowlevel baselib sysinit
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
