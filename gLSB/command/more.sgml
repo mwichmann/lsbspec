@@ -18,6 +18,12 @@ differences as listed below.
 
 <REFSECT1>
 <TITLE>Differences</TITLE>
+
+<para>
+The <COMMAND>more</COMMAND> command need not respect the LINES and
+COLUMNS environment variables.
+</para>
+
 <VARIABLELIST>
 
 <VARLISTENTRY>
@@ -25,17 +31,6 @@ differences as listed below.
 <LISTITEM>
 <PARA>
 specifies an integer which is the screen size (in lines).
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>-d</TERM>
-<LISTITEM>
-<PARA>
-prompts user with the message "[Press space to continue, 
-'q' to quit.]" and will display "[Press 'h' for instructions.]"
-instead of ringing the bell when an illegal key is pressed.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -50,30 +45,10 @@ has implementation-dependent behavior.
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM>-l</TERM>
-<LISTITEM>
-<PARA>
-prevents the typical behavior where <COMMAND>more</COMMAND> treats 
-^L (form feed) as a special character and pauses after any line that 
-contains a form feed. 
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
 <TERM>-i</TERM>
 <LISTITEM>
 <PARA>
 has implementation-dependent behavior.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>-f</TERM>
-<LISTITEM>
-<PARA>
-counts logical, rather than screen lines (i.e., long lines are not folded).
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -91,17 +66,19 @@ has implementation-dependent behavior.
 <TERM>-p</TERM>
 <LISTITEM>
 <PARA>
-does not scroll.  Instead, clear the whole screen and then display the
-text.
+Either (1) clear the whole screen and then display the text (instead
+of the usual scrolling behavior), or (2) provide the behavior
+specified by the SUS.  In the latter case, the syntax is "-p
+<replaceable>command</replaceable>".
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM>+/</TERM>
+<TERM>-t</TERM>
 <LISTITEM>
 <PARA>
-specifies a string that will be searched for before each file is displayed.
+has implementation-dependent behavior.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -115,7 +92,76 @@ starts at line number num.
 </LISTITEM>
 </VARLISTENTRY>
 
+<VARLISTENTRY>
+<TERM>+/<replaceable>string</replaceable></TERM>
+<LISTITEM>
+<PARA>
+specifies a string that will be searched for before each file is displayed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
 </VARIABLELIST>
 </REFSECT1>
+
+<REFSECT1>
+<title>LSB Deprecated Differences</title>
+
+<para>The behaviors specified in this section are expected to
+disappear from a future version of the LSB; applications should only
+use the non-LSB-deprecated behaviors.</para>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-d</TERM>
+<LISTITEM>
+<PARA>
+prompts user with the message "[Press space to continue, 
+'q' to quit.]" and will display "[Press 'h' for instructions.]"
+instead of ringing the bell when an illegal key is pressed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-l</TERM>
+<LISTITEM>
+<PARA>
+prevents the typical behavior where <COMMAND>more</COMMAND> treats 
+^L (form feed) as a special character and pauses after any line that 
+contains a form feed. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-f</TERM>
+<LISTITEM>
+<PARA>
+counts logical, rather than screen lines (i.e., long lines are not folded).
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<refsect1>
+<title>Rationale</title>
+
+<para>
+The +<replaceable>num</replaceable> and
++/<replaceable>string</replaceable> options are deprecated in the
+SUSv2; however we must continue to specify them because
+util-linux-2.11f does not support the SUS replacement (-p
+<replaceable>command</replaceable>).  The SUSv2
++<replaceable>command</replceable> is more general than what we
+specify, but util-linux-2.11f appears to only support the more
+specific +<replaceable>num</replaceable> and
++/<replaceable>string</replaceable> forms.
+</para>
+
+</refsect1>
 
 </REFENTRY>
