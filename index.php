@@ -28,16 +28,16 @@ complete specification for a platform consists of the common specification plus
 one of the architecture specifications.</p>
 </blockquote>
 
-<H1>LSB 2.0 is in Public Review</H1>
+<H1>LSB 2.0 Release Candiate 1 has been published </H1>
 <p>
-The formal Public Review of the LSB 2.0 Specifications 
-is closed. However, we welcome and appreciate comments
-and bug reports at any time.</p>
-<p>
-The review documents are marked as version 1.9.6 and can be found
-<A HREF="specs.php">HERE</A>. Please file comments using the
+Release Candidate 1 of LSB 2.0 can be found <A HREF="specs.php">HERE</A>.
+Contributors are encouraged to use this version to verify that all issues
+have been satisfactorily resolved. 
+This will be the final specification unless a major issue is discovered in
+the next few days.
+Please file comments using the
 <A HREF="http://bugs.linuxbase.org">LSB Project bugzilla</A>.
-These will become LSB 2.0 upon release.</p>
+</p>
 
 <H1>LSB 1.3 is the Current Specification</H1>
 <p>
