@@ -59,17 +59,23 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.11 2004-08-16 17:30:32 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.12 2004-09-19 20:27:26 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
+print "<THEAD>\n";
+print "<ROW>";
+print "<ENTRY>Name</ENTRY><ENTRY>Title</ENTRY><ENTRY>URL</ENTRY>";
+print "</ROW>";
+print "</THEAD>\n";
 print "<TBODY>\n";
 for(1..$sth->numrows) {
 	%entry=$sth->fetchhash;
 	print "<ROW>";
 	# Don't print the nickname. It may be confusing
 	#printf "<ENTRY>%s</ENTRY>",$entry{'Sname'};
-	printf "<ENTRY ID=\"std.%s\" XREFLABEL=\"%s\">%s</ENTRY>",makeid($entry{'Sname'}),$entry{'Sfull'},$entry{'Sfull'};
+	printf "<ENTRY ID=\"std.%s\" XREFLABEL=\"%s\">%s</ENTRY>",makeid($entry{'Sname'}),$entry{'Sshort'},$entry{'Sshort'};
+	printf "<ENTRY>%s</ENTRY", $entry{'Sfull'};
 	printf "<ENTRY><ULINK URL=\"%s\">%s</ULINK></ENTRY>",
 					$entry{'Surl'}, $entry{'Surl'};
 	#printf "<ENTRY>%s</ENTRY>",$entry{'Scomment'};
@@ -77,7 +83,7 @@ for(1..$sth->numrows) {
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.11 2004-08-16 17:30:32 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.12 2004-09-19 20:27:26 nick Exp $- -->\n");
 
 sub makeid {
 	my ($name) = @_;
