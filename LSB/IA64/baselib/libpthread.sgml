@@ -1,0 +1,252 @@
+<SECT1 ID=libpthread>
+<TITLE>libpthread</TITLE>
+<PARA>
+</PARA>
+<TABLE>
+<TITLE></TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Library:</ENTRY>
+<ENTRY>libpthread</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Runtime Path:</ENTRY>
+<ENTRY>libpthread.so.0</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+LSB systems support POSIX threads with the following exceptions.
+This list is intended to match the behavior of historical Linux
+implementations.  Applications should be written to deal with either
+POSIX threads or the thread behaviors described here.
+</PARA>
+
+<PARA>
+POSIX specifies a concept of per-process rather than per-thread
+signals.  The LSB does not require this behavior; traditional Linux
+implementations have had per-thread signals only.  A related issue is
+that applications cannot (using legacy Linux implementations, at
+least) rely on getpid() returning the same value in different threads.
+</PARA>
+
+<PARA>
+Note: one implication of per-thread signals is that a core dump (for
+example) may not stop all threads in a given process.  This may be an
+issue when designing ways to stop/start applications.
+</PARA>
+
+<PARA>
+Applications which create child processes (using fork() and the like)
+must then wait for them (using waitpid() family of functions) in the
+same thread as they created them.  Note that coding applications this
+way will work both with full POSIX threads and legacy Linux thread
+implementations.
+</PARA>
+
+<PARA>
+POSIX specifies that changing the user or group id instantly affects
+the behavior of all threads.  This behavior is not specified;
+applications must use their own lock if they need this behavior.
+Rationale: it seems unnecessary and it is a performance hit (an SMP
+kernel must lock the user id).  
+<!-- 
+FIXME: is this our current understanding?  
+It was discussed on lsb-spec on January 2000 but I'm
+not sure we reached a consensus.
+-->
+</PARA>
+
+<PARA>
+Although this standard doesn't have a way to list processes,
+<!-- 
+FIXME: /proc or "ps" command line isn't in, right?
+-->
+it is our intention to not
+specify one way or the other whether multiple threads appear as
+separate processes or as a single process.
+</PARA>
+
+<PARA>
+Applications cannot rely on resource limits (getrusage and setrusage)
+being maintained per-process rather than per-thread.
+</PARA>
+
+<PARA>
+Applications must disconnect from the controlling tty before
+pthread_create 
+<!--
+FIXME: have I summarized this correctly?.
+-->
+</PARA>
+
+<PARA>
+times() doesn't account for all threads, just the caller.
+</PARA>
+
+<PARA>
+Applications must not call pthread_cancel if they call any system
+libraries (most notably X windows), as system libraries are not
+guaranteed to be thread safe.  Likewise, for such libraries, only one
+thread per process may call them.
+</PARA>
+
+<PARA>
+Applications cannot rely on fcntl/lockf locks being visible
+per-process rather than per-thread.  Likewise for mandatory file
+locks.
+</PARA>
+
+<PARA>
+Threaded applications cannot use SIGUSR1 or SIGUSR2.
+</PARA>
+<PARA>
+The behaviour of the interfaces in this library is specified by the following Standards.<SIMPLELIST COLUMNS=1>
+<MEMBER>
+CAE Specification, January 1997, System Interfaces and Headers (XSH),
+Issue 5 (ISBN: 1-85912-181-0, C606)<FOOTNOTE ID="std-132-5">
+<PARA>
+CAE Specification, January 1997, System Interfaces and Headers (XSH),
+Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
+</FOOTNOTE>
+</MEMBER>
+</SIMPLELIST>
+</PARA>
+<SECT2>
+<TITLE>Posix Threads</TITLE>
+<PARA>
+</PARA>
+</SECT2>
+</SECT1>
+<SECT1 ID=libpthread-ddefs>
+<TITLE> Data Definitions for libpthread</TITLE>
+<PARA>
+</PARA>
+<SECT2>
+<TITLE>pthread.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+int pthread_attr_destroy (pthread_attr_t);
+int pthread_attr_getdetachstate (pthread_attr_t, int);
+int pthread_attr_getinheritsched (pthread_attr_t, int);
+int pthread_attr_getschedparam (pthread_attr_t, struct sched_param);
+int pthread_attr_getschedpolicy (pthread_attr_t, int);
+int pthread_attr_getscope (pthread_attr_t, int);
+int pthread_attr_init (pthread_attr_t);
+int pthread_attr_setdetachstate (pthread_attr_t, int);
+int pthread_attr_setinheritsched (pthread_attr_t, int);
+int pthread_attr_setschedparam (pthread_attr_t, struct sched_param);
+int pthread_attr_setschedpolicy (pthread_attr_t, int);
+int pthread_attr_setscope (pthread_attr_t, int);
+int pthread_cancel (pthread_t);
+int pthread_cond_broadcast (pthread_cond_t);
+int pthread_cond_destroy (pthread_cond_t);
+int pthread_cond_init (pthread_cond_t, pthread_condattr_t);
+int pthread_cond_signal (pthread_cond_t);
+int pthread_cond_timedwait (pthread_cond_t, pthread_mutex_t, struct timespec);
+int pthread_cond_wait (pthread_cond_t, pthread_mutex_t);
+int pthread_condattr_destroy (pthread_condattr_t);
+int pthread_condattr_init (pthread_condattr_t);
+int pthread_create (pthread_t, pthread_attr_t, void (, void);
+		    int pthread_detach (pthread_t);
+		    int pthread_equal (pthread_t, pthread_t);
+		    void pthread_exit (void);
+		    int pthread_getschedparam (pthread_t, int,
+					       struct sched_param);
+		    void pthread_getspecific (pthread_key_t);
+		    int pthread_join (pthread_t, void);
+		    int pthread_key_create (pthread_key_t, void ();
+					    int
+					    pthread_key_delete
+					    (pthread_key_t);
+					    int
+					    pthread_mutex_destroy
+					    (pthread_mutex_t);
+					    int
+					    pthread_mutex_init
+					    (pthread_mutex_t,
+					     pthread_mutexattr_t);
+					    int
+					    pthread_mutex_lock
+					    (pthread_mutex_t);
+					    int
+					    pthread_mutex_trylock
+					    (pthread_mutex_t);
+					    int
+					    pthread_mutex_unlock
+					    (pthread_mutex_t);
+					    int
+					    pthread_mutexattr_destroy
+					    (pthread_mutexattr_t);
+					    int pthread_once (pthread_once_t,
+							      void ();
+							      pthread_t
+							      pthread_self
+							      (void);
+							      int
+							      pthread_setcancelstate
+							      (int, int);
+							      int
+							      pthread_setcanceltype
+							      (int, int);
+							      int
+							      pthread_setschedparam
+							      (pthread_t, int,
+							       struct
+							       sched_param);
+							      int
+							      pthread_setspecific
+							      (pthread_key_t,
+							       void);
+							      void
+							      pthread_testcancel
+							      (void);
+							      int
+							      pthread_attr_setstackaddr
+							      (pthread_attr_t,
+							       void);
+							      int
+							      pthread_attr_getstackaddr
+							      (pthread_attr_t,
+							       void);
+							      int
+							      pthread_attr_setstacksize
+							      (pthread_attr_t);
+							      int
+							      pthread_attr_getstacksize
+							      (pthread_attr_t);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>semaphore.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+typedef struct
+{
+
+  struct __sem_lock;
+  long status;
+  int __sem_value;
+  int spinlock;
+  _pthread_descr __sem_waiting;
+}
+sem_t;
+
+
+int sem_close (sem_t);
+int sem_destroy (sem_t);
+int sem_getvalue (sem_t, int);
+int sem_init (sem_t, int, unsigned int);
+sem_t sem_open (char, int, ...);
+int sem_post (sem_t);
+int sem_trywait (sem_t);
+int sem_unlink (char);
+int sem_wait (sem_t);
+</SCREEN>
+</SECT2>
+</SECT1>
