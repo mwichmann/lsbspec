@@ -13,6 +13,7 @@
 <!entity stdshell.sgm system "stdshell/stdshell.sgml">
 <!entity usersgroups.sgm system "usersgroups/usersgroups.sgml">
 <!entity fhs.sgm system "fhs/fhs.sgml">
+<!entity execenv.sgm system "execenv/execenv.sgml">
 <!entity sysinit.sgm system "sysinit/sysinit.sgml">
 <!entity sgmlspec.sgm system "sgmlspec/sgmlspec.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
@@ -58,6 +59,7 @@ with the respective license of those documents.
 &stdshell.sgm;
 &usersgroups.sgm;
 &fhs.sgm;
+&execenv.sgm;
 &sysinit.sgm;
 &appA.sgm;
 &appB.sgm;
