@@ -19,6 +19,9 @@ all::
 	./mkintlist -A IA32 >intlist.IA32.txt
 	./mkintlist -A IA64 >intlist.IA64.txt
 	./mkintlist -A PPC32 >intlist.PPC32.txt
+	./mkintlist -A PPC64 >intlist.PPC64.txt
+	./mkintlist -A S390 >intlist.S390.txt
+	./mkintlist -A S390X >intlist.S390X.txt
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
