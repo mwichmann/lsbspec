@@ -150,10 +150,15 @@ possibility to control what the application can do.
 <TITLE>Installable applications</TITLE>
 
 <PARA>
-If the installation of an application requires 
-the execution of programs with superuser privileges, 
-such programs should also be supplied in a 
-human-readable form. 
+Where the installation of an application needs additional privileges, it must
+clearly document all files and system databases that are modified outside of
+those in 
+<FILENAME>/opt/<REPLACEABLE>pkg-name</REPLACEABLE></FILENAME>
+and <FILENAME>/var/opt/<REPLACEABLE>pkg-name</REPLACEABLE></FILENAME>,
+other than those that may be
+updated by system logging or auditing activities.
+
+
 </PARA>
 
 <PARA>
@@ -334,25 +339,30 @@ and awk (<xref linkend="awk" />).  </para>
 </section>
 
 <section id="localization-glob"
- XRefLabel="Internationalization and Filename Globbing">
-<title>Filename Globbing</title>
+ XRefLabel="Internationalization and Pattern Matching Notation">
+<title>Pattern Matching Notation</title>
 <para>
-Utilities that perform filename globbing (also known as Pattern
-Matching Notation) shall do it as specified in the Single UNIX
-Specification, with the following exceptions:</para>
+Utilities that perform filename pattern matching (also known as Filename
+Globbing) shall do it as specified in 
+<XREF LINKEND=STD.SUSv3>, Pattern Matching Notation,
+with the following exceptions:</para>
 
-<para>Range expression (such as [a-z]) can be based on code point
+<para>Pattern bracket expressions (such as 
+<replaceable>[a-z]</replaceable>) can be based on code point
 order instead of collating element order.</para>
 
-<para>Equivalence class expression (such as [=a=]) and multi-character
-collating element expression (such as [.ch.]) are optional.</para>
+<para>Equivalence class expression (such as <replaceable>[=a=]</replaceable>) and multi-character
+collating element expression (such as <replaceable>[.ch.]</replaceable>) are optional.</para>
 
 <para>Handling of a multi-character collating element is
 optional.</para>
 
-<para>This affects at least the following utilities: cpio
-(<xref linkend="cpio" />), find (<xref linkend="find" />),
-ls (<xref linkend="ls" />) and tar (<xref linkend="tar" />).</para>
+<para>This affects at least the following utilities: 
+<COMMAND>cpio</COMMAND>
+(<xref linkend="cpio" >), 
+<COMMAND>find</COMMAND> (<xref linkend="find" >),
+<COMMAND>ls</COMMAND> (<xref linkend="ls" >) and 
+<COMMAND>tar</COMMAND> (<xref linkend="tar" >).</para>
 
 </section>
 
