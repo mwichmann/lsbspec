@@ -22,7 +22,9 @@ MANPAGES=__assert_fail.sgml __errno_location.sgml __strtod_internal.sgml \
 	stpcpy.sgml stpncpy.sgml strfry.sgml strnlen.sgml strsep.sgml\
 	strsignal.sgml strtok_r.sgml swscanf.sgml system.sgml timezone.sgml\
 	wcsftime.sgml	wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
-	wcswcs.sgml wcspbrk.sgml
+	wcswcs.sgml wcspbrk.sgml fwprintf.sgml psignal.sgml \
+	wait4.sgml wcpcpy.sgml wcpncpy.sgml wcscasecmp.sgml wcsdup.sgml \
+	wcsnrtombs.sgml
 
 FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
 	libdl.sgml libcrypt.sgml librt.sgml
