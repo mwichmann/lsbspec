@@ -54,8 +54,10 @@ LSB-conforming applications shall use the Machine Information as defined in
 <SECT1 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
-The following sections are defined in the <XREF LINKEND="std.PPC32.Arch">.
+The following sections are defined in the <XREF LINKEND="std.PPC32.ABI>.
 include(elfsect.sgml)
+Note that the .tags, .taglist and .tagsym sections described in 
+<XREF LINKEND="std.PPC32.ABI> are not supported.
 </PARA>
 </SECT1>
 <SECT1 ID="linuxspecial">
@@ -95,11 +97,6 @@ Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 
 </PARA>
 
-<PARA>
-Might have to add entry about small data area - do we support it? Ask
-Alan?
-</PARA>
-
 </CHAPTER>
 
 <CHAPTER ID=relocation>
@@ -113,6 +110,8 @@ Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 <SECT1 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
+The relocation type R_PPC_ADDR30 as specified in Table 4-8 of
+<XREF LINKEND="std.PPC32.ABI"> is not supported.
 </PARA>
 </SECT1>
 
