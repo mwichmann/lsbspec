@@ -157,9 +157,9 @@ int abc(char *arg1, ...);
  <FUNCPROTOTYPE> 
   <FUNCDEF>int 
    <FUNCTION>abc</FUNCTION></FUNCDEF> 
-  <PARAMDEF>char 
-   <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER> 
-   <PARAMETER>...</PARAMETER></PARAMDEF> 
+  <PARAMDEF>char *
+   <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER></PARAMDEF>
+   <PARAMDEF><PARAMETER>...</PARAMETER></PARAMDEF> 
  </FUNCPROTOTYPE> 
 </FUNCSYNOPSIS> 
 =========== Notes ============
@@ -167,6 +167,25 @@ int abc(char *arg1, ...);
 - Ellipses are used to specify variable arguments only when the function 
   also contains absolute arguments. (See "Function requiring variable 
   arguments only" for alternate specification of variable arguments.) 
++++++++SPECIAL LSB EXTENSION NOTE++++++++++++++++
+- If the top level file (e.g. LSB-generic.sgml) contains the following
+  extensions to the Docbook DTD, then <VARARGS> tags work even in this
+  mixed case.
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!ENTITY % funcprototype.element "IGNORE">
+<!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
+
+With this in place, you can better specify the above as
+<FUNCSYNOPSIS> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>int 
+   <FUNCTION>abc</FUNCTION></FUNCDEF> 
+  <PARAMDEF>char *
+   <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER></PARAMDEF>
+   <VARARGS>
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+
 ==============================
 
 SYNOPSIS EXAMPLE - Function requiring zero arguments
@@ -217,8 +236,8 @@ arg2);
    <FUNCTION>abc</FUNCTION></FUNCDEF> 
   <PARAMDEF>const char * restrict 
    <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER></PARAMDEF> 
-  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>hostent</STRUCTNAME> * restrict 
-   <PARAMETER>arg2</PARAMETER></FUNCPARAMS></PARAMDEF> 
+  <PARAMDEF>struct hostent * restrict 
+   <PARAMETER>arg2</PARAMETER></PARAMDEF> 
  </FUNCPROTOTYPE> 
 </FUNCSYNOPSIS> 
 =========== Notes ============
