@@ -363,6 +363,14 @@ This Index Record must not be present.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>Reserved</TERM>
+<LISTITEM>
+<PARA>
+This Index Record must not be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
 </VARIABLELIST>
 </SECT4>
 </SECT3>
