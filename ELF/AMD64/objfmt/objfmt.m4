@@ -51,68 +51,19 @@ Chapter 4 of the
 <TITLE>Sections</TITLE>
 <PARA>
 </PARA>
-
-<SECT1 ID="elftypes">
-<TITLE>Section Types</TITLE>
-<PARA>
-A section header's <COMPUTEROUTPUT>sh_type</COMPUTEROUTPUT> member specifies the
- sections's semantics.
-</PARA>
-<SECT2>
-<TITLE>ELF Section Types</TITLE>
-<PARA>
-The following section types are defined in the <XREF LINKEND="std.x86.64.ABI">.
-include(elfsecttypes.sgml)
-</PARA>
-</SECT2>
-<SECT2>
-<TITLE>Additional Section Types</TITLE>
-<PARA>
-The following additional section types are defined here.
-
-include(linuxsecttypes.sgml)
-</PARA>
-</SECT2>
-</SECT1>
-
-<SECT1 ID="sectionattribflags">
-<TITLE>Section Attribute Flags</TITLE>
-<PARA>
-</PARA>
-</SECT1>
-
-<SECT1 ID="specialsectiontypes">
-<TITLE>Special Section Types</TITLE>
-<PARA>
-</PARA>
-</SECT1>
-</CHAPTER>
-
-<CHAPTER ID=specialsections>
+<SECT1 ID="specialsections">
 <TITLE>Special Sections</TITLE>
-<PARA>
-</PARA>
-
-<SECT1 ID="elfspecial">
-<TITLE>Special Sections</TITLE>
-<PARA>
-Various sections hold program and control information. Sections in the lists bel
-ow are used by the system and have the indicated types and attributes.
-</PARA>
-<SECT2>
-<TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in the <XREF LINKEND="std.x86.64.ABI">.
 include(elfsect.sgml)
 </PARA>
-</SECT2>
-<SECT2>
-<TITLE>Addition Special Sections</TITLE>
+</SECT1>
+<SECT1 ID="linuxspecial">
+<TITLE>Additional Special Sections</TITLE>
 <PARA>
 The following additional sections are defined here.
 include(linuxsect.sgml)
 </PARA>
-</SECT2>
 </SECT1>
 
 </CHAPTER>
