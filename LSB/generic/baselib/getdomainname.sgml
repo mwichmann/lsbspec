@@ -9,11 +9,22 @@ get NIS domain name.
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
 #include &lt;unistd.h&gt;
-
-extern int getdomainname(char *name, size_t namelen);
-</SYNOPSIS>
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+  <FUNCDEF>int 
+    <FUNCTION>getdomainname</FUNCTION>
+  </FUNCDEF>
+  <PARAMDEF>char *
+    <PARAMETER>name</PARAMETER>
+  </PARAMDEF>
+  <PARAMDEF>size_t
+    <PARAMETER>namelen</PARAMETER>
+  </PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <refsect1>
 <title>Description</title>
@@ -23,8 +34,10 @@ If the Network Information System (NIS) is in use,
 copy the NIS domain name to the supplied buffer identified by 
 <PARAMETER>name</PARAMETER>,
 with maximum length <PARAMETER>namelen</PARAMETER>. 
-If NIS is not in use, <FUNCTION>getdomainname</FUNCTION> shall
-provide the string "(none)". If <PARAMETER>namelen</PARAMETER> is less 
+If the NIS domain name is not currently set, 
+<FUNCTION>getdomainname</FUNCTION> shall
+copy the string "(none)" to the <PARAMETER>name</PARAMETER>.
+If <PARAMETER>namelen</PARAMETER> is less 
 the length of the string
 to be copied, <FUNCTION>getdomainname</FUNCTION>
 may either truncate the string to <PARAMETER>namelen</PARAMETER>
@@ -41,14 +54,27 @@ a fully qualified domain name (for example, in DNS).
 <refsect1>
 <title>Return Value</title>
 <para>
-<FUNCTION>getdomainname</FUNCTION> returns 0 if successful; -1 if not (in which case <VARNAME>errno</VARNAME>
-is set to indicate the error).
+On success,
+<FUNCTION>getdomainname</FUNCTION> shall return 
+<RETURNVALUE>0</RETURNVALUE>. Otherwise, it shall return
+<RETURNVALUE>-1</RETURNVALUE> and set <VARNAME>errno</VARNAME>
+to indicate the error).
 </para>
 </refsect1>
 
 <refsect1>
 <title>Errors</title>
 <VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>name</PARAMETER> was a null pointer.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
 <VARLISTENTRY>
 <TERM>
 EINVAL

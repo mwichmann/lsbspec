@@ -5,7 +5,7 @@
 <REFNAMEDIV>
 <REFNAME>bindtextdomain</REFNAME>
 <REFPURPOSE>
-specify the locale of a message catalog
+specify the location of a message catalog
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -17,7 +17,7 @@ specify the locale of a message catalog
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*bindtextdomain</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -33,30 +33,70 @@ specify the locale of a message catalog
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>bindtextdomain</FUNCTION> specifies that the 
-<PARAMETER>domainname</PARAMETER> message catalog can be found in the 
-<PARAMETER>dirname</PARAMETER> directory hierarchy, rather than in the 
-system locale data base.
+The <FUNCTION>bindtextdomain</FUNCTION> shall set the the base
+directory of the hierarchy containing message catalogs for a given message
+domain.
 </PARA>
 <PARA>
-<FUNCTION>bindtextdomain</FUNCTION> applies 
-<PARAMETER>domainname</PARAMETER> to the currently active 
-<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
-syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
-application of <PARAMETER>domainname</PARAMETER>, except that the 
-selection of the domain in <FUNCTION>bind_textdomain_codeset</FUNCTION> 
-is valid only for the duration of the call.
+The <FUNCTION>bindtextdomain</FUNCTION> function specifies that the 
+<PARAMETER>domainname</PARAMETER> message catalog can be found in the 
+<PARAMETER>dirname</PARAMETER> directory hierarchy, rather than in the 
+system default locale data base.
+</PARA>
+<PARA>
+If <PARAMETER>dirname</PARAMETER> is not 
+<CONSTANT>NULL</CONSTANT>, the base directory for message catalogs 
+belonging  to  domain 
+<PARAMETER>domainname</PARAMETER> shall be set to 
+<PARAMETER>dirname</PARAMETER>. The function shall make
+copies of the argument strings as needed.
 </PARA>
 <PARA>
 <PARAMETER>dirname</PARAMETER> can be an absolute or relative pathname.
+<NOTE><PARA>Applications that wish to use <FUNCTION>chdir</FUNCTION>
+should always use absolute pathnames to avoid misadvertently
+selecting the wrong or non-existant directory.
+</PARA></NOTE>
 </PARA>
 <PARA>
-On success, <FUNCTION>bindtextdomain</FUNCTION> returns the 
-directory pathname currently bound to the domain. On failure, a 
-<LITERAL>NULL</LITERAL> pointer is returned.
+If <PARAMETER>domainname</PARAMETER> is the null pointer, or is an empty
+string, <FUNCTION>bindtextdomain</FUNCTION> shall fail, but need not
+set <VarName>errno</VarName>.
+</PARA>
+<PARA>
+The <function>bindtextdomain</function> function shall return 
+a pointer to a string containing the name of the selected directory. 
+The string shall be allocated
+internally in the function and shall not be changed or freed by the user.
 </PARA>
 </REFSECT1>
 
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <FUNCTION>bindtextdomain</FUNCTION> shall return a
+pointer to the 
+directory pathname currently bound to the domain. On failure, a 
+<LITERAL>NULL</LITERAL> pointer is returned, and the global variable
+<VarName>errno</VarName> may be set to indicate the error.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><CONSTANT>ENOMEM</CONSTANT></TERM>
+<LISTITEM>
+<PARA>
+Insufficient memory was available.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+</REFSECT1>
 <REFSECT1>
 <TITLE>See Also</TITLE>
 <PARA>
