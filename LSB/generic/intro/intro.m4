@@ -24,39 +24,50 @@ to be an implementation of the Linux Standard Base.
 <SECT1 ID="overpurp">
 <TITLE>Purpose</TITLE>
 <PARA>
-The Linux Standard Base (LSB) defines a system interface for compiled applications and a minimal environment for support of installation scripts. Its purpose is to enable a uniform industry standard environment for high-volume applications conforming to the LSB.
+The Linux Standard Base (LSB) defines a system interface for compiled
+applications and a minimal environment for support of installation scripts.
+Its purpose is to enable a uniform industry standard environment for
+high-volume applications conforming to the LSB.
 </PARA>
 <PARA>
-The LSB defines a binary interface for application programs that are compiled and packaged for LSB-conforming implementations on many different hardware architectures. Since a binary specification must include information specific to the computer processor architecture for which it is intended, it is not possible for a single document to specify the interface for all possible LSB-conforming implementations. Therefore, the LSB is a family of specifications, rather than a single one.
+The LSB defines a binary interface for application programs that are compiled
+and packaged for LSB-conforming implementations on many different hardware
+architectures. Since a binary specification must include information specific
+to the computer processor architecture for which it is intended, it is not
+possible for a single document to specify the interface for all possible
+LSB-conforming implementations. Therefore, the LSB is a family of
+specifications, rather than a single one.
 </PARA>
 <PARA>
-The LSB is composed of two basic parts: A generic part of the specification describes those parts of the interface that remain constant across all hardware implementations of the LSB, and a processor-specific part of the specification describes the parts of the specification that are specific to a particular processor architecture. Together, the generic LSB and the processor-specific supplement for a single hardware architecture provide a complete interface specification for compiled application programs on systems that share a common hardware architecture.
+The LSB is composed of two basic parts: A common part of the specification
+describes those parts of the interface that remain constant across all hardware
+implementations of the LSB, and an architecture-specific part of the
+specification describes the parts of the specification that are specific to a
+particular processor architecture. Together, the generic LSB and the
+architecture-specific supplement for a single hardware architecture provide a
+complete interface specification for compiled application programs on systems
+that share a common hardware architecture.
 </PARA>
 <PARA>
-This document is the generic LSB. It must be used in conjunction with a processor-specific supplement. Whenever a section of this specification must be supplemented by processor-specific information, this document includes a reference to the processor supplement. Processor supplements may also contain additional information that is not referenced here.
+This document is the generic LSB. It must be used in conjunction with an
+architecture-specific supplement. Whenever a section of this specification
+must be supplemented by architecture-specific information, this document
+includes a reference to the architecture supplement. Architecture supplements
+may also contain additional information that is not referenced here.
 </PARA>
 <PARA>
-This document should be used in conjunction with the documents it references. This document enumerates the system components it includes, but descriptions of those components may be included entirely or partly in this document, partly in other documents, or entirely in other reference documents. For example, the section that describes system service routines includes a list of the system routines supported in this interface, formal declarations of the data structures they use that are visible to applications, and a pointer to the underlying referenced specification for information about the syntax and semantics of each call. Only those routines not described in standards referenced by this document, or extensions to those standards, are described in the detail. Information referenced in this way is as much a part of this document as is the information explicitly included here.
-</PARA>
-</SECT1>
-
-<SECT1 ID="structure">
-<TITLE>Structure of the Linux Standard Base</TITLE>
-<PARA>
-The Linux Standard Base (LSB) is composed of a common specification (this
-document), and a set of architecture specific specifications that contain
-information that is unique to a given architecture. The goal of the LSB is to
-keep as much information as possible in the common specification. Due to the
-need to maintain compatibility with other operating systems on some
-architectures, some system information varies across the architectures. These
-differences are identified in the architecture specific specifications.
-</PARA>
-<PARA>
-The Linux Standard Base is built on several other specifications which are
-listed later. Those specifications, or portions thereof, are included by
-reference into the LSB. The LSB attempts to avoid duplication of information
-contained in other specification, but may modify or supplement the other
-specification as needed.
+This document should be used in conjunction with the documents it references.
+This document enumerates the system components it includes, but descriptions of
+those components may be included entirely or partly in this document, partly in
+other documents, or entirely in other reference documents. For example, the
+section that describes system service routines includes a list of the system
+routines supported in this interface, formal declarations of the data
+structures they use that are visible to applications, and a pointer to the
+underlying referenced specification for information about the syntax and
+semantics of each call. Only those routines not described in standards
+referenced by this document, or extensions to those standards, are described in
+the detail. Information referenced in this way is as much a part of this
+document as is the information explicitly included here.
 </PARA>
 </SECT1>
 

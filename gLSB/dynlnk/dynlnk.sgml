@@ -18,20 +18,6 @@ satisfy the symbols on the shared library.
 </PARA>
 </CHAPTER>
 
-<CHAPTER ID=progheader>
-<TITLE>Program Header</TITLE>
-<PARA>
-Do we need to specify Elf64_Phdr or is that picked up in the update?
-</PARA>
-</CHAPTER>
-
-<CHAPTER ID=dynlinking>
-<TITLE>Dynamic Linking</TITLE>
-<PARA>
-Do we need to specify Elf64_Dyn or is that picked up in the update?
-</PARA>
-</CHAPTER>
-
 <CHAPTER ID=DynamicSection>
 <TITLE>Dynamic Entries</TITLE>
 <PARA>

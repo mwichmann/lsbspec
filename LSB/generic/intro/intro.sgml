@@ -3,10 +3,12 @@
 
 <CHAPTER id=Introduction>
 <TITLE>Introduction</TITLE>
+<SECT1 ID="overview">
+<TITLE>Introduction</TITLE>
 <PARA>
-This is version &specversion of the Linux Standard Base Specification. This version
-is a mostly complete framework of the specification, but many details are
-still not filled in. 
+This is version &specversion of the Linux Standard Base Specification. This 
+version is a mostly complete framework of the specification, but many details 
+are still not filled in. 
 </PARA>
 <PARA>
 Those wishing to implement this standard should treat this version as more of
@@ -17,24 +19,55 @@ specification of the Linux Standard Base.
 An implementation of this version of the specification may not claim
 to be an implementation of the Linux Standard Base.
 </PARA>
+</SECT1>
 
-<SECT1 ID="structure">
-<TITLE>Structure of the Linux Standard Base</TITLE>
+<SECT1 ID="overpurp">
+<TITLE>Purpose</TITLE>
 <PARA>
-The Linux Standard Base (LSB) is composed of a common specification (this
-document), and a set of architecture specific specifications that contain
-information that is unique to a given architecture. The goal of the LSB is to
-keep as much information as possible in the common specification. Due to the
-need to maintain compatibility with other operating systems on some
-architectures, some system information varies across the architectures. These
-differences are identified in the architecture specific specifications.
+The Linux Standard Base (LSB) defines a system interface for compiled
+applications and a minimal environment for support of installation scripts.
+Its purpose is to enable a uniform industry standard environment for
+high-volume applications conforming to the LSB.
 </PARA>
 <PARA>
-The Linux Standard Base is built on several other specifications which are
-listed later. Those specifications, or portions thereof, are included by
-reference into the LSB. The LSB attempts to avoid duplication of information
-contained in other specification, but may modify or supplement the other
-specification as needed.
+The LSB defines a binary interface for application programs that are compiled
+and packaged for LSB-conforming implementations on many different hardware
+architectures. Since a binary specification must include information specific
+to the computer processor architecture for which it is intended, it is not
+possible for a single document to specify the interface for all possible
+LSB-conforming implementations. Therefore, the LSB is a family of
+specifications, rather than a single one.
+</PARA>
+<PARA>
+The LSB is composed of two basic parts: A common part of the specification
+describes those parts of the interface that remain constant across all hardware
+implementations of the LSB, and an architecture-specific part of the
+specification describes the parts of the specification that are specific to a
+particular processor architecture. Together, the generic LSB and the
+architecture-specific supplement for a single hardware architecture provide a
+complete interface specification for compiled application programs on systems
+that share a common hardware architecture.
+</PARA>
+<PARA>
+This document is the generic LSB. It must be used in conjunction with an
+architecture-specific supplement. Whenever a section of this specification
+must be supplemented by architecture-specific information, this document
+includes a reference to the architecture supplement. Architecture supplements
+may also contain additional information that is not referenced here.
+</PARA>
+<PARA>
+This document should be used in conjunction with the documents it references.
+This document enumerates the system components it includes, but descriptions of
+those components may be included entirely or partly in this document, partly in
+other documents, or entirely in other reference documents. For example, the
+section that describes system service routines includes a list of the system
+routines supported in this interface, formal declarations of the data
+structures they use that are visible to applications, and a pointer to the
+underlying referenced specification for information about the syntax and
+semantics of each call. Only those routines not described in standards
+referenced by this document, or extensions to those standards, are described in
+the detail. Information referenced in this way is as much a part of this
+document as is the information explicitly included here.
 </PARA>
 </SECT1>
 
@@ -60,7 +93,7 @@ the Linux Standard Base.
 <ROW><ENTRY>ISOC99</ENTRY><ENTRY>ISO/IEC 9899: 1999, Programming Languages --C</ENTRY><ENTRY><ULINK URL=""></ULINK></ENTRY><ENTRY></ENTRY></ROW>
 <ROW><ENTRY>LSB</ENTRY><ENTRY>Linux Standard Base</ENTRY><ENTRY><ULINK URL="http://www.linuxbase.org/spec/">http://www.linuxbase.org/spec/</ULINK></ENTRY><ENTRY></ENTRY></ROW>
 <ROW><ENTRY>OGL</ENTRY><ENTRY>OpenGL® Application Binary Interface for Linux</ENTRY><ENTRY><ULINK URL="http://oss.sgi.com/projects/ogl-sample/ABI/">http://oss.sgi.com/projects/ogl-sample/ABI/</ULINK></ENTRY><ENTRY></ENTRY></ROW>
-<ROW><ENTRY>POSIX.1</ENTRY><ENTRY>IEEE Std POSIX.1-1990 (ISO/IEC 9945-1)</ENTRY><ENTRY><ULINK URL="http://www.ieee.org">http://www.ieee.org</ULINK></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>POSIX.1</ENTRY><ENTRY>IEEE Std POSIX.1-1996 [ISO/IEC 9945-1:1996]</ENTRY><ENTRY><ULINK URL="http://www.ieee.org">http://www.ieee.org</ULINK></ENTRY><ENTRY></ENTRY></ROW>
 <ROW><ENTRY>POSIX.2</ENTRY><ENTRY>IEEE Std POSIX 1003.2-1992 (ISO/IEC 9945-2:1993)</ENTRY><ENTRY><ULINK URL="http://www.ieee.org">http://www.ieee.org</ULINK></ENTRY><ENTRY></ENTRY></ROW>
 <ROW><ENTRY>pthreads</ENTRY><ENTRY>POSIX 1003.1c</ENTRY><ENTRY><ULINK URL="http://www.ieee.org">http://www.ieee.org</ULINK></ENTRY><ENTRY></ENTRY></ROW>
 <ROW><ENTRY>SUS-CURSES</ENTRY><ENTRY> CAE Specification, May 1996, X/Open Curses, Issue 4, Version 2 (ISBN:
@@ -127,7 +160,7 @@ specifications.
 <ROW><ENTRY>libX11</ENTRY><ENTRY>libX11.so.6</ENTRY></ROW>
 <ROW><ENTRY>libXt</ENTRY><ENTRY>libXt.so.6</ENTRY></ROW>
 <ROW><ENTRY>libm</ENTRY><ENTRY>libm.so.6</ENTRY></ROW>
-<ROW><ENTRY>libGL</ENTRY><ENTRY>libGL.so.1.1</ENTRY></ROW>
+<ROW><ENTRY>libGL</ENTRY><ENTRY>libGL.so.1.2</ENTRY></ROW>
 <ROW><ENTRY>libXext</ENTRY><ENTRY>libXext.so.6</ENTRY></ROW>
 <ROW><ENTRY>libICE</ENTRY><ENTRY>libICE.so.6</ENTRY></ROW>
 <ROW><ENTRY>libSM</ENTRY><ENTRY>libSM.so.6</ENTRY></ROW>
@@ -135,10 +168,11 @@ specifications.
 <ROW><ENTRY>libdl</ENTRY><ENTRY>libdl.so.2</ENTRY></ROW>
 <ROW><ENTRY>libcrypt</ENTRY><ENTRY>libcrypt.so.1</ENTRY></ROW>
 <ROW><ENTRY>libz</ENTRY><ENTRY>libz.so.1</ENTRY></ROW>
-<ROW><ENTRY>libcurses</ENTRY><ENTRY>libncurses.so.4</ENTRY></ROW>
+<ROW><ENTRY>libcurses</ENTRY><ENTRY>libncurses.so.5</ENTRY></ROW>
 <ROW><ENTRY>libutil</ENTRY><ENTRY>libutil.so.1</ENTRY></ROW>
 <ROW><ENTRY>libpthread</ENTRY><ENTRY>libpthread.so.0</ENTRY></ROW>
 <ROW><ENTRY>proginterp</ENTRY><ENTRY>ld-lsb.so.1</ENTRY></ROW>
+<ROW><ENTRY>librt</ENTRY><ENTRY>librt.so.1</ENTRY></ROW>
 </TBODY>
 
 </TGROUP>
@@ -150,7 +184,20 @@ These libraries will be in a default location found by the dynamic linker.
 
 <SECT1 ID="howto">
 <TITLE>How to Use this Standard</TITLE>
-<PARA></PARA>
+<PARA>
+The complete LSB specification is composed of this generic LSB specification and the supplemental processor-specific specification for a particular processor architecture. These two documents constitute a specification that should be used in conjunction with the publicly-available standards documents it references. The LSB enumerates the system components it includes, but descriptions of those components may be included entirely in the LSB, partly in the LSB and partly in other documents, or entirely in other reference documents.
+</PARA>
+<PARA>
+Application programmers who wish to produce binary packages that will install and run on any LSB-conforming implementation should follow this procedure:
+</PARA>
+<PARA>
+1. Write programs using the referenced programming interfaces defined in Reference Standards, or as modified by the LSB specification. Routines guaranteed to be present on all LSB-conforming implementations as dynamically-linkable resources are listed below. 
+</PARA>
+<NOTE>
+<PARA>
+Need to enumerate the rest of the procedure.
+</PARA>
+</NOTE>
 </SECT1>
 
 <SECT1 ID="defns">
@@ -209,6 +256,166 @@ An application which has been written to include system routines,
 commands, or other resources not included in this document, or which
 has been compiled into a  different from those specified here,
 or which does not behave as specified in this document.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+LSB Implementation Conformance 
+</TERM>
+<LISTITEM>
+<PARA>
+Manufacturers of LSB-conforming implementations providing the system 
+interface described in this document shall satisfy the following set 
+of requirements: 
+</PARA>
+<PARA>
+1. The implementation shall implement fully the architecture described 
+in the hardware manual for the target processor architecture. 
+</PARA>
+<PARA>
+2. The implementation shall be capable of executing compiled applications 
+having the  described in this document. 
+</PARA>
+<PARA>
+3. The implementation shall provide libraries containing the interfaces 
+specified by this document, and shall provide a dynamic 
+linking mechanism that allows these interfaces to be attached to 
+applications at runtime. All the interfaces shall behave as specified 
+in the normative references and requirements of this document 
+</PARA>
+<PARA>
+4. The map of virtual memory provided by the implementation shall conform 
+to the requirements of this document. 
+</PARA>
+<PARA>
+5. The implementation's low-level behavior with respect to function call 
+linkage, system traps, signals, and other such activities shall conform 
+to the formats described in this document. 
+</PARA>
+<PARA>
+6. The compilation system shall compile source code into executable 
+files having the formats and characteristics specified in this document. 
+</PARA>
+<PARA>
+7. The implementation shall provide all of the mandatory interfaces, 
+in their entirety. 
+</PARA>
+<PARA>
+8. The implementation may provide one or more of the optional 
+interfaces. Each optional interface that is provided shall be provided 
+in its entirety. The product documentation 
+shall state which optional interfaces are provided. 
+</PARA>
+<PARA>
+9. The implementation shall provide all files and utilities specified 
+as part of this document in the  defined here and in 
+other referenced documents. All commands and utilities shall behave as 
+required by this document. The implementation 
+shall also provide all mandatory components of an application's runtime 
+environment that are included or referenced in this document. 
+</PARA>
+<PARA>
+10. The implementation, when provided with standard data formats 
+and values at a named interface, shall provide the behavior defined 
+for those values and data formats at that interface. However, a 
+conforming implementation may consist of separately-packaged and/or sold 
+components. For example, a vendor of a conforming implementation might 
+sell the hardware, operating system, and windowing system as separately 
+packaged items. 
+</PARA>
+<PARA>
+11. The implementation may provide additional interfaces with different 
+names. It may also provide additional behavior corresponding to data 
+values outside the standard ranges, for standard named interfaces. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+LSB Application Conformance 
+</TERM>
+<LISTITEM>
+<PARA>
+An LSB conforming application has the following characteristics: 
+</PARA>
+<PARA>
++ Its executable files are either shell scripts or object 
+files in the  defined for the Object File Format system interface. 
+(Q:what about other interpreted languages, such as perl/awk/python etc?) 
+</PARA>
+<PARA>
++ Its object files participate in dynamic linking as defined in the 
+Program Loading and Linking System interface. 
+</PARA>
+<PARA>
++ It employs only the instructions, traps, and other low-level 
+facilities defined in the Low-Level System interface as being for use 
+by applications. 
+</PARA>
+<PARA>
++ If it requires any optional interface defined in this document in 
+order to be installed or to execute successfully, the requirement for 
+that optional interface is stated in the application's documentation. 
+</PARA>
+<PARA>
++ It does not use any interface or data  that is not required to 
+be provided by a conforming implementation, unless: 
+</PARA>
+<PARA>
+- If such an interface or data  is supplied by another application 
+through direct invocation of that application during execution, that 
+application is in turn an LSB- compliant application. 
+</PARA>
+<PARA>
+- The use of that interface or data , as well as its source, 
+is identified in the documentation of the application. 
+</PARA>
+<PARA>
++ It must not use any values for a named interface that are reserved 
+for vendor extensions. 
+</PARA>
+<PARA>
+A strictly conforming application does not require or use any interface, 
+facility, or implementation-defined extension that is not defined in 
+this document in order to be installed or to execute successfully. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+Rationale 
+</TERM>
+<LISTITEM>
+<PARA>
+An LSB-compliant application is expected to have no dependencies on any 
+vendor extensions to this document. The most common such extensions are 
+additional function entry points and additional libraries other than the 
+ones defined in this document. If an application requires such extensions, 
+it is not portable, since other LSB-conforming implementations may not 
+provide those extensions. 
+</PARA>
+<PARA>
+An LSB-compliant application is required to use system services on the 
+implementation on which it is running, rather than importing system 
+routines from some other implementation. Thus, it must link dynamically 
+to any routines in the implementation that perform system traps to 
+kernel services. 
+</PARA>
+<PARA>
+It is to be expected that some applications may be companion applications 
+to other applications. For example, a query application may be a 
+companion to a database application; a preprocessor may be an adjunct 
+to one or more compilers; a data reformatter may convert data from one 
+document manager to another. In such cases, the application may or may 
+not be LSB-compliant, regardless of whether the other application on 
+which it is dependent is LSB-compliant. If such an application merely 
+uses data produced by another application, the application's compliance is 
+independent of the other application's compliance. If such an application 
+actually invokes another application during execution (as, for example, 
+a third-party math library), the invoking application is LSB-compliant 
+only if it also constitutes a LSB-compliant application in combination 
+with the invoked application. 
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>

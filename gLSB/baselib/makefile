@@ -16,7 +16,7 @@ MANPAGES=__assert_fail.sgml __clone.sgml __errno_location.sgml \
 	__wcstoull_internal.sgml __xmknod.sgml
 
 FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
-	libdb.sgml libdl.sgml libcrypt.sgml
+	libdl.sgml libcrypt.sgml librt.sgml
 TABLES=
 
 .cpp.sgml:
@@ -33,6 +33,7 @@ gensrc:
 	../../mklibspec -a All -l libpthread >libpthread.sgml
 	../../mklibspec -a All -l libdb >libdb.sgml
 	../../mklibspec -a All -l libdl >libdl.sgml
+	../../mklibspec -a All -l librt >librt.sgml
 	../../mklibspec -a All -l libcrypt >libcrypt.sgml
 
 clean:

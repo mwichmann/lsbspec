@@ -25,11 +25,11 @@ include(libm.sgml)
 
 include(libpthread.sgml)
 
-include(libdb.sgml)
-
 include(libdl.sgml)
 
 include(libcrypt.sgml)
+
+include(librt.sgml)
 
 </CHAPTER>
 
