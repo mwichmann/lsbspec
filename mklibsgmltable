@@ -19,7 +19,8 @@ die;
 #
 $numcols=1;
 $dodesc=0;
-GetOptions("a=s" => \$archname);
+GetOptions("a=s" => \$archname,
+	   "f" => \$future);
 
 if( !$archname ) { usage(); }
 
@@ -48,14 +49,19 @@ $Aname=$entry{'Aname'};
 #
 $select = "SELECT * FROM Library ";
 $select.= "LEFT JOIN ArchLib ON Lid=ALlid ";
-$select.= "WHERE Lstd='Yes' AND ALaid=$Aid";
+if( $future ) {
+	$select.= "WHERE ( Lstd='Yes' OR Lstd='Future' ) ";
+} else {
+	$select.= "WHERE Lstd='Yes' ";
+}
+$select.= "AND ALaid=$Aid";
 #$select .=" ORDER BY Lname ";
 #printf $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.8 2002-04-12 20:12:27 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.9 2002-09-20 14:25:27 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -75,7 +81,7 @@ for(1..$sth->numrows) {
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.8 2002-04-12 20:12:27 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.9 2002-09-20 14:25:27 anderson Exp $- -->\n");
 
 sub makeid {
 	my ($name) = @_;
