@@ -4,7 +4,7 @@ SRC= chap1-elf64abi.sgml chap2-elf64abi.sgml chap3-elf64abi.sgml \
 	PPC-elf64abi.sgml
 
 #DB2HTML=sgmltools -b html
-DB2HTML=docbook2html -o spec -p '/usr/bin/jade -V %use-id-as-filename%'
+DB2HTML=docbook2html -o spec -p '/usr/bin/jade '
 
 #DB2RTF=sgmltools -b rtf
 DB2RTF=docbook2rtf
@@ -21,12 +21,12 @@ DB2ONEHTML=docbook2html -u
 #DB2TXT=sgmltools -b txt
 DB2TXT=docbook2text
 
+all:: htmlspec onehtmlspec rtfspec pdfspec psspec 
+
 htmlspec:  spec/book1.html 
 
 spec/book1.html:
 	$(DB2HTML) -o spec PPC-elf64abi.sgml
-
-all:: htmlspec onehtmlspec rtfspec pdfspec psspec 
 
 onehtmlspec: PPC-elf64abi.html
 
