@@ -16,6 +16,7 @@ gensrc:
 	../../mkstandardsgmltable >standards.sgml
 	../../mkstandardsgmltable -r >refimpls.sgml
 	../../mklibsgmltable -a All >libraries.sgml
+	../../mklibsgmltable -a None >pslibs.sgml
 
 clean:
 	rm -f $(FILES)

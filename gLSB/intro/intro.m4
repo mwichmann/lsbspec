@@ -105,7 +105,7 @@ system. This list may be supplemented or amended by the architecture-specific
 specifications.
 </PARA>
 <TABLE>
-<TITLE>Relevant Libraries</TITLE>
+<TITLE>Standards Libraries</TITLE>
 <TGROUP COLS=2>
 <THEAD>
 <ROW>
@@ -114,6 +114,18 @@ specifications.
 </ROW>
 </THEAD>
 include(libraries.sgml)
+</TGROUP>
+</TABLE>
+<TABLE>
+<TITLE>Standards Libraries specificed in the Processor Specific document</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Library</ENTRY>
+<ENTRY>Runtime Name</ENTRY>
+</ROW>
+</THEAD>
+include(pslibs.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
