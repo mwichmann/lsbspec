@@ -1,6 +1,6 @@
 
 SUBDIRS=intro objfmt baselib utillib graphlib sysinit usersgroups command \
-	dynlnk sgmlspec
+	dynlnk sgmlspec appendix
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this

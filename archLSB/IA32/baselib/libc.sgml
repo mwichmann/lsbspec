@@ -32,6 +32,12 @@ ISO/IEC 9899: 1999, Programming Languages --C</PARA>
 </FOOTNOTE>
 </MEMBER>
 <MEMBER>
+Large File Support<FOOTNOTE ID="std-131-35">
+<PARA>
+Large File Support</PARA>
+</FOOTNOTE>
+</MEMBER>
+<MEMBER>
 GNU/Linux defacto standard<FOOTNOTE ID="std-131-20">
 <PARA>
 GNU/Linux defacto standard</PARA>
@@ -47,12 +53,6 @@ Linux Standard Base</PARA>
 IEEE Std POSIX.1-1996 [ISO/IEC 9945-1:1996]<FOOTNOTE ID="std-131-3">
 <PARA>
 IEEE Std POSIX.1-1996 [ISO/IEC 9945-1:1996]</PARA>
-</FOOTNOTE>
-</MEMBER>
-<MEMBER>
-RFC 1831 & 1832<FOOTNOTE ID="std-131-8">
-<PARA>
-RFC 1831 & 1832</PARA>
 </FOOTNOTE>
 </MEMBER>
 <MEMBER>
@@ -96,7 +96,7 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 <TITLE></TITLE>
 <TGROUP COLS=5>
 <TBODY>
-<ROW><ENTRY>ioperm<FOOTNOTEREF LINKEND="std-131-20"></ENTRY><ENTRY>iopl<FOOTNOTEREF LINKEND="std-131-20"></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>ioperm(1)<FOOTNOTEREF LINKEND="std-131-20"></ENTRY><ENTRY>iopl(1)<FOOTNOTEREF LINKEND="std-131-20"></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
@@ -191,7 +191,6 @@ void __assert_fail (char, char, unsigned int, char);
 </PARA>
 <SCREEN>
 
-unsigned short __ctype_b;
 __int32_t __ctype_tolower;
 __int32_t __ctype_toupper;
 int _tolower (int);
@@ -221,6 +220,7 @@ int toupper (int);
 typedef Unknown Type:"" unknown DIR;
 
 
+int alphasort (void, void);
 void rewinddir (DIR);
 void seekdir (DIR, long);
 long telldir (DIR);
@@ -254,6 +254,10 @@ int fnmatch (char, char, int);
 <PARA>
 </PARA>
 <SCREEN>
+typedef Unknown Type:"" unknown __ftw_func_t;
+
+
+int ftw (char, __ftw_func_t, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -312,6 +316,10 @@ int getgrnam_r (char, struct group, char, struct group);
 </PARA>
 <SCREEN>
 typedef void iconv_t;
+
+
+int iconv_close (iconv_t);
+iconv_t iconv_open (char, char);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -319,11 +327,22 @@ typedef void iconv_t;
 <PARA>
 </PARA>
 <SCREEN>
+typedef typedef struct
+{
+
+  long quot;
+  long rem;
+}
+lldiv_t;
+imaxdiv_t;
+
 
 intmax_t strtoimax (char, char, int);
 uintmax_t strtoumax (char, char, int);
 intmax_t wcstoimax (int);
 uintmax_t wcstoumax (int);
+intmax_t imaxabs (intmax_t);
+imaxdiv_t imaxdiv (intmax_t, intmax_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -407,6 +426,7 @@ struct passwd
 
 
 void endpwent (void);
+passwd fgetpwent ();
 passwd getpwent (void);
 passwd getpwnam (char);
 passwd getpwuid (__uid_t);
@@ -481,6 +501,8 @@ reg_syntax_t re_set_syntax (reg_syntax_t);
 char loc1;
 char loc2;
 char locs;
+int advance (char, char);
+int step (char, char);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -514,13 +536,19 @@ typedef struct entry
 }
 ENTRY;
 
+typedef Unknown Type:"" unknown __action_fn_t;
+
 
 int hcreate ();
 ENTRY hsearch (ENTRY, ACTION);
 void insque (void, void);
+void lfind (void, void, __compar_fn_t);
 void lsearch (void, void, __compar_fn_t);
 void remque (void);
 void hdestroy (void);
+void tfind (void, void, __compar_fn_t);
+void tsearch (void, void, __compar_fn_t);
+void twalk (void, __action_fn_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -551,6 +579,7 @@ sigjmp_buf;
 int __sigsetjmp (jmp_buf, int);
 void longjmp (jmp_buf, int);
 void siglongjmp (sigjmp_buf, int);
+void _longjmp (jmp_buf, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -567,6 +596,7 @@ int __libc_current_sigrtmax (void);
 int __libc_current_sigrtmin (void);
 int __sigpause (int, int);
 __sighandler_t __sysv_signal (int, __sighandler_t);
+char _sys_siglist;
 int killpg (__pid_t, int);
 void psignal (int, char);
 int raise (int);
@@ -594,7 +624,6 @@ int sigvec (int, struct sigvec, struct sigvec);
 int sigqueue (__pid_t, int,, enum sigval);
 int sigwaitinfo (sigset_t, siginfo_t);
 int sigtimedwait (sigset_t, siginfo_t, struct timespec);
-__sighandler_t ssignal (int, __sighandler_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -620,6 +649,7 @@ FILE freopen (char, char, FILE);
 int fscanf (FILE, char, ...);
 int fseek (FILE, long, int);
 int getchar (void);
+int getchar_unlocked (void);
 int getw (FILE);
 int pclose (FILE);
 void perror (char);
@@ -642,7 +672,6 @@ FILE stdout;
 char tempnam (char, char);
 FILE tmpfile (void);
 char tmpnam (char);
-char tmpnam_r (char);
 int vfprintf (FILE, char, __gnuc_va_list);
 int vprintf (char, __gnuc_va_list);
 int feof (FILE);
@@ -663,8 +692,10 @@ int snprintf (char, char, ...);
 int ungetc (int, FILE);
 int vsnprintf (char, char, __gnuc_va_list);
 int vsprintf (char, char, __gnuc_va_list);
+void flockfile (FILE);
 int ftrylockfile (FILE);
 void funlockfile (FILE);
+int getc_unlocked (FILE);
 void setbuffer (FILE, char);
 </SCREEN>
 </SECT2>
@@ -807,7 +838,6 @@ char strtok_r (char, char, char);
 </PARA>
 <SCREEN>
 
-int madvise (void, int);
 int msync (void, int);
 int mlock (void);
 int mlockall (int);
@@ -944,8 +974,6 @@ int chmod (char, __mode_t);
 int fchmod (int, __mode_t);
 int mkdir (char, __mode_t);
 __mode_t umask (__mode_t);
-int fstat (int, struct stat);
-int mknod (char, __mode_t, __dev_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -995,6 +1023,7 @@ __pid_t wait4 (__pid_t, __WAIT_STATUS, int, struct rusage);
 
 speed_t cfgetispeed (struct termios);
 speed_t cfgetospeed (struct termios);
+void cfmakeraw (struct termios);
 int cfsetispeed (struct termios, speed_t);
 int cfsetospeed (struct termios, speed_t);
 int cfsetspeed (struct termios, speed_t);
@@ -1070,13 +1099,16 @@ int acct (char);
 unsigned int alarm (unsigned int);
 int chown (char, __uid_t, __gid_t);
 int chroot (char);
+int daemon (int, int);
 int execl (char, char, ...);
 int execle (char, char, ...);
 int execlp (char, char, ...);
 int execv (char, char);
 int execvp (char, char);
 int fdatasync (int);
+int getdomainname (char);
 long gethostid (void);
+char getlogin (void);
 __pid_t getpgrp (void);
 char getwd (char);
 int lockf (int, int, __off_t);
@@ -1128,6 +1160,7 @@ __pid_t setsid (void);
 int setuid (__uid_t);
 unsigned int sleep (unsigned int);
 int symlink (char, char);
+long sysconf (int);
 int unlink (char);
 __pid_t vfork (void);
 long fpathconf (int, int);
@@ -1145,6 +1178,7 @@ int ttyname_r (int, char);
 <SCREEN>
 
 int utime (char, struct utimbuf);
+int utimes ();
 </SCREEN>
 </SECT2>
 <SECT2>
