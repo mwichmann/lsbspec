@@ -93,7 +93,7 @@ the object symbol.
 <SECT1 ID="symmapping">
 <TITLE>Symbol Mapping</TITLE>
 <PARA>
-Symbols in a source program are tranlated by the compilation system into
+Symbols in a source program are translated by the compilation system into
 symbols that exist in the object file. The rules for this translation are
 defined here.
 </PARA>
