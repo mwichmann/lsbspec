@@ -21,7 +21,7 @@ die;
 
 GetOptions("a=s" => \$archname, "s=s" => \$specids);
 
-if( !$archname ) { usage(); }
+if( !$archname && !$specids ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -31,14 +31,17 @@ $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER,$LSBDBPASSWD) || die $Mysql::db
 #
 # 3) get & print the architecture info
 #
-$select = "SELECT * FROM Architecture WHERE ";
-$select.= "Architecture.Aname=".$Dbh->quote($archname);
-print STDERR $select,"\n" if $trace;
-$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+if( $archname ) {
+	$select = "SELECT * FROM Architecture WHERE ";
+	$select.= "Architecture.Aname=".$Dbh->quote($archname);
+	print STDERR $select,"\n" if $trace;
+	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 
-%entry=$sth->fetchhash;
-$Aid=$entry{'Aid'};
-$Aname=$entry{'Aname'};
+	%entry=$sth->fetchhash;
+	$Aid=$entry{'Aid'};
+} else {
+	$Aid=0;
+}
 
 $select = "SELECT * FROM Standard ";
 $select.= "WHERE Stype='Standard' ";
@@ -53,7 +56,7 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.9 2003-12-06 20:46:17 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.10 2004-08-13 21:02:06 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -71,7 +74,7 @@ for(1..$sth->numrows) {
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.9 2003-12-06 20:46:17 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.10 2004-08-13 21:02:06 anderson Exp $- -->\n");
 
 sub makeid {
 	my ($name) = @_;
