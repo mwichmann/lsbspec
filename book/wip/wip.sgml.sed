@@ -1,6 +1,6 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity specversion "LSBVERSION">
+<!entity specversion "Work In Progress">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
 <!entity objfmt.sgm system "objfmt/objfmt.sgml">
@@ -24,7 +24,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification &specversion</TITLE>
+<TITLE>Linux Standard Base &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2000</YEAR>
 <YEAR>2001</YEAR>
@@ -32,7 +32,6 @@
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal.sgm;
-&changes.sgm;
 </BOOKINFO>
 
 &intro.sgm;
