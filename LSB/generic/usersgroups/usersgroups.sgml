@@ -8,15 +8,17 @@ A "user name" is a string that is used to identify a user.  A "login name" is
 a user name that is associated with a system login.   A "user id" is a non
 negative integer, which can be contained in an object of type
 uid_t, that is used to identify a system user.  
+</PARA>
+<PARA>
 When the identity of a user is associated with a process, a user ID value is 
-referred to as a real user ID, or an effective user ID.  [POSIX 1.003.1-1996]
+referred to as a real user ID, or an effective user ID.  [POSIX 1003.1-1996]
 </PARA>
 <PARA>
 A "group name" is a string that is used to identify a set of users.  
 A "group id" is a non negative integer, which can be contained in a object 
 of type gid_t, that is used to identify a group of system users.
 Each system user is a member of at least one group.   When the identity of a
-group is associated with a process, agroup ID value is referred to as a real 
+group is associated with a process, a group ID value is referred to as a real 
 group ID, or an effective group ID.  [POSIX 1003.1-1996]
 </PARA>
 
