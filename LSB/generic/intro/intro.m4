@@ -85,20 +85,6 @@ include(standards.sgml)
 </TABLE>
 </SECT1>
 
-<SECT1 ID="rimplementations">
-<TITLE>Related Implementations</TITLE>
-<PARA>
-The implementations listed here are referenced in whole or in part by the
-Linux Standard Base when no formal specification is available.
-</PARA>
-<TABLE>
-<TITLE>Related Implementations</TITLE>
-<TGROUP COLS=2>
-include(refimpls.sgml)
-</TGROUP>
-</TABLE>
-</SECT1>
-
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
