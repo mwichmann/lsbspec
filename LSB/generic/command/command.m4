@@ -9,7 +9,8 @@
 
 The following table lists the Commands and Utilities. Unless otherwise
 specified the command or utility is described in the Single UNIX
-Specification (SUS).  When an interface is not defined in the SUS,
+Specification (SUS).  When an interface is not defined in the Single
+UNIX Specification,
 then the next prevailing standard is referenced (ie., POSIX, SVID).
 
 </PARA>

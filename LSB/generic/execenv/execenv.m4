@@ -181,7 +181,7 @@ needed.</para></footnote>
 </para>
 
 <para>The fcntl() function shall detect EDEADLK, as described as
-optional behavior in the SUS.</para>
+optional behavior in the Single UNIX Specification.</para>
 
 <para>The fcntl() function shall treat the "cmd" value -1 as
 invalid.</para>
@@ -192,10 +192,10 @@ lseek(), fseek() and fcntl() functions.</para>
 <para>The value "-5" shall be an invalid signal number.</para>
 
 <para>The opendir() function shall detect EMFILE and ENFILE, as
-described as optional behavior in the SUS.</para>
+described as optional behavior in the Single UNIX Specification.</para>
 
 <para>The readdir() and closedir() functions shall detect EBADF, as
-described as optional behavior in the SUS.</para>
+described as optional behavior in the Single UNIX Specification.</para>
 
 <para>If the sigaddset() or sigdelset() functions are passed an
 invalid signal number, they shall return with EINVAL.  Implementations
@@ -205,7 +205,7 @@ mentioned above).</para>
 
 <para>The START and STOP termios characters shall be changeable, as
 described as optional behavior in the "General Terminal Interface"
-section of the SUS.</para>
+section of the Single UNIX Specification.</para>
 
 <para>The mode value "-1" to the access() function shall be treated as
 invalid.</para>
@@ -217,7 +217,8 @@ pathconf().</para>
 sysconf().</para>
 
 <para>The link() function shall require access to the existing file in
-order to succeed, as described as optional behavior in the SUS.</para>
+order to succeed, as described as optional behavior in the Single UNIX
+Specification.</para>
 
 <para id="exec-link-unlink"
 XRefLabel="Additional behaviors: unlink/link on directory"
@@ -227,7 +228,7 @@ argument shall fail.  See also <xref linkend="baselib-unlink-3" />.</para>
 
 <para>The link() function shall not work across file systems, and
 shall return with EXDEV as described as optional behavior in the
-SUS.</para>
+Single UNIX Specification.</para>
 
 <para>The nl_item value "-1" shall be invalid for nl_langinfo.</para>
 
