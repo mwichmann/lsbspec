@@ -16,11 +16,11 @@ TABLES= libICE.sgml libSM.sgml libX11.sgml libXext.sgml libXt.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mklibspec -a All -c 4 -l libX11 >libX11.sgml
-	../../mklibspec -a All -c 4 -l libXext >libXext.sgml
-	../../mklibspec -a All -c 4 -l libICE >libICE.sgml
-	../../mklibspec -a All -c 4 -l libSM >libSM.sgml
-	../../mklibspec -a All -c 4 -l libXt >libXt.sgml
+	../../../mklibspec -a All -c 4 -l libX11 >libX11.sgml
+	../../../mklibspec -a All -c 4 -l libXext >libXext.sgml
+	../../../mklibspec -a All -c 4 -l libICE >libICE.sgml
+	../../../mklibspec -a All -c 4 -l libSM >libSM.sgml
+	../../../mklibspec -a All -c 4 -l libXt >libXt.sgml
 
 clean:
 	rm -f $(FILES)
