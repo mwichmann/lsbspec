@@ -149,7 +149,7 @@ conform with the Package Naming section of this specification.
 <LISTITEM>
 <PARA>
 Value indicating the Operating Systgem for which this package is valid. This
-value must be 0x0100.
+value must be 1.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -158,7 +158,7 @@ value must be 0x0100.
 <LISTITEM>
 <PARA>
 Value indicating the type of the signature used in the Signature part of the
-file. This value must be 0x0500.
+file. This value must be 5.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -252,7 +252,8 @@ least 1 Index Record.
 <TERM><STRUCTFIELD>hsize</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-The size of the storage area for the data pointed to by the Index Records.
+The size in bytes of the storage area for the data pointed to by the
+Index Records.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -307,59 +308,54 @@ Value identifying the type of the data associated with this Index Record.
 </THEAD>
 <TBODY>
 <ROW>
-<ENTRY>NULL_TYPE</ENTRY>
+<ENTRY>RPM_NULL_TYPE</ENTRY>
 <ENTRY>0</ENTRY>
 <ENTRY>0</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>CHAR</ENTRY>
+<ENTRY>RPM_CHAR_TYPE</ENTRY>
 <ENTRY>1</ENTRY>
 <ENTRY>1</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>INT8</ENTRY>
+<ENTRY>RPM_INT8_TYPE</ENTRY>
 <ENTRY>2</ENTRY>
 <ENTRY>1</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>INT16</ENTRY>
+<ENTRY>RPM_INT16_TYPE</ENTRY>
 <ENTRY>3</ENTRY>
 <ENTRY>2</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>INT32</ENTRY>
+<ENTRY>RPM_INT32_TYPE</ENTRY>
 <ENTRY>4</ENTRY>
 <ENTRY>4</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>INT64</ENTRY>
+<ENTRY>RPM_INT64_TYPE</ENTRY>
 <ENTRY>5</ENTRY>
-<ENTRY>8</ENTRY>
+<ENTRY>Not used.</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>STRING</ENTRY>
+<ENTRY>RPM_STRING_TYPE</ENTRY>
 <ENTRY>6</ENTRY>
 <ENTRY>variable, NULL terminated</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>BIN</ENTRY>
+<ENTRY>RPM_BIN_TYPE</ENTRY>
 <ENTRY>7</ENTRY>
 <ENTRY>1</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>STRINGS_ARRAY</ENTRY>
+<ENTRY>RPM_STRING_ARRAY_TYPE</ENTRY>
 <ENTRY>8</ENTRY>
 <ENTRY>?</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>I18NSTRING</ENTRY>
+<ENTRY>RPM_I18NSTRING_TYPE</ENTRY>
 <ENTRY>9</ENTRY>
-<ENTRY>?</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>NULL_TYPE</ENTRY>
-<ENTRY>0</ENTRY>
-<ENTRY>0</ENTRY>
+<ENTRY>variable, NULL terminated</ENTRY>
 </ROW>
 </TBODY>
 </TABLE>
@@ -390,7 +386,7 @@ elements whose size is defined by the type of this Record.
 <PARA>
 The header store contains the values specified by the Index structures. The
 store is located immediately following the Index structures. The store may be
-padded with zeros to ensure it ends on a 8 byte boundary.
+padded with zeros to ensure it ends on an 8 byte boundary.
 </PARA>
 </SECT3>
 
