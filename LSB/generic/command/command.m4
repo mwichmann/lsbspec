@@ -20,8 +20,10 @@ include(cmdsutils.sgml)
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
-This section contains descriptions of commands that are not documented by other
-standards, or descriptions of the difference from other standards.
+This section contains descriptions for commands and utilities whose
+specified behavior in the LSB contradicts or extends the standards
+referenced. It also contains commands and utilities only required by
+the LSB and not specified by other standards.
 </PARA>
 include(ar.sgml)
 include(at.sgml)
