@@ -1,9 +1,6 @@
 <PART ID="tocdynlnk">
-<TITLE>Dynamic Linking</TITLE>
-
-<CHAPTER ID=dynlnk>
 <TITLE>Program Loading and Dynamic Linking</TITLE>
-
+<PARTINTRO>
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the System V
@@ -12,36 +9,41 @@ Interface - DRAFT - April 29, 1998, System V Application Binary Interface -
 Intel386 Architecture Processor Supplement and as supplemented by the Linux
 Standard Base Specification and this document.
 </PARA>
-</CHAPTER>
+</PARTINTRO>
 
-<CHAPTER ID=DynamicSection>
-<TITLE>Dynamic Entries</TITLE>
+<CHAPTER ID=programheader>
+<TITLE>Program Header</TITLE>
 <PARA>
 </PARA>
-<SECT1 ID=dynsectent>
-<TITLE>ELF Dynamic Entries</TITLE>
+
+<SECT1 ID=progheadtypes>
+<TITLE>Types</TITLE>
 <PARA>
-The following dynamic entries are defined in the System V Application Binary
-Interface - Intel386 Architecture Processor Supplement.
-<TABLE>
-<TITLE>ELF Dynamic Entries</TITLE>
-<TGROUP COLS=4>
-include(dyntag.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
-</CHAPTER>
 
-<CHAPTER ID=ProgramInterpreter>
-<TITLE>
-Program Interpreter
-</TITLE>
+<SECT1 ID=progheadflags>
+<TITLE>Flags</TITLE>
 <PARA>
 </PARA>
+</SECT1>
+
+</CHAPTER>
+
+<CHAPTER ID=programloading>
+<TITLE>Program Loading</TITLE>
+<PARA>
+</PARA>
+
+</CHAPTER>
+
+<CHAPTER ID=dynamiclinking>
+<TITLE>Dynamic Linking</TITLE>
+<PARA>
+</PARA>
+
 <SECT1 ID=proginterp>
-<TITLE>
-</TITLE>
+<TITLE>Program Intepreter/Dynamic Linker</TITLE>
 <PARA>
 The LSB specifies the Program Interpreter to be
 <ITEMIZEDLIST>
@@ -49,6 +51,51 @@ The LSB specifies the Program Interpreter to be
 </ITEMIZEDLIST>
 </PARA>
 </SECT1>
+
+<SECT1 ID=dynsection>
+<TITLE>Dynamic Section</TITLE>
+<PARA>
+The following dynamic entries are defined in the System V Application Binary
+Interface - Intel386 Architecture Processor Supplement.
+<TABLE>
+<TITLE>Dynamic Section Entries</TITLE>
+<TGROUP COLS=4>
+include(dyntag.sgml)
+</TGROUP>
+</TABLE>
+</PARA>
+</SECT1>
+
+<SECT1 ID=globaloffettable>
+<TITLE>Global Offset Table</TITLE>
+<PARA>
+</PARA>
+</SECT1>
+
+<SECT1 ID=sharedobjectdependencies>
+<TITLE>Shared Object Dependencies</TITLE>
+<PARA>
+</PARA>
+</SECT1>
+
+<SECT1 ID=functionaddresses>
+<TITLE>Function Addresses</TITLE>
+<PARA>
+</PARA>
+</SECT1>
+
+<SECT1 ID=proceedurelinkagetable>
+<TITLE>Procedure Linkage Table</TITLE>
+<PARA>
+</PARA>
+</SECT1>
+
+<SECT1 ID=initandfinifunctons>
+<TITLE>Initialization and Termination Functions</TITLE>
+<PARA>
+</PARA>
+</SECT1>
+
 </CHAPTER>
 
 </PART>
