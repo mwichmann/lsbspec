@@ -25,10 +25,11 @@ not the ILP32 model shall also be supported.
 <SECT2 ID="mifileclass">
 <TITLE>File Class</TITLE>
 <PARA>
-For LP64 relocatable objects, the file class value may be either
+For LP64 relocatable objects, the file class value in
+<literal>e_ident[EI_CLASS]</literal> may be either
 <SystemItem class="Constant">ELFCLASS32</SystemItem> or 
 <SystemItem class="Constant">ELFCLASS64</SystemItem>,
- and a conforming linker must be able to process
+and a conforming linker must be able to process
 either or both classes.
 </PARA>
 </SECT2>
@@ -36,12 +37,16 @@ either or both classes.
 <TITLE>Data Encoding</TITLE>
 <PARA>
 Implementations shall support 2's complement, little endian data encoding.
+The data encoding value in
+<literal>e_ident[EI_DATA]</literal> shall contain the value
+<SystemItem class="Constant">ELFDATA2LSB</SystemItem>.
 </PARA>
 </SECT2>
 <SECT2 ID="miosidentification">
 <TITLE>OS Identification</TITLE>
 <PARA>
-The OS Identification field shall contain the value 
+The OS Identification field 
+<literal>e_ident[EI_OSABI]</literal> shall contain the value 
 <SystemItem class="Constant">ELFOSABI_LINUX</SystemItem>.
 </PARA>
 </SECT2>
@@ -49,13 +54,15 @@ The OS Identification field shall contain the value
 <TITLE>Processor Identification</TITLE>
 <PARA>
 The processor identification value held in <literal>e_machine</literal>
-shall contain the value <literal>EM_IA_64</literal>.
+shall contain the value 
+<SystemItem class="Constant">EM_IA_64</SystemItem>.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorspecialflags">
 <TITLE>Processor Specific Flags</TITLE>
 <PARA>
-See
+The flags field <literal>e_flags</literal> shall be
+as described in
 <XREF LINKEND="std.IA64.ABI">,
 Chapter 4.1.1.6.
 </PARA>
@@ -77,15 +84,14 @@ The following additional processor-specific flags are defined:
 <ENTRY>0x00000001</ENTRY>
 </ROW>
 </TBODY>
+</TGROUP>
 </TABLE>
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>EF_IA_64_LINUX_EXECUTABLE_STACK</TERM>
-<LISTITEM>
-<PARA>
-The stack section is executable.  If this flag
-is not set, the stack is not executable.
-</PARA>
+<LISTITEM><PARA>
+The stack and heap sections are executable.  If this flag
+is not set, code can not be executed from the stack or heap.</PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
