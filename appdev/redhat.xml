@@ -1,0 +1,137 @@
+<section id='redhat'>
+
+  <title>Configuring a RedHat system for &lsb;-compliant Application
+  Development</title>
+
+  <section>
+    <title>Setting up the &lsb; development environment</title>
+
+    <para>
+      <orderedlist numeration="arabic">
+        <listitem>
+          <para>
+          The &lsb; development environment requires a Linux 2.4 kernel.
+          Redhat 7.1 and 7.2 include Linux 2.4 kernels by default.  If you
+          are not running Redhat 7.1 or 7.2, you should install a Linux 2.4
+          kernel.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          The &lsb; development environment requires an existing ssh server
+          running on the lsbdev machine and files provided by the
+          glibc-devel and binutils packages.  If you do not have binutils,
+          glibc-devel, and openssh-server installed, you should install
+          them.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Insure you have the dependencies for the lsb-rpm package
+          installed.
+            <screen>
+# rpm -q gawk fileutils textutils mktemp shadow-utils
+            </screen>
+          </para>
+          <para>
+          If you get any package is not installed errors, you will need to
+          install the missing package(s).
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Download and install the &lsb; development applications (lsb-rpm 
+          and lsbdev) from 
+            <ulink url="ftp://ftp.freestandards.org/pub/lsb/lsbdev/" />
+            <screen>
+# rpm -Uvh lsb-rpm-4.0.3-1.03.i386.rpm
+# rpm -Uvh lsbdev-1.1.0-1.i386.rpm
+            </screen>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Edit the lsbdev configuration files (lsbdev.conf,
+          extra_mount_dirs.conf, extra_mount_files.conf) in /etc/lsbdev/ 
+          to your liking.  The lsbdev.conf file is used to configure the
+          overall &lsb; build environment chroot.  Configuration options
+          include the location of the chroot environment on the local 
+          filesystem, the location of the &lsb; stub libraries, a space 
+          separated list of users whose home directories will be 
+          automatically bind-mounted into the chroot area, the location of
+          the &lsb; header files, among others. The extra_mount_dirs.conf 
+          file is used to configure additional directories to be 
+          bind-mounted into the chroot area.  The extra_mount_files.conf 
+          file is used to configure additional files to be bind-mounted 
+          into the chroot area.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Start the &lsb; development environment:
+            <screen>
+# /etc/init.d/lsbdev start
+Starting &lsb; build environment
+Failed to get home directory for cyeoh. Skipping user cyeoh
+Failed to get home directory for vsx0. Skipping user vsx0
+Warning. No &lsb; header files available. Using system include
+files. The binaries produced may not be &lsb; compliant.
+            </screen>
+          </para>
+          <para>
+          The &lsb; header files are included in the lsbdev package, but
+          disabled by default.  To enable the inclusion of the &lsb; header
+          files, edit the /etc/lsbdev/lsbdev.conf file and change the
+          LSB_INCLUDE line to LSB_INCLUDE=$DATA_ROOT/lsb_header or the
+          location of the &lsb; header files on your system.  The &lsb; 
+          header files are located in /var/opt/lsbdev/lsb_header by
+          default.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Connect to the &lsb; development environment:
+            <screen>
+$ /usr/bin/slogin -p 5436 username@hostname
+            </screen>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          You now have configured a RedHat system for &lsb;-compliant
+          application development.  Once you have compiled your
+          application, you should run the <command>lsbappchk</command>
+          program against your executable(s) to verify that they are
+          &lsb;-compliant. 
+          </para>
+        </listitem>
+      </orderedlist>
+    </para>
+  </section>
+
+  <section>
+    <title>Setting up lsbappchk</title>
+      
+      <para>
+        <orderedlist numeration="arabic">
+          <listitem>
+            <para>
+            Download and install lsbappchk from <ulink
+          url='ftp://ftp.freestandards.org/pub/lsb/test_suites/released-1.1.0/binary/application/'
+          />.
+          
+              <screen>
+# rpm -Uvh lsbappchk-1.1.1-2.i386.rpm
+              </screen>
+            </para>
+          </listitem>
+        </orderedlist>
+      </para>
+  </section>
+
+</section>
+
+<!-- vim: set ai et tw=75 sw=2 sts=2: -->
+<!--  Local variables: -->
+<!--  eval: (sgml-load-dtd "../doctools/docbook.ced") -->
+<!--  End: -->

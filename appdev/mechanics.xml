@@ -1,0 +1,209 @@
+<section id='mechanics'>
+  <title>Mechanics</title>
+
+  <para>
+  The &lsb; organization specifies the build environment as well as the 
+  proper compiler arguments necessary to build an &lsb;-compliant 
+  application.  This section covers those details as found in the &glsb;.
+  </para>
+
+  <section>
+    <title>&lsb; Environment</title>
+
+    <para>
+      The &lsb; organization provides header files and stub libraries that 
+      match the set of interfaces guaranteed by the specification. The stub 
+      libraries are exactly that: placeholder shared libraries to allow the 
+      compiler to verify the presence of the symbols needed. The functions 
+      themselves will be linked in at runtime in the "real" environment.
+    </para>
+  </section>
+
+
+  <section id="sec-chroot">
+    <title id="sec-chroot.title">Chroot Build Environment</title>
+
+    <para>
+      For a high level of confidence that a package uses only
+      &lsb;-guaranteed commands and interfaces, the &lsbdev; package
+      provides a chroot environment.
+    </para>
+
+    <para>
+      Here are some issues to be aware of when setting up the &lsb;
+      chroot.
+
+      <itemizedlist>
+        <listitem>
+          <para>You should have <application>sshd</application> installed
+          on the host system to grant access to the chroot environment.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            You must use a 2.4 kernel; the chroot scripts remount existing
+            directories on your system with a bind mount that isn't
+            supported under 2.2.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            Users to be exported<footnote>
+              <para>
+                <filename>/etc/passwd</filename> and
+                <filename>/etc/shadow</filename> are pulled into the
+                chroot, so any users already defined there can log in with
+                their existing passwords. The home directories to be
+                imported are defined in <filename>lsbdev.conf</filename>.
+              </para>
+            </footnote> into the chroot environment should have local home
+            directories; <acronym>NFS</acronym> directories cannot be
+            remounted.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            Upgrading components that are in use by the chroot may be
+            dangerous; once a file that has been exported to the chroot is
+            removed, the chroot will not properly shut down until the mount
+            point is forcibly removed with <command>umount -f</command>.
+          </para>
+          <para>
+            If you see the following error message from
+            <command>/etc/init.d/lsbdev stop</command> or tools such as
+            <application>fuser</application> or
+            <application>lsof</application>, an exported file has been
+            removed from the host system.
+            <informalexample>
+              <para><computeroutput>/var/opt/lsbdev/root/usr/sbin/sshd\040(deleted): No such file or directory</computeroutput></para>
+            </informalexample>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>To log into the chroot environment, run the following command (or
+    its equivalent in your environment):
+      <command>ssh -p 5436 localuser@localhost</command>
+    </para>
+  </section>
+
+
+  <section id="sec-wrapper">
+    <title id="sec-wrapper.title">&gcc; Wrapper</title>
+
+    <para>
+      To allow applications to be built with the necessary &lsb; components
+      in a full (non-chroot) environment, a wrapper script
+      (<application>lsbcc</application>) is planned that would invoke the C
+      compiler with the proper arguments.
+    </para>
+
+    <para>
+      Here is an example of a gcc invocation to pull in the
+      appropriate &lsb; components.  <informalexample><para> <command>gcc
+      <option>-o <replaceable>foo</replaceable></option> <parameter
+      class="command">-Wall</parameter> <parameter
+      class="command"><replaceable>foo.c</replaceable></parameter>
+      <parameter class="command">-L/usr/lib/lsb-stub</parameter> <parameter
+      class="command">-Wl,--dynamic-linker=/lib/ld-lsb.so.1</parameter>
+          </command>
+        </para>
+      </informalexample>
+    </para>
+
+    <para>
+    Here is an example shell script that can be used as a gcc wrapper 
+    script:
+      <programlisting><![CDATA[
+
+#!/bin/sh
+
+if [ -z "$1" ]; then
+    echo ""
+    echo "Wrapper script for gcc to build LSB compliant apps. Use by:"
+    echo "'export CC=lsbcc' and then running 'make' or 'configure' normally," 
+    echo "or call explicitly as you would gcc. ie: 'lsbcc foo.c -o foo'"
+    echo ""
+    exit 1
+fi
+
+if [ -z "$(echo $* | grep '\-c')" ]; then 
+    gcc -L/usr/lib/lsb-stub -Xlinker --dynamic-linker -Xlinker \
+    /lib/ld-lsb.so.1 -I/usr/include/lsb $*
+else
+    gcc -L/usr/lib/lsb-stub -I/usr/include/lsb $*
+fi
+      ]]>
+
+      </programlisting>
+    </para>
+
+  </section>
+
+  <section>
+    <title>&lsb; Test Suite</title>
+    <para>
+      The &lsb; organization provides utilities to test applications, 
+      libraries, and operating environments for compliance with its 
+      specifications. You can find the main test web page at <ulink
+        url="http://www.linuxbase.org/test/"/>. <note><para>
+<ulink
+      url="http://www.linuxbase.org/test/appcheck.html"/>, linked from that
+      page, refers to <link
+      linkend="sec-wrapper"><application>lsbcc</application></link> as if
+      it exists; as of this writing, no such tool seems to be available
+      from the &lsb; <acronym>FTP</acronym> site.</para></note>
+    </para>
+
+    <para>
+      The most important tool for application developers is
+      &lsbappchk;. Its usage is shown below:
+      <cmdsynopsis>
+        <command>lsbappchk</command>
+        <arg choice="opt" rep="repeat">-L
+        <replaceable>libpath</replaceable></arg>
+        <arg choice="req">executable</arg>
+      </cmdsynopsis>
+    </para>
+
+    <para>
+      It neither reports success nor returns a useful exit code. Instead,
+      it always outputs the version of the &lsb; specification against 
+      which it checks the executable's compliance, and then it reports any
+      concerns that it finds.
+    </para>
+
+    <para>
+      The <option>-L <replaceable>libpath</replaceable></option> option
+      allows &lsbappchk; to trace unidentified library symbols to libraries
+      that will be shipped with the executable; otherwise, &lsbappchk;
+      would report those symbols as undefined within the &lsb;
+      specification.
+    </para>
+
+    <para>
+      <application>lsblibchk</application> is a similar tool that takes
+      no arguments. It checks runtime libraries in an environment to verify
+      that the right versions of the &lsb;-specified interfaces are
+      available.
+    </para>
+
+    <para>
+      The &lsb; test suite project also provides more comprehensive tools
+      to test an environment for &lsb; compliance. These tools use the <ulink
+      url="http://tetworks.opengroup.org"><quote>Test Environment
+      Toolkit</quote></ulink> as a framework.
+    </para>
+
+  </section>
+
+</section>
+
+<!-- vim: set ai et tw=75 sw=2 sts=2: -->
+<!--  Local variables: -->
+<!--  eval: (sgml-load-dtd "../doctools/docbook.ced") -->
+<!--  End: -->

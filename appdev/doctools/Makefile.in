@@ -1,0 +1,37 @@
+# $Progeny: Makefile.in,v 1.4 2002/01/18 06:21:07 dsp Exp $
+
+.POSIX:
+
+srcdir=			@srcdir@
+VPATH=			@srcdir@
+top_srcdir=		@top_srcdir@
+
+PACKAGE_TARNAME=	@PACKAGE_TARNAME@
+PACKAGE_VERSION=	@PACKAGE_VERSION@
+
+INSTALL_DIR=		@INSTALL_DIR@
+
+distclean_FILES=	Makefile .cvsignore
+IGNOREFILES=		${distclean_FILES}
+
+DISTFILES=	Makefile.in docbook.ced docbook.mk progeny-fo.xsl progeny.dsl progeny.ent
+distname=	${PACKAGE_TARNAME}-${PACKAGE_VERSION}
+distdir=	${top_srcdir}/${distname}
+
+all:
+
+.cvsignore: Makefile
+	printf "%s\n" "${IGNOREFILES}" > $@
+
+install:
+uninstall:
+clean:
+
+distclean:
+	rm -f ${distclean_FILES}
+
+distdir: ${DISTFILES}
+	${INSTALL_DIR} ${distdir}/${_THISDIR_}
+	for file in ${DISTFILES}; do					\
+		ln -f $${file} ${distdir}/${_THISDIR_}/$${file};	\
+	done

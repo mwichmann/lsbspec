@@ -1,0 +1,131 @@
+<section id="sec-packaging">
+  <title>Packaging</title>
+  <para>
+  An important part of the &lsb; specification is the packaging.  This
+  section covers the important information concerning packaging of the
+  developed application, such as the filesystem hierarchy and the tool to
+  use for packaging the final application.
+  </para>
+
+  <section id="sec-fhs">
+    <title>Filesystem Hierarchy Standard</title>
+    <para>
+      The &glsb; relies on the <ulink
+        url="http://www.pathname.com/fhs/">Filesystem Hierarchy
+        Standard</ulink> (<acronym>FHS</acronym>) version 2.2 to define the
+      layout of an &lsb;-compliant distribution.
+    </para>
+
+    <para>
+      Components of the filesystem that are labeled as optional by the
+      FHS must be handled as such by &lsb;-compliant applications.
+      Applications are required <emphasis>not</emphasis> to assume that 
+      those pieces are available.
+    </para>
+
+    <para>
+      As an example, the <filename>/root</filename> directory as the home
+      directory for the &users.root; user is
+      optional, albeit recommended. Applications that must access
+      &users.root;'s home directory might
+      check the invoking user's <envar>HOME</envar> environment
+      variable<footnote> <para>Note that a user who is running
+          <command>sudo</command> or <command>su</command> to run an
+          application or install a package may have his or her personal
+          <envar>HOME</envar> instead of &users.root;'s.</para>
+      </footnote>
+      and/or use the <function>getpwent</function> function to determine
+      root's home directory if <filename>/root</filename> does not exist
+      (and perhaps even if it does). Further, as &users.root; may be
+      logged onto a system in maintenance mode without all filesystems
+      mounted, if &users.root;'s home directory isn't mounted,
+      applications should fall back to <filename>/</filename> for that
+      purpose.
+    </para>
+  </section>
+
+  <section id="sec-packaging-tool">
+    <title id="sec-packaging-tool.title">Packaging Tool</title>
+
+    <para>
+      The &lsb; organization has standardized on the &rpm; (Red Hat 
+      Package Manager) format to provide a common package format
+      upon which its tools and standards are based.  This 
+      <emphasis>does not</emphasis> mean that all distributions must use &rpm;
+      to manage all packages on the system; rather, an &lsb;-compliant
+      environment must provide some mechanism for installing such packages.
+    </para>
+
+    <note>
+    <para>
+      The &glsb; defers to 
+      <ulink
+        url="http://www.rpmdp.org/rpmbook/node117.html">the
+        appendix</ulink> of <ulink
+      url="http://www.rpmdp.org/rpmbook/">Maximum RPM</ulink> for
+      describing the specifics of the desired &rpm; format.
+    </para>
+    </note>
+
+    <para>
+      The &lsb; implementation of &rpm; can be found in the <ulink
+        url="http://www.linuxbase.org/usinglsbdev.html">&lsb; development
+        package's</ulink> <ulink
+        url="ftp://ftp.freestandards.org/pub/lsb/lsbdev">ftp
+        directory</ulink>.
+    </para>
+
+    <para>
+      The key utility in &lsbrpm; is &rpmbuild;. A man page is provided; 
+      <ulink url="http://www.rpmdp.org/rpmbook/">Maximum RPM</ulink>,
+      despite its age, is apparently still the most comprehensive look at
+      the &rpm; build process. The version at <ulink
+        url="http://www.rpm.org/">rpm.org</ulink>, <ulink
+      url="http://www.rpm.org/max-rpm/">http://www.rpm.org/max-rpm/</ulink>,
+      appears to be slightly less dated.
+    </para>
+  </section>
+
+  <section id="sec-rpm-restrictions">
+    <title id="sec-rpm-restrictions.title">&lsb;-imposed Restrictions</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>
+          Package names must start with <literal>lsb-</literal>. Currently,
+          the extension is still <filename
+          role="extension">.rpm</filename>, but there has been some
+          discussion of using <filename role="extension">.lsb</filename>.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+          Scripts included with a package for use during (un)installs must
+          not use commands and/or interfaces that are not specified by the
+          &lsb;.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+          &rpm; triggers must not be provided.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+          Installation-related scripts do not have a defined order of
+          invocation during an upgrade; packages may not depend on any
+          specific ordering to always be used.
+        </para>
+      </listitem>
+    </itemizedlist>
+
+  </section>
+</section>
+
+<!-- vim: set ai et tw=75 sw=2 sts=2: -->
+<!--  Local variables: -->
+<!--  eval: (sgml-load-dtd "../doctools/docbook.ced") -->
+<!--  End: -->

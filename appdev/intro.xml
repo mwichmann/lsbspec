@@ -1,0 +1,348 @@
+<section id='introduction'>
+  <title>Introduction</title>
+
+    <para>
+    The Application Developers' Guide covers the highlights and specifics 
+    that are important when developing &lsb;-compliant applications for 
+    Linux.  This guide is intended to apply generally for the various Linux 
+    distributions.  Some adjustments may need to be made for each 
+    distribution.
+    </para>
+
+    <para>
+    This section of the guide explains what the Linux Standard Base is all
+    about, its function, and who defines the specifications.
+    </para>
+
+    <section>
+      <title>What is the &lsb;?</title>
+      <para>
+      The Linux Standard Base (&lsb;) defines a system interface for compiled
+      applications and a minimal environment for support of installation
+      scripts.  Its purpose is to enable a uniform industry-standard
+      environment for high-volume applications compliant with the &lsb;.
+      </para>
+      
+      <para>
+      The &lsb; defines the components, features, and API of a model Linux
+      system so that application developers know what the target system will
+      include, what the behavior of their application will be, and how to
+      package their application to do the following:
+
+      <itemizedlist mark='opencircle'>
+        <listitem>
+          <para>
+          Minimize issues in porting code from another platform
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Allow a package to perform the same way regardless of the Linux
+          distribution
+          </para>
+        </listitem>
+      </itemizedlist>
+      </para>
+    </section>
+
+    <section>
+      <title>Why develop an &lsb;-compliant application?</title>
+      <para>
+      By developing an &lsb;-compliant application, an Independent Software
+      Vendor (ISV) can know in advance how their application will perform 
+      on &lsb;-compliant Linux distributions and can reduce the need for
+      distribution-specific packages.
+      </para>
+    </section>
+
+    <section>
+      <title>Overview of the &lsb; Specification</title>
+
+      <para>
+      At first, the &lsb; Specification can appear to be an unwieldy mass
+      of information.  This section provides a more manageable summary of
+      the type of information covered in the &lsb; Specification.
+      </para>
+      
+      <para>
+      The &lsb; is composed of two basic parts: A common part of the
+      specification, also known as the generic &lsb; (&glsb;), that 
+      describes those parts of the interface that remain constant across 
+      all hardware implementations of the &lsb;; and an 
+      architecture-specific part of the specification that describes the
+      parts of the specification that are specific to a particular
+      processor architecture.  Together, the generic &lsb; and the
+      architecture-specific supplement for a single hardware architecture
+      provide a complete interface specification for compiled application
+      programs on systems that share a common hardware architecture.
+      </para>
+
+      <para>
+      Section I of the &glsb; is the Introduction.  The purpose of the
+      &lsb;, related standards and implementations, relevant libraries,
+      instructions on using the &lsb;, and definitions and terminology are
+      covered in the introduction.
+      </para>
+      
+      <para>
+      Section II of the &glsb; covers object file formats.
+      &lsb;-complying implementations shall support the object file
+      Executable and Linking Format (&elf;).  The bulk of
+      this section is devoted to details about &elf; such as &elf; section
+      types, Linux section types, &elf; and Linux special section types,
+      symbol mapping in the C and C++ languages, and symbol versioning.
+      </para>
+      
+      <para>
+      Section III of the &glsb; covers dynamic linking.  &lsb;-complying
+      implementations shall support the object file information and system 
+      actions that create running programs as specified in the <ulink
+      url="http://www.caldera.com/developers/devspecs/gabi41.pdf">System V
+      Application Binary Interface, Edition 4.1</ulink> and the <ulink
+      url="http://www.caldera.com/developers/gabi/2000-07-17/contents.html">
+      System V Application Binary Interface - DRAFT - April 29, 1998</ulink> 
+      and as supplemented by the &glsb; and an architecture-specific &lsb; 
+      specification.  Any shared object that is loaded must contain
+      sufficient DT_NEEDED records to satisfy the symbols in the shared
+      library.  Details about &elf; dynamic entries and Linux dynamic
+      entries make up the bulk of this section.  Details about the program
+      interpreter are covered in the appropriate architecture-specific
+      &lsb; specification.
+      </para>
+
+      <para>
+      Sections IV, V, and VI of the &glsb; cover libraries.  The specific
+      APIs provided by these libraries are detailed in the &glsb;.  Only
+      the general category of the interfaces (for example, string
+      functions) is detailed in this guide.
+      </para>
+
+      <para>
+      Section IV of the &glsb; covers base libraries.  The base libraries
+      include libc, libm, libpthread, libdl, libcrypt, and librt.  The
+      interfaces for libc include RPC interfaces, system calls, standard
+      I/O, signal handling, standard libraries, localization, socket
+      interface functions, wide characters, string functions, IPC 
+      functions, regular expressions, character type functions, time 
+      manipulation, terminal interface functions, system database interface
+      functions, language support, and large file support.  The interfaces
+      for libm include math interfaces.  The interfaces for libpthread
+      include &posix; thread interfaces.  &lsb;-complying implementations
+      support &posix; threads with the following exceptions.  This list is
+      intended to match the behavior of historical Linux implementations.
+      Applications should be written to deal with either &posix; threads or
+      the thread behaviors described here.
+      
+        <itemizedlist mark="opencircle">
+          <listitem>
+            <para>
+            &posix; specifies a concept of per-process rather than per-thread 
+            signals. The &lsb; does not require this behavior; traditional 
+            Linux implementations have had per-thread signals only. A 
+            related issue is that applications cannot rely on getpid() 
+            returning the same value in different threads.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            Note: one implication of per-thread signals is that a core dump 
+            (for example) may not stop all threads in a given process. This 
+            may be an issue when designing ways to stop/start applications.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            Applications which create child processes (using fork() and the 
+            like) must then wait for them (using waitpid() family of 
+            functions) in the same thread as they created them. Note that 
+            coding applications this way will work both with full &posix; 
+            threads and legacy Linux thread implementations.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            &posix; specifies that changing the user or group id instantly 
+            affects the behavior of all threads. This behavior is not 
+            specified; applications must use their own lock if they need 
+            this behavior. Rationale: it seems unnecessary and it is a 
+            performance hit (an SMP kernel must lock the user id).
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            Although the &glsb; doesn't specify a way to list processes, it 
+            is the intention of the authors of the &lsb; to not specify 
+            whether multiple threads appear as separate processes or as a 
+            single process.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            Applications cannot rely on resource limits (getrusage and
+            setrusage) being maintained per-process rather than per-thread.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            Applications must disconnect from the controlling tty before
+            calling pthread_create.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            times() doesn't account for all threads, just the caller
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            Applications must not call pthread_cancel if they call any
+            system libraries (most notably X Window System libraries), as
+            system libraries are not guaranteed to be thread safe.
+            Likewise, for such libraries, only one thread per process may
+            call them.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            Applications cannot rely on fcntl/lockf locks being visible 
+            per-process rather than per-thread. Likewise for mandatory 
+            file locks.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+            Threaded applications cannot use SIGUSR1 or SIGUSR2
+            </para>
+          </listitem>
+        </itemizedlist>
+
+        The interfaces for libdl include dynamic loader function
+        interfaces.  The interfaces for libcrypt include encryption
+        function interfaces.  The interfaces for librt include asynchronous
+        I/O function interfaces.
+      </para>
+
+      <para>
+      Section V of the &glsb; covers utility libraries.  The utility
+      libraries include libz, libncurses, and libutil.  The interfaces for
+      libz include compression library function interfaces.  The interfaces
+      for libncurses include Curses function interfaces.  The interfaces
+      for libutil include utility function interfaces.
+      </para>
+
+      <para>
+      Section VI of the &glsb; covers graphics libraries.  The graphics
+      libraries include libX11, libXext, libSM, libICE, libXt, and libGL.
+      The interfaces for libX11 include X Windows System Interface function
+      interfaces.  The interfaces for libXext include X Shape Extension
+      function interfaces, X Display Power Management Signaling Extension
+      function interfaces, X Shared Memory Extensions function interfaces,
+      X Security Extension function interfaces, and X Double Buffer
+      Extension function interfaces.  The interfaces for libSM include
+      Session Management Functions function interfaces.  The interfaces for
+      libICE include Inter-Client Exchange (ICE) Protocol Functions
+      function interfaces.  The interfaces for libXt include X Toolkit
+      function interfaces.  The interfaces for libGL include GL X
+      interface function interfaces and <trademark
+      class='registered'>OpenGL</trademark> function interfaces.
+      </para>
+
+      <para>
+      Section VII of the &glsb; covers Package Format and Installation.
+      Applications should be provided in the &rpm; packaging format as
+      defined in the <ulink
+      url="http://www.rpmdp.org/rpmbook/node117.html">appendix</ulink> of
+      <ulink url="http://www.rpmdp.org/rpmbook/">Maximum RPM</ulink>, with
+      some restrictions.  See <quote><link linkend="sec-rpm-restrictions"
+      endterm="sec-rpm-restrictions.title" /></quote>.  Package naming
+      conventions and package dependencies are also detailed in this
+      section.
+      </para>
+
+      <para>
+      Section VIII of the &glsb; provides an exhaustive list of the 
+      commands and utilities specified by the &lsb; and their various 
+      command-line options.
+      </para>
+
+      <para>
+      Section IX of the &glsb; defines the standard shell that must be
+      available in an &lsb;-compliant environment.  Currently, the &lsb;
+      defines minor exceptions so that bash meets its requirements.
+      </para>
+
+      <para>
+      Section X of the &glsb; defines specifics about users and groups in
+      &lsb;-compliant environments.
+      </para>
+
+      <para>
+      Section XI of the &glsb; defines the execution environment of
+      &lsb;-complying systems.  The execution environment consists of the
+      File System Hierarchy (the FHS 2.2) plus additional recommendations
+      on directory and file permissions.
+      </para>
+
+      <para>
+      Section XII of the &glsb; defines the system initialization
+      environment including cron jobs, run levels, init script actions,
+      comment conventions for init scripts, installation and removal of
+      init.d files, facility and script naming conventions, and init script
+      functions.
+      </para>
+
+      <para>
+      Appendix A of the &glsb; provides and alphabetical listing of the
+      APIs defined in the &glsb;.
+      </para>
+      
+      <para>
+      The &lsb; IA32 defines low level system information, object file
+      formats, program loading and dynamic linking, and base libraries that
+      are unique to the IA32 platform.
+      </para>
+
+      <para>
+      The &lsb; IA64 defines low level system information, object file
+      formats, program loading and dynamic linking, base libraries, and the
+      execution environment that are unique to the IA64 platform.  The
+      &lsb; IA64 is currently available only as a draft.
+      </para>
+    </section>
+
+    <section>
+      <title>Who Defines the &lsb;?</title>
+      <para>
+      The &lsb; organization consists of a Steering Committee and technical
+      subcommittees.  Each committee is composed of a Chairman (or a
+      Technical Lead), and various representatives (both voting and
+      non-voting), including members from Linux Distribution Vendors, ISVs,
+      and prominent Technical Contributors from the Linux community.  Each
+      participating company will be allowed at most one voting seat on the
+      Steering Committee.
+      </para>
+      <para>
+      The Steering Committee will be responsible for overall coordination of
+      the &lsb;.  This includes ensuring that everything is moving forward
+      at a reasonable pace and that the technical projects remain
+      synchronized.  The Steering Committee will be responsible for
+      coordinating non-technical issues such as press releases and other
+      marketing issues.  The Steering Committee will also resolve issues that
+      cannot be resolved in the subcommittees.  Finally, the Chairman of
+      the Steering Committee should not be selected from any Linux
+      Distribution Vendor.
+      </para>
+
+      <para>
+      The Steering Committee Chairman and the Technical Leads of the
+      Technical Subcommittees are the only authorized spokespersons for
+      the &lsb;.
+      </para>
+      
+    </section>
+  </section>
+
+<!-- vim: set ai et tw=75 sw=2 sts=2: -->
+<!--  Local variables: -->
+<!--  eval: (sgml-load-dtd "../doctools/docbook.ced") -->
+<!--  End: -->

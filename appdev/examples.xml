@@ -1,0 +1,976 @@
+<section id='examples'>
+  <title>Examples</title>
+
+  <para>
+  The following examples illustrate an &lsb;-compliant application and a
+  non-compliant application.  Though both examples are simple programs,
+  they provide the program code and the results.  Note that these examples
+  should be run in the &lsb; build environment.
+  </para>
+
+
+    <section>
+      <title>An &lsb;-Compliant Application</title>
+      <para>
+      A simple "hello world" program, hw.c
+      </para>
+      <programlisting><![CDATA[
+#include <stdio.h>
+
+int
+main(int argc, char *argv[])
+{
+    printf("Hello World!\n");
+    return 0;
+}]]>
+      </programlisting>
+
+      <para>
+      Compile the "hello world" program and link it with the &lsb; loader and
+      libraries.
+      </para>
+
+      <screen>
+$ gcc -o hw -Wall hw.c -L/usr/lib/lsb-stub -Wl,--dynamic-linker=/lib/ld-lsb.so.1
+      </screen>
+
+      <para>
+      Test to see if the "hello world" program works.
+      </para>
+      
+      <screen>
+$ ./hw
+Hello World!
+      </screen>
+
+      <para>
+      Test to see if the "hello world" program is using the &lsb; loader and
+      libraries
+      </para>
+
+      <screen>
+$ ldd hw
+libc.so.6 =&gt; /lib/libc.so.6
+/lib/ld-lsb.so.1 =&gt; /lib/ld-lsb.so.1
+      </screen>
+
+      <para>
+      Test whether the "hello world" program is &lsb;-compliant.
+      </para>
+
+      <screen>
+$ lsbappchk hw
+      </screen>
+      
+      <para>
+      If there is any output from <command>lsbappchk</command>, then it
+      detected API calls that are not specified by the &glsb;.
+      </para>
+
+      <para>
+      To correct this situation, the programmer has the following options:
+
+      <itemizedlist mark="opencircle">
+        <listitem>
+          <para>
+          To satisfy the API calls, link these functions statically 
+          (last resort for SUID/SGID programs).  To make this less 
+          annoying, we recommend concentrating the privileged activity 
+          (for example, opening port 80 for a web server) on a small binary, 
+          which is called by a non-privileged binary and can do its work 
+          after the small SUID/SGID binary has done its job.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Supply a vendor private dynamic library.  When linking,
+          explicitly add this library path with the -rpath linker option.
+          Applications should be aware that using -rpath may make it
+          difficult or impossible to ship a package that can be installed in
+          more than one location.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Supply a vendor private dynamic library and get it loaded at
+          runtime by setting the environment variable LD_LIBRARY_PATH.
+          This will not work with SUID/SGID programs.
+          </para>
+        </listitem>
+      </itemizedlist>
+      </para>
+
+    </section>
+
+    <section>
+      <title>A Non-&lsb;-Compliant Application</title>
+
+      <para>
+      A simple "domain name" program, dn.c
+      </para>
+
+        <programlisting><![CDATA[
+#include <stdio.h>
+#include <unistd.h>
+
+int
+main(int argc, char *argv[])
+{
+    char domain[BUFSIZ];
+    int rc;
+
+    rc = call_my_non_lsb_getdomainname((char *)&domain, BUFSIZ);
+
+    if (0 == rc) {
+        printf("domainname is: %s\n", domain);
+    }
+}]]>
+        </programlisting>
+
+        <para>
+        Compile the "domain name" program and link it with the LSB loader
+        and libraries.
+        </para>
+
+        <screen>
+$ gcc -o dn -Wall dn.c -L/usr/lib/lsb-stub -Wl,--dynamic-linker=/lib/ld-lsb.so.1
+dn.c: In function `main':
+dn.c:14: warning: control reaches end of non-void function
+/tmp/ccHpOeFD.o: In function `main':
+/tmp/ccHpOeFD.o(.text+0x16): undefined reference to
+`call_my_non_lsb_getdomainname'
+collect2: ld returned 1 exit status
+        </screen>
+
+        <para>
+        The dn.c failed to link with the &lsb; filter libraries because the
+        API call_my_non_lsb_getdomainname is not defined.
+        </para>
+
+        <para>
+        Let's assume that we were able to compile and link some libraries
+        and are using the correct &lsb; loader.  Test to verify with
+        <command>lsbappchk</command> that the domain name application is
+        using only &lsb;-specified APIs.
+        </para>
+
+        <screen>
+$ lsbappchk dn
+call_my_non_lsb_getdomainname
+        </screen>
+
+        <para>
+        The &lsb;'s <command>lsbappchk</command> output
+        <emphasis>call_my_non_lsb_getdomainname</emphasis>, so it detected
+        an API call that is not specified by the &glsb;.  To correct this 
+        problem, the application should discontinue the use of those APIs, 
+        or a trouble report should be sent to the &lsb; organization.
+        </para>
+
+  </section>
+
+  <section>
+    <title>A Complex &lsb;-Compliant Application</title>
+
+    <para>The previous two examples were very simple in nature.  In this
+    section we will examine a much more complex situation.  The goal will
+    be take take an existing piece of software and bring it into compliance
+    with the &lsb; specifications and then build an &lsb;-compliant &rpm; 
+    package.</para>
+
+    <para>For this example we will be using an existing application named
+    <application>Mutt</application>.  <application>Mutt</application> is a
+    very powerful text-based mail user agent which runs on a variety of
+    operating systems.  In this example with
+    <application>Mutt</application> we will come across a variety of issues
+    and see how to resolve them as you might with your own
+    application.</para>
+
+    <para>To work through this example it will be helpful to have a &lsb;
+    chroot build environment at your disposal.  You should configure the
+    &lsb; chroot to utilize the system header files by setting LSB_INCLUDE
+    in the lsbdev.conf file to null (that is, <quote>LSB_INCLUDE=</quote>,
+    without the quotes, should appear in your lsbdev.conf file without
+    anything after the equal sign.  Assuming you have started the &lsb;
+    chroot build environment as described previously in this document you 
+    can login by running the following.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>ssh -p 5436 username@hostname</userinput>
+    </screen>
+
+    <para>Now logged into our &lsb; environment, we are ready to begin.  The
+    first step will be to retrieve and extract the source to
+    <application>Mutt</application>.  Chapter 14 of the &lsb; specification
+    requires the presence of various commands and utilities.  Among those
+    mandated are <command>rsync</command> and GNU
+    <command>tar</command>.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>cd /var/tmp</userinput>
+<prompt>%</prompt> <userinput>rsync -v ftp.mutt.org::mutt/mutt-1.3.27i.tar.gz .</userinput>
+mutt-1.3.27i.tar.gz
+wrote 21832 bytes  read 14602 bytes  10409.71 bytes/sec
+total size is 2536093  speedup is 69.61
+<prompt>%</prompt> <userinput>tar xzf mutt-1.3.27i.tar.gz</userinput>
+<prompt>%</prompt> <userinput>cd mutt-1.3.27</userinput>
+    </screen>
+
+    <para>Equipped with the source, we can start figuring out what kinds of
+    changes, if any, we will need to make to bring
+    <application>Mutt</application> into compliance with the &lsb;
+    specification.  If we read the <filename>INSTALL</filename> file
+    distributed with <application>Mutt</application> we will discover that
+    <application>Mutt</application> uses the commonplace
+    <command>./configure &amp;&amp; make &amp;&amp; make install</command>
+    process for building and installing.  Let's begin by trying to configure
+    <application>Mutt</application>.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>CC=lsbcc ./configure</userinput>
+creating cache ./config.cache
+checking for a BSD compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking whether make sets ${MAKE}... yes
+checking for working aclocal... found
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+checking for fchdir... yes
+checking for regcomp... yes
+checking whether your system's regexp library is completely broken... no
+checking where new mail is stored... no
+configure: error: Could not determine where new mail is stored.
+    </screen>
+
+    <note><para>The <envar>CC</envar> environment variable was set to
+    <command>lsbcc</command> while running <command>./configure</command>.
+    If you remember from section 8.3 <command>lsbcc</command> is the &lsb;
+    <command>gcc</command> wrapper.  Its main purpose is to make sure that
+    <command>gcc</command> is invoked with the proper arguments necessary
+    to build &lsb;-compliant software.</para></note>
+
+    <para>The configure step failed because it could not determine where
+    mail is to be stored.  Running <command>./configure</command>
+    <option>--help</option> will show us that there is a
+    <option>--with-mailpath</option> option that lets us specify the path
+    to where mail is stored.  The question remains though, where should
+    that be?  Chapter 17 of the &lsb; specification declares that the file
+    system should be laid out as specified in <acronym>FHS</acronym> 2.2.
+    The <ulink url="http://www.pathname.com/fhs/"><acronym>FHS</acronym>
+    website</ulink> has the 2.2 version of the standard, and reading it
+    will reveal that mail should be stored in
+    <filename>/var/mail</filename>.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>CC=lsbcc ./configure --with-mailpath=/var/mail</userinput>
+creating cache ./config.cache
+checking for a BSD compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking whether make sets ${MAKE}... yes
+checking for working aclocal... found
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+creating Muttrc.head
+creating doc/instdoc.sh
+creating config.h
+creating po/POTFILES
+creating po/Makefile
+    </screen>
+
+    <para>This time <command>./configure</command> completed successfully,
+    and we can proceed to building <application>Mutt</application>.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>make</userinput>
+<![CDATA[./gen_defs ./OPS ./OPS.PGP > keymap_defs.h
+./patchlist.sh < ./PATCHES > patchlist.c
+cd . \
+  && CONFIG_FILES=Makefile CONFIG_HEADERS= /bin/sh ./config.status
+creating Makefile]]>
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+<![CDATA[lsbcc -Wall -pedantic -g -O2  -o mutt  patchlist.o addrbook.o
+alias.o attach.o \
+base64.o browser.o buffy.o color.o commands.o complete.o compose.o copy.o \
+curs_lib.o curs_main.o date.o edit.o enter.o flags.o init.o filter.o from.o \
+getdomain.o handler.o hash.o hdrline.o headers.o help.o hook.o keymap.o main.o \
+mbox.o menu.o mh.o mx.o pager.o parse.o pattern.o postpone.o query.o \
+recvattach.o recvcmd.o rfc822.o rfc1524.o rfc2047.o rfc2231.o score.o send.o \
+sendlib.o signal.o sort.o status.o system.o thread.o charset.o history.o lib.o \
+muttlib.o editmsg.o utf8.o mbyte.o wcwidth.o url.o ascii.o pgp.o pgpinvoke.o \
+pgpkey.o pgplib.o gnupgparse.o pgpmicalg.o pgppacket.o resize.o dotlock.o \ 
+-lncurses     
+color.o: In function `mutt_alloc_color':
+/var/tmp/mutt-1.3.27/color.c:215: undefined reference to `COLOR_PAIRS'
+color.o: In function `parse_color_name':
+/var/tmp/mutt-1.3.27/color.c:319: undefined reference to `COLORS'
+color.o: In function `_mutt_parse_color':
+/var/tmp/mutt-1.3.27/color.c:710: undefined reference to `use_default_colors'
+menu.o: In function `print_enriched_string':
+/var/tmp/mutt-1.3.27/menu.c:57: undefined reference to `acs_map'
+/var/tmp/mutt-1.3.27/menu.c:65: undefined reference to `acs_map'
+/var/tmp/mutt-1.3.27/menu.c:73: undefined reference to `acs_map'
+/var/tmp/mutt-1.3.27/menu.c:81: undefined reference to `acs_map'
+/var/tmp/mutt-1.3.27/menu.c:89: undefined reference to `acs_map'
+menu.o:/var/tmp/mutt-1.3.27/menu.c:97: more undefined references to `acs_map' follow
+signal.o: In function `exit_handler':
+/var/tmp/mutt-1.3.27/signal.c:39: undefined reference to `sys_siglist'
+resize.o: In function `mutt_resize_screen':
+/var/tmp/mutt-1.3.27/resize.c:79: undefined reference to `resizeterm'
+collect2: ld returned 1 exit status
+make[2]: *** [mutt] Error 1
+make[2]: Leaving directory `/var/tmp/mutt-1.3.27'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/var/tmp/mutt-1.3.27'
+make: *** [all-recursive-am] Error 2]]>
+    </screen>
+
+    <para>The build has failed trying to to link to a library containing
+    various functions.  A little knowledge or a quick search on the
+    Internet helps us to figure out these functions are part of
+    <application>ncurses</application>.  The
+    <application>ncurses</application> library for terminal handling is
+    defined as part of the &lsb; specification, but for some unknown reason
+    they have only specified a portion of the interface and thus a number
+    of symbols are missing from the stub libraries provided in the &lsb;
+    development environment.</para>
+
+    <para>Until the situation with with the &lsb;'s ncurses implementation
+    is resolved we will have to work around it.  There are two options
+    available to us: build our own copy of
+    <application>ncurses</application> or use another terminal handling
+    library <application>Mutt</application> supports, named
+    <application>S-Lang</application>.  For this example we'll use
+    <application>S-Lang</application> since it is a library outside of the
+    &lsb;, and it is reportedly better at handling some bad termcap
+    entries.</para>
+
+    <para>To use <application>S-Lang</application> we need to download the
+    source and extract it just like we did with
+    <application>Mutt</application>.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>cd /var/tmp</userinput>
+<prompt>%</prompt> <userinput>ftp ftp://space.mit.edu/pub/davis/slang/v1.4/slang-1.4.5.tar.gz</userinput>
+Connected to SPACE.MIT.EDU.
+220 space FTP server (SunOS 4.1) ready.
+331 Guest login ok, send ident as password.
+230 Guest login ok, access restrictions apply.
+200 Type set to I.
+250 CWD command successful.
+250 CWD command successful.
+250 CWD command successful.
+250 CWD command successful.
+local: slang-1.4.5.tar.gz remote: slang-1.4.5.tar.gz
+500 'EPSV': command not understood.
+227 Entering Passive Mode (18,75,0,10,7,253)
+150 Binary data connection for slang-1.4.5.tar.gz (216.37.46.170,52199) (757822 bytes).
+226 Binary Transfer complete.
+757822 bytes received in 00:08 (88.28 KB/s)
+221 Goodbye.
+<prompt>%</prompt> <userinput>tar xzf slang-1.4.5.tar.gz</userinput>
+<prompt>%</prompt> <userinput>cd slang-1.4.5</userinput>
+    </screen>
+
+    <para>To figure out how to build <application>S-Lang</application> we
+    will look around in the source, and will quickly find
+    <filename>INSTALL.unx</filename>.  Reading that file will reveal that
+    <application>S-Lang</application> builds in a manner very similar to
+    the way <application>Mutt</application> does, except for the addition
+    of an optional <command>make</command>
+    <option>runtests</option> step.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>CC=lsbcc ./configure --prefix=`pwd`/install</userinput>
+creating cache ./config.cache
+checking host system type... i686-pc-linux-gnu
+checking for gcc... lsbcc
+checking whether the C compiler (lsbcc  ) works... yes
+checking whether the C compiler (lsbcc  ) is a cross-compiler... no
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+checking for Terminfo... no
+creating ./config.status
+creating Makefile
+
+Configuration complete.  You may need to edit src/Makefile.
+You are compiling SLANG with the following compiler configuration:
+       CC = lsbcc
+   CFLAGS = -g -O2  -fno-strength-reduce
+  LDFLAGS =  -Wl,-export-dynamic
+
+   ELF_CC = gcc
+ ELF_LINK = gcc -shared -Wl,-soname#
+ELF_CFLAGS= -O2 -fno-strength-reduce -fPIC 
+
+                  prefix: /var/tmp/slang-1.4.5/install
+             exec_prefix: ${prefix}
+    Installation Lib Dir: ${exec_prefix}/lib
+Installation Include Dir: ${prefix}/include
+
+See also src/sl-feat.h for various features.
+Type 'make' to build normal library.
+On ELF systems, type 'make elf' to create ELF shared library.
+    </screen>
+
+    <para>It seems to have configured fine, and so we are ready to build
+    it.  We will just run <command>make</command> without any arguments,
+    because we want the static library, not the shared one produced by the
+    <option>elf</option> target.  If we were to link
+    <application>Mutt</application> to a shared version of
+    <application>S-Lang</application> we would need to include the shared
+    library as part of the <application>Mutt</application> package or in a
+    separate package that <application>Mutt</application> would depend
+    on.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>make</userinput>
+cd src; make all
+make[1]: Entering directory `/var/tmp/slang-1.4.5/src'
+cd /var/tmp/slang-1.4.5/src/objs; lsbcc -c -g -O2  -fno-strength-reduce -Dunix \
+-DSLANG -DMISC_TERMINFO_DIRS='""' /var/tmp/slang-1.4.5/src/sltermin.c
+cd /var/tmp/slang-1.4.5/src/objs; lsbcc -c -g -O2  -fno-strength-reduce -Dunix \
+-DSLANG  /var/tmp/slang-1.4.5/src/sldisply.c
+cd /var/tmp/slang-1.4.5/src/objs; lsbcc -c -g -O2  -fno-strength-reduce -Dunix \
+-DSLANG  /var/tmp/slang-1.4.5/src/slutty.c
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+cd /var/tmp/slang-1.4.5/src/objs; ar cr libslang.a sltermin.o sldisply.o \
+slutty.o slang.o slarray.o slclass.o slcmd.o slerr.o slgetkey.o slkeymap.o
+\
+slmalloc.o slmath.o slmemchr.o slmemcmp.o slmemcpy.o slmemset.o slmisc.o \
+slparse.o slprepr.o slregexp.o slrline.o slsearch.o slsmg.o slstd.o sltoken.o \
+sltypes.o slxstrng.o slcurses.o slscroll.o slsignal.o slkeypad.o slerrno.o \
+slstring.o slstruct.o slcmplex.o slarrfun.o slimport.o slpath.o slarith.o \
+slassoc.o slcompat.o slposdir.o slstdio.o slproc.o sltime.o slstrops.o \
+slbstr.o slpack.o slintall.o slistruc.o slposio.o slnspace.o slarrmis.o \
+slospath.o slscanf.o
+ranlib /var/tmp/slang-1.4.5/src/objs/libslang.a
+
+libslang.a created in /var/tmp/slang-1.4.5/src/objs
+make[1]: Leaving directory `/var/tmp/slang-1.4.5/src'
+    </screen>
+
+    <para>Next we want to run <command>make</command>
+    <option>runtests</option> to check to see if
+    <application>S-Lang</application> built properly.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>make runtests</userinput>
+cd src; make runtests
+make[1]: Entering directory `/var/tmp/slang-1.4.5/src'
+cd test; make CC="lsbcc" CFLAGS="-g -O2  -fno-strength-reduce" \
+TCAPLIB="-ltermcap"
+make[2]: Entering directory `/var/tmp/slang-1.4.5/src/test'
+lsbcc -g -O2  -fno-strength-reduce  sltest.c -o sltest -I.. -L../objs -lslang \
+-ltermcap -lm
+/usr/bin/ld: cannot find -ltermcap
+collect2: ld returned 1 exit status
+make[2]: *** [sltest] Error 1
+make[2]: Leaving directory `/var/tmp/slang-1.4.5/src/test'
+make[1]: *** [runtests] Error 2
+make[1]: Leaving directory `/var/tmp/slang-1.4.5/src'
+make: *** [runtests] Error 2
+    </screen>
+
+    <para>The test has failed miserably.  When trying to compile the
+    <application>S-Lang</application> test program it tried to link to the
+    termcap library.  The termcap library is not a part of &lsb;
+    specifications and is not available in the &lsb; build environment.  
+    The newer alternative to termcap is terminfo, and this is what most 
+    vendors prefer.  If you look back at the output from 
+    <application>S-Lang</application>'s <command>./configure</command> 
+    you will see that it tested for terminfo and could not find support.
+    </para>
+
+    <para>Investigation will reveal that the test for using termcap versus
+    terminfo is inadequate.  To resolve this we will edit the
+    <filename>autoconf/aclocal.m4</filename> file.  Good documentation on
+    how to use and work with <application>Autoconf</application> can be
+    found in the <ulink url="http://sources.redhat.com/autobook/">GNU
+    Autoconf, Automake, and Libtool</ulink> book.  The changes illustrated
+    below make sure termcap is actually usable, before falling back to it.
+    This way <application>S-Lang</application> will not try to link to it
+    when it doesn't exist.</para>
+
+    <programlisting><![CDATA[
+diff -Naur slang-1.4.5.orig/autoconf/aclocal.m4 slang-1.4.5/autoconf/aclocal.m4
+--- slang-1.4.5.orig/autoconf/aclocal.m4        Sun Feb 10 07:39:19 2002
++++ slang-1.4.5/autoconf/aclocal.m4     Fri Feb 15 17:46:27 2002
+@@ -415,7 +415,13 @@
+ done
+ if test "$TERMCAP"; then
+   AC_MSG_RESULT(no)
+-  AC_DEFINE(USE_TERMCAP)
++
++  AC_CHECK_LIB(termcap, tgetent)
++  if test "$ac_cv_lib_termcap_tgetent" = yes; then
++    AC_DEFINE(USE_TERMCAP)
++  else
++    TERMCAP=""
++  fi
+ fi
+ AC_SUBST(TERMCAP)dnl
+ AC_SUBST(MISC_TERMINFO_DIRS)dnl]]>
+    </programlisting>
+
+    <para>After making these changes the <filename>configure</filename>
+    scripts need to be regenerated.  This is accomplished by running
+    <command>autoconf</command>.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>cd autoconf &amp;&amp; autoconf -o ../configure</userinput>
+<prompt>%</prompt> <userinput>cd ../demo &amp;&amp; autoconf -l ../autoconf</userinput>
+<prompt>%</prompt> <userinput>cd ..</userinput>
+    </screen>
+
+    <para>Now with newly generated <command>configure</command> scripts we
+    should create a diff from the original source for our later use when
+    building the &rpm; package.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>make distclean</userinput>
+/bin/rm -f *~ Makefile config.status config.log config.cache files.pck
+cd src; make distclean
+make[1]: Entering directory `/var/tmp/slang-1.4.5/src'
+rm -f *~ "#"*
+rm -f /var/tmp/slang-1.4.5/src/objs/*
+rm -f /var/tmp/slang-1.4.5/src/elfobjs/*
+rm -rf /var/tmp/slang-1.4.5/src/objs /var/tmp/slang-1.4.5/src/elfobjs Makefile \
+sysconf.h config.h
+make[1]: Leaving directory `/var/tmp/slang-1.4.5/src'
+cd demo; make distclean
+make[1]: Entering directory `/var/tmp/slang-1.4.5/demo'
+/bin/rm -f /var/tmp/slang-1.4.5/demo/objs/* *~
+/bin/rm -rf /var/tmp/slang-1.4.5/demo/objs Makefile
+make[1]: Leaving directory `/var/tmp/slang-1.4.5/demo'
+<prompt>%</prompt> <userinput>cd .. &amp;&amp; mkdir $$ &amp;&amp; tar xzf \
+slang-1.4.5.tar.gz -C $$ &amp;&amp; mv $$/slang-1.4.5 slang-1.4.5.orig \
+&amp;&amp; rm -r $$</userinput>
+<prompt>%</prompt> <userinput>LC_ALL=C TZ=UTC0 diff -Naur slang-1.4.5.orig slang-1.4.5 > /var/tmp/slang-ac_terminfo.patch</userinput>
+    </screen>
+
+    <para>With the patch saved, we can go back to the beginning and give it
+    another shot.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>cd slang-1.4.5</userinput>
+<prompt>%</prompt> <userinput>CC=lsbcc ./configure --prefix=`pwd`/install</userinput>
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+<prompt>%</prompt> <userinput>make</userinput>
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+<prompt>%</prompt> <userinput>make runtests</userinput>
+cd src; make runtests
+make[1]: Entering directory `/var/tmp/slang-1.4.5/src'
+cd test; make CC="lsbcc" CFLAGS="-g -O2  -fno-strength-reduce" TCAPLIB=""
+make[2]: Entering directory `/var/tmp/slang-1.4.5/src/test'
+lsbcc -g -O2  -fno-strength-reduce  sltest.c -o sltest -I.. -L../objs-lslang  \
+-lm
+
+Running tests:
+
+Testing syntax ...Ok
+Testing sscanf ...Ok
+Testing looping constructs ...Ok
+Testing Arithmetic ...Ok
+Testing array functions ...Ok
+Testing string functions...Ok
+Testing Binary Strings...Ok
+Testing pack and unpack functions...Ok
+Testing stdio routines...Ok
+Testing Associative Arrays ...Ok
+Testing recursive function modifications ...Ok
+Testing structures ...Ok
+Testing NameSpace routines ...Ok
+Testing ospath ...Ok
+Testing #ifeval ...Ok
+Testing Any_Type ...Ok
+Testing Matrix Multiplications ...Ok
+touch sltest.c
+make[2]: Leaving directory `/var/tmp/slang-1.4.5/src/test'
+make[1]: Leaving directory `/var/tmp/slang-1.4.5/src'
+    </screen>
+
+    <para><application>S-Lang</application> has built properly, and we are
+    now ready to install it.  You may remember the
+    <option>--prefix=`pwd`/install</option> we gave to
+    <command>./configure</command> earlier.  This was done so that
+    <application>S-Lang</application> would be installed in a temporary
+    directory, specifically
+    <filename>/var/tmp/slang-1.4.5/install</filename>, and not on the
+    system its self.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>make install</userinput>
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+    </screen>
+
+    <para>With <application>S-Lang</application> built and working we can
+    go back to compiling <application>Mutt</application>.  The steps will
+    be very similar to the last time we tried.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>cd /var/tmp/mutt-1.3.27</userinput>
+<prompt>%</prompt> <userinput>CC=lsbcc ./configure --with-mailpath=/var/mail --with-slang=/var/tmp/slang-1.4.5/install</userinput>
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+<prompt>%</prompt> <userinput>make</userinput>
+<![CDATA[./gen_defs ./OPS ./OPS.PGP > keymap_defs.h
+./patchlist.sh < ./PATCHES > patchlist.c
+cd . \
+  && CONFIG_FILES=Makefile CONFIG_HEADERS= /bin/sh ./config.status
+creating Makefile]]>
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+lsbcc  -Wall -pedantic -g -O2 -L/var/tmp/slang-1.4.5/install/lib -o mutt \
+patchlist.o addrbook.o alias.o attach.o base64.o browser.o buffy.o color.o \
+commands.o complete.o compose.o copy.o curs_lib.o curs_main.o date.o edit.o \
+enter.o flags.o init.o filter.o from.o getdomain.o handler.o hash.o hdrline.o \
+headers.o help.o hook.o keymap.o main.o mbox.o menu.o mh.o mx.o pager.o \
+parse.o pattern.o postpone.o query.o recvattach.o recvcmd.o rfc822.o rfc1524.o \
+rfc2047.o rfc2231.o score.o send.o sendlib.o signal.o sort.o status.o system.o \
+thread.o charset.o history.o lib.o muttlib.o editmsg.o utf8.o mbyte.o \
+wcwidth.o url.o ascii.o pgp.o pgpinvoke.o pgpkey.o pgplib.o gnupgparse.o \
+pgpmicalg.o pgppacket.o resize.o dotlock.o   -lslang -lm      
+signal.o: In function `exit_handler':
+/var/tmp/mutt-1.3.27/signal.c:39: undefined reference to `sys_siglist'
+collect2: ld returned 1 exit status
+make[2]: *** [mutt] Error 1
+make[2]: Leaving directory `/var/tmp/mutt-1.3.27'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/var/tmp/mutt-1.3.27'
+make: *** [all-recursive-am] Error 2
+    </screen>
+
+    <para>The build has failed trying to use the
+    <function>sys_siglist</function> function which is not part of the
+    &lsb; specification.  The problem occurs due to the fact we are using
+    our regular system headers in which <function>sys_siglist</function> is
+    defined.  If the &lsb; stub headers were functional they would solve
+    the problem for us.  To hack around this we can simply tell the build
+    system to not to use <function>sys_siglist</function> and try building
+    again.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>echo '#undef SYS_SIGLIST_DECLARED' >> config.h</userinput>
+<prompt>%</prompt> <userinput>make clean</userinput>
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+<prompt>%</prompt> <userinput>make</userinput>
+<![CDATA[./gen_defs ./OPS ./OPS.PGP > keymap_defs.h
+./patchlist.sh < ./PATCHES > patchlist.c
+cd . \
+  && CONFIG_FILES=Makefile CONFIG_HEADERS= /bin/sh ./config.status
+creating Makefile
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+lsbcc -DPKGDATADIR=\"/usr/local/share/mutt\" -DSYSCONFDIR=\"/usr/local/etc\" \
+-DBINDIR=\"/usr/local/bin\" -DMUTTLOCALEDIR=\"/usr/local/share/locale\" \
+-DHAVE_CONFIG_H=1 -I. -I.  -Iintl  -I/var/tmp/slang-1.4.5/install/include \
+-I./intl -I/usr/local/include  -Wall -pedantic -g -O2 -c sha1.c
+lsbcc  -Wall -pedantic -g -O2 -L/var/tmp/slang-1.4.5/install/lib -o pgpring \
+pgppubring.o pgplib.o lib.o extlib.o sha1.o pgppacket.o ascii.o   
+lsbcc -Wall -pedantic -g -O2 -I/var/tmp/slang-1.4.5/install/include -I./intl \
+-I/usr/local/include -L/var/tmp/slang-1.4.5/install/lib  pgpewrap.c -o pgpewrap
+make[2]: Leaving directory `/var/tmp/mutt-1.3.27'
+make[1]: Leaving directory `/var/tmp/mutt-1.3.27']]>
+    </screen>
+
+    <para>We have finally successfully built
+    <application>Mutt</application>.  The last step before proceeding to
+    package building will be to make sure we have indeed built an &lsb;
+    compliant binary.  We will do this using the
+    <command>lsbappchk</command> utility that was previously described in
+    this document.</para>
+
+    <screen>
+<prompt>%</prompt> <userinput>lsbappchk mutt</userinput>
+lsbappchk 1.1
+    </screen>
+
+    <para>The simple output means that we are compliant with version 1.1 of
+    the &lsb; specification.  If the binary had not been &lsb;-compliant
+    <command>lsbappchk</command> would have listed all the violations.
+    With the knowledge of how to build an &lsb;-compliant
+    <application>Mutt</application> we are ready to begin the processes of
+    packaging <application>Mutt</application>.</para>
+
+    <para>The rest of this example will document the process of creating an
+    &lsb; &rpm; package for <application>Mutt</application>.  A number of
+    the details of creating and building &rpm; packages will be absent, and
+    thus for further documentation the best resource is <ulink
+    url="http://www.rpmdp.org/rpmbook/">Maximum RPM</ulink>.</para>
+
+    <para>At the core of &rpm; packages is the &rpm; spec file.  The spec
+    file contains information about the package and how to build it.  An
+    &rpm; spec file contains several different key sections:</para>
+
+    <para><itemizedlist mark="opencircle">
+      <listitem>
+        <para>The preamble contains various bits of information about the
+        package.  Each different piece of data is stored on each line, in
+        the form `keyword: value'.  Some examples of data that can be found
+        in the preamble is a summary of what the package does, the name of
+        the package, its copyright, who created the package, and so on.  A
+        special section of the preamble spans multiple lines and is
+        indicated by the `%description' marker.  As it suggests, that is
+        where you can put an extended description of the software.</para>
+      </listitem>
+
+      <listitem>
+        <para>The %prep section of the spec file tells the computer how to
+        prepare for building the package.  Commands in the %prep section are
+        run in a shell, so you can use all the standard shell syntax and
+        commands.</para>
+      </listitem>
+
+      <listitem>
+        <para>The %build section is what actually compiles the software.
+        This is where one runs <command>./configure</command>,
+        <command>make</command>, and friends.</para>
+      </listitem>
+
+      <listitem>
+        <para>The %install section of the &rpm; spec file installs the
+        files built in the section section onto your system.  Typically you
+        will want to install into a DESTDIR so that you don't clutter your
+        actual filesystem.</para>
+      </listitem>
+
+      <listitem>
+        <para>The %clean section is pretty self explanatory.  It is where
+        all files built during the run of the spec file should be cleaned
+        up using shell syntax and commands.</para>
+      </listitem>
+
+      <listitem>
+        <para>The last key section of the spec file is the %files section.
+        This is where all the files that will be installed by the package
+        should be listed.  Unfortunately, there are no standard methods to
+        generate this automatically so it takes a little thought and
+        grudge-work to get this list compiled.</para>
+      </listitem>
+    </itemizedlist></para>
+
+    <para>An example spec file written for our purposes follows.  Examine
+    it closely to get a solid understanding of how it works.  Any parts
+    which you do not understand are probably explained in the <ulink
+    url="http://www.rpmdp.org/rpmbook/">Maximum RPM</ulink>.</para>
+
+    <programlisting>
+<![CDATA[# RPM spec file for Mutt
+
+Summary: A powerful text-based mail user agent
+Name: mutt
+Version: 1.3.27i
+Release: 1
+Copyright: GPL
+Group: Application/Internet
+Source: ftp://ftp.mutt.org/pub/mutt/mutt-1.3.27i.tar.gz
+Source1: ftp://space.mit.edu/pub/davis/slang/v1.4/slang-1.4.5.tar.gz
+Patch10: slang-ac_terminfo.patch
+URL: http://www.mutt.org/
+Vendor: Progeny Linux Systems, Inc.
+Packager: Percival P. Progeny <percival@progeny.com>
+BuildRoot: /var/tmp/mutt-root
+
+%description
+Mutt is a powerful text-based mail user agent supporting many features,
+some of which are:
+  - color support
+  - message threading
+  - MIME support (including RFC2047 support for encoded headers)
+  - PGP/MIME (RFC2015)
+  - various features to support mailing lists, including list-reply
+  - active development community
+  - POP3 support
+  - IMAP support
+  - full control of message headers when composing
+  - support for multiple mailbox formats (mbox, MMDF, MH, Maildir)
+  - highly customizable, including keybindings and macros
+  - change configuration automatically based on recipients, current folder,
+    etc.
+  - searches using regular expressions, including an internal pattern
+    matching language
+  - Delivery Status Notification (DSN) support
+  - postpone message composition indefinitely for later recall
+  - easily include attachments when composing, even from the command line
+  - ability to specify alternate addresses for recognition of mail forwarded
+    from other accounts, with ability to set the From: headers on
+    replies/etc. accordingly
+  - multiple message tagging
+  - reply to or forward multiple messages at once
+  - .mailrc style configuration files
+  - easy to install (uses GNU autoconf)
+  - translation into at least 20 languages
+  - small and efficient
+  - It's free!  (no cost and GPL'ed)
+
+%prep
+rm -rf $RPM_BUILD_DIR/slang-1.4.5
+rm -rf $RPM_BUILD_DIR/mutt-1.3.27
+tar xzvf $RPM_SOURCE_DIR/slang-1.4.5.tar.gz
+cd $RPM_BUILD_DIR/slang-1.4.5 && patch -p1 < \
+$RPM_SOURCE_DIR/slang-ac_terminfo.patch && cd -
+tar xzvf $RPM_SOURCE_DIR/mutt-1.3.27i.tar.gz
+
+%build
+cd $RPM_BUILD_DIR/slang-1.4.5
+CC=lsbcc ./configure --prefix=`pwd`/install
+make
+make install
+
+cd $RPM_BUILD_DIR/mutt-1.3.27
+CC=lsbcc ./configure --with-mailpath=/var/mail \
+--with-slang=$RPM_BUILD_DIR/slang-1.4.5/install --prefix=/opt/mutt-1.3.27 \
+--with-docdir=/opt/mutt-1.3.27/doc
+echo '#undef SYS_SIGLIST_DECLARED' >> config.h
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+cd $RPM_BUILD_DIR/mutt-1.3.27
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+/opt/mutt-1.3.27/bin/flea
+/opt/mutt-1.3.27/bin/mutt
+/opt/mutt-1.3.27/bin/muttbug
+/opt/mutt-1.3.27/bin/pgpewrap
+/opt/mutt-1.3.27/bin/pgpring
+/opt/mutt-1.3.27/doc/COPYRIGHT
+/opt/mutt-1.3.27/doc/ChangeLog
+/opt/mutt-1.3.27/doc/GPL
+/opt/mutt-1.3.27/doc/INSTALL
+/opt/mutt-1.3.27/doc/NEWS
+/opt/mutt-1.3.27/doc/PGP-Notes.txt
+/opt/mutt-1.3.27/doc/README
+/opt/mutt-1.3.27/doc/README.SECURITY
+/opt/mutt-1.3.27/doc/README.SSL
+/opt/mutt-1.3.27/doc/TODO
+/opt/mutt-1.3.27/doc/applying-patches.txt
+/opt/mutt-1.3.27/doc/devel-notes.txt
+/opt/mutt-1.3.27/doc/html/manual-1.html
+/opt/mutt-1.3.27/doc/html/manual-2.html
+/opt/mutt-1.3.27/doc/html/manual-3.html
+/opt/mutt-1.3.27/doc/html/manual-4.html
+/opt/mutt-1.3.27/doc/html/manual-5.html
+/opt/mutt-1.3.27/doc/html/manual-6.html
+/opt/mutt-1.3.27/doc/html/manual-7.html
+/opt/mutt-1.3.27/doc/html/manual.html
+/opt/mutt-1.3.27/doc/manual.txt
+/opt/mutt-1.3.27/doc/patch-notes.txt
+/opt/mutt-1.3.27/doc/samples/Mush.rc
+/opt/mutt-1.3.27/doc/samples/Pine.rc
+/opt/mutt-1.3.27/doc/samples/Tin.rc
+/opt/mutt-1.3.27/doc/samples/gpg.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.aix-3.2.5.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.aix-4.1.5.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.aix-4.2.0.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.aix-4.3.2.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.freebsd-3.3.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.glibc-2.1.3.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.glibc-2.1.90.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.hpux-10.01.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.hpux-10.20.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.hpux-11.00.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.irix-6.5.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.osf1-4.0a.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.osf1-4.0d.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.solaris-2.4.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.solaris-2.5.1.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.solaris-2.6-cjk.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.solaris-2.6.rc
+/opt/mutt-1.3.27/doc/samples/iconv/iconv.solaris-2.7.rc
+/opt/mutt-1.3.27/doc/samples/pgp2.rc
+/opt/mutt-1.3.27/doc/samples/pgp5.rc
+/opt/mutt-1.3.27/doc/samples/pgp6.rc
+/opt/mutt-1.3.27/doc/samples/sample.mailcap
+/opt/mutt-1.3.27/doc/samples/sample.muttrc
+/opt/mutt-1.3.27/doc/samples/sample.muttrc-tlr
+/opt/mutt-1.3.27/etc/Muttrc
+/opt/mutt-1.3.27/etc/mime.types
+/opt/mutt-1.3.27/man/man1/flea.1
+/opt/mutt-1.3.27/man/man1/mutt.1
+/opt/mutt-1.3.27/man/man1/mutt_dotlock.1
+/opt/mutt-1.3.27/man/man1/muttbug.1
+/opt/mutt-1.3.27/man/man5/mbox.5
+/opt/mutt-1.3.27/man/man5/muttrc.5
+/opt/mutt-1.3.27/share/locale/ca/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/cs/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/da/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/de/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/el/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/eo/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/es/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/et/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/fr/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/gl/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/hu/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/id/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/it/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/ja/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/ko/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/lt/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/nl/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/pl/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/pt_BR/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/ru/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/sk/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/sv/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/tr/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/uk/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/zh_CN/LC_MESSAGES/mutt.mo
+/opt/mutt-1.3.27/share/locale/zh_TW/LC_MESSAGES/mutt.mo]]>
+    </programlisting>
+
+    <para>Building &rpm; packages requires root privileges, and thus it
+    will be easiest if you <command>su</command> to root for the rest of
+    the example.</para>
+
+    <para>Save the spec file as <filename>mutt.spec</filename> in
+    <filename>/opt/lsb-rpm-4.0.3/src/lsb/SPECS</filename>.  After that,
+    copy your other source files to
+    <filename>/opt/lsb-rpm-4.0.3/src/lsb/SOURCES</filename>.</para>
+
+    <screen>
+<prompt>#</prompt> <userinput>cd /opt/lsb-rpm-4.0.3/src/lsb/SOURCES</userinput>
+<prompt>#</prompt> <userinput>cp /var/tmp/mutt-1.3.27i.tar.gz /var/tmp/slang-1.4.5.tar.gz \
+/var/tmp/slang-ac_terminfo.patch .</userinput>
+    </screen>
+
+    <para>With all the files in the appropriate places now we are
+    ready to build the &rpm;.</para>
+
+    <screen>
+<prompt>#</prompt> <userinput>cd ../SPECS</userinput>
+<prompt>#</prompt> <userinput>rpm -ba mutt.spec</userinput>
+Executing(%prep): /bin/sh -e
+/opt/lsb-rpm-4.0.3/var/tmp/rpm-tmp.11297
++ umask 022
++ cd /opt/lsb-rpm-4.0.3/src/lsb/BUILD
++ rm -rf /opt/lsb-rpm-4.0.3/src/lsb/BUILD/slang-1.4.5
++ rm -rf /opt/lsb-rpm-4.0.3/src/lsb/BUILD/mutt-1.3.27
+<lineannotation>[ irrelevant text trimmed ]</lineannotation>
+Wrote: /opt/lsb-rpm-4.0.3/src/lsb/SRPMS/mutt-1.3.27i-1.src.rpm
+Wrote:
+/opt/lsb-rpm-4.0.3/src/lsb/RPMS/i386/mutt-1.3.27i-1.i386.rpm
+Executing(%clean): /bin/sh -e
+/opt/lsb-rpm-4.0.3/var/tmp/rpm-tmp.39642
++ umask 022
++ cd /opt/lsb-rpm-4.0.3/src/lsb/BUILD
++ rm -rf /var/tmp/mutt-root
++ exit 0
+    </screen>
+
+    <para>Congratulations!  You have built binary and source &rpm;
+    packages.  Hopefully this example has been helpful in showing some of
+    the various steps you might have to take as your prepare your own
+    application for &lsb;-compliance.  Good luck.</para>
+
+  </section>
+
+
+</section>
+
+
+<!-- vim: set ai et tw=75 sw=2 sts=2: -->
+<!--  Local variables: -->
+<!--  eval: (sgml-load-dtd "../doctools/docbook.ced") -->
+<!--  End: -->
