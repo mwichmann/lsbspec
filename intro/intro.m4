@@ -4,7 +4,7 @@
 <CHAPTER id=Introduction>
 <TITLE>Introduction</TITLE>
 <PARA>
-This is version 0.1+ of the Linux Standard Base Specification. This version
+This is version &specversion of the Linux Standard Base Specification. This version
 is a mostly complete framework of the specification, but many details are
 still not filled in. 
 </PARA>
