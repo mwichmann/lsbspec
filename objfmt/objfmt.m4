@@ -95,8 +95,14 @@ and libgcc.
 <NOTE>
 <PARA>
 We do need to specify some mechanisms, such as global constructors and
-destructors (.ctor and .dtor I think).  But that is much easier than a
+destructors.  But that is much easier than a
 full C++ ABI.
+</PARA>
+<PARA>
+Constructors and destructors are .ctor and .dtor, FIXME how do these
+differ from .init and .fini and who is going to write the spec for
+them?).  FIXME: what about .eh_frame?  Do we need to specify them and
+if so, likewise.
 </PARA>
 </NOTE>
 <NOTE>
