@@ -9,6 +9,7 @@
 <!entity archspec "PPC32">
 <!entity canonicalarch "PPC32">
 <!entity specarchitecture "PPC32">
+<!entity spectitle "Linux Standard Base Core Module Specification for PPC32">
 
 %entities;
 
@@ -16,7 +17,7 @@
 
 <SET>
 <SETINFO>
-<TITLE>Linux Standard Base Core Module Specification for PPC32 &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
@@ -29,7 +30,7 @@
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
-&lsb-ia32-intro;
+&lsb-ppc32-intro;
 </BOOK>
 <BOOK>
 <BOOKINFO>

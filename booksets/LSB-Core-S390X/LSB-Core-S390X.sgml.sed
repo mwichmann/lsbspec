@@ -9,6 +9,7 @@
 <!entity archspec "S390X">
 <!entity canonicalarch "S390X">
 <!entity specarchitecture "S390X">
+<!entity spectitle "Linux Standard Base Core Module Specification for S390X">
 
 %entities;
 
@@ -16,7 +17,7 @@
 
 <SET>
 <SETINFO>
-<TITLE>Linux Standard Base Core Module Specification for S390X &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
@@ -29,7 +30,7 @@
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
-&lsb-ia32-intro;
+&lsb-s390x-intro;
 </BOOK>
 <BOOK>
 <BOOKINFO>

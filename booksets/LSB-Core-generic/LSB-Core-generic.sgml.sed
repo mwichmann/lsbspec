@@ -7,6 +7,7 @@
 <!entity desktop-contents SYSTEM "../../book/Desktop/contents">
 
 <!entity specversion "LSBVERSION">
+<!entity spectitle "Linux Standard Base Core Specification">
 
 %entities;
 
@@ -14,7 +15,7 @@
 
 <SET>
 <SETINFO>
-<TITLE>Linux Standard Base Core Specification &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>

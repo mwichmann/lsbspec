@@ -9,6 +9,7 @@
 <!entity archspec "IA32">
 <!entity canonicalarch "IA32">
 <!entity specarchitecture "IA32">
+<!entity spectitle "Linux Standard Base Core Module Specification for IA32">
 
 %entities;
 
@@ -16,7 +17,7 @@
 
 <SET>
 <SETINFO>
-<TITLE>Linux Standard Base Core Module Specification for IA32 &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>

@@ -9,6 +9,7 @@
 <!entity archspec "IA64">
 <!entity canonicalarch "IA64">
 <!entity specarchitecture "Itanium&trade;">
+<!entity spectitle "Linux Standard Base Core Module Specification for IA64">
 
 %entities;
 
@@ -16,7 +17,7 @@
 
 <SET>
 <SETINFO>
-<TITLE>Linux Standard Base Core Module Specification for IA64 &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>

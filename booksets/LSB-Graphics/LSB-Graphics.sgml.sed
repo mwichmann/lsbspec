@@ -5,6 +5,7 @@
 <!entity graphics-contents SYSTEM "../../book/Graphics/contents">
 
 <!entity specversion "LSBVERSION">
+<!entity spectitle "Linux Standard Base Graphics Module Specification">
 
 %entities;
 
@@ -12,7 +13,7 @@
 
 <SET>
 <SETINFO>
-<TITLE>Linux Standard Base Graphics Module Specification &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>

@@ -7,6 +7,7 @@
 <!entity desktop-contents SYSTEM "../../book/Desktop/contents">
 
 <!entity specversion "LSBVERSION">
+<!entity spectitle "Linux Standard Base Embedded Specification">
 
 %entities;
 
@@ -14,7 +15,7 @@
 
 <SET>
 <SETINFO>
-<TITLE>Linux Standard Base Embedded Specification &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2000</YEAR>
 <YEAR>2001</YEAR>
