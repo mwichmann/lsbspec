@@ -35,6 +35,12 @@ autobuild:
 	find . -name '*.m4' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
 
+relbuild:
+	find . -name '*.m4' | xargs touch
+	make gensrc 
+	make source 
+	make all
+
 clean::
 	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
 
