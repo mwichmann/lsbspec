@@ -189,12 +189,12 @@ are needed.
 <TITLE>Comment conventions for init scripts</TITLE>
 
 <PARA>
-Packages that need to execute a script at bootup and/or shutdown will
-provide an init.d file.  This file is installed by the install_initd
-program described below, which copies it into a standard directory and
-makes whatever other adjustments (creation of symlinks, creation of
-entries in a database, etc.) are necessary so that the script can be run
-at boot-time.
+LSB applications which need to execute script(s) at bootup and/or
+shutdown may provide one or more init.d files.  These files are
+installed by the install_initd program described below, which copies
+it into a standard directory and makes whatever other adjustments
+(creation of symlinks, creation of entries in a database, etc.) are
+necessary so that the script can be run at boot-time.
 <FOOTNOTE><PARA>
 This specification does not require, but is designed to allow, the
 development of a system which runs boot scripts in parallel.  Hence,
@@ -203,12 +203,15 @@ necessary.
 </PARA></FOOTNOTE>
 </PARA>
 
-<PARA>
-In the init.d file, information about the shell script is delimited by
-the strings "### BEGIN INIT INFO" and "### END INIT INFO".  Inside
-this block declarations shall take the form of "# {keyword}: [arg1]
-[arg2] ..."  The following keywords, with their arguments are defined
-in this specification:
+<PARA> 
+In the init.d file, information about the shell script shall be
+delimited by the lines "### BEGIN INIT INFO" and "### END INIT INFO".
+These delimiter lines may containg trailing whitespace, which shall be
+ignored.  Inside this block there shall be lines of the form "#
+{keyword}: [arg1] [arg2] ...".  (All lines inside this block start
+with a hash ('#') character in the first column, so that shell treats
+them as comments.)  The following keywords, with their arguments are
+defined in this specification:
 </PARA>
 
 <SCREEN>
@@ -316,7 +319,7 @@ defines the following system facility names:
 
 <SIMPLELIST type=horiz columns=2>
 <MEMBER>$local_fs</MEMBER>	
-<MEMBER>all remote filesystems are mounted</MEMBER>
+<MEMBER>all local filesystems are mounted</MEMBER>
 
 <MEMBER>$network</MEMBER>  	
 <MEMBER>low level networking (ethernet card; may
@@ -489,19 +492,19 @@ defined by POSIX.2.
 
 <MEMBER>pidofproc basename</MEMBER>
 
-<MEMBER>	  This finds the pid(s) for a particular daemon.  If an
-		  entry is found in /var/run/basename.pid, then that
-		  value is returned.  If not, first the "pidof" program
-		  is used to try to find the daemon, and if that fails,
-		  pidofproc will search the ps listing, looking for a
-		  process name field of:
-
-			  basename
-			  (basename)
-			  [basename]
-			  basename: 
-
-		    [ Same as sysvinit package ]
+<MEMBER> This function returns one or more pid(s) for a particular
+		  daemon.  If an entry is found in
+		  /var/run/basename.pid, then that value is returned.
+		  Compliant implementations of the LSB may attempt
+		  other mechanisms for determining the pid(s),
+		  although this is not required.  (And not
+		  recommended, since a user can trick startup scripts
+		  by creating processes that appear to be system
+		  programs in the process list thus creating a
+		  potential security exposure.)  Hence, LSB complaint
+		  applications who wish to use the pidofproc function
+		  in their init scripts must store the pid in
+		  /var/run/basename.pid.
 </MEMBER>
 
 <MEMBER>log_success_msg "message"</MEMBER>

@@ -52,7 +52,6 @@ with the respective license of those documents.
 &usersgroups.sgm;
 &fhs.sgm;
 &sysinit.sgm;
-&sgmlspec.sgm;
 &appA.sgm;
 &appB.sgm;
 </BOOK>
