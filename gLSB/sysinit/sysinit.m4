@@ -6,13 +6,13 @@
 
 include(cron.sgml)
 
-include(runlevels.sgml)
-
 include(initactions.sgml)
 
 include(initscripts.sgml)
 
 include(installinit.sgml)
+
+include(runlevels.sgml)
 
 include(facnames.sgml)
 
