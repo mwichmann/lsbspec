@@ -124,6 +124,10 @@ provide or depend on versioned symbols. Symbol Versioning is implemented by 3
 section types: SHT_GNU_VERSYM, SHT_GNU_VERDEF, and SHT_GNU_VERNEED.
 </PARA>
 <PARA>
+The term "elfxx" means "elf32", "elf64" or another value based on the
+architecture.
+</PARA>
+<PARA>
 Versions are described by strings. The structures that are used for symbol
 versions also contain a member that holds the ELF hashing values of the
 strings. This allows for more efficient processing.
