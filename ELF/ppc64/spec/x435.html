@@ -1,0 +1,448 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Process Initialization</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.5"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Low Level System Information"
+HREF="c124.html"><LINK
+REL="PREVIOUS"
+TITLE="Traceback Tables"
+HREF="x418.html"><LINK
+REL="NEXT"
+TITLE="Coding Examples"
+HREF="x544.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>64-bit PowerPC ELF Application Binary Interface Supplement 1.5</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x418.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Low Level System Information</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x544.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PROC-INIT"
+>3.4. Process Initialization</A
+></H1
+><P
+>This section describes the machine state that exec creates for "infant" processes, including argument passing, 
+		register usage, and stack frame layout. Programming language systems use this initial program state to establish a 
+		standard environment for their application programs.  For example, a C program begins executing at a function named 
+		main, conventionally declared as follows:
+		</P
+><PRE
+CLASS="PROGRAMLISTING"
+>extern int main (int argc, char *argv[], char *envp[]);</PRE
+><P
+>Briefly, <VAR
+CLASS="PARAMETER"
+>argc</VAR
+> is a non-negative argument count; <VAR
+CLASS="PARAMETER"
+>argv</VAR
+> is an 			array of argument strings, with argv[argc] == 0; and envp is an array of environment strings, also terminated by a NULL 
+		 pointer.
+		</P
+><P
+>Although this section does not describe C program initialization, it gives the information necessary to implement 
+		the call to main or to the entry point for a program in any other language.
+		</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PROC-REG"
+>3.4.1. Registers</A
+></H2
+><P
+>When a process is first entered (from an exec(BA_OS) system call), the contents of registers other 
+			than those listed below are unspecified. Consequently, a program that requires registers to have specific 
+			values must set them explicitly during process initialization.  It should not rely on the operating system to set 
+			all registers to 0.  Following are the registers whose contents are specified:
+			</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>r1</DT
+><DD
+><P
+>The initial stack pointer, aligned to a quadword boundary and 
+						pointing to a word containing a NULL pointer.</P
+></DD
+><DT
+>r2</DT
+><DD
+><P
+>The initial TOC pointer register value, obtained via the 
+						function descriptor pointed at by the e_entry field in the ELF header.  For more 
+						 information on function decscriptors, see <A
+HREF="x267.html#FUNC-DES"
+>Section 3.2.5</A
+>.  For 
+						more information on the ELF Header, see <A
+HREF="c751.html#ELF-HEAD"
+>Section 4.1</A
+>.
+						</P
+></DD
+><DT
+>r3</DT
+><DD
+><P
+>Contains argc, the number of arguments.</P
+></DD
+><DT
+>r4</DT
+><DD
+><P
+>Contains argv, a pointer to the array of argument pointers in the stack.  
+					The array is immediately followed by a NULL pointer.  If there are no arguments, r4 
+					points to a NULL pointer.</P
+></DD
+><DT
+>r5</DT
+><DD
+><P
+>Contains envp, a pointer to the array of environment pointers 
+						in the stack.  The array is immediately followed by a NULL pointer.  If no 
+						environment exists, r5 points to a NULL pointer .</P
+></DD
+><DT
+>r6</DT
+><DD
+><P
+>Contains a pointer to the auxiliary vector.  The auxiliary 
+						vector shall have at least one member, a terminating entry with an a_type of 
+						AT_NULL (see below).</P
+></DD
+><DT
+>r7</DT
+><DD
+><P
+>Contains a termination function pointer.  If r7 contains a 
+						nonzero value, the value represents a function pointer that the application 
+						should register with <CODE
+CLASS="FUNCTION"
+>atexit(BA_OS)</CODE
+>.  If r7 contains zero, 
+						no action is required.
+						</P
+></DD
+><DT
+>fpscr</DT
+><DD
+><P
+>Contains 0, specifying "round to nearest" mode, IEEE Mode, 
+						and the disabling of floating-point exceptions.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PROC-STACK"
+>3.4.2. Process Stack</A
+></H2
+><P
+>Every process has a stack, but the system defines no fixed stack address.  Furthermore, a program's 
+			stack address can change from one system to another--even from one process invocation to another.  Thus 
+			the process initialization code must use the stack address in general purpose register r1.  Data in the stack 
+			segment at addresses below the stack pointer contain undefined values.
+			</P
+><P
+>Whereas the argument and environment vectors transmit information from one application program to 
+			another, the auxiliary vector conveys information from the operating system to the program.  This vector is 
+			an array of structures, defined as follows:
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct
+{
+  int     a_type;
+  union
+    {
+      long  a_val;
+      void  *a_ptr;
+      void  (*a_fcn)();
+    } a_un;
+} auxv_t;</PRE
+><PRE
+CLASS="SCREEN"
+>Name                Value       a_un field
+
+AT_NULL             0           ignored
+AT_IGNORE           1           ignored
+AT_EXECFD           2           a_val
+AT_PHDR             3           a_ptr
+AT_PHENT            4           a_val
+AT_PHNUM            5           a_val
+AT_PAGESZ           6           a_val
+AT_BASE             7           a_ptr
+AT_FLAGS            8           a_val
+AT_ENTRY            9           a_ptr
+AT_DCACHEBSIZE      10          a_val
+AT_ICACHEBSIZE      11          a_val
+AT_UCACHEBSIZE      12          a_val</PRE
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>AT_NULL</DT
+><DD
+><P
+>The auxiliary vector has no fixed length; instead an entry of
+this type denotes the end of the vector.  The corresponding value of
+a_un is undefined.</P
+></DD
+><DT
+>AT_IGNORE</DT
+><DD
+><P
+>This type indicates the entry has no meaning. The
+corresponding value of a_un is undefined.</P
+></DD
+><DT
+>AT_EXECFD</DT
+><DD
+><P
+>As Chapter 5 in the System V ABI describes, exec may pass
+control to an interpreter program.  When this happens, the system
+places either an entry of type AT_EXECFD or one of type AT_PHDR in the
+auxiliary vector.  The entry for type AT_EXECFD uses the a_val member
+to contain a file descriptor open to read the application program's
+object file.</P
+></DD
+><DT
+>AT_PHDR</DT
+><DD
+><P
+>Under some conditions, the system creates the memory image of
+the application program before passing control to an interpreter
+program.  When this happens, the a_ptr member of the AT_PHDR entry
+tells the interpreter where to find the program header table in the
+memory image.  If the AT_PHDR entry is present, entries of types
+AT_PHENT, AT_PHNUM, and AT_ENTRY must also be present.  See the
+section Program Header in Chapter 5 of the System V ABI and <A
+HREF="c882.html"
+>Chapter 5</A
+> of this processor supplement for
+more information about the program header table.</P
+></DD
+><DT
+>AT_PHENT</DT
+><DD
+><P
+>The a_val member of this entry holds the size, in bytes, of
+one entry in the program header table to which the AT_PHDR entry
+points.</P
+></DD
+><DT
+>AT_PHNUM</DT
+><DD
+><P
+>The a_val member of this entry holds the number of entries
+in the program header table to which the AT_PHDR entry points.</P
+></DD
+><DT
+>AT_PAGESZ</DT
+><DD
+><P
+>If present, this entry's a_val member gives the system page
+size in bytes.  The same information is also available through the
+sysconf system call.</P
+></DD
+><DT
+>AT_BASE</DT
+><DD
+><P
+>The a_ptr member of this entry holds the base address at
+which the interpreter program was loaded into memory.  See the section
+Program Header in Chapter 5 of the System V ABI for more information
+about the base address.</P
+></DD
+><DT
+>AT_FLAGS</DT
+><DD
+><P
+>If present, the a_val member of this entry holds 1-bit
+flags.  Bits with undefined semantics are set to zero.</P
+></DD
+><DT
+>AT_ENTRY</DT
+><DD
+><P
+>The a_ptr member of this entry holds the entry point of the
+application program to which the interpreter program should transfer
+control.</P
+></DD
+><DT
+>AT_DCACHEBSIZE</DT
+><DD
+><P
+>The a_val member of this entry gives the data cache
+block size for processors on the system on which this program is
+running.  If the processors have unified caches, AT_DCACHEBSIZE is the
+same as AT_UCACHEBSIZE.</P
+></DD
+><DT
+>AT_ICACHEBSIZE</DT
+><DD
+><P
+>The a_val member of this entry gives the instruction
+cache block size for processors on the system on which this program is
+running.  If the processors have unified caches, AT_DCACHEBSIZE is the
+same as AT_UCACHEBSIZE.</P
+></DD
+><DT
+>AT_UCACHEBSIZE</DT
+><DD
+><P
+>The a_val member of this entry is zero if the
+processors on the system on which this program is running do not have
+a unified instruction and data cache.  Otherwise, it gives the cache
+block size.</P
+></DD
+></DL
+></DIV
+><P
+>Other auxiliary vector types are reserved.  No flags are currently
+defined for AT_FLAGS on the 64-bit PowerPC Architecture.
+			</P
+><P
+>When a process receives control, its stack holds the arguments,
+environment, and auxiliary vector from exec.  Argument strings,
+environment strings, and the auxiliary information appear in no
+specific order within the information block; the system makes no
+guarantees about their relative arrangement.  The system may also
+leave an unspecified amount of memory between the null auxiliary
+vector entry and the beginning of the information block.  The back
+chain word of the first stack frame contains a null pointer (0).
+			</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x418.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x544.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Traceback Tables</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c124.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Coding Examples</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,793 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Function Calling Sequence</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.6"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Low Level System Information"
+HREF="c113.html"><LINK
+REL="PREVIOUS"
+TITLE="Low Level System Information"
+HREF="c113.html"><LINK
+REL="NEXT"
+TITLE="Traceback Tables"
+HREF="x409.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>64-bit PowerPC ELF Application Binary Interface Supplement 1.6</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c113.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Low Level System Information</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x409.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="FUNC-CALL"
+>3.2. Function Calling Sequence</A
+></H1
+><P
+>This section discusses the standard function calling sequence, including stack frame layout, register usage, 
+		and parameter passing.</P
+><P
+>C programs follow the conventions given here.  For specific information on the implementation of C, see 
+		<A
+HREF="x535.html"
+>Section 3.5</A
+>.</P
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="/usr/share/sgml/docbook/stylesheet/dsssl/modular/images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Note</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The standard calling sequence requirements apply only to global functions.  Local functions that are
+			 not reachable from other compilation units may use different conventions as long as they provide 
+			traceback tables as described in <A
+HREF="x409.html"
+>Section 3.3</A
+>.  Nonetheless, it is recommended that all 
+			functions use the standard calling sequences when possible.
+			</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="REG"
+>3.2.1. Registers</A
+></H2
+><P
+>The 64-bit PowerPC Architecture provides 32 general purpose registers, each 64 bits wide. In 
+			addition, the architecture provides 32 floating-point registers, each 64 bits wide, and several special 
+			purpose registers.  All of the integer, special purpose, and floating-point registers are global to all functions 
+			in a running program.  The following table shows how the registers are used.
+			</P
+><PRE
+CLASS="SCREEN"
+>r0        Volatile register used in function prologs
+r1        Stack frame pointer
+r2        TOC pointer
+r3        Volatile parameter and return value register
+r4-r10    Volatile registers used for function parameters
+r11       Volatile register used in calls by pointer and as an
+          environment pointer for languages which require one
+r12       Volatile register used for exception handling and glink code
+r13       Reserved for use as system thread ID
+r14-r31   Nonvolatile registers used for local variables
+
+f0        Volatile scratch register
+f1-f4     Volatile floating point parameter and return value registers
+f5-f13    Volatile floating point parameter registers
+f14-f31   Nonvolatile registers
+
+LR        Link register (volatile)
+CTR       Loop counter register (volatile)
+XER       Fixed point exception register (volatile)
+FPSCR     Floating point status and control register (volatile)
+
+CR0-CR1   Volatile condition code register fields
+CR2-CR4   Nonvolatile condition code register fields
+CR5-CR7   Volatile condition code register fields</PRE
+><P
+>Registers r1, r14 through r31, and f14 through f31 are nonvolatile, which means that they preserve 
+			their values across function calls.  Functions which use those registers must save the value before 
+			changing it, restoring it before the function returns.  Register r2 is technically nonvolatile, but it is handled 
+			specially during function calls as described below: in some cases the calling function must restore its value 
+			 after a function call.
+			</P
+><P
+>Registers r0, r3 through r12, f0 through f13, and the special purpose registers LR, CTR, XER, and 
+			FPSCR are volatile, which means that they are not preserved across function calls.  Furthermore, registers 
+			r0, r2, r11, and r12 may be modified by cross-module calls, so a function can not assume that the values of 
+			 one of these registers is that placed there by the calling function.
+			</P
+><P
+>The condition code register fields CR0, CR1, CR5, CR6, and CR7 are volatile.  The condition code 
+			register fields CR2, CR3, and CR4 are nonvolatile; a function which modifies them must save and restore at 
+			least those fields of the CR.  Languages that require "environment pointers" shall use r11 for that 
+			purpose.
+			</P
+><P
+>The following registers have assigned roles in the standard calling sequence:
+			</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>r1</DT
+><DD
+><P
+>The stack pointer (stored in r1) shall maintain quadword 
+						alignment.  It shall always point to the lowest allocated valid stack frame, and 
+						 grow toward low addresses.  The contents of the word at that address 
+						always point to the previously allocated stack frame.  If required, it can be 
+						decremented by the called function.  See <A
+HREF="x535.html#DYNAM-STACK"
+>Section 3.5.13</A
+> 
+						for additional infromation.  As discussed later in this chapter, the lowest valid 
+						stack address is 288 bytes less than the value in the stack pointer.  The 
+						stack pointer must be atomically updated by a single instruction, thus 
+						avoiding any timing window in which an interrupt can occur with a partially 
+						updated stack.</P
+></DD
+><DT
+>r2</DT
+><DD
+><P
+>This register holds the TOC base.  See 
+						<A
+HREF="x535.html#TOC-SEC"
+>Section 3.5.2</A
+> for additional information.</P
+></DD
+><DT
+>r3 through r10 and f1 through f13</DT
+><DD
+><P
+>These sets of volatile 
+						registers may be modified across function invocations and shall therefore be 
+						presumed by the calling function to be destroyed.  They are used for 
+						passing parameters to the called function.  See 		
+						<A
+HREF="x256.html#PARAM-PASS"
+>Section 3.2.3</A
+> for additional information.  In addition, 
+						registers r3 and f1 through f4 are used to return values from the called 
+						function, as described in Return Values.</P
+></DD
+><DT
+>LR (Link Register)</DT
+><DD
+><P
+>This register shall contain the address to which a 
+						called function normally returns.  LR is volatile across function calls.</P
+></DD
+></DL
+></DIV
+><P
+>Signals can interrupt processes (see signal (BA-OS) in the System V Interface Definition).  					Functions called during signal handling have no unusual restrictions on their use of registers.  Moreover, if 
+			a signal handling function returns, the process resumes its original execution path with all registers restored 
+			to their original values.  Thus, programs and compilers may freely use all registers above except those 
+			reserved for system use without the danger of signal handlers inadvertently changing their values.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="STACK"
+>3.2.2. The Stack Frame</A
+></H2
+><P
+>In addition to the registers, each function may have a stack frame on the runtime stack.  This stack 
+			grows downward from high addresses.  The following figure shows the stack frame organization.  SP in the 
+			figure denotes the stack pointer (general purpose register r1) of the called function after it has executed 
+			code establishing its stack frame.
+			</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN297"
+></A
+><P
+><B
+>Figure 3-17. Stack Frame Organiztion</B
+></P
+><PRE
+CLASS="SCREEN"
+>High Address
+
+          +-&#62; Back chain
+          |   Floating point register save area
+          |   General register save area
+          |   Local variable space
+          |   Parameter save area    (SP + 48)
+          |   TOC save area          (SP + 40)
+          |   link editor doubleword (SP + 32)
+          |   compiler doubleword    (SP + 24)
+          |   LR save area           (SP + 16)
+          |   CR save area           (SP + 8)
+SP  ---&#62;  +-- Back chain             (SP + 0)
+
+Low Address</PRE
+></DIV
+><P
+>The following requirements apply to the stack frame:
+			</P
+><P
+></P
+><UL
+><LI
+><P
+>The stack pointer shall maintain quadword alignment.</P
+></LI
+><LI
+><P
+>The stack pointer shall point to the first word of the lowest allocated 
+					stack frame, the "back chain" word.  The stack shall grow   downward, that is, toward 
+					lower addresses.  The first word of the stack frame shall always point to the previously 
+					allocated stack   frame (toward higher addresses), except for the first stack frame,   
+					which shall have a back chain of 0 (NULL).</P
+></LI
+><LI
+><P
+>The stack pointer shall be decremented by the called function in its 
+					prologue, if required, and restored prior to return.</P
+></LI
+><LI
+><P
+>					The stack pointer shall be decremented and the back chain updated
+					atomically using one of the "Store Double Word with Update"
+					instructions, so that the stack pointer always points to the
+					beginning of a linked list of stack frames.
+					</P
+></LI
+><LI
+><P
+>The sizes of the floating-point and general register save areas may 
+					vary within a function and are as determined by the traceback table described below.
+					</P
+></LI
+><LI
+><P
+>Before a function changes the value in any nonvolatile floating-point 
+					register, frn, it shall save the value in frn in the double word in the floating-point 
+					register save area 8*(32-n) bytes before the back chain word of the previous frame.  
+					The floating-point register save area is always doubleword aligned.  The size of the 
+					floating-point register save area depends upon the number of floating point registers 
+					which must be saved. It ranges from 0 bytes to a maximum of 144 bytes (18 * 8).</P
+></LI
+><LI
+><P
+>Before a function changes the value in any nonvolatile general 
+					register, rn, it shall save the value in rn in the word in the general register save area 
+					8*(32-n) bytes before the low addressed end of the floating-point register save area.  
+					The general register save area is always doubleword aligned.  The size of the general 
+					register save area depends upon the number of general registers which must be saved.
+					  It ranges from 0 bytes to a maximum of 144 bytes (18 * 8).</P
+></LI
+><LI
+><P
+>The local variable space contains any local variable storage required 
+					by the function.</P
+></LI
+><LI
+><P
+>The parameter save area shall be allocated by the caller.  It shall be 
+					doubleword aligned, and shall be at least 8 doublewords in length.  If a function needs 
+					to pass more than 8 doublewords of arguments, the parameter save area shall be large 
+					enough to contain the arguments that the caller stores in it.  Its contents are not 
+					preserved across function calls.</P
+></LI
+><LI
+><P
+>The TOC save area is used by global linkage code to save the TOC 
+					pointer register.  See The TOC section later in the chapter.</P
+></LI
+><LI
+><P
+>The link editor doubleword is reserved for use by code generated by 
+					the link editor.  This ABI does not specify any usage; the AIX link editor uses this 
+					space under certain circumstances.</P
+></LI
+><LI
+><P
+>The compiler doubleword is reserved for use by the compiler.  This 
+					ABI does not specify any usage; the AIX compiler uses this space under certain 
+					circumstances.</P
+></LI
+><LI
+><P
+>Before a function calls any other functions, it shall save the value 
+					in the LR register in the LR save area.</P
+></LI
+><LI
+><P
+>Before a function changes the value in any nonvolatile field in the 
+					condition register, it shall save the values in all the nonvolatile fields of the condition 
+					register at the time of entry to the function in the CR save area.</P
+></LI
+><LI
+><P
+>A function which does not call any other function and which needs no 
+					local variables does not need to have a stack frame.  It may use non-volatile registers, 
+					saving their old values on the stack.  Thus, the lowest possible valid stack address is 
+					288 bytes (144 + 144) less than the current value of the stack pointer.  Functions may 
+					use this stack space as volatile storage which is not preserved across function calls.  
+					Interrupt handlers and any other code which can not be seen by compiled code must 
+					avoid using this area.</P
+></LI
+></UL
+><P
+>The stack frame header consists of the back chain word, the CR save area, the LR save area, the 
+			compiler and link editor doublewords, and the TOC save area, for a total of 48 bytes.  The back chain word 
+			always contains a pointer to the previously allocated stack frame.  Before a function calls another function, 
+			it shall save the contents of the link register at the time the function was entered in the LR save area of its 
+			caller's stack frame and shall establish its own stack frame.
+			</P
+><P
+>Except for the stack frame header and any padding necessary to make the entire frame a multiple of 
+			16 bytes in length, a function need not allocate space for the areas that it does not use.  If a function does 
+			not call any other functions and does not require any of the other parts of the stack frame, it need not 
+			establish a stack frame.  Any padding of the frame as a whole shall be within the local variable area; the 
+			parameter save area shall immediately follow the stack frame header, and the register save areas shall 
+			contain no padding.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PARAM-PASS"
+>3.2.3. Parameter Passing</A
+></H2
+><P
+>For a RISC machine such as 64-bit PowerPC, it is generally more efficient to pass arguments to 
+			called functions in registers (both general and floating-point registers) than to construct an argument list in 
+			storage or to push them onto a stack.  Since all computations must be performed in registers anyway, 
+			memory traffic can be eliminated if the caller can compute arguments into registers and pass them in the 
+			same registers to the called function, where the called function can then use them for further computation in 
+			 the same registers.  The number of registers implemented in a processor architecture naturally limits the 
+			number of arguments that can be passed in this manner.
+			</P
+><P
+>For the 64-bit PowerPC, up to eight doublewords are passed in general purpose registers, loaded 
+			sequentially into general purpose registers r3 through r10.  In addition, up to thirteen floating-point 
+			arguments can be passed in floating-point registers f1 through f13.  If fewer (or no) arguments are passed, 
+			the unneeded registers are not loaded and will contain undefined values on entry to the called function. 
+			</P
+><P
+>The parameter save area, which is located at a fixed offset of 48 bytes from the stack pointer, is 
+			reserved in each stack frame for use as an argument list.  A minimum of 8 doublewords is always reserved.
+			  The size of this area must be sufficient to hold the longest argument list being passed by the function 
+			which owns the stack frame.  Although not all arguments for a particular call are located in storage, 
+			consider them to be forming a list in this area, with each argument occupying one or more doublewords.
+			</P
+><P
+>If more arguments are passed than can be stored in registers, the remaining arguments are stored in 
+			the parameter save area.  The values passed on the stack are identical to those that have been placed in 
+			registers; thus, the stack contains register images.
+			</P
+><P
+>The rules for parameter passing are as follows:
+			</P
+><P
+></P
+><UL
+><LI
+><P
+>Each argument is mapped to as many doublewords of the parameter 
+					save area as are required to hold its value.</P
+><P
+></P
+><UL
+><LI
+><P
+>Single precision floating point values are mapped to the 
+						first word in a single doubleword.
+						</P
+></LI
+><LI
+><P
+>Double precision floating point values are mapped to a 
+						single doubleword.</P
+></LI
+><LI
+><P
+>Extended precision floating point values are mapped to two 
+						consecutive doublewords.</P
+></LI
+><LI
+><P
+>Simple integer types (char, short, int, long, enum) are 
+						mapped to a single doubleword.  Values shorter than a doubleword are sign 
+						or zero extended as necessary.</P
+></LI
+><LI
+><P
+>Pointers are mapped to a single doubleword.</P
+></LI
+><LI
+><P
+>						Fixed size aggregates and unions passed by value are mapped to as
+						many doublewords of the parameter save area as the value uses in
+						memory.  An aggregate or union smaller than one doubleword in size
+						is padded so that it appears in the least significant bits of the
+						doubleword.  All others are padded, if necessary, at their tail.
+						Variable size aggregates or unions are passed by reference.
+						</P
+></LI
+><LI
+><P
+>Other scalar values, such as FORTRAN complex numbers, 
+						are mapped to the number of doublewords required by their size.</P
+></LI
+></UL
+></LI
+><LI
+><P
+>If the callee has a known prototype, arguments are converted to the 
+					type of the corresponding parameter before being mapped into the parameter save 
+					area.  For example, if a long is used as an argument to a float double parameter, the 
+					value is converted to double-precision and mapped to a doubleword in the parameter 
+					save area.</P
+></LI
+><LI
+><P
+>The first eight doublewords mapped to the parameter save area are 
+					never stored in the parameter save area by the calling function.  Instead, these 							doublewords are passed in registers as described below.</P
+></LI
+><LI
+><P
+>Argument values beyond the first eight doublewords must be stored in 
+					the parameter save area following the first eight doublewords, even though these 
+					arguments may also be passed in the floating point registers as described below.  The 
+					first eight doublewords in the parameter save area are reserved for the initial 
+					arguments, even though they are passed in registers.</P
+></LI
+><LI
+><P
+>General registers are used to pass some values.  The first eight 
+					doublewords mapped to the parameter save area correspond to the register r3 through 
+					r10.  If the arguments are mapped to fewer than eight doublewords of the parameter 
+					save area, registers corresponding to those unused doublewords are not used.</P
+><P
+></P
+><UL
+><LI
+><P
+>If there is no known function prototype for a 
+							callee, or the known prototype contains an ellipsis, the first eight 
+							doublewords mapped to the parameter save area are passed in 
+							their corresponding general registers.</P
+></LI
+><LI
+><P
+>If the callee has a prototype with no ellipsis, values other 
+						than single and double precision floating point values are passed in their 
+						corresponding general registers.  General registers corresponding to single 
+						and double precision floating-point arguments are not used.  The floating 
+						point  values are placed in floating-point registers instead.</P
+></LI
+></UL
+></LI
+><LI
+><P
+>Floating point registers are used consecutively to pass up to 13 
+					single and double precision floating point values.  Each floating point register holds at 
+					most a single value, whether the argument is single or double precision.</P
+><P
+></P
+><UL
+><LI
+><P
+>If there is no known prototype for a callee, or 
+							the known prototype contains an ellipsis, up to 13 floating point 
+							values are passed in f1 through f13.  In this case, floating point 
+							values mapped to the  first eight doublewords of the parameter 
+							save area are also passed in general registers.</P
+></LI
+><LI
+><P
+>If there is a known prototype for the callee, and it 
+							doesn't contain an ellipsis, up to 13 floating point values are 
+							passed in f1 through f13.  In this case, floating point values 
+							mapped to the first eight doublewords of the parameter save 
+							argument area are <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> also passed in the 
+							general registers.</P
+></LI
+></UL
+></LI
+><LI
+><P
+>If the callee takes the address of any of its parameters, then r3 
+					through r10 must be stored by the callee into the parameter save area, except when 
+					any of these general registers correspond to single or double precision floating point 
+					parameters, in which case the floating point registers are stored rather than the general 
+					registers.  This is because the caller may have had a function prototype for the callee, 
+					and therefore put floating point parameters in floating point registers only.</P
+></LI
+></UL
+><P
+>If the compilation unit for the caller contains a function prototype, but the callee has a mismatching 
+			definition, and if the callee takes the address of any of its parameters, the wrong values may be stored in 
+			the first eight doublewords of the parameter save area.
+			</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN383"
+></A
+><P
+><B
+>Figure 3-18. Parameter Passing</B
+></P
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+  int    a;
+  double dd;
+} sparm;
+sparm   s, t;
+int     c, d, e;
+long double ld;
+double  ff, gg, hh;
+
+x = func(c, ff, d, ld, s, gg, t, e, hh);</PRE
+><PRE
+CLASS="SCREEN"
+>Parameter     Register     Offset in parameter save area
+c             r3           0-7    (not stored in parameter save area)
+ff            f1           8-15   (not stored)
+d             r5           16-23  (not stored)
+ld            r6,r7        24-39  (not stored)
+s             r8,r9        40-55  (not stored)
+gg            f2           56-63  (not stored)
+t             (none)       64-79  (stored in parameter save area)
+e             (none)       80-87  (stored)
+hh            f3           88-95  (stored)</PRE
+></DIV
+><P
+>The above is complete if a prototype with no ellipsis is in scope.  If a prototype is not in scope, or if 
+			the prototype contains an ellipsis, then, in addition to the above, ff is passed in r4 and gg is passed in r10.  
+			The floating point argument hh is passed in two places: the value is stored both in f3 and on the stack.  If a 
+			prototype is not in scope, or if the prototype contains an ellipsis, then the floating point arguments ff and gg 
+			are also passed in two places, in both a general register and a floating point register.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RETURN-VAL"
+>3.2.4. Return Values</A
+></H2
+><P
+>Functions shall return float or double values in f1, with float values rounded to single precision.
+			</P
+><P
+>Functions shall return values of type int, long, enum, short, and char, or a pointer to any type, as 
+			unsigned or signed integers as appropriate, zero- or sign-extended to 64 bits if necessary, in r3.  Character 
+			 arrays of length 8 bytes or less, or bit strings of length 64 bits or less, will be returned right justified in r3.  
+			Aggregates or unions of any length, and character strings of length longer than 8 bytes, will be returned in 
+			a storage buffer allocated by the caller.  The caller will pass the address of this buffer as a hidden first 
+			argument in r3, causing the first explicit argument to be passed in r4.  This hidden argument is treated as a 
+			normal formal parameter, and corresponds to the first doubleword of the parameter save area.
+			</P
+><P
+>Functions shall return floating point scalar values of size 16 or 32 bytes in f1:f2 and f1:f4, 
+			respectively.
+			</P
+><P
+>Functions shall return floating point complex values of size 16 (four or eight byte complex) in f1:f2 
+			and floating point complex values of size 32 (16 byte complex) in f1:f4.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="FUNC-DES"
+>3.2.5. Function Descriptors</A
+></H2
+><P
+>A function descriptor is a three doubleword data structure that contains the following values:
+			</P
+><P
+></P
+><UL
+><LI
+><P
+>The first doubleword contains the address of the entry point of the 
+					function.</P
+></LI
+><LI
+><P
+>The second doubleword contains the TOC base address for the 
+					function (see <A
+HREF="x763.html"
+>Section 4.3</A
+> later in this chapter).</P
+></LI
+><LI
+><P
+>The third doubleword contains the environment pointer for languages 
+					such as Pascal and PL/1.</P
+></LI
+></UL
+><P
+>For an externally visible function, the value of the symbol with the same name as the function is the 
+			address of the function descriptor.  Symbol names with a dot (.) prefix are reserved for holding entry point 
+			addresses.  The value of a symbol named &quot;.FN&quot; is the entry point of the function &quot;FN&quot;.
+			</P
+><P
+>The value of a function pointer in a language like C is the address of the function descriptor.  
+			Examples of calling a function through a pointer are provided in <A
+HREF="x535.html#FUNC-CALLS"
+>Section 3.5.11</A
+>.
+			</P
+><P
+>When the link editor processes relocatable object files in order to produce an executable or shared 
+			object, it must treat direct function calls specially, as described below.
+			</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c113.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x409.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Low Level System Information</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c113.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Traceback Tables</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
