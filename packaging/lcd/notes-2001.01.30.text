@@ -1,0 +1,166 @@
+Notes on the LSB Lowest Common Denominator Packaging Taskforce discussions 
+of January 30, 2001. 
+
+* Authors:
+      Main specification points originally by:  Aaron Brick, Eazel 
+      Prefixed with goal statements by: Albert den Haan, Corel.
+
+* Attendees:
+	(from Albert's memory. Corrections appreciated!)
+	Albert den Haan, Corel (Moderator)
+	Wichert Akkerman, Debian 
+	Raymund Will, Caldera 
+	Matt Wilson, Red Hat 
+	Frederic Lepied, MandrakeSoft 
+	Aaron Brick, Eazel  (Note taker)
+	Alfredo Kojima, Conectiva 
+
+* RSVP'd as coming but not present (?)
+       Jeff Johnson, Red Hat 
+       Jurgen Botz, Eazel 
+       Nick Moffitt, VA Linux 
+
+* Background
+
+Moment by moment minutes as such were not recorded for this meeting
+and the agenda was loose enough to allow many relevant though not
+strictly on-topic discussions.
+
+* Meeting Goals
+
+Albert's Goal for the LCD taskforce: To build a working
+prototype cross distribution packaging system "for the end of Summer
+2001" ( northern hemisphere :)  
+
+To speed development of a robust and stable reference example this
+system will attempt only the minimum deemed necessary by the folks on
+the taskforce(s).  Fancy new features will be left to the Unified
+taskforce.
+
+The preparation materials published in the original agenda at
+http://www.linuxbase.org/talks/20010130.html have been very good at
+avoiding specifying explicitly only what needs to specified and
+leaving the rest in general terms.  
+
+This particular taskforce has to become specific soon to achieve the
+above timing goal, but this particular meeting does not need to that
+level yet for all discussions.
+
+* LCD Goals
+
+Based on the disscusions in this meeting the goals of this taskforce
+are:
+
+Build a reference implementation of a Lowest Common Denominator
+packaging system using the facilities already available on current
+distributions.
+
+Enough mindshare and ISV participation that the implementation will
+get substantial testing despite its utilitarian nature.
+
+A working package certification system that can tell if a binary
+package complies with the letter of the LCD specification.  In fact
+most of the hard rules of the specification will be coded in here
+first before they appear in any other documentation beyond task force
+discussions.  (see the "minimal documentation" goal below)
+
+Interworking implementations of the low level installation maintenance
+system on at least one of each of the dpkg and rpm based distributions
+is straightforward to implement on others.
+
+Trivial and non-trivial reference source and binary package
+construction systems for ISV's to model their own package construction
+systems on.
+
+A minimum of prose documentation beyond a "package construction
+HOWTO", a "system maintenance HOWTO", and manual pages.  More
+documentation can wait until we know we are on the right track.  This
+goal is not intended to justify inaccurate or insufficient
+documentation -- it is intended to reduce the workload in construction
+the reference implementation by minimizing duplicated documentation
+and documentation outside the packaging audiences.
+ 
+Living Documentation on how the LCD work products are supposed to work
+and the rationales for important choices.  Currently this is expected
+to be an archive of the LSB-taskforce1 mailing list.
+
+Specific requirements and recommendations for the next generations or
+package manager standards
+
+
+* Specification points
+
+Based on the question "What is the Lowest Common Denominator of
+packaging we wish to support" we came up with the many points in a few
+classifications: packaging operations, visible data types for those
+operations, mandatory documentation, certification and implementation
+policies, and a wish list of items that would be nice but can be
+rationalized out of the LCD implementation.
+
+The following specification points are as recorded by Aaron Brick.
+They will be fleshed out as the reference implementation is constructed.
+
+** LCD operations:
+
+	install:	per metadata requires, pre-requires, provides, conflicts
+	remove
+	pkg check:	(static) legitimacy test for packages.
+			test for LSB packaging compliance.
+?	pkg build:	acceptable build mechanisms to be determined.
+	pkg info:	works on package files or from installed database;
+			how to differentiate the approaches?
+
+** LCD output data:
+
+	packages must be built on LSB-compliant system.
+	package names' legal characters include [a-z0-9.+-].
+
+	binary pkgs:	for now, a subset of RPM v3 format.
+	source pkgs:	compressed tar with arbitrary contents;
+			recommend the inclusion of INSTALL file.
+	summary file:	in apt style, with:	md5 sum or equivalent.
+						vendor name
+						reference URLs (mailto, bug reporting)
+
+*** versioning:
+
+	dpkg version numbers fall into a superset of the LCD versioning scheme.
+	legal characters include [A-Za-z0-9.+].
+	epochs will be supported but their use will be strongly discouraged with documented rationales
+
+** documentation:
+
+	examples of:	prerelease vs. epoch usage
+			CVS snapshots -> tarball
+			minimal HelloWorld
+
+	C locale standardization
+	architectural compatibility (`uname -m`)
+	RPM-style autodependencies / dpkg-shlibdeps are to be avoided.
+	versioned Provides: are not supported.
+	payload permissions / ownership details
+	script state machine specification
+	How to properly use epochs in versions.
+
+scripts:
+
+	only postinstall scripts may rely upon arbitrary programs;
+	preinstall scripts are limited to LSB-sanctioned ones.
+	only certain UIDs are legal for files in payload.
+	exit values to be determined.
+
+** certification policy
+
+LSB compliance statement / certificate is to be represented as a package for
+the time being. ISV packages, et al, are to require it to demand compliance.
+
+** Implementation Realities
+
+localization perhaps implemented in two levels for additional detail in
+error messages meant for the end-user.
+
+** wishlist:
+
+	logging and journalling for packaging operations
+	authorization for commercial transactions
+
