@@ -67,9 +67,11 @@ gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
 gLSB.sgml: gLSB.sgml.sed ../lsbversion
+	echo `cat ../lsbversion` >buildversion
 	sed -e "s#LSBVERSION#`cat ../lsbversion`#" <gLSB.sgml.sed >gLSB.sgml
 
 autobuild: gensrc source
+	echo `cat ../lsbversion`-`date +"%Y%m%d"` >buildversion
 	sed -e "s#LSBVERSION#`cat ../lsbversion`-`date +"%Y%m%d"`#" <gLSB.sgml.sed >gLSB.sgml
 	make buildspecs
 	
