@@ -74,8 +74,15 @@ document as is the information explicitly included here.
 <SECT1 ID="rstandards">
 <TITLE>Related Standards</TITLE>
 <PARA>
-The specification listed here, and referenced in whole or in part by
-the Linux Standard Base.
+The specifications listed below are referenced in whole or in part by
+the Linux Standard Base.  Such references may be normative or
+non-normative; a reference to specification shall only be considered
+normative if it is explicitly cited as such.  The LSB
+may make normative references to a portion of these
+specifications (that is, to define a specific function or group of
+functions); in such cases, only the explicitly referenced portion of
+the specification is to be considered normative.
+
 </PARA>
 <TABLE>
 <TITLE>Related Standards</TITLE>
