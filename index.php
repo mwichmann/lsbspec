@@ -20,15 +20,27 @@ complete specification for a platform consists of the common specification plus
 one of the architecture specifications.</p>
 </blockquote>
 
-<H1>Daily Drafts of the LSB Specification</H1>
+<H1>Current in-progress Snapshots of the LSB Specification</H1>
 <p>
-Current drafts can be found <A HREF="specs.php">HERE</A>.
+Current snapshots can be found <A HREF="specs.php">HERE</A>.
 </p>
 
-<H1>LSB 2.0.1 and earlier Specification</H1>
+<H1>Current LSB Specification</H1>
 <p>
-The 2.0.1 (And earlier) version of the LSB can be found
-<A HREF=http://refspecs.freestandards.org/lsb.shtml>Here</A>.</p>
+The current LSB specification is version 2.1 which can be found
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_1_0>Here</A>.</p>
+</p>
+
+<H1>LSB 2.0.1 aka the ISO Submission</H1>
+<p>
+Version 2.0.1 of the LSB has been submitted to ISO for consideration as an International Standard.
+This version of the LSB can be found
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_0_1>Here</A>.</p>
+
+<H1>Older version of the Specification</H1>
+<p>
+Older versions of the LSB can be found
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_1_3_0>Here</A>.</p>
 
 <H3>About the Specification</H3>
 <p>
