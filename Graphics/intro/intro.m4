@@ -1,15 +1,16 @@
 <PREFACE id="OVERVIEW">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the Linux Desktop Specification (LDS).
+This is version &specversion; of the LSB-Graphics Module Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 1.0 of the Linx Desktop Specification.
+this version will result in version 1.0 of the LSB-Graphics Moudle
+Specification.
 </PARA>
 <PARA>
 Implmentations may not claim conformance to this version.
 <!--
 An implementation of this version of the specification may not claim
-to be an implementation of Linux Desktop unless it has successfully
+to be an implementation of LSB-Graphics Module unless it has successfully
 completed the compliance process as defined by the Free Standards Group.
 Note: This is boilerplate. It need not be a final requirment.
 -->
@@ -18,8 +19,8 @@ Note: This is boilerplate. It need not be a final requirment.
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LDS defines The desktop components that are required to be present on
-a Linux system.
+The LSB-Graphics Module defines The graphics components that are required to
+be present on a Linux system.
 </PARA>
 
 <PARA>
@@ -70,9 +71,9 @@ This section needs to be written.
 <TITLE>Normative References</TITLE>
 <PARA>
 The specifications listed below are referenced in whole or in part by
-the Linux Desktop Standard.  Such references may be normative or
+the LSB-Graphics Module Standard.  Such references may be normative or
 informative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The LPS
+normative if it is explicitly cited as such.  The LSB-Graphics Module
 may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
@@ -159,7 +160,7 @@ The implementation may provide additional interfaces with different names. It ma
 -->
 </PARA>
 </SECT1>
-<SECT1 ID="Application"><TITLE>Linux Desktop Conformance </TITLE>
+<SECT1 ID="Application"><TITLE>LSB-Graphics Module Conformance</TITLE>
 <PARA>
 A package shall satisfy the following requirements:
 </PARA>
