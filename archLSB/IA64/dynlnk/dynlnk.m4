@@ -5,8 +5,8 @@
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the System V
 Application Binary Interface, Edition 4.1, the System V Application Binary
-Interface - DRAFT - April 29, 1998, System V Application Binary Interface -
-Intel386 Architecture Processor Supplement and as supplemented by the Linux
+Interface - DRAFT - April 29, 1998, Intel &reg; Itanium &trade;
+Processor Specific Application Binary Interface and as supplemented by the Linux
 Standard Base Specification and this document.
 </PARA>
 </PARTINTRO>
@@ -14,6 +14,8 @@ Standard Base Specification and this document.
 <CHAPTER ID=programheader>
 <TITLE>Program Header</TITLE>
 <PARA>
+The program header shall be as defined in the Intel Itanium Processor
+Specific ABI, Chapter 5.
 </PARA>
 
 <SECT1 ID=progheadtypes>
@@ -46,9 +48,7 @@ Standard Base Specification and this document.
 <TITLE>Program Intepreter/Dynamic Linker</TITLE>
 <PARA>
 The LSB specifies the Program Interpreter to be
-<ITEMIZEDLIST>
-<LISTITEM><SCREEN>/lib/ld-lsb-ia64.so.1</SCREEN></LISTITEM>
-</ITEMIZEDLIST>
+<FILENAME>/lib/lsb/ld-lsb.so.1</FILENAME>.
 </PARA>
 </SECT1>
 
