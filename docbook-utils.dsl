@@ -143,11 +143,11 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;Generate Part Title Page?
 (define %generate-part-titlepage% 
-  #f)
+  #t)
 
 ;;Do you want the Part intro on the part title page?
 (define %generate-partintro-on-titlepage%
-  #t)
+  #f)
 
 ;;What elements should have a LOT?
 (define ($generate-book-lot-list$)
@@ -526,6 +526,31 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element emphasis ($italic-seq$))
 (element cmdsynopsis ($mono-seq$))
 (element structname ($mono-seq$))
+
+;=============================================
+; extension to allow ISO-C varargs functions
+;=============================================
+
+(element varargs
+  (make sequence
+      (if (equal? (absolute-child-number (current-node)) 2)
+	  (literal "(")
+	  (empty-sosofo))
+      (literal "...);")))
+(element paramdef
+  (let ((param (select-elements (children (current-node)) (normalize "parameter"))))
+    (make sequence
+      (if (equal? (child-number (current-node)) 1)
+	  (literal "(")
+	  (empty-sosofo))
+      (if (equal? %funcsynopsis-style% 'ansi)
+	  (process-children)
+	  (process-node-list param))
+      (if (or
+	    (equal? (gi (ifollow (current-node))) (normalize "paramdef"))
+	    (equal? (gi (ifollow (current-node))) (normalize "varargs")))
+	  (literal ", ")
+	  (literal ");")))))
 
 ;=============================================
 ; ISO Style additions
@@ -1228,6 +1253,35 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
                     (literal "(" (format-number conumber "1") ")")))
           (make element gi: "B"
          (literal "(??)")))))
+;=============================================
+; extension to allow ISO-C varargs functions
+;=============================================
+
+; NB, a varargs tag is always the last element in a funcprototype,
+; so we automatically include the closing paren and semi colon.
+; The first element should always be the funcdef, so only put out the opening
+; paren if this is the second child
+(element varargs
+  (make sequence
+      (if (equal? (absolute-child-number (current-node)) 2)
+	  (literal "(")
+	  (empty-sosofo))
+      (literal "...);")))
+(element paramdef
+  (let ((param (select-elements (children (current-node)) (normalize "parameter"))))
+    (make sequence
+      (if (equal? (child-number (current-node)) 1)
+	  (literal "(")
+	  (empty-sosofo))
+      (if (equal? %funcsynopsis-style% 'ansi)
+	  (process-children)
+	  (process-node-list param))
+      (if (or
+	    (equal? (gi (ifollow (current-node))) (normalize "paramdef"))
+	    (equal? (gi (ifollow (current-node))) (normalize "varargs")))
+	  (literal ", ")
+	  (literal ");")))))
+
 
 </style-specification-body>
 </style-specification>
