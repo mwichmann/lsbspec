@@ -1,7 +1,8 @@
-<PREFACE id="OVERVIEW">
+<PREFACE id="foreword">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the ELF Specification.
+This is version &specversion; of the Executable and Linking Format (ELF)
+Specification.
 This version is a preliminary version for review only. Conclusion of work on
 this version will result in version 2.0 of the ELF
 Specification.
