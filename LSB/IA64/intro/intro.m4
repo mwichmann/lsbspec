@@ -7,8 +7,10 @@
 <TITLE>Introduction</TITLE>
 <PARA>
 This is version &specversion of the Linux Standard Base Specification for
-the IA32 Architecture. This version is very preliminary since this document
+the IA64 Architecture. This version is very preliminary since this document
 has only recently been separated out from the common specification. 
+Further, this version is derived from the IA32 architecture specific
+section of the Linux Standards Base.
 </PARA>
 <PARA>
 Those wishing to implement this standard should treat this version as more of
@@ -72,7 +74,7 @@ These libraries will be in a default location found by the dynamic linker.
 <TITLE>Definitions</TITLE>
 <NOTE>
 <PARA>
-The Application Binary  Interface (ABI) defined the following terms. We
+The Application Binary Interface (ABI) defined the following terms. We
 probably want to have something similar here. ABI, generic ABI, processor
 specific ABI, ABI-conforming system, ABI-conforming program, ABI_nonconforming
 program, undefined behavior, unspecified property.
