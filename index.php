@@ -270,15 +270,15 @@ include("lsbversion.X86-64")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbx86-64review.html">Review it!</A></TD>
-<TD ALIGN=center><a href="archLSB/X86-64/spec/book1.html">HTML</a></TD>
-<TD ALIGN=center><a href="archLSB/X86-64/spec.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="archLSB/X86-64/spec.pdf">PDF</a></TD>
-<TD ALIGN=center><a href="archLSB/X86-64/spec.html">HTML</a></TD>
-<TD ALIGN=center><a href="archLSB/X86-64/spec.txt">TXT</a></TD>
-<TD ALIGN=center><a href="archLSB/X86-64/spec_lines.txt">TXT</a></TD>
+<TD ALIGN=center><a href="archLSB/AMD64/spec/book1.html">HTML</a></TD>
+<TD ALIGN=center><a href="archLSB/AMD64/spec.rtf">RTF</a></TD>
+<TD ALIGN=center><a href="archLSB/AMD64/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><a href="archLSB/AMD64/spec.html">HTML</a></TD>
+<TD ALIGN=center><a href="archLSB/AMD64/spec.txt">TXT</a></TD>
+<TD ALIGN=center><a href="archLSB/AMD64/spec_lines.txt">TXT</a></TD>
 <TD>
 <?
-echo(date("r", filemtime("archLSB/X86-64/spec/book1.html")))
+echo(date("r", filemtime("archLSB/AMD64/spec/book1.html")))
 ?>
 </TD>
 </TR>
