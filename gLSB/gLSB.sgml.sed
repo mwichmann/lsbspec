@@ -1,6 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
 
 <!entity specversion "LSBVERSION">
+<!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
 <!entity objfmt.sgm system "objfmt/objfmt.sgml">
 <!entity dynlnk.sgm system "dynlnk/dynlnk.sgml">
