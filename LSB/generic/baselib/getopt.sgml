@@ -111,13 +111,13 @@ option name is a single alphanumeric character from the portable character set
 </LISTITEM>
 <LISTITEM>
 <PARA>
-option is preceded by the "<TOKEN>-</TOKEN>" delimiter character
+option is preceded by the '<TOKEN>-</TOKEN>' delimiter character
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
 options without option-arguments should be accepted when grouped behind 
-one "<TOKEN>-</TOKEN>" delimiter
+one '<TOKEN>-</TOKEN>' delimiter
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -161,7 +161,7 @@ characters can be represented as type <LITERAL>int</LITERAL>.
 <LISTITEM>
 <PARA>
 applications that call any utility with a first operand starting with 
-"<TOKEN>-</TOKEN>" should usually specify "<TOKEN>--</TOKEN>" 
+'<TOKEN>-</TOKEN>' should usually specify "<TOKEN>--</TOKEN>" 
 to mark the end of the options. Standard utilities that do not support 
 this guideline indicate that fact in the OPTIONS section of the utility 
 description.
@@ -193,6 +193,35 @@ long option <LITERAL>--foo</LITERAL>.
 of long options.</PARA></NOTE>
 </PARA>
 </LISTITEM>
+<LISTITEM>
+<PARA>
+The first character of <PARAMETER>optstring</PARAMETER> shall modify 
+the behavior of <FUNCTION>getopt</FUNCTION> as follows:
+<ITEMIZEDLIST MARK=BULLET>
+<LISTITEM>
+<PARA>
+if the first character is '+', then 
+<CONSTANT>REQUIRE_ORDER</CONSTANT> processing shall be in
+effect (see above)
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+if the first character is '-', then 
+<CONSTANT>RETURN_IN_ORDER</CONSTANT> processing shall be in
+effect (see above)
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+if the first character is ':', then 
+<FUNCTION>getopt</FUNCTION> shall return ':' instead of '?'
+to indicate a missing option argument. 
+</PARA>
+</LISTITEM>
+</ITEMIZEDLIST>
+</PARA>
+</LISTITEM>
 </ITEMIZEDLIST>
 </PARA>
 <PARA>
@@ -209,40 +238,20 @@ the <OPTION>-W</OPTION> option is reserved for implementation extensions.
 <REFSECT2>
 <TITLE>Return Values</TITLE>
 <PARA>
-<EMPHASIS>LSB</EMPHASIS> specifies the following 
+<EMPHASIS>LSB</EMPHASIS> specifies the following additional
 <FUNCTION>getopt</FUNCTION> return values:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-the next option character is returned, if found successfully.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-"<RETURNVALUE>:</RETURNVALUE>" is returned if a parameter is 
-missing for one of the options.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-"<RETURNVALUE>?</RETURNVALUE>" is returned if an unknown option 
-character is encountered.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-<RETURNVALUE>1</RETURNVALUE> is returned
+<RETURNVALUE>'\001'</RETURNVALUE> is returned
 if <CONSTANT>RETURN_IN_ORDER</CONSTANT> argument ordering is in effect,
 and the next argument is an operand, not an option. The argument is
 available in <varname>optarg</varname>.
 </PARA>
 </LISTITEM>
-<LISTITEM>
-<PARA>
-<RETURNVALUE>-1</RETURNVALUE> is returned for the end of the option list.
-</PARA>
-</LISTITEM>
 </ITEMIZEDLIST>
+Any other return value has the same meaning as for
+<EMPHASIS>POSIX</EMPHASIS>.
 </PARA>
 <PARA>
 <EMPHASIS>POSIX</EMPHASIS> specifies the following 
@@ -255,17 +264,17 @@ the next option character is returned, if found successfully.
 </LISTITEM>
 <LISTITEM>
 <PARA>
-"<RETURNVALUE>:</RETURNVALUE>" is returned if a parameter is missing for 
+'<RETURNVALUE>:</RETURNVALUE>' is returned if a parameter is missing for 
 one of the options and the first character of <VARNAME>optstring</VARNAME> is 
-"<TOKEN>:</TOKEN>".
+'<TOKEN>:</TOKEN>'.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-"<RETURNVALUE>?</RETURNVALUE>" is returned if an unknown option 
+'<RETURNVALUE>?</RETURNVALUE>' is returned if an unknown option 
 character not in <VARNAME>optstring</VARNAME> is encountered, or if 
 <FUNCTION>getopt</FUNCTION> detects a missing argument and the first 
-character of <VARNAME>optstring</VARNAME> is not "<TOKEN>:</TOKEN>".
+character of <VARNAME>optstring</VARNAME> is not '<TOKEN>:</TOKEN>'.
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -307,6 +316,8 @@ arguments resulted from wildcard expansion and so should not be
 considered as options. This behavior was removed in bash version 
 2.01, but the support remains in <EMPHASIS>GNU</EMPHASIS> libc.
 </PARA></NOTE>
+This behavior is DEPRECATED in this version of the LSB; future revisions
+of this specification may not include this requirement.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
