@@ -50,7 +50,7 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.5 2001-04-25 17:39:25 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.6 2002-03-15 01:51:37 nick_stoughton Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -58,11 +58,22 @@ print "<TBODY>\n";
 for(1..$sth->numrows) {
 	%entry=$sth->fetchhash;
 	print "<ROW>";
-	printf "<ENTRY>%s</ENTRY>",$entry{'Lname'};
+	printf "<ENTRY ID=\"lib.%s\" XREFLABEL=\"%s\">%s</ENTRY>",
+		makeid($entry{'Lname'}),
+		$entry{'Lrunname'},
+		$entry{'Lname'};
 	printf "<ENTRY>%s</ENTRY>",$entry{'Lrunname'};
 	print "</ROW>\n";
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.5 2001-04-25 17:39:25 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.6 2002-03-15 01:51:37 nick_stoughton Exp $- -->\n");
 
+sub makeid {
+	my ($name) = @_;
+	$name =~ s/\s+/./g;
+	$name =~ s/[^A-Za-z0-9.]+/./g;
+	# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
+	$name =~ s/\.\.+/./g;
+	return $name;
+}
