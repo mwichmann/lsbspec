@@ -20,7 +20,7 @@ BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 all: $(FILES) $(TABLES)
 
 gensrc:
-	./mkcmdtable  > cmdsutils.sgml
+	../../mkcmdtable  > cmdsutils.sgml
 
 clean:
 	rm -f $(FILES)
