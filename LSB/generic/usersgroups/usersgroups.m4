@@ -54,6 +54,7 @@ Below is a table of optional mnemonic user and group names.   This
 specification makes no attempt to numerically assign uid or gid numbers.
 If the username exists on a system, then they should be in the suggested
 corresponding group.
+These user and group names are for use by distributions, not by applications.
 </PARA>
 <TABLE>
 <TITLE>Optional User & Group Names</TITLE>
@@ -100,6 +101,14 @@ The system UIDs from 100 to 499 should be reserved for dynamically
 allocation by system administrators and post install scripts using useradd(1).
 </PARA>
 </SECT1>
+
+<sect1>
+<title>Rationale</title>
+<para>
+The purpose of specifying optional users and groups is to reduce the
+potential for name conflicts between applications and distributions.
+</para>
+</sect1>
 
 </CHAPTER>
 </PART>
