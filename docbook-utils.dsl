@@ -511,7 +511,6 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element application ($mono-seq$))
 (element command ($bold-seq$))
 (element filename ($mono-seq$))
-(element function ($mono-seq$))
 (element guibutton ($bold-seq$))
 (element guiicon ($bold-seq$))
 (element guilabel ($italic-seq$))
@@ -526,6 +525,10 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element emphasis ($italic-seq$))
 (element cmdsynopsis ($mono-seq$))
 (element structname ($mono-seq$))
+(element function (
+  if (equal? (gi (parent (current-node))) (normalize "funcdef"))
+	($mono-seq$)
+	($mono-seq$(make sequence (process-children)(literal "()")))))
 
 ;=============================================
 ; extension to allow ISO-C varargs functions
@@ -664,6 +667,13 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
    (list (normalize "warning")		"&Warning;")
    ))
 
+;; redefine inline equations to use only the ALT part if
+;; it is provided
+(element (inlineequation graphic) 
+  (let ((alttag (select-elements (children (parent)) (normalize "alt"))))
+    (if alttag
+	(make sequence ($mono-seq$(literal (data alttag))))
+	($img$))))
 </style-specification-body>
 </style-specification>
 
@@ -912,6 +922,20 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (define %section-autolabel%
  #t)
 
+;; Function Synopsis
+(define %funcsynopsis-style% 
+ 'ansi)
+
+(define %funcsynopsis-decoration%
+ #t)
+
+;; redefine inline equations to use only the ALT part if
+;; it is provided
+(element (inlineequation graphic) 
+  (let ((alttag (select-elements (children (parent)) (normalize "alt"))))
+    (if alttag
+	(make sequence ($mono-seq$(literal (data alttag))))
+	($img$))))
 ;;=========================
 ;;    HTML Attributes
 ;;=========================
@@ -1036,7 +1060,6 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element application ($mono-seq$))
 (element command ($bold-seq$))
 (element filename ($mono-seq$))
-(element function ($mono-seq$))
 (element guibutton ($bold-seq$))
 (element guiicon ($bold-seq$))
 (element guilabel ($bold-mono-seq$))
@@ -1052,6 +1075,10 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element emphasis ($italic-seq$))
 (element cmdsynopsis ($mono-seq$))
 (element structname ($mono-seq$))
+(element function (
+  if (equal? (gi (parent (current-node))) (normalize "funcdef"))
+	($mono-seq$)
+	($mono-seq$(make sequence (process-children)(literal "()")))))
 
 ;;Show comment element?
 (define %show-comments%
