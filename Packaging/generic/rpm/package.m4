@@ -112,7 +112,7 @@ must be 0.
 <TERM><STRUCTFIELD>type</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value indicating wether this is a source or binary package.
+Value indicating whether this is a source or binary package.
 This value must be 0 to indicate a binary package.
 </PARA>
 </LISTITEM>
