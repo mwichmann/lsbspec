@@ -6,18 +6,10 @@
 <SECT1 ID="overview">
 <TITLE>Introduction</TITLE>
 <PARA>
-This is version &specversion of the Linux Standard Base Specification. This 
-version contains all of the material that will appear in the final 1.0
-Specification and should be reviewed thoroughly.
-</PARA>
-<PARA>
-Those wishing to implement this standard should use this specification with
-the understanding that further testing and public review will occur, and that
-changes as a result of these activities may occur.
-</PARA>
-<PARA>
+This is version &specversion of the Linux Standard Base Specification.
 An implementation of this version of the specification may not claim
-to be an implementation of the Linux Standard Base.
+to be an implementation of the Linux Standard Base unless it has successfully
+completed the compliance proces as defined by the Free Standards Group.
 </PARA>
 </SECT1>
 
