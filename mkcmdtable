@@ -2,15 +2,18 @@
 #
 #	Linux Standard Base, http://www.linuxbase.org/
 #	George Kraft IV, gk4@us.ibm.com, 03/09/2000
+#	Nick Stoughton, nick@usenix.org, 2004 - 2005
 #
 #
 
 
 use DBI;
+use Getopt::Long;
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 local %references;
 local %standards;
+my $builtins = 0;
 
 ################################################################################
 #	lsbOpenDB
@@ -40,120 +43,179 @@ sub lsbCloseDB {
 }
 
 ################################################################################
+#	builtinexcepts
+################################################################################
+
+sub builtinexcepts {
+	print << "END_BIEXCEPT_TEXT";
+<ORDEREDLIST>
+<LISTITEM><PARA>
+The built in commands and utilities shall be provided by the
+<command>sh</command> utility itself, and need not be separate executable files
+located in the <ENVAR>PATH</ENVAR>.
+<NOTE>
+<TITLE>Rationale (Informative)</TITLE>
+<PARA>
+Since the built in utilities must affect the environment of the calling
+process, they have no effect when executed as a file.
+</PARA></NOTE>
+</PARA></LISTITEM>
+</ORDEREDLIST>
+END_BIEXCEPT_TEXT
+}
+
+################################################################################
+#	cmdexcepts
+################################################################################
+
+sub cmdexcepts {
+	print << "END_EXCEPT_TEXT";
+<ORDEREDLIST>
+<LISTITEM><PARA>
+If any operand (except one which follows <option>--</option>) starts with a
+hyphen, the behavior is unspecified.
+<NOTE><TITLE>Rationale (Informative)</TITLE>
+<para>Applications should place options before operands, or use
+<option>--</option>, as needed.  This text is needed because,
+by default, GNU option parsing
+differs from POSIX, unless the environment variable 
+<ENVAR>POSIXLY_CORRECT</ENVAR>
+is set.  For example, <command>ls . -a</command> in GNU
+<command>ls</command> means to list the current directory, showing all
+files (that is, <option>"."</option> is an operand and <option>-a</option> is an
+option).  In POSIX, <option>"."</option> and <option>-a</option> are both operands,
+and the command means to list the current directory, and also the file
+named <filename>-a</filename>.  Suggesting that applications rely on the
+setting of the <envar>POSIXLY_CORRECT</envar> environment variable,
+or try to set it, seems worse than just asking the applictions to invoke
+commands in ways which work with either the POSIX or GNU behaviors.</para>
+
+</NOTE>
+</PARA></LISTITEM>
+</ORDEREDLIST>
+END_EXCEPT_TEXT
+}
+################################################################################
 #	lsbCommands
 ################################################################################
 
 sub lsbCommands {
 
-		$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command WHERE Standard.Sid=Command.Cstandard AND Command.Cstatus='Included' ORDER BY Sname");
-		$sth->execute;
+	my $status, $title, $tbl, $MainTitle;
+	if ($builtins) {
+		$status = 'Builtin';
+		$title = 'shell built in utilities';
+		$tbl = "tbl-builtins";
+		$MainTitle = "Built In Utilities";
+	} else {
+		$status = 'Included';
+		$title = 'commands and utilities';
+		$tbl = "tbl-cmds";
+		$MainTitle = "Commands And Utilities";
+	}
+	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command WHERE Standard.Sid=Command.Cstandard AND Command.Cstatus='$status' ORDER BY Sname");
+	$sth->execute;
 
-		if ($sth->rows > 0) {
+	if ($sth->rows > 0) {
 
-		printf("<!-- Start of text generated from database -->\n");
-		printf("<PARA>\n");
-		printf("The behavior of the interfaces described in this\n");
-		printf("section is specified by the following standards.");
-		printf("</PARA>\n");
-		printf("<SIMPLELIST COLUMNS=1>\n");
+	printf("<!-- Start of text generated from database -->\n");
+	printf("<PARA>\n");
+	printf("An LSB conforming implementation shall provide the\n");
+	printf("%s as described in <XREF LINKEND=\"%s\">, with at least the behavior\n",
+		$title, $tbl);
+	printf("described as mandatory in the referenced underlying\n");
+	printf("specification, with the following execptions:\n");
+	$builtins ? builtinexcepts : cmdexcepts;
 
-		my $i = 0;
-		while ($field = $sth->fetchrow_hashref) {
-				$footer{$ftid} = $ref;
-				printf("<MEMBER>\n");
-				printf("<XREF LINKEND=\"std.%s\">\n", makeid($field->{'Sname'}));
+	printf("</PARA>\n");
 
-				printf("</MEMBER>\n");
-		}
-		printf("</SIMPLELIST>\n");
+	$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE Command.Cstatus='$status' ORDER BY Command.Cname");
+	$sth->execute;
 
-		$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE Command.Cstatus='Included' ORDER BY Command.Cname");
-		$sth->execute;
+	if ($sth->rows < 1) {
+		printf("<PARA>No Commands or Utilities found!</PARA>\n");
+		return;
+	} 
 
-		if ($sth->rows < 1) {
-			printf("<PARA>No Commands or Utilities found!</PARA>\n");
-			return;
-		} 
+	printf("<TABLE id=\"$tbl\">\n");
+	printf("<TITLE>$MainTitle</TITLE>\n");
+	printf("<TGROUP COLS=5>\n");
+	printf("<TBODY>\n");
+	printf("<ROW>\n");
 
-		printf("<TABLE id=\"tbl-cmds\">\n");
-		printf("<TITLE>Commands and Utilities</TITLE>\n");
-		printf("<TGROUP COLS=5>\n");
-		printf("<TBODY>\n");
-		printf("<ROW>\n");
+	my $i = 0; #column count
+	my $row = 0;
+	my $totalrows = int(($sth->rows+4) / 5);
 
-		my $i = 0;
-		while ($field = $sth->fetchrow_hashref) {
-			$ref = $permutation{$field->{'Cstandard'}};
+	my $cmds = $sth->fetchall_arrayref({});
 
-			#
-			# fixed width table ... 5 columns
-			#
-			if ($i != 0 && 0 == ($i % 5)) {
-				printf("</ROW><ROW>\n");
-			}
+	while ($row < $totalrows) {
 
-			#$ftid = sprintf("std-fn-%s-%s",  
-			#	$field[1], $permutation{$field[1]});
-
-			printf("<ENTRY>%s\n", $field->{'Cname'});
-			# figure out a reference
-			# each table is followed by a list of references
-			#
-			# this is a little complex:
-			# %references is a hash, using keys of the form "std-%d-%d"
-			#   with values being the names of the standards
-			# @ref is an array; each element is a key in %ref
-			# $refno is the current index into that array
-			if( $field->{'Sid'} ) {
-
-				my $refstr = sprintf "std-cmd-%d",
-					$field->{'Sid'};
-				$references{$refstr} = $field->{'Sname'};
-				$refno = 0;
-				for $r (0..$#ref) {
-					$refno = $r;
-					last if ($ref[$r] eq $refstr);
-				}
-				if ($ref[$refno] ne $refstr) {
-					push(@ref, $refstr);
-					$refno = $#ref;
-				}
-				
-				printf("<LINK LINKEND=\"%s\"> [%d]</LINK>\n", 
-					$refstr, $refno+1 );
-			}
-			printf("</ENTRY>\n");
-
-			++$i;
-		}
-
-		printf("</ROW>\n");
-		printf("</TBODY>\n");
-		printf("</TGROUP>\n");
-		printf("</TABLE>\n");
 		#
-		# now print out the referenced standards list
+		# fixed width table ... 5 columns
 		#
-		if ($#ref >= 0) {
-			print "<PARA><EMPHASIS>Referenced Specification(s)</EMPHASIS></PARA>\n";
+		if ($i == 5) {
+			last if(++$row >= $totalrows);
+			printf("</ROW><ROW>\n");
+			$i = 0;
+		}
+		$field = $cmds->[($row + ($i++ * $totalrows))];
+
+		$ref = $permutation{$field->{'Cstandard'}};
+
+		#$ftid = sprintf("std-fn-%s-%s",  
+		#	$field[1], $permutation{$field[1]});
+
+		printf("<ENTRY>%s\n", $field->{'Cname'});
+		# figure out a reference
+		# each table is followed by a list of references
+		#
+		# this is a little complex:
+		# %references is a hash, using keys of the form "std-%d-%d"
+		#   with values being the names of the standards
+		# @ref is an array; each element is a key in %ref
+		# $refno is the current index into that array
+		if( $field->{'Sid'} ) {
+
+			my $refstr = sprintf "std-cmd%s-%d",
+				$builtins ? "bi":"" ,$field->{'Sid'};
+			$references{$refstr} = $field->{'Sname'};
+			$refno = 0;
 			for $r (0..$#ref) {
-				$refstr = $ref[$r];
-				$references{$refstr} = "This specification" if ($references{$refstr} eq "Linux Standard Base");
-				printf "<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para><XREF LINKEND=std.%s></para></FORMALPARA>\n",
-					$refstr, $r+1, makeid($references{$refstr});
-				}
+				$refno = $r;
+				last if ($ref[$r] eq $refstr);
+			}
+			if ($ref[$refno] ne $refstr) {
+				push(@ref, $refstr);
+				$refno = $#ref;
+			}
+			
+			printf("<LINK LINKEND=\"%s\"> [%d]</LINK>\n", 
+				$refstr, $refno+1 );
+		}
+		printf("</ENTRY>\n");
+
+	}
+
+	printf("</ROW>\n");
+	printf("</TBODY>\n");
+	printf("</TGROUP>\n");
+	printf("</TABLE>\n");
+	#
+	# now print out the referenced standards list
+	#
+	if ($#ref >= 0) {
+		print "<PARA><EMPHASIS>Referenced Specification(s)</EMPHASIS></PARA>\n";
+		for $r (0..$#ref) {
+			$refstr = $ref[$r];
+			$references{$refstr} = "This specification" if ($references{$refstr} eq "Linux Standard Base");
+			printf "<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para><XREF LINKEND=std.%s></para></FORMALPARA>\n",
+				$refstr, $r+1, makeid($references{$refstr});
 			}
 		}
+	}
 
-		printf("<!-- End of text generated from database -->\n");
-
-#		foreach $key (keys %standards) {
-#			printf("<FOOTNOTE ID=\"std-%s-%s\">\n", $key, $permutation{$key});
-#			printf("<PARA>\n");
-#			printf("%s\n", $standards{$key});
-#			printf("</PARA>\n</FOOTNOTE>\n");
-#		}
-
+	printf("<!-- End of text generated from database -->\n");
 }
 
 ################################################################################
@@ -173,6 +235,7 @@ sub makeid($)
 #	main
 ################################################################################
 
+GetOptions("b" => \$builtins);
 lsbOpenDB;
 lsbCommands;
 lsbCloseDB;
