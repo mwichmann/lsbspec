@@ -4,6 +4,7 @@
 <CHAPTER id=baselib>
 <TITLE>Libraries</TITLE>
 
+include(libc.sgml)
 include(libm.sgml)
 include(libstdcxx.sgml)
 
