@@ -48,19 +48,23 @@ include(linuxtag.sgml)
 <TITLE>Global Offset Table</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.
+<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.2.
 </PARA>
 </SECT1>
 
 <SECT1 ID=functionaddresses>
 <TITLE>Function Addresses</TITLE>
 <PARA>
+See
+<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.3.
 </PARA>
 </SECT1>
 
 <SECT1 ID=procedurelinkagetable>
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
+See
+<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.4.
 </PARA>
 </SECT1>
 

@@ -49,6 +49,7 @@ Chapter 4 of the <XREF LINKEND="std.PPC64.ABI">.
 <SECT1 ID="symbolvalues">
 <TITLE>Symbol Values</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.PPC64.ABI">.
 </PARA>
 </SECT1>
 
@@ -65,6 +66,7 @@ Chapter 4 of the <XREF LINKEND="std.PPC64.ABI">.
 <SECT1 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.PPC64.ABI">.
 </PARA>
 </SECT1>
 
