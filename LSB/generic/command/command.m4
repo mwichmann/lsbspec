@@ -29,7 +29,9 @@ include(cmdsutils.sgml)
 This section contains descriptions of commands that are not documented by other
 standards, or descriptions of the difference from other standards.
 </PARA>
+include(ar.sgml)
 include(at.sgml)
+include(awk.sgml)
 include(batch.sgml)
 include(bc.sgml)
 include(cat.sgml)
