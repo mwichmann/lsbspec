@@ -112,8 +112,8 @@ recommendations of the FHS and must be obtained by the *pwnam(3) calls.
 <SECT1 ID="uidrange">
 <TITLE>UID Ranges</TITLE>
 <PARA>
-The system UIDs from 0 to 99 should be statically allocated by the system.
-These static assignments should be defined by a common registry.
+The system UIDs from 0 to 99 should be statically allocated by the system,
+and not created by applications.
 </PARA>
 <PARA>
 The system UIDs from 100 to 499 should be reserved for dynamically
