@@ -34,32 +34,8 @@ execute a shell command
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>system</FUNCTION> executes a command specified in 
-<PARAMETER>string</PARAMETER> by calling <LITERAL>/bin/sh -c 
-string</LITERAL>, and returns after the command has been completed. 
-During execution of the command, <VARNAME>SIGCHLD</VARNAME> will be 
-blocked, and <VARNAME>SIGINT</VARNAME> and <VARNAME>SIGQUIT</VARNAME> 
-will be ignored.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return Value
-</TITLE>
-<PARA>
-The value <RETURNVALUE>127</RETURNVALUE> returned if the 
-<FUNCTION>execve</FUNCTION> call for <LITERAL>/bin/sh</LITERAL> 
-fails, <RETURNVALUE>-1</RETURNVALUE> if there was another error 
-and the return code of the command otherwise.
-</PARA>
-<PARA>
-If the value of string is <TOKEN>NULL</TOKEN>, <FUNCTION>system</FUNCTION> 
-returns a nonzero value if the shell is available, 
-and zero if not.
-</PARA>
-<PARA>
-<FUNCTION>system</FUNCTION> does not affect the wait status of any 
-other children.
+The <FUNCTION>system</FUNCTION> function shall behave as described in
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
 </REFSECT1>
 
@@ -72,27 +48,27 @@ not what a program wants. <XREF LINKEND=STD.SUSv3>
 describes some of the consequences; an 
 additional consequence is that a program calling <FUNCTION>system</FUNCTION> 
 from a loop cannot be reliably interrupted. Many programs will want to use 
-the <FUNCTION>exec</FUNCTION>(3) family of functions instead.
+the <FUNCTION>exec</FUNCTION> family of functions instead.
 </PARA>
 <PARA>
 Do not use <FUNCTION>system</FUNCTION> from a program with 
 <VARNAME>suid</VARNAME> or <VARNAME>sgid</VARNAME> privileges, 
-because strange values for some environment variables might be used 
-to subvert system integrity. Use the <FUNCTION>exec</FUNCTION>(3) 
-family of functions instead, but not <FUNCTION>execlp</FUNCTION>(3) 
-or <FUNCTION>execvp</FUNCTION>(3). <FUNCTION>system</FUNCTION> will 
+because unexpected values for some environment variables might be used 
+to subvert system integrity. Use the <FUNCTION>exec</FUNCTION>
+family of functions instead, but not <FUNCTION>execlp</FUNCTION>
+or <FUNCTION>execvp</FUNCTION>. <FUNCTION>system</FUNCTION> will 
 not, in fact, work properly from programs with <VARNAME>suid</VARNAME> 
 or <VARNAME>sgid</VARNAME> privileges on systems on which 
-<LITERAL>/bin/sh</LITERAL> is <EMPHASIS>bash</EMPHASIS> version 2, 
-since <EMPHASIS>bash</EMPHASIS> 2 drops privileges on startup. 
-(Debian uses a modified <EMPHASIS>bash</EMPHASIS> which does not do 
-this when invoked as <LITERAL>sh</LITERAL>.)
+<FILENAME>/bin/sh</FILENAME> is <COMMAND>bash</COMMAND> version 2, 
+since <COMMAND>bash</COMMAND> 2 drops privileges on startup. 
+(Debian uses a modified <COMMAND>bash</COMMAND> which does not do 
+this when invoked as <COMMAND>sh</COMMAND>.)
 </PARA>
 <PARA>
-The check for the availability of <LITERAL>/bin/sh</LITERAL> 
+The check for the availability of <FILENAME>/bin/sh</FILENAME> 
 is not actually performed; it is always assumed to be available. 
-<EMPHASIS>ISO C</EMPHASIS> specifies the check, but 
-<EMPHASIS>POSIX.2</EMPHASIS> specifies that the return shall 
+<XREF LINKEND=STD.ISOC99> specifies the check, but 
+<XREF LINKEND=STD.SUSv3> specifies that the return shall 
 always be nonzero, since a system without the 
 shell is not conforming, and it is this that is implemented.
 </PARA>
