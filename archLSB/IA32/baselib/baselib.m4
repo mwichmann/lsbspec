@@ -17,7 +17,6 @@ the Linux Standard Base Specification.
 </PARA>
 
 include(libc.sgml)
-include(libcman.sgml)
 
 include(libm.sgml)
 

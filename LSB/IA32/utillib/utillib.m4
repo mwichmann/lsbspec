@@ -15,8 +15,6 @@ include(libcurses.sgml)
 
 include(libutil.sgml)
 
-include(libutilman.sgml)
-
 </CHAPTER>
 
 </PART>
