@@ -13,12 +13,12 @@ TABLES= libICE.sgml libSM.sgml libX11.sgml libXext.sgml libXt.sgml libGL.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a IA32 -l libX11 >libX11.sgml
-	../../../mklibspec -a IA32 -l libXext >libXext.sgml
-	../../../mklibspec -a IA32 -l libICE >libICE.sgml
-	../../../mklibspec -a IA32 -l libSM >libSM.sgml
-	../../../mklibspec -a IA32 -l libXt >libXt.sgml
-	../../../mklibspec -a IA32 -l libGL >libGL.sgml
+	../../../mklibspec -a IA64 -l libX11 >libX11.sgml
+	../../../mklibspec -a IA64 -l libXext >libXext.sgml
+	../../../mklibspec -a IA64 -l libICE >libICE.sgml
+	../../../mklibspec -a IA64 -l libSM >libSM.sgml
+	../../../mklibspec -a IA64 -l libXt >libXt.sgml
+	../../../mklibspec -a IA64 -l libGL >libGL.sgml
 
 clean:
 	rm -f $(FILES)

@@ -15,7 +15,7 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../../../mkstandardsgmltable >standards.sgml
 	../../../mkstandardsgmltable -r >refimpls.sgml
-	../../../mklibsgmltable -a IA32 >libraries.sgml
+	../../../mklibsgmltable -a IA64 >libraries.sgml
 
 clean:
 	rm -f $(FILES)

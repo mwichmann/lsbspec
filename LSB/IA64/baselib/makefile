@@ -16,8 +16,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a IA32 -l libc >libc.sgml
-	../../../mklibspec -a IA32 -l libm >libm.sgml
+	../../../mklibspec -a IA64 -l libc >libc.sgml
+	../../../mklibspec -a IA64 -l libm >libm.sgml
 
 clean:
 	rm -f $(FILES)

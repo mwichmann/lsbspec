@@ -30,7 +30,7 @@ psspec: source
 	$(DB2PS) spec.sgml
 
 source:
-	sed -e "s#LSBVERSION#`cat ../../lsbversion.IA32`#" <spec.sgml.sed >spec.sgml
+	sed -e "s#LSBVERSION#`cat ../../lsbversion.IA64`#" <spec.sgml.sed >spec.sgml
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 gensrc:
