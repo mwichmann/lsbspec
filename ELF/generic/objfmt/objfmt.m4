@@ -124,7 +124,7 @@ g++ example.cc -Wl,-Bdynamic,-lc,-Bstatic
 </FOOTNOTE>
 </PARA>
 <PARA>
-In a future version of this specification, name mangling rules will be
+In a future version of this specification, name mangling rules shall be
 specified so that C++ symbols can be mapped into symbol names in the object
 file.
 </PARA>

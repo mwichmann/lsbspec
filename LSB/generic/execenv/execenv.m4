@@ -14,7 +14,7 @@ In this Chapter "System" means an "LSB conforming implementation" and
 </PARA>
 
 <PARA>
-The system must grant to the application read and execute              
+The system shall grant to the application read and execute              
 permissions needed to use all system interfaces (ABIs)                 
 mentioned in the LSB document and included standards.                  
 </PARA>
@@ -260,7 +260,7 @@ having write access, but the LSB does not require this.</para>
 Applications may either install a message catalog in the MO format as
 specified by the info page in version 0.10.40 of the gettext source package,
 or the application may execute the msgfmt command during it's installation
-to compile the message catalog. In either case, the resulting output must be
+to compile the message catalog. In either case, the resulting output shall be
 located in the package's private area under <FILENAME>/opt</FILENAME>, and the
 application may use <FUNCTION>bindtextdomain()</FUNCTION> to specify this
 location.

@@ -106,7 +106,7 @@ Applications cannot assume any policy for the default umask or the default
 directory permissions a user may have. Applications should enforce user
 only file permissions on private files such as mailboxes.  The location of
 the users home directory is also not defined by policy other than the
-recommendations of the FHS and must be obtained by the *pwnam(3) calls.
+recommendations of the FHS and shall be obtained by the *pwnam(3) calls.
 </PARA>
 </SECT1>
 <SECT1 ID="uidrange">

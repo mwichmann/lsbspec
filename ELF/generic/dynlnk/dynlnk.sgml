@@ -13,7 +13,7 @@ an architecture-specific LSB specification.
 </PARA>
 
 <PARA>
-Any shared object that is loaded must contain sufficient DT_NEEDED records to
+Any shared object that is loaded shall contain sufficient DT_NEEDED records to
 satisfy the symbols on the shared library.
 </PARA>
 </CHAPTER>

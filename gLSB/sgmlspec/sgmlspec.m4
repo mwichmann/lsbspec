@@ -22,8 +22,8 @@ written specification.
 In a normalization effort, about thirty people, including packagers
 of some Linux distributions, and developers of SGML related tools such
 as the SGML-Tools and DocBook Tools project, discussed informally and
-agreed on a series of recommendations that will be submitted as a draft
-to the Linux Standard Base project. A reference implementation will also
+agreed on a series of recommendations that shall be submitted as a draft
+to the Linux Standard Base project. A reference implementation shall also
 be done as part of the DocBook-tools project.
 </para>
 <para>
@@ -34,7 +34,7 @@ for all our choices are given in a separate document.
 </para>
 
 <para>
-Following a list of definitions, you will find a set of recommendations:
+Following a list of definitions, you shall find a set of recommendations:
 <simplelist>
   <member>R001--SGML Directory layout</member>
   <member>R002--DocBook Directory layout (standard names for directories, their contents)</member>
@@ -88,7 +88,7 @@ and all the other many people that helped with their own contribution.
 <title>Definitions</title>
 
 <para>
-In the scope of this document, we will use the following terms:
+In the scope of this document, we shall use the following terms:
 </para>
 
   <glossentry><glossterm>Centralized catalog</glossterm>
@@ -301,7 +301,7 @@ Open Catalog files include:
 
 </para>
 <para>
-The centralized catalog file names must end in .cat and reside in
+The centralized catalog file names shall end in .cat and reside in
 <filename class="directory">/etc/sgml</filename>.
 They contain only comments and CATALOG directives pointing
 to the <quote>real</quote> catalogs, like:
@@ -489,7 +489,7 @@ The identifiers should be fixed to:
 
 </para>
 <para>
-During the transitory period, symbolic links and duplicate declarations will
+During the transitory period, symbolic links and duplicate declarations shall
 be allowed as a means of preserving compatibility with previous naming
 schemes.
 
