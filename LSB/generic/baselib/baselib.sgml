@@ -12,8 +12,8 @@ hardware in the system.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
-<!--    at Thu Aug 22 16:35:08 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
+<!--    at Thu Aug 29 11:06:00 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -190,7 +190,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>__fxstat<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY>fchown<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>ioctl<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
+<ENTRY>ioctl<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY>readdir<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>setsid<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 </ROW>
@@ -3017,6 +3017,9 @@ struct semid_ds
 #define MSG_TRUNC	0x20
 #define MSG_EOR	0x80
 #define SIOCGIFCONF	0x8912
+#define SIOCGIFFLAGS	0x8913
+#define SIOCGIFADDR	0x8915
+#define SIOCGIFNETMASK	0x891b
 #define MSG_OOB	1
 #define SHUT_WR	1
 #define MSG_PEEK	2
@@ -8384,6 +8387,294 @@ Insufficient memory to allocate group information structure.
 <!--        Version 1a, November 1998   -->
 </REFENTRY>
 
+<REFENTRY ID="baselib-ioctl-2"> <REFMETA>
+<REFENTRYTITLE>ioctl</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>ioctl
+</REFNAME>
+<REFPURPOSE>
+control device
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>29 August 2002</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;sys/ioctl.h>
+
+int ioctl(int d, int request, ...);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>29 August 2002</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The ioctl function manipulates the underlying device parameters of special
+files. The argument d must be an open file descriptor. The third
+</PARA>
+<PARA>
+An application may not call ioctl except for situations explicitely stated
+in this specification.
+</PARA>
+
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, zero is returned. An ioctl may use the return value as an output
+parameter and return a nonnegative value on success. On error, -1 is returned,
+and errno is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EBADF  
+</TERM>
+<LISTITEM>
+<PARA>
+<replaceable>d</replaceable> is not a valid descriptor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT 
+</TERM>
+<LISTITEM>
+<PARA>
+<replaceable>argp</replaceable> references an inaccessible memory area.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOTTY 
+</TERM>
+<LISTITEM>
+<PARA>
+<replaceable>d</replaceable> is not associated with a character special device.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOTTY 
+</TERM>
+<LISTITEM>
+<PARA>
+The specified request does not apply to the kind of object that the descriptor
+<replaceable>d</replaceable> references.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL 
+</TERM>
+<LISTITEM>
+<PARA>
+<replaceable>request</replaceable> or <replaceable>argp</replaceable> is not valid.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+<REFENTRY ID="baselib-sockio-3"> <REFMETA>
+<REFENTRYTITLE>sockio</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sockio
+</REFNAME>
+<REFPURPOSE>
+socket ioctl commands
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>29 August 2002</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;sys/socket.h>
+
+int ioctl(int sockfd, int request, char *argp);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>29 August 2002</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Socket ioctl commands are a subset of the ioctl(2) system calls which can
+perform a variety of functions on sockets. The file descriptor
+<replaceable>sockfd</replaceable> must contain the value of a file descriptor
+which was created with the socket(2) or accept(2) system calls.
+</PARA>
+<PARA>
+These commands apply to the underlying network interfaces, and affect the
+entire system, not just the file descriptor used to issue the ioctl.
+</PARA>
+<PARA>
+The following ioctls are provided:
+</PARA>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+SIOCGIFCONF  
+</TERM>
+<LISTITEM>
+<PARA>
+Gets the interface configuration list for the system. The parameter
+<replaceable>argp</replaceable> is a pointer to a
+<replaceable>struct conf</replaceable>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+SIOCGIFFLAGS  
+</TERM>
+<LISTITEM>
+<PARA>
+Gets the interface flags for the indicated interface.
+The parameter <replaceable>argp</replaceable> is a pointer to a
+<replaceable>struct ifreq</replaceable>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+SIOCGIFADDR  
+</TERM>
+<LISTITEM>
+<PARA>
+Gets the interface address list for the system. The parameter
+<replaceable>argp</replaceable> is a pointer to a
+<replaceable>struct ifreq</replaceable>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+SIOCGIFNETMASK  
+</TERM>
+<LISTITEM>
+<PARA>
+Gets the network mask for the indicated interface. The parameter
+<replaceable>argp</replaceable> is a pointer to a
+<replaceable>struct ifreq</replaceable>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EBADF  
+</TERM>
+<LISTITEM>
+<PARA>
+<replaceable>sockfd</replaceable> is not a valid descriptor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT 
+</TERM>
+<LISTITEM>
+<PARA>
+<replaceable>argp</replaceable> references an inaccessible memory area.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOTTY 
+</TERM>
+<LISTITEM>
+<PARA>
+<replaceable>sockfd</replaceable> is not associated with a character special device.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOTTY 
+</TERM>
+<LISTITEM>
+<PARA>
+The specified request does not apply to the kind of object that the descriptor
+<replaceable>sockfd</replaceable> references.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL 
+</TERM>
+<LISTITEM>
+<PARA>
+<replaceable>request</replaceable> or <replaceable>argp</replaceable> is not valid.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+
+
 <REFENTRY ID="baselib-isblank-3"> <REFMETA>
 <REFENTRYTITLE>isblank</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -11872,13 +12163,13 @@ Convert initial portion of wide string NPTR to unsigned long long int representa
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
-<!--    at Thu Aug 22 16:36:13 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
+<!--    at Thu Aug 29 11:07:06 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -12373,13 +12664,13 @@ struct exception
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
-<!--    at Thu Aug 22 16:36:41 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
+<!--    at Thu Aug 29 11:07:33 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -13024,13 +13315,13 @@ sem_timedwait() waits for semaphore object SEM being posted. It is a new functio
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
-<!--    at Thu Aug 22 16:36:57 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
+<!--    at Thu Aug 29 11:07:49 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -13242,13 +13533,13 @@ directory search-path for object files
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
-<!--    at Thu Aug 22 16:37:07 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
+<!--    at Thu Aug 29 11:08:00 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -13474,7 +13765,7 @@ typedef int *intptr_t;
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.42 2002/08/22 17:52:56 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.43 2002/08/23 11:10:23 anderson Exp 0 -->
 
 
 </CHAPTER>
