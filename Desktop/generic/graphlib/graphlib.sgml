@@ -11,7 +11,7 @@ The X Libraries should be built thread-safe.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
-<!--    at Mon Apr 15 19:51:30 2002 -->
+<!--    at Tue Apr 16 21:43:50 2002 -->
 <SECT1 ID=libX11>
 <TITLE>Interfaces for libX11</TITLE>
 <PARA>
@@ -428,7 +428,6 @@ typedef struct XWindowAttributes;
 typedef struct XHostAddress;
 
 
-struct XImagefuncs;
 typedef struct _XImage
 {
   int width;
@@ -624,7 +623,7 @@ typedef enum XICCEncodingStyle;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
-<!--    at Mon Apr 15 19:51:32 2002 -->
+<!--    at Tue Apr 16 21:43:54 2002 -->
 <SECT1 ID=libXext>
 <TITLE>Interfaces for libXext</TITLE>
 <PARA>
@@ -870,7 +869,7 @@ XSyncAlarmState;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
-<!--    at Mon Apr 15 19:51:37 2002 -->
+<!--    at Tue Apr 16 21:44:03 2002 -->
 <SECT1 ID=libSM>
 <TITLE>Interfaces for libSM</TITLE>
 <PARA>
@@ -1005,7 +1004,7 @@ typedef void (*SmsErrorHandler) (void);
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
-<!--    at Mon Apr 15 19:51:35 2002 -->
+<!--    at Tue Apr 16 21:43:59 2002 -->
 <SECT1 ID=libICE>
 <TITLE>Interfaces for libICE</TITLE>
 <PARA>
@@ -1193,7 +1192,7 @@ IceAuthDataEntry;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
-<!--    at Mon Apr 15 19:51:38 2002 -->
+<!--    at Tue Apr 16 21:44:07 2002 -->
 <SECT1 ID=libXt>
 <TITLE>Interfaces for libXt</TITLE>
 <PARA>
@@ -1348,6 +1347,10 @@ typedef void (*XtDoChangeProc) (Widget composite_parent,
 </PARA>
 <SCREEN>
 
+#define XtInheritGeometryManager	((XtGeometryHandler) _XtInherit)
+#define XtInheritInsertChild	((XtWidgetProc) _XtInherit)
+#define XtInheritDeleteChild	((XtWidgetProc) _XtInherit)
+#define XtCompositeExtensionVersion	2L
 
 
 
@@ -1374,6 +1377,7 @@ typedef struct _CompositeClassRec CompositeClassRec;
 </PARA>
 <SCREEN>
 
+#define XtConstraintExtensionVersion	1L
 
 
 typedef struct _ConstraintPart ConstraintPart;
@@ -1412,18 +1416,6 @@ typedef struct _ConstraintClassRec *ConstraintWidgetClass;
 
 
 
-struct _ObjectPart
-{
-  Widget self;
-  WidgetClass widget_class;
-  Widget parent;
-  XrmName xrm_name;
-  Boolean being_destroyed;
-  XtCallbackList destroy_callbacks;
-  XtPointer constraints;
-}
- ;
-typedef struct _ObjectRec ObjectRec;
 typedef struct _ObjectPart
 {
   Widget self;
@@ -1437,45 +1429,13 @@ typedef struct _ObjectPart
 ObjectPart;
 
 
-
-
-
-struct _ObjectClassPart
+typedef struct _ObjectRec
 {
-  WidgetClass superclass;
-  String class_name;
-  Cardinal widget_size;
-  XtProc class_initialize;
-  XtWidgetClassProc class_part_initialize;
-  XtEnum class_inited;
-  XtInitProc initialize;
-  XtArgsProc initialize_hook;
-  XtProc obj1;
-  XtProc obj2;
-  XtProc obj3;
-  XtResourceList resources;
-  Cardinal num_resources;
-  XrmClass xrm_class;
-  Boolean obj4;
-  XtEnum obj5;
-  Boolean obj6;
-  Boolean obj7;
-  XtWidgetProc destroy;
-  XtProc obj8;
-  XtProc obj9;
-  XtSetValuesFunc set_values;
-  XtArgsFunc set_values_hook;
-  XtProc obj10;
-  XtArgsProc get_values_hook;
-  XtProc obj11;
-  XtVersionType version;
-  XtPointer callback_private;
-  String obj12;
-  XtProc obj13;
-  XtProc obj14;
-  XtPointer extension;
+  ObjectPart object;
 }
- ;
+ObjectRec;
+
+
 typedef struct _ObjectClassPart
 {
   WidgetClass superclass;
@@ -1514,7 +1474,7 @@ typedef struct _ObjectClassPart
 ObjectClassPart;
 
 
-struct ObjectClassExtensionRec Struct
+struct
 {
   XtPointer next_extension;
   XrmQuark record_type;
@@ -1524,7 +1484,9 @@ struct ObjectClassExtensionRec Struct
   XtDeallocateProc deallocate;
 }
  ;
-typedef struct ObjectClassExtensionRec Struct
+
+
+typedef struct
 {
   XtPointer next_extension;
   XrmQuark record_type;
@@ -1534,17 +1496,7 @@ typedef struct ObjectClassExtensionRec Struct
   XtDeallocateProc deallocate;
 }
 ObjectClassExtensionRec;
-struct ObjectClassExtensionRec Struct
-{
-  XtPointer next_extension;
-  XrmQuark record_type;
-  long version;
-  Cardinal record_size;
-  XtAllocateProc allocate;
-  XtDeallocateProc deallocate;
-}
- *;
-typedef struct ObjectClassExtensionRec Struct
+typedef struct
 {
   XtPointer next_extension;
   XrmQuark record_type;
@@ -1556,11 +1508,6 @@ typedef struct ObjectClassExtensionRec Struct
  *ObjectClassExtension;
 
 
-struct _ObjectClassRec
-{
-  ObjectClassPart object_class;
-}
- ;
 typedef struct _ObjectClassRec
 {
   ObjectClassPart object_class;
@@ -1742,7 +1689,7 @@ Determine if Widget(object) is a subclass of WidgetClass(widget_class).
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
-<!--    at Mon Apr 15 19:51:40 2002 -->
+<!--    at Tue Apr 16 21:44:10 2002 -->
 <SECT1 ID=libGL>
 <TITLE>Interfaces for libGL</TITLE>
 <PARA>

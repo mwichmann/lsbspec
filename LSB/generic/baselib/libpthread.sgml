@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
-<!--    at Mon Apr 15 19:51:14 2002 -->
+<!--    at Tue Apr 16 21:43:26 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -195,7 +195,6 @@ typedef unsigned long pthread_t;
 
 
 typedef struct _pthread_descr_struct *_pthread_descr;
-struct _pthread_descr_struct;
 
 
 typedef struct
@@ -287,8 +286,8 @@ sem_t;
 
 #define SIGRTMAX	(__libc_current_sigrtmax ())
 #define SIGRTMIN	(__libc_current_sigrtmin ())
-#define SIGEV_SIGNAL	0
 #define SIG_BLOCK	0
+#define SIGEV_SIGNAL	0
 #define SIG_UNBLOCK	1
 #define SIG_SETMASK	2
 #define SIGEV_THREAD	2
@@ -332,8 +331,8 @@ struct sigstack
 #define SIGUNUSED	31
 #define SIGILL	4
 #define SIGTRAP	5
-#define SIGABRT	6
 #define SIGIOT	6
+#define SIGABRT	6
 #define SIGBUS	7
 #define SIGFPE	8
 #define SIGKILL	9
@@ -359,23 +358,22 @@ sigval_t;
 #define SIGEV_NONE	1
 
 
-union _sigev_un
-{
-  int _pad[SI_PAD_SIZE];
-  struct
-  {
-    void (*sigev_thread_func) (void);
-    void *_attribute;
-  }
-  _sigev_thread;
-}
- ;
 typedef struct sigevent
 {
   sigval_t sigev_value;
   int sigev_signo;
   int sigev_notify;
-  union _sigev_un _sigev_un;
+  union
+  {
+    int _pad[SI_PAD_SIZE];
+    struct
+    {
+      void (*sigev_thread_func) (void);
+      void *_attribute;
+    }
+    _sigev_thread;
+  }
+  _sigev_un;
 }
 sigevent_t;
 #define SI_QUEUE	-1
