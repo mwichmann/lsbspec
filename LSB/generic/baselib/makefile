@@ -15,19 +15,19 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	bindtextdomain.sgml cfmakeraw.sgml \
 	creat.sgml fopen.sgml freopen.sgml \
 	cfsetspeed.sgml daemon.sgml dcgettext.sgml dladdr.sgml endutent.sgml \
-	err.sgml error.sgml errx.sgml flock.sgml getdomainname.sgml \
+	err.sgml error.sgml errx.sgml flock.sgml fcntl.sgml getdomainname.sgml \
 	gethostbyname_r.sgml getloadavg.sgml getopt.sgml getopt_long.sgml \
 	getopt_long_only.sgml getservbyname.sgml getservent.sgml \
 	gettext.sgml getutent.sgml getutent_r.sgml glob64.sgml \
 	htons.sgml inet_aton.sgml inet_ntoa.sgml \
 	initgroups.sgml ioctl.sgml iswctype.sgml kill.sgml llabs.sgml \
-	mbsnrtowcs.sgml memmem.sgml memrchr.sgml \
+	link.sgml mbsnrtowcs.sgml memmem.sgml memrchr.sgml \
 	mkstemp64.sgml ntohs.sgml obstack_free.sgml opterr.sgml \
-	optind.sgml optopt.sgml \
+	optind.sgml optopt.sgml regexec.sgml \
 	psignal.sgml putwchar.sgml pwrite64.sgml sem_timedwait.sgml \
 	setbuffer.sgml setegid.sgml seteuid.sgml setgroups.sgml \
 	sethostid.sgml sethostname.sgml setsockopt.sgml \
-	setutent.sgml \
+	setutent.sgml getsockopt.sgml \
 	sigandset.sgml sigblock.sgml siggetmask.sgml sigisemptyset.sgml sigorset.sgml \
 	sigreturn.sgml sigsetmask.sgml sigvec.sgml sockio.sgml stime.sgml stpcpy.sgml \
 	stpncpy.sgml strcasestr.sgml strerror_r.sgml strfry.sgml strndup.sgml \
@@ -44,16 +44,25 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	dlopen.sgml dlsym.sgml wait3.sgml utmpname.sgml \
 	pam_acct_mgmt.sgml pam_authenticate.sgml pam_chauthtok.sgml pam_close_session.sgml \
 	pam_end.sgml pam_fail_delay.sgml pam_getenvlist.sgml pam_get_item.sgml \
-	pam_open_session.sgml pam_setcred.sgml pam_set_item.sgml pam_start.sgml pam_strerror.sgml
+	pam_open_session.sgml pam_setcred.sgml pam_set_item.sgml pam_start.sgml pam_strerror.sgml \
+	uselocale.sgml newlocale.sgml duplocale.sgml freelocale.sgml \
+	fscanf.sgml fwscanf.sgml scanf.sgml sscanf.sgml swscanf.sgml \
+	vfscanf.sgml vfwscanf.sgml vscanf.sgml vsscanf.sgml vswscanf.sgml \
+	vwscanf.sgml wscanf.sgml
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
 	libpam.sgml libstdcxx.sgml
+SCANFFILES=fscanf.sgml fwscanf.sgml scanf.sgml sscanf.sgml swscanf.sgml \
+	vfscanf.sgml vfwscanf.sgml vscanf.sgml vsscanf.sgml vswscanf.sgml \
+	vwscanf.sgml wscanf.sgml
 
 .m4.sgml:
 	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
 
 all source: $(FILES) $(GENFILES)
+
+$(SCANFFILES): scanf_diffs.sgml
 
 gensrc:
 	../../../mklibspec -a All -l libc >libc.sgml
