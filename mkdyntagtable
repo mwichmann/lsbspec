@@ -52,22 +52,12 @@ $select.= " ORDER BY DynamicEntries.DEname ";
 #print $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
-print "<TBODY>\n";
-print "<ROW>";
-$curcol=1;
+print "<VARIABLELIST>\n";
 for(1..$sth->numrows) {
+	print "<VARLISTENTRY>";
 	%entry=$sth->fetchhash;
-	printf "<ENTRY>%s</ENTRY>",$entry{'DEname'};
-	if ( $dodesc ) {
-		printf "<ENTRY>%s</ENTRY>",$entry{'DEdescription'};
-	}
-	if( $curcol%$numcols == 0 && $_ != $sth->numrows) {
-		print "</ROW>\n";
-		print "<ROW>";
-		$curcol=1;
-	} else {
-		$curcol++;
-	}
+	printf "<TERM>%s</TERM>",$entry{'DEname'};
+	printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry{'DEdescription'};
+	print "</VARLISTENTRY>";
 }
-print "</ROW>\n";
-print "</TBODY>\n";
+print "</VARIABLELIST>\n";
