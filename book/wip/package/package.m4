@@ -103,7 +103,7 @@ value must be 3.
 <TERM><STRUCTFIELD>minor</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value indicating the minor revision nuber of file format version. This value
+Value indicating the minor revision number of file format version. This value
 must be 0.
 </PARA>
 </LISTITEM>
@@ -112,8 +112,8 @@ must be 0.
 <TERM><STRUCTFIELD>type</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value indicating the minor revision nuber of file format version. This value
-must be 0.
+Value indicating wether this is a source or binary package.
+This value must be 0 to indicate a binary package.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -461,7 +461,7 @@ file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 <PARA>
 The CPIO Header uses the following header structure (sometimes referred to
 as "new ASCII" or "SVR4 cpio"). All numbers are stored as ASCII
-representations of their hexidecimal value.
+representations of their hexadecimal value.
 With the exception of <STRUCTFIELD>c_namesize</STRUCTFIELD>
 and the corresponding name string, and <STRUCTFIELD>c_checksum</STRUCTFIELD>,
 all information contained in the CPIO Header is also represented in the
@@ -513,7 +513,7 @@ This field must match the corresponding value in the
 <TERM><STRUCTFIELD>c_mode</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Permission bits of the file. This is an ascii representation of the hexidecimal
+Permission bits of the file. This is an ascii representation of the hexadecimal
 number representing the bit as defined for the
 <STRUCTFIELD>st_mode</STRUCTFIELD> field of the <STRUCTNAME>stat</STRUCTNAME>
 structure defined for the <VARNAME>stat</VARNAME> function.
