@@ -3,7 +3,7 @@
 <!entity % entities SYSTEM "../../entities">
 <!entity elf-contents SYSTEM "../../book/ELF-generic/contents">
 <!entity lsb-contents SYSTEM "../../book/LSB-generic/contents">
-<!entity packaging-contents SYSTEM "../../book/Packaging/contents">
+<!entity packaging-contents SYSTEM "../../book/Packaging-generic/contents">
 <!entity desktop-contents SYSTEM "../../book/Desktop/contents">
 
 <!entity specversion "LSBVERSION">

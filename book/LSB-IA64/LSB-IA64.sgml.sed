@@ -9,6 +9,9 @@
 <!entity specarchitecture "Itanium&trade;">
 <!entity spectitle "Linux Standard Base Specification for the IA64 Architecture">
 
+<!entity itanium "Itanium&trade;">
+<!ENTITY w "<emphasis>w</emphasis>">
+
 %entities;
 
 ]>
