@@ -48,30 +48,34 @@ Processor Supplement.
 </SECT1>
 </CHAPTER>
 
+<!-- These are currently empty on IA32, so just leave them out.
 <CHAPTER ID=sections>
 <TITLE>Sections</TITLE>
 <PARA>
 </PARA>
-<SECT1 ID="specialsections">
-<TITLE>Special Sections</TITLE>
+
+<SECT1 ID="elftypes">
+<TITLE>Section Types</TITLE>
+<PARA>
+A section header's <COMPUTEROUTPUT>sh_type</COMPUTEROUTPUT> member specifies the
+ sections's semantics.
+</PARA>
+<SECT2>
+<TITLE>ELF Section Types</TITLE>
 <PARA>
 The following sections are defined in the System V Application Binary
 Interface - Intel386 Architecture Processor Supplement.
-include(elfsect.sgml)
+Xinclude(elfsecttypes.sgml)
 </PARA>
-</SECT1>
-<SECT1 ID="linuxspecial">
-<TITLE>Linux Special Sections</TITLE>
+</SECT2>
+<SECT2>
+<TITLE>Additional Section Types</TITLE>
 <PARA>
-The following Linux IA-32 specific sections are defined here.
-include(linuxsect.sgml)
-</PARA>
-</SECT1>
+The following additional section types are defined here.
 
-<SECT1 ID="sectiontypes">
-<TITLE>Section Types</TITLE>
-<PARA>
+Xinclude(linuxsecttypes.sgml)
 </PARA>
+</SECT2>
 </SECT1>
 
 <SECT1 ID="sectionattribflags">
@@ -84,6 +88,36 @@ include(linuxsect.sgml)
 <TITLE>Special Section Types</TITLE>
 <PARA>
 </PARA>
+</SECT1>
+</CHAPTER>
+-->
+
+<CHAPTER ID=specialsections>
+<TITLE>Special Sections</TITLE>
+<PARA>
+</PARA>
+
+<SECT1 ID="elfspecial">
+<TITLE>Special Sections</TITLE>
+<PARA>
+Various sections hold program and control information. Sections in the lists bel
+ow are used by the system and have the indicated types and attributes.
+</PARA>
+<SECT2>
+<TITLE>ELF Special Sections</TITLE>
+<PARA>
+The following sections are defined in the System V Application Binary
+Interface - Intel386 Architecture Processor Supplement.
+include(elfsect.sgml)
+</PARA>
+</SECT2>
+<SECT2>
+<TITLE>Addition Special Sections</TITLE>
+<PARA>
+The following additional sections are defined here.
+include(linuxsect.sgml)
+</PARA>
+</SECT2>
 </SECT1>
 
 </CHAPTER>

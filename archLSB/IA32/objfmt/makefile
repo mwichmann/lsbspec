@@ -14,10 +14,10 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mksectiontable -a IA32 -s 'IA32-ABI-4' -c 4 >elfsect.sgml
-	../../../mksectiontable -a IA32 -s 'LSB' -d >linuxsect.sgml
-	../../../mksecttypestable -a IA32 -s 'IA32-ABI-4' -c 4 >elfsecttypes.sgml
-	../../../mksecttypestable -a IA32 -s 'LSB' -d >linuxsecttypes.sgml
+	../../../mksecttypestable -a IA32 -s 'IA32-ABI-4' -t 'ELF Section Types' >elfsecttypes.sgml
+	../../../mksecttypestable -a IA32 -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
+	../../../mksectiontable -a IA32 -s 'IA32-ABI-4' -t 'ELF Special Sections' >elfsect.sgml
+	../../../mksectiontable -a IA32 -s 'LSB' -t 'Additional Special Sections' >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)
