@@ -160,7 +160,7 @@ include("lsbversion")
 <TD ALIGN=center><A HREF="lsbreview.html">Review it!</A></TD>
 <TD ALIGN=center><a href="gLSB/gLSB/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="gLSB/gLSB.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="gLSB/gLSB.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="gLSB/gLSB.pdf">PDF</a></TD>
 <TD ALIGN=center><a href="gLSB/gLSB.html">HTML</a></TD>
 <TD ALIGN=center><a href="gLSB/gLSB.txt">TXT</a></TD>
 <TD ALIGN=center><a href="gLSB/gLSB_lines.txt">TXT</a></TD>
@@ -180,7 +180,7 @@ include("lsbversion.IA32")
 <TD ALIGN=center><A HREF="lsbia32review.html">Review it!</A></TD>
 <TD ALIGN=center><a href="archLSB/IA32/spec/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/IA32/spec.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="archLSB/IA32/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="archLSB/IA32/spec.pdf">PDF</a--></TD>
 <TD ALIGN=center><a href="archLSB/IA32/spec.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/IA32/spec.txt">TXT</a></TD>
 <TD ALIGN=center><a href="archLSB/IA32/spec_lines.txt">TXT</a></TD>
@@ -200,7 +200,7 @@ include("lsbversion.IA64")
 <TD ALIGN=center><A HREF="lsbia64review.html">Review it!</A></TD>
 <TD ALIGN=center><a href="archLSB/IA64/spec/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/IA64/spec.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="archLSB/IA64/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="archLSB/IA64/spec.pdf">PDF</a--></TD>
 <TD ALIGN=center><a href="archLSB/IA64/spec.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/IA64/spec.txt">TXT</a></TD>
 <TD ALIGN=center><a href="archLSB/IA64/spec_lines.txt">TXT</a></TD>
@@ -220,7 +220,7 @@ include("lsbversion.PPC32")
 <TD ALIGN=center><A HREF="lsbppc32review.html">Review it!</A></TD>
 <TD ALIGN=center><a href="archLSB/PPC32/spec/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/PPC32/spec.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="archLSB/PPC32/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="archLSB/PPC32/spec.pdf">PDF</a--></TD>
 <TD ALIGN=center><a href="archLSB/PPC32/spec.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/PPC32/spec.txt">TXT</a></TD>
 <TD ALIGN=center><a href="archLSB/PPC32/spec_lines.txt">TXT</a></TD>
@@ -240,7 +240,7 @@ include("lsbversion.PPC64")
 <TD ALIGN=center><A HREF="lsbppc64review.html">Review it!</A></TD>
 <TD ALIGN=center><a href="archLSB/PPC64/spec/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/PPC64/spec.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="archLSB/PPC64/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="archLSB/PPC64/spec.pdf">PDF</a--></TD>
 <TD ALIGN=center><a href="archLSB/PPC64/spec.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/PPC64/spec.txt">TXT</a></TD>
 <TD ALIGN=center><a href="archLSB/PPC64/spec_lines.txt">TXT</a></TD>
@@ -260,7 +260,7 @@ include("lsbversion.S390")
 <TD ALIGN=center><A HREF="lsbs390review.html">Review it!</A></TD>
 <TD ALIGN=center><a href="archLSB/S390/spec/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/S390/spec.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="archLSB/S390/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="archLSB/S390/spec.pdf">PDF</a--></TD>
 <TD ALIGN=center><a href="archLSB/S390/spec.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/S390/spec.txt">TXT</a></TD>
 <TD ALIGN=center><a href="archLSB/S390/spec_lines.txt">TXT</a></TD>
@@ -280,7 +280,7 @@ include("lsbversion.S390X")
 <TD ALIGN=center><A HREF="lsbs390xreview.html">Review it!</A></TD>
 <TD ALIGN=center><a href="archLSB/S390X/spec/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/S390X/spec.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="archLSB/S390X/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="archLSB/S390X/spec.pdf">PDF</a--></TD>
 <TD ALIGN=center><a href="archLSB/S390X/spec.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/S390X/spec.txt">TXT</a></TD>
 <TD ALIGN=center><a href="archLSB/S390X/spec_lines.txt">TXT</a></TD>
@@ -300,7 +300,7 @@ include("lsbversion.AMD64")
 <TD ALIGN=center><A HREF="lsbx86-64review.html">Review it!</A></TD>
 <TD ALIGN=center><a href="archLSB/AMD64/spec/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/AMD64/spec.rtf">RTF</a></TD>
-<TD ALIGN=center><a href="archLSB/AMD64/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="archLSB/AMD64/spec.pdf">PDF</a--></TD>
 <TD ALIGN=center><a href="archLSB/AMD64/spec.html">HTML</a></TD>
 <TD ALIGN=center><a href="archLSB/AMD64/spec.txt">TXT</a></TD>
 <TD ALIGN=center><a href="archLSB/AMD64/spec_lines.txt">TXT</a></TD>
