@@ -61,7 +61,7 @@ information as defined by the .eh_frame_hdr section.
 <PARA>
 The p_flags member specifies the permissions on the segment containing the stack
 and is used to indicate wether the stack should be executable. The absense of
-this header indicates indicates that the stack will be executable.
+this header indicates that the stack will be executable.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
