@@ -8,7 +8,7 @@ A "user name" is a string that is used to identify a user.  A "login name" is
 a user name that is associated with a system login.   A "user id" is a non
 negative integer, which can be contained in an object of type
 uid_t, that is used to identify a system user.  
-When the identify of a user is associated with a process, a user ID value is 
+When the identity of a user is associated with a process, a user ID value is 
 referred to as a real user ID, or an effective user ID.  [POSIX 1.003.1-1996]
 </PARA>
 <PARA>
