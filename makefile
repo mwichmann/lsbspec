@@ -11,8 +11,14 @@ DB2PS=sgmltools -b ps
 
 DB2PDF=sgmltools -b pdf
 
-all:
+all::
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+
+all::
+	./mkintlist -A All >intlist.All.txt
+	./mkintlist -A IA32 >intlist.IA32.txt
+	./mkintlist -A IA64 >intlist.IA64.txt
+	./mkintlist -A PPC32 >intlist.PPC32.txt
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
