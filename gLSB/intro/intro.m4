@@ -159,14 +159,14 @@ only LSB defined APIs.
 <LISTITEM>
 <PARA>
 Link your binary application with the LSB 
-<FILENAME class=library path=/lib>ld-lsb.so.1</FILENAME>
+<FILENAME>/lib/ld-lsb.so.1</FILENAME>
 dynamic linker/loader. 
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
 Verify your binary application with the LSB's 
-<FILENAME class=executable path=/usr/bin>lsbappchk</FILENAME>
+<FILENAME>/usr/bin/lsbappchk</FILENAME>
 tool to determine at runtime if your application is using only LSB defined APIs.
 </PARA>
 </LISTITEM>
