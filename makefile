@@ -12,6 +12,7 @@ DB2PS=sgmltools -b ps
 DB2PDF=sgmltools -b pdf
 
 all::
+	find . -name '*.m4' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 all::
@@ -31,6 +32,7 @@ source:
 	for dir in $(SUBDIRS);do (cd $$dir && make source);done
 
 autobuild:
+	find . -name '*.m4' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
 
 clean::
