@@ -12,8 +12,8 @@ DB2RTF=docbook2rtf
 DB2PS=sgmltools -b ps
 #DB2PS=docbook2ps
 
-DB2PDF=sgmltools -b pdf
-#DB2PDF=docbook2pdf
+#DB2PDF=sgmltools -b pdf
+DB2PDF=docbook2pdf
 
 #DB2ONEHTML=sgmltools -b onehtml
 DB2ONEHTML=docbook2html -u
