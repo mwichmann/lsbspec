@@ -3,29 +3,9 @@
 
 <CHAPTER ID=swinstall>
 <TITLE>Software Installation</TITLE>
-<PARA></PARA>
-
-<SECT1 ID=pkgformat>
-<TITLE>Package Format</TITLE>
 <PARA>
-Applications should be provided in the RPM packaging format
-as defined in the
-<ulink url="http://www.rpm.org/max-rpm/s1-rpm-file-format-rpm-file-format.html">
-appendix</ulink> of the 1997 edition of
-<ulink url="http://www.rpm.org/max-rpm/">
-Maximum RPM
-</ulink>,
-with some restrictions listed below.
-<FOOTNOTE ID="pkg-1">
-<PARA>
-Some versions of RPM may produce packages which contain extensions or 
-modifications to the RPM package format beyond what has been documented 
-in the appendix of the Maximum RPM book.  An LSB-conformant package must 
-not contain any of these extensions, in order to assure interoperability
-with the largest number of versions of RPM and packaging systems which
-understand how to import RPM format packages.
-</PARA>
-</FOOTNOTE>
+Applications should be provided in the RPM packaging format as defined in
+this specification.
 </PARA>
 <PARA>
 Distributions must provide a mechanism for installing applications in
@@ -40,7 +20,995 @@ installing the LSB-conformant packages.
 </FOOTNOTE>
 </PARA>
 
+
+
+<SECT1 ID=pkgformat>
+<TITLE>Package File Format</TITLE>
+<PARA>
+An RPM format file consists of 4 sections, the Lead, Signature, Header, and
+the Payload. All values are stored in network byte order.
+</PARA>
+<TABLE>
+<TITLE>RPM File Format</TITLE>
+<TGROUP COLS=1>
+<TBODY>
+<ROW>
+<ENTRY>Lead</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Signature</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Header</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Payload</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+These 4 sections must exist in the order specified. 
+</PARA>
+<PARA>
+The lead section is used to identify the package file.
+</PARA>
+<PARA>
+The signature section is used to verify the integrity, and optionally, the
+authenticity of the majority of the package file.
+</PARA>
+<PARA>
+The header section contains all available information about the package. Entries
+such as the package's name, version, and file list, are contained in the header.
+</PARA>
+<PARA>
+The payload section holds the actual files that comprise the package.
+</PARA>
 <SECT2>
+<TITLE>Lead Section</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+struct rpmlead {
+    unsigned char magic[4];
+    unsigned char major, minor;
+    short type;
+    short archnum;
+    char name[66];
+    short osnum;
+    short signature_type;
+    char reserved[16];
+} ;
+</SCREEN>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>magic</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying this file as an RPM format file. This value must be
+"\355\253\356\333".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>major</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value indicating the major version number of the file format version. This
+value must be 3.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>minor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value indicating the minor revision number of file format version. This value
+must be 0.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>type</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value indicating wether this is a source or binary package.
+This value must be 0 to indicate a binary package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>archnum</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value indicating the architecture for which this package is valid. This value
+is specified in the architecture-specific LSB specification.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>name</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A NUL terminated string that provides the package name. This name must
+conform with the Package Naming section of this specification.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>osnum</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value indicating the Operating Systgem for which this package is valid. This
+value must be 1.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>signature_type</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value indicating the type of the signature used in the Signature part of the
+file. This value must be 5.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>reserved</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Reserved space. The value is undefined.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</SECT2>
+
+
+<SECT2>
+<TITLE>Header Structure</TITLE>
+<PARA>
+The Header structure is used for both the Signature and Header Sections. A
+Header Structure consists of 3 parts, a Header record, followed by 1 or more
+Index records, followed by 0 or more bytes of data associated with the Index
+records. A Header structure must be aligned to an 8 byte boundary.
+</PARA>
+<TABLE>
+<TITLE>Signature Format</TITLE>
+<TGROUP COLS=1>
+<TBODY>
+<ROW>
+<ENTRY>Header Record</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Array of Index Records</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Store of Index Values</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+<SECT3>
+<TITLE>Header Record</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+struct rpmheader {
+    unsigned char magic[4];
+    unsigned char reserved[4];
+    int nindex;
+    int hsize;
+    } ;
+</SCREEN>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>magic</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying this record as an RPM header record. This value must be
+"\216\255\350\001".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>reserved</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Reserved space.  This value must be "\000\000\000\000".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>nindex</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The number of Index Records that follow this Header Record. There should be at
+least 1 Index Record.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>hsize</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The size in bytes of the storage area for the data pointed to by the
+Index Records.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
+</SECT3>
+
+
+<SECT3>
+<TITLE>Index Record</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+struct rpmhdrindex {
+    int tag;
+    int type;
+    int offset;
+    int count;
+    } ;
+</SCREEN>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>tag</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the purpose of the data associated with this Index Record.
+This value of this field is dependent on the context in which the Index Record
+is used, and is defined below and in later sections.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>type</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the type of the data associated with this Index Record. The
+possible <STRUCTFIELD>type</STRUCTFIELD> values are defined below.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>offset</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Location in the Store of the data associated with this Index Record. This value
+should between 0 and the value contained in the <STRUCTFIELD>hsize</STRUCTFIELD>
+of the Header Structure.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>count</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Size of the data associated with this Index Record. The
+<STRUCTFIELD>count</STRUCTFIELD> is the number of elements whose size is
+defined by the type of this Record.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<SECT4>
+<TITLE>Index Type Values</TITLE>
+<PARA>
+The possible values for the <STRUCTFIELD>type</STRUCTFIELD> field are defined
+in this table.
+</PARA>
+<TABLE>
+<TITLE>Index Type values</TITLE>
+<TGROUP COLS=4>
+<THEAD>
+<ROW>
+<ENTRY>Type</ENTRY>
+<ENTRY>Value</ENTRY>
+<ENTRY>Size (in bytes)</ENTRY>
+<ENTRY>Alignment</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>RPM_NULL_TYPE</ENTRY>
+<ENTRY>0</ENTRY>
+<ENTRY>Not Implemented.</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_CHAR_TYPE</ENTRY>
+<ENTRY>1</ENTRY>
+<ENTRY>1</ENTRY>
+<ENTRY>1</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_INT8_TYPE</ENTRY>
+<ENTRY>2</ENTRY>
+<ENTRY>1</ENTRY>
+<ENTRY>1</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_INT16_TYPE</ENTRY>
+<ENTRY>3</ENTRY>
+<ENTRY>2</ENTRY>
+<ENTRY>2</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_INT32_TYPE</ENTRY>
+<ENTRY>4</ENTRY>
+<ENTRY>4</ENTRY>
+<ENTRY>4</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_INT64_TYPE</ENTRY>
+<ENTRY>5</ENTRY>
+<ENTRY>Reserved.</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_STRING_TYPE</ENTRY>
+<ENTRY>6</ENTRY>
+<ENTRY>variable, NUL terminated</ENTRY>
+<ENTRY>1</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_BIN_TYPE</ENTRY>
+<ENTRY>7</ENTRY>
+<ENTRY>1</ENTRY>
+<ENTRY>1</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_STRING_ARRAY_TYPE</ENTRY>
+<ENTRY>8</ENTRY>
+<ENTRY>Variable, sequence of NUL terminated strings</ENTRY>
+<ENTRY>1</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPM_I18NSTRING_TYPE</ENTRY>
+<ENTRY>9</ENTRY>
+<ENTRY>variable, sequence of NUL terminated strings</ENTRY>
+<ENTRY>1</ENTRY>
+</ROW>
+</TBODY>
+</TABLE>
+
+<PARA>
+The string arrays specified for enties of type
+<CONSTANT>RPM_STRING_ARRAY_TYPE</CONSTANT> and
+<CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT>
+are vectors of strings in a contiguous block of memory, each element separated
+from its neighbors by a NUL character.
+</PARA>
+<PARA>
+Index records with type <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT> must always
+have a <STRUCTFIELD>count</STRUCTFIELD> if 1. The array entries in an index of
+type <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT> correspond to the locale names
+contained in the <CONSTANT>HDRTAG_HDRI18NTABLE</CONSTANT> index.
+</PARA>
+</SECT4>
+<SECT4>
+<TITLE>Index Tag Values</TITLE>
+<PARA>
+Some values are designated as header private, and may appear in any header
+structure. These are defined here. Additional values are defined in later
+sections.
+</PARA>
+<!-- Start of text generated from database -->
+<!-- generated from the LSB specification database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+<!--    at Wed Oct 16 23:59:35 2002 -->
+<TABLE>
+<TITLE>Header Private Tag Values</TITLE>
+<TGROUP COLS=5>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Tag Value</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Count</ENTRY><ENTRY ALIGN=center>Status</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>RPMTAG_HEADERSIGNATURES</ENTRY><ENTRY>62</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_HEADERIMMUTABLE</ENTRY><ENTRY>63</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Reserved</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_HEADERI18NTABLE</ENTRY><ENTRY>100</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<VARIABLELIST>
+<VARLISTENTRY><TERM>RPMTAG_HEADERSIGNATURES</TERM><LISTITEM><PARA>Contains an index record that specifies the location of the Signature data, reletive to the start of index record.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_HEADERIMMUTABLE</TERM><LISTITEM><PARA></PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_HEADERI18NTABLE</TERM><LISTITEM><PARA>Contains a list of locales for which strings are provided in other parts of the package.</PARA></LISTITEM></VARLISTENTRY>
+</VARIABLELIST>
+<!-- End of text generated from database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+
+<PARA>
+Not all Index records defined here will be present in all packages. Each tag
+value has a status which indicated is defined here.
+</PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>Required</TERM>
+<LISTITEM>
+<PARA>
+This Index Record must be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>Optional</TERM>
+<LISTITEM>
+<PARA>
+This Index Record may be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>Deprecated</TERM>
+<LISTITEM>
+<PARA>
+This Index Record should not be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>Obsolete</TERM>
+<LISTITEM>
+<PARA>
+This Index Record must not be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</SECT4>
+</SECT3>
+
+<SECT3>
+<TITLE>Header Store</TITLE>
+<PARA>
+The header store contains the values specified by the Index structures. These
+values are aligned according to their type and padding is used if needed. The
+store is located immediately following the Index structures.
+</PARA>
+</SECT3>
+
+</SECT2>
+
+
+<SECT2>
+<TITLE>Signature Section</TITLE>
+<PARA>
+The Signature section is implemented using the Header structure. The signature
+section defines 3 additional tag values which may be used in the Index
+structures.
+</PARA>
+<!-- Start of text generated from database -->
+<!-- generated from the LSB specification database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+<!--    at Wed Oct 16 23:59:36 2002 -->
+<TABLE>
+<TITLE>Signature Tag Values</TITLE>
+<TGROUP COLS=5>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Tag Value</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Count</ENTRY><ENTRY ALIGN=center>Status</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>SIGTAG_SHA1HEADER</ENTRY><ENTRY>265</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Reserved</ENTRY></ROW>
+<ROW><ENTRY>SIGTAG_SIGSIZE</ENTRY><ENTRY>1000</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>SIGTAG_MD5</ENTRY><ENTRY>1004</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Required</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<VARIABLELIST>
+<VARLISTENTRY><TERM>SIGTAG_SHA1HEADER</TERM><LISTITEM><PARA>SHA1 Signature Data</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>SIGTAG_SIGSIZE</TERM><LISTITEM><PARA>This tag specifies the combined size of the Header and Archive sections.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>SIGTAG_MD5</TERM><LISTITEM><PARA>This tag specifies the 128-bit MD5 checksum of the combined Header and Archive sections.</PARA></LISTITEM></VARLISTENTRY>
+</VARIABLELIST>
+<!-- End of text generated from database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+
+</SECT2>
+
+
+<SECT2>
+<TITLE>Header Section</TITLE>
+<PARA>
+The Header section is implemented using the Header structure. The Header
+section defines the following additional tag values which may be used in
+the Index structures.
+</PARA>
+<!-- Start of text generated from database -->
+<!-- generated from the LSB specification database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+<!--    at Wed Oct 16 23:59:36 2002 -->
+<TABLE>
+<TITLE>Header Tag Values</TITLE>
+<TGROUP COLS=5>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Tag Value</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Count</ENTRY><ENTRY ALIGN=center>Status</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>RPMTAG_NAME</ENTRY><ENTRY>1000</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_VERSION</ENTRY><ENTRY>1001</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_RELEASE</ENTRY><ENTRY>1002</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_SUMMARY</ENTRY><ENTRY>1004</ENTRY><ENTRY>I18NSTRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_DESCRIPTION</ENTRY><ENTRY>1005</ENTRY><ENTRY>I18NSTRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_BUILDTIME</ENTRY><ENTRY>1006</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_BUILDHOST</ENTRY><ENTRY>1007</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_SIZE</ENTRY><ENTRY>1009</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_LICENSE</ENTRY><ENTRY>1014</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_GROUP</ENTRY><ENTRY>1016</ENTRY><ENTRY>I18NSTRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_OS</ENTRY><ENTRY>1021</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_ARCH</ENTRY><ENTRY>1022</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILESIZES</ENTRY><ENTRY>1028</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEMODES</ENTRY><ENTRY>1030</ENTRY><ENTRY>INT16</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILERDEVS</ENTRY><ENTRY>1033</ENTRY><ENTRY>INT16</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEMTIMES</ENTRY><ENTRY>1034</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEMD5S</ENTRY><ENTRY>1035</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILELINKTOS</ENTRY><ENTRY>1036</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEFLAGS</ENTRY><ENTRY>1037</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEUSERNAME</ENTRY><ENTRY>1039</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEGROUPNAME</ENTRY><ENTRY>1040</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_SOURCERPM</ENTRY><ENTRY>1044</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEVERIFYFLAGS</ENTRY><ENTRY>1045</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_ARCHIVESIZE</ENTRY><ENTRY>1046</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PROVIDENAME</ENTRY><ENTRY>1047</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_REQUIREFLAGS</ENTRY><ENTRY>1048</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_REQUIRENAME</ENTRY><ENTRY>1049</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_REQUIREVERSION</ENTRY><ENTRY>1050</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_RPMVERSION</ENTRY><ENTRY>1064</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CHANGELOGTIME</ENTRY><ENTRY>1080</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CHANGELOGNAME</ENTRY><ENTRY>1081</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CHANGELOGTEXT</ENTRY><ENTRY>1082</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PREINPROG</ENTRY><ENTRY>1085</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_POSTINPROG</ENTRY><ENTRY>1086</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PREUNPROG</ENTRY><ENTRY>1087</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_POSTUNPROG</ENTRY><ENTRY>1088</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_COOKIE</ENTRY><ENTRY>1094</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEDEVICES</ENTRY><ENTRY>1095</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILEINODES</ENTRY><ENTRY>1096</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_FILELANGS</ENTRY><ENTRY>1097</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PROVIDEFLAGS</ENTRY><ENTRY>1112</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PROVIDEVERSION</ENTRY><ENTRY>1113</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_DIRINDEXES</ENTRY><ENTRY>1116</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_BASENAMES</ENTRY><ENTRY>1117</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_DIRNAMES</ENTRY><ENTRY>1118</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_OPTFLAGS</ENTRY><ENTRY>1122</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PAYLOADFORMAT</ENTRY><ENTRY>1124</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PAYLOADCOMPRESSOR</ENTRY><ENTRY>1125</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PAYLOADFLAGS</ENTRY><ENTRY>1126</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_RHNPLATFORM</ENTRY><ENTRY>1131</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Deprecated</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_PLATFORM</ENTRY><ENTRY>1132</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<VARIABLELIST>
+<VARLISTENTRY><TERM>RPMTAG_NAME</TERM><LISTITEM><PARA>This tag specifies the name of the package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_VERSION</TERM><LISTITEM><PARA>This tag specifies the version of the package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_RELEASE</TERM><LISTITEM><PARA>This tag specifies the release of the package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_SUMMARY</TERM><LISTITEM><PARA>This tag specifies the summary description of the package. The summary value pointed to by this index record contains a one line description of the package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_DESCRIPTION</TERM><LISTITEM><PARA>This tag specifies the description of the package. The description value pointed to by this index record contains a full desription of the package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_BUILDTIME</TERM><LISTITEM><PARA>This tag specifies the time as seconds since the epoch at which the package was built.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_BUILDHOST</TERM><LISTITEM><PARA>This tag specifies the on which which the package was built.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_SIZE</TERM><LISTITEM><PARA>This tag specifies the sum of the file sizes in the archive.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_LICENSE</TERM><LISTITEM><PARA>This tag specifies the license which applies to this package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_GROUP</TERM><LISTITEM><PARA>This tag specifies the administrative group to which this package belongs.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_OS</TERM><LISTITEM><PARA>This tag specifies the OS of the package. The OS value pointed to by this index record must be "linux".</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_ARCH</TERM><LISTITEM><PARA>This tag specifies the architecture of the package. The architecture value pointed to by this index record is defined in architecture specific LSB specification.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILESIZES</TERM><LISTITEM><PARA>This tag specifies the size of each file in the archive.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEMODES</TERM><LISTITEM><PARA>This tag specifies the mode of each file in the archive.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILERDEVS</TERM><LISTITEM><PARA>This tag specifies the device number from which the file was copied.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEMTIMES</TERM><LISTITEM><PARA>This tag specifies the modification time in seconds since the epoch of each file in the archive.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEMD5S</TERM><LISTITEM><PARA>This tag specifies the ASCII representation of the MD5 sum of the corresponding file contents. This value is empty if the corresponding archive entry is not a regular file.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILELINKTOS</TERM><LISTITEM><PARA>The target for a symlink, otherwise NULL.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEFLAGS</TERM><LISTITEM><PARA>This tag specifies the bit(s) to classify and control how files are to be installed.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEUSERNAME</TERM><LISTITEM><PARA>This tag specifies the owner of the corresponding file.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEGROUPNAME</TERM><LISTITEM><PARA>This tag specifies the of the corresponding file.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_SOURCERPM</TERM><LISTITEM><PARA>This tag specifies the name of the source RPM</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEVERIFYFLAGS</TERM><LISTITEM><PARA>This tag specifies the bit(s) to control how files are to be verified after install, specifying which checks should be performed.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_ARCHIVESIZE</TERM><LISTITEM><PARA>This tag specifies the uncompressed size of the Payload archive, including the cpio headers.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PROVIDENAME</TERM><LISTITEM><PARA>This tag indicates the name of the dependency provided by this package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_REQUIREFLAGS</TERM><LISTITEM><PARA>Bits(s) to specify the dependency range and context.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_REQUIRENAME</TERM><LISTITEM><PARA>This tag indicates the dependencies for this package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_REQUIREVERSION</TERM><LISTITEM><PARA>This tag indicates the versions associated with the values found in the RPMTAG_REQUIRENAME Index.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_RPMVERSION</TERM><LISTITEM><PARA>This tag indicates the version of RPM tool used to build this package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_CHANGELOGTIME</TERM><LISTITEM><PARA>This tag specifies the Unix time in seconds since the epoch associated with each entry in the Changelog file.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_CHANGELOGNAME</TERM><LISTITEM><PARA>This tag specifies the name of who made a change to this package</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_CHANGELOGTEXT</TERM><LISTITEM><PARA>This tag specifies the changes asssociated with a changelog entry.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PREINPROG</TERM><LISTITEM><PARA>This tag specifies the name of the preinstall program.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_POSTINPROG</TERM><LISTITEM><PARA>This tag specifies the name of the postinstall program.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PREUNPROG</TERM><LISTITEM><PARA>This tag specifies the name of the preuninstall program.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_POSTUNPROG</TERM><LISTITEM><PARA>This program specifies the name of the postunnistall program.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_COOKIE</TERM><LISTITEM><PARA>This tag contains an opaque string which contains the name of the system on which the package was built and the ASCII representation of the time value of when the package was built.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEDEVICES</TERM><LISTITEM><PARA>This tag specifies the 16 bit device number from which the file was copied.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEINODES</TERM><LISTITEM><PARA>This tag specifies the inode value from the original file on the build host.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILELANGS</TERM><LISTITEM><PARA>This tag specifies a per-file locale marker used to install only locale specific subsets of files when the package is installed.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PROVIDEFLAGS</TERM><LISTITEM><PARA>This tag ??????</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PROVIDEVERSION</TERM><LISTITEM><PARA>This tag ????</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_DIRINDEXES</TERM><LISTITEM><PARA>This tag specifies the index into the array provided by the RPMTAG_DIRNAMES Index which contains the directory name for the corresponding filename.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_BASENAMES</TERM><LISTITEM><PARA>This tag specifies the base portion of the corresponding filename.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_DIRNAMES</TERM><LISTITEM><PARA>This tag specifies the directory portion of the corresponding filename. Each directory name must contain a trailing '/'.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_OPTFLAGS</TERM><LISTITEM><PARA>This tag indicates additional flags which may have been passed to the compiler when building this package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PAYLOADFORMAT</TERM><LISTITEM><PARA>This tag specifies the format of the Archive section. The format value pointed to by this index record must be </PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PAYLOADCOMPRESSOR</TERM><LISTITEM><PARA>This tag specifies the compression used on the Archive section. The compression value pointed to by this index record must be </PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PAYLOADFLAGS</TERM><LISTITEM><PARA>This tag indicates the compression level used for the Payload. This value must always be '9'.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_RHNPLATFORM</TERM><LISTITEM><PARA>This tag ????</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PLATFORM</TERM><LISTITEM><PARA>This tag ???</PARA></LISTITEM></VARLISTENTRY>
+</VARIABLELIST>
+<!-- End of text generated from database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+
+<SECT3>
+<TITLE>Package Dependencies</TITLE>
+<PARA>
+The package dependencies are stored in the
+<VARNAME>RPMTAG_REQUIRENAME</VARNAME> and
+<VARNAME>RPMTAG_REQUIREVERSION</VARNAME>
+index records. The following values may be used.
+</PARA>
+<TABLE>
+<TITLE>Index Type values</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY>
+<ENTRY>Version</ENTRY>
+<ENTRY>Meaning</ENTRY>
+<ENTRY>Status</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>lsb</ENTRY>
+<ENTRY>1.2</ENTRY>
+<ENTRY>Indicates this is an LSB conforming package.</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>rpmlib(VersionedDependencies)</ENTRY>
+<ENTRY>3.0.3-1</ENTRY>
+<ENTRY>Indicates That the package contains Requires entries which have
+a version associated with them.</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>rpmlib(PayloadFilesHavePrefix)</ENTRY>
+<ENTRY>4.0-1</ENTRY>
+<ENTRY>Indicates the filenames in the Archive have had "." prepended to them.</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>rpmlib(CompressedFileNames)</ENTRY>
+<ENTRY>3.0.4-1</ENTRY>
+<ENTRY>Indicates that the filenames in the Payload are represented in the
+RPMTAG_DIRINDEXES, RPMTAG_DIRNAME and RPMTAG_BASENAMES indexes.</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+</SECT3>
+<SECT3>
+<TITLE>Package Dependencies Attributes</TITLE>
+<PARA>
+The package dependency attributes are stored in the
+<VARNAME>RPMTAG_REQUIREFLAGS</VARNAME>,
+<VARNAME>RPMTAG_PROVIDEFLAGS</VARNAME> and
+<VARNAME>RPMTAG_OBSOLETEFLAGS</VARNAME>
+index records. The following values may be used.
+</PARA>
+<TABLE>
+<TITLE>Package Dependency Attributes</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY>
+<ENTRY>Value</ENTRY>
+<ENTRY>Meaning</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>RPMSENSE_LESS</ENTRY>
+<ENTRY>0x02</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_GREATER</ENTRY>
+<ENTRY>0x04</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_EQUAL</ENTRY>
+<ENTRY>0x08</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_PREREQ</ENTRY>
+<ENTRY>0x40</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_INTERP</ENTRY>
+<ENTRY>0x100</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_SCRIPT_PRE</ENTRY>
+<ENTRY>0x200</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_SCRIPT_POST</ENTRY>
+<ENTRY>0x400</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_SCRIPT_PREUN</ENTRY>
+<ENTRY>0x800</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_SCRIPT_POSTUN</ENTRY>
+<ENTRY>0x1000</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_RPMLIB</ENTRY>
+<ENTRY>0x1000000</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+</SECT3>
+</SECT2>
+
+
+<SECT2>
+<TITLE>Payload Section</TITLE>
+<PARA>
+The Payload section contains a compressed cpio archive. The format of this
+section is defined by <XREF LINKEND="std.RFC1952">.
+</PARA>
+<PARA>
+When uncompressed, the cpio archive contains a sequence of records for each
+file. Each record contains a CPIO Header, Filename, Padding, and File Data.
+<TABLE>
+<TITLE>CPIO File Format</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>CPIO Header</ENTRY>
+<ENTRY>Header structure as defined below.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Filename</ENTRY>
+<ENTRY>ASCII string containing the name of the file.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Padding</ENTRY>
+<ENTRY>0-3 bytes as needed to align the file stream to a 4 byte boundary.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>File data</ENTRY>
+<ENTRY>The contents of the file.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Padding</ENTRY>
+<ENTRY>0-3 bytes as needed to align the file stream to a 4 byte boundary.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+The CPIO Header uses the following header structure (sometimes referred to
+as "new ASCII" or "SVR4 cpio"). All numbers are stored as ASCII
+representations of their hexadecimal value.
+With the exception of <STRUCTFIELD>c_namesize</STRUCTFIELD>
+and the corresponding name string, and <STRUCTFIELD>c_checksum</STRUCTFIELD>,
+all information contained in the CPIO Header is also represented in the
+Header Section.
+The values in in the CPIO Header must match the values contained in the
+Header Section.
+</PARA>
+<SCREEN>
+struct {
+        char    c_magic[6];
+        char    c_ino[8];
+        char    c_mode[8];
+        char    c_uid[8];
+        char    c_gid[8];
+        char    c_nlink[8];
+        char    c_mtime[8];
+        char    c_filesize[8];
+        char    c_devmajor[8];
+        char    c_devminor[8];
+        char    c_rdevmajor[8];
+        char    c_rdevminor[8];
+        char    c_namesize[8];
+        char    c_checksum[8];
+        };
+</SCREEN>
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_magic</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying this cpio format. This value must be "070701".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_ino</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+This field contains the inode number from the filesystem from which the
+file was read.
+This field is ignored when installing a package.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEINODES</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_mode</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Permission bits of the file. This is an ascii representation of the hexadecimal
+number representing the bit as defined for the
+<STRUCTFIELD>st_mode</STRUCTFIELD> field of the <STRUCTNAME>stat</STRUCTNAME>
+structure defined for the <VARNAME>stat</VARNAME> function.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEMODES</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_uid</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying this owner of this file.
+This value matches the uid value of the corresponding user in the
+RPMTAG_FILEUSERNAME as found on the system where this package was built. The
+username specified in RPMTAG_FILEUSERNAME should take precedence when
+installing the package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_gid</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying this group of this file.
+This value matches the gid value of the corresponding user in the
+RPMTAG_FILEGROUPNAME as found on the system where this package was built. The
+groupname specified in RPMTAG_FILEGROUPNAME should take precedence when
+installing the package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_nlink</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the number of links associated with this file. If the value
+is greater than 1, then this filename will be linked to 1 or more files in this
+archive that has a matching value for the c_ino, c_devmajor and c_devminor
+fields.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_FILELINKTOS</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_mtime</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the modification time of the file when it was read.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEMTIMES</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_filesize</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the size of the file.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_FILESIZES</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_devmajor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The major number of the device containing the file system from which the
+file was read.
+With the exception of processing files with c_nlink >1, this field is ignored
+when installing a package.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEDEVICES</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_devminor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The minor number of the device containing the file system from which the
+file was read.
+With the exception of processing files with c_nlink >1, this field is ignored
+when installing a package.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEDEVICES</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_rdevmajor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The major number of the raw device containing the file system from which the
+file was read.
+This field is ignored when installing a package.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_RDEVS</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_rdevminor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The minor number of the raw device containing the file system from which the
+file was read.
+This field is ignored when installing a package.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_RDEVS</CONSTANT> index in the Header section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_namesize</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the length of the filename, which is locatted immediately
+following the CPIO Header structure.
+</PARA>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_checksum</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value containing the CRC checksum of the file data. This field is not used,
+and must contain the value "00000000".
+This field is ignored when installing a package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+<PARA>
+A record with the filename "TRAILER!!!" indicates the last record in the
+archive.
+</PARA>
+</SECT2>
+</SECT1>
+
+
+
+
+<SECT1 ID=pkgscripts>
 <TITLE>Package Script Restrictions</TITLE>
 <PARA>
 Scripts used as part of the package install and uninstall may only use
@@ -56,8 +1024,6 @@ Packages may not use RPM triggers.
 Packages may not depend on the order in which scripts are executed
 (pre-install, pre-uninstall, &amp;c), when doing an upgrade.
 </PARA>
-</SECT2>
-
 </SECT1>
 
 <SECT1 ID=pkgtools>
@@ -127,6 +1093,7 @@ that application.
 Additional specifications or restrictions may be found in the architecture
 specific LSB specification.
 </PARA>
+
 
 </SECT1>
 
