@@ -47,7 +47,7 @@ Standard Base Specification and this document.
 <PARA>
 The LSB specifies the Program Interpreter to be
 <ITEMIZEDLIST>
-<LISTITEM><SCREEN>/lib/lsb/ld-lsb.so.1</SCREEN></LISTITEM>
+<LISTITEM><SCREEN>/lib/ld-lsb.so.1</SCREEN></LISTITEM>
 </ITEMIZEDLIST>
 </PARA>
 </SECT1>
