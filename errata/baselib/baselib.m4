@@ -5,6 +5,7 @@
 <TITLE>Libraries</TITLE>
 
 include(libc.sgml)
+include(libpthread.sgml)
 include(libm.sgml)
 include(libstdcxx.sgml)
 

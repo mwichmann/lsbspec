@@ -19,4 +19,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-baselib.sgml: baselib.m4 libc.sgml libm.sgml libstdcxx.sgml
+baselib.sgml: baselib.m4 libc.sgml libm.sgml libstdcxx.sgml libpthread.sgml
