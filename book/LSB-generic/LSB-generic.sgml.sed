@@ -26,5 +26,5 @@
 
 &lsb-generic-intro;
 &contents;
-
+&fdl;
 </BOOK>
