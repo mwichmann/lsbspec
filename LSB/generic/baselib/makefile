@@ -19,7 +19,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	gethostbyname_r.sgml getloadavg.sgml getopt.sgml getopt_long.sgml \
 	getopt_long_only.sgml getservbyname.sgml getservent.sgml \
 	gettext.sgml getutent.sgml getutent_r.sgml glob64.sgml \
-	htons.sgml inet_aton.sgml inet_ntoa.sgml \
+	getgrouplist.sgml htons.sgml inet_aton.sgml inet_ntoa.sgml \
 	initgroups.sgml ioctl.sgml iswctype.sgml kill.sgml llabs.sgml \
 	link.sgml mbsnrtowcs.sgml memmem.sgml memrchr.sgml \
 	mkstemp64.sgml ntohs.sgml obstack_free.sgml opterr.sgml \
