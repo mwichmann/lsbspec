@@ -23,7 +23,7 @@ control device
   <FUNCTION>ioctl</FUNCTION>
  </FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>d</REPLACEABLE></PARAMETER>
+  <PARAMETER><REPLACEABLE>fildes</REPLACEABLE></PARAMETER>
  </PARAMDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>request</REPLACEABLE></PARAMETER>
@@ -41,7 +41,7 @@ control device
 </TITLE>
 <PARA>
 The <FUNCTION>ioctl</FUNCTION> function shall manipulate the underlying device 
-parameters of special files. <PARAMETER>d</PARAMETER> shall be 
+parameters of special files. <PARAMETER>fildes</PARAMETER> shall be 
 an open file descriptor referring to a special file.
 The <FUNCTION>ioctl</FUNCTION> function shall take three parameters;
 the type and value of the third parameter 
@@ -72,18 +72,18 @@ the global variable <VARNAME>errno</VARNAME> is set appropriately.
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-EBADF  
+<errorcode>EBADF</errorcode>
 </TERM>
 <LISTITEM>
 <PARA>
-<PARAMETER>d</PARAMETER> is not a valid descriptor.
+<PARAMETER>fildes</PARAMETER> is not a valid descriptor.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-EFAULT 
+<errorcode>EFAULT</errorcode>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -94,30 +94,30 @@ The third parameter references an inaccessible memory area.
 
 <VARLISTENTRY>
 <TERM>
-ENOTTY 
+<errorcode>ENOTTY</errorcode>
 </TERM>
 <LISTITEM>
 <PARA>
-<PARAMETER>d</PARAMETER> is not associated with a character special device.
+<PARAMETER>fildes</PARAMETER> is not associated with a character special device.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-ENOTTY 
+<errorcode>ENOTTY </errorcode>
 </TERM>
 <LISTITEM>
 <PARA>
 The specified request does not apply to the kind of object that
-<PARAMETER>d</PARAMETER> references.
+<PARAMETER>fildes</PARAMETER> references.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-EINVAL 
+<errorcode>EINVAL </errorcode>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -129,6 +129,17 @@ EINVAL
 </VARIABLELIST>
 </REFSECT1>
 
+<REFSECT1>
+<TITLE>Relationship to POSIX (Informative)</TITLE>
+<PARA>
+It should be noted that <XREF LINKEND="STD.SUSv3"> contains an interface 
+named <function>ioctl</function>. The LSB only defines behavior when
+<parameter>fildes</parameter> refers to a socket or terminal device, while 
+<XREF LINKEND="STD.SUSv3"> only defines behavior when 
+<parameter>fildes</parameter> refers to a STREAMS device. An implementation
+may support both behaviors; the LSB does not require any STREAMS support.
+</PARA>
+</REFSECT1>
 </REFENTRY>
 include(sockio.sgml)
 include(ttyio.sgml)
