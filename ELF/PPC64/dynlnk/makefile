@@ -23,4 +23,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-dynlnk.sgml: dyntag.sgml linuxtag.sgml
+dynlnk.sgml: dynlnk.m4 dyntag.sgml linuxtag.sgml
