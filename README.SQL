@@ -46,10 +46,11 @@ a slave to that.  So if you are making modifications in the database
 you don't want those rules.
 
 6.  Get a copy of the DocBook tools from
-http://sourceware.cygnus.com/docbook-tools/
-I installed all of their packages: docbook, psgml, jade, sgml-common,
-jadetex, and stylesheets (of course check the documentation at the web
-site for up to date details).
+http://sourceware.cygnus.com/docbook-tools/ .  I installed all of
+their packages: docbook, psgml, jade, sgml-common, jadetex, and
+stylesheets (of course check the documentation at the web site for up
+to date details).  The tools at http://www.sgmltools.org/ are older
+versions (I believe) but have also been made to work.
 
 7.  To produce postscript, type "make spec.sgml" followed by "db2ps
 spec.sgml" which will put the output in spec.ps.  To produce HTML,
