@@ -1,6 +1,9 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity specversion "LSBVERSION">
+<!entity archspec "IA32">
+<!entity cononicalarch "IA32">
+<!entity specarchitecture "IA32">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
 <!entity lowlevel.sgm system "lowlevel/lowlevel.sgml">
@@ -15,7 +18,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the IA32 Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the &cononicalarch; Architecture &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2001</YEAR>
 <YEAR>2002</YEAR>

@@ -1,6 +1,8 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity specversion "LSBVERSION">
+<!entity cononicalarch "S390X">
+<!entity specarchitecture "64 bit implementation of the z/Architecture&trade;">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
 <!entity lowlevel.sgm system "lowlevel/lowlevel.sgml">
@@ -14,7 +16,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the z/Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the &cononicalarch; &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2002</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
