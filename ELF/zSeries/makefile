@@ -40,3 +40,7 @@ psspec: lzsabi0_s390.ps lzsabi0_zSeries.ps
 lzsabi0_s390.ps lzsabi0_zSeries.ps:
 	$(DB2PS) $@
 
+lzsabi0_s390.pdf: lzsabi0_s390.sgml
+lzsabi0_zSeries.pdf: lzsabi0_zSeries.sgml
+lzsabi0_s390.rtf: lzsabi0_s390.sgml
+lzsabi0_zSeries.rtf: lzsabi0_zSeries.sgml
