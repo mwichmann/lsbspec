@@ -1,7 +1,7 @@
 <SECT1 ID=iniscrptact>
 <TITLE>Init Script Actions</TITLE>
 <PARA>
-Init files should accept one argument, saying what to do:
+Init files shall accept one argument, saying what to do:
 </PARA>
 <SIMPLELIST type=horiz columns=2>
 <MEMBER>start</MEMBER><MEMBER>start the service</MEMBER>
@@ -15,28 +15,24 @@ if the service supports this, otherwise restart the service</MEMBER>
 <MEMBER>status</MEMBER><MEMBER>print the current status of the service</MEMBER>
 </SIMPLELIST>
 <PARA>
-The start, stop, restart, force-reload, and status options must be
-supported by all init files, the reload option is optional.
+The start, stop, restart, force-reload, and status commands must be
+supported by all init files; the reload option is optional.  Other init 
+script actions may be defined by the init script.
 </PARA>
 <PARA>
-Init files should ensure that they will behave sensibly if invoked
+Init files must ensure that they will behave sensibly if invoked
 with start when the service is already running, or with stop when it
-isn't, and that they don't kill unfortunately-named user processes. The
-best way to achieve this is usually to use start-stop-daemon
-<FOOTNOTE>
-<PARA>
-assuming that start-stop-daemon or a similar program is included in the LSB
-</PARA>
-</FOOTNOTE>
-.
+isn't, and that they don't kill unfortunately-named user processes. 
+The best way to achieve this is to use the init-script functions provided by
+<FILENAME>/lib/lsb/init-functions</FILENAME>.
 </PARA>
 <PARA>
 If a service reloads its configuration automatically (as in the case
-of cron, for example), the reload option of the init file should
+of cron, for example), the reload option of the init file must
 behave as if the configuration has been reloaded successfully.
 </PARA>
 <PARA>
-These executable files should not fail obscurely when the configuration
+These executable files must not fail obscurely when the configuration
 files remain but the package has been removed, as the default in [the
 packaging system] is to leave configuration files on the system after
 the package has been removed.  Only when it is executed with the
@@ -49,10 +45,29 @@ like this:
 or take the equivalent action if the init file is not a shell script.
 </PARA>
 <PARA>
-Init files should return an exit status of zero if the action
-described by the argument has been successful.  Otherwise, the exit
-status should be non-zero.  In addition to straightforward success,
-the following situations are also to be considered successful:
+If the status command is given, the init script will return the following 
+exit status codes.  
+
+<SIMPLELIST type=horiz columns=2>
+<MEMBER>0</MEMBER><MEMBER>program is running</MEMBER>
+<MEMBER>1</MEMBER><MEMBER>program is dead and /var/run pid file exists</MEMBER>
+<MEMBER>2</MEMBER><MEMBER>program is dead and /var/lock lock file exists</MEMBER>
+<MEMBER>3</MEMBER><MEMBER>program is stopped</MEMBER>
+<MEMBER>4-100</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
+<MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
+<MEMBER>150-199</MEMBER><MEMBER>reserved for application use</MEMBER>
+<MEMBER>200-254</MEMBER><MEMBER>reserved</MEMBER>
+</SIMPLELIST>
+</PARA>
+
+<PARA>
+In the case of init script commands other than "status" (i.e.,
+"start", "stop", "restart", "reload", and "force-reload"), the init
+script must return an exit status of zero if the action described by
+the argument has been successful.  Otherwise, the exit status shall
+be non-zero, as defined below.  In addition to straightforward
+success, the following situations are also to be considered
+successful:
 
 <ITEMIZEDLIST MARK="bullet">
 <LISTITEM><PARA>
@@ -71,24 +86,9 @@ running "restart" on a service already stopped or not running
 
 </PARA>
 <PARA>
-Exit status for "status" command:
-<SIMPLELIST type=horiz columns=2>
-<MEMBER>0</MEMBER><MEMBER>program is running</MEMBER>
-<MEMBER>1</MEMBER><MEMBER>program is dead and /var/run pid file exists</MEMBER>
-<MEMBER>2</MEMBER><MEMBER>program is dead and /var/lock lock file exists</MEMBER>
-<MEMBER>3</MEMBER><MEMBER>program is stopped</MEMBER>
-<MEMBER>4-100</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
-<MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
-<MEMBER>150-199</MEMBER><MEMBER>reserved for application use</MEMBER>
-<MEMBER>200-254</MEMBER><MEMBER>reserved</MEMBER>
-</SIMPLELIST>
-</PARA>
-<PARA>
-Exit status for "start", "stop", "restart", "reload", and "force-reload":
-</PARA>
-<PARA>
-In error conditions, the init file should fail, print an error, and
-return one of the following non-zero exit status codes.
+In case of an error, while processing any init script action except
+for "status", the init script must print an error message and return
+one of the following non-zero exit status codes.
 
 <SIMPLELIST type=horiz columns=2>
 <MEMBER>1</MEMBER><MEMBER>generic or unspecified error (current practice)</MEMBER>
@@ -105,14 +105,14 @@ return one of the following non-zero exit status codes.
 </SIMPLELIST>
 </PARA>
 <PARA>
-All error messages should be printed on standard error.  All status
-messages should be printed on standard output.
+All error messages must be printed on standard error.  All status
+messages must be printed on standard output.
 </PARA>
 <PARA>
 
 Since init files may be run manually by a system administrator with
 non-standard environment variable values for PATH, USER, LOGNAME,
-etc. init files should not depend on the values of these environment
+etc. init files must not depend on the values of these environment
 variables.  They should set them to some known/default values if they
 are needed.
 
