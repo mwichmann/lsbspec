@@ -1,55 +1,21 @@
 
-SUBDIRS=intro lowlevel objfmt baselib dynlnk appendix
+.SUFFIXES: .sgml .cpp .m4
 
-# These commands are those found on sourceforge.net. Please create your own
-# wrapper script if needed instead of changing this
-DB2HTML=sgmltools -b html
+FILES=execenv.sgml
+TABLES=
 
-DB2RTF=sgmltools -b rtf
+.cpp.sgml:
+	cpp -I../../../../code/headers $*.cpp | grep -v '^# ' >$@
 
-DB2PS=sgmltools -b ps
+.m4.sgml:
+	m4 $*.m4 >$@
 
-DB2PDF=sgmltools -b pdf
-
-DB2ONEHTML=sgmltools -b onehtml
-
-DB2TXT=sgmltools -b txt
-
-all:: htmlspec rtfspec onehtmlspec txtspec
-
-htmlspec: source
-	rm -rf spec.junk
-	-mv spec spec.junk
-	$(DB2HTML) spec.sgml
-	if [ -d spec.junk/CVS -a ! -d spec/CVS ];then mv spec.junk/CVS spec; fi
-	rm -rf spec.junk
-
-onehtmlspec: source
-	$(DB2ONEHTML) spec.sgml
-
-txtspec: source
-	$(DB2TXT) spec.sgml
-	nl -ba spec.txt > spec_lines.txt
-
-rtfspec: source
-	$(DB2RTF) spec.sgml
-
-pdfspec: source
-	$(DB2PDF) spec.sgml
-
-psspec: source
-	$(DB2PS) spec.sgml
-
-source:
-	sed -e "s#LSBVERSION#`cat ../../lsbversion.IA64`#" <spec.sgml.sed >spec.sgml
-	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+all: $(FILES) $(TABLES)
 
 gensrc:
-	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
-clean::
-	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
+clean:
+	rm -f $(FILES)
 
-spotless::
-	for dir in $(SUBDIRS);do (cd $$dir && make spotless);done
-
+spotless: clean
+	rm -f $(TABLES)
