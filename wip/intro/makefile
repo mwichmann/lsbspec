@@ -13,9 +13,9 @@ TABLES=standards.sgml libraries.sgml pslibs.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All >standards.sgml
-	../../mklibsgmltable -a All -f >libraries.sgml
-	../../mklibsgmltable -a None >pslibs.sgml
+	../../../mkstandardsgmltable -a All >standards.sgml
+	../../../mklibsgmltable -a All -f >libraries.sgml
+	../../../mklibsgmltable -a None >pslibs.sgml
 
 clean:
 	rm -f $(FILES)
