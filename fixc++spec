@@ -23,6 +23,100 @@ die;
 #if( !$libname ) { usage(); }
 #if( !$archname ) { usage(); }
 
+sub
+dotable()
+{
+#
+# Skip down to the next TITLE
+#
+while(<>) {
+	if(/<TITLE>/) {
+		$title=$_;
+		$title=~/<TITLE>(.+)<\/TITLE>/;
+		$title=$1;
+		$title=~s/std:://g;
+		$title=~s/\</&lt;/g;
+		print "<TITLE>$title</TITLE>\n";
+		last;
+		}
+	if(/<\/SECT2>/) {
+		#fail-safe for an empty section
+		print $_;
+		return;
+		}
+	print $_;
+	}
+#
+# Process each Row in the table
+#
+while(<>) {
+	if(/<\/TABLE>/) {
+		#print STDERR $_;
+		print $_;
+		last;
+		}
+	if(/<TBODY>/) {
+		print $_;
+		#print STDERR $_;
+		next;
+		}
+	if(/<\/TBODY>/) {
+		#print STDERR $_;
+		print $_;
+		next;
+		}
+	if(/<TGROUP/) {
+		print $_;
+		#print STDERR $_;
+		next;
+		}
+	if(/<\/TGROUP/) {
+		print $_;
+		#print STDERR $_;
+		next;
+		}
+	if(/<ROW>/) {
+		print $_;
+		#print STDERR $_;
+		next;
+		}
+	if(/<\/ROW>/) {
+		print $_;
+		#print STDERR $_;
+		next;
+		}
+	#
+	# Process each entry in the table
+	#
+	if(/<ENTRY>/) {
+		#print STDERR "<ENTRY>\n";
+		$footnote="";
+		$entry=$_;
+		$entry=~s/std:://g;
+		$entry=~/<ENTRY>(.+)<\/ENTRY>/;
+		#print STDERR "Entry: $1\n";
+		$entry=$1;
+		#$entry=~s/$group\:\://;
+		if(/FOOTNOTEREF/) {
+			#print STDERR "Found a FOOTNOTEREF\n";
+			$footnote=$entry;
+			$footnote=~/(.+)<FOOTNOTEREF(.+)>/;
+			$entry=$1;
+			$footnote=$2;
+			}
+		$entry=~s/\</&lt;/g;
+		$entry=~s/\[/&lsqb;/g;
+		print "<ENTRY>$entry";
+		if( $footnote ne "" ) {
+			print "<FOOTNOTEREF $footnote>";
+			}
+		print "</ENTRY>\n";
+		next;
+		}
+	print "<!--huh??-->".$_;
+	}
+}
+
 while(<>) {
 	#
 	# Top level loop that looks for the tables on which to work.
@@ -39,62 +133,12 @@ while(<>) {
 		$title=$1;
 		$title=~s/\</&lt;/g;
 		print "<TITLE>$title</TITLE>\n";
-		#
-		# Skip down to the next TITLE
-		#
-		while(<>) {
-			if(/<TITLE>/) {
-				$title=$_;
-				$title=~/<TITLE>(.+)<\/TITLE>/;
-				$title=$1;
-				$title=~s/std:://g;
-				$title=~s/\</&lt;/g;
-				print "<TITLE>$title</TITLE>\n";
-				last;
-				}
-			print $_;
-			}
-		#
-		# Skip down to the start of the table
-		#
-		while(<>) {
-			s/std:://g;
-			if(/<ROW>/) {
-				print $_;
-				last;
-				}
-			print $_;
-			}
-		#
-		# Process each entry in the table
-		#
-		while(<>) {
-			if(/<\/ROW>/) {
-				last;
-				}
-			$footnote="";
-			$entry=$_;
-			$entry=~s/std:://g;
-			$entry=~/<ENTRY>(.+)<\/ENTRY>/;
-			print STDERR "Entry: $1\n";
-			$entry=$1;
-			$entry=~s/$group\:\://;
-			if(/FOOTNOTEREF/) {
-				print STDERR "Found a FOOTNOTEREF\n";
-				$footnote=$entry;
-				$footnote=~/(.+)<FOOTNOTEREF(.+)>/;
-				$entry=$1;
-				$footnote=$2;
-				}
-			$entry=~s/\</&lt;/g;
-			print "<ENTRY>$entry";
-			if( $footnote ne "" ) {
-				print "<FOOTNOTEREF $footnote>";
-				}
-			print "</ENTRY>\n";
-			}
+		dotable();
+		next;
 	}
 	if(/<!--libgroupdata-->/) {
+		dotable();
+		next;
 	}
 	#s/\</&lt;/g;
 	print $_;
