@@ -100,7 +100,7 @@ include(refimpls.sgml)
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed here are available on a Linux Standard Base conforming
+The libraries listed here shall be available on a Linux Standard Base 
 system. This list is an addition to the list in the general specification.
 </PARA>
 <TABLE>
