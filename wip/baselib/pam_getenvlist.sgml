@@ -1,11 +1,11 @@
-<REFENTRY ID="baselib-pam-strerror"> <REFMETA>
-<REFENTRYTITLE>pam_strerror</REFENTRYTITLE>
+<REFENTRY ID="baselib-pam-getenvlist"> <REFMETA>
+<REFENTRYTITLE>pam_getenvlist</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA> 
 <REFNAMEDIV>
-<REFNAME>pam_strerror</REFNAME>
+<REFNAME>pam_getenvlist</REFNAME>
 <REFPURPOSE>
-returns a string describing the PAM error
+returns a pointer to the complete PAM environment.
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -15,7 +15,7 @@ returns a string describing the PAM error
 <SYNOPSIS>
 #include &lt;security/pam_appl.h>
 
-extern int pam_strerror(pam_handle_t *pamh, int errnum);
+extern char * const *pam_getenvlist(pam_handle_t *pamh);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -25,18 +25,23 @@ extern int pam_strerror(pam_handle_t *pamh, int errnum);
 <TITLE>Description
 </TITLE>
 <PARA>
-  This function returns a string describing the PAM error associated with
-  the argument <PARAMETER>errnum</PARAMETER>.
+  This function returns a pointer to the complete PAM environment.
+  It is a pointer to a read-only list of read-only environment
+  variables.  It should be noted that this memory will become invalid
+  after a call to pam_end(), If an application wishes to make use of this
+  list after such a call, it should first make a copy of all the set variables.
+</PARA>
+<PARA>
+  The PAM library module allocates memory for the returned value. The calling
+  calling application is responsible for freeing this memory. 
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>RETURN VALUE</TITLE>
 <PARA>
-  On success this function returns a description of the indicated  error.
-  If the error is not recognized a string beginning with
-  `Unknown Linux-PAM error' is returned. The application should not free or
-  modify this string. This returned string will not be translated.
+  This function returns an array of string pointers containing the PAM
+  environment. If an error occurs, <CONSTANT>NULL</CONSTANT> is returned.
 </PARA>
 </REFSECT1>
 </REFENTRY>

@@ -12,8 +12,8 @@ hardware in the system.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.48 2002/09/25 13:01:53 anderson Exp 0 -->
-<!--    at Fri Sep 27 19:19:25 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
+<!--    at Mon Sep 30 16:10:02 2002 -->
 <SECT1 ID=libstdcxx>
 <TITLE>Interfaces for libstdcxx</TITLE>
 <PARA>
@@ -899,12 +899,12 @@ ISO/IEC 14882: 1998(E) Programming languages --C++</PARA>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.48 2002/09/25 13:01:53 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.48 2002/09/25 13:01:53 anderson Exp 0 -->
-<!--    at Fri Sep 27 19:20:04 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
+<!--    at Mon Sep 30 16:10:41 2002 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
@@ -932,12 +932,6 @@ Linux Standard Base<FOOTNOTE ID="std-233-10">
 Linux Standard Base</PARA>
 </FOOTNOTE>
 </MEMBER>
-<MEMBER>
-OSF-RFC 86.0<FOOTNOTE ID="std-233-66">
-<PARA>
-OSF-RFC 86.0</PARA>
-</FOOTNOTE>
-</MEMBER>
 </SIMPLELIST>
 </PARA>
 <SECT2>
@@ -952,22 +946,22 @@ OSF-RFC 86.0</PARA>
 <ROW>
 <ENTRY>pam_acct_mgmt<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
 <ENTRY>pam_close_session<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
-<ENTRY>pam_open_session<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
-<ENTRY>pam_start<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY>pam_get_item<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_set_item<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_strerror<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
 </ROW>
 <ROW>
 <ENTRY>pam_authenticate<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
 <ENTRY>pam_end<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
-<ENTRY>pam_set_item<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
-<ENTRY>pam_strerror<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_getenvlist<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_setcred<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 <ROW>
 <ENTRY>pam_chauthtok<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
-<ENTRY>pam_get_item<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
-<ENTRY>pam_setcred<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY>pam_fail_delay<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_open_session<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_start<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 </TBODY>
@@ -1032,14 +1026,17 @@ struct pam_conv
 
 
 #define PAM_SUCCESS	0
+#define PAM_OPEN_ERR	1
 #define PAM_USER_UNKNOWN	10
 #define PAM_MAXTRIES	11
+#define PAM_NEW_AUTHTOK_REQD	12
 #define PAM_ACCT_EXPIRED	13
 #define PAM_SESSION_ERR	14
 #define PAM_CRED_UNAVAIL	15
 #define PAM_CRED_EXPIRED	16
 #define PAM_CRED_ERR	17
 #define PAM_CONV_ERR	19
+#define PAM_SYMBOL_ERR	2
 #define PAM_AUTHTOK_ERR	20
 #define PAM_AUTHTOK_RECOVER_ERR	21
 #define PAM_AUTHTOK_LOCK_BUSY	22
@@ -1049,10 +1046,13 @@ struct pam_conv
 #define PAM_AUTHTOKEN_REQD	27
 #define PAM_AUTHTOK_EXPIRED	27
 #define PAM_BAD_ITEM	29
+#define PAM_SERVICE_ERR	3
+#define PAM_SYSTEM_ERR	4
 #define PAM_BUF_ERR	5
 #define PAM_PERM_DENIED	6
 #define PAM_AUTH_ERR	7
 #define PAM_CRED_INSUFFICIENT	8
+#define PAM_AUTHINFO_UNAVAIL	9
 
 
 
@@ -1814,6 +1814,110 @@ DAMAGE.
  -->
 
 
+<REFENTRY ID="baselib-pam-fail-delay"> <REFMETA>
+<REFENTRYTITLE>pam_fail_delay</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA> 
+<REFNAMEDIV>
+<REFNAME>pam_fail_delay</REFNAME>
+<REFPURPOSE>
+specify delay time to use on authentication error
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>27 September 2002</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;security/pam_appl.h>
+
+extern int pam_fail_delay(pam_handle_t *pamh, unsigned int micro_sec);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>27 September 2002</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+  This function is used to specify the minimum delay for the PAM library to
+  use when an authentication error occurs. The actual delay will vary by
+  as much at 25%. If this function is called multiple times, the longest time
+  specified by any of the call will be used.
+</PARA>
+<PARA>
+  Independent of success, the delay time is reset to its zero default
+  value when the PAM library returns control to the application.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>RETURN VALUE</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+PAM_SUCCESS
+</TERM>
+<LISTITEM>
+<PARA>
+Indicates success.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS</TITLE>
+<PARA>
+May be translated to text with pam_strerror(3).
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<!--
+Portions taken from the Linux-PAM Application Guide which contains
+the following Copyright message.
+
+    Copyright (C) Andrew G. Morgan 1996-9.  All rights reserved.
+
+Redistribution and use in source (sgml) and binary (derived) forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, and the entire permission notice in its entirety,
+   including the disclaimer of warranties.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+3. The name of the author may not be used to endorse or promote
+   products derived from this software without specific prior
+   written permission.
+
+ALTERNATIVELY, this product may be distributed under the terms of the
+GNU General Public License, in which case the provisions of the GNU
+GPL are required INSTEAD OF the above restrictions.  (This clause is
+necessary due to a potential bad interaction between the GNU GPL and
+the restrictions contained in a BSD-style copyright.)
+
+THIS SOFTWARE IS PROVIDED `AS IS' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
+
+ -->
+
+
 <REFENTRY ID="baselib-pam-get-item"> <REFMETA>
 <REFENTRYTITLE>pam_get_item</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -1892,6 +1996,97 @@ The application attempted to get an undefined item.
 <TITLE>ERRORS</TITLE>
 <PARA>
 May be translated to text with pam_strerror(3).
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<!--
+Portions taken from the Linux-PAM Application Guide which contains
+the following Copyright message.
+
+    Copyright (C) Andrew G. Morgan 1996-9.  All rights reserved.
+
+Redistribution and use in source (sgml) and binary (derived) forms,
+with or without modification, are permitted provided that the
+following conditions are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, and the entire permission notice in its entirety,
+   including the disclaimer of warranties.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+3. The name of the author may not be used to endorse or promote
+   products derived from this software without specific prior
+   written permission.
+
+ALTERNATIVELY, this product may be distributed under the terms of the
+GNU General Public License, in which case the provisions of the GNU
+GPL are required INSTEAD OF the above restrictions.  (This clause is
+necessary due to a potential bad interaction between the GNU GPL and
+the restrictions contained in a BSD-style copyright.)
+
+THIS SOFTWARE IS PROVIDED `AS IS' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
+
+ -->
+
+
+<REFENTRY ID="baselib-pam-getenvlist"> <REFMETA>
+<REFENTRYTITLE>pam_getenvlist</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA> 
+<REFNAMEDIV>
+<REFNAME>pam_getenvlist</REFNAME>
+<REFPURPOSE>
+returns a pointer to the complete PAM environment.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>27 September 2002</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;security/pam_appl.h>
+
+extern char * const *pam_getenvlist(pam_handle_t *pamh);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>27 September 2002</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+  This function returns a pointer to the complete PAM environment.
+  It is a pointer to a read-only list of read-only environment
+  variables.  It should be noted that this memory will become invalid
+  after a call to pam_end(), If an application wishes to make use of this
+  list after such a call, it should first make a copy of all the set variables.
+</PARA>
+<PARA>
+  The PAM library module allocates memory for the returned value. The calling
+  calling application is responsible for freeing this memory. 
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>RETURN VALUE</TITLE>
+<PARA>
+  This function returns an array of string pointers containing the PAM
+  environment. If an error occurs, <CONSTANT>NULL</CONSTANT> is returned.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -2484,10 +2679,48 @@ extern int pam_start(const char *service_name, const char *user,
   to any other usage of the PAM library.  Following a successful return
   the contents of <PARAMETER>*pamh</PARAMETER> is a handle that provides
   continuity for successive calls to the PAM library. The arguments
-  expected by pam_start are as follows: the service_name of the program, the
-  username of the individual to be authenticated, a pointer to an
-  application-supplied pam_conv structure and a pointer to a
+  expected by pam_start are as follows: the <PARAMETER>service_name</PARAMETER>
+  of the program, the <PARAMETER>username</PARAMETER> of the individual to be
+  authenticated, a pointer to an application-supplied
+  <STRUCTNAME>pam_conv</STRUCTNAME> structure and a pointer to a
   <VARNAME>pam_handle_t</VARNAME> pointer.
+</PARA>
+<PARA>
+  An application must provide a `conversation function'. It is used
+  for direct communication between a loaded module and the application
+  and will typically provide a means for the module to prompt the user
+  for a password etc. . The structure, pam_conv, is defined to be,
+</PARA>
+<SCREEN>
+  struct pam_conv {
+    int (*conv) (int num_msg,
+                 const struct pam_message * *msg,
+                 struct pam_response * *resp,
+                 void *appdata_ptr);
+    void *appdata_ptr;
+  };
+</SCREEN>
+<PARA>
+  It is initialized by the application before it is passed to the
+  library.  The contents of this structure are attached to the
+  <PARAMETER>*pamh</PARAMETER> handle. The point of this argument is to
+  provide a mechanism for any loaded module to interact directly with the
+  application program. This is why it is called a conversation structure.
+</PARA>
+<PARA>
+  When a module calls the referenced conv() function, the argument
+  <PARAMETER>*appdata_ptr</PARAMETER> is set to the second element of this
+  structure.
+</PARA>
+<PARA>
+  The other arguments of a call to conv() concern the information
+  exchanged by module and application. The first parameter,
+  <PARAMETER>num_msg</PARAMETER> holds the length of the array of
+  pointers passed via, <PARAMETER>msg</PARAMETER>. After a successful return,
+  the pointer <PARAMETER>resp</PARAMETER> points to an array of
+  <PARAMETER>num_msg</PARAMETER> <STRUCTNAME>pam_response</STRUCTNAME>
+  structures, holding the application supplied text.  Note, *resp is an
+  struct pam_response array and not an array of pointers.
 </PARA>
 </REFSECT1>
 
@@ -2613,13 +2846,9 @@ extern int pam_strerror(pam_handle_t *pamh, int errnum);
 <TITLE>RETURN VALUE</TITLE>
 <PARA>
   On success this function returns a description of the indicated  error.
-  If the error is not recognized `Unknown Linux-PAM error' is returned.
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>ERRORS</TITLE>
-<PARA>
-May be translated to text with pam_strerror(3).
+  If the error is not recognized a string beginning with
+  Unknown Linux-PAM error is returned. The application should not free or
+  modify this string. This returned string will not be translated.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -2669,7 +2898,7 @@ DAMAGE.
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.48 2002/09/25 13:01:53 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
 
 
 </CHAPTER>

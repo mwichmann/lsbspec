@@ -1,11 +1,11 @@
-<REFENTRY ID="baselib-pam-strerror"> <REFMETA>
-<REFENTRYTITLE>pam_strerror</REFENTRYTITLE>
+<REFENTRY ID="baselib-pam-fail-delay"> <REFMETA>
+<REFENTRYTITLE>pam_fail_delay</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA> 
 <REFNAMEDIV>
-<REFNAME>pam_strerror</REFNAME>
+<REFNAME>pam_fail_delay</REFNAME>
 <REFPURPOSE>
-returns a string describing the PAM error
+specify delay time to use on authentication error
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -15,7 +15,7 @@ returns a string describing the PAM error
 <SYNOPSIS>
 #include &lt;security/pam_appl.h>
 
-extern int pam_strerror(pam_handle_t *pamh, int errnum);
+extern int pam_fail_delay(pam_handle_t *pamh, unsigned int micro_sec);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -25,18 +25,36 @@ extern int pam_strerror(pam_handle_t *pamh, int errnum);
 <TITLE>Description
 </TITLE>
 <PARA>
-  This function returns a string describing the PAM error associated with
-  the argument <PARAMETER>errnum</PARAMETER>.
+  This function is used to specify the minimum delay for the PAM library to
+  use when an authentication error occurs. The actual delay will vary by
+  as much at 25%. If this function is called multiple times, the longest time
+  specified by any of the call will be used.
+</PARA>
+<PARA>
+  Independent of success, the delay time is reset to its zero default
+  value when the PAM library returns control to the application.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>RETURN VALUE</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+PAM_SUCCESS
+</TERM>
+<LISTITEM>
 <PARA>
-  On success this function returns a description of the indicated  error.
-  If the error is not recognized a string beginning with
-  `Unknown Linux-PAM error' is returned. The application should not free or
-  modify this string. This returned string will not be translated.
+Indicates success.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS</TITLE>
+<PARA>
+May be translated to text with pam_strerror(3).
 </PARA>
 </REFSECT1>
 </REFENTRY>
