@@ -13,8 +13,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	./mkdyntagtable Sname='ELF Specification' numcols=4 >dyntag.sgml
-	./mkdyntagtable Sname='LSB' dodesc=Y >linuxtag.sgml
+	../../../mkdyntagtable -a IA32 -s 'ELF Specification' -c 4 >dyntag.sgml
+	../../../mkdyntagtable -a IA32 -s 'LSB' -d >linuxtag.sgml
 
 clean:
 	rm -f $(FILES)
