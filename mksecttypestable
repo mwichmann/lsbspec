@@ -1,30 +1,54 @@
 #!/usr/bin/perl
 
-use CGI;
-use Carp;
+use Getopt::Long;
 use Mysql;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
-$query = new CGI(%ARGV);
+sub usage()
+{
+print STDERR "mksecttypestable -a <archname> -s <stdname> [-c <numcols>] [-d]\n";
+die;
+}
 
+# Uncomment to trace SQL statments
+#$trace=1;
+
+#
+# 1) process the arguments
+#
+$numcols=1;
+$dodesc=0;
+GetOptions("a=s" => \$archname,
+           "s=s" => \$stdname,
+           "c=i" => \$numcols,
+           "d" => \$dodesc);
+
+if( !$archname ) { usage(); }
+if( !$stdname ) { usage(); }
+
+#
+# 2) Establish connection to the database
+#
 $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
 
-if( $query->param('numcols') ) {
-	$numcols=$query->param('numcols');
-} else {
-	$numcols=1;
-}
-if( $query->param('dodesc') ) {
-	$dodesc=$query->param('dodesc');
-} else {
-	$dodesc='N';
-}
-$select  ="SELECT STname,STdescription ";
-$select .="FROM SectionTypes,Standard ";
-$select .="WHERE STstandard=Sid and Sname=".$Dbh->quote($query->param('Sname'));
+#
+# 3) get & print the architecture info
+#
+$select = "SELECT * FROM Architecture WHERE ";
+$select.= "Architecture.Aname=".$Dbh->quote($archname);
+print STDERR $select,"\n" if $trace;
+$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 
-$select .=" ORDER BY SectionTypes.STname ";
+%entry=$sth->fetchhash;
+$Aid=$entry{'Aid'};
+$Aname=$entry{'Aname'};
+
+$select = "SELECT STname,STdescription ";
+$select.= "FROM SectionTypes,Standard ";
+$select.= "WHERE STstandard=Sid and Sname=".$Dbh->quote($stdname);
+$select.= " AND STarch=$Aid";
+$select.= " ORDER BY SectionTypes.STname ";
 #print $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
@@ -34,7 +58,7 @@ $curcol=1;
 for(1..$sth->numrows) {
 	%entry=$sth->fetchhash;
 	printf "<ENTRY>%s</ENTRY>",$entry{'STname'};
-	if ( $dodesc eq 'Y' ) {
+	if ( $dodesc ) {
 		printf "<ENTRY>%s</ENTRY>",$entry{'STdescription'};
 	}
 	if( $curcol%$numcols == 0 && $_ != $sth->numrows) {
