@@ -26,6 +26,7 @@ Chapter 2 of the
 <CHAPTER ID=sections>
 <TITLE>Sections</TITLE>
 <PARA>
+See chapter 2 of the <XREF LINKEND="std.S390.ABI">.
 </PARA>
 
 <SECT1 ID="elfspecial">
@@ -59,6 +60,7 @@ Chapter 2 of the <XREF LINKEND="std.S390.ABI">.
 <SECT1 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
+See chapter 2 of the <XREF LINKEND="std.S390.ABI">.
 </PARA>
 </SECT1>
 
