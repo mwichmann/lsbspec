@@ -3,16 +3,17 @@
 
 MANPAGES=
 
-FILES=baselib.sgml libstdcxx.sgml
+FILES=baselib.sgml libstdcxx.sgml libpam.sgml
 TABLES=
 
 .m4.sgml:
-	m4 -Uindex -Uformat $*.m4 >$@
+	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mklibspec -a All -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
+	../../mklibspec -a All -l libpam >libpam.sgml
 
 clean:
 	rm -f $(FILES)

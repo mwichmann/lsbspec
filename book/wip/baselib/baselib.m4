@@ -11,6 +11,7 @@ hardware in the system.
 </PARA>
 
 include(libstdcxx.sgml)
+include(libpam.sgml)
 
 </CHAPTER>
 
