@@ -205,13 +205,6 @@ in that specification.
 Any conflict between the requirements described here and the <XREF
 LINKEND="STD.SUSv3">
 standard is unintentional, except as explicitly noted otherwise.
-This specification defers to <XREF LINKEND="STD.SUSv3">; any interpretation
-request or defect noted on an interface shared between this specification
-and <XREF LINKEND="STD.SUSv3"> shall be addressed initially by the
-working group responsible for <XREF LINKEND="STD.SUSv3"> maintenance.
-Where an interface has incompatible differences with <XREF LINKEND="STD.SUSv3">
-such differences
-are explicitly noted.
 </PARA>
 <NOTE>
 <PARA>
