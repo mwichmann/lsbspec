@@ -15,14 +15,13 @@ TABLES = baselib/libsysansi.sgml baselib/libsyspsoxi.sgml
 
 SUBDIRS=intro objfmt baselib utillib graphlib sysinit usersgroups command
 
-DB2HTML=db2html
-#DB2HTML=sgmltools -b html
+# These commands are those found on sourceforge.net. Please create your own
+# wrapper script if needed instead of changing this
+DB2HTML=sgml2html -s 2
 
-DB2RTF=db2rtf
-#DB2RTF=sgmlbools -b rtf
+DB2RTF=sgml2rtf
 
-DB2PS=db2ps
-#DB2PS=sgmlbools -b ps
+DB2PS=sgml2ps
 
 all:: htmlspec rtfspec
 
