@@ -18,9 +18,32 @@ An implementation of this version of the specification may not claim
 to be an implementation of the Linux Standard Base.
 </PARA>
 
+<SECT1 ID="structure">
+<TITLE>Structure of the Linux Standard Base</TITLE>
+<PARA>
+The Linux Standard Base (LSB) is composed of a common specification (this
+document), and a set of architecture specific specifications that contain
+information that is unique to a given architecture. The goal of the LSB is to
+keep as much information as possible in the common specification. Due to the
+need to maintain compatibility with other operating systems on some
+architectures, some system information varies across the architectures. These
+differences are identified in the architecture specific specifications.
+</PARA>
+<PARA>
+The Linux Standard Base is built on several other specifications which are
+listed later. Those specifications, or portions thereof, are included by
+reference into the LSB. The LSB attempts to avoid duplication of information
+contained in other specification, but may modify or supplement the other
+specification as needed.
+</PARA>
+</SECT1>
+
 <SECT1 ID="rstandards">
 <TITLE>Related Standards</TITLE>
-<PARA></PARA>
+<PARA>
+The specification listed here, and referenced in whole or in part by
+the Linux Standard Base.
+</PARA>
 <TABLE>
 <TITLE>Related Standards</TITLE>
 <TGROUP COLS=3>
@@ -31,7 +54,10 @@ include(standards.sgml)
 
 <SECT1 ID="rimplementations">
 <TITLE>Related Implementations</TITLE>
-<PARA></PARA>
+<PARA>
+The implementations listed here are referenced in whole or in part by the
+Linux Standard Base when no formal specification is available.
+</PARA>
 <TABLE>
 <TITLE>Related Implementations</TITLE>
 <TGROUP COLS=3>
@@ -41,10 +67,14 @@ include(refimpls.sgml)
 </SECT1>
 
 <SECT1 ID="rlibraries">
-<TITLE>Relevent Libraries</TITLE>
-<PARA></PARA>
+<TITLE>Relevant Libraries</TITLE>
+<PARA>
+The Libraries listed here are available on a Linux Standard Base conforming
+system. This list may be supplemented or ameneded by the architecture specific 
+specifications.
+</PARA>
 <TABLE>
-<TITLE>Relevent Libraries</TITLE>
+<TITLE>Relevant Libraries</TITLE>
 <TGROUP COLS=2>
 <THEAD>
 <ROW>
@@ -70,8 +100,8 @@ These libraries will be in a default location found by the dynamic linker.
 <NOTE>
 <PARA>
 The Application Binary  Interface (ABI) defined the following terms. We
-probably want to have someting similar here. ABI, generic ABI, processor
-specific ABI, ABI-conforming system, ABI-conforming program, ABI_nonconforming
+probably want to have something similar here. ABI, generic ABI, processor
+specific ABI, ABI-conforming system, ABI-conforming program, ABI-nonconforming
 program, undefined behavior, unspecified property.
 </PARA>
 </NOTE>
