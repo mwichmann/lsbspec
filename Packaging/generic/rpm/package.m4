@@ -871,6 +871,26 @@ on features contained in the LSB-Graphics module.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>lsb-core-noarch</TERM>
+<LISTITEM>
+<PARA>
+This dependency is used to indicate that the application is dependent
+on features contained in the LSB-Core specification and that the package 
+does not contain any architecture specific files.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>lsb-graphics-noarch</TERM>
+<LISTITEM>
+<PARA>
+This dependency is used to indicate that the application is dependent
+on features contained in the LSB-Graphics module and that the package
+does not contain any architecture specific files.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
 </VARIABLELIST>
 </PARA>
 <PARA>
@@ -886,6 +906,13 @@ which is registered to that application.
 
 <SECT1 ID=pkgarchcon>
 <TITLE>Package Architecture Considerations</TITLE>
+<PARA>
+Packages which do not contain any architecture specific files must specify an
+architecture of <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>. A LSB runtime
+environment must accept values <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>, or
+the value specified in the architecture specific supplement.
+</PARA>
+
 <PARA>
 Additional specifications or restrictions may be found in the architecture
 specific LSB specification.
