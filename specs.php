@@ -55,6 +55,12 @@ select,input { font-size: small; }
   </style>
  </head>
  <body>
+<?
+virtual("/themes/FreeStandards2/contentheader.html");
+virtual("/themes/FreeStandards2/nav.linuxbase.php");
+virtual("/themes/FreeStandards2/contentmain.html");
+?>
+
 <P>
 You can review the specification using either the Module documents, or
 the individual specification which are found below.
@@ -86,6 +92,7 @@ if ($project != null) {
 	print("<strong>No project under the path ".$_SERVER['PATH_INFO']."</strong>\n");
 }
 
+virtual("/themes/FreeStandards2/contentfooter.html");
 ?>
  </body>
 </html>
