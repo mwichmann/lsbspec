@@ -118,6 +118,9 @@ mcontext_t uc_mcontext;
 </screen>
 </para>
 
+<para>On PPC32, makecontext, getcontext, and setcontext need not be
+supported.</para>
+
 </CHAPTER>
 
 </PART>
