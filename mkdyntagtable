@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkdyntagtable -a <archname>\n";
+print STDERR "mkdyntagtable -a <archname> -s <stdname> [-c <numcols>] [-d]\n";
 die;
 }
 
@@ -17,12 +17,15 @@ die;
 #
 # 1) process the arguments
 #
+$numcols=1;
+$dodesc=0;
 GetOptions("a=s" => \$archname,
-	   "s=s" => \$stdname);
-	   "c=i" => \$numcols);
+	   "s=s" => \$stdname,
+	   "c=i" => \$numcols,
 	   "d" => \$dodesc);
 
 if( !$archname ) { usage(); }
+if( !$stdname ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -41,28 +44,11 @@ $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 $Aid=$entry{'Aid'};
 $Aname=$entry{'Aname'};
 
-#
-#
-#
-#if( $query->param('numcols') ) {
-#	$numcols=$query->param('numcols');
-#} else {
-#	$numcols=1;
-#}
-#if( $query->param('dodesc') ) {
-#	$dodesc=$query->param('dodesc');
-#} else {
-#	$dodesc='N';
-#}
-
-$numcols=1;
-$dodesc='N';
-
-$select  ="SELECT DEname,DEdescription ";
-$select .="FROM DynamicEntries,Standard ";
-$select .="WHERE DEstandard=Sid and Sname=".$Dbh->quote($query->param('Sname'));
-
-$select .=" ORDER BY DynamicEntries.DEname ";
+$select = "SELECT DEname,DEdescription ";
+$select.= "FROM DynamicEntries,Standard ";
+$select.= "WHERE DEstandard=Sid and Sname=".$Dbh->quote($stdname);
+$select.= " AND DEarch=$Aid";
+$select.= " ORDER BY DynamicEntries.DEname ";
 #print $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
@@ -72,7 +58,7 @@ $curcol=1;
 for(1..$sth->numrows) {
 	%entry=$sth->fetchhash;
 	printf "<ENTRY>%s</ENTRY>",$entry{'DEname'};
-	if ( $dodesc eq 'Y' ) {
+	if ( $dodesc ) {
 		printf "<ENTRY>%s</ENTRY>",$entry{'DEdescription'};
 	}
 	if( $curcol%$numcols == 0 && $_ != $sth->numrows) {
