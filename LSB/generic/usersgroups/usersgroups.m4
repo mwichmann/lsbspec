@@ -49,8 +49,8 @@ it is access via an API.
 According to JFH, the original author of shadow-utils, 
 there are no group write APIs; therefore, do not be tempted to edit the group 
 database file directly, use the system admin. commands such as groupadd(1),
-groupdel(1), groupmod(1).  Use usermod(1) to add, but not remove, a user 
-to a supplementary group.
+groupdel(1), groupmod(1).  Use usermod(1) to add and remove a user 
+from supplementary groups.
 </PARA>
 </NOTE>
 </SECT1>
