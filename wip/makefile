@@ -41,7 +41,7 @@ psspec: source
 	$(DB2PS) wip.sgml
 
 source:
-	sed -e "s#LSBVERSION#`cat ../lsbversion`#" <wip.sgml.sed >wip.sgml
+	sed -e "s#LSBVERSION#`date +"%Y%m%d"`#" <wip.sgml.sed >wip.sgml
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 gensrc:

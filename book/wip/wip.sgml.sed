@@ -1,6 +1,6 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity specversion "Work In Progress">
+<!entity specversion "Work In Progress LSBVERSION">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
 <!entity objfmt.sgm system "objfmt/objfmt.sgml">
