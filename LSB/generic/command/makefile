@@ -8,7 +8,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=command.sgml
-TABLES= cmdsutils.sgml
+TABLES= cmdsutils.sgml cmdman.sgml
 BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 
 .cpp.sgml:
@@ -21,6 +21,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkcmdtable  > cmdsutils.sgml
+	../../mkcmdlist  > cmdman.sgml
 
 clean:
 	rm -f $(FILES)
