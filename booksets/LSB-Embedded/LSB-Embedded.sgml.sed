@@ -1,7 +1,10 @@
 <!DOCTYPE SET PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "../../books/gLSB/contents">
+<!entity contents SYSTEM "../../book/LSB-generic/contents">
+<!entity elf-contents SYSTEM "../../book/ELF-generic/contents">
+<!entity packaging-contents SYSTEM "../../book/Packaging/contents">
+<!entity desktop-contents SYSTEM "../../book/Desktop/contents">
 
 <!entity specversion "LSBVERSION">
 
@@ -22,6 +25,19 @@
 &legal;
 </SETINFO>
 
+
+<BOOK>
+<BOOKINFO>
+<TITLE>Specification Introduction</TITLE>
+</BOOKINFO>
+&lsb-generic-intro;
+</BOOK>
+<BOOK>
+<BOOKINFO>
+<TITLE>ELF Specification</TITLE>
+</BOOKINFO>
+&elf-contents;
+</BOOK>
 <BOOK>
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification</TITLE>
