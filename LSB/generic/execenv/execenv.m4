@@ -169,7 +169,8 @@ particularly with respect to its security.
 
 <CHAPTER ID="execenv-addntl-bhvr">
 <title>Additional Behaviors</title>
-
+<SECT1>
+<title>Mandatory Optional Behaviors</title>
 <para>This section specifies behaviors in which there is optional
 behavior in one of the standards on which the LSB relies, and where
 the LSB requires a specific behavior.
@@ -246,7 +247,49 @@ Linux allows <FUNCTION>rename()</FUNCTION> on a directory without
 having write access, but the LSB does not require this.</para>
 </footnote>
 </para>
+<SECT2 id=addl-behaviors-test>
+<TITLE>Special Requirements</TITLE>
+<PARA>
+LSB conforming systems shall enforce certain special additional restrictions
+above and beyond those required by <XREF LINKEND="STD.SUSv3">.
+<FOOTNOTE>
+<PARA>These additional restrictions are required in order to support the testing
+and certification programs associated with the LSB. In each case, these are values
+that defined macros must not have; conforming applications that use these values
+shall trigger a failure in the interface that is otherwise described as a "may fail".
+</PARA>
+</FOOTNOTE>
+</PARA>
+<para>The fcntl() function shall treat the "cmd" value -1 as
+invalid.</para>
 
+<para>The "whence" value -1 shall be an invalid value for the
+lseek(), fseek() and fcntl() functions.</para>
+
+<para>The value "-5" shall be an invalid signal number.</para>
+
+<para>If the sigaddset() or sigdelset() functions are passed an
+invalid signal number, they shall return with EINVAL.  Implementations
+are only required to enforce this requirement for signal numbers which
+are specified to be invalid by this specification (such as the -5
+mentioned above).</para>
+<para>The mode value "-1" to the access() function shall be treated as
+invalid.</para>
+
+<para>A value of -1 shall be an invalid "_PC_..." value for
+pathconf().</para>
+
+<para>A value of -1 shall be an invalid "_SC..." value for
+sysconf().</para>
+
+<para>The nl_item value "-1" shall be invalid for nl_langinfo.</para>
+
+<para>The value -1 shall be an invalid "_CS_..." value for confstr().</para>
+
+<para>The value "z" shall be an invalid mode argument to popen().</para>
+
+</SECT2>
+</SECT1>
 </CHAPTER>
 
 <CHAPTER id=localization>
