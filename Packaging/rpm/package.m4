@@ -803,14 +803,47 @@ by LANANA shall only consist of the ASCII characters [a-z0-9].
 <SECT1 ID=pkgdepend>
 <TITLE>Package Dependencies</TITLE>
 <PARA>
-Packages shall depend on a dependency "lsb".  They may not depend on
-other system-provided dependencies.  They shall not depend on
-non-system-provided dependencies unless the dependencies are fulfilled
-by packages which are part of the same application.
-If a package includes "Provides"
-it shall only provide a virtual package name which is registered to
-that application.
+Packages shall have a dependency which indicates which LSB profile is
+required.  The following dependencies may be used.
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>lsb-core</TERM>
+<LISTITEM>
+<PARA>
+This dependency is used to indicate that the application is only dependent
+on features contained in the LSB-Core specification, which is common to all 
+LSB Profiles.
 </PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>lsb-server</TERM>
+<LISTITEM>
+<PARA>
+This dependency is used to indicate that the application is dependent
+on features contained in the LSB-Server specification.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>lsb-workstation</TERM>
+<LISTITEM>
+<PARA>
+This dependency is used to indicate that the application is dependent
+on features contained in the LSB-Workstation specification.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+<PARA>
+Packages may not depend on other system-provided dependencies.  They
+shall not depend on non-system-provided dependencies unless the dependencies
+are fulfilled by packages which are part of the same application.  If a
+package includes "Provides" it shall only provide a virtual package name
+which is registered to that application.
+</PARA>
+<PARA>
 
 </SECT1>
 
