@@ -21,31 +21,6 @@ must not rely on tags related functionality.
 LSB-conforming applications shall use the Machine Information as defined in
 <XREF LINKEND="std.S390.ABI">, Chapter 2.
 </PARA>
-<SECT2 ID="mifileclass">
-<TITLE>File Class</TITLE>
-<PARA>
-</PARA>
-</SECT2>
-<SECT2 ID="midataencoding">
-<TITLE>Data Encoding</TITLE>
-<PARA>
-</PARA>
-</SECT2>
-<SECT2 ID="miosidentification">
-<TITLE>OS Identification</TITLE>
-<PARA>
-</PARA>
-</SECT2>
-<SECT2 ID="miprocessorident">
-<TITLE>Processor Identification</TITLE>
-<PARA>
-</PARA>
-</SECT2>
-<SECT2 ID="miprocessorspecialflags">
-<TITLE>Processor Specific Flags</TITLE>
-<PARA>
-</PARA>
-</SECT2>
 </SECT1>
 </CHAPTER>
 
@@ -65,24 +40,6 @@ include(elfsect.sgml)
 <PARA>
 The following Linux S/390 specific sections are defined here.
 include(linuxsect.sgml)
-</PARA>
-</SECT1>
-
-<SECT1 ID="sectiontypes">
-<TITLE>Section Types</TITLE>
-<PARA>
-</PARA>
-</SECT1>
-
-<SECT1 ID="sectionattribflags">
-<TITLE>Section Attribute Flags</TITLE>
-<PARA>
-</PARA>
-</SECT1>
-
-<SECT1 ID="specialsectiontypes">
-<TITLE>Special Section Types</TITLE>
-<PARA>
 </PARA>
 </SECT1>
 
