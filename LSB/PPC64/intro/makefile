@@ -14,7 +14,7 @@ all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mkstandardsgmltable -a PPC64 -x $(EXCLSPECS) >standards.sgml
-	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI'" >cxxstandards.sgml
+	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI','SUSV3'" >cxxstandards.sgml
 	../../../mklibsgmltable -a PPC64 -m "LSB-Core" -x "'libstdcxx'" >libraries.sgml
 	../../../mklibsgmltable -a PPC64 -m "LSB-Core" -l "'libstdcxx'" >cxxlibraries.sgml
 

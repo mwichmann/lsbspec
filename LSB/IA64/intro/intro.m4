@@ -18,7 +18,7 @@ that section alone, and the rest of the referenced document is informative.
 <!-- the ID below is a placeholder for any standards that have Istandard=0 in the database -->
 <TABLE ID='STD.'>
 <TITLE>Normative References</TITLE>
-<TGROUP COLS=2>
+<TGROUP COLS=3>
 include(`standards.sgml')
 </TGROUP>
 </TABLE>
