@@ -12,7 +12,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>LSB-Graphics Module Specification</TITLE>
+<TITLE>Graphics Specification</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
