@@ -1,5 +1,5 @@
 
-SUBDIRS=intro baselib package execenv
+SUBDIRS=intro objfmt baselib package execenv
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
