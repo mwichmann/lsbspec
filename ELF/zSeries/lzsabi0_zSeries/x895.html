@@ -1,0 +1,771 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Process initialization</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="zSeries ELF Application Binary Interface Supplement"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Low-level system information"
+HREF="c22.html"><LINK
+REL="PREVIOUS"
+TITLE="Exception interface"
+HREF="x832.html"><LINK
+REL="NEXT"
+TITLE="Coding examples"
+HREF="x1127.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>zSeries ELF Application Binary Interface Supplement</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x832.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Low-level system information</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1127.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PROCINIT"
+>1.5. Process initialization</A
+></H1
+><P
+>This section describes the machine state that exec creates for "infant"
+
+processes, including argument passing, register usage, and stack frame layout.
+
+Programming language systems use this initial program state to establish a
+
+standard environment for their application programs. For example, a C program
+
+begins executing at a function named main, conventionally declared in the
+
+way described in <A
+HREF="x895.html#DECLMAIN"
+>Figure 1-21</A
+>:</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="DECLMAIN"
+></A
+><P
+><B
+>Figure 1-21. Declaration for main</B
+></P
+><DIV
+CLASS="INFORMALEXAMPLE"
+><P
+></P
+><A
+NAME="AEN901"
+></A
+><P
+CLASS="LITERALLAYOUT"
+>&nbsp;&nbsp;&nbsp;extern&nbsp;int&nbsp;main&nbsp;(int&nbsp;argc,&nbsp;char<br>
+<br>
+*argv[&nbsp;],&nbsp;char&nbsp;*envp[&nbsp;]);</P
+><P
+></P
+></DIV
+></DIV
+><P
+>Briefly, argc is a non-negative argument count; argv is an array of
+
+argument strings, with argv[argc] == 0, and envp is an array of environment
+
+strings, also terminated by a NULL pointer.</P
+><P
+>Although this section does not describe C program initialization, it
+
+gives the information necessary to implement the call to main or to the entry
+
+point for a program in any other language.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN905"
+>1.5.1. Registers</A
+></H2
+><P
+>When a process is first entered (from an exec system call), the contents
+
+of registers other than those listed below are unspecified. Consequently,
+
+a program that requires registers to have specific values must set them explicitly
+
+during process initialization.  It should not rely on the operating system
+
+to set all registers to 0.  Following are the registers whose contents are
+
+specified:</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN908"
+></A
+><P
+><B
+>Table 1-13. </B
+></P
+><TABLE
+BORDER="1"
+FRAME="border"
+CLASS="CALSTABLE"
+><COL
+WIDTH="27*"
+TITLE="COL1"><COL
+WIDTH="170*"
+TITLE="COL2"><TBODY
+><TR
+><TD
+><P
+>r15</P
+></TD
+><TD
+><P
+>The initial stack pointer, aligned to a 8-byte
+
+boundary and pointing to a stack location that contains the argument count
+
+(see <A
+HREF="x895.html#PROCESSSTACK"
+>Section 1.5.2</A
+> for further information about the initial
+
+stack layout)</P
+></TD
+></TR
+><TR
+><TD
+><P
+>fpc</P
+></TD
+><TD
+><P
+>The floating point control register contains 0,
+
+specifying "round to nearest" mode and the disabling of floating-point exceptions&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PROCESSSTACK"
+>1.5.2. Process stack</A
+></H2
+><P
+>Every process has a stack, but the system defines no fixed stack address.
+
+Furthermore, a program's stack address can change from one system to another &ndash; even
+
+from one process invocation to another. Thus the process initialization code
+
+must use the stack address in general purpose register r15. Data in the stack
+
+segment at addresses below the stack pointer contain undefined values.</P
+><P
+>Whereas the argument and environment vectors transmit information from
+
+one application program to another, the auxiliary vector conveys information
+
+from the operating system to the program. This vector is an array of structures,
+
+which are defined in <A
+HREF="x895.html#AUXSTRUCT"
+>Figure 1-22</A
+>.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AUXSTRUCT"
+></A
+><P
+><B
+>Figure 1-22. Auxiliary vector structure</B
+></P
+><DIV
+CLASS="INFORMALEXAMPLE"
+><P
+></P
+><A
+NAME="AEN932"
+></A
+><P
+CLASS="LITERALLAYOUT"
+>typedef&nbsp;struct&nbsp;{<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long&nbsp;a_type;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;union&nbsp;{<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long&nbsp;a_val;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;*a_ptr;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;(*a_fcn)();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;a_un;<br>
+<br>
+}&nbsp;auxv_t;</P
+><P
+></P
+></DIV
+></DIV
+><P
+>The structures are interpreted according to the a_type member, as shown
+
+in <A
+HREF="x895.html#AUXTYPES"
+>Table 1-14</A
+>.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AUXTYPES"
+></A
+><P
+><B
+>Table 1-14. Auxiliary Vector Types, a_type</B
+></P
+><TABLE
+BORDER="1"
+FRAME="border"
+CLASS="CALSTABLE"
+><COL
+WIDTH="112*"
+TITLE="COL1"><COL
+WIDTH="81*"
+TITLE="COL2"><COL
+WIDTH="103*"
+TITLE="COL3"><TBODY
+><TR
+><TD
+><P
+>Name</P
+></TD
+><TD
+><P
+>Value</P
+></TD
+><TD
+><P
+>a_un</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_NULL</P
+></TD
+><TD
+><P
+>0</P
+></TD
+><TD
+><P
+>ignored</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_IGNORE</P
+></TD
+><TD
+><P
+>1</P
+></TD
+><TD
+><P
+>ignored</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_EXECFD</P
+></TD
+><TD
+><P
+>2</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_PHDR</P
+></TD
+><TD
+><P
+>3</P
+></TD
+><TD
+><P
+>a_ptr</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_PHENT</P
+></TD
+><TD
+><P
+>4</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_PHNUM</P
+></TD
+><TD
+><P
+>5</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_PAGESZ</P
+></TD
+><TD
+><P
+>6</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_BASE</P
+></TD
+><TD
+><P
+>7</P
+></TD
+><TD
+><P
+>a_ptr</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_FLAGS</P
+></TD
+><TD
+><P
+>8</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_ENTRY</P
+></TD
+><TD
+><P
+>9</P
+></TD
+><TD
+><P
+>a_ptr</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_NOTELF</P
+></TD
+><TD
+><P
+>10</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_UID</P
+></TD
+><TD
+><P
+>11</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_EUID</P
+></TD
+><TD
+><P
+>12</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_GID</P
+></TD
+><TD
+><P
+>13</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+><TR
+><TD
+><P
+>AT_EGID</P
+></TD
+><TD
+><P
+>14</P
+></TD
+><TD
+><P
+>a_val</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>a_type auxiliary vector types are described in 'Auxiliary Vector Types
+
+Description' below.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Auxiliary Vector Types Description</B
+></P
+><DL
+><DT
+>AT_NULL</DT
+><DD
+><P
+>The auxiliary vector has no fixed length; so an entry of this type is
+
+used to denote the end of the vector. The corresponding value of a_un is undefined.&#13;</P
+></DD
+><DT
+>AT_IGNORE</DT
+><DD
+><P
+>This type indicates the entry has no meaning. The corresponding value
+
+of a_un is undefined.</P
+></DD
+><DT
+>AT_EXECFD</DT
+><DD
+><P
+>exec may pass control to an interpreter program. When this happens,
+
+the system places either an entry of type AT_EXECFD or one of type AT_PHDR
+
+in the auxiliary vector. The a_val field in the AT_EXECFD entry contains a
+
+file descriptor for the application program's object file.</P
+></DD
+><DT
+>AT_PHDR</DT
+><DD
+><P
+>Under some conditions, the system creates the memory image of the application
+
+program before passing control to an interpreter program. When this happens,
+
+the a_ptr field of the AT_PHDR entry tells the interpreter where to find the
+
+program header table in the memory image. If the AT_PHDR entry is present,
+
+entries of types AT_PHENT, AT_PHNUM and AT_ENTRY must also be present.  See
+
+the section <A
+HREF="c2083.html"
+>Chapter 3</A
+> for more information about the program
+
+header table.</P
+></DD
+><DT
+>AT_PHENT</DT
+><DD
+><P
+>The a_val field of this entry holds the size, in bytes, of one entry
+
+in the program header table at which the AT_PHDR entry points.</P
+></DD
+><DT
+>AT_PHNUM</DT
+><DD
+><P
+>The a_val field of this entry holds the number of entries in the program
+
+header table at which the AT_PHDR entry points.</P
+></DD
+><DT
+>AT_PAGESZ</DT
+><DD
+><P
+>If present this entry's a_val field gives the system page size in bytes.
+
+The same information is also available through sysconf.</P
+></DD
+><DT
+>AT_BASE</DT
+><DD
+><P
+>The a_ptr member of this entry holds the base address at which the interpreter
+
+program was loaded into memory.</P
+></DD
+><DT
+>AT_FLAGS</DT
+><DD
+><P
+>If present, the a_val field of this entry holds 1-bit flags. Undefined
+
+bits are set to zero.</P
+></DD
+><DT
+>AT_ENTRY</DT
+><DD
+><P
+>The a_ptr field of this entry holds the entry point of the application
+
+program to which the interpreter program should transfer control.</P
+></DD
+><DT
+>AT_NOTELF</DT
+><DD
+><P
+>The a_val field of this entry is non-zero if the program is in another
+
+format than ELF, for example in the old COFF format.</P
+></DD
+><DT
+>AT_UID</DT
+><DD
+><P
+>The a_ptr field of this entry holds the real user id of the process.&#13;</P
+></DD
+><DT
+>AT_EUID</DT
+><DD
+><P
+>The a_ptr field of this entry holds the effective user id of the process.&#13;</P
+></DD
+><DT
+>AT_GID</DT
+><DD
+><P
+>The a_ptr field of this entry holds the real group id of the process.&#13;</P
+></DD
+><DT
+>AT_EGID</DT
+><DD
+><P
+>The a_ptr field of this entry holds the effective group id of the process.&#13;</P
+></DD
+></DL
+></DIV
+><P
+>Other auxiliary vector types are reserved. No flags are currently defined
+
+for AT_FLAGS on the zSeries architecture.</P
+><P
+>When a process receives control, its stack holds the arguments, environment,
+
+and auxiliary vector from exec.  Argument strings, environment strings, and
+
+the auxiliary information appear in no specific order within the information
+
+block; the system makes no guarantees about their relative arrangement.  The
+
+system may also leave an unspecified amount of memory between the null auxiliary
+
+vector entry and the beginning of the information block. A sample initial
+
+stack is shown in <A
+HREF="x895.html#INISTACK"
+>Figure 1-23</A
+>.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="INISTACK"
+></A
+><P
+><B
+>Figure 1-23. Initial Process Stack</B
+></P
+><DIV
+CLASS="MEDIAOBJECT"
+><P
+><IMG
+SRC="pics/inipst64.png"></P
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x832.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1127.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Exception interface</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c22.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Coding examples</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
