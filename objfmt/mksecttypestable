@@ -1,0 +1,48 @@
+#!/usr/local/bin/perl
+
+use CGI;
+use Carp;
+use Mysql;
+
+$query = new CGI(%ARGV);
+
+$Dbh = Mysql->connect(localhost) || die $Mysql::db_errstr;
+$Dbh->selectdb("Linux") || die $Dbh->errmsg();
+
+if( $query->param('numcols') ) {
+	$numcols=$query->param('numcols');
+} else {
+	$numcols=1;
+}
+if( $query->param('dodesc') ) {
+	$dodesc=$query->param('dodesc');
+} else {
+	$dodesc='N';
+}
+$select  ="SELECT STname,STdescription ";
+$select .="FROM SectionTypes,Standard ";
+$select .="WHERE STstandard=Sid and Sname=".$Dbh->quote($query->param('Sname'));
+
+$select .=" ORDER BY SectionTypes.STname ";
+#print $select,"\n";
+$sth = $Dbh->query($select) || die $Dbh->errmsg();
+
+print "<TBODY>\n";
+print "<ROW>";
+$curcol=1;
+for(1..$sth->numrows) {
+	%entry=$sth->fetchhash;
+	printf "<ENTRY>%s</ENTRY>",$entry{'STname'};
+	if ( $dodesc eq 'Y' ) {
+		printf "<ENTRY>%s</ENTRY>",$entry{'STdescription'};
+	}
+	if( $curcol%$numcols == 0 && $_ != $sth->numrows) {
+		print "</ROW>\n";
+		print "<ROW>";
+		$curcol=1;
+	} else {
+		$curcol++;
+	}
+}
+print "</ROW>\n";
+print "</TBODY>\n";

@@ -1,0 +1,24 @@
+
+.SUFFIXES: .sgml .cpp .m4
+
+FILES=dynlnk.sgml dyntag.sgml linuxtag.sgml
+TABLES=
+
+.cpp.sgml:
+	cpp -I../../code/headers $*.cpp | grep -v '^# ' >$@
+
+.m4.sgml:
+	m4 $*.m4 >$@
+
+all: $(FILES) $(TABLES)
+
+dyntag.sgml: mkdyntagtable
+	./mkdyntagtable Sname='ELF Specification' numcols=4 >dyntag.sgml
+
+linuxtag.sgml: mkdyntagtable
+	./mkdyntagtable Sname='LSB' dodesc=Y >linuxtag.sgml
+
+clean:
+	rm -f $(FILES) $(TABLES)
+
+dynlnk.sgml: dyntag.sgml linuxtag.sgml

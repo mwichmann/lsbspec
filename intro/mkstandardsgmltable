@@ -1,0 +1,26 @@
+#!/usr/local/bin/perl
+
+use Carp;
+use Mysql;
+
+$Dbh = Mysql->connect(localhost) || die $Mysql::db_errstr;
+$Dbh->selectdb("Linux") || die $Dbh->errmsg();
+
+$select  ="SELECT * ";
+$select .="FROM Standard";
+
+#$select .=" ORDER BY Interface.Iname ";
+#printf $select,"\n";
+$sth = $Dbh->query($select) || die $Dbh->errmsg();
+
+print "<TBODY>\n";
+for(1..$sth->numrows) {
+	%entry=$sth->fetchhash;
+	print "<ROW>";
+	printf "<ENTRY>%s</ENTRY>",$entry{'Sname'};
+	printf "<ENTRY>%s</ENTRY>",$entry{'Sfull'};
+	printf "<ENTRY>%s</ENTRY>",$entry{'Surl'};
+	printf "<ENTRY>%s</ENTRY>",$entry{'Scomment'};
+	print "</ROW>\n";
+}
+print "</TBODY>\n";
