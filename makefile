@@ -13,7 +13,7 @@ HTML=glibcx86-206.html glibcx86-210.html glibcaxp-206.html \
 
 TABLES = baselib/libsysansi.sgml baselib/libsyspsoxi.sgml
 
-SUBDIRS=intro objfmt baselib utillib graphlib sysinit
+SUBDIRS=intro objfmt baselib utillib graphlib sysinit usersgroups command
 
 DB2HTML=db2html
 #DB2HTML=sgmltools -b html
