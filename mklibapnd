@@ -1,0 +1,228 @@
+#!/usr/bin/perl
+
+use Getopt::Long;
+use Mysql;
+
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+
+sub usage()
+{
+print STDERR "mklibapdn -a <archname>\n";
+die;
+}
+
+# Uncomment to trace SQL statments
+#$trace=1;
+
+#
+# 1) process the arguments
+#
+GetOptions("a=s" => \$archname);
+
+if( !$archname ) { usage(); }
+
+#
+# 2) Establish connection to the database
+#
+$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+
+#
+# 3) get & print the architecture info
+#
+$select = "SELECT * FROM Architecture WHERE ";
+$select.= "Architecture.Aname=".$Dbh->quote($archname);
+print STDERR $select,"\n" if $trace;
+$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+
+%entry=$sth->fetchhash;
+$Aid=$entry{'Aid'};
+$Aname=$entry{'Aname'};
+
+print "<APPENDIX LABEL=A>\n";
+print "<TITLE></TITLE>\n";
+#
+# 4) get & print the library info
+#
+$select = "SELECT * FROM Library WHERE ";
+$select.= "Library.Lstd='Yes'";
+print STDERR $select,"\n" if $trace;
+$lth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+for(1..$lth->numrows) {
+
+%entry=$lth->fetchhash;
+$Lid=$entry{'Lid'};
+$Lname=$entry{'Lname'};
+
+print "<SECT1 ID=app-", $Lname, ">\n";
+print "<TITLE>", $Lname, "</TITLE>\n";
+print "<PARA>\n";
+print "</PARA>\n";
+
+#
+# 6) Get a list of the Standards that are used by this library
+#
+print "<PARA>\n";
+$select = "SELECT DISTINCT Sfull,Sid FROM Standard,LibGroup,LGInt,Interface ";
+$select.= "WHERE Sid=Istandard AND Iid=LGIint AND LGIlibg=LGid ";
+$select.= "AND LGlib=$Lid ORDER BY Sname";
+print STDERR $select,"\n" if $trace;
+$lsh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+if( $lsh->numrows) {
+	print "The behaviour of the interfaces in this library is specified ";
+	print "by the following Standards.";
+	print "<SIMPLELIST COLUMNS=1>\n";
+	for(1..$lsh->numrows) {
+		local(*entry);
+		%entry=$lsh->fetchhash;
+		# NB: Footnotes must be unique across the entire document
+		print "<MEMBER>\n";
+		print $entry{'Sfull'};
+#		if( $entry{'Sid'} != 0 ) {
+#			printf "<FOOTNOTE ID=\"std-%d-%d\">\n",
+#					$Lid, $entry{'Sid'};
+#			print "<PARA>\n";
+#			print $entry{'Sfull'};
+#			print "</PARA>\n";
+#			print "</FOOTNOTE>\n";
+#		}
+		print "</MEMBER>\n";
+		}
+	print "</SIMPLELIST>\n";
+	}
+print "</PARA>\n";
+print "<TABLE>\n";
+print "<TITLE></TITLE>\n";
+print "<TGROUP COLS=5>\n";
+print "<TBODY>\n";
+
+#
+# 7) Get a list of the libgroups in the library
+#
+$select = "SELECT * FROM LibGroup WHERE LGlib=$Lid ORDER BY LGorder";
+print STDERR $select,"\n" if $trace;
+#$lgh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+#for(1..$lgh->numrows) {
+	local(*entry);
+	local(*std);
+#	local(*mangle);
+#	%entry=$lgh->fetchhash;
+#	$LGid=$entry{'LGid'};
+#
+# 8) Foreach group, make a table of the interfaces
+#
+	$select = "SELECT Iname,Istandard,Vname ";
+	$select.= "FROM Interface,LGInt,LibGroup ";
+	$select.= "LEFT JOIN Version ON Vid=Iversion ";
+	$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
+	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
+	$select.= "ORDER BY Iname";
+	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	print STDERR $select,"\n" if $trace;
+	for(1..$inh->numrows) {
+		%entry=$inh->fetchhash;
+		$entry[$_]=$entry{'Iname'};
+		$std[$_]=$entry{'Istandard'};
+		$symver[$_]=$entry{'Vname'};
+	}
+	if( $inh->numrows > 0 ) {
+	$inc=int(($inh->numrows+4)/5);
+	for(1..$inc) {
+		print "<ROW>";
+		printf "<ENTRY>%s", $entry[$_];
+		if( $symver[$_] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_];
+		}
+		printf "</ENTRY>";
+		printf "<ENTRY>%s", $entry[$_+$inc];
+		if( $symver[$_+$inc] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_+$inc] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_+$inc];
+		}
+		printf "</ENTRY>";
+		printf "<ENTRY>%s", $entry[$_+(2*$inc)];
+		if( $symver[$_+(2*$inc)] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_+(2*$inc)] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_+(2*$inc)];
+		}
+		printf "</ENTRY>";
+		printf "<ENTRY>%s", $entry[$_+(3*$inc)];
+		if( $symver[$_+(3*$inc)] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_+(3*$inc)] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_+(3*$inc)];
+		}
+		printf "</ENTRY>";
+		printf "<ENTRY>%s", $entry[$_+(4*$inc)];
+		if( $symver[$_+(4*$inc)] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_+(4*$inc)] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_+(4*$inc)];
+		}
+		printf "</ENTRY>";
+		print "</ROW>\n";
+	}
+	}
+
+#}
+print "</TBODY>\n";
+print "</TGROUP>\n";
+print "</TABLE>\n";
+#
+# 10) Make a table of data interfaces
+#
+{
+	local(*datasym);
+	local(*std);
+	$select = "SELECT * FROM Interface,LGInt,LibGroup ";
+	$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Data' ";
+	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
+	$select.= "ORDER BY Iname";
+	print STDERR $select,"\n" if $trace;
+	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	if ($sth->numrows > 0 ) {
+		for(1..$sth->numrows) {
+			%datasym=$sth->fetchhash;
+			$datasym[$_]=$datasym{'Iname'};
+			$std[$_]=$datasym{'Istandard'};
+		}
+		print "<TABLE>\n";
+		print "<TITLE></TITLE>\n";
+		print "<TGROUP COLS=5>\n";
+		print "<TBODY>\n";
+		$inc=($sth->numrows+4)/5;
+		for(1..$inc) {
+			print "<ROW>";
+			printf "<ENTRY>%s",$datasym[$_];
+			if( $datasym[$_] && $std[$_] ) {
+				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+								$Lid, $std[$_];
+			}
+			printf "</ENTRY>";
+			printf "<ENTRY>%s</ENTRY>",$datasym[$_+$inc];
+			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(2*$inc)];
+			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(3*$inc)];
+			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(4*$inc)];
+			print "</ROW>\n";
+		}
+		print "</TBODY>\n";
+		print "</TGROUP>\n";
+		print "</TABLE>\n";
+	}
+}
+print "</SECT1>\n";
+}
+print "</APPENDIX>\n";
