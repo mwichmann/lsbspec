@@ -28,6 +28,16 @@ sub unmangle($)
 	return $int;
 }
 
+sub makeid($) 
+{
+	my ($name) = @_;
+	$name =~ s/\s+/./g;
+	$name =~ s/[^A-Za-z0-9.]+/./g;
+	# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
+	$name =~ s/\.\.+/./g;
+	return $name;
+}
+
 sub output_table($$$$$$$)
 {
 local ($i,$name,*int,*symver,*stdnum,*stdname,$title) = @_;
@@ -88,8 +98,8 @@ if ($#ref >= 0) {
 	for $r (0..$#ref) {
 		$refstr = $ref[$r];
 		$refname{$refstr} = "This specification" if ($refname{$refstr} eq "Linux Standard Base" && $archname eq "All");
-		printf "<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para>%s</para></FORMALPARA>\n",
-			$refstr, $r+1, $refname{$refstr};
+		printf "<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para><XREF LINKEND=std.%s></para></FORMALPARA>\n",
+			$refstr, $r+1, makeid($refname{$refstr});
 		}
 	}
 }
@@ -301,7 +311,7 @@ sub getinterfaces($$$$)
 	else {
 		die "Unknown type $type";
 		}
-	$select = "SELECT DISTINCT Iname, AIarch, Vname, Istandard, Sfull FROM Interface ";
+	$select = "SELECT DISTINCT Iname, AIarch, Vname, Istandard, Sname FROM Interface ";
 	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
 	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 	$select.= "LEFT JOIN Version ON Vid=AIversion ";
@@ -321,14 +331,15 @@ sub getinterfaces($$$$)
 			$symver[$i]=$entry{'Vname'};
 		}
 		$stdnum[$i]=$entry{'Istandard'};
-		$stdname[$i]=$entry{'Sfull'};
+		$stdname[$i]=$entry{'Sname'};
 	}
 	if( $i > 0 ) {
+		$arch_type = ($archname eq "All") ? "generic" : "architecture specific";
 		$tblname = sprintf "tbl-%s-%s-%s", $safeLname, nmhash($LGname), $name;
 		$tblname =~ s/\s/-/g;
 		$tblname =~ s/\+/x/g;		# change the C++ names into Cxx
 		print "<PARA>\n";
-		print "An LSB conforming implementation shall provide the $type\n";
+		print "An LSB conforming implementation shall provide the $arch_type $type\n";
 		print "for $LGname specified in <XREF linkend=\"$tblname\">,\n";
 		print "with the full functionality as described in the referenced\n";
 		print "underlying specification.\n";
@@ -409,7 +420,7 @@ $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.59 2004-07-08 19:02:30 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.60 2004-07-13 18:49:08 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -686,4 +697,4 @@ if($sth->numrows) {
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.59 2004-07-08 19:02:30 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.60 2004-07-13 18:49:08 nick Exp $- -->\n");
