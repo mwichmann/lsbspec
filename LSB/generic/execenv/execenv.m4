@@ -32,18 +32,21 @@ mentioned in the LSB document and included standards.
 <PARA>
 The application should not depend on having directory write 
 permission outside /tmp, /var/tmp, its home directory and
-/var/opt/&lt;package>, (where &lt;package> is the name of the 
+/var/opt/<replaceable>package</replaceable>,
+(where <replaceable>package</replaceable> is the name of the 
 application package). 
 </PARA>
 
 <PARA>
 The application should not depend on owning these directories.
+<!-- What do we mean here?  Can an application create
+/var/opt/<package>/<subdir> and own it? -->
 </PARA>
 
 <PARA>
 For these directories the application should be able to work 
 with directory write permissions restricted by the "sticky bit". 
-(Which prevents the application to remove files owned by another 
+(Which prevents the application from removing files owned by another 
 user. This is classically done with /tmp, to prevent accidental
 deletion of "foreign" files.)
 </PARA>
@@ -56,7 +59,7 @@ deletion of "foreign" files.)
 <PARA>
 The application should not depend on file write permission on
 files not owned by the user it runs under with the exception 
-of its personal inbox /var/mail/&lt;username&gt;
+of its personal inbox /var/mail/<replaceable>username</replaceable>
 </PARA>
 </SECT2>
          
