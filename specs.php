@@ -12,16 +12,16 @@ $addroot = "http://www.linuxbase.org/spec";
 $r = new Project("lsb");
 $r->name = "Linux Standard Base Specifications";
 
+$p = new Project("booksets");
+$p->name = "LSB Specification Modules";
+$p->url = "http://www.linuxbase.org/spec/";
+$p->indexDir($baseroot.'/booksets');
+addProject($p);
+
 $p = new Project("book");
 $p->name = "Individual Specification";
 $p->url = "http://www.linuxbase.org/spec/";
 $p->indexDir($baseroot.'/book');
-addProject($p);
-
-$p = new Project("booksets");
-$p->name = "LSB Specification Profiles";
-$p->url = "http://www.linuxbase.org/spec/";
-$p->indexDir($baseroot.'/booksets');
 addProject($p);
 
 $colours = array("beta" => "#ccccff",
@@ -55,6 +55,9 @@ select,input { font-size: small; }
   </style>
  </head>
  <body>
+<P>
+You can review the specification using either the Module documents, or
+the individual specification which are found below.
 <?
 $path = eregi_replace("/$", "", $_SERVER["PATH_INFO"]);
 $project = $r;
