@@ -1,0 +1,137 @@
+#!/usr/bin/perl
+#
+#	Linux Standard Base, http://www.linuxbase.org/
+#	George Kraft IV, gk4@us.ibm.com, 03/09/2000
+#
+#
+
+
+use DBI;
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+
+local %references;
+local %standards;
+
+################################################################################
+#	lsbOpenDB
+################################################################################
+
+sub lsbOpenDB {
+
+	$dbh = DBI->connect("DBI:mysql:$LSBDB", $LSBUSER, $LSBDBPASSWD);
+	die unless $dbh;
+
+	$sth = $dbh->prepare( "SHOW TABLES" );
+	$sth->execute;
+
+}
+
+################################################################################
+#	lsbCloseDB
+################################################################################
+
+sub lsbCloseDB {
+
+	$sth = $dbh->prepare( "SHOW TABLES" );
+	$sth->execute;
+
+	$sth->finish;
+	$dbh->disconnect;
+}
+
+################################################################################
+#	lsbCommands
+################################################################################
+
+sub lsbCommands {
+
+		$sth = $dbh->prepare("SELECT DISTINCT Command.Cname, Standard.Sid, Standard.Sfull FROM Command left join StandUgCmds on Command.Cid=StandUgCmds.UGCcmd, Standard WHERE StandUgCmds.UGCstand=Standard.Sid AND StandUgCmds.UGClsb='1' ORDER BY Command.Cname");
+		$sth->execute;
+
+		if ($sth->rows < 1) {
+			printf("<PARA>No Commands or Utilities found!</PARA>\n");
+			return;
+		} 
+
+		printf("<PARA>\n");
+		printf("The behaviour of the interfaces described in this\n");
+		printf("section are specified by the following Standards.");
+		printf("</PARA>\n");
+		printf("<SIMPLELIST COLUMNS=1>\n");
+
+		my $i = 0;
+		while (@field = $sth->fetchrow_array) {
+			if (!$standards{$field[1]}) {
+				++$i;
+				$standards{$field[1]} = $field[2];
+				$references{$i} = $field[1];
+				$permutation{$field[1]} = $i;
+				$ref = $i;
+			} else {
+				$ref = $permutation{$field[1]};
+			}
+
+			$ftid = sprintf("std-ugc-fn-%s-%s",  
+				$field[1], $permutation{$field[1]});
+
+			if (!$footer{$ftid}) {
+				$footer{$ftid} = $ref;
+				printf("<MEMBER>%s\n", $standards{$field[1]});
+				printf("<FOOTNOTE ID=\"%s\">\n", $ftid);
+				printf("<PARA>%s</PARA></FOOTNOTE>", 
+					$standards{$field[1]});
+				printf("</MEMBER>\n");
+			}
+		}
+		printf("</SIMPLELIST>\n");
+
+		$sth = $dbh->prepare("SELECT DISTINCT Command.Cname, Standard.Sid, Standard.Sfull FROM Command left join StandUgCmds on Command.Cid=StandUgCmds.UGCcmd, Standard WHERE StandUgCmds.UGCstand=Standard.Sid AND StandUgCmds.UGClsb='1' ORDER BY Command.Cname");
+		$sth->execute;
+
+		if ($sth->rows < 1) {
+			printf("<PARA>No Commands or Utilities found!</PARA>\n");
+			return;
+		} 
+
+		printf("<TABLE>\n");
+		printf("<TITLE></TITLE>\n");
+		printf("<TGROUP COLS=5>\n");
+		printf("<TBODY>\n");
+		printf("<ROW>\n");
+
+		my $i = 0;
+		while (@field = $sth->fetchrow_array) {
+			$ref = $permutation{$field[1]};
+
+			if ($i != 0 && 0 == ($i % 5)) {
+				printf("</ROW><ROW>\n");
+			}
+
+			$ftid = sprintf("std-ugc-fn-%s-%s",  
+				$field[1], $permutation{$field[1]});
+
+			printf("<ENTRY>%s\n", $field[0]);
+			printf("<FOOTNOTEREF LINKEND=\"%s\">\n", $ftid);
+			printf("</ENTRY>\n");
+
+			++$i;
+		}
+
+		printf("</ROW>\n");
+		printf("</TBODY>\n");
+		printf("</TGROUP>\n");
+		printf("</TABLE>\n");
+
+}
+
+################################################################################
+#	main
+################################################################################
+
+lsbOpenDB;
+lsbCommands;
+lsbCloseDB;
+
+exit;
+
+# EOF
