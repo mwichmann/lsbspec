@@ -13,10 +13,10 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../mklibspec Lname=libz >libz.sgml
-	../mklibspec Lname=libcurses >libcurses.sgml
-	../mklibspec Lname=libresolv >libresolv.sgml
-	../mklibspec Lname=libutil >libutil.sgml
+	../mklibspec -l libz >libz.sgml
+	../mklibspec -l libcurses >libcurses.sgml
+	../mklibspec -l libresolv >libresolv.sgml
+	../mklibspec -l libutil >libutil.sgml
 
 clean:
 	rm -f $(FILES) $(TABLES)
