@@ -236,6 +236,7 @@ SUS.</para>
 
 <para>The value "z" shall be an invalid mode argument to popen().</para>
 
+<para>
 <footnote>
 <para>
 On a Linux kernel, removing or renaming a directory will give EBUSY
@@ -248,6 +249,8 @@ to applications and may be difficult to implement on some kernels.
 Linux allows one to call rename() on a directory without
 having write access, but the LSB does not require this.</para>
 </footnote>
+</para>
+
 </chapter>
 
 </PART>
