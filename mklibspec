@@ -1,22 +1,39 @@
 #!/usr/bin/perl
 
-use CGI;
-use Carp;
+use Getopt::Long;
 use Mysql;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
-$query = new CGI(%ARGV);
+sub usage()
+{
+print STDERR "mklibspec -l <libname>\n";
+die;
+}
 
+# Uncomment to trace SQL statments
+#$trace=1;
+
+#
+# 1) process the arguments
+#
+GetOptions("l=s" => \$libname);
+
+if( !$libname ) { usage(); }
+
+#
+# 2) Establish connection to the database
+#
 $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
 
 #
-# First, get & print the library info
+# 3) get & print the library info
 #
-$select = "SELECT * FROM Library WHERE ".
-		"Library.Lname=".$Dbh->quote($query->param('Lname'));
-#printf $select,"\n";
+$select = "SELECT * FROM Library WHERE ";
+$select.= "Library.Lname=".$Dbh->quote($libname);
+print STDERR $select,"\n" if $trace;
 $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+
 %entry=$sth->fetchhash;
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
@@ -37,20 +54,22 @@ print "<ROW>\n";
 print "<ENTRY>Runtime Path:</ENTRY>\n";
 print "<ENTRY>", $entry{'Lrunname'}, "</ENTRY>\n";
 print "</ROW>\n";
-print "<ROW>\n";
-print "<ENTRY>Development Name:</ENTRY>\n";
-print "<ENTRY>", $entry{'LDevname'}, "</ENTRY>\n";
-print "</ROW>\n";
-print "<ROW>\n";
-print "<ENTRY>Header Location:</ENTRY>\n";
-print "<ENTRY>", $entry{'Lheaderpath'}, "</ENTRY>\n";
-print "</ROW>\n";
+# These aren't needed right now, and they are no longer stored in the
+# DB after the Fall 2000 redesign. Maybe later....
+#print "<ROW>\n";
+#print "<ENTRY>Development Name:</ENTRY>\n";
+#print "<ENTRY>", $entry{'LDevname'}, "</ENTRY>\n";
+#print "</ROW>\n";
+#print "<ROW>\n";
+#print "<ENTRY>Header Location:</ENTRY>\n";
+#print "<ENTRY>", $entry{'Lheaderpath'}, "</ENTRY>\n";
+#print "</ROW>\n";
 print "</TBODY>\n";
 print "</TGROUP>\n";
 print "</TABLE>\n";
 
 #
-# Second, Check for additional description text for the library
+# 4) Check for additional description text for the library
 #
 if(open(DESC,"<$Lname.txt" )) {
 	while(<DESC>) {
@@ -59,12 +78,13 @@ if(open(DESC,"<$Lname.txt" )) {
 }
 
 #
-# Third, get a list of the Standards that are used by this library
+# 5) Get a list of the Standards that are used by this library
 #
 print "<PARA>\n";
-$select = "SELECT DISTINCT Sfull,Sid FROM Standard,LibGroup,Interface ";
-$select.= "WHERE Sid=Istandard AND Ilibgroup=LGid ";
+$select = "SELECT DISTINCT Sfull,Sid FROM Standard,LibGroup,LGInt,Interface ";
+$select.= "WHERE Sid=Istandard AND Iid=LGIint AND LGIlibg=LGid ";
 $select.= "AND LGlib=$Lid ORDER BY Sname";
+print STDERR $select,"\n" if $trace;
 $lsh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $lsh->numrows) {
 	print "The behaviour of the interfaces in this library is specified ";
@@ -88,9 +108,10 @@ if( $lsh->numrows) {
 print "</PARA>\n";
 
 #
-# Fourth, get a list of the libgroups in the library
+# 6) Get a list of the libgroups in the library
 #
 $select = "SELECT * FROM LibGroup WHERE LGlib=$Lid ORDER BY LGorder";
+print STDERR $select,"\n" if $trace;
 $lgh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 for(1..$lgh->numrows) {
 	local(*entry);
@@ -105,11 +126,12 @@ for(1..$lgh->numrows) {
 	print "<PARA>\n";
 	print "</PARA>\n";
 #
-# Fifth, foreach group, make a table of the interfaces
+# 7) Foreach group, make a table of the interfaces
 #
-	$select = "SELECT * FROM Interface ".
-		  "WHERE Ilibgroup=$LGid AND Itype='F' ORDER BY Iname";
+	$select = "SELECT * FROM Interface,LGInt ";
+	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype='Function' ORDER BY Iname";
 	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	print STDERR $select,"\n" if $trace;
 	for(1..$inh->numrows) {
 		%entry=$inh->fetchhash;
 		$entry[$_]=$entry{'Iname'};
@@ -158,47 +180,51 @@ for(1..$lgh->numrows) {
 	print "</TGROUP>\n";
 	print "</TABLE>\n";
 
-	#
-	# Get the mangles for this libgroup
-	#
-	$select = "SELECT DISTINCT * FROM Mangle ".
-		  "WHERE Mlibgroup=$LGid ".
-		  "ORDER BY Mname";
-	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	if ($sth->numrows > 0 ) {
-		print "<TABLE>\n";
-		print "<TITLE>Mangled Symbol Mappings</TITLE>\n";
-		print "<TGROUP COLS=2>\n";
-		print "<THEAD>";
-		print "<ROW>";
-		print "<ENTRY>Symbol</ENTRY>";
-		print "<ENTRY>Implements</ENTRY>";
-		print "</ROW>";
-		print "</THEAD>\n";
-		print "<TBODY>\n";
-		for(1..$sth->numrows) {
-			%mangle=$sth->fetchhash;
-			print "<ROW>";
-			printf "<ENTRY>%s</ENTRY>",$mangle{'Mmname'};
-			printf "<ENTRY>%s</ENTRY>",$mangle{'Mname'};
-			print "</ROW>\n";
-		}
-		print "</TBODY>\n";
-		print "</TGROUP>\n";
-		print "</TABLE>\n";
-	}
-	print "</SECT2>\n";
-}
+#
+# 8) Get the mangles for this libgroup
+#
+
+# Leave out the Mangles until it is reimplemented in the DB
+
+#	$select = "SELECT DISTINCT * FROM Mangle ";
+#	$select.= "WHERE Mlibgroup=$LGid ";
+#	$select.= "ORDER BY Mname";
+#	print STDERR $select,"\n" if $trace;
+#	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+#	if ($sth->numrows > 0 ) {
+#		print "<TABLE>\n";
+#		print "<TITLE>Mangled Symbol Mappings</TITLE>\n";
+#		print "<TGROUP COLS=2>\n";
+#		print "<THEAD>";
+#		print "<ROW>";
+#		print "<ENTRY>Symbol</ENTRY>";
+#		print "<ENTRY>Implements</ENTRY>";
+#		print "</ROW>";
+#		print "</THEAD>\n";
+#		print "<TBODY>\n";
+#		for(1..$sth->numrows) {
+#			%mangle=$sth->fetchhash;
+#			print "<ROW>";
+#			printf "<ENTRY>%s</ENTRY>",$mangle{'Mmname'};
+#			printf "<ENTRY>%s</ENTRY>",$mangle{'Mname'};
+#			print "</ROW>\n";
+#		}
+#		print "</TBODY>\n";
+#		print "</TGROUP>\n";
+#		print "</TABLE>\n";
+#	}
+#	print "</SECT2>\n";
 
 #
-# Sixth, make a table of data interaces
+# 9) Make a table of data interfaces
 #
 {
-	local(*lftovr);
-	$select = "SELECT DISTINCT * FROM Interface,LibInt ".
-		  "WHERE LibInt.LIlib=".$Lid." AND ".
-		  "LibInt.LIint=Interface.Iid AND IType='D' ".
-		  "ORDER BY Iname";
+	local(*datasym);
+	local(*std);
+	$select = "SELECT * FROM Interface,LGInt ";
+	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype='Data' ";
+	$select.= "ORDER BY Iname";
+	print STDERR $select,"\n" if $trace;
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	if ($sth->numrows > 0 ) {
 		print "<SECT2>\n";
@@ -206,8 +232,9 @@ for(1..$lgh->numrows) {
 		print "<PARA>\n";
 		print "</PARA>\n";
 		for(1..$sth->numrows) {
-			%lftovr=$sth->fetchhash;
-			$lftovr[$_]=$lftovr{'Iname'};
+			%datasym=$sth->fetchhash;
+			$datasym[$_]=$datasym{'Iname'};
+			$std[$_]=$datasym{'Istandard'};
 		}
 		print "<TABLE>\n";
 		print "<TITLE></TITLE>\n";
@@ -216,11 +243,16 @@ for(1..$lgh->numrows) {
 		$inc=($sth->numrows+4)/5;
 		for(1..$inc) {
 			print "<ROW>";
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_];
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+$inc];
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(2*$inc)];
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(3*$inc)];
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(4*$inc)];
+			printf "<ENTRY>%s",$datasym[$_];
+			if( $datasym[$_] ) {
+				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+								$Lid, $std[$_];
+			}
+			printf "</ENTRY>";
+			printf "<ENTRY>%s</ENTRY>",$datasym[$_+$inc];
+			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(2*$inc)];
+			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(3*$inc)];
+			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(4*$inc)];
 			print "</ROW>\n";
 		}
 		print "</TBODY>\n";
@@ -229,115 +261,121 @@ for(1..$lgh->numrows) {
 		print "</SECT2>\n";
 	}
 }
+}
 
+
+# This goes away completely because interfaces don't belong to libraries anymore. They
+# belong only to libgroups.
 
 #
 # Seventh, make a table of the interfaces not in a group
 #
-{
-	local(*lftovr);
-	$select = "SELECT DISTINCT * FROM Interface,LibInt ".
-		  "WHERE LibInt.LIlib=".$Lid." AND ".
-		  "LibInt.LIint=Interface.Iid AND ".
-		  "Itype!='D' AND Ilibgroup is NULL ".
-		  "ORDER BY Iname";
-	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	if ($sth->numrows > 0 ) {
-		print "<SECT2>\n";
-		print "<TITLE>Leftovers (This need to be eliminated)</TITLE>\n";
-		print "<PARA>\n";
-		print "</PARA>\n";
-		for(1..$sth->numrows) {
-			%lftovr=$sth->fetchhash;
-			$lftovr[$_]=$lftovr{'Iname'};
-		}
-		print "<TABLE>\n";
-		print "<TITLE></TITLE>\n";
-		print "<TGROUP COLS=5>\n";
-		print "<TBODY>\n";
-		$inc=($sth->numrows+4)/5;
-		for(1..$inc) {
-			print "<ROW>";
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_];
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+$inc];
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(2*$inc)];
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(3*$inc)];
-			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(4*$inc)];
-			print "</ROW>\n";
-		}
-		print "</TBODY>\n";
-		print "</TGROUP>\n";
-		print "</TABLE>\n";
-		print "</SECT2>\n";
-	}
-}
+#{
+#	local(*lftovr);
+#	$select = "SELECT DISTINCT * FROM Interface,LibInt ".
+#		  "WHERE LibInt.LIlib=".$Lid." AND ".
+#		  "LibInt.LIint=Interface.Iid AND ".
+#		  "Itype!='D' AND Ilibgroup is NULL ".
+#		  "ORDER BY Iname";
+#	print STDERR $select,"\n" if $trace;
+#	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+#	if ($sth->numrows > 0 ) {
+#		print "<SECT2>\n";
+#		print "<TITLE>Leftovers (This need to be eliminated)</TITLE>\n";
+#		print "<PARA>\n";
+#		print "</PARA>\n";
+#		for(1..$sth->numrows) {
+#			%lftovr=$sth->fetchhash;
+#			$lftovr[$_]=$lftovr{'Iname'};
+#		}
+#		print "<TABLE>\n";
+#		print "<TITLE></TITLE>\n";
+#		print "<TGROUP COLS=5>\n";
+#		print "<TBODY>\n";
+#		$inc=($sth->numrows+4)/5;
+#		for(1..$inc) {
+#			print "<ROW>";
+#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_];
+#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+$inc];
+#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(2*$inc)];
+#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(3*$inc)];
+#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(4*$inc)];
+#			print "</ROW>\n";
+#		}
+#		print "</TBODY>\n";
+#		print "</TGROUP>\n";
+#		print "</TABLE>\n";
+#		print "</SECT2>\n";
+#	}
+#}
 
 #
 # Eigth, make a table of the dangling mangled interfaces 
 #
-{
-	local(*mangle);
-	$select = "SELECT DISTINCT * FROM Mangle ".
-		  "WHERE Mlib=$Lid AND Mlibgroup=0 ".
-		  "ORDER BY Mname";
-	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	if ($sth->numrows > 0 ) {
-		print "<SECT2>\n";
-		print "<TITLE>Leftover Mangled Symbols (This need to be eliminated)</TITLE>\n";
-		print "<PARA>\n";
-		print "</PARA>\n";
-		print "<TABLE>\n";
-		print "<TITLE></TITLE>\n";
-		print "<TGROUP COLS=5>\n";
-		print "<TBODY>\n";
-		for(1..$sth->numrows) {
-			%mangle=$sth->fetchhash;
-			print "<ROW>";
-			printf "<ENTRY>%s</ENTRY>",$mangle{'Mname'};
-			printf "<ENTRY>%s</ENTRY>",$mangle{'Mprototype'};
-			print "</ROW>\n";
-		}
-		print "</TBODY>\n";
-		print "</TGROUP>\n";
-		print "</TABLE>\n";
-		print "</SECT2>\n";
-	}
-}
+#{
+#	local(*mangle);
+#	$select = "SELECT DISTINCT * FROM Mangle ".
+#		  "WHERE Mlib=$Lid AND Mlibgroup=0 ".
+#		  "ORDER BY Mname";
+#	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+#	if ($sth->numrows > 0 ) {
+#		print "<SECT2>\n";
+#		print "<TITLE>Leftover Mangled Symbols (This need to be eliminated)</TITLE>\n";
+#		print "<PARA>\n";
+#		print "</PARA>\n";
+#		print "<TABLE>\n";
+#		print "<TITLE></TITLE>\n";
+#		print "<TGROUP COLS=5>\n";
+#		print "<TBODY>\n";
+#		for(1..$sth->numrows) {
+#			%mangle=$sth->fetchhash;
+#			print "<ROW>";
+#			printf "<ENTRY>%s</ENTRY>",$mangle{'Mname'};
+#			printf "<ENTRY>%s</ENTRY>",$mangle{'Mprototype'};
+#			print "</ROW>\n";
+#		}
+#		print "</TBODY>\n";
+#		print "</TGROUP>\n";
+#		print "</TABLE>\n";
+#		print "</SECT2>\n";
+#	}
+#}
+
 print "</SECT1>\n";
 
 #
 # List the data definitions by including the related headers here
 #
-$select = "SELECT * FROM Headers WHERE Hlibrary=$Lid ORDER BY Hname";
-$hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-if( $hdh->numrows ) {
-	print "<SECT1>\n";
-	print "<TITLE> Data Definitions for ", $Lname, "</TITLE>\n";
-	print "<PARA>\n";
-	print "</PARA>\n";
+#$select = "SELECT * FROM Headers WHERE Hlibrary=$Lid ORDER BY Hname";
+#$hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+#if( $hdh->numrows ) {
+#	print "<SECT1>\n";
+#	print "<TITLE> Data Definitions for ", $Lname, "</TITLE>\n";
+#	print "<PARA>\n";
+#	print "</PARA>\n";
 #
 # Now, get a list of all headers associate with this library
 #
-	$select = "SELECT * FROM Headers WHERE Hlibrary=$Lid ORDER BY Hname";
-	$hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	for(1..$hdh->numrows) {
-		local(*entry);
-		%entry=$hdh->fetchhash;
-		$Hname=$entry{'Hname'};
-		$headname="../../src/include/".$Hname;
-		print "<SECT2>\n";
-		print "<TITLE>";
-		print $entry{'Hname'};
-		print "</TITLE>\n";
-		print "<PARA>\n";
-		print "</PARA>\n";
-		print "<SCREEN>\n";
-		open(HEADER,"<".$headname) || die "Can't open $headname";
-		while(<HEADER>) {
-			print $_;
-			}
-		print "</SCREEN>\n";
-		print "</SECT2>\n";
-	}
-	print "</SECT1>\n";
-}
+#	$select = "SELECT * FROM Headers WHERE Hlibrary=$Lid ORDER BY Hname";
+#	$hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+#	for(1..$hdh->numrows) {
+#		local(*entry);
+#		%entry=$hdh->fetchhash;
+#		$Hname=$entry{'Hname'};
+#		$headname="../../src/include/".$Hname;
+#		print "<SECT2>\n";
+#		print "<TITLE>";
+#		print $entry{'Hname'};
+#		print "</TITLE>\n";
+#		print "<PARA>\n";
+#		print "</PARA>\n";
+#		print "<SCREEN>\n";
+#		open(HEADER,"<".$headname) || die "Can't open $headname";
+#		while(<HEADER>) {
+#			print $_;
+#			}
+#		print "</SCREEN>\n";
+#		print "</SECT2>\n";
+#	}
+#	print "</SECT1>\n";
+#}
