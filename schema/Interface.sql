@@ -8,6 +8,7 @@ CREATE TABLE Interface (
   Istatus enum('Included','Excluded','Unknown') DEFAULT 'Unknown' NOT NULL,
   Itype enum('Function','Data','Unknown') DEFAULT 'Unknown' NOT NULL,
   Istandard int(10) DEFAULT '0' NOT NULL,
+  Iarch int(10) DEFAULT '0' NOT NULL,
   Iheader int(10) DEFAULT '0' NOT NULL,
   Ilibgroup int(10) DEFAULT '0' NOT NULL,
   Ireturn int(11) DEFAULT '0' NOT NULL,

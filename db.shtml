@@ -87,6 +87,26 @@ and Interfaces. The Standard Table has the following Attributes:
 <CODE><PRE>
 <!--#include file="schema/Standard.sql"-->
 </PRE></CODE>
+<H3>Architecture</H3>
+<P>
+The Architecture Table is an Entity Table that represents Processor
+Architectures. Portions of the specification vary depending on the
+Architecture. This table is used to establish this relationship with
+many other tables. It is assumed that data is either unique to one
+architecture, or applicable to all architectures.
+The Architecture Table has the following Attributes:
+<DL>
+<DT>Aname
+<DD>This attribute is the name of a processor Architecture.
+<DT>Aspecifcation
+<DD>This Attribute contains the formal specification of the architecture.
+<DT>Asymbol
+<DD>This Attribute specifies the compilation symbol used to test for the
+architecture.
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Architecture.sql"-->
+</PRE></CODE>
 <H3>Interface</H3>
 <P>
 The Interface Table is an Entity Table that represents symbols found in
@@ -103,6 +123,9 @@ global data.
 <DT>Istandard
 <DD>This is a 1-to-N relationship used to indicate which Standard governs
 the behavior of this interface.
+<DT>Iarch
+<DD>This is a 1-to-N relationship used to indicate for which architecture this
+interface is valid.
 <DT>Iheader
 <DD>This is a 1-to-N relationship used to indicate which header file contained
 the prototype and other definitions associated with this interface.
@@ -170,6 +193,8 @@ The LibGroup Table has the following Attributes:
 <DD>This attribute is a common name for a group of functions.
 <DT>LGlib
 <DD>This is a 1-to-N relationship used to indicate to which library this group belongs.
+<DT>LGarch
+<DD>This is a 1-to-N relationship used to indicate for which architectures this group is valid.
 <DT>LGorder
 <DD>This Attribute is used to place the groups in a given order.
 <DT>LGdescription
@@ -218,6 +243,9 @@ The HeaderGroup Table has the following Attributes:
 <DD>This is a 1-to-N relationship used to indicate to which Header this group belongs.
 <DT>HGorder
 <DD>This attribute is used to allow the groups to be ordered in a meaningful manner.
+<DT>HGarch
+<DD>This is a 1-to-N relationship used to indicate for which Architectures this
+group is valid.
 <DT>HGdescription
 <DD>This Attribute provides a description of the group. This description is used
 to create a comment when producing a header file from this data.
@@ -226,9 +254,28 @@ to create a comment when producing a header file from this data.
 <!--#include file="schema/HeaderGroup.sql"-->
 </PRE></CODE>
 <H3>Constant</H3>
+<P>
+The Constant Table is an Entity Table that represents constant value defined by the LSB. Typically, these values correspond to source symbols and values
+expressed by a C preprocessor <CODE>#define</CODE> statement.
+The Constant Table has the following Attributes:
 <DL>
-<DT>
-<DD>
+<DT>Cname
+<DD>This Attribute is the name used to describe this constant value.
+<DT>Cvalue
+<DD>This Attribute is the textual representation of the constant value.
+<DT>Ctype
+<DD>This Attribute is used to indicate what type of constant is being
+represented. The development environment tests need this information to
+correctly test the constant values.
+<DT>Cheadgroup
+<DD>This is a 1-to-N relationship used to indicate to which HeaderGroup this
+Constant belongs.
+<DT>Carch
+<DD>This is a 1-to-N relationship used to indicate for which Architectures this
+constant is valid.
+<DT>Ccomment
+<DD>This Attribute is a description of the value. It is used to produce
+a comment when creating the reference headers.
 </DL>
 <CODE><PRE>
 <!--#include file="schema/Constant.sql"-->
@@ -248,14 +295,6 @@ to create a comment when producing a header file from this data.
 </DL>
 <CODE><PRE>
 <!--#include file="schema/TypeMember.sql"-->
-</PRE></CODE>
-<H3>Architecture</H3>
-<DL>
-<DT>
-<DD>
-</DL>
-<CODE><PRE>
-<!--#include file="schema/Architecture.sql"-->
 </PRE></CODE>
 <H3>MangledNames</H3>
 <DL>

@@ -2,7 +2,9 @@
 # This makefile puts together the database 
 #
 SETUP = setupdb.sql
-TABLES = Interface.sql LibGroup.sql Library.sql Parameter.sql Standard.sql
+TABLES = Architecture.sql Constant.sql Header.sql HeaderGroup.sql \
+	Interface.sql LibGroup.sql Library.sql Parameter.sql \
+	Standard.sql Version.sql
 PERMS = dbperms.sql
 
 all:
