@@ -11,7 +11,17 @@
 #
 # Open up these tables for the LSB db admin
 #
+GRANT INSERT,UPDATE,DELETE on lsb.Architecture TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.Constant TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.Header TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.HeaderGroup TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.Interface TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.LibGroup TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.LGInt TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.Library TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.Parameter TO lsbadmin;
 GRANT INSERT,UPDATE,DELETE on lsb.Standard TO lsbadmin;
+GRANT INSERT,UPDATE,DELETE on lsb.Version TO lsbadmin;
 #
 # The rest should be "read Only" from the localhost
 #
