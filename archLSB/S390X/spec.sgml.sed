@@ -2,7 +2,7 @@
 
 <!entity specversion "LSBVERSION">
 <!entity canonicalarch "S390X">
-<!entity specarchitecture "64 bit implementation of the z/Architecture&trade;">
+<!entity specarchitecture "z/Architecture&trade; (64-bit)">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
 <!entity lowlevel.sgm system "lowlevel/lowlevel.sgml">

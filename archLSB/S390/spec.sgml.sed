@@ -2,7 +2,7 @@
 
 <!entity specversion "LSBVERSION">
 <!entity canonicalarch "S390">
-<!entity specarchitecture "31 bit implementation of the S390&trade;">
+<!entity specarchitecture "ESA/390&trade; (31-bit)">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
 <!entity lowlevel.sgm system "lowlevel/lowlevel.sgml">
