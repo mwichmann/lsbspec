@@ -26,6 +26,7 @@ die;
 sub
 dotable()
 {
+print "<!--table start-->\n";
 #
 # Skip down to the next TITLE
 #
@@ -89,10 +90,11 @@ while(<>) {
 	# Process each entry in the table
 	#
 	if(/<ENTRY>/) {
+		print "<!--entry start-->\n";
 		$origline=$_;
 		$origline=~s/std:://g;
 		$entry=$origline;
-		print STDERR "Entry1: $entry\n";
+		#print STDERR "Entry1: $entry\n";
 		$entry=~/(.+)<primary>(.+)<\/primary><\/indexterm>(.+)<FOOTNOTEREF(.+)/;
 		$linestart=$1;
 		$entry=$2;
@@ -104,10 +106,10 @@ while(<>) {
 			$entry=$2;
 			$lineend="";
 		}
-		print STDERR "Entry2: $entry\n";
+		#print STDERR "Entry2: $entry\n";
 		$entry=~s/\</&lt;/g;
 		$entry=~s/\[/&lsqb;/g;
-		print STDERR "Entry3: $entry\n";
+		#print STDERR "Entry3: $entry\n";
 		if( $entry ne "" ) {
 			print "$linestart<primary>$entry";
 			print "</primary></indexterm>$entry";
@@ -119,10 +121,12 @@ while(<>) {
 		} else {
 			print "$origline";
 			}
+		print "<!--entry end-->\n";
 		next;
 		}
 	print "<!--huh??-->".$_;
 	}
+print "<!--table end-->\n";
 }
 
 while(<>) {
@@ -131,6 +135,7 @@ while(<>) {
 	#
 	#s/std:://g;
 	if(/<!--libgroup-->/) {
+		print $_;
 		$title=<>;
 		$title=~s/std:://g;
 		$group=$title;
@@ -141,10 +146,20 @@ while(<>) {
 		$title=$1;
 		$title=~s/\</&lt;/g;
 		print "<TITLE>$title</TITLE>\n";
+		next;
+	}
+	if(/<!--classdata-->/) {
+		print $_;
+		dotable();
+		next;
+	}
+	if(/<!--libgroupints-->/) {
+		print $_;
 		dotable();
 		next;
 	}
 	if(/<!--libgroupdata-->/) {
+		print $_;
 		dotable();
 		next;
 	}
