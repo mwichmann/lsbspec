@@ -3,6 +3,8 @@
 
 <CHAPTER id=Introduction>
 <TITLE>Introduction</TITLE>
+<SECT1 ID="overview">
+<TITLE>Introduction</TITLE>
 <PARA>
 This is version &specversion of the Linux Standard Base Specification for
 the IA32 Architecture. This version is very preliminary since this document
@@ -17,6 +19,7 @@ specification of the Linux Standard Base.
 An implementation of this version of the specification may not claim
 to be an implementation of the Linux Standard Base.
 </PARA>
+</SECT1>
 
 <SECT1 ID="rstandards">
 <TITLE>Related Standards</TITLE>

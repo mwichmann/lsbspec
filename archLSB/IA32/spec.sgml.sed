@@ -18,7 +18,14 @@
 </COPYRIGHT>
 <LEGALNOTICE>
 <PARA>
-Insert copy of FSG license here.
+This material may be distributed only subject to the terms and conditions set
+forth in the Open Publication License, v1.0 or later (the latest version is
+presently available at <ULINK URL="http://www.opencontent.org/openpub/">
+http://www.opencontent.org/openpub/</ULINK>)
+and provided that neither the name of the Free Standards Group, the name
+of the Linux Standard Base, nor the names of its contributors may be
+used to endorse or promote derived works without specific prior written
+permission.
 </PARA>
 </LEGALNOTICE>
 <LEGALNOTICE>
