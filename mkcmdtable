@@ -129,6 +129,7 @@ sub lsbCommands {
 
 	if ($sth->rows > 0) {
 
+	$sth->finish;
 	printf("<!-- Start of text generated from database -->\n");
 	printf("<PARA>\n");
 	printf("An LSB conforming implementation shall provide the\n");
@@ -154,23 +155,30 @@ sub lsbCommands {
 	printf("<TBODY>\n");
 	printf("<ROW>\n");
 
-	my $i = 0; #column count
+	my $col = 0; #column count
 	my $row = 0;
 	my $totalrows = int(($sth->rows+4) / 5);
 
 	my $cmds = $sth->fetchall_arrayref({});
 
-	for $row (1..$totalrows) {
+	while ($row < $totalrows) {
 
 		#
 		# fixed width table ... 5 columns
 		#
-		if ($i == 5) {
+		if ($col == 5) {
 			last if(++$row >= $totalrows);
 			printf("</ROW><ROW>\n");
-			$i = 0;
+			$col = 0;
 		}
-		$field = $cmds->[($row + ($i++ * $totalrows))];
+		my $idx = ($row + ($col++ * $totalrows));
+		$field = $cmds->[($idx)];
+
+		#
+		# Shouldn't need this, but we;ve seen this script 
+		# go into an infinite loop before, so this is a safeguard.
+		#
+		die "OVERFLOW!!! $idx > " . $totalrows * 5 unless ($idx <= $totalrows*5);
 
 		$ref = $permutation{$field->{'Cstandard'}};
 
