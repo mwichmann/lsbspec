@@ -10,7 +10,7 @@ TABLES=
 .m4.sgml:
 	m4 $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mklibapnd -a x86-64 | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >liblist.sgml

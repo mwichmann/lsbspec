@@ -10,12 +10,12 @@ TABLES=standards.sgml libraries.sgml
 .m4.sgml:
 	m4 -Uindex -Uformat $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All >standards.sgml
-	../../mklibsgmltable -a All >libraries.sgml
-	../../mklibsgmltable -a None >pslibs.sgml
+	../../../mkstandardsgmltable -a All >standards.sgml
+	../../../mklibsgmltable -a All >libraries.sgml
+	../../../mklibsgmltable -a None >pslibs.sgml
 
 clean:
 	rm -f $(FILES)

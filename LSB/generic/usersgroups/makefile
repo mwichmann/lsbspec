@@ -10,7 +10,7 @@ FILES = usersgroups.sgml
 .m4.sgml:
 	m4 -Uformat -Uindex $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
 

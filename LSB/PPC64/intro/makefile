@@ -10,7 +10,7 @@ TABLES=standards.sgml libraries.sgml
 .m4.sgml:
 	m4 -Uformat $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mkstandardsgmltable -a PPC64 >standards.sgml

@@ -17,11 +17,11 @@ BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 .m4.sgml:
 	m4 -Uindex -Uformat $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkcmdtable  > cmdsutils.sgml
-	../../mkcmdlist  > cmdman.sgml
+	../../../mkcmdtable  > cmdsutils.sgml
+	../../../mkcmdlist  > cmdman.sgml
 
 clean:
 	rm -f $(FILES)

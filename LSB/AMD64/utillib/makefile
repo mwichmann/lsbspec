@@ -10,11 +10,11 @@ TABLES=
 .m4.sgml:
 	m4 $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mklibspec -a x86-64 -l libz >libz.sgml
-	../../../mklibspec -a x86-64 -l libcurses >libcurses.sgml
+	../../../mklibspec -a x86-64 -l libncurses >libcurses.sgml
 	../../../mklibspec -a x86-64 -l libutil >libutil.sgml
 
 clean:

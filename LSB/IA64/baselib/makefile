@@ -23,7 +23,7 @@ TABLES=
 .m4.sgml:
 	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
 
-all: $(FILES) $(TABLES) $(MANPAGES)
+all source: $(FILES) $(TABLES) $(MANPAGES)
 
 gensrc:
 	../../../mklibspec -a IA64 -l libc >libc.sgml

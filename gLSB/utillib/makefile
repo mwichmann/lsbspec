@@ -10,12 +10,12 @@ TABLES=
 .m4.sgml:
 	m4 -Uindex -Uformat $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../mklibspec -a All -l libz >libz.sgml
-	../../mklibspec -a All -l libncurses >libcurses.sgml
-	../../mklibspec -a All -l libutil >libutil.sgml
+	../../../mklibspec -a All -l libz >libz.sgml
+	../../../mklibspec -a All -l libncurses >libcurses.sgml
+	../../../mklibspec -a All -l libutil >libutil.sgml
 
 clean:
 	rm -f $(FILES)

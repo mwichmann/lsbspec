@@ -10,11 +10,11 @@ TABLES=
 .m4.sgml:
 	m4 $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mklibspec -a IA32 -l libz >libz.sgml
-	../../../mklibspec -a IA32 -l libcurses >libcurses.sgml
+	../../../mklibspec -a IA32 -l libncurses >libcurses.sgml
 	../../../mklibspec -a IA32 -l libutil >libutil.sgml
 
 clean:
