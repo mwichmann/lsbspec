@@ -13,6 +13,7 @@ DB2PDF=sgmltools -b pdf
 
 all::
 	find . -name '*.m4' | xargs touch
+	find . -name '*.sed' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 all::
