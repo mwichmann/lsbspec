@@ -13,7 +13,7 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'RFC1952','RFC2440'" >standards.sgml
+	../../../mkstandardsgmltable -a All -s "'RFC1952','RFC2440'" >standards.sgml
 
 clean:
 	rm -f $(FILES)
