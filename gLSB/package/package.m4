@@ -4,8 +4,19 @@
 <CHAPTER ID=swinstall>
 <TITLE>Software Installation</TITLE>
 <PARA>
-Applications must be provided in the RPM packaging format as defined in
-this specification.
+Applications shall either be packaged in the RPM packaging format as
+defined in this specification, or supply an installer which is LSB
+conforming (for example, calls LSB commands and utilities).
+<footnote>
+<para>
+Supplying an RPM package is encouraged because it makes systems easier
+to manage.  A future version of the LSB may require RPM, or specify a
+way for an installer to update a package database.
+</para>
+<para>
+Applications are also encouraged to uninstall cleanly.
+</para>
+</footnote>
 </PARA>
 <PARA>
 Distributions shall provide a mechanism for installing applications in
