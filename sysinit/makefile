@@ -1,0 +1,18 @@
+
+.SUFFIXES: .sgml .cpp .m4
+
+FILES=sysinit.sgml
+TABLES=
+
+.cpp.sgml:
+	cpp -I../../code/headers $*.cpp | grep -v '^# ' >$@
+
+.m4.sgml:
+	m4 $*.m4 >$@
+
+all: $(FILES) $(TABLES)
+
+clean:
+	rm -f $(FILES) $(TABLES)
+
+sysinit.sgml: cron.sgml initactions.sgml runlevels.sgml
