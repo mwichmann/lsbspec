@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.sgml \
-	__cxa_atexit.sgml __dcgettext.sgml __divdi3.sgml __environ.sgml \
+	__cxa_atexit.sgml __dcgettext.sgml __environ.sgml \
 	__errno_location.sgml __fpending.sgml __getpgid.sgml __mempcpy.sgml \
 	__rawmemchr.sgml __sysconf.sgml _environ.sgml _IO_2_1_stderr_.sgml \
 	_IO_2_1_stdin_.sgml _IO_2_1_stdout_.sgml _IO_feof.sgml _IO_getc.sgml \
@@ -60,6 +60,6 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-baselib.sgml: libc.sgml libcman.sgml datadefs.sgml libm.sgml libpthread.sgml
+baselib.sgml: libc.sgml datadefs.sgml libm.sgml libpthread.sgml
 baselib.sgml: libdb.sgml libdl.sgml libcrypt.sgml $(MANPAGES)
 datadefs.sgml: ../../../src/include/datadefs.sgml

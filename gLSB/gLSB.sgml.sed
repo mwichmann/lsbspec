@@ -58,9 +58,7 @@ with the respective license of those documents.
 &command.sgm;
 &stdshell.sgm;
 &usersgroups.sgm;
-&fhs.sgm;
 &execenv.sgm;
 &sysinit.sgm;
 &appA.sgm;
-&appB.sgm;
 </BOOK>
