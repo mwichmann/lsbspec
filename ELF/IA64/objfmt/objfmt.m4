@@ -133,7 +133,9 @@ Otherwise, the <SystemItem class="Constant"> st_value</SystemItem> member
 contains zero.  This procedure linkage table entry address is used by
 the dynamic linker in resolving references to the address of the function.
 <NOTE>
+<PARA>
 Need to add something here about st_info and st_other ...
+</PARA>
 </NOTE>
 </PARA>
 
