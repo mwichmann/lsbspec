@@ -4,10 +4,12 @@
 <CHAPTER id=execenvfhs>
 <TITLE>File System Hierarchy</TITLE>
 <PARA>
-An LSB conforming implementation shall adhere to the <XREF LINKEND="std.FHS">
+An LSB conforming implementation shall provide the mandatory portions of the
+filesystem hierarchy specified in the <XREF LINKEND="STD.FHS"> (FHS),
+together with any additional requirements made in this specification.
 </PARA>
 <PARA>
-An LSB conforming application shall follow the FHS.
+An LSB conforming application shall conform to the <XREF LINKEND="STD.FHS">.
 </PARA>
 <PARA>
 The FHS allows many components or subsystems to be optional. An application
@@ -235,10 +237,15 @@ possibility to control what the application can do.
 <TITLE>Installable applications</TITLE>
 
 <PARA>
-If the installation of an application requires 
-the execution of programs with superuser privileges, 
-such programs should also be supplied in a 
-human-readable form. 
+Where the installation of an application needs additional privileges, it must
+clearly document all files and system databases that are modified outside of
+those in 
+<FILENAME>/opt/<REPLACEABLE>pkg-name</REPLACEABLE></FILENAME>
+and <FILENAME>/var/opt/<REPLACEABLE>pkg-name</REPLACEABLE></FILENAME>,
+other than those that may be
+updated by system logging or auditing activities.
+
+
 </PARA>
 
 <PARA>
@@ -381,10 +388,21 @@ sysconf().</para>
 <TITLE>Localization</TITLE>
 
 <PARA>
-Applications may either install a message catalog in the MO format as
-specified by the info page in version 0.10.40 of the gettext source package,
-or the application may execute the msgfmt command during it's installation
-to compile the message catalog. In either case, the resulting output shall be
+In order to install a message catalog, the installation procedure 
+shall supply the message catalog in a format readable by the
+<COMMAND>msgfmt</COMMAND> utility, which shall be invoked to compile
+the message catalog into an appropriate binary format on the target system.
+<NOTE>
+<TITLE>Rationale</TITLE>
+<PARA>The original intent was to allow an application to contain the binary
+GNU MO format files. However, the format of these files is not
+officially stable, hence it is necessary to compile these catalogs
+on the target system. These binary catalogs
+may differ from architecture to architecture
+as well.
+</PARA>
+</NOTE>
+The resulting binary message catalog shall be
 located in the package's private area under <FILENAME>/opt</FILENAME>, and the
 application may use <FUNCTION>bindtextdomain()</FUNCTION> to specify this
 location.
@@ -413,31 +431,36 @@ collating element expression (such as [.ch.]) are optional.</para>
 optional.</para>
 
 <para>This affects at least the following utilities: grep (<xref
-linkend="grep" />) (including egrep), sed (<xref linkend="sed" />),
-and awk (<xref linkend="awk" />).  </para>
+linkend="grep" >) (including egrep), sed (<xref linkend="sed">),
+and awk (<xref linkend="awk">).  </para>
 
 </section>
 
 <section id="localization-glob"
- XRefLabel="Internationalization and Filename Globbing">
-<title>Filename Globbing</title>
+ XRefLabel="Internationalization and Pattern Matching Notation">
+<title>Pattern Matching Notation</title>
 <para>
-Utilities that perform filename globbing (also known as Pattern
-Matching Notation) shall do it as specified in the Single UNIX
-Specification, with the following exceptions:</para>
+Utilities that perform filename pattern matching (also known as Filename
+Globbing) shall do it as specified in 
+<XREF LINKEND=STD.SUSv3>, Pattern Matching Notation,
+with the following exceptions:</para>
 
-<para>Range expression (such as [a-z]) can be based on code point
+<para>Pattern bracket expressions (such as 
+<replaceable>[a-z]</replaceable>) can be based on code point
 order instead of collating element order.</para>
 
-<para>Equivalence class expression (such as [=a=]) and multi-character
-collating element expression (such as [.ch.]) are optional.</para>
+<para>Equivalence class expression (such as <replaceable>[=a=]</replaceable>) and multi-character
+collating element expression (such as <replaceable>[.ch.]</replaceable>) are optional.</para>
 
 <para>Handling of a multi-character collating element is
 optional.</para>
 
-<para>This affects at least the following utilities: cpio
-(<xref linkend="cpio" />), find (<xref linkend="find" />),
-ls (<xref linkend="ls" />) and tar (<xref linkend="tar" />).</para>
+<para>This affects at least the following utilities: 
+<COMMAND>cpio</COMMAND>
+(<xref linkend="cpio" >), 
+<COMMAND>find</COMMAND> (<xref linkend="find" >),
+<COMMAND>ls</COMMAND> (<xref linkend="ls" >) and 
+<COMMAND>tar</COMMAND> (<xref linkend="tar" >).</para>
 
 </section>
 

@@ -14,7 +14,7 @@ information such as file formats and device names.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:24:05 2004 -->
+<!--    at Sat Sep  4 09:25:30 2004 -->
 <SECT1 ID=libz>
 <TITLE>Interfaces for libz</TITLE>
 <PARA>
@@ -231,7 +231,7 @@ typedef voidp gzFile;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:24:06 2004 -->
+<!--    at Sat Sep  4 09:25:31 2004 -->
 <SECT1 ID=libncurses>
 <TITLE>Interfaces for libncurses</TITLE>
 <PARA>
@@ -968,7 +968,7 @@ struct _win_st
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:24:07 2004 -->
+<!--    at Sat Sep  4 09:25:32 2004 -->
 <SECT1 ID=libutil>
 <TITLE>Interfaces for libutil</TITLE>
 <PARA>
@@ -1052,12 +1052,12 @@ in the referenced base document.
 </PARA>
 <REFENTRY ID="libutil-forkpty-3"> <REFMETA>
 <REFENTRYTITLE>forkpty</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
+<REFMISCINFO>Utility Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
 <REFNAME>forkpty
 </REFNAME>
-<REFPURPOSE>find and open an available pseudo-tty
+<REFPURPOSE>Create a new process attached to an available pseudo-terminal
 </REFPURPOSE>
 <INDEXTERM ID="ix-libutil-forkpty-3"><PRIMARY>forkpty</PRIMARY></INDEXTERM>
 </REFNAMEDIV>
@@ -1065,12 +1065,26 @@ in the referenced base document.
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int forkpty(int *<replaceable class="parameter" >amaster</replaceable>, 
-	char *<replaceable class="parameter" >name</replaceable>,
-	struct termios *<replaceable class="parameter" >termp</replaceable>,
-	struct winsize *<replaceable class="parameter" >winp</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;pty.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+<FUNCDEF>int
+<FUNCTION>
+forkpty
+</FUNCTION>
+</FUNCDEF>
+  <PARAMDEF>int *
+    <PARAMETER><REPLACEABLE>amaster</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMDEF>char *
+    <PARAMETER><REPLACEABLE>name</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMDEF>struct termios *
+    <PARAMETER><REPLACEABLE>termp</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMDEF>struct winsize *
+    <PARAMETER><REPLACEABLE>winp</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -1079,15 +1093,74 @@ int forkpty(int *<replaceable class="parameter" >amaster</replaceable>,
 <TITLE>Description
 </TITLE>
 <PARA>
-The forkpty() function joins openpty(), fork(), and login_tty() to create a new process operating on a pseudo-tty. The file descriptor of the master side of the pseudo-tty is returned in amaster, and null or the filename of the slave in name. If non-null, the termp and winp parameters will determine the terminal attributes and window size of the slave side of the pseudo-tty.
+The <FUNCTION>forkpty()</FUNCTION>
+function shall find and open a pseudo-terminal device pair in the
+same manner as the <FUNCTION>openpty()</FUNCTION> function. 
+If a pseudo-terminal is available,
+<FUNCTION>forkpty</FUNCTION>
+shall create a new process in the same manner as the <FUNCTION>fork()</FUNCTION>
+function, and prepares the new process for login in the same manner as 
+<FUNCTION>login_tty()</FUNCTION>.
+</PARA>
+<PARA>
+If <PARAMETER>termp</PARAMETER> is not null, 
+it shall refer to a <VARNAME>termios</VARNAME> structure that shall be used
+to initialize the characteristics of the slave device. 
+If <PARAMETER>winp</PARAMETER> is not null, it
+shall refer to a <VARNAME>winsize</VARNAME> structure used to 
+initialize the window size of the
+slave device.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success of the child process, zero is returned. When the parent process receives the PID of its child process, pid is returned. On error, -1 is returned, and errno is set appropriately.
+On success, the parent process shall return the process id of the child, and the
+child shall return 0. On error, no new process shall be created, -1 shall be
+returned, and <VARNAME>errno</VARNAME> shall be set appropriately.
+On success, the parent process shall receive the file descriptor of the master
+side of the pseudo-terminal in the location referenced by 
+<PARAMETER>amaster</PARAMETER>, and, if <PARAMETER>name</PARAMETER> is
+not NULL, the filename of the slave device in 
+<PARAMETER>name</PARAMETER>. 
 </PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EAGAIN
+</TERM>
+<LISTITEM>
+<PARA>
+Unable to create a new process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+ENOENT
+</TERM>
+<LISTITEM>
+<PARA>
+There are no available pseudo-terminals.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+ENOMEM
+</TERM>
+<LISTITEM>
+<PARA>
+Insufficient memory was available.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </REFSECT1>
 </REFENTRY>
 
@@ -1106,9 +1179,19 @@ On success of the child process, zero is returned. When the parent process recei
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-void login(struct utmp *<replaceable class="parameter" >ut</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;utmp.h&gt;
+</FUNCSYNOPSISINFO>
+  <FUNCPROTOTYPE>
+    <FUNCDEF>void
+      <FUNCTION>login</FUNCTION>
+    </FUNCDEF>
+    <PARAMDEF>struct utmp *
+      <PARAMETER><REPLACEABLE>ut</REPLACEABLE></PARAMETER>
+    </PARAMDEF>
+  </FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -1117,19 +1200,58 @@ void login(struct utmp *<replaceable class="parameter" >ut</replaceable>);
 <TITLE>Description
 </TITLE>
 <PARA>
-The login() function updates the /var/run/utmp and /var/log/wtmp files with user information contained in ut.
+The <function>login()</function> function shall update the user accounting databases in
+<filename>/var/run/utmp</filename> and 
+<filename>/var/log/wtmp</filename>.
+The <parameter>ut</parameter> parameter shall reference a 
+<VarName>utmp</VarName> structure that shall be updated as follows before 
+the accounting files are written:
+<ORDEREDLIST>
+<LISTITEM>
+<PARA>
+The <varname>ut_type</varname> field shall be set to <constant>
+USER_PROCESS</constant>.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+The <varname>ut_pid</varname> field shall be set to the process identifier
+for the current process.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+The <varname>ut_line</varname> field shall be set to the name of the 
+controlling terminal device.
+The name shall be found by examaning the device associated with the
+standard input, output and error streams in sequence, until one associated with
+a terminal device is found.
+If none of these streams refers to a terminal device, the 
+<varname>ut_line</varname> field shall be set to <constant>"???"</constant>.
+If the terminal device is in the <filename>/dev</filename> directory
+hierarchy, the <varname>ut_line</varname> field shall not contain the leading
+<constant>"/dev/"</constant>, otherwise it shall be set to the final component
+of the pathname of the device. If the <varname>ut_line</varname> field
+is not of sufficient size to hold the terminal device name, the name 
+shall be truncated to <CONSTANT>UT_LINESIZE</CONSTANT>-1 bytes.
+</PARA></LISTITEM>
+</ORDEREDLIST>
 </PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>None</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>None</PARA>
 </REFSECT1>
 </REFENTRY>
 
 <REFENTRY ID="libutil-login-tty-3"> <REFMETA>
 <REFENTRYTITLE>login_tty</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
+<REFMISCINFO>Utility Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
 <REFNAME>login_tty
 </REFNAME>
-<REFPURPOSE>find and open an available pseudo-tty
+<REFPURPOSE>Prepare a terminal for login
 </REFPURPOSE>
 <INDEXTERM ID="ix-libutil-login-tty-3"><PRIMARY>login_tty</PRIMARY></INDEXTERM>
 </REFNAMEDIV>
@@ -1137,9 +1259,17 @@ The login() function updates the /var/run/utmp and /var/log/wtmp files with user
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int login_tty(int <replaceable class="parameter" >fdr</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;utmp.h&gt;
+</FUNCSYNOPSISINFO>
+ <FUNCPROTOTYPE>
+  <FUNCDEF>int
+    <FUNCTION>login_tty</FUNCTION>
+  </FUNCDEF>
+  <PARAMDEF>int <PARAMETER><replaceable>fdr</replaceable></PARAMETER></PARAMDEF>
+ </FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -1148,18 +1278,39 @@ int login_tty(int <replaceable class="parameter" >fdr</replaceable>);
 <TITLE>Description
 </TITLE>
 <PARA>
-login_tty() sets up for a login on the tty referenced by the file 
-descriptor fdr. This function creates a new session, makes the tty 
-for the current process the controlling terminal, sets the standard 
-input, output, and error streams of the current process, and closes fdr.
+The <function>login_tty()</function> function
+shall prepare the terminal device referenced by the file
+descriptor <parameter>fdr</parameter>. 
+This function shall create a new session, make the terminal 
+the controlling terminal for the current process, and set the standard 
+input, output, and error streams of the current process to the terminal.
+If <parameter>fdr</parameter> is not the standard input, output or error stream,
+then <function>login_tty()</function> shall close <parameter>fdr</parameter>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, <function>login_tty()</function> shall return zero;
+otherwise -1 is returned, and errno shall be set appropriately.
 </PARA>
+</REFSECT1>
+<REFSECT1>
+<REFSECT1INFO><DATE>Aug 16 2004</DATE></REFSECT1INFO>
+<TITLE>Errors</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+ENOTTY
+</TERM>
+<LISTITEM>
+<PARA>
+<parameter>fdr</parameter> does not refer to a terminal device.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </REFSECT1>
 </REFENTRY>
 
@@ -1178,9 +1329,19 @@ On success, zero is returned. On error, -1 is returned, and errno is set appropr
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int logout(const char *<replaceable class="parameter" >line</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;utmp.h&gt;
+</FUNCSYNOPSISINFO>
+  <FUNCPROTOTYPE>
+    <FUNCDEF>int
+      <FUNCTION>logout</FUNCTION>
+    </FUNCDEF>
+    <PARAMDEF>const char *
+      <PARAMETER><REPLACEABLE>line</REPLACEABLE></PARAMETER>
+    </PARAMDEF>
+  </FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -1189,14 +1350,31 @@ int logout(const char *<replaceable class="parameter" >line</replaceable>);
 <TITLE>Description
 </TITLE>
 <PARA>
-Given the device line, the logout() function removes the entry from the corresponding /var/run/utmp system file.
+Given the device <parameter>line</parameter>,
+the <function>logout()</function> function shall search
+the <filename>/var/run/utmp</filename> user accounting database
+for an entry with the corresponding line,
+and with the type of <CONSTANT>USER_PROCESS</CONSTANT>.
+If a corresponding entry is located, it shall be updated as follows:
+<ORDEREDLIST>
+<LISTITEM><PARA>The <varname>ut_name</varname> field shall be set to zeroes
+(<Constant>UT_NAMESIZE</constant> NUL bytes).</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_host</varname> field shall be set to zeroes
+(<Constant>UT_HOSTSIZE</constant> NUL bytes).</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_tv</varname> shall be set to the current 
+time of day.</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_type</varname> field shall be set to
+<constant>DEAD_PROCESS</constant>.</PARA></LISTITEM>
+</ORDEREDLIST>
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-Zero is returned if there was no entry to remove. A non-zero return value indicates success.
+On success, the <function>logout()</function> function shall return non-zero.
+Zero is returned if there was no entry to remove, or if the utmp file
+could not be opened or updated.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -1217,11 +1395,25 @@ append an entry to the wtmp file
 <REFSYNOPSISDIVINFO>
 <DATE>13 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
 #include &lt;utmp.h>
-
-void logwtmp(const char *line, const char *name, const char *host);
-</SYNOPSIS>
+</FUNCSYNOPSISINFO>
+ <FUNCPROTOTYPE>
+  <FUNCDEF>void
+    <FUNCTION>logwtmp</FUNCTION>
+  </FUNCDEF>
+  <PARAMDEF>const char *
+    <PARAMETER><REPLACEABLE>line</REPLACEABLE></PARAMETER>
+  </PARAMDEF>
+  <PARAMDEF>const char *
+    <PARAMETER><REPLACEABLE>name</REPLACEABLE></PARAMETER>
+  </PARAMDEF>
+  <PARAMDEF>const char *
+    <PARAMETER><REPLACEABLE>host</REPLACEABLE></PARAMETER>
+  </PARAMDEF>
+ </FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -1231,15 +1423,58 @@ void logwtmp(const char *line, const char *name, const char *host);
 <TITLE>Description
 </TITLE>
 <PARA>
-logwtmp() constructs an utmp structure using line, name, host, current time and current process id. Then it calls updwtmp() to append the structure to the utmp file.
+If the process has appropriate privileges,
+the <FUNCTION>logwtmp()</FUNCTION> function
+shall append a record to the user accounting database in
+<FILENAME>/var/log/wtmp</FILENAME>. The record to be appended
+shall be constructed as follows:
+<ORDEREDLIST>
+<LISTITEM><PARA>The <varname>ut_line</varname> field shall be intitialized
+from <parameter>line</parameter>. If <parameter>line</parameter> refers to
+a string of more than <CONSTANT>UT_LINESIZE</CONSTANT>, it shall be 
+truncated to <CONSTANT>UT_LINESIZE</CONSTANT>-1 bytes, and null terminated.
+</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_name</varname> field shall be intitialized
+from <parameter>name</parameter>. If <parameter>name</parameter> refers to
+a string of more than <CONSTANT>UT_NAMESIZE</CONSTANT>, it shall be 
+truncated to <CONSTANT>UT_NAMESIZE</CONSTANT>-1 bytes, and null terminated.
+</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_host</varname> field shall be intitialized
+from <parameter>host</parameter>. If <parameter>host</parameter> refers to
+a string of more than <CONSTANT>UT_HOSTSIZE</CONSTANT>, it shall be 
+truncated to <CONSTANT>UT_HOSTSIZE</CONSTANT>-1 bytes, and null terminated.
+</PARA></LISTITEM>
+<LISTITEM><PARA>If the <parameter>name</parameter> parameter does not refer
+to an empty string (i.e. <constant>""</constant>), 
+the <varname>ut_type</varname> field shall be set to 
+<constant>USER_PROCESS</constant>; otherwise the
+<varname>ut_type</varname> fieldshall be set to 
+<constant>DEAD_PROCESS</constant>.
+</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_id</varname> field shall be set to the 
+process identifier for the current process.
+</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_tv</varname> field shall be set to the
+current time of day.
+</PARA></LISTITEM>
+</ORDEREDLIST>
+<NOTE><PARA>If a process does not have write access to the 
+<filename>/var/log/wtmp</filename> file, the
+<function>logwtmp()</function> function will not update the file. 
+Since the function does not return
+any value, an application has no way of knowing whether it succeeded or failed.
+Applications should check that they can update the 
+<filename>/var/log/wtmp</filename> file (e.g. using the
+<function>access()</function> function)
+before calling this interface.</PARA></NOTE>
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Availability
+<TITLE>Return Value
 </TITLE>
 <PARA>
-Both functions are available under glibc2, but not under libc5. However, logwtmp occurs in the old libbsd.
+None.
 </PARA>
 </REFSECT1>
 
@@ -1248,7 +1483,7 @@ Both functions are available under glibc2, but not under libc5. However, logwtmp
 Files
 </TITLE>
 <PARA>
-/var/log/wtmp database of past user logins
+<filename>/var/log/wtmp</filename> database of past user logins
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -1257,12 +1492,12 @@ Files
 
 <REFENTRY ID="libutil-openpty-3"> <REFMETA>
 <REFENTRYTITLE>openpty</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
+<REFMISCINFO>Utility Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
 <REFNAME>openpty
 </REFNAME>
-<REFPURPOSE>find and open an available pseudo-tty
+<REFPURPOSE>find and open an available pseudo-terminal
 </REFPURPOSE>
 <INDEXTERM ID="ix-libutil-openpty-3"><PRIMARY>openpty</PRIMARY></INDEXTERM>
 </REFNAMEDIV>
@@ -1270,13 +1505,21 @@ Files
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int openpty(int *<replaceable class="parameter" >amaster</replaceable>, 
-	int *<replaceable class="parameter" >aslave</replaceable>, 
-	char *<replaceable class="parameter" >name</replaceable>,
-	struct termios *<replaceable class="parameter" >termp</replaceable>,
-	struct winsize *<replaceable class="parameter" >winp</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;pty.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+  <FUNCDEF>int
+    <FUNCTION>openpty</FUNCTION></FUNCDEF>
+    <PARAMDEF>int *<parameter><replaceable>amaster</replaceable></parameter></PARAMDEF>
+    <PARAMDEF>int *<parameter><replaceable>aslave</replaceable></parameter></PARAMDEF>
+    <PARAMDEF>char *<parameter><replaceable>name</replaceable></parameter></PARAMDEF>
+    <PARAMDEF>struct termios *<parameter><replaceable>termp</replaceable></parameter></PARAMDEF>
+    <PARAMDEF>struct winsize *<parameter><replaceable>winp</replaceable></parameter></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -1285,7 +1528,21 @@ int openpty(int *<replaceable class="parameter" >amaster</replaceable>,
 <TITLE>Description
 </TITLE>
 <PARA>
-The openpty() function finds an available pseudo-tty and returns file descriptors for the amaster and aslave. The filename of the slave is returned in name, otherwise a null. The terminal parameters of the slave will be set to the values in termp, otherwise a null. The window size of the slave will be set to the values in winp, otherwise a null.
+The <function>openpty()</function>
+function shall find an available pseudo-terminal
+and return file descriptors for the master and slave devices in
+the locations referenced by 
+<parameter>amaster</parameter> and <parameter>aslave</parameter>
+respectively. 
+If <parameter>name</parameter> is not NULL,
+the filename of the slave shall be placed in the user supplied buffer 
+referenced by <parameter>name</parameter>.
+If <parameter>termp</parameter> is not NULL, it shall
+point to a <varname>termios</varname> structure used to initialize
+the terminal parameters of the slave pseudo-terminal device.
+If <parameter>winp</parameter> is not NULL, it shall
+point to a <varname>winsize</varname> structure used to initialize
+the window size parameters of the slave pseudo-terminal device.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -1305,7 +1562,7 @@ ENOENT
 </TERM>
 <LISTITEM>
 <PARA>
-There are no available ttys.
+There are no available pseudo-terminals.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>

@@ -22,7 +22,7 @@ architecture-specific LSB specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:23:07 2004 -->
+<!--    at Sat Sep  4 09:24:51 2004 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -4961,29 +4961,36 @@ it is only in the binary standard.
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>__assert_fail</FUNCTION> receives a string containing the expression 
-<PARAMETER>assertion</PARAMETER>, the filename <PARAMETER>file</PARAMETER>, 
-and the line number <PARAMETER>line</PARAMETER>, and prints a message on the
-standard error stream.  For example:
+The <FUNCTION>__assert_fail</FUNCTION> function is used to
+implement the <FUNCTION>assert</FUNCTION> function of
+<XREF LINKEND=STD.SUSv3>.
+The <FUNCTION>__assert_fail</FUNCTION> function 
+shall print the given <parameter>file</parameter> filename,
+<parameter>line</parameter> line number, 
+<parameter>function</parameter> function name and a message
+on the standard error stream in an implementation defined format, and abort
+program execution via the <function>abort</function> function.
+For example:
 <BLOCKQUOTE>
 <PARA>
 a.c:10: foobar: Assertion a == b failed.
 </PARA>
 </BLOCKQUOTE>
-<FUNCTION>__assert_fail</FUNCTION> then aborts program execution via a 
-call to <FUNCTION>abort</FUNCTION>. The exact form of the message is up 
-to the implementation.
 </PARA>
 <PARA>
-If <PARAMETER>function</PARAMETER> is <LITERAL>NULL</LITERAL>, then omit 
+If <PARAMETER>function</PARAMETER> is <LITERAL>NULL</LITERAL>, 
+<function>__assert_fail</function> shall omit
 information about the function.
 </PARA><PARA>
 <PARAMETER>assertion</PARAMETER>, <PARAMETER>file</PARAMETER>, and
 <PARAMETER>line</PARAMETER> shall be non-<LITERAL>NULL</LITERAL>.
 </PARA>
 <PARA>
-<FUNCTION>__assert_fail</FUNCTION> is not in the source standard; 
+The <FUNCTION>__assert_fail</FUNCTION> function
+is not in the source standard; 
 it is only in the binary standard.
+The <FUNCTION>assert</FUNCTION> function is not in the binary standard;
+it is only in the source standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5002,11 +5009,17 @@ accessor function for __ctype_b array for ctype functions
 <REFSYNOPSISDIVINFO>
 <DATE>8 July 2004</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
 #include &lt;ctype.h&gt;
-
-extern const unsigned short int <VARNAME>**ctype_b_loc(void)</VARNAME>;
-</SYNOPSIS>
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+  <FUNCDEF>const unsigned short int
+    <FUNCTION>**ctype_b_loc</FUNCTION>
+  </FUNCDEF>
+  <VOID>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -5015,9 +5028,25 @@ extern const unsigned short int <VARNAME>**ctype_b_loc(void)</VARNAME>;
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>__ctype_b_loc()</FUNCTION> returns the address of the array to be
-used by the <FUNCTION>ctype</FUNCTION> functions. This array is locale aware,
-and is local to the current thread if the application is multithreaded.
+The <FUNCTION>__ctype_b_loc</FUNCTION>
+function shall return a pointer into an array of
+characters in the current locale that contains characteristics for each
+character in the current character set. The array shall contain a total of 
+<CONSTANT>384</CONSTANT>
+characters, and can be indexed with any signed or unsigned char (i.e. with an
+index value between <CONSTANT>-128</CONSTANT> and 
+<CONSTANT>255</CONSTANT>). If the application is multithreaded, the 
+array shall be local to the current thread. 
+</PARA>
+<PARA>
+This interface is not in the source standard; it is only in the binary standard.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>The <FUNCTION>__ctype_b_loc</FUNCTION> function shall return a pointer
+to the array of characters to be used for the <FUNCTION>ctype</FUNCTION>
+family of functions (see <FILENAME>&lt;ctype.h&gt;</FILENAME>).
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5095,9 +5124,16 @@ accessor function for __ctype_b_tolower array for ctype tolower() function
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>__ctype_tolower_loc()</FUNCTION> returns the address of the array to be
-used by the <FUNCTION>tolower</FUNCTION> function. This array is locale aware, 
-and is local to the current thread if the application is multithreaded.
+The <FUNCTION>__ctype_tolower_loc</FUNCTION>
+function shall return a pointer into an array
+characters in the current locale that contains lower case equivalents for each
+character in the current character set. The array shall contain a total of 384
+characters, and can be indexed with any signed or unsigned char (i.e. with an
+index value between -128 and 255). If the application is multithreaded, the 
+array shall be local to the current thread. 
+</PARA>
+<PARA>
+This interface is not in the source standard; it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5110,7 +5146,8 @@ and is local to the current thread if the application is multithreaded.
 <REFNAME>__ctype_toupper_loc
 </REFNAME>
 <REFPURPOSE>
-accessor function for __ctype_b_toupper array for ctype toupper() function
+accessor function for <function>__ctype_b_toupper</function>
+array for ctype <function>toupper()</function> function
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -5135,9 +5172,16 @@ accessor function for __ctype_b_toupper array for ctype toupper() function
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>__ctype_toupper_loc()</FUNCTION> returns the address of the array to be
-used by the <FUNCTION>toupper</FUNCTION> function. This array is locale aware, 
-and is local to the current thread if the application is multithreaded.
+The <FUNCTION>__ctype_toupper_loc</FUNCTION>
+function shall return a pointer into an array
+characters in the current locale that contains upper case equivalents for each
+character in the current character set. The array shall contain a total of 384
+characters, and can be indexed with any signed or unsigned char (i.e. with an
+index value between -128 and 255). If the application is multithreaded, the 
+array shall be local to the current thread. 
+</PARA>
+<PARA>
+This interface is not in the source standard; it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5200,7 +5244,7 @@ it is only in the binary standard.
 <REFNAME>
 </REFNAME>
 <REFPURPOSE>
-global variable containing daylight
+an alias for daylight
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -5212,8 +5256,14 @@ int <VARNAME>__daylight</VARNAME>;
 <TITLE>Description
 </TITLE>
 <PARA>
-<VARNAME>__daylight</VARNAME> is as specified in the 
-<XREF LINKEND="std.SUSv3">.
+The integer variable <VARNAME>__daylight</VARNAME> 
+shall be an alias for <VARNAME>daylight</VARNAME>
+as specified in the 
+<XREF LINKEND="std.SUSv3"> header file <FILENAME>&lt;time.h&gt;</FILENAME>.
+</PARA>
+<PARA>
+<VARNAME>__daylight</VARNAME> is not in the source standard;
+it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5359,7 +5409,7 @@ alias for getpagesize - get current page size
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>__getpagesize</FUNCTION></FUNCDEF>
   <VOID>
 </FUNCPROTOTYPE>
@@ -5780,7 +5830,7 @@ initialization routine
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCPROTOTYPE>
- <FUNCDEF>BP_SYM 
+ <FUNCDEF>void
   <FUNCTION>__libc_start_main</FUNCTION></FUNCDEF>
  <PARAMDEF>int (*main) (int, char**, char**)</PARAMDEF>
  <PARAMDEF>int 
@@ -5803,7 +5853,10 @@ initialization routine
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>__libc_start_main</FUNCTION> initializes glibc.
+The <FUNCTION>__libc_start_main</FUNCTION> function shall
+initialize the process, call the <parameter>main</parameter> function
+with appropriate arguments, and handle the return from <function>
+main</function>.
 </PARA>
 <PARA>
 <FUNCTION>__libc_start_main</FUNCTION> is not in the source standard; 
@@ -5881,7 +5934,7 @@ copy given number of bytes of source to destination
 #include &lt;string.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern ptr_t 
+ <FUNCDEF>ptr_t 
   <FUNCTION>__mempcpy</FUNCTION></FUNCDEF>
  <PARAMDEF>ptr_t restrict 
   <PARAMETER><REPLACEABLE>dest</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -5930,7 +5983,7 @@ scan memory
 #include &lt;string.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern ptr_t 
+ <FUNCDEF>ptr_t 
   <FUNCTION>__rawmemchr</FUNCTION></FUNCDEF>
  <PARAMDEF>const ptr_t 
   <PARAMETER><REPLACEABLE>s</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -6038,9 +6091,8 @@ save stack context for non-local goto
 </TITLE>
 <PARA>
 <FUNCTION>__sigsetjmp</FUNCTION> has the same behavior as 
-<FUNCTION>sigsetjmp</FUNCTION> as specified by the 
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 2</CITETITLE>.
+<FUNCTION>sigsetjmp</FUNCTION> as specified by 
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
 <PARA>
 <FUNCTION>__sigsetjmp</FUNCTION> is not in the source standard; 
@@ -6603,7 +6655,8 @@ signal handling
 </TITLE>
 <PARA>
 <FUNCTION>__sysv_signal</FUNCTION> has the same behavior as 
-<FUNCTION>signal</FUNCTION> as specified by <EMPHASIS>X/Open</EMPHASIS>.
+<FUNCTION>signal</FUNCTION> as specified by 
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
 <PARA>
 <FUNCTION>__sysv_signal</FUNCTION> is not in the source standard; 
@@ -6634,7 +6687,7 @@ long int <VARNAME>__timezone</VARNAME>;
 <PARA>
 <FUNCTION>__timezone</FUNCTION> has the same specification as 
 <FUNCTION>timezone</FUNCTION> in the 
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>.
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND=STD.SUSv3></CITETITLE>
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -6661,14 +6714,14 @@ char <VARNAME>*__tzname</VARNAME>[2];
 <PARA>
 <FUNCTION>__tzname</FUNCTION> has the same specification as 
 <FUNCTION>tzname</FUNCTION> in the 
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>.
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND=STD.SUSv3></CITETITLE>.
 </PARA>
 <PARA>
 Note that the array size of <LITERAL>2</LITERAL> is explicit in the 
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 3</CITETITLE>, but not in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification,
-Version 2</CITETITLE>.
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND=STD.SUSv3>
+</CITETITLE>, but not in the
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND=STD.SUSv2>
+</CITETITLE>.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -6917,11 +6970,11 @@ make block or character special file
   <FUNCTION>__xmknod</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>__const char 
+ <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*path</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>__mode_t 
+ <PARAMDEF>mode_t 
   <PARAMETER><REPLACEABLE>mode</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>__dev_t 
+ <PARAMDEF>dev_t 
   <PARAMETER><REPLACEABLE>*dev</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
@@ -6933,8 +6986,8 @@ make block or character special file
 <TITLE>Description
 </TITLE>
 <PARA>
-<PARAMETER>ver</PARAMETER> shall be <LITERAL>1</LITERAL> or the 
-behavior of <FUNCTION>__xmknod</FUNCTION> is undefined. 
+The <FUNCTION>__xmknod</FUNCTION> shall implement the
+<FUNCTION>mknod</FUNCTION> interface from <XREF LINKEND=STD.SUSv3>.
 </PARA>
 <PARA>
 <FUNCTION>__xmknod(<LITERAL>1</LITERAL>, 
@@ -6944,11 +6997,14 @@ behavior of <FUNCTION>__xmknod</FUNCTION> is undefined.
 <PARAMETER>mode</PARAMETER>, <PARAMETER>dev</PARAMETER>)</FUNCTION>.
 </PARA>
 <PARA>
-Note that the format of dev_t is not the same as the argument that the kernel syscall uses.
+<PARAMETER>ver</PARAMETER> shall be <LITERAL>1</LITERAL> or the 
+behavior of <FUNCTION>__xmknod</FUNCTION> is undefined. 
 </PARA>
 <PARA>
-<FUNCTION>__xmknod</FUNCTION> is not in the source standard; 
+The <FUNCTION>__xmknod</FUNCTION> function is not in the source standard; 
 it is only in the binary standard.
+The <FUNCTION>mknod</FUNCTION> function is not in the binary standard; 
+it is only in the source standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -6960,7 +7016,7 @@ it is only in the binary standard.
 <REFNAMEDIV>
 <REFNAME>__xstat
 </REFNAME>
-<REFPURPOSE>provide inode information
+<REFPURPOSE>Get File Status
 </REFPURPOSE>
 <INDEXTERM ID="ix-baselib-xstat-1"><PRIMARY>stat</PRIMARY></INDEXTERM>
 <INDEXTERM ID="ix-baselib-xstat-2"><PRIMARY>xstat</PRIMARY></INDEXTERM>
@@ -6978,31 +7034,31 @@ it is only in the binary standard.
  <FUNCDEF>int 
   <FUNCTION>__xstat</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*path</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>__lxstat</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*path</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>__fxstat</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__filedesc</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>fildes</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -7013,45 +7069,39 @@ it is only in the binary standard.
 <TITLE>Description
 </TITLE>
 <PARA>
-<PARAMETER>__ver</PARAMETER> shall be <LITERAL>3</LITERAL> or the 
+The functions 
+<function>__xstat</function>,
+<function>__lxstat</function>, and
+<function>__fxstat</function> shall implement
+the <XREF LINKEND=STD.SUSv3> functions
+<function>stat</function>,
+<function>lstat</function>, and
+<function>fstat</function> respectively.
+</PARA>
+<PARA>
+<PARAMETER>ver</PARAMETER> shall be <LITERAL>3</LITERAL> or the 
 behavior of these functions is undefined. 
 </PARA>
 <PARA>
-<PARAMETER>__filename</PARAMETER> is as specified in 
-<EMPHASIS>POSIX</EMPHASIS>.
+<FUNCTION>__xstat(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>stat(<PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
 <PARA>
-<PARAMETER>__filedesc</PARAMETER> is as specified in 
-<EMPHASIS>POSIX</EMPHASIS>.
+<FUNCTION>__lxstat(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>lstat(<PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
 <PARA>
-<PARAMETER>__stat_buf</PARAMETER> is as specified in 
-<EMPHASIS>POSIX</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__xstat(<LITERAL>3</LITERAL>, <PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>stat(<PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by 
-<EMPHASIS>POSIX</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__lxstat(<LITERAL>3</LITERAL>, <PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>lstat(<PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by 
-<EMPHASIS>POSIX</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__fxstat(<LITERAL>3</LITERAL>, <PARAMETER>__filedesc</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>fstat(<PARAMETER>__filedesc</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by 
-<EMPHASIS>POSIX</EMPHASIS>.
-</PARA>
-<PARA>
-Note that the struct <STRUCTNAME>stat</STRUCTNAME> used by these 
-functions is not the one that the kernel uses.
+<FUNCTION>__fxstat(<LITERAL>3</LITERAL>, <PARAMETER>fildes</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>fstat(<PARAMETER>fildes</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
 <PARA>
 <FUNCTION>__xstat</FUNCTION>, <FUNCTION>__lxstat</FUNCTION>, and 
@@ -7073,7 +7123,7 @@ they are only in the source standard.
 <REFNAMEDIV>
 <REFNAME>__xstat64
 </REFNAME>
-<REFPURPOSE>provide inode information
+<REFPURPOSE>Get File Status
 </REFPURPOSE>
 <INDEXTERM ID="ix-baselib-xstat64-1"><PRIMARY>stat64</PRIMARY></INDEXTERM>
 <INDEXTERM ID="ix-baselib-xstat64-2"><PRIMARY>lstat64</PRIMARY></INDEXTERM>
@@ -7096,31 +7146,31 @@ they are only in the source standard.
  <FUNCDEF>int 
   <FUNCTION>__xstat64</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*path</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>__lxstat64</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*path</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>__fxstat64</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__filedesc</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>fildes</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -7131,41 +7181,39 @@ they are only in the source standard.
 <TITLE>Description
 </TITLE>
 <PARA>
-<PARAMETER>__ver</PARAMETER> shall be <LITERAL>3</LITERAL> or the 
+The functions 
+<function>__xstat64</function>,
+<function>__lxstat64</function>, and
+<function>__fxstat64</function> shall implement
+the <XREF LINKEND=STD.LFS> functions
+<function>stat64</function>,
+<function>lstat64</function>, and
+<function>fstat64</function> respectively.
+</PARA>
+<PARA>
+<PARAMETER>ver</PARAMETER> shall be <LITERAL>3</LITERAL> or the 
 behavior of these functions is undefined. 
 </PARA>
 <PARA>
-<PARAMETER>__filename</PARAMETER> is as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
+<FUNCTION>__xstat64(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>stat(<PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.LFS>.
 </PARA>
 <PARA>
-<PARAMETER>__filedesc</PARAMETER> is as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
+<FUNCTION>__lxstat64(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>lstat(<PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.LFS>.
 </PARA>
 <PARA>
-<PARAMETER>__stat_buf</PARAMETER> is as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__xstat64(<LITERAL>3</LITERAL>, <PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>stat64(<PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__lxstat64(<LITERAL>3</LITERAL>, <PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>lstat64(<PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__fxstat64(<LITERAL>3</LITERAL>, <PARAMETER>__filedesc</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>fstat64(<PARAMETER>__filedesc</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
+<FUNCTION>__fxstat64(<LITERAL>3</LITERAL>, <PARAMETER>fildes</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>fstat(<PARAMETER>fildes</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.LFS>.
 </PARA>
 <PARA>
 <FUNCTION>__xstat64</FUNCTION>, <FUNCTION>__lxstat64</FUNCTION>, and 
@@ -7177,10 +7225,6 @@ they are only in the binary standard.
 <FUNCTION>fstat64</FUNCTION> are not in the binary standard; 
 they are only in the source standard.
 </PARA>
-<!--
-FIXME: are we clear on specifying the correct struct stat64,
-rather than the kernel one?
--->
 </REFSECT1>
 </REFENTRY>
 
@@ -7273,7 +7317,7 @@ initialize an obstack for use
 #include &lt;obstack.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>_obstack_begin</FUNCTION></FUNCDEF>
  <PARAMDEF>struct obstack *</PARAMDEF>
  <PARAMDEF>int</PARAMDEF>
@@ -7316,7 +7360,7 @@ allocate a new current chunk of memory for the obstack
 #include &lt;obstack.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern void 
+ <FUNCDEF>void 
   <FUNCTION>_obstack_newchunk</FUNCTION></FUNCDEF>
  <PARAMDEF>struct obstack *</PARAMDEF>
  <PARAMDEF>int</PARAMDEF>
@@ -7406,8 +7450,10 @@ extern const char *const <VARNAME>_sys_siglist</VARNAME>[NSIG];
 the signal names.
 </PARA>
 <PARA>
-<VARNAME>_sys_siglist</VARNAME> exists only for compatibility; use 
-<FUNCTION>strsignal</FUNCTION> instead. (See <FILENAME>string.h</FILENAME>).
+The <VARNAME>_sys_siglist</VARNAME> array 
+is only in the binary standard; it is not in the source standard.
+Applications wishing to access the names of signals should use
+the <function>strsignal</function> function.
 </PARA>
 
 </REFSECT1>
@@ -7821,7 +7867,7 @@ to a value other than those listed above, or to set
 <REFNAMEDIV>
 <REFNAME>asprintf</REFNAME>
 <REFPURPOSE>
-write formatted output to a string dynamically allocated with malloc and store the address of the string
+write formatted output to a dynamically allocated string
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -7830,11 +7876,11 @@ write formatted output to a string dynamically allocated with malloc and store t
 #include &lt;stdio.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>asprintf</FUNCTION></FUNCDEF>
- <PARAMDEF>char **restrict 
+ <PARAMDEF>char ** restrict 
   <PARAMETER><REPLACEABLE>ptr</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char *restrict
+ <PARAMDEF>const char * restrict
   <PARAMETER><REPLACEABLE>format</REPLACEABLE></PARAMETER>
   <PARAMETER>...</PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
@@ -7844,17 +7890,29 @@ write formatted output to a string dynamically allocated with malloc and store t
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>asprintf</FUNCTION> has the same behavior as 
-<FUNCTION>sprintf</FUNCTION>, but calls <FUNCTION>malloc</FUNCTION> 
-to dynamically allocate space for the output, and then puts the 
-output string in that space.
-</PARA>
-<PARA>
-<FUNCTION>asprintf</FUNCTION> stores the address of the string in 
-<PARAMETER>ptr</PARAMETER>.
+The <FUNCTION>asprintf</FUNCTION> function shall behave as
+<FUNCTION>sprintf</FUNCTION>, except that the output string
+shall be dynamically allocated space of sufficient length to hold
+the resulting string. The address of this dynamically allocated string
+shall be stored in the location referenced by <PARAMETER>ptr</PARAMETER>.
 </PARA>
 
 </REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+Refer to <FUNCTION>fprintf</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+Refer to <FUNCTION>fprintf</FUNCTION>.
+</PARA>
+</REFSECT1>
+
 </REFENTRY>
 
 
@@ -7865,18 +7923,29 @@ output string in that space.
 <REFNAMEDIV>
 <REFNAME>bind_textdomain_codeset</REFNAME>
 <REFPURPOSE>
-specify encoding for message retrieval from message catalog for domain DOMAINNAME
+specify encoding for message retrieval
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
 <DATE>16 September 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
 #include &lt;libintl.h>
-
-extern char *bind_textdomain_codeset(const char *domainname, const char *codeset);
-</SYNOPSIS>
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+  <FUNCDEF>char *
+   <FUNCTION>bind_textdomain_codeset</FUNCTION>
+  </FUNCDEF>
+  <PARAMDEF>const char *
+     <PARAMETER>domainname</PARAMETER>
+  </PARAMDEF>
+  <PARAMDEF>const char *
+     <PARAMETER>codeset</PARAMETER>
+  </PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -7887,22 +7956,27 @@ extern char *bind_textdomain_codeset(const char *domainname, const char *codeset
 <PARA>
 The <emphasis>bind_textdomain_codeset</emphasis> function can be used to
 specify the output codeset for message catalogs for domain 
-<emphasis>domainname</emphasis>.  The <emphasis>codeset</emphasis>
+<parameter>domainname</parameter>.  The <parameter>codeset</parameter>
 argument shall be a valid codeset name which can be used tor the
-<emphasis>iconv_open()</emphasis> funtion, or a null pointer.
-If the <emphasis>codeset</emphasis> argument is the null pointer, then 
+<parameter>iconv_open</parameter> function, or a null pointer.
+If the <parameter>codeset</parameter> argument is the null pointer, then 
 function returns the currently selected codeset for the domain with the name
-<emphasis>domainname</emphasis>.  It returns null pointer if no
+<parameter>domainname</parameter>.  It shall return a null pointer if no
 codeset has yet been selected
 </PARA>
 <PARA>
-The <emphasis>bind_textdomain_codeset</emphasis> function can be used
-several times.  If used multiple times, with the same
-<emphasis>domainname</emphasis> argument, the later call overrrides the
-settings made by the earlier one.
+Each successive call to <function>bind_textdomain_codeset</function>
+function overrrides the
+settings made by the preceding call with the same <parameter>domainname</parameter>.
 </PARA>
 <PARA>
-The <emphasis>bind_textdomain_codeset</emphasis> function returns
+The <function>bind_textdomain_codeset</function> function shall return 
+a pointer to a string containing the name of the selected codeset. 
+The string shall be allocated
+internally in the function and shall not be changed or freed by the user.
+</PARA>
+<PARA>
+The <function>bind_textdomain_codeset</function> function returns
 a pointer to a string containing the name of the selected codeset. 
 The string is allocated internally in the function and
 shall not be changed by the user.
@@ -7918,32 +7992,59 @@ domainname
 </TERM>
 <LISTITEM>
 <PARA>
-The <emphasis>domainname</emphasis> argument is applied to the currenlty 
+The <parameter>domainname</parameter> argument is applied to the currently 
 active LC_MESSAGE locale.  It is equivalent in syntax and meaning to
-the <emphasis>domainname</emphasis> argument 
-to <emphasis>textdomain()</emphasis>, except that the selection of the 
+the <parameter>domainname</parameter> argument 
+to <parameter>textdomain</parameter>, except that the selection of the 
 domain is valid only for the duration of
 the call.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
+<VARLISTENTRY>
+<TERM>
+codeset
+</TERM>
+<LISTITEM>
+<PARA>
+The name of the output codeset for the selected domain, or NULL to select
+the current codeset.
+</PARA>
+<PARA>
+If <PARAMETER>domainname</PARAMETER> is the null pointer, or is an empty
+string, <FUNCTION>bind_textdomain_codeset</FUNCTION> shall fail, but need not
+set <VarName>errno</VarName>.
+</PARA>
+
+</LISTITEM>
+</VARLISTENTRY>
 </VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Return</TITLE>
+<TITLE>Return Value</TITLE>
 <PARA>
-Returns the currently selected codeset name.  It returns null
+Returns the currently selected codeset name.  It returns a null
 pointer if no codeset has yet been selected.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Errors</TITLE>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+ENOMEM
+</TERM>
+<LISTITEM>
 <PARA>
-The function is not required to set the external <emphasis>errno</emphasis> variable.
+Insufficient memory available to allocate return value.
 </PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
@@ -7951,7 +8052,7 @@ The function is not required to set the external <emphasis>errno</emphasis> vari
 <PARA>
 <ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
 dngettext, dcgettext, dcngettext, textdomain,
-bindtextdomain, bind_textdomain_codeset
+bindtextdomain
 </PARA>
 </REFSECT1>
 
@@ -7994,8 +8095,10 @@ bind socket to privileged IP port
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>bindresvport</FUNCTION> binds a socket to a privileged IP 
-port. This function can be used only by <EMPHASIS>root</EMPHASIS>.
+If the process has appropriate privilege, the
+<FUNCTION>bindresvport</FUNCTION> function shall bind
+a socket to a privileged IP 
+port.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -8013,7 +8116,18 @@ the global variable <VARNAME>errno</VARNAME> is set appropriately.
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-EPFNOSUPPORT
+<CONSTANT>EPERM</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+The process did not have appropriate privilege.
+<PARAMETER>sd</PARAMETER>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>EPFNOSUPPORT</CONSTANT>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -8034,7 +8148,7 @@ Address of <PARAMETER>sin</PARAMETER> did not match address family of
 <REFNAMEDIV>
 <REFNAME>bindtextdomain</REFNAME>
 <REFPURPOSE>
-specify the locale of a message catalog
+specify the location of a message catalog
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -8046,7 +8160,7 @@ specify the locale of a message catalog
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*bindtextdomain</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -8062,36 +8176,76 @@ specify the locale of a message catalog
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>bindtextdomain</FUNCTION> specifies that the 
-<PARAMETER>domainname</PARAMETER> message catalog can be found in the 
-<PARAMETER>dirname</PARAMETER> directory hierarchy, rather than in the 
-system locale data base.
+The <FUNCTION>bindtextdomain</FUNCTION> shall set the the base
+directory of the hierarchy containing message catalogs for a given message
+domain.
 </PARA>
 <PARA>
-<FUNCTION>bindtextdomain</FUNCTION> applies 
-<PARAMETER>domainname</PARAMETER> to the currently active 
-<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
-syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
-application of <PARAMETER>domainname</PARAMETER>, except that the 
-selection of the domain in <FUNCTION>bind_textdomain_codeset</FUNCTION> 
-is valid only for the duration of the call.
+The <FUNCTION>bindtextdomain</FUNCTION> function specifies that the 
+<PARAMETER>domainname</PARAMETER> message catalog can be found in the 
+<PARAMETER>dirname</PARAMETER> directory hierarchy, rather than in the 
+system default locale data base.
+</PARA>
+<PARA>
+If <PARAMETER>dirname</PARAMETER> is not 
+<CONSTANT>NULL</CONSTANT>, the base directory for message catalogs 
+belonging  to  domain 
+<PARAMETER>domainname</PARAMETER> shall be set to 
+<PARAMETER>dirname</PARAMETER>. The function shall make
+copies of the argument strings as needed.
 </PARA>
 <PARA>
 <PARAMETER>dirname</PARAMETER> can be an absolute or relative pathname.
+<NOTE><PARA>Applications that wish to use <FUNCTION>chdir</FUNCTION>
+should always use absolute pathnames to avoid misadvertently
+selecting the wrong or non-existant directory.
+</PARA></NOTE>
 </PARA>
 <PARA>
-On success, <FUNCTION>bindtextdomain</FUNCTION> returns the 
-directory pathname currently bound to the domain. On failure, a 
-<LITERAL>NULL</LITERAL> pointer is returned.
+If <PARAMETER>domainname</PARAMETER> is the null pointer, or is an empty
+string, <FUNCTION>bindtextdomain</FUNCTION> shall fail, but need not
+set <VarName>errno</VarName>.
+</PARA>
+<PARA>
+The <function>bindtextdomain</function> function shall return 
+a pointer to a string containing the name of the selected directory. 
+The string shall be allocated
+internally in the function and shall not be changed or freed by the user.
 </PARA>
 </REFSECT1>
 
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <FUNCTION>bindtextdomain</FUNCTION> shall return a
+pointer to the 
+directory pathname currently bound to the domain. On failure, a 
+<LITERAL>NULL</LITERAL> pointer is returned, and the global variable
+<VarName>errno</VarName> may be set to indicate the error.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><CONSTANT>ENOMEM</CONSTANT></TERM>
+<LISTITEM>
+<PARA>
+Insufficient memory was available.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+</REFSECT1>
 <REFSECT1>
 <TITLE>See Also</TITLE>
 <PARA>
 <ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
 dngettext, dcgettext, dcngettext, textdomain,
-bindtextdomain, bind_textdomain_codeset
+bind_textdomain_codeset
 </PARA>
 </REFSECT1>
 
@@ -8130,7 +8284,7 @@ get and set terminal attributes
 <TITLE>Description
 </TITLE>
 <PARA>
-The <function>cfmakeraw()</function> function shall set the
+The <function>cfmakeraw</function> function shall set the
 attributes of the <structname>termios</structname> structure referenced
 by <parameter>termios_p</parameter> as follows:
 <SYNOPSIS>
@@ -8301,8 +8455,8 @@ Invalid <parameter>speed</parameter> argument
 <title>Description</title>
 
 <para>
-<function>creat</function> is as specified in the
-Single UNIX Specification, but with differences as listed below.
+<function>creat</function> is as specified in 
+<XREF LINKEND=STD.SUSv3>, but with differences as listed below.
 </para>
 
 <refsect2>
@@ -8362,14 +8516,20 @@ run in the background
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>daemon</FUNCTION> allows programs to detach from the 
-controlling terminal and run in the background as system daemons. 
-Unless <PARAMETER>nochdir</PARAMETER> is nonzero, 
-<FUNCTION>daemon</FUNCTION> changes the current working directory 
-to the root (`/'). Unless <PARAMETER>noclose</PARAMETER> is 
-non-<LITERAL>zero</LITERAL>, <FUNCTION>daemon</FUNCTION> will 
-redirect standard input, standard output and standard error to 
-<EMPHASIS>/dev/null</EMPHASIS>.
+The <FUNCTION>daemon</FUNCTION> function shall create a new process,
+detached from the controlling terminal. If successful, the calling process
+shall exit and the new process shall continue to execute the application
+in the background.
+If <PARAMETER>nochdir</PARAMETER> evaluates to true, the current directory
+shall not be changed. Otherwise, 
+<FUNCTION>daemon</FUNCTION> shall change the current working directory 
+to the root (`/'). If <PARAMETER>noclose</PARAMETER> evaluates to true
+the standard input, standard output, and standard error file
+descriptors shall not be altered. Otherwise,
+<FUNCTION>daemon</FUNCTION> shall close
+the standard input, standard output and standard error file descriptors
+and reopen them attached to 
+<FILENAME>/dev/null</FILENAME>. 
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -8396,7 +8556,7 @@ specified for the library functions <FUNCTION>fork</FUNCTION>(2) and
 <REFNAMEDIV>
 <REFNAME>dcgettext</REFNAME>
 <REFPURPOSE>
-perform lookup in message catalog for the current LC_MESSAGES locale
+perform domain and category specific lookup in message catalog
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -8409,7 +8569,7 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 #include &lt;locale.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*dcgettext</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -8427,84 +8587,49 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>dcgettext</FUNCTION> is a domain specified version 
+The <FUNCTION>dcgettext</FUNCTION> function
+is a domain specified version 
 of <FUNCTION>gettext</FUNCTION>.
 </PARA>
-</REFSECT1>
-<REFSECT1>
-
-<TITLE>Parameters</TITLE>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-domainname
-</TERM>
-<LISTITEM>
 <PARA>
-<FUNCTION>dcgettext</FUNCTION> applies 
-<PARAMETER>domainname</PARAMETER> to the currently active 
-<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
-syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
-application of <PARAMETER>domainname</PARAMETER>, except that the 
-selection of the domain in <FUNCTION>dcgettext</FUNCTION> 
-is valid only for the duration of the call.
+The <function>dcgettext</function>
+function shall lookup the translation in the current locale of the message
+identified by <parameter>msgid</parameter> in the domain specified by 
+<parameter>domainname</parameter> and in the locale
+category specified by <parameter>category</parameter>. 
+If <parameter>domainname</parameter> is NULL, the current default
+domain shall be used. 
+The <parameter>msgid</parameter> argument shall be a NULL-terminated 
+string to be
+matched in the catalogue. 
+<parameter>category</parameter> shall specify the locale category to be used
+for retrieving message strings. 
+The category parameter shall be one of <parameter>LC_CTYPE</parameter>,
+<parameter>LC_COLLATE</parameter>, 
+<parameter>LC_MESSAGES</parameter>, 
+<parameter>LC_MONETARY</parameter>,
+<parameter>LC_NUMERIC</parameter>, 
+or <parameter>LC_TIME</parameter>. 
+The default domain
+shall not be changed by a call to dcgettext.
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-msgid
-</TERM>
-<LISTITEM>
-<PARA>
-a <LITERAL>NULL</LITERAL>-terminated string to be matched in the 
-catalogue with respect to a specific domain and the current locale.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-category
-</TERM>
-<LISTITEM>
-<PARA>
-<PARAMETER>category</PARAMETER> is used for retrieving messages 
-string for other than <VARNAME>LC_MESSAGES</VARNAME> category. Available 
-value for <PARAMETER>category</PARAMETER> are <VARNAME>LC_CTYPE</VARNAME>, 
-<VARNAME>LC_COLLATE</VARNAME>, <VARNAME>LC_MESSAGES</VARNAME>, 
-<VARNAME>LC_MONETARY</VARNAME>,<VARNAME>LC_NUMERIC</VARNAME>, and 
-<VARNAME>LC_TIME</VARNAME>.
-</PARA>
-<PARA>
-<FUNCTION>dcgettext(<PARAMETER>domainname</PARAMETER>, 
-<PARAMETER>msgid</PARAMETER>, 
-<VARNAME>LC_MESSAGES</VARNAME>)</FUNCTION> 
-has the same specification as 
-<FUNCTION>dgettext(<PARAMETER>domainname</PARAMETER>, 
-<PARAMETER>msgid</PARAMETER>)</FUNCTION>. 
-Note that <VARNAME>LC_ALL</VARNAME> shall not be used.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return Value</TITLE>
 <PARA>
-On success, the translated <LITERAL>NULL</LITERAL>-terminated 
-string is returned. On error, <PARAMETER>msgid</PARAMETER> is returned.
+If a translation was found in one of the specified catalogs, it shall be
+converted to the current locale's codeset and returned. The resulting
+NULL-terminated string shall be allocated by the dcgettext function, and must
+not be modified or freed. If no translation was found, or category was invalid,
+<parameter>msgid</parameter> shall be returned.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Errors</TITLE>
 <PARA>
-<FUNCTION>dcgettext</FUNCTION> will not modify the 
+<FUNCTION>dcgettext</FUNCTION> shall not modify the 
 <VARNAME>errno</VARNAME> global variable.
 </PARA>
 </REFSECT1>
@@ -8513,7 +8638,7 @@ string is returned. On error, <PARAMETER>msgid</PARAMETER> is returned.
 <TITLE>See Also</TITLE>
 <PARA>
 <ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
-dngettext, dcgettext, dcngettext, textdomain,
+dngettext, dcngettext, textdomain,
 bindtextdomain, bind_textdomain_codeset
 </PARA>
 </REFSECT1>
@@ -8528,7 +8653,8 @@ bindtextdomain, bind_textdomain_codeset
 <REFNAMEDIV>
 <REFNAME>dcngettext</REFNAME>
 <REFPURPOSE>
-perform lookup in message catalog for the current LC_MESSAGES locale
+perform domain and category specific lookup in message catalog
+with plural
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -8541,7 +8667,7 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 #include &lt;locale.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*dcngettext</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -8563,117 +8689,58 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>dcngettext</FUNCTION> is a plural version of 
-<FUNCTION>dcgettext</FUNCTION>. (See <FUNCTION>dcgettext</FUNCTION>
-for more information.)
+The <FUNCTION>dcngettext</FUNCTION> function is a domain specific version of 
+gettext, capable of
+returning either a singular or plural form of the message. 
+The <FUNCTION>dcngettext</FUNCTION>
+function shall lookup the translation in the current locale of the message
+identified by <PARAMETER>msgid1</PARAMETER>
+in the domain specified by <PARAMETER>domainname</PARAMETER>
+and in the locale
+category specified by <PARAMETER>category</PARAMETER>. 
+If <PARAMETER>domainname</PARAMETER> is NULL, the current default
+domain shall be used. The <PARAMETER>msgid1</PARAMETER>
+argument shall be a NULL-terminated string to
+be matched in the catalogue. <PARAMETER>category</PARAMETER>
+shall specify the locale category to be
+used for retrieving message strings. The <PARAMETER>category</PARAMETER>
+parameter shall be one of
+<PARAMETER>LC_CTYPE</PARAMETER>, 
+<PARAMETER>LC_COLLATE</PARAMETER>, 
+<PARAMETER>LC_MESSAGES</PARAMETER>, 
+<PARAMETER>LC_MONETARY</PARAMETER>, 
+<PARAMETER>LC_NUMERIC</PARAMETER>, or 
+<PARAMETER>LC_TIME</PARAMETER>. 
+The
+default domain shall not be changed by a call to <FUNCTION>dcgettext</FUNCTION>.
+If <PARAMETER>n</PARAMETER> is 1 then the
+singular version of the message is returned, otherwise one of the plural forms
+is returned, depending on the value of <PARAMETER>n</PARAMETER> and the current locale settings.
 </PARA>
-</REFSECT1>
-<REFSECT1>
-
-<TITLE>Parameters</TITLE>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-domainname
-</TERM>
-<LISTITEM>
-<PARA>
-<FUNCTION>dcngettext</FUNCTION> applies 
-<PARAMETER>domainname</PARAMETER> to the currently active 
-<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
-syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
-application of <PARAMETER>domainname</PARAMETER>, except that the 
-selection of the domain in <FUNCTION>dcngettext</FUNCTION> 
-is valid only for the duration of the call.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-msgid1
-</TERM>
-<LISTITEM>
-<PARA>
-a <LITERAL>NULL</LITERAL>-terminated string to be matched in the 
-catalogue with respect to a specific domain and the current locale. 
-If the value of <PARAMETER>n</PARAMETER> is <LITERAL>1</LITERAL> 
-and no message catalogs containing a translation for 
-<PARAMETER>msgid1</PARAMETER> are found, <PARAMETER>msgid1</PARAMETER> 
-is returned.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-msgid2
-</TERM>
-<LISTITEM>
-<PARA>
-a <LITERAL>NULL</LITERAL>-terminated string to be returned if the 
-value of <PARAMETER>n</PARAMETER> is not <LITERAL>1</LITERAL> and 
-no message catalogs are found.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-n
-</TERM>
-<LISTITEM>
-<PARA>
-determines which plural form is returned, in a language and
-message catalog dependent way.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-category
-</TERM>
-<LISTITEM>
-<PARA>
-<PARAMETER>category</PARAMETER> is used for retrieving messages 
-string for other than <VARNAME>LC_MESSAGES</VARNAME> category. Available 
-value for <PARAMETER>category</PARAMETER> are <VARNAME>LC_CTYPE</VARNAME>, 
-<VARNAME>LC_COLLATE</VARNAME>, <VARNAME>LC_MESSAGES</VARNAME>, 
-<VARNAME>LC_MONETARY</VARNAME>,<VARNAME>LC_NUMERIC</VARNAME>, and 
-<VARNAME>LC_TIME</VARNAME>.
-</PARA>
-<PARA>
-<FUNCTION>dcngettext(<PARAMETER>domainname</PARAMETER>, 
-<PARAMETER>msgid1</PARAMETER>, <PARAMETER>msgid2</PARAMETER>, 
-<PARAMETER>n</PARAMETER>, <VARNAME>LC_MESSAGES</VARNAME>)</FUNCTION> 
-has the same specification as 
-<FUNCTION>dngettext(<PARAMETER>domainname</PARAMETER>, 
-<PARAMETER>msgid1</PARAMETER>, <PARAMETER>msgid2</PARAMETER>, 
-<PARAMETER>n</PARAMETER>)</FUNCTION>. 
-Note that <VARNAME>LC_ALL</VARNAME> shall not be used.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return Value</TITLE>
 <PARA>
-On success of a <PARAMETER>msgid1</PARAMETER> query, the translated 
-<LITERAL>NULL</LITERAL>-terminated string is returned. On error, the 
-original <PARAMETER>msgid1</PARAMETER> or <PARAMETER>msgid2</PARAMETER> 
-is returned, according to <PARAMETER>n</PARAMETER>.
+If a translation corresponding to the value of <PARAMETER>n</PARAMETER>
+was found in one of the
+specified catalogs for <PARAMETER>msgid1</PARAMETER>, 
+it shall be converted to the current locale's
+codeset and returned. The resulting NULL-terminated string 
+shall be allocated by
+the <FUNCTION>dcngettext</FUNCTION> function, 
+and must not be modified or freed. If no translation
+was found, or <PARAMETER>category</PARAMETER> was invalid, 
+<PARAMETER>msgid1</PARAMETER> shall be returned 
+if <PARAMETER>n</PARAMETER> has the value
+1, otherwise <PARAMETER>msgid2</PARAMETER> shall be returned.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Errors</TITLE>
 <PARA>
-<FUNCTION>dcngettext</FUNCTION> will not modify the 
+<FUNCTION>dcngettext</FUNCTION> shall not modify the 
 <VARNAME>errno</VARNAME> global variable.
 </PARA>
 </REFSECT1>
@@ -8682,7 +8749,7 @@ is returned, according to <PARAMETER>n</PARAMETER>.
 <TITLE>See Also</TITLE>
 <PARA>
 <ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
-dngettext, dcgettext, dcngettext, textdomain,
+dngettext, dcgettext, textdomain,
 bindtextdomain, bind_textdomain_codeset
 </PARA>
 </REFSECT1>
@@ -8709,7 +8776,7 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*dgettext</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -8804,7 +8871,7 @@ bindtextdomain, bind_textdomain_codeset
 <REFNAMEDIV>
 <REFNAME>dngettext</REFNAME>
 <REFPURPOSE>
-perform lookup in message catalog for the current LC_MESSAGES locale
+perform lookup in message catalog for the current locale
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -8816,7 +8883,7 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*dngettext</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -8836,100 +8903,17 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>dngettext</FUNCTION> is a plural version of 
-<FUNCTION>dgettext</FUNCTION>. (See <FUNCTION>dgettext</FUNCTION>
-for more information.)
+<FUNCTION>dngettext</FUNCTION> shall be equivalent to a call to
+<PROGRAMLISTING>dcngettext(domainname, msgid1, msgid2, n, LC_MESSAGES)</PROGRAMLISTING>
+See <FUNCTION>dgettext</FUNCTION>
+for more information.
 </PARA>
 </REFSECT1>
-<REFSECT1>
-
-<TITLE>Parameters</TITLE>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-domainname
-</TERM>
-<LISTITEM>
-<PARA>
-<FUNCTION>dngettext</FUNCTION> applies 
-<PARAMETER>domainname</PARAMETER> to the currently active 
-<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
-syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
-application of <PARAMETER>domainname</PARAMETER>, except that the 
-selection of the domain in <FUNCTION>dngettext</FUNCTION> 
-is valid only for the duration of the call.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-msgid1
-</TERM>
-<LISTITEM>
-<PARA>
-a <LITERAL>NULL</LITERAL>-terminated string to be matched in the 
-catalogue with respect to a specific domain and the current locale. 
-If the value of <PARAMETER>n</PARAMETER> is <LITERAL>1</LITERAL> 
-and no message catalogs containing a translation for 
-<PARAMETER>msgid1</PARAMETER> are found, <PARAMETER>msgid1</PARAMETER> 
-is returned.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-msgid2
-</TERM>
-<LISTITEM>
-<PARA>
-a <LITERAL>NULL</LITERAL>-terminated string to be returned if the 
-value of <PARAMETER>n</PARAMETER> is not <LITERAL>1</LITERAL> and
-no message catalogs are found.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-n
-</TERM>
-<LISTITEM>
-<PARA>
-determines which plural form is returned, in a language and
-message catalog dependent way.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
-On success of a <PARAMETER>msgid1</PARAMETER> query, the translated 
-<LITERAL>NULL</LITERAL>-terminated string is returned. On error, the 
-original <PARAMETER>msgid1</PARAMETER> or <PARAMETER>msgid2</PARAMETER> 
-is returned, according to <PARAMETER>n</PARAMETER>.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Errors</TITLE>
-<PARA>
-<FUNCTION>dcngettext</FUNCTION> will not modify the 
-<VARNAME>errno</VARNAME> global variable.
-</PARA>
-</REFSECT1>
-
 <REFSECT1>
 <TITLE>See Also</TITLE>
 <PARA>
 <ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
-dngettext, dcgettext, dcngettext, textdomain,
+dcgettext, dcngettext, textdomain,
 bindtextdomain, bind_textdomain_codeset
 </PARA>
 </REFSECT1>
@@ -8975,17 +8959,41 @@ bindtextdomain, bind_textdomain_codeset
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>err</FUNCTION> displays a formatted error message on the 
-standard error output. The last component of the program name, a colon 
-character, and a space are output. If <PARAMETER>fmt</PARAMETER> is 
-non-<LITERAL>NULL</LITERAL>, the formatted error message, a colon 
-character, and a space are output. The error message string affiliated 
-with the current value of the global variable <VARNAME>errno</VARNAME> 
-is output. The output is followed by a newline character.
+The <FUNCTION>err</FUNCTION> function
+shall display a formatted error message on the standard
+error stream.
+The output shall consist of the last component of the program name, a colon
+character, and a space character. If <PARAMETER>fmt</PARAMETER> is non-NULL, it shall be used as a
+format string for the <FUNCTION>printf</FUNCTION>
+family of functions, and the formatted message, a
+colon character, and a space are written to <VarName>stderr</VarName>.
+Finally,  the error message
+string affiliated with the current value of the global variable 
+<VarName>errno</VarName> shall be
+written to <VarName>stderr</VarName>, followed by a newline character.
 </PARA>
 <PARA>
-<FUNCTION>err</FUNCTION> does not return, but exits with the value of 
-<PARAMETER>eval</PARAMETER>.
+The <FUNCTION>err</FUNCTION> function shall not return, 
+the program shall terminate with the exit value of <PARAMETER>eval</PARAMETER>.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA>
+<FUNCTION>error</FUNCTION>, <FUNCTION>errx</FUNCTION>
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+None.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+None.
 </PARA>
 </REFSECT1>
 <!--      4th Berkeley Distribution        June 9, 1993           -->
@@ -9023,17 +9031,18 @@ print error message
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>error</FUNCTION> prints a message to standard error.
+<FUNCTION>error</FUNCTION> shall print a message to standard error.
 </PARA>
 <PARA>
-<FUNCTION>error</FUNCTION> builds the message from the following 
+<FUNCTION>error</FUNCTION> shall build the message from the following 
 elements in their specified order:
 <ORDEREDLIST NUMERATION="ARABIC">
 <LISTITEM>
 <PARA>
 the program name. If the application has provided a function named 
 <FUNCTION>error_print_progname</FUNCTION>, <FUNCTION>error</FUNCTION> 
-calls this to supply the program name; otherwise, <FUNCTION>error</FUNCTION> 
+shall call this to supply the program name; 
+otherwise, <FUNCTION>error</FUNCTION> 
 uses the content of the global variable <VARNAME>program_name</VARNAME>.
 </PARA>
 </LISTITEM>
@@ -9047,7 +9056,7 @@ and the optional arguments.
 <LISTITEM>
 <PARA>
 if <PARAMETER>errnum</PARAMETER> is nonzero, 
-<FUNCTION>error</FUNCTION> adds the colon and 
+<FUNCTION>error</FUNCTION> shall add the colon and 
 space characters, then the result of 
 <FUNCTION>strerror(<VARNAME>errnum</VARNAME>)</FUNCTION>.
 </PARA>
@@ -9061,12 +9070,18 @@ a newline.
 </PARA>
 <PARA>
 If <PARAMETER>exitstatus</PARAMETER> is nonzero, 
-<FUNCTION>error</FUNCTION> calls
+<FUNCTION>error</FUNCTION> shall call
 <FUNCTION>exit(<VARNAME>exitstatus</VARNAME>)</FUNCTION>.
 </PARA>
 <!-- There's an interaction with wide characters(?): this call makes
 stderr narrow-oriented. Should put that in once we figure out what it
 means and whether it would be bad in an Asian locale -->
+</REFSECT1>
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA>
+<FUNCTION>err</FUNCTION>, <FUNCTION>errx</FUNCTION>
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -9077,7 +9092,7 @@ means and whether it would be bad in an Asian locale -->
 <REFNAMEDIV>
 <REFNAME>errx
 </REFNAME>
-<REFPURPOSE>format error messages
+<REFPURPOSE>display formatted error message and exit
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -9108,16 +9123,37 @@ means and whether it would be bad in an Asian locale -->
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>errx</FUNCTION> displays a formatted error message on the 
-standard error output. The last component of the program name, a colon 
-character, and a space are output. If <PARAMETER>fmt</PARAMETER> is 
-non-<LITERAL>NULL</LITERAL>, the formatted error message, a colon 
-character, and a space are output. The output is followed by a 
+The <FUNCTION>errx</FUNCTION> function shall display a formatted error message on the 
+standard error stream. The last component of the program name, a colon 
+character, and a space shall be output. If <PARAMETER>fmt</PARAMETER> is 
+non-<LITERAL>NULL</LITERAL>, it shall be used as the format string
+for the <FUNCTION>printf</FUNCTION> family of functions, and
+the formatted error message, a colon 
+character, and a space shall be output. The output shall be followed by a 
 newline character.
 </PARA>
 <PARA>
-<FUNCTION>errx</FUNCTION> does not return, but exits with the value of 
+<FUNCTION>errx</FUNCTION> does not return, but shall exit with the value of 
 <PARAMETER>eval</PARAMETER>.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+None.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+None.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA>
+<FUNCTION>error</FUNCTION>, <FUNCTION>err</FUNCTION>
 </PARA>
 </REFSECT1>
 <!--      4th Berkeley Distribution        June 9, 1993           -->
@@ -9141,9 +9177,9 @@ file control
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>fcntl</FUNCTION> is as specified in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 3</CITETITLE>, but with differences as listed below.
+<FUNCTION>fcntl</FUNCTION> is as specified in 
+<XREF LINKEND=STD.SUSv3>,
+but with differences as listed below.
 </PARA>
 
 <REFSECT2>
@@ -9154,15 +9190,12 @@ According to the <CITETITLE PUBWORK="BOOK">Single UNIX
 Specification</CITETITLE>, only an application sets
 <FUNCTION>fcntl</FUNCTION> flags, for example 
 <EMPHASIS>O_LARGEFILE</EMPHASIS>. However, this specification
-also allows implementations to set <EMPHASIS>O_LARGEFILE</EMPHASIS> 
-in a case in which the default behavior matches the 
-<EMPHASIS>O_LARGEFILE</EMPHASIS> behavior.
-<FOOTNOTE>
-<PARA>For example, if <PARAMETER>off_t</PARAMETER> is 64 bits.
-</PARA>
-</FOOTNOTE>
-Or in other words, calling <FUNCTION>fcntl</FUNCTION> with the 
-<COMMAND>F_GETFL</COMMAND> command may return 
+also allows an implementation to set <EMPHASIS>O_LARGEFILE</EMPHASIS> 
+in the case where the system default behavior matches the 
+<EMPHASIS>O_LARGEFILE</EMPHASIS> behavior,
+for example if <COMPUTEROUTPUT>sizeof(off_t)</COMPUTEROUTPUT> is 8.
+Thus, calling <FUNCTION>fcntl</FUNCTION> with the 
+<PARAMETER>F_GETFL</PARAMETER> command may return 
 <EMPHASIS>O_LARGEFILE</EMPHASIS> as well as flags explicitly 
 set by the application.
 </PARA>
@@ -9189,10 +9222,10 @@ set by the application.
 <title>Description</title>
 
 <para>
-<command>fflush_unlocked</command> is the same as
-<command>fflush</command> except that it need not be thread safe.
+<function>fflush_unlocked</function> is the same as
+<function>fflush</function> except that it need not be thread safe.
 That is, it may only be invoked in the ways which are legal for
-getc_unlocked.
+<function>getc_unlocked</function>.
 </para>
 
 </refsect1>
@@ -9216,10 +9249,10 @@ getc_unlocked.
 <title>Description</title>
 
 <para>
-<command>fgetwc_unlocked</command> is the same as
-<command>fgetwc</command> except that it need not be thread safe.
+<function>fgetwc_unlocked</function> is the same as
+<function>fgetwc</function> except that it need not be thread safe.
 That is, it may only be invoked in the ways which are legal for
-getc_unlocked.
+<function>getc_unlocked</function>.
 </para>
 
 </refsect1>
@@ -9361,8 +9394,8 @@ The file is locked and the <LITERAL>LOCK_NB</LITERAL> flag was selected.
 <title>Description</title>
 
 <para>
-<function>fopen</function> is as specified in the
-Single UNIX Specification, but with differences as listed below.
+<function>fopen</function> is as specified in 
+<XREF LINKEND=STD.SUSv3>, but with differences as listed below.
 </para>
 
 <refsect2>
@@ -9405,8 +9438,8 @@ submitted.
 <title>Description</title>
 
 <para>
-<function>freopen</function> is as specified in the
-Single UNIX Specification, but with differences as listed below.
+<function>freopen</function> is as specified in 
+<XREF LINKEND=STD.SUSv3>, but with differences as listed below.
 </para>
 
 <refsect2>
@@ -9438,44 +9471,91 @@ submitted.
 <REFNAMEDIV>
 <REFNAME>getdomainname</REFNAME>
 <REFPURPOSE>
-get NIS domain name.
+get NIS domain name (DEPRECATED).
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
 #include &lt;unistd.h&gt;
-
-extern int getdomainname(char *name, size_t namelen);
-</SYNOPSIS>
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+  <FUNCDEF>int 
+    <FUNCTION>getdomainname</FUNCTION>
+  </FUNCDEF>
+  <PARAMDEF>char *
+    <PARAMETER>name</PARAMETER>
+  </PARAMDEF>
+  <PARAMDEF>size_t
+    <PARAMETER>namelen</PARAMETER>
+  </PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <refsect1>
 <title>Description</title>
 <para>
-If NIS is in use, provide the NIS domain name.  Note that this is not
-the same as the domain name which provides the domain portion of a
-fully qualified domain name (for example, in DNS).  If NIS is not in
-use, provide the string "(none)".
-</para>
-<para>
-If the string which is provided is strictly less than namelen
-characters in length, getdomainname places it in the array pointed to
-by name followed by a terminating null character.  If not,
-getdomainname may either truncate it to namelen characters and place
-it in name (without a terminating null character), or may fail with
-EINVAL.
+If the Network Information System (NIS) is in use, 
+<FUNCTION>getdomainname</FUNCTION> shall
+copy the NIS domain name to the supplied buffer identified by 
+<PARAMETER>name</PARAMETER>,
+with maximum length <PARAMETER>namelen</PARAMETER>. 
+If the NIS domain name is not currently set, 
+<FUNCTION>getdomainname</FUNCTION> shall
+copy the string "(none)" to the <PARAMETER>name</PARAMETER>.
+If <PARAMETER>namelen</PARAMETER> is less 
+the length of the string
+to be copied, <FUNCTION>getdomainname</FUNCTION>
+may either truncate the string to <PARAMETER>namelen</PARAMETER>
+characters and place it in <PARAMETER>name</PARAMETER>
+(without a terminating null character),
+or may fail with EINVAL.
+</PARA>
+<PARA>
+Note that the NIS domain name is not the same as the domain portion of
+a fully qualified domain name (for example, in DNS).
 </para>
 </refsect1>
 
 <refsect1>
 <title>Return Value</title>
 <para>
-getdomainname returns 0 if successful; -1 if not (in which case errno
-is set to indicate the error).
+On success,
+<FUNCTION>getdomainname</FUNCTION> shall return 
+<RETURNVALUE>0</RETURNVALUE>. Otherwise, it shall return
+<RETURNVALUE>-1</RETURNVALUE> and set <VARNAME>errno</VARNAME>
+to indicate the error).
 </para>
 </refsect1>
 
-</REFENTRY>
+<refsect1>
+<title>Errors</title>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>name</PARAMETER> was a null pointer.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+The buffer identified by <PARAMETER>name</PARAMETER> and 
+<PARAMETER>namelen</PARAMETER> is of insufficient size to store the NIS domain name string, and the implementation considers this an error.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
 
+</REFENTRY>
 
 <REFENTRY ID="baselib-gethostbyname-r-3"> <REFMETA>
 <REFENTRYTITLE>gethostbyname_r</REFENTRYTITLE>
@@ -9492,7 +9572,7 @@ find network host database entry matching host name (DEPRECATED)
 <REFSYNOPSISDIV>
 <FUNCSYNOPSIS>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>gethostbyname_r</FUNCTION></FUNCDEF>
  <PARAMDEF>__const char *__restrict 
   <PARAMETER><REPLACEABLE>__name</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -9604,7 +9684,7 @@ parse command line options
  <PARAMDEF>char * const 
   <PARAMETER><REPLACEABLE>argv</REPLACEABLE>[]</PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*opstring</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*optstring</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 <SYNOPSIS>
@@ -9619,15 +9699,49 @@ extern int <VARNAME>optind</VARNAME>, <VARNAME>opterr</VARNAME>, <VARNAME>optopt
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>getopt</FUNCTION> parses command line arguments. 
-<EMPHASIS>GNU</EMPHASIS> and <EMPHASIS>POSIX</EMPHASIS> specifications 
-for this function vary in the following areas.  LSB systems shall
-implement the GNU behaviors described below.
+The <FUNCTION>getopt</FUNCTION> function shall parse command line arguments.
+as described in <XREF LINKEND=STD.SUSv3>, with the following exceptions,
+where LSB and POSIX specifications vary.
+LSB systems shall
+implement the modified behaviors described below.
 </PARA>
+<REFSECT2>
+<TITLE>Argument Ordering</TITLE>
+<PARA>
+The <function>getopt</function> function can process command line arguments
+referenced by <parameter>argv</parameter> in one of three ways:
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>PERMUTE</TERM><LISTITEM><PARA>the order of arguments in
+<parameter>argv</parameter> is altered so that all options (and
+their arguments) are moved in front of all of the operands.
+This is the default behavior.</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>REQUIRE_ORDER</TERM><LISTITEM><PARA>The arguments in
+<parameter>argv</parameter> are processed in exactly the order
+given, and option processing stops when the first non-option argument
+is reached, or when the element of argv is "--". This ordering
+can be enforced either by setting the environment variable
+<VARNAME>POSIXLY_CORRECT</VARNAME>, or by setting the first character
+of <parameter>optstring</parameter> to '+'.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>RETURN_IN_ORDER</TERM><LISTITEM><PARA>The order of arguments
+is not altered, and all arguments are processed. Non-option arguments
+(operands) are handled as if they were the argument to an option with
+the value 1 ('\001'). This ordering is selected by setting the first
+character of <parameter>optstring</parameter> to '-';
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+</REFSECT2>
 <REFSECT2>
 <TITLE>Option Characteristics</TITLE>
 <PARA>
-<EMPHASIS>GNU</EMPHASIS> specifies that:
+<EMPHASIS>LSB</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -9645,7 +9759,7 @@ characters of an option element, aside from the initial
 </ITEMIZEDLIST>
 </PARA>
 <PARA>
-POSIX specifies that:
+<EMPHASIS>POSIX</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -9721,7 +9835,7 @@ description.
 <REFSECT2>
 <TITLE>Extensions</TITLE>
 <PARA>
-<EMPHASIS>GNU</EMPHASIS> specifies that:
+<EMPHASIS>LSB</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -9734,9 +9848,11 @@ it is returned in <PARAMETER>optarg</PARAMETER>, otherwise
 <LISTITEM>
 <PARA>
 if <PARAMETER>optstring</PARAMETER> contains <LITERAL>W</LITERAL> followed 
-by a <TOKEN>;</TOKEN>, then <LITERAL>-W foo</LITERAL> is treated as the 
-long option <LITERAL>--foo</LITERAL>. (Not available with libraries before 
-<EMPHASIS>GNU libc 2</EMPHASIS>.)
+by a semi-colon (<TOKEN>;</TOKEN>),
+then <LITERAL>-W foo</LITERAL> is treated as the 
+long option <LITERAL>--foo</LITERAL>. 
+<NOTE><PARA>See <function>getopt_long</function> for a description
+of long options.</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -9755,7 +9871,7 @@ the <OPTION>-W</OPTION> option is reserved for implementation extensions.
 <REFSECT2>
 <TITLE>Return Values</TITLE>
 <PARA>
-<EMPHASIS>GNU</EMPHASIS> specifies the following 
+<EMPHASIS>LSB</EMPHASIS> specifies the following 
 <FUNCTION>getopt</FUNCTION> return values:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
@@ -9777,6 +9893,14 @@ character is encountered.
 </LISTITEM>
 <LISTITEM>
 <PARA>
+<RETURNVALUE>1</RETURNVALUE> is returned
+if <CONSTANT>RETURN_IN_ORDER</CONSTANT> argument ordering is in effect,
+and the next argument is an operand, not an option. The argument is
+available in <varname>optarg</varname>.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
 <RETURNVALUE>-1</RETURNVALUE> is returned for the end of the option list.
 </PARA>
 </LISTITEM>
@@ -9794,7 +9918,7 @@ the next option character is returned, if found successfully.
 <LISTITEM>
 <PARA>
 "<RETURNVALUE>:</RETURNVALUE>" is returned if a parameter is missing for 
-one of the options and the first character of <VARNAME>opstring</VARNAME> is 
+one of the options and the first character of <VARNAME>optstring</VARNAME> is 
 "<TOKEN>:</TOKEN>".
 </PARA>
 </LISTITEM>
@@ -9817,7 +9941,7 @@ character of <VARNAME>optstring</VARNAME> is not "<TOKEN>:</TOKEN>".
 <REFSECT2>
 <TITLE>Environment Variables</TITLE>
 <PARA>
-<EMPHASIS>GNU</EMPHASIS> specifies that:
+<EMPHASIS>LSB</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -9827,18 +9951,24 @@ processing stops as soon as a non-option argument is encountered.
 </LISTITEM>
 <LISTITEM>
 <PARA>
-if <VARNAME>POSIXLY_CORRECT</VARNAME> is set, <EMPHASIS>GNU</EMPHASIS> 
+if <VARNAME>POSIXLY_CORRECT</VARNAME> is set, <EMPHASIS>LSB</EMPHASIS> 
 <FUNCTION>getopt</FUNCTION> conforms to <EMPHASIS>
 <XREF LINKEND="STD.SUSv3"></EMPHASIS>.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-the variable <VARNAME>_[PID]_GNU_nonoption_argv_flags_</VARNAME> was 
+the variable <VARNAME>_<replaceable>[PID]</replaceable>_GNU_nonoption_argv_flags_</VARNAME>
+(where <replaceable>[PID]</replaceable> is the process ID for the 
+current process), contains a space separated list of arguments that should
+not be treated as arguments even though they appear to be so.
+<NOTE><TITLE>Rationale</TITLE><PARA>
+This was 
 used by bash 2.0 to communicate to <EMPHASIS>GNU</EMPHASIS> libc which 
 arguments resulted from wildcard expansion and so should not be 
 considered as options. This behavior was removed in bash version 
 2.01, but the support remains in <EMPHASIS>GNU</EMPHASIS> libc.
+</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -9903,27 +10033,74 @@ array of struct <STRUCTNAME>option</STRUCTNAME> declared in
 <SYNOPSIS>
   struct option {
              const char *name;
-             int *flag;
              int has_arg;
+             int *flag;
              int val;
   };
 </SYNOPSIS>
+</PARA>
+<PARA>
+The fields in this structure have the following meaning:
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>name</STRUCTFIELD></TERM>
+<LISTITEM><PARA>The name of the long option.</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>has_arg</STRUCTFIELD></TERM>
+<LISTITEM><PARA>
+One of: 
+<SIMPLELIST>
+<MEMBER>
+<constant>no_argument</constant> (or 0) if the option does not take an argument,
+</MEMBER>
+<MEMBER>
+<constant>required_argument</constant> (or 1) if the option requires an argument,  or
+</MEMBER>
+<MEMBER>
+<constant>optional_argument</constant>  (or  2) if the option takes an optional argument.
+</MEMBER>
+</SIMPLELIST>
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>flag</STRUCTFIELD></TERM>
+<LISTITEM><PARA>
+specifies how results are returned for a long option.   
+If  flag
+is  <constant>NULL</constant>,  then  
+<function>getopt_long</function> shall return <structfield>val</structfield>.
+(For example, the
+calling program may set val to the equivalent short option character.)
+Otherwise, <function>getopt_long</function> returns 
+<RETURNVALUE>0</RETURNVALUE>, and <structfield>flag</structfield> shall point to
+a variable which shall be set to <structfield>val</structfield>
+if the option is found, but left unchanged if the option is not found.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>val</STRUCTFIELD></TERM>
+<LISTITEM><PARA>The value to return, or to load into the variable pointed to
+by flag.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>getopt_long</FUNCTION> returns the option character if the 
+<FUNCTION>getopt_long</FUNCTION> returns the option character if a short 
 option was found successfully, or "<RETURNVALUE>:</RETURNVALUE>" if 
 there was a missing parameter for one of the options, or 
 "<RETURNVALUE>?</RETURNVALUE>" for an unknown option character, or 
 <RETURNVALUE>-1</RETURNVALUE> for the end of the option list.
 </PARA>
 <PARA>
-<FUNCTION>getopt_long</FUNCTION> also returns the option character 
-when a short option is recognized. For a long option, they return val 
-if flag is <LITERAL>NULL</LITERAL>, and <RETURNVALUE>0</RETURNVALUE> 
+For a long option, 
+<function>getopt_long</function> returns <structfield>val</structfield> 
+if <structfield>flag</structfield> is <LITERAL>NULL</LITERAL>, and <RETURNVALUE>0</RETURNVALUE> 
 otherwise. Error and <RETURNVALUE>-1</RETURNVALUE> returns are the 
 same as for <FUNCTION>getopt</FUNCTION>, plus 
 "<RETURNVALUE>?</RETURNVALUE>" for an ambiguous match or an 
@@ -9964,7 +10141,7 @@ parse command line options
  <PARAMDEF>char * const 
   <PARAMETER><REPLACEABLE>argv</REPLACEABLE>[]</PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*opstring</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*optstring</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>const struct <STRUCTNAME>option</STRUCTNAME> 
   <PARAMETER>*longopts</PARAMETER></FUNCPARAMS></PARAMDEF>
  <PARAMDEF>int 
@@ -10007,6 +10184,16 @@ same as for <FUNCTION>getopt</FUNCTION>, plus
 extraneous parameter.
 </PARA>
 
+<REFSECT2>
+<TITLE>Application Usage</TITLE>
+<PARA>
+Applications that use <function>getopt_long_only</function>
+may not conform to the Utility Syntax Guidelines of 
+<XREF LINKEND=STD.SUSv3>. As such, their portability is limited
+and application developers should consider using <function>getopt</function>
+or <function>getopt_long</function> instead.
+</PARA>
+</REFSECT2>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
 <!--        Version 1a, November 1998   -->
 
@@ -10021,7 +10208,7 @@ extraneous parameter.
 <REFNAMEDIV>
 <REFNAME>gettext</REFNAME>
 <REFPURPOSE>
-perform lookup in message catalog for the current LC_MESSAGES locale
+Search message catalogs for a string
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -10033,7 +10220,7 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*gettext</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*msgid</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -10044,80 +10231,37 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 <REFSECT1INFO>
 <DATE>16 September 2002</DATE>
 </REFSECT1INFO>
-<TITLE>Description
-</TITLE>
+<TITLE>Description</TITLE>
 <PARA>
-<FUNCTION>gettext</FUNCTION> attempts to retrieve a target 
-string based on the specified key from <PARAMETER>msgid</PARAMETER> 
-within the context of a specific domain and the current locale.  
+The <FUNCTION>gettext</FUNCTION> function shall search the currently 
+selected message catalogs for a string matching the string
+<PARAMETER>msgid</PARAMETER>. If a string is located, 
+that string shall be returned.
 </PARA>
 <PARA>
-The <VARNAME>LANGUAGE</VARNAME> environment variable is examined 
-first to determine the message catalogs to be used. 
-<VARNAME>LANGUAGE</VARNAME> is a list of locale names separated 
-by "<TOKEN>:</TOKEN>" character. If <VARNAME>LANGUAGE</VARNAME> 
-is defined, each locale name is tried in the specified order and 
-if a message catalog containing the requested message is found, 
-the message is returned. If <VARNAME>LANGUAGE</VARNAME> is defined 
-but failed to locate a message catalog, the <PARAMETER>msgid</PARAMETER> 
-string is returned. If <VARNAME>LANGUAGE</VARNAME> is not defined, 
-the <VARNAME>LC_ALL</VARNAME>, <VARNAME>LC_xxx</VARNAME>, and
-<VARNAME>LANG</VARNAME> environment variables are examined to 
-locate the message catalog, following the convention used by the 
-<FUNCTION>setlocale</FUNCTION> function.
+The <FUNCTION>gettext</FUNCTION> function is equivalent to
+<FUNCTION>dcgettext(NULL, msgid, LC_MESSAGES)</FUNCTION>.
 </PARA>
-<PARA>
-The pathname used to locate the message catalog is 
-<EMPHASIS><LITERAL>dirname</LITERAL></EMPHASIS>/<EMPHASIS><LITERAL>locale</LITERAL></EMPHASIS>/<EMPHASIS><LITERAL>category</LITERAL></EMPHASIS><LITERAL>/domainname.mo</LITERAL>, 
-where <EMPHASIS><LITERAL>dirname</LITERAL></EMPHASIS> is the directory 
-specified by the <FUNCTION>bindtextdomain</FUNCTION> function, 
-<EMPHASIS><LITERAL>locale</LITERAL></EMPHASIS> is a locale name 
-determined by the definition of environment variables, and 
-<EMPHASIS><LITERAL>category</LITERAL></EMPHASIS> is 
-<VARNAME>LC_MESSAGES</VARNAME>.
-</PARA>
-<PARA>
-If the <VARNAME>LC_MESSAGES</VARNAME> locale category of the current 
-locale is the standard C locale or the standard POSIX locale, 
-<FUNCTION>gettext</FUNCTION> returns <PARAMETER>msgid</PARAMETER>
-without looking in any message catalog.
-</PARA>
+
 </REFSECT1>
-<REFSECT1>
-<TITLE>Parameters</TITLE>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-msgid
-</TERM>
-<LISTITEM>
-<PARA>
-A <LITERAL>NULL</LITERAL>-terminated string to be 
-matched in the catalogue with respect to a specific domain and the 
-current locale.  
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
-</REFSECT1>
-
 <REFSECT1>
 <TITLE>Return Value</TITLE>
+
 <PARA>
-If the function query above succeeds with <PARAMETER>msgid</PARAMETER>, 
-then a translated <LITERAL>NULL</LITERAL>-terminated string is returned. 
-If the search fails, then the original <PARAMETER>msgid</PARAMETER> is 
-returned. The length of the string returned is undetermined until the 
-function is called. 
+If a string is found in the currently selected message catalogs for
+<PARAMETER>msgid</PARAMETER>, then a pointer to that string shall be returned.
+Otherwise, a pointer to <PARAMETER>msgid</PARAMETER> shall be returned.
+</PARA>
+<PARA>
+Applications shall not modify the string returned by <FUNCTION>
+gettext</FUNCTION>.
 </PARA>
 </REFSECT1>
-
 <REFSECT1>
 <TITLE>Errors</TITLE>
+<PARA>None.</PARA>
 <PARA>
-<FUNCTION>gettext</FUNCTION> does not modify the global variable 
+The <FUNCTION>gettext</FUNCTION> function shall not modify 
 <VARNAME>errno</VARNAME>.
 </PARA>
 </REFSECT1>
@@ -10125,7 +10269,7 @@ function is called.
 <REFSECT1>
 <TITLE>See Also</TITLE>
 <PARA>
-<ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
+dgettext, ngettext, 
 dngettext, dcgettext, dcngettext, textdomain,
 bindtextdomain, bind_textdomain_codeset
 </PARA>
@@ -10142,7 +10286,7 @@ bindtextdomain, bind_textdomain_codeset
 <REFNAME>getutent
 </REFNAME>
 <REFPURPOSE>
-access utmp file entries	
+access user accounting database file entries	
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -10170,9 +10314,8 @@ access utmp file entries
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>getutent</FUNCTION> reads a line from the current file 
-position in the <FILENAME>utmp</FILENAME> file. It returns a 
-pointer to a structure containing the fields of the line.
+The <FUNCTION>getutent</FUNCTION> function shall read the
+next entry from the user accounting database.
 </PARA>
 </REFSECT1>
 
@@ -10180,8 +10323,13 @@ pointer to a structure containing the fields of the line.
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>getutent</FUNCTION> returns a pointer to a static struct 
-<STRUCTNAME>utmp</STRUCTNAME>.
+Upon successful completion, <function>getutent</function>
+shall return a 
+pointer to a <structname>utmp</structname> structure containing a copy
+of the requested entry in the user accounting database.
+Otherwise, a null pointer shall be returned. The return value may point
+to a static area which is overwritten by a subsequent call to
+<function>getutid</function> or <function>getutline</function>.
 </PARA>
 </REFSECT1>
 
@@ -10189,8 +10337,7 @@ pointer to a structure containing the fields of the line.
 <TITLE>Errors
 </TITLE>
 <PARA>
-On error, <EMPHASIS>(struct utmp*)</EMPHASIS><LITERAL>0</LITERAL> 
-is returned.
+None defined.
 </PARA>
 </REFSECT1>
 
@@ -10199,10 +10346,16 @@ is returned.
 Files
 </TITLE>
 <PARA>
+<SIMPLELIST>
+<MEMBER>
 <FILENAME>/var/run/utmp</FILENAME> database of currently logged-in users
-</PARA>
-<PARA>
+</MEMBER>
+<!--
+<MEMBER>
 <FILENAME>/var/log/wtmp</FILENAME> database of past user logins
+</MEMBER>
+-->
+</SIMPLELIST>
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -10217,7 +10370,7 @@ Files
 <REFNAME>getutent_r
 </REFNAME>
 <REFPURPOSE>
-access utmp file entries
+access user accounting database entries
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -10227,12 +10380,12 @@ access utmp file entries
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>getutent_r</FUNCTION></FUNCDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>utmp</STRUCTNAME> 
-  <PARAMETER>*__buffer</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*buffer</PARAMETER></FUNCPARAMS></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>utmp</STRUCTNAME> 
-  <PARAMETER>**__result</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>**result</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -10244,9 +10397,22 @@ access utmp file entries
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>getutent_r</FUNCTION> is a reentrant version of the 
-<FUNCTION>getutent</FUNCTION> <STRUCTNAME>utmp</STRUCTNAME> 
-file handler.
+The <FUNCTION>getutent_r</FUNCTION> function is a reentrant version of the 
+<FUNCTION>getutent</FUNCTION> function.
+On entry, <parameter>buffer</parameter> should point to a user supplied
+buffer to which the next entry in the database will be copied, and
+<parameter>result</parameter> should point to a location where the
+result will be stored.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <function>getutent_r</function> shall return 0 and set
+the location referenced by <parameter>result</parameter> to a pointer
+to <parameter>buffer</parameter>. Otherwise, <function>getutent_r</function>
+shall return <constant>-1</constant> and set the location referenced
+by <parameter>result</parameter> to <constant>NULL</constant>.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -10439,8 +10605,10 @@ initialize the supplementary group access list
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>initgroups</FUNCTION> initializes the group access 
-list by reading the group database and using all groups of which 
+If the process has appropriate privilege,
+the <FUNCTION>initgroups</FUNCTION> function shall initialize the 
+Supplementary Group IDs for the current process
+by reading the group database and using all groups of which 
 <PARAMETER>user</PARAMETER> is a member. The additional group 
 <PARAMETER>group</PARAMETER> is also added to the list.
 </PARA>
@@ -10482,6 +10650,13 @@ Insufficient memory to allocate group information structure.
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA>
+<FUNCTION>setgroups</FUNCTION>
+</PARA>
 </REFSECT1>
 
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -10532,15 +10707,15 @@ control device
 <TITLE>Description
 </TITLE>
 <PARA>
-The <FUNCTION>ioctl()</FUNCTION> function shall manipulate the underlying device 
+The <FUNCTION>ioctl</FUNCTION> function shall manipulate the underlying device 
 parameters of special files. <PARAMETER>d</PARAMETER> shall be 
 an open file descriptor referring to a special file.
-The <FUNCTION>ioctl()</FUNCTION> function shall take three parameters;
+The <FUNCTION>ioctl</FUNCTION> function shall take three parameters;
 the type and value of the third parameter 
 is dependent on the device and <PARAMETER>request</PARAMETER>.
 </PARA>
 <PARA>
-An application may not call <FUNCTION>ioctl</FUNCTION> except for 
+Conforming LSB applications may not call <FUNCTION>ioctl</FUNCTION> except for 
 situations explicitly stated in this specification.
 </PARA>
 
@@ -10664,19 +10839,20 @@ socket ioctl commands
 <TITLE>Description
 </TITLE>
 <PARA>
-Socket <EMPHASIS>ioctl</EMPHASIS> commands are a subset of the 
+Socket <function>ioctl</function> commands are a subset of the 
 <FUNCTION>ioctl</FUNCTION> calls, which can perform a variety of 
 functions on sockets. <PARAMETER>sockfd</PARAMETER> shall contain 
 the value of a file descriptor that was created with the 
 <FUNCTION>socket</FUNCTION> or <FUNCTION>accept</FUNCTION> calls.
 </PARA>
 <PARA>
-Socket <EMPHASIS>ioctl</EMPHASIS> commands apply to the underlying 
+Socket <function>ioctl</function> commands apply to the underlying 
 network interfaces, and affect the entire system, not just the file 
 descriptor used to issue the <FUNCTION>ioctl</FUNCTION>.
 </PARA>
 <PARA>
-The following <FUNCTION>ioctl</FUNCTION>s are provided:
+The following values for <parameter>request</parameter>
+are accepted:
 </PARA>
 <VARIABLELIST>
 
@@ -10687,33 +10863,34 @@ SIOCGIFCONF
 <LISTITEM>
 <PARA>
 Gets the interface configuration list for the system.
-<FOOTNOTE>
+<NOTE>
 <PARA>
 <SYMBOL>SIOCGIFCONF</SYMBOL> is similar to the 
 <FUNCTION>if_nameindex</FUNCTION> family found in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 3</CITETITLE> or the <FUNCTION>getifaddrs</FUNCTION> 
-family found in <ACRONYM>BSD</ACRONYM>.
+<XREF LINKEND=STD.SUSv3>
+or the <FUNCTION>getifaddrs</FUNCTION> 
+family found in <ACRONYM>BSD</ACRONYM> derived systems.
 </PARA>
-</FOOTNOTE>
+</NOTE>
 <PARAMETER>argp</PARAMETER> is a pointer to a
-<STRUCTNAME>ifconf</STRUCTNAME> structure. Before calling, the caller 
+<STRUCTNAME>ifconf</STRUCTNAME> structure, as described in
+<filename>&lt;net/if.h&gt;</filename>. Before calling, the caller 
 shall allocate the <STRUCTFIELD>ifc_ifcu.ifcu_req</STRUCTFIELD> field 
 to point to an array of <STRUCTNAME>ifreq</STRUCTNAME> structures, and 
-set <STRUCTFIELD>if_len</STRUCTFIELD> to the size of this allocated 
-array (in bytes). Upon return, <STRUCTFIELD>if_len</STRUCTFIELD> 
-will contain the amount of the array which was actually used (again, 
-in bytes).  If it is the same as the length upon calling, the caller 
+set <STRUCTFIELD>ifc_len</STRUCTFIELD> to the size in bytes of this allocated 
+array. Upon return, <STRUCTFIELD>ifc_len</STRUCTFIELD> 
+will contain the size in bytes of the array which was actually used.
+If it is the same as the length upon calling, the caller 
 should assume that the array was too small and try again with a 
 larger array.
 </PARA>
 <PARA>
 On success, <SYMBOL>SIOCGIFCONF</SYMBOL> can return any nonnegative value.
-<FOOTNOTE>
+<NOTE><TITLE>Rationale</TITLE>
 <PARA>
 Historical UNIX systems disagree on the meaning of the return value.
 </PARA>
-</FOOTNOTE>
+</NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10741,7 +10918,7 @@ SIOCGIFADDR
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface address list for the system. 
+Gets the interface address for the given interface.
 <PARAMETER>argp</PARAMETER> is a pointer to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -10758,7 +10935,7 @@ SIOCGIFNETMASK
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the network mask for the indicated interface. 
+Gets the network mask for the given interface. 
 <PARAMETER>argp</PARAMETER> is a pointer to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -10776,25 +10953,29 @@ FIONREAD
 <LISTITEM>
 <PARA>
 Returns the amount of queued unread data in the receive buffer.
-Argument is a pointer to  an  integer where the result is to be placed.
+Argument is a pointer to an integer where the result is to be placed.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 </VARIABLELIST>
 
+<!--
 <PARA>
 The <STRUCTNAME>sockaddr</STRUCTNAME> structure is as specified in 
-the <CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>.
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
-
+-->
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
+On success, if <parameter>request</parameter> is
+<TOKEN>SIOCGIFCONF</TOKEN>, a non-negative integer shall be returned.
+If request is not <TOKEN>SIOCGIFCONF</TOKEN>, on success 
+<RETURNVALUE>0</RETURNVALUE> is returned. 
 On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
 the global variable <VARNAME>errno</VARNAME> is set appropriately.
 </PARA>
@@ -10832,18 +11013,6 @@ ENOTTY
 </TERM>
 <LISTITEM>
 <PARA>
-<PARAMETER>sockfd</PARAMETER> is not associated with a character 
-special device.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-ENOTTY 
-</TERM>
-<LISTITEM>
-<PARA>
 The specified <PARAMETER>request</PARAMETER> does not apply to the kind of 
 object that the descriptor <PARAMETER>sockfd</PARAMETER> references.
 </PARA>
@@ -10856,7 +11025,8 @@ EINVAL
 </TERM>
 <LISTITEM>
 <PARA>
-<PARAMETER>request</PARAMETER> and <PARAMETER>argp</PARAMETER> are not valid.
+Either <PARAMETER>request</PARAMETER> or <PARAMETER>argp</PARAMETER>
+is invalid.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10966,6 +11136,9 @@ send a signal
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;signal.h&gt;
+</FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>kill</FUNCTION></FUNCDEF>
@@ -10981,8 +11154,9 @@ send a signal
 </TITLE>
 <PARA>
 <FUNCTION>kill</FUNCTION> is as specified in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 2</CITETITLE>, but with differences as listed below.
+<CITETITLE PUBWORK="BOOK">
+<XREF LINKEND='STD.SUSv3'>
+</CITETITLE>, but with differences as listed below.
 </PARA>
 
 <REFSECT2>
@@ -10991,7 +11165,10 @@ Version 2</CITETITLE>, but with differences as listed below.
 <PARA>
 If <PARAMETER>pid</PARAMETER> is specified as <LITERAL>-1</LITERAL>,
 <PARAMETER>sig</PARAMETER> shall not be sent to the calling process.
-<FOOTNOTE>
+Other than this, the rules in the <CITETITLE PUBWORK="BOOK">
+<XREF LINKEND='STD.SUSv3'>
+</CITETITLE> apply.
+<NOTE><TITLE>Rationale</TITLE>
 <PARA>
 This was a deliberate Linus decision after an unpopular experiment in
 including the calling process in the 2.5.1 kernel.  See "What does it
@@ -10999,9 +11176,7 @@ mean to signal everybody?", Linux Weekly News, 20 December 2001,
 <ulink url="http://lwn.net/2001/1220/kernel.php3"
 >http://lwn.net/2001/1220/kernel.php3</ulink>
 </PARA>
-</FOOTNOTE>
-Other than this, the rules in the <CITETITLE PUBWORK="BOOK">Single UNIX 
-Specification, Version 2</CITETITLE> apply.
+</NOTE>
 </PARA>
 </REFSECT2>
 
@@ -11194,7 +11369,8 @@ locate a substring
 </TITLE>
 <PARA>
 <FUNCTION>memmem</FUNCTION> finds the start of the first 
-occurrence of the substring <PARAMETER>needle</PARAMETER> 
+occurrence of the bytre array referenced by 
+<PARAMETER>needle</PARAMETER> 
 of length <PARAMETER>needlelen</PARAMETER> in the memory 
 area <PARAMETER>haystack</PARAMETER> of length 
 <PARAMETER>haystacklen</PARAMETER>.
@@ -11205,7 +11381,7 @@ area <PARAMETER>haystack</PARAMETER> of length
 </TITLE>
 <PARA>
 <FUNCTION>memmem</FUNCTION> returns a pointer to the beginning 
-of the substring, or <LITERAL>NULL</LITERAL> if the substring 
+of the byte array, or <LITERAL>NULL</LITERAL> if the byte array 
 is not found.
 </PARA>
 </REFSECT1>
@@ -11213,19 +11389,9 @@ is not found.
 <TITLE>Notes
 </TITLE>
 <PARA>
-<FUNCTION>memmem</FUNCTION> was broken in Linux libraries up to and 
-including libc 5.0.9; there the <PARAMETER>needle</PARAMETER> and 
-<PARAMETER>haystack</PARAMETER> arguments were interchanged, and a 
-pointer to the end of the first occurrence of <PARAMETER>needle</PARAMETER> 
-was returned. Since libc 5.0.9 is still widely used, this is a dangerous 
-function to use.
-</PARA>
-<PARA>
-Both old and new libc's have the bug that if <PARAMETER>needle</PARAMETER> 
-is empty, <PARAMETER>haystack</PARAMETER><EMPHASIS>-1</EMPHASIS> is returned 
-(instead of <PARAMETER>haystack</PARAMETER>). And glibc 2.0 makes it worse, 
-returning a pointer to the last byte of <PARAMETER>haystack</PARAMETER>. 
-This is fixed in glibc 2.1.
+Earlier versions of the C library contained a
+<function>memmem</function> with various problems, and application
+developers should treat this function with care.
 </PARA>
 
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -11272,11 +11438,28 @@ scan memory for a character
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>memrchr</FUNCTION> returns a pointer to the last occurrence 
-of <PARAMETER>c</PARAMETER> in the first <PARAMETER>n</PARAMETER> 
-characters of the string represented by <PARAMETER>s</PARAMETER>.
+The <FUNCTION>memrchr</FUNCTION> function shall locate the last
+occurence of <PARAMETER>c</PARAMETER> (converted to an unsigned char)
+in the initial <PARAMETER>n</PARAMETER> bytes (each interpreted as
+an unsigned char) of the object pointed to by
+<PARAMETER>s</PARAMETER>.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+The <function>memrchr</function> shall return a pointer to the located
+byte, or a null pointer if the byte does not occur in the object.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>No errors are defined.</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA><FUNCTION>memchr</FUNCTION></PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -11288,7 +11471,7 @@ characters of the string represented by <PARAMETER>s</PARAMETER>.
 <REFNAMEDIV>
 <REFNAME>ngettext</REFNAME>
 <REFPURPOSE>
-perform lookup in message catalog for the current LC_MESSAGES locale
+Search message catalogs for plural string
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -11300,7 +11483,7 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*ngettext</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*msgid1</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -11318,83 +11501,44 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>ngettext</FUNCTION> is the plural version of 
-<FUNCTION>gettext</FUNCTION>, which searches for the message 
-string using the <PARAMETER>msgid1</PARAMETER> arguments 
-as the key, using the argument <PARAMETER>n</PARAMETER> 
-to determine the plural form. If no message catalogs 
-containing a translation for <PARAMETER>msgid1</PARAMETER> 
-are found, <PARAMETER>msgid1</PARAMETER> is returned if 
-<PARAMETER>n</PARAMETER> == <LITERAL>1</LITERAL>, otherwise, 
-<PARAMETER>msgid2</PARAMETER> is returned. (See 
-<FUNCTION>gettext</FUNCTION> for more details.)
+The <FUNCTION>ngettext</FUNCTION> function shall search the currently 
+selected message catalogs for a string matching the singular string
+<PARAMETER>msgid1</PARAMETER>. If a string is located, and if
+<PARAMETER>n</PARAMETER> is 1, that string shall be returned.
+If <PARAMETER>n</PARAMETER> is not 1, a pluralized version
+(dependant on <PARAMETER>n</PARAMETER>) of the string shall be returned.
 </PARA>
+<PARA>
+The <FUNCTION>ngettext</FUNCTION> function is equivalent to
+<FUNCTION>dcngettext(NULL, msgid1, msgid2, n, LC_MESSAGES)</FUNCTION>.
+</PARA>
+
 </REFSECT1>
 <REFSECT1>
+<TITLE>Return Value</TITLE>
 
-<TITLE>Parameters</TITLE>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-msgid1
-</TERM>
-<LISTITEM>
 <PARA>
-A <LITERAL>NULL</LITERAL>-terminated string to be matched 
-in the catalogue with respect to a specific domain and the 
-current locale.  If no message catalogs are found, 
-<PARAMETER>msgid1</PARAMETER> is returned if 
-<PARAMETER>n</PARAMETER> == <LITERAL>1</LITERAL>.
+If a string is found in the currently selected message catalogs for
+<PARAMETER>msgid1</PARAMETER>, then if <PARAMETER>n</PARAMETER> is
+<CONSTANT>1</CONSTANT> a pointer to the located string shall be returned.
+If <PARAMETER>n</PARAMETER> is not <CONSTANT>1</CONSTANT>, a pointer to an
+appropriately pluralized version of the string shall be returned.
+If no message could be found in the currently selected mesage catalogs,
+then if <PARAMETER>n</PARAMETER> is <CONSTANT>1</CONSTANT>,
+a pointer to <PARAMETER>msgid1</PARAMETER> shall be returned, otherwise
+a pointer to <PARAMETER>msgid2</PARAMETER> shall be returned.
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-msgid2
-</TERM>
-<LISTITEM>
 <PARA>
-A <LITERAL>NULL</LITERAL>-terminated string to be returned 
-if no message catalogs are found and 
-<PARAMETER>n</PARAMETER> != <LITERAL>1</LITERAL>.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-n
-</TERM>
-<LISTITEM>
-<PARA>
-Determines in which plural form a message string is returned, 
-in a language and message catalog dependent way.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return</TITLE>
-<PARA>
-If the function query above succeeds with 
-<PARAMETER>msgid1</PARAMETER>, then a translated 
-<LITERAL>NULL</LITERAL>-terminated string is returned. If the 
-search fails, then the original <PARAMETER>msgid1</PARAMETER> 
-or <PARAMETER>msgid2</PARAMETER> is returned, according to 
-<PARAMETER>n</PARAMETER>.
+Applications shall not modify the string returned by <FUNCTION>
+ngettext</FUNCTION>.
 </PARA>
 </REFSECT1>
-
 <REFSECT1>
 <TITLE>Errors</TITLE>
+<PARA>None.</PARA>
 <PARA>
-<FUNCTION>ngettext</FUNCTION> will not modify the 
-<VARNAME>errno</VARNAME> global variable.
+The <FUNCTION>ngettext</FUNCTION> function shall not modify 
+<VARNAME>errno</VARNAME>.
 </PARA>
 </REFSECT1>
 
@@ -11467,12 +11611,35 @@ free an object in the obstack
 </refnamediv>
 
 <refsect1>
+<title>Synopsis</title>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+<FUNCDEF>int
+ <FUNCTION>open</FUNCTION>
+</FUNCDEF>
+<PARAMDEF>const char
+  <PARAMETER><REPLACEABLE>*path</REPLACEABLE></PARAMETER>
+</PARAMDEF>
+<PARAMDEF>int
+  <PARAMETER><REPLACEABLE>oflag</REPLACEABLE></PARAMETER>
+</PARAMDEF>
+<PARAMDEF>
+  <PARAMETER>...</PARAMETER>
+</PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</refsect1>
+<refsect1>
 <title>Description</title>
 
 <para>
-<function>open</function> is as specified in 
+The <function>open</function> function shall behave as specified in 
 <CITETITLE><XREF LINKEND="STD.SUSV3"></CITETITLE>, 
-but with differences as listed below.
+except with differences as listed below.
 </para>
 
 <refsect2>
@@ -11485,14 +11652,16 @@ Where <XREF LINKEND="STD.SUSV3"> specifies an <errorname>ENXIO</errorname>
 return, a conforming
 implementation may return either <errorname>ENXIO</errorname>
 or <errorname>ENODEV</errorname>.  Implementations are
-encouarged to return <errorname>ENXIO</errorname>.
-<footnote>
+encouraged to return <errorname>ENXIO</errorname>.
+<note>
+<TITLE>Rationale</TITLE>
 <para>
-As of spring 2004, we don't know of any Linux kernel patches to switch
-to <errorname>ENXIO</errorname>, but we believe that such a kernel patch would be accepted if
+As of spring 2004, no Linux kernel patches to switch
+to <errorname>ENXIO</errorname> are known, but it is
+believed that such a kernel patch would be accepted if
 submitted.
 </para>
-</footnote>
+</note>
 </para>
 </refsect2>
 
@@ -11567,7 +11736,7 @@ extern int <VARNAME>optind</VARNAME>;
 </TITLE>
 <PARA>
 <VARNAME>optind</VARNAME> holds the current index of the array 
-<VARNAME>argr</VARNAME>[], which contains the command line options 
+<VARNAME>argv</VARNAME>[], which contains the command line options 
 being parsed by <FUNCTION>getopt</FUNCTION>.
 </PARA>
 </REFSECT1>
@@ -11618,7 +11787,8 @@ that option character is not recognized by <FUNCTION>getopt</FUNCTION>.
 <REFNAMEDIV>
 <REFNAME>pmap_getport</REFNAME>
 <REFPURPOSE>
-Returns the port number on which a service is waiting for.
+Find the port number assigned to a service registered with a
+portmapper.
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -11630,7 +11800,7 @@ Returns the port number on which a service is waiting for.
 #include &lt;pmap_clnt.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern u_short 
+ <FUNCDEF>u_short 
   <FUNCTION>*pmap_getport</FUNCTION></FUNCDEF>
  <PARAMDEF>struct sockaddr_in
   <PARAMETER><REPLACEABLE>*address</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -11650,23 +11820,40 @@ Returns the port number on which a service is waiting for.
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>pmap_getport</FUNCTION> returns the port number on which a service 
-is waiting for.
-<FUNCTION>pmap_getport</FUNCTION> is called given the RPC program
-number <PARAMETER>program</PARAMETER>, <PARAMETER>version</PARAMETER>,
-and the transport <PARAMETER>protocol</PARAMETER> set to either
-<VARNAME>IPPROTO_UDP</VARNAME> or <VARNAME>IPPROTO_TCP</VARNAME>.  
-The pre-allocated socket <PARAMETER>address</PARAMETER> is a returned parameter.
+<XREF LINKEND="STD.RFC1833">.
+The <FUNCTION>pmap_getport</FUNCTION> function shall
+return the port number assigned to a service registered with a
+RPC Binding service running on a given target system,
+using the protocol described in
+<XREF LINKEND="STD.RFC1833">.
+The <function>pmap_getport</function> function shall be called given the
+RPC program number <parameter>program</parameter>,
+the program version <parameter>version</parameter>, and transport
+protocol <parameter>protocol</parameter>. Conforming implementations shall
+support both <constant>IPPROTO_UDP</constant> and 
+<constant>IPPROTO_TCP</constant> protocols. On entry,
+<parameter>address</parameter> shall specify the address of the 
+system on which the portmapper to be
+contacted resides. The value of <varname>address->sin_port</varname>
+shall be ignored, and the standard
+value for the portmapper port shall always be used.
 </PARA>
+<NOTE><PARA>Security and network restrictions may prevent a
+conforming application from contacting a remote RPC Binding
+Service.</PARA></NOTE>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>pmap_getport</FUNCTION> returns 0 if the mapping does not exist
-or if contact to the remote portmap service failed.  If the remote portmap
-service could not be reached, the status is left in the global variable
-<VARNAME>rpc_createerr</VARNAME>.
+On success, the <FUNCTION>pmap_getport</FUNCTION> function shall return 
+the port number in host byte order of the RPC application
+registered with the remote portmapper. On failure, 
+if either the program was not
+registered or the remote portmapper service could not be reached, 
+the <function>pmap_getport</function> function
+shall return 0. If the remote portmap service could not be reached, the status
+is left in the global variable <varname>rpc_createerr</varname>.
 </PARA>
 </REFSECT1>
 
@@ -11683,7 +11870,7 @@ service could not be reached, the status is left in the global variable
 <REFNAMEDIV>
 <REFNAME>pmap_set</REFNAME>
 <REFPURPOSE>
-Establishes mapping to machine's <FUNCTION>portmap</FUNCTION> service.
+Establishes mapping to machine's RPC Bind service.
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -11717,8 +11904,8 @@ Establishes mapping to machine's <FUNCTION>portmap</FUNCTION> service.
 <PARA>
 <FUNCTION>pmap_set</FUNCTION> establishes a mapping between the
 triple <PARAMETER>[program,version,protocol]</PARAMETER> and
-<PARAMETER>port</PARAMETER> on the machine's <FUNCTION>portmap
-</FUNCTION> service. The value of <PARAMETER>protocol</PARAMETER>
+<PARAMETER>port</PARAMETER> on the machine's RPC Bind
+service. The value of <PARAMETER>protocol</PARAMETER>
 is most likely <VARNAME>IPPROTO_UDP</VARNAME> or <VARNAME>IPPROTO_TCP
 </VARNAME>. Automatically done by <FUNCTION>svc_register</FUNCTION>.
 </PARA>
@@ -11744,7 +11931,7 @@ is most likely <VARNAME>IPPROTO_UDP</VARNAME> or <VARNAME>IPPROTO_TCP
 <REFNAMEDIV>
 <REFNAME>pmap_unset</REFNAME>
 <REFPURPOSE>
-Destroys all mapping between the triple and ports.
+Destroys RPC Binding
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -11772,11 +11959,11 @@ Destroys all mapping between the triple and ports.
 <TITLE>Description
 </TITLE>
 <PARA>
-As a user interface to the <VARNAME>portmap</VARNAME> service, 
+As a user interface to the RPC Bind service, 
 <FUNCTION>pmap_unset</FUNCTION> destroys all mapping between the triple 
 [<PARAMETER>prognum</PARAMETER>,<PARAMETER>versnum</PARAMETER>,
 <PARAMETER>*</PARAMETER>] and <VARNAME>ports</VARNAME> on the machine's 
-<VARNAME>portmap</VARNAME> service.
+RPC Bind service.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -11831,10 +12018,16 @@ extern const char *const <VARNAME>sys_siglist</VARNAME>[]
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>psignal</FUNCTION> displays a message on stderr consisting 
+The <FUNCTION>psignal</FUNCTION> function shall 
+display a message on the <varname>stderr</varname> stream.
+If <PARAMETER>s</PARAMETER> is not the null pointer, and does 
+not point to an empty string (e.g. <LITERAL>"\0"</LITERAL>), the
+message shall consist 
 of the string <PARAMETER>s</PARAMETER>, a colon, a space, and a string 
-describing the signal number <PARAMETER>sig</PARAMETER>. If 
-<PARAMETER>sig</PARAMETER> is invalid, the message displayed will 
+describing the signal number <PARAMETER>sig</PARAMETER>; otherwise
+<function>psignal</function> shall display only a message describing
+the signal number <PARAMETER>sig</PARAMETER>. If 
+<PARAMETER>sig</PARAMETER> is invalid, the message displayed shall 
 indicate an unknown signal.
 </PARA>
 <PARA>
@@ -11874,7 +12067,7 @@ generate random number
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>random_r</FUNCTION></FUNCDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>random_data</STRUCTNAME> *__restrict
   <PARAMETER>__buf</PARAMETER></FUNCPARAMS></PARAMDEF>
@@ -11955,15 +12148,26 @@ the caller, rather than being determined by the default
 <REFNAMEDIV>
 <REFNAME>setdomainname</REFNAME>
 <REFPURPOSE>
-set NIS domain name.
+set NIS domain name (DEPRECATED).
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
 #include &lt;unistd.h&gt;
-
-extern int setdomainname(char *name, size_t namelen);
-</SYNOPSIS>
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+  <FUNCDEF>int
+    <FUNCTION>setdomainname</FUNCTION>
+  </FUNCDEF>
+  <PARAMDEF>char *
+    <PARAMETER>name</PARAMETER>
+  </PARAMDEF>
+  <PARAMDEF>size_t
+    <PARAMETER>namelen</PARAMETER>
+  </PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <refsect1>
 <title>Description</title>
@@ -11977,18 +12181,39 @@ use, this function may set the domain name anyway, or it may fail.
 This call shall fail unless the caller has appropriate privileges.
 </para>
 <para>
-namelen shall be the length of the string pointed to by name.
+<PARAMETER>namelen</PARAMETER>
+shall be the length of the string pointed to by <PARAMETER>name</PARAMETER>.
 </para>
 </refsect1>
 
 <refsect1>
 <title>Return Value</title>
 <para>
-setdomainname returns 0 if successful; -1 if not (in which case errno
-is set to indicate the error).
+On success, <function>setdomainname</function> shall return
+<RETURNVALUE>0</RETURNVALUE>. Otherwise,
+it shall return <RETURNVALUE>-1</RETURNVALUE> and set <VARNAME>errno</VARNAME>
+to indicate the error.
 </para>
 </refsect1>
 
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><CONSTANT>EPERM</CONSTANT></TERM>
+<LISTITEM><PARA>The process did not have sufficient privilege to set 
+the domain name.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><CONSTANT>EINVAL</CONSTANT></TERM>
+<LISTITEM><PARA><PARAMETER>name</PARAMETER> is a null pointer.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+</REFSECT1>
 </REFENTRY>
 
 
@@ -12022,17 +12247,22 @@ set list of supplementary group IDs
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>setgroups</FUNCTION> sets the supplementary groups for 
-the process. Only the super-user may use this function.
+If the process has appropriate privilege,
+the <FUNCTION>setgroups</FUNCTION> function shall set
+the supplementary group IDs for 
+the current process. <PARAMETER>list</PARAMETER> shall reference
+an array of <PARAMETER>size</PARAMETER> group IDs. A process
+may have at most <CONSTANT>NGROUPS_MAX</CONSTANT> supplementary
+group IDs.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
+On successful completion, <RETURNVALUE>0</RETURNVALUE> is returned. 
 On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
-the global variable <VARNAME>errno</VARNAME> is set appropriately.
+the <VARNAME>errno</VARNAME> is set to indicate the error.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -12055,18 +12285,17 @@ EPERM
 </TERM>
 <LISTITEM>
 <PARA>
-The user is not the super-user.
+The process does not have appropriate privileges.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
 <TERM>
-EINVA
+EINVAL
 </TERM>
 <LISTITEM>
 <PARA>
-<PARAMETER>size</PARAMETER> is greater than <VARNAME>NGROUPS</VARNAME> 
-(32 for Linux 2.0.32).
+<PARAMETER>size</PARAMETER> is greater than <VARNAME>NGROUPS_MAX</VARNAME>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -12166,6 +12395,8 @@ set host name
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
 #include &lt;unistd.h&gt;
+#include &lt;sys/param.h.h&gt;
+#include &lt;sys/utsname.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
@@ -12182,8 +12413,21 @@ set host name
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>sethostname</FUNCTION> changes the host name of the 
-current processor.
+If the process has appropriate privileges, the
+<FUNCTION>sethostname</FUNCTION> function shall change the host name for the 
+current macine. The <PARAMETER>name</PARAMETER> shall point to a
+null-terminated string of at most <PARAMETER>len</PARAMETER> bytes
+that holds the new hostname.
+</PARA>
+<PARA>
+If the symbol <CONSTANT>HOST_NAME_MAX</CONSTANT> is defined, or if
+<FUNCTION>sysconf(_SC_HOST_NAME_MAX)</FUNCTION> returns a value greater
+than 0, this value shall represent the maximum length of the new hostname.
+Otherwise, if the symbol <CONSTANT>MAXHOSTLEN</CONSTANT> is defined, this value
+shall represent the maximum length for the new hostname. If none of these
+values are defined, the maximum length shall be the sixe of the
+<structfield>nodename</structfield> field of the
+<structname>utsname</structname> structure.
 </PARA>
 </REFSECT1>
 
@@ -12218,7 +12462,7 @@ EPERM
 </TERM>
 <LISTITEM>
 <PARA>
-the caller was not the superuser.
+the process did not have appropriate privilege.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -12237,16 +12481,31 @@ EFAULT
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Notes
+<TITLE>Rationale
 </TITLE>
 <PARA>
-The <CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 2</CITETITLE> guarantees that:
+<XREF LINKEND=STD.SUSv3>
+guarantees that:
 <BLOCKQUOTE>
 <PARA>
-Host names are limited to 255 bytes.
+Maximum length of a host name (not including the terminating null) 
+as returned from the <function>gethostname</function> function shall be at least 255 bytes.
 </PARA>
 </BLOCKQUOTE>
+</PARA>
+<PARA>
+The glibc C library does not define <CONSTANT>HOST_NAME_MAX</CONSTANT>,
+and although it provides the name <CONSTANT>_SC_HOST_NAME_MAX</CONSTANT>
+a call to <FUNCTION>sysconf</FUNCTION> returns <RETURNVALUE>-1</RETURNVALUE>
+and does not alter <varname>errno</varname> in this case (indicating that
+there is no restriction on the hostname length). However, the glibc
+manual idicates that some implementations may have 
+<CONSTANT>MAXHOSTNAMELEN</CONSTANT> as a means of detecting the maximum length,
+while the Linux kernel at release 2.4 and 2.6 stores this hostname
+in the <structname>utsname</structname> structure.
+While the glibc manual suggests simply shortening the name until
+<function>sethostname</function> succeeds, the LSB requires
+that one of the first four mechanisms works.
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -12438,17 +12697,25 @@ access utmp file entries
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>setutent</FUNCTION> rewinds the file pointer to the beginning 
-of the utmp file. It is generally a <EMPHASIS>Good Idea</EMPHASIS> to 
-call it before any of the other functions.
+The <FUNCTION>setutent</FUNCTION> function shall 
+reset the user accounting database such that the next
+call to <function>getutent</function> shall be return the first
+record in the database.
+It is recommended to
+call it before any of the other functions that operate on
+the user accounting databases (e.g.
+<function>getutent</function>,
+<function>getutid</function>,
+<function>getutline</function>, or
+<function>pututline</function>).
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Errors
+<TITLE>Return Value
 </TITLE>
 <PARA>
-On error, (struct utmp*)0 will be returned.
+None.
 </PARA>
 </REFSECT1>
 
@@ -12456,8 +12723,14 @@ On error, (struct utmp*)0 will be returned.
 <TITLE>Files
 </TITLE>
 <PARA>
+<SIMPLELIST>
+<MEMBER>
 <FILENAME>/var/run/utmp</FILENAME> database of currently logged-in users
+</MEMBER>
+<MEMBER>
 <FILENAME>/var/log/wtmp</FILENAME> database of past user logins
+</MEMBER>
+</SIMPLELIST>
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -12483,7 +12756,7 @@ build a new signal set by combining the two input sets using logical AND
 #include &lt;signal.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>sigandset</FUNCTION></FUNCDEF>
  <PARAMDEF>sigset_t 
   <PARAMETER><REPLACEABLE>*set</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -12501,10 +12774,49 @@ build a new signal set by combining the two input sets using logical AND
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>sigandset</FUNCTION> is a signal function that builds a new 
-signal set by combining the two input sets using logical AND.
+The <FUNCTION>sigandset</FUNCTION> shall combine the two signal 
+sets referenced
+by <PARAMETER>left</PARAMETER> and <PARAMETER>right</PARAMETER>,
+using a logical AND operation, and shall place the result in the location
+referenced by <PARAMETER>set</PARAMETER>,
+The resulting signal set shall contain only signals that are in both
+the set referenced by <PARAMETER>left</PARAMETER> and the set referenced by
+<PARAMETER>right</PARAMETER>.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <function>sigandset</function> shall return <returnvalue>0
+</returnvalue>. Otherise, <function>sigandset</function> shall return
+<returnvalue>-1</returnvalue> and set <varname>errno</varname> to indicate
+the error.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><CONSTANT>EINVAL</CONSTANT></TERM>
+<LISTITEM>
+<PARA>
+One or more of 
+<PARAMETER>set</PARAMETER>,
+<PARAMETER>left</PARAMETER>, or
+<PARAMETER>right</PARAMETER> was a null pointer.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA>
+<function>sigorset</function>
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -12527,6 +12839,7 @@ manipulate the signal mask
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
+#include _BSD_SOURCE
 #include &lt;signal.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
@@ -12545,13 +12858,24 @@ manipulate the signal mask
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>sigblock</FUNCTION> is made obsolete by 
-<FUNCTION>sigprocmask</FUNCTION>(2).
-</PARA>
-<PARA>
-<FUNCTION>sigblock</FUNCTION> adds the signals specified in 
+The <FUNCTION>sigblock</FUNCTION> function shall add
+the signals corresponding to the bits set in 
 <PARAMETER>mask</PARAMETER> to the set of signals currently 
 being blocked from delivery.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+The <FUNCTION>sigblock</FUNCTION> function shall return the
+previous signal mask.
+</PARA>
+
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+None.
 </PARA>
 </REFSECT1>
 
@@ -12559,9 +12883,8 @@ being blocked from delivery.
 <TITLE>Notes
 </TITLE>
 <PARA>
-Prototype for <FUNCTION>sigblock</FUNCTION> is only available if 
-<VARNAME>_BSD_SOURCE</VARNAME> is defined before the inclusion of 
-any system.
+<FUNCTION>sigblock</FUNCTION> is made obsolete by 
+<FUNCTION>sigprocmask</FUNCTION>(2).
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -12586,6 +12909,7 @@ manipulate the signal mask
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
+#define _BSD_SOURCE
 #include &lt;signal.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
@@ -12603,11 +12927,8 @@ manipulate the signal mask
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>siggetmask</FUNCTION> is made obsolete by 
-<FUNCTION>sigprocmask</FUNCTION>(2).
-</PARA>
-<PARA>
-<FUNCTION>siggetmask</FUNCTION> returns the current set of masked signals.
+The <FUNCTION>siggetmask</FUNCTION> function shall 
+return the current set of masked signals.
 </PARA>
 </REFSECT1>
 
@@ -12615,9 +12936,8 @@ manipulate the signal mask
 <TITLE>Notes
 </TITLE>
 <PARA>
-Prototype for <FUNCTION>siggetmask</FUNCTION> is only available if 
-<VARNAME>_BSD_SOURCE</VARNAME> is defined before the inclusion of 
-any system header file.
+<FUNCTION>siggetmask</FUNCTION> is made obsolete by 
+<FUNCTION>sigprocmask</FUNCTION>(2).
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -12640,7 +12960,7 @@ check for empty signal set
 #include &lt;signal.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>sigisemptyset</FUNCTION></FUNCDEF>
  <PARAMDEF>const sigset_t 
   <PARAMETER><REPLACEABLE>*set</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -12651,12 +12971,38 @@ check for empty signal set
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>sigisemptyset</FUNCTION> checks for empty signal set. It 
-returns a non-empty value if <PARAMETER>set</PARAMETER> is not empty.
+The <FUNCTION>sigisemptyset</FUNCTION> function shall
+check for empty signal set referenced by <PARAMETER>set</PARAMETER>. 
 </PARA>
 
 </REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+The <FUNCTION>sigisemptyset</FUNCTION> function shall return
+a positive non-zero value if the signal set referenced by 
+<PARAMETER>set</PARAMETER> is empty, or zero if this set is empty.
+On error, <FUNCTION>sigisemptyset</FUNCTION> shall return <returnvalue>-1
+</returnvalue> and set <varname>errno</varname> to indicate the error.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</Title>
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><CONSTANT>EINVAL</CONSTANT></TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>set</PARAMETER> is a null pointer.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+</REFSECT1>
 </REFENTRY>
+
 
 
 <REFENTRY ID="baselib-sigorset"> <REFMETA>
@@ -12666,7 +13012,7 @@ returns a non-empty value if <PARAMETER>set</PARAMETER> is not empty.
 <REFNAMEDIV>
 <REFNAME>sigorset</REFNAME>
 <REFPURPOSE>
-build a new signal set by combining the two input sets using logical or
+build a new signal set by combining the two input sets using logical OR
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -12678,7 +13024,7 @@ build a new signal set by combining the two input sets using logical or
 #include &lt;signal.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>sigorset</FUNCTION></FUNCDEF>
  <PARAMDEF>sigset_t 
   <PARAMETER><REPLACEABLE>*set</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -12696,11 +13042,49 @@ build a new signal set by combining the two input sets using logical or
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>sigorset</FUNCTION> is a signal function that builds a new 
-signal <PARAMETER>set</PARAMETER> by combining the two input sets 
-using logical or.
+The <FUNCTION>sigorset</FUNCTION> shall combine the two signal 
+sets referenced
+by <PARAMETER>left</PARAMETER> and <PARAMETER>right</PARAMETER>,
+using a logical OR operation, and shall place the result in the location
+referenced by <PARAMETER>set</PARAMETER>,
+The resulting signal set shall contain only signals that are in either
+the set referenced by <PARAMETER>left</PARAMETER> or the set referenced by
+<PARAMETER>right</PARAMETER>.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <function>sigorset</function> shall return <returnvalue>0
+</returnvalue>. Otherise, <function>sigorset</function> shall return
+<returnvalue>-1</returnvalue> and set <varname>errno</varname> to indicate
+the error.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><CONSTANT>EINVAL</CONSTANT></TERM>
+<LISTITEM>
+<PARA>
+One or more of 
+<PARAMETER>set</PARAMETER>,
+<PARAMETER>left</PARAMETER>, or
+<PARAMETER>right</PARAMETER> was a null pointer.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA>
+<function>sigorset</function>
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -12797,7 +13181,7 @@ set time
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
-#define _SVID_SOURCE  /* glibc needs this */
+#define _SVID_SOURCE
 #include &lt;time.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
@@ -12816,10 +13200,11 @@ set time
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>stime</FUNCTION> sets the system's idea of the time and date. 
-Time, pointed to by <PARAMETER>t</PARAMETER>, is measured in seconds 
-from 00:00:00 GMT January 1, 1970. <FUNCTION>stime</FUNCTION> may only 
-be executed by the super user.
+If the process has appropriate privilege, the <FUNCTION>stime</FUNCTION>
+function shall set the system's idea of the time and date. 
+Time, referenced by <PARAMETER>t</PARAMETER>, is measured in seconds 
+from the epoch (defined in
+<XREF LINKEND=STD.SUSv3> as 00:00:00 UTC January 1, 1970).
 </PARA>
 </REFSECT1>
 
@@ -12827,9 +13212,11 @@ be executed by the super user.
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
-On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
-the global variable <VARNAME>errno</VARNAME> is set appropriately.
+On success, <function>stime</function> shall return 
+<RETURNVALUE>0</RETURNVALUE>.
+Otherwise, <function>stime</function> shall return 
+<RETURNVALUE>-1</RETURNVALUE> and
+<VARNAME>errno</VARNAME> shall be set to indicate the error.
 </PARA>
 </REFSECT1>
 
@@ -12839,25 +13226,31 @@ the global variable <VARNAME>errno</VARNAME> is set appropriately.
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
+<CONSTANT>
 EPERM
+</CONSTANT>
 </TERM>
 <LISTITEM>
 <PARA>
-The caller is not the super-user.
+The process does not have appropriate privilege.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>
+EINVAL
+</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>t</PARAMETER> is a null pointer.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 </REFSECT1>
 
-<REFSECT1>
-<TITLE>Notes
-</TITLE>
-<PARA>
-Under <EMPHASIS>glibc2</EMPHASIS>, <FILENAME>time.h</FILENAME> only 
-provides a prototype when <VARNAME>_SVID_SOURCE</VARNAME> is defined.
-</PARA>
-</REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
 <!--      Version 1a, November 1998   -->
 </REFENTRY>
@@ -12883,10 +13276,10 @@ copy a string returning a pointer to its end
 <FUNCPROTOTYPE>
  <FUNCDEF>char 
   <FUNCTION>*stpcpy</FUNCTION></FUNCDEF>
- <PARAMDEF>char 
-  <PARAMETER><REPLACEABLE>*dest</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*src</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char * restrict
+  <PARAMETER><REPLACEABLE>dest</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char * restrict
+  <PARAMETER><REPLACEABLE>src</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -12897,7 +13290,8 @@ copy a string returning a pointer to its end
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>stpcpy</FUNCTION> copies the string pointed to by 
+The <FUNCTION>stpcpy</FUNCTION> function shall
+copy the string pointed to by 
 <PARAMETER>src</PARAMETER> (including the terminating '\0'
 character) to the array pointed to by <PARAMETER>dest</PARAMETER>. 
 The strings may not overlap, and the destination string 
@@ -12926,6 +13320,7 @@ This program uses <FUNCTION>stpcpy</FUNCTION> to concatenate
   int
   main (void)
   {
+    char buffer[256];
     char *to = buffer;
     to = stpcpy (to, "foo");
     to = stpcpy (to, "bar");
@@ -12962,10 +13357,10 @@ copy a fixed-size string, returning a pointer to its end
 <FUNCPROTOTYPE>
  <FUNCDEF>char 
   <FUNCTION>*stpncpy</FUNCTION></FUNCDEF>
- <PARAMDEF>char 
-  <PARAMETER><REPLACEABLE>*dest</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*src</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char * restrict
+  <PARAMETER><REPLACEABLE>dest</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char * restrict
+  <PARAMETER><REPLACEABLE>src</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>size_t 
   <PARAMETER><REPLACEABLE>n</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
@@ -12978,7 +13373,8 @@ copy a fixed-size string, returning a pointer to its end
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>stpncpy</FUNCTION> copies at most <PARAMETER>n</PARAMETER> 
+The <FUNCTION>stpncpy</FUNCTION> function
+shall copy at most <PARAMETER>n</PARAMETER> 
 characters from the string pointed to by <PARAMETER>src</PARAMETER>, 
 including the terminating <TOKEN>\0</TOKEN> character, to the array 
 pointed to by <PARAMETER>dest</PARAMETER>. Exactly <PARAMETER>n</PARAMETER>
@@ -13002,7 +13398,8 @@ The programmer shall ensure that there is room for at least
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>stpncpy</FUNCTION> returns a pointer to the terminating 
+The <FUNCTION>stpncpy</FUNCTION> function shall return
+a pointer to the terminating 
 <TOKEN>NULL</TOKEN> in <PARAMETER>dest</PARAMETER>, or, if 
 <PARAMETER>dest</PARAMETER> is not <TOKEN>NULL</TOKEN>-terminated, 
 <PARAMETER>dest</PARAMETER> + <PARAMETER>n</PARAMETER>.
@@ -13022,7 +13419,7 @@ The programmer shall ensure that there is room for at least
 <REFNAMEDIV>
 <REFNAME>strcasestr</REFNAME>
 <REFPURPOSE>
-locate a substring - ignores the case of both strings
+locate a substring ignoring case
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -13037,9 +13434,9 @@ locate a substring - ignores the case of both strings
  <FUNCDEF>char 
   <FUNCTION>*strcasestr</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*haystack</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*s1</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*needle</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*s2</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -13050,13 +13447,28 @@ locate a substring - ignores the case of both strings
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>strcasestr</FUNCTION> is similar to <FUNCTION>strstr</FUNCTION>, 
-but ignores the case of both strings.
+The <FUNCTION>strcasestr</FUNCTION> shall behave as 
+<FUNCTION>strstr</FUNCTION>, 
+except that it shall ignore the case of both strings.
+The <FUNCTION>strcasestr</FUNCTION> function shall be locale aware;
+that is <FUNCTION>strcasestr</FUNCTION> shall behave as if both
+strings had been converted to lower case in the current locale
+before the comparison is performed.
+
 </PARA>
 
 </REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+Upon successful completion, 
+<FUNCTION>strcasestr</FUNCTION> shall return a pointer to the located
+string or a null pointer if the string is not found. 
+If <PARAMETER>s2</PARAMETER> points to a string
+with zero length, the function shall return <PARAMETER>s1</PARAMETER>.
+</PARA>
+</REFSECT1>
 </REFENTRY>
-
 
 <REFENTRY ID="baselib-strerror-r"> <REFMETA>
 <REFENTRYTITLE>strerror_r</REFENTRYTITLE>
@@ -13074,7 +13486,7 @@ reentrant version of strerror
 #include &lt;string.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*strerror_r</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>errnum</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -13095,15 +13507,15 @@ returns a pointer to an error message corresponding to error number
 <PARAMETER>errnum</PARAMETER>. The returned pointer may point within 
 the buffer <PARAMETER>buf</PARAMETER> (at most 
 <PARAMETER>buflen</PARAMETER> bytes).
-<FOOTNOTE>
+<NOTE>
 <PARA>
 Note the optional use of the buffer, unlike the 
-<FUNCTION>strerror_r</FUNCTION> found in the <CITETITLE 
-PUBWORK="BOOK">Single UNIX Specification, Version 3</CITETITLE>,
+<FUNCTION>strerror_r</FUNCTION> found in 
+<XREF LINKEND=STD.SUSv3>,
 in which the message is always copied into the supplied buffer. 
 The return types also differ.
 </PARA>
-</FOOTNOTE>
+</NOTE>
 
 </PARA>
 
@@ -13183,7 +13595,7 @@ return a malloc'd copy of at most the specified number of bytes of a string
 #include &lt;string.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*strndup</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*string</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -13199,13 +13611,42 @@ return a malloc'd copy of at most the specified number of bytes of a string
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>strndup</FUNCTION> returns a 
+The <FUNCTION>strndup</FUNCTION> function shall return a 
 <FUNCTION>malloc</FUNCTION>'d copy of at most <PARAMETER>n</PARAMETER> 
-bytes of <PARAMETER>string</PARAMETER>. The resultant string is 
+bytes of <PARAMETER>string</PARAMETER>. The resultant string shall be 
 terminated even if no <TOKEN>NULL</TOKEN> terminator appears 
-before STRING[N].
+before <PARAMETER>string</PARAMETER>+<PARAMETER>n</PARAMETER>.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <function>strndup</function> shall return a pointer to a newly
+allocated block of memory containing a copy of at most <parameter>n</parameter>
+bytes of <parameter>string</parameter>. Otherwise, <function>strndup</function>
+shall return <returnvalue>NULL</returnvalue> and set <varname>errno</varname>
+to indicate the error.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>
+ENOMEM
+</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+Insufficient memory available.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </REFSECT1>
 </REFENTRY>
 
@@ -13287,17 +13728,17 @@ parse a time string
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>strptime</FUNCTION> is as specified in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 2</CITETITLE> with differences as listed below.
+The <FUNCTION>strptime</FUNCTION> shall behave as specified in the
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND=STD.SUSv3>
+</CITETITLE> with differences as listed below.
 </PARA>
 
 <REFSECT2>
-<TITLE>Number of leading zeroes limited
+<TITLE>Number of leading zeroes may be limited
 </TITLE>
 <PARA>
-The <CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 2</CITETITLE> specifies fields for which "leading zeros are
+The <CITETITLE PUBWORK="BOOK"><XREF LINKEND=STD.SUSv3>
+</CITETITLE> specifies fields for which "leading zeros are
 permitted but not required"; however, applications shall not expect to 
 be able to supply more leading zeroes for these fields than would be 
 implied by the range of the field. Implementations may choose to 
@@ -13326,11 +13767,15 @@ as it would be perverse to parse that date as November 12, year 26.
 The second pattern parses it as December 26, year 11.
 </PARA>
 <PARA>
-The <CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE> is 
+The <CITETITLE PUBWORK="BOOK"><XREF LINKEND=STD.SUSv3></CITETITLE> is 
 not explicit that an unlimited number of leading zeroes are required, 
 although it may imply this. The <ACRONYM>LSB</ACRONYM> explicitly 
 allows implementations to have either behavior. Future versions of this 
 standard may require implementations to forbid excess leading zeroes.
+</PARA>
+<PARA>
+An Interpretation Request is
+currently pending against <XREF LINKEND=STD.SUSV3> for this matter.
 </PARA>
 </REFSECT1>
 
@@ -13371,19 +13816,27 @@ extract token from string
 <TITLE>Description
 </TITLE>
 <PARA>
+The <FUNCTION>strsep</FUNCTION> function shall find the first token
+in the string referencd by the pointer <PARAMETER>stringp</PARAMETER>,
+using the characters in <PARAMETER>delim</PARAMETER> as delimiters.
+</PARA>
+<PARA>
 If <PARAMETER>stringp</PARAMETER> is <TOKEN>NULL</TOKEN>, 
-<FUNCTION>strsep</FUNCTION> returns <RETURNVALUE>NULL</RETURNVALUE> 
-and does nothing else. 
+<FUNCTION>strsep</FUNCTION> shall return <RETURNVALUE>NULL</RETURNVALUE> 
+and do nothing else. 
 </PARA>
 <PARA>
 If <PARAMETER>stringp</PARAMETER> is non-<TOKEN>NULL</TOKEN>, 
-<FUNCTION>strsep</FUNCTION> finds the first token in the 
-<PARAMETER>stringp</PARAMETER>, where tokens are delimited by symbols 
-in the string <PARAMETER>delim</PARAMETER>. This token is terminated 
-with a <TOKEN>\0</TOKEN> character (by overwriting the delimiter) and 
-<PARAMETER>stringp</PARAMETER> is updated to point past the token. In 
+<FUNCTION>strsep</FUNCTION> shall find the first token in the 
+string referenced by
+<PARAMETER>stringp</PARAMETER>, where tokens are delimited by characters 
+in the string <PARAMETER>delim</PARAMETER>. This token shall be terminated 
+with a <TOKEN>\0</TOKEN> character by overwriting the delimiter, and 
+<PARAMETER>stringp</PARAMETER> shall be updated to point past the token. In 
 case no delimiter was found, the token is taken to be the entire string 
-<PARAMETER>stringp</PARAMETER>, and <PARAMETER>stringp</PARAMETER> is 
+referenced by
+<PARAMETER>stringp</PARAMETER>, and the location referenced by
+<PARAMETER>stringp</PARAMETER> is 
 made <TOKEN>NULL</TOKEN>.
 </PARA>
 </REFSECT1>
@@ -13391,27 +13844,25 @@ made <TOKEN>NULL</TOKEN>.
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>strsep</FUNCTION> returns a pointer to the token, that is, 
-it returns the original value of <PARAMETER>stringp</PARAMETER>.
+<FUNCTION>strsep</FUNCTION> shall return a pointer to the 
+beginning of the token.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Notes
 </TITLE>
 <PARA>
-<FUNCTION>strsep</FUNCTION> was introduced as a replacement for 
+The <FUNCTION>strsep</FUNCTION> function was introduced as a replacement for 
 <FUNCTION>strtok</FUNCTION>, since the latter cannot handle empty 
 fields. However, <FUNCTION>strtok</FUNCTION> conforms to 
 <EMPHASIS>ANSI-C</EMPHASIS> and hence is more portable.
 </PARA>
 </REFSECT1>
 <REFSECT1>
-<TITLE>Bugs
+<TITLE>See Also
 </TITLE>
 <PARA>
-<FUNCTION>strsep</FUNCTION> suffers from the same problems as 
-<FUNCTION>strtok</FUNCTION>. In particular, 
-<FUNCTION>strsep</FUNCTION> modifies the original string. Avoid it.
+<FUNCTION>strtok</FUNCTION>, <FUNCTION>strtok_r</FUNCTION>. 
 </PARA>
 
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -13459,14 +13910,16 @@ extern const char * const <VARNAME>sys_siglist</VARNAME>[];
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>strsignal</FUNCTION> returns a string describing the signal 
-number <PARAMETER>sig</PARAMETER>. The string can only be used until 
-the next call to <FUNCTION>strsignal</FUNCTION>.
+The <FUNCTION>strsignal</FUNCTION> function shall return a pointer to
+a string describing the signal 
+number <PARAMETER>sig</PARAMETER>. 
+The string can only be used until the next call to <function>strsignal
+</function>.
 </PARA>
 <PARA>
 The array <VARNAME>sys_siglist</VARNAME> holds the signal description 
-strings indexed by signal number. <FUNCTION>strsignal</FUNCTION> should 
-be used if possible instead of this array.
+strings indexed by signal number. This array should not be accessed 
+directly by applications.
 </PARA>
 </REFSECT1>
 
@@ -13474,10 +13927,16 @@ be used if possible instead of this array.
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>strsignal</FUNCTION> returns the appropriate description 
-string, or an unknown signal message if the signal number is invalid. 
-On some systems (but not on Linux), a <RETURNVALUE>NULL</RETURNVALUE> 
-pointer may be returned instead for an invalid signal number.
+If <PARAMETER>sig</PARAMETER> is a valid signal number,
+<FUNCTION>strsignal</FUNCTION> shall return a pointer to
+the appropriate description 
+string. Otherwise, <FUNCTION>strsignal</FUNCTION> shall return
+either a pointer to the string <LITERAL>"unknown signal"</LITERAL>, or
+a null pointer.
+</PARA>
+<PARA>
+Although the function is not declared as returning a pointer to a constant
+character string, applications shall not modify the returned string.
 </PARA>
 
 
@@ -13809,7 +14268,7 @@ compare strings holding name and indices/version numbers
 #include &lt;string.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>strverscmp</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*s1</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -13841,7 +14300,7 @@ numbers.
 <REFNAMEDIV>
 <REFNAME>svc_register</REFNAME>
 <REFPURPOSE>
-Associates program and versnum with the service dispatch procedure, dispatch.
+Register Remote Procedure Call Interface
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -13875,30 +14334,39 @@ Associates program and versnum with the service dispatch procedure, dispatch.
 <TITLE>Description
 </TITLE>
 <PARA>
-Associates <PARAMETER>prognum</PARAMETER> and <PARAMETER>versnum</PARAMETER>
+The <FUNCTION>svc_register</FUNCTION> function shall associate
+the program identified by <PARAMETER>prognum</PARAMETER> at version
+<PARAMETER>versnum</PARAMETER>
 with the service dispatch procedure, <PARAMETER>dispatch</PARAMETER>.
 If <PARAMETER>protocol</PARAMETER> is zero, the service is not registered with the
 <VARNAME>portmap</VARNAME> service.  If <PARAMETER>protocol</PARAMETER> is
 non-zero, then a mapping of the triple [<PARAMETER>prognum</PARAMETER>,
-<PARAMETER>versnum</PARAMETER>,<PARAMETER>protocol</PARAMETER>] to 
+<PARAMETER>versnum</PARAMETER>, <PARAMETER>protocol</PARAMETER>] to 
 <VARNAME>xprt->xp_port</VARNAME> is established with the local 
-<VARNAME>portmap</VARNAME> service (generally <PARAMETER>protocol</PARAMETER> is
-zero, <VARNAME>IPPROTO_UDP</VARNAME> or <VARNAME>IPPROTO_TCP</VARNAME>).  The
+<VARNAME>portmap</VARNAME> service.  The
 procedure <PARAMETER>dispatch</PARAMETER> has the following form:
 </PARA>
-<PARA>
-<VARNAME>
-dispatch(request, xprt)
-struct svc_req *request;
-SVCXPRT *xprt;
-</VARNAME>
-</PARA>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+<FUNCDEF>int
+<FUNCTION>dispatch</FUNCTION></FUNCDEF>
+<PARAMDEF>struct svc_req *
+<PARAMETER>request</PARAMETER>
+</PARAMDEF>
+<PARAMDEF>SVCXPRT *
+<PARAMETER>xprt</PARAMETER>
+</PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>svc_register</FUNCTION> returns 1 if it succeeds, and zero otherwise.
+<FUNCTION>svc_register</FUNCTION> returns 
+<RETURNVALUE>1</RETURNVALUE> if it succeeds, and 
+<RETURNVALUE>zero</RETURNVALUE> 
+otherwise.
 </PARA>
 </REFSECT1>
 
@@ -14163,8 +14631,8 @@ other children.
 </TITLE>
 <PARA>
 The fact that <FUNCTION>system</FUNCTION> ignores interrupts is often 
-not what a program wants. The <CITETITLE PUBWORK="BOOK">Single UNIX 
-Specification</CITETITLE> describes some of the consequences; an 
+not what a program wants. <XREF LINKEND=STD.SUSv3>
+describes some of the consequences; an 
 additional consequence is that a program calling <FUNCTION>system</FUNCTION> 
 from a loop cannot be reliably interrupted. Many programs will want to use 
 the <FUNCTION>exec</FUNCTION>(3) family of functions instead.
@@ -14209,7 +14677,7 @@ the global variable <VARNAME>errno</VARNAME> to make sure.
 <REFNAMEDIV>
 <REFNAME>textdomain</REFNAME>
 <REFPURPOSE>
-set the current default message catalog
+set the current default message domain
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -14221,7 +14689,7 @@ set the current default message catalog
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*textdomain</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -14235,10 +14703,20 @@ set the current default message catalog
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>textdomain</FUNCTION> sets the current default message 
-catalog to <PARAMETER>domainname</PARAMETER>, which remains valid 
-across subsequent calls to <FUNCTION>setlocale</FUNCTION>, and 
-<FUNCTION>gettext</FUNCTION>.
+The <FUNCTION>textdomain</FUNCTION> function shall set
+the current default message 
+domain to <PARAMETER>domainname</PARAMETER>. 
+Subsequent calls to <FUNCTION>gettext</FUNCTION> and 
+<FUNCTION>ngettext</FUNCTION> use the default message domain.
+</PARA>
+
+<PARA>
+If <PARAMETER>domainname</PARAMETER> is <TOKEN>NULL</TOKEN>, 
+the default message domain shall not be altered.
+</PARA>
+<PARA>
+If <PARAMETER>domainname</PARAMETER> is "", <FUNCTION>textdomain</FUNCTION>
+shall reset the default domain to the system default of "messages". 
 </PARA>
 
 </REFSECT1>
@@ -14246,16 +14724,9 @@ across subsequent calls to <FUNCTION>setlocale</FUNCTION>, and
 <REFSECT1>
 <TITLE>Return</TITLE>
 <PARA>
-On success, <FUNCTION>textdomain</FUNCTION> returns the currently 
-selected domain. On error, a <TOKEN>NULL</TOKEN> pointer is returned.
-</PARA>
-<PARA>
-If <PARAMETER>domainname</PARAMETER> is <TOKEN>NULL</TOKEN>, 
-<FUNCTION>textdomain</FUNCTION> returns the current default.
-</PARA>
-<PARA>
-If <PARAMETER>domainname</PARAMETER> is "", reset to the default of 
-"messages". 
+On success, <FUNCTION>textdomain</FUNCTION> shall return the currently 
+selected domain. Otherwise, a null pointer shall be returned, and
+<VARNAME>errno</VARNAME> set to indicate the error.
 </PARA>
 </REFSECT1>
 
@@ -14264,11 +14735,11 @@ If <PARAMETER>domainname</PARAMETER> is "", reset to the default of
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-ENOMEM
+<CONSTANT>ENOMEM</CONSTANT>
 </TERM>
 <LISTITEM>
 <PARA>
-The function may have failed if there was "insufficent memory available."
+Insufficent memory available.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -14322,13 +14793,14 @@ instead of <ERRORNAME>EPERM</ERRORNAME> as specified by
 <CITETITLE PUBWORK="BOOK">
 <XREF LINKEND="STD.SUSV3">
 </CITETITLE>.
-<FOOTNOTE>
+<NOTE>
+<TITLE>Rationale</TITLE>
 <PARA>
 The Linux kernel has deliberately chosen <ERRORNAME>EISDIR</ERRORNAME> 
 for this case and does not expect to change (Al Viro, personal 
 communication).
 </PARA>
-</FOOTNOTE>
+</NOTE>
 </PARA>
 </REFSECT2>
 
@@ -14342,7 +14814,7 @@ communication).
 <REFNAMEDIV>
 <REFNAME>vasprintf</REFNAME>
 <REFPURPOSE>
-write formatted output to a string dynamically allocated with malloc and store the address of the string
+write formatted output to a dynamically allocated string
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -14351,16 +14823,17 @@ write formatted output to a string dynamically allocated with malloc and store t
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
+#include &lt;stdarg.h&gt;
 #include &lt;stdio.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>vasprintf</FUNCTION></FUNCDEF>
- <PARAMDEF>char **restrict 
+ <PARAMDEF>char ** restrict 
   <PARAMETER><REPLACEABLE>ptr</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char *restrict 
-  <PARAMETER><REPLACEABLE>f</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>G_va_list 
+ <PARAMDEF>const char * restrict 
+  <PARAMETER><REPLACEABLE>format</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>va_list 
   <PARAMETER><REPLACEABLE>arg</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
@@ -14372,14 +14845,33 @@ write formatted output to a string dynamically allocated with malloc and store t
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>vasprintf</FUNCTION> writes formatted output to a string 
-dynamically allocated with <FUNCTION>malloc</FUNCTION>, and stores 
-the address of the string in <PARAMETER>ptr</PARAMETER>.
+The <FUNCTION>vasprintf</FUNCTION> function shall write
+formatted output to a 
+dynamically allocated string, and store
+the address of taht string in the location
+referenced by <PARAMETER>ptr</PARAMETER>.
+It shall behave as <FUNCTION>asprintf</FUNCTION>,
+except that instead of being called with a variable number
+of arguments, it is called with an argument list as defined
+by <FILENAME>&lt;stdarg.h&gt;</FILENAME>.
 </PARA>
 
 </REFSECT1>
-</REFENTRY>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+Refer to <FUNCTION>fprintf</FUNCTION>.
+</PARA>
+</REFSECT1>
 
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+Refer to <FUNCTION>fprintf</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+</REFENTRY>
 
 <REFENTRY ID="baselib-vdprintf"> <REFMETA>
 <REFENTRYTITLE>vdprintf</REFENTRYTITLE>
@@ -14400,13 +14892,13 @@ write formatted output to a file descriptor
 #include &lt;stdio.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>vdprintf</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>fd</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char *restrict 
-  <PARAMETER><REPLACEABLE>fmt</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>G_va_list 
+ <PARAMDEF>const char * restrict 
+  <PARAMETER><REPLACEABLE>format</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>va_list 
   <PARAMETER><REPLACEABLE>arg</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
@@ -14418,9 +14910,24 @@ write formatted output to a file descriptor
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>vdprintf</FUNCTION> writes formatted output to a file descriptor.
+The <FUNCTION>vdprintf</FUNCTION> shall behave as 
+<FUNCTION>vfprintf</FUNCTION>, except that the first argument
+is a file descriptor rather than a STDIO stream.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+Refer to <FUNCTION>fprintf</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+Refer to <FUNCTION>fprintf</FUNCTION>.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -14432,13 +14939,14 @@ write formatted output to a file descriptor
 <REFNAMEDIV>
 <REFNAME>verrx
 </REFNAME>
-<REFPURPOSE>display formatted error messages
+<REFPURPOSE>display formatted error message and exit
 </REFPURPOSE>
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
+#include &lt;stdarg.h&gt;
 #include &lt;err.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
@@ -14458,16 +14966,27 @@ write formatted output to a file descriptor
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>verrx</FUNCTION> displays a formatted error message on the 
-standard error output. The last component of the program name, a 
-colon character, and a space are output. 
-If <PARAMETER>fmt</PARAMETER> is not <TOKEN>NULL</TOKEN>, the formatted 
-error message, a colon, and a space are 
-output. The output is followed by a newline character.
+The <FUNCTION>verrx</FUNCTION> shall behave as <FUNCTION>errx</FUNCTION>
+except that instead of being called with a variable number
+of arguments, it is called with an argument list as defined by
+<FILENAME>&lt;stdarg.h&gt;</FILENAME>.
 </PARA>
 <PARA>
 <FUNCTION>verrx</FUNCTION> does not return, but exits with the value 
 of <PARAMETER>eval</PARAMETER>.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+None.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+None.
 </PARA>
 </REFSECT1>
 <!--      4th Berkeley Distribution        June 9, 1993           -->
@@ -14490,6 +15009,10 @@ log to system log
 
 <REFSYNOPSISDIV>
 <FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;stdarg.h&gt;
+#include &lt;syslog.h&gt;
+</FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>void 
   <FUNCTION>vsyslog</FUNCTION></FUNCDEF>
@@ -14507,15 +15030,12 @@ log to system log
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>vsyslog</FUNCTION> is identical to <FUNCTION>syslog</FUNCTION> 
-as specified in the <CITETITLE PUBWORK="BOOK">Single UNIX 
-Specification</CITETITLE>, except that <PARAMETER>arglist</PARAMETER> 
+The <FUNCTION>vsyslog</FUNCTION> function
+is identical to <FUNCTION>syslog</FUNCTION> 
+as specified in <XREF LINKEND=STD.SUSv3>,
+except that <PARAMETER>arglist</PARAMETER> 
 (as defined by <FILENAME>stdarg.h</FILENAME>) replaces the variable 
 number of arguments.
-</PARA>
-<PARA>
-The caller is responsible for running <FUNCTION>va_end</FUNCTION> 
-after calling <FUNCTION>vsyslog</FUNCTION>.
 </PARA>
 </REFSECT1>
 
@@ -14536,16 +15056,16 @@ wait for child process
 <TITLE>Description</TITLE>
 <PARA>
 <FUNCTION>wait3</FUNCTION> is as specified in the 
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, Version 2</CITETITLE>, 
+<XREF LINKEND=STD.SUSv2>
 but with differences as listed below.
 </PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Notes</TITLE>
+<REFSECT2>
+<TITLE><SYMBOL>WCONTINUED</SYMBOL> and <SYMBOL>WIFCONTINUED</SYMBOL> optional</TITLE>
 <PARA>
 Implementations need not support the functionality of 
 <SYMBOL>WCONTINUED</SYMBOL> or <SYMBOL>WIFCONTINUED</SYMBOL>.
 </PARA>
+</REFSECT2>
 </REFSECT1>
 </REFENTRY>
 
@@ -14688,13 +15208,13 @@ If status is not <TOKEN>NULL</TOKEN>, <FUNCTION>wait4</FUNCTION>
 stores status information in the location 
 <PARAMETER>status</PARAMETER>. This status can be evaluated with the 
 following macros:
-<FOOTNOTE>
+<NOTE>
 <PARA>
-These macros take the <VARNAME>stat</VARNAME> buffer (an 
+These macros take the <VARNAME>status</VARNAME> value (an 
 <LITERAL>int</LITERAL>) as an argument -- not a pointer to the 
-buffer!
+value!
 </PARA>
-</FOOTNOTE>
+</NOTE>
 </PARA>
 <VARIABLELIST>
 <VARLISTENTRY>
@@ -14847,13 +15367,14 @@ wait for child process
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<FUNCTION>waitpid</FUNCTION> is as specified in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>,
+<FUNCTION>waitpid</FUNCTION> is as specified in 
+<XREF LINKEND=STD.SUSv3>,
 but with differences as listed below.
 </PARA>
 
 <REFSECT2>
-<TITLE>Need not support <FUNCTION>WCONTINUED</FUNCTION></TITLE>
+<TITLE>Need not support <SYMBOL>WCONTINUED</SYMBOL> or
+<SYMBOL>WIFCONTINUED</SYMBOL></TITLE>
 <PARA>
 Implementations need not support the functionality of 
 <FUNCTION>WCONTINUED</FUNCTION> or <FUNCTION>WIFCONTINUED</FUNCTION>.
@@ -14900,14 +15421,18 @@ formatted error messages
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>warn</FUNCTION> displays a formatted error message on the 
-standard error output. The last component of the program name, a 
-colon character, and a space are output. 
-If <PARAMETER>fmt</PARAMETER> is not <TOKEN>NULL</TOKEN>, the formatted 
-error message, a colon, and space are 
-output. The error message string affiliated with the current value of 
-the global variable <VARNAME>errno</VARNAME> is output. The output is 
-followed by a newline character.
+The <FUNCTION>warn</FUNCTION> function
+shall display a formatted error message on the standard
+error stream.
+The output shall consist of the last component of the program name, a colon
+character, and a space character. If <PARAMETER>fmt</PARAMETER> is non-NULL, it shall be used as a
+format string for the <FUNCTION>printf</FUNCTION>
+family of functions, and the formatted message, a
+colon character, and a space are written to <VarName>stderr</VarName>.
+Finally,  the error message
+string affiliated with the current value of the global variable 
+<VarName>errno</VarName> shall be
+written to <VarName>stderr</VarName>, followed by a newline character.
 </PARA>
 </REFSECT1>
 
@@ -14915,6 +15440,19 @@ followed by a newline character.
 <!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
 <!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
 <!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+None.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+None.
+</PARA>
+</REFSECT1>
 </REFENTRY>
 
 <REFENTRY ID="baselib-warnx-3"> <REFMETA>
@@ -14948,18 +15486,33 @@ formatted error messages
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>warnx</FUNCTION> displays a formatted error message on the 
-standard error output. The last component of the program name, a 
-colon character, and a space are output. 
-If <PARAMETER>fmt</PARAMETER> is not <TOKEN>NULL</TOKEN>, the formatted 
-error message, a colon, and space are 
-output. The output is followed by a newline character.
+The <FUNCTION>warnx</FUNCTION> function shall display a formatted error message on the 
+standard error stream. The last component of the program name, a colon 
+character, and a space shall be output. If <PARAMETER>fmt</PARAMETER> is 
+non-<LITERAL>NULL</LITERAL>, it shall be used as the format string
+for the <FUNCTION>printf</FUNCTION> family of functions, and
+the formatted error message, a colon 
+character, and a space shall be output. The output shall be followed by a 
+newline character.
 </PARA>
 </REFSECT1>
 <!--        4th Berkeley Distribution        June 9, 1993    -->
 <!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
 <!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
 <!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+None.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+None.
+</PARA>
+</REFSECT1>
 </REFENTRY>
 
 <REFENTRY ID="baselib-wcpcpy-3"> <REFMETA>
@@ -15525,7 +16078,7 @@ multi-thread safe.
 <REFNAMEDIV>
 <REFNAME>wcstoq</REFNAME>
 <REFPURPOSE>
-convert initial portion of wide string NPTR to long int representation
+convert wide string to long long int representation
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -15537,11 +16090,11 @@ convert initial portion of wide string NPTR to long int representation
 #include &lt;wchar.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern long long int 
+ <FUNCDEF>long long int 
   <FUNCTION>wcstoq</FUNCTION></FUNCDEF>
- <PARAMDEF>const wchar_t *restrict 
+ <PARAMDEF>const wchar_t * restrict 
   <PARAMETER><REPLACEABLE>nptr</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>wchar_t **restrict 
+ <PARAMDEF>wchar_t ** restrict 
   <PARAMETER><REPLACEABLE>endptr</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>base</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -15555,11 +16108,25 @@ convert initial portion of wide string NPTR to long int representation
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>wcstoq</FUNCTION> converts the initial portion of the wide 
-string <PARAMETER>nptr</PARAMETER> to <LITERAL>long int</LITERAL> 
-representation.
+The <FUNCTION>wcstoq</FUNCTION> function shall convert
+the initial portion of the wide 
+string <PARAMETER>nptr</PARAMETER> to <LITERAL>long long int</LITERAL> 
+representation. It is identical to <FUNCTION>wcstoll</FUNCTION>.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+Refer to <FUNCTION>wcstoll</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+Refer to <FUNCTION>wcstoll</FUNCTION>.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -15571,7 +16138,7 @@ representation.
 <REFNAMEDIV>
 <REFNAME>wcstouq</REFNAME>
 <REFPURPOSE>
-convert initial portion of wide string NPTR to unsigned long long int representation
+convert wide string to unsigned long long int representation
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -15583,11 +16150,11 @@ convert initial portion of wide string NPTR to unsigned long long int representa
 #include &lt;wchar.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern unsigned long long int 
+ <FUNCDEF>unsigned long long int 
   <FUNCTION>wcstouq</FUNCTION></FUNCDEF>
- <PARAMDEF>const wchar_t *restrict 
+ <PARAMDEF>const wchar_t * restrict 
   <PARAMETER><REPLACEABLE>nptr</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>wchar_t **restrict 
+ <PARAMDEF>wchar_t ** restrict 
   <PARAMETER><REPLACEABLE>endptr</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>base</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -15601,11 +16168,26 @@ convert initial portion of wide string NPTR to unsigned long long int representa
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>wcstouq</FUNCTION> converts the initial portion of the wide 
+The <FUNCTION>wcstouq</FUNCTION> function shall convert
+the initial portion of the wide 
 string <PARAMETER>nptr</PARAMETER> to <LITERAL>unsigned long long 
 int</LITERAL> representation.
+It is identical to <FUNCTION>wcstoull</FUNCTION>.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+Refer to <FUNCTION>wcstoull</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+Refer to <FUNCTION>wcstoull</FUNCTION>.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -15664,7 +16246,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:23:12 2004 -->
+<!--    at Sat Sep  4 09:24:55 2004 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -16223,7 +16805,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:23:14 2004 -->
+<!--    at Sat Sep  4 09:24:56 2004 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -16603,7 +17185,7 @@ establish cancellation handlers
 #include &lt;pthread.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern void 
+ <FUNCDEF>void 
   <FUNCTION>_pthread_cleanup_pop</FUNCTION></FUNCDEF>
  <PARAMDEF>struct _pthread_cleanup_buffer *</PARAMDEF>
  <PARAMDEF>int</PARAMDEF>
@@ -16617,9 +17199,14 @@ establish cancellation handlers
 <TITLE>Description
 </TITLE>
 <PARA>
-Macro <FUNCTION>pthread_cleanup_pop</FUNCTION> defines the ABI 
-<FUNCTION>_pthread_cleanup_pop</FUNCTION> is as specified in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, Version 3</CITETITLE>.
+The <FUNCTION>_pthread_cleanup_pop</FUNCTION> function provides
+an implementation of the <function>pthread_cleanup_pop</function> macro
+described in
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>.
+</PARA>
+<PARA>
+The <function>_pthread_cleanup_pop</function> function is not in the
+source standard; it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -16644,7 +17231,7 @@ establish cancellation handlers
 #include &lt;pthread.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern void 
+ <FUNCDEF>void 
   <FUNCTION>_pthread_cleanup_push</FUNCTION></FUNCDEF>
  <PARAMDEF>struct _pthread_cleanup_buffer *</PARAMDEF>
  <PARAMDEF>void (*) (void *)</PARAMDEF>
@@ -16659,9 +17246,14 @@ establish cancellation handlers
 <TITLE>Description
 </TITLE>
 <PARA>
-Macro <FUNCTION>pthread_cleanup_push</FUNCTION> defines the ABI 
-<FUNCTION>_pthread_cleanup_push</FUNCTION> is as specified in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, Version 3</CITETITLE>.
+The <FUNCTION>_pthread_cleanup_push</FUNCTION> function provides
+an implementation of the <function>pthread_cleanup_push</function> macro
+described in
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>.
+</PARA>
+<PARA>
+The <function>_pthread_cleanup_push</function> function is not in the
+source standard; it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -16675,7 +17267,7 @@ Macro <FUNCTION>pthread_cleanup_push</FUNCTION> defines the ABI
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:23:19 2004 -->
+<!--    at Sat Sep  4 09:25:00 2004 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -16773,7 +17365,7 @@ struct _Unwind_Exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:23:15 2004 -->
+<!--    at Sat Sep  4 09:24:57 2004 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -16893,7 +17485,7 @@ in the referenced base document.
 <REFNAME>dladdr
 </REFNAME>
 <REFPURPOSE>
-library routine for dynamic linking of object files
+find the shared object containing a given address
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -16929,79 +17521,70 @@ typedef struct {
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>dladdr</FUNCTION> implements the System V dynamic linking 
-routines.
+The <FUNCTION>dladdr</FUNCTION> function shall query the dynamic
+linker for information about the shared object containing the 
+address <PARAMETER>address</PARAMETER>. The information shall be returned
+in the user supplied data structure referenced by <PARAMETER>dlip</PARAMETER>.
+</PARA>
+<PARA>
+The structure shall contain at least the following members:
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><structfield>dli_fname</structfield></TERM>
+<LISTITEM><PARA>
+The pathname of the shared object containing the address
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><structfield>dli_fbase</structfield></TERM>
+<LISTITEM><PARA>
+The base address at which the shared object is
+mapped into the address space of the calling process.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><structfield>dli_sname</structfield></TERM>
+<LISTITEM><PARA>
+The name of the nearest runtime symbol with  value
+less than or equal to <PARAMETER>address</PARAMETER>.
+Where possible, the symbol name shall be returned as it
+would appear in C source code.
+</PARA><PARA>
+If no symbol with a suitable value is found,
+both this field and <structfield>dli_saddr</structfield>
+shall be set to <LITERAL>NULL</LITERAL>.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><structfield>dli_saddr</structfield></TERM>
+<LISTITEM><PARA>
+The value of the symbol returned in
+<structfield>dli_sname</structfield>.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+<PARA>
+The behavior of <function>dladdr</function> is only
+specified in dynamically linked programs.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <function>dladdr</function> shall return non-zero, and
+the structure referenced by <parameter>dlip</parameter> shall be filled in
+as described. Otherwise, <function>dladdr</function> shall return zero,
+and the cause of the error can be fetched with <function>dlerr</function>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
-<TITLE>Return Value
-</TITLE>
+<TITLE>Errors</TITLE>
 <PARA>
-<FUNCTION>dladdr</FUNCTION> is the inverse of <FUNCTION>dlsym</FUNCTION>. 
-If <PARAMETER>address</PARAMETER> is successfully located inside a 
-module, <FUNCTION>dladdr</FUNCTION> returns a nonzero
-value, otherwise, it returns a <RETURNVALUE>0</RETURNVALUE>. 
-On success, <FUNCTION>dladdr</FUNCTION> fills in the fields of 
-<PARAMETER>dlip</PARAMETER> as follows:
-</PARA>
-
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-dli_fname
-</TERM>
-<LISTITEM>
-<PARA>
-the pathname of the module
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-dli_fbase   
-</TERM>
-<LISTITEM>
-<PARA>
-the base address of the module
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-dli_sname   
-</TERM>
-<LISTITEM>
-<PARA>
-the name of the highest addressed symbol whose address precedes the given address 
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-dli_saddr   
-</TERM>
-<LISTITEM>
-<PARA>
-the address of that symbol
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
-
-<PARA>
-Shared objects shall be linked using the <OPTION>-shared</OPTION> 
-option to the linker <COMMAND>ld(1)</COMMAND>. The linker flag 
-<OPTION>-rpath</OPTION> may be used to add a directory to the 
-default search path for shared objects and shared libraries. 
-The linker flag <OPTION>-E</OPTION> or the C compiler flag 
-<OPTION>-rdynamic</OPTION> should be used to cause the 
-application to export its symbols to the shared objects.
+See <function>dlerr</function>.
 </PARA>
 </REFSECT1>
-
 <REFSECT1>
 <TITLE>
 Environment
@@ -17009,7 +17592,7 @@ Environment
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-LD_LIBRARY_PATH
+<LITERAL>LD_LIBRARY_PATH</LITERAL>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -17144,7 +17727,7 @@ with the behavior as described in <XREF LINKEND="std.SUSv3">.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:23:17 2004 -->
+<!--    at Sat Sep  4 09:24:58 2004 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -17215,7 +17798,7 @@ underlying specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Tue Aug 17 09:23:18 2004 -->
+<!--    at Sat Sep  4 09:24:59 2004 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
@@ -17423,7 +18006,7 @@ establish the status of a user's account
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_acct_mgmt</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -17592,7 +18175,7 @@ authenticate the user
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_authenticate</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -17787,7 +18370,7 @@ change the authentication token for a given user
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_chauthtok</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -17987,7 +18570,7 @@ indicate that an authenticated session has ended
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_close_session</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -18111,7 +18694,7 @@ terminate the use of the PAM library
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_end</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -18224,7 +18807,7 @@ specify delay time to use on authentication error
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_fail_delay</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -18343,7 +18926,7 @@ obtain the value of the indicated item.
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_get_item</FUNCTION></FUNCDEF>
  <PARAMDEF>const pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -18479,7 +19062,7 @@ returns a pointer to the complete PAM environment.
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char * const 
+ <FUNCDEF>char * const 
   <FUNCTION>*pam_getenvlist</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -18577,7 +19160,7 @@ used to indicate that an authenticated session has been initiated
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_open_session</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -18701,7 +19284,7 @@ DAMAGE.
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_set_item</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -19126,7 +19709,7 @@ initialize the PAM library
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern int 
+ <FUNCDEF>int 
   <FUNCTION>pam_start</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*service_name</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -19304,7 +19887,7 @@ returns a string describing the PAM error
 #include &lt;security/pam_appl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern const char *
+ <FUNCDEF>const char *
   <FUNCTION>pam_strerror</FUNCTION></FUNCDEF>
  <PARAMDEF>pam_handle_t 
   <PARAMETER><REPLACEABLE>*pamh</REPLACEABLE></PARAMETER></PARAMDEF>
