@@ -18,14 +18,12 @@ releases of the specification.
 </PARA>
 
 include(libc.sgml)
-include(libcman.sgml)
 
 include(libm.sgml)
 
 include(libpthread.sgml)
 
 include(libdl.sgml)
-include(libdlman.sgml)
 
 include(libcrypt.sgml)
 
