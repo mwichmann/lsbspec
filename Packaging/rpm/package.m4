@@ -315,7 +315,7 @@ from its neighbors by a NUL character.
 Index records with type <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT> must always
 have a <STRUCTFIELD>count</STRUCTFIELD> of 1. The array entries in an index of
 type <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT> correspond to the locale names
-contained in the <CONSTANT>HDRTAG_HDRI18NTABLE</CONSTANT> index.
+contained in the <CONSTANT>RPMTAG_HDRI18NTABLE</CONSTANT> index.
 </PARA>
 </SECT4>
 <SECT4>
