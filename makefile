@@ -22,7 +22,7 @@ all::
 	./mkintlist -A PPC64 >intlist.PPC64.txt
 	./mkintlist -A S390 >intlist.S390.txt
 	./mkintlist -A S390X >intlist.S390X.txt
-	./mkintlist -A X86-64 >intlist.X86-64.txt
+	./mkintlist -A X86-64 >intlist.AMD64.txt
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
