@@ -31,13 +31,14 @@ print "<!--table start-->\n";
 # Skip down to the next TITLE
 #
 while(<>) {
-	if(/<TITLE>/) {
+	if(/<TITLE(\sID=".*")?>/i) {
 		$title=$_;
-		$title=~/<TITLE>(.+)<\/TITLE>/;
+		$id=$1;
+		$title=~/<TITLE.*>(.+)<\/TITLE>/i;
 		$title=$1;
 		$title=~s/std:://g;
-		$title=~s/\</&lt;/g;
-		print "<TITLE>$title</TITLE>\n";
+		# $title=~s/\</&lt;/g; -- now done in mklibspec
+		print "<TITLE$id>$title</TITLE>\n";
 		last;
 		}
 	if(/<\/SECT2>/) {
@@ -51,7 +52,7 @@ while(<>) {
 # Process each Row in the table
 #
 while(<>) {
-	if(/<\/TABLE>/) {
+	if(/<\/TABLE.*>/) {
 		#print STDERR $_;
 		print $_;
 		last;
@@ -109,9 +110,9 @@ while(<>) {
 			$lineend="";
 		}
 		#print STDERR "Entry2: $entry\n";
-		$entry=~s/\</&lt;/g;
+		# $entry=~s/\</&lt;/g; -- now done in mklibspec
 		$entry=~s/\[/&lsqb;/g;
-		$entry2=~s/\</&lt;/g;
+		# $entry2=~s/\</&lt;/g; -- now done in mklibspec
 		$entry2=~s/\[/&lsqb;/g;
 		#print STDERR "Entry3: $entry\n";
 		if( $entry ne "" ) {
@@ -148,7 +149,7 @@ while(<>) {
 		#print STDERR "Group: $1\n";
 		$group=$1;
 		$title=$1;
-		$title=~s/\</&lt;/g;
+		# $title=~s/\</&lt;/g; -- now done in mklibspec
 		print "<TITLE>$title</TITLE>\n";
 		next;
 	}
@@ -162,7 +163,7 @@ while(<>) {
 		#print STDERR "Group: $1\n";
 		$group=$1;
 		$title=$1;
-		$title=~s/\</&lt;/g;
+		# $title=~s/\</&lt;/g; -- now done in mklibspec
 		print "<TITLE>$title</TITLE>\n";
 		next;
 	}
@@ -182,6 +183,11 @@ while(<>) {
 		next;
 	}
 	if(/<!--libgroupdata-->/) {
+		print $_;
+		dotable();
+		next;
+	}
+	if(/<!--libgroupddata-->/) {
 		print $_;
 		dotable();
 		next;

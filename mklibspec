@@ -2,20 +2,38 @@
 
 use Getopt::Long;
 use Mysql;
+use IPC::Open2;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mklibspec -l <libname> -a <archname>\n";
-die;
+	print STDERR "mklibspec -l <libname> -a <archname> [-c cols] [-d]\n";
+	die;
 }
 
-sub output_table($$$$$)
+sub unmangle($)
 {
-local ($i,*int,*symver,*std,$title) = @_;
+	local($int) = @_;
 
-print "<TABLE>\n";
+	if (!defined($cxxfilt)) {
+		$cxxfilt = open2(\*CXXRDR, \*CXXWRT, "c++filt") or
+			die "Could not open c++filt: $!";
+	}
+	print CXXWRT "$int\n";
+	$int = <CXXRDR>;
+	chomp($int);
+	$int =~ s/</\&lt;/g;
+	$int =~ s/>/\&gt;/g;
+	return $int;
+}
+
+sub output_table($$$$$$$)
+{
+local ($i,$name,*int,*symver,*stdnum,*stdname,$title) = @_;
+local *ref;
+
+print "<TABLE id=\"$name\">\n";
 print "<TITLE>$title</TITLE>\n";
 print "<TGROUP COLS=$numcols>\n";
 print "<TBODY>\n";
@@ -24,14 +42,37 @@ for $row (1..$inc) {
 	print "<ROW>\n";
 	for $col (0..$numcols-1) {
 		printf "<ENTRY>";
-		if( $int[$row+($col*$inc)] ) {
-			printf "<indexterm><primary>%s</primary></indexterm>%s", $int[$row+($col*$inc)], $int[$row+($col*$inc)];
-			if( $symver[$row+($col*$inc)] ) {
-				printf "(%s)", $symver[$row];
+		my $intnum = $row+($col*$inc);
+		if( $int[$intnum] ) {
+			# figure out a reference
+			# each table is followed by a list of references
+			#
+			# this is a little complex:
+			# %refname is a hash, using keys of the form "std-%d-%d"
+			#   with values being the names of the standards
+			# @ref is an array; each element is a key in %ref
+			# $refno is the current index into that array
+			my $refstr = sprintf "std-%d-%d-%s", 
+				$Lid, $stdnum[$intnum], $name;
+			$refname{$refstr} = $stdname[$intnum];
+			$refno = 0;
+			for $r (0..$#ref) {
+				$refno = $r;
+				last if ($ref[$r] eq $refstr);
+			}
+			if ($ref[$refno] ne $refstr) {
+				push(@ref, $refstr) ;
+				$refno = $#ref;
 				}
-			if( $std[$row+($col*$inc)] ) {
-				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-						$Lid, $std[$row+($col*$inc)];
+			my $interface = $int[$intnum];
+			$interface = unmangle($interface) if ($demangle);
+			printf "<indexterm><primary>%s</primary></indexterm>%s", $interface, $interface;
+			if( $symver[$intnum] ) {
+				printf "(%s)", $symver[$intnum];
+				}
+			if( $stdnum[$intnum] ) {
+				printf "<LINK LINKEND=\"%s\"> [%d]</LINK>",
+					$refstr, $refno+1;
 				}
 			}
 		printf "</ENTRY>\n";
@@ -41,6 +82,16 @@ for $row (1..$inc) {
 print "</TBODY>\n";
 print "</TGROUP>\n";
 print "</TABLE>\n";
+# and dump the reference list
+if ($#ref >= 0) {
+	print "<PARA><EMPHASIS>Referenced Specification(s)</EMPHASIS></PARA>\n";
+	for $r (0..$#ref) {
+		$refstr = $ref[$r];
+		$refname{$refstr} = "This specification" if ($refname{$refstr} eq "Linux Standard Base" && $archname eq "All");
+		printf "<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para>%s</para></FORMALPARA>\n",
+			$refstr, $r+1, $refname{$refstr};
+		}
+	}
 }
 
 sub getinterfacename($)
@@ -63,130 +114,254 @@ return $entry{'Iname'};
 
 sub output_classinfo($)
 {
-local ($class) = @_;
+	local ($class) = @_;
 
-#print STDERR $$class{'CIname'}."\n";
+	#print STDERR $$class{'CIname'}."\n";
+	local $classname = unmangle($$class{'CIname'});
 
-print "<SECT3>\n";
-print "<TITLE>";
-print "Class data for ".$$class{'CIname'};
-print "</TITLE>\n";
-print "<PARA>\n";
-print "</PARA>\n";
+	print "<SECT3>\n";
+	print "<TITLE>";
+	print "Class data for ".$classname;
+	print "</TITLE>\n";
+	print "<PARA>\n";
+	print "</PARA>\n";
 
-#
-# Display Vtable info
-#
-if( $$class{'CIvtable'} ) {
-	print "<!--classdata-->\n";
-	print "<TABLE>\n";
-	print "<TITLE>".getinterfacename($$class{'CIvtable'})."</TITLE>\n";
-	print "<TGROUP COLS=2>\n";
-	print "<TBODY>\n";
-	print "<ROW>\n";
-	print "<ENTRY>Base Offset</ENTRY>\n";
-	print "<ENTRY>";
-	print $$class{'CIbaseoffset'};
-	print "</ENTRY>\n";
-	print "</ROW>\n";
-	print "<ROW>\n";
-	print "<ENTRY>RTTI</ENTRY>\n";
-	print "<ENTRY>";
-	$func=getinterfacename($$class{'CIrtti'});
-	printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-	print "</ENTRY>\n";
-	print "</ROW>\n";
-	$select = "SELECT * FROM Vtable ";
-	$select.= "LEFT JOIN ClassInfo ON VTCid=CIid ";
-	$select.= "WHERE CIid=".$$class{'CIid'}." ";
-	$select.= "ORDER BY VTpos";
-	$vsth = $Dbh->query($select) || die $Dbh->errmsg();
-	for(1..$$class{'CInumvfunc'}) {
-		%entry=$vsth->fetchhash;
+	#
+	# Display Vtable info
+	#
+	if( $$class{'CIvtable'} ) {
+		#
+		# we are in a class ... always unmangle (ignore -d)
+		#
+		local $tblref = sprintf "cls-%s", nmhash($$class{'CIvtable'});
+		print "<PARA>\n";
+		print "The virtual table for the $classname class\n";
+		print "is described by <XREF LINKEND=\"$tblref\">\n";
+		print "</PARA>\n";
+		print "<!--classdata-->\n";
+		print "<TABLE id=\"$tblref\">\n";
+		print "<TITLE>";
+		print unmangle(getinterfacename($$class{'CIvtable'}));
+		print "</TITLE>\n";
+		print "<TGROUP COLS=2>\n";
+		print "<TBODY>\n";
 		print "<ROW>\n";
-		print "<ENTRY>vfunc:</ENTRY>\n";
+		print "<ENTRY>Base Offset</ENTRY>\n";
 		print "<ENTRY>";
-		$func=getinterfacename($$class{'VTviid'});
+		print $$class{'CIbaseoffset'};
+		print "</ENTRY>\n";
+		print "</ROW>\n";
+		print "<ROW>\n";
+		print "<ENTRY>RTTI</ENTRY>\n";
+		print "<ENTRY>";
+		$func=unmangle(getinterfacename($$class{'CIrtti'}));
 		printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
 		print "</ENTRY>\n";
 		print "</ROW>\n";
-		}
-
-	print "</TBODY>\n";
-	print "</TGROUP>\n";
-	print "</TABLE>\n";
-	}
-
-#
-# Display RTTI info
-#
-if( $$class{'CIrtti'} ) {
-	print "<!--classdata-->\n";
-	print "<TABLE>\n";
-	print "<TITLE>".getinterfacename($$class{'CIrtti'})."</TITLE>\n";
-	print "<TGROUP COLS=2>\n";
-	print "<TBODY>\n";
-	print "<ROW>\n";
-	print "<ENTRY>Base Vtable</ENTRY>\n";
-	print "<ENTRY>";
-	$func=getinterfacename($$class{'CIbasevtable'});
-	printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-	print "</ENTRY>\n";
-	print "</ROW>\n";
-	print "<ROW>\n";
-	print "<ENTRY>Name</ENTRY>\n";
-	print "<ENTRY>";
-	$func="_ZTS".substr($$class{'CIname'},2,256);
-	printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-	print "</ENTRY>\n";
-	print "</ROW>\n";
-	if( $$class{'CInumbasetype'} ) {
-		$select = "SELECT * FROM BaseTypes ";
-		$select.= "LEFT JOIN ClassInfo ON BTcid=CIid ";
+		$select = "SELECT * FROM Vtable ";
+		$select.= "LEFT JOIN ClassInfo ON VTCid=CIid ";
 		$select.= "WHERE CIid=".$$class{'CIid'}." ";
-		$select.= "ORDER BY BTpos";
+		$select.= "ORDER BY VTpos";
 		$vsth = $Dbh->query($select) || die $Dbh->errmsg();
-		for(1..$$class{'CInumbasetype'}) {
+		for(1..$$class{'CInumvfunc'}) {
 			%entry=$vsth->fetchhash;
 			print "<ROW>\n";
-			print "<ENTRY>basetype:</ENTRY>\n";
+			print "<ENTRY>vfunc:</ENTRY>\n";
 			print "<ENTRY>";
-			$func=getinterfacename($$class{'BTrttiid'});
+			$func=unmangle(getinterfacename($$class{'VTviid'}));
 			printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
 			print "</ENTRY>\n";
 			print "</ROW>\n";
 			}
+
+		print "</TBODY>\n";
+		print "</TGROUP>\n";
+		print "</TABLE>\n";
 		}
-	if( $$class{'CInumvmitypes'} ) {
+
+	#
+	# Display RTTI info
+	#
+	if( $$class{'CIrtti'} ) {
+		local $tblref = sprintf "rtti-%s", nmhash($$class{'CIrtti'});
+		print "<PARA>\n";
+		print "The Run Time Type Information for the $classname  class\n";
+		print "is described by <XREF LINKEND=\"$tblref\">\n";
+		print "</PARA>\n";
+		print "<!--classdata-->\n";
+		print "<TABLE ID=\"$tblref\">\n";
+		print "<TITLE>".unmangle(getinterfacename($$class{'CIrtti'}))."</TITLE>\n";
+		print "<TGROUP COLS=2>\n";
+		print "<TBODY>\n";
 		print "<ROW>\n";
-		print "<ENTRY>flags:</ENTRY>\n";
-		print "<ENTRY>".$$class{'CIflags'}."</ENTRY>\n";
+		print "<ENTRY>Base Vtable</ENTRY>\n";
+		print "<ENTRY>";
+		$func=unmangle(getinterfacename($$class{'CIbasevtable'}));
+		printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+		print "</ENTRY>\n";
 		print "</ROW>\n";
-		$select = "SELECT * FROM VMIBaseTypes ";
-		$select.= "LEFT JOIN ClassInfo ON VBTcid=CIid ";
-		$select.= "WHERE CIid=".$$class{'CIid'}." ";
-		$select.= "ORDER BY VBTpos";
-		$vsth = $Dbh->query($select) || die $Dbh->errmsg();
-		for(1..$$class{'CInumvmitypes'}) {
-			%entry=$vsth->fetchhash;
-			print "<ROW>\n";
-			print "<ENTRY>basetype:</ENTRY>\n";
-			print "<ENTRY>";
-			$func=getinterfacename($$class{'VBTbasetype'});
-			printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-			print "</ENTRY>\n";
-			print "<ENTRY>".$entry{'VBTflags'}."</ENTRY>\n";
-			print "</ROW>\n";
+		print "<ROW>\n";
+		print "<ENTRY>Name</ENTRY>\n";
+		print "<ENTRY>";
+		$func="_ZTS".substr($$class{'CIname'},2,256);
+		$func = unmangle($func);
+		printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+		print "</ENTRY>\n";
+		print "</ROW>\n";
+		if( $$class{'CInumbasetype'} ) {
+			$select = "SELECT * FROM BaseTypes ";
+			$select.= "LEFT JOIN ClassInfo ON BTcid=CIid ";
+			$select.= "WHERE CIid=".$$class{'CIid'}." ";
+			$select.= "ORDER BY BTpos";
+			$vsth = $Dbh->query($select) || die $Dbh->errmsg();
+			for(1..$$class{'CInumbasetype'}) {
+				%entry=$vsth->fetchhash;
+				print "<ROW>\n";
+				print "<ENTRY>basetype:</ENTRY>\n";
+				print "<ENTRY>";
+				$func=unmangle(getinterfacename($$class{'BTrttiid'}));
+				printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+				print "</ENTRY>\n";
+				print "</ROW>\n";
+				}
 			}
-		}
+		if( $$class{'CInumvmitypes'} ) {
+			print "<ROW>\n";
+			print "<ENTRY>flags:</ENTRY>\n";
+			print "<ENTRY>".$$class{'CIflags'}."</ENTRY>\n";
+			print "</ROW>\n";
+			$select = "SELECT * FROM VMIBaseTypes ";
+			$select.= "LEFT JOIN ClassInfo ON VBTcid=CIid ";
+			$select.= "WHERE CIid=".$$class{'CIid'}." ";
+			$select.= "ORDER BY VBTpos";
+			$vsth = $Dbh->query($select) || die $Dbh->errmsg();
+			for(1..$$class{'CInumvmitypes'}) {
+				%entry=$vsth->fetchhash;
+				print "<ROW>\n";
+				print "<ENTRY>basetype:</ENTRY>\n";
+				print "<ENTRY>";
+				$func=unmangle(getinterfacename($$class{'VBTbasetype'}));
+				printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+				print "</ENTRY>\n";
+				print "<ENTRY>".$entry{'VBTflags'}."</ENTRY>\n";
+				print "</ROW>\n";
+				}
+			}
 
-	print "</TBODY>\n";
-	print "</TGROUP>\n";
-	print "</TABLE>\n";
-	}
-print "</SECT3>\n";
+		print "</TBODY>\n";
+		print "</TGROUP>\n";
+		print "</TABLE>\n";
+		}
+	print "</SECT3>\n";
 }
 
+sub getinterfaces($$$$)
+{
+	local ($Lname, $LGname, $type, $needpara) = @_;
+	local(*entry);
+	local(*symver);
+	local(*stdnum);
+	local(*stdname);
+	local($table_title);
+	local($name);
+	local($where);
+
+	if ($type eq "functions" || $type eq "methods") {
+		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
+		$where.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
+		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+		$name  = "ints";
+		$table_title = "$Lname - $LGname Function Interfaces";
+		}
+	elsif ($type eq "deprecated functions") {
+		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
+		$where.= "AND Istatus='Deprecated' ";
+		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+		$name  = "depints";
+		$table_title = "$Lname - $LGname Deprecated Function Interfaces";
+		}
+	elsif ($type eq "data interfaces") {
+		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
+		$where.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
+		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+		$name  = "data";
+		$table_title = "$Lname - $LGname Data Interfaces";
+		}
+	elsif ($type eq "deprecated data interfaces") {
+		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
+		$where.= "AND Istatus='Deprecated' ";
+		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+		$name  = "ddata";
+		$table_title = "$Lname - $LGname Deprecated Data Interfaces";
+		}
+	else {
+		die "Unknown type $type";
+		}
+	$select = "SELECT DISTINCT Iname, Vname, Istandard, Sfull FROM Interface ";
+	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
+	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+	$select.= "LEFT JOIN Version ON Vid=AIversion ";
+	$select.= "LEFT JOIN Standard ON Sid=Istandard ";
+	$select.= "$where ";
+	$select.= "ORDER BY Iname";
+	print STDERR $select,"\n" if $trace;
+	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	$i=0;
+	for(1..$inh->numrows) {
+		%entry=$inh->fetchhash;
+		if( $entry[$i] ne $entry{'Iname'} ) {
+			$i++;
+		}
+		$entry[$i]=$entry{'Iname'};
+		if( $entry{'AIarch'} == $Aid ) { 
+			$symver[$i]=$entry{'Vname'};
+		}
+		$stdnum[$i]=$entry{'Istandard'};
+		$stdname[$i]=$entry{'Sfull'};
+	}
+	if( $i > 0 ) {
+		$tblname = sprintf "tbl-%s-%s-%s", $Lname, nmhash($LGname), $name;
+		$tblname =~ s/\s/-/g;
+		$tblname =~ s/\+/x/g;		# change the C++ names into Cxx
+		print "<PARA>\n";
+		print "An LSB conforming implementation shall provide the $type\n";
+		print "for $LGname specified in <XREF linkend=\"$tblname\">,\n";
+		print "with the full functionality as described in the referenced\n";
+		print "underlying specification.\n";
+		print "</PARA>\n";
+		if ($type =~ /deprecated.*/) {
+			print "<NOTE><TITLE>NOTE</TITLE>";
+			print "<PARA>These interfaces are deprecated, and applications\n";
+			print "should avoid using them.\n";
+			print "These interfaces may be withdrawn\n";
+			print "in future releases of this specification.\n";
+			print "</PARA></NOTE>\n";
+			}
+		print "<!--libgroup$name-->\n";
+		output_table($i,$tblname,*entry,*symver,*stdnum,*stdname,$table_title);
+		}
+	elsif ($needpara) {
+		print "<PARA>\n";
+		print "No external $type are defined for $Lname - $LGname\n";
+		print "</PARA>\n";
+		}
+}
+
+sub nmhash($)
+{
+	local ($name) = @_;
+	
+	# generate a three char name from the (long) libgroup name
+	local ($sname) = lc(substr($name, 0, 3));
+	$namehash{$sname} = $name if (!defined ($namehash{$sname}));
+	until (!defined($namehash{$sname}) || ($namehash{$sname} eq $name)) {
+		$sname++;
+	}
+	$namehash{$sname} = $name;
+	return $sname;
+}
+
+# the main program ...
 # Uncomment to trace SQL statements
 #$trace=1;
 
@@ -194,6 +369,7 @@ print "</SECT3>\n";
 
 $numcols=5;
 
+$demangle = 0;
 #
 # 1) process the arguments
 #
@@ -201,6 +377,7 @@ $numcols=5;
 
 GetOptions("l=s" => \$libname,
 	   "c=i" => \$numcols,
+	   "d"   => \$demangle,
 	   "a=s" => \$archname);
 
 if( !$libname ) { usage(); }
@@ -225,13 +402,15 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.53 2003-06-03 20:38:14 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.54 2004-06-21 21:28:18 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
 print "<SECT1 ID=", $libname, ">\n";
 print "<TITLE>Interfaces for ", $libname, "</TITLE>\n";
 print "<PARA>\n";
+print "<XREF LINKEND=\"lib-$libname-def\"> defines the library name and shared object name\n";
+print "for the $libname library\n";
 print "</PARA>\n";
 
 #
@@ -251,7 +430,7 @@ $Lname=$entry{'Lname'};
 $Larch=$entry{'ALaid'};
 
 if( $Larch == $Aid ) {
-	print "<TABLE>\n";
+	print "<TABLE id=\"lib-$libname-def\">\n";
 	print "<TITLE>$Lname Definition</TITLE>\n";
 	print "<TGROUP COLS=2>\n";
 	print "<TBODY>\n";
@@ -298,7 +477,7 @@ print STDERR $select,"\n" if $trace;
 $lsh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $lsh->numrows) {
 	print "The behavior of the interfaces in this library is specified ";
-	print "by the following standards.";
+	print "by the following specifications:";
 	print "<SIMPLELIST COLUMNS=1>\n";
 	for(1..$lsh->numrows) {
 		local(*entry);
@@ -329,11 +508,12 @@ $lgh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 for(1..$lgh->numrows) {
 	local(*entry);
 	local(*std);
-	local(*mangle);
 	%entry=$lgh->fetchhash;
 	$LGid=$entry{'LGid'};
 	$LGname=$entry{'LGname'};
-
+	print "<!-- debug: database interface name $LGname -->\n";
+	$LGname=unmangle($LGname) if ($demangle);
+	
 	print "<SECT2>\n";
 	print "<!--libgroup-->\n";
 	print "<TITLE>";
@@ -360,151 +540,24 @@ for(1..$lgh->numrows) {
 #
 # 9) For each group, make a table of the interfaces
 #
-print "<SECT3>\n";
-print "<TITLE>";
-print "Interfaces for ".$LGname;
-print "</TITLE>\n";
-print "<PARA>\n";
-print "</PARA>\n";
-{
-	local(*entry);
-	local(*symver);
-	local(*std);
-	$select = "SELECT * FROM Interface ";
-	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
-	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
-	$select.= "LEFT JOIN Version ON Vid=AIversion ";
-	$select.= "WHERE LGIlibg=$LGid AND Itype='Function' ";
-	$select.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
-	$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
-	$select.= "ORDER BY Iname";
-	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	print STDERR $select,"\n" if $trace;
-	$i=0;
-	for(1..$inh->numrows) {
-		%entry=$inh->fetchhash;
-		if( $entry[$i] ne $entry{'Iname'} ) {
-			$i++;
-		}
-		$entry[$i]=$entry{'Iname'};
-		if( $entry{'AIarch'} == $Aid ) { 
-			$symver[$i]=$entry{'Vname'};
-		}
-		$std[$i]=$entry{'Istandard'};
-	}
-	if( $i > 0 ) {
-		print "<!--libgroupints-->\n";
-		output_table($i,*entry,*symver,*std,"$Lname - $LGname Function Interfaces");
-		}
-}
+	print "<SECT3>\n";
+	print "<TITLE>";
+	print "Interfaces for ".$LGname;
+	print "</TITLE>\n";
+	getinterfaces( $Lname, $LGname, $demangle ? "methods" : "functions", 1);
 #
 # 10) For each group, make a table of the deprecated interfaces
 #
-{
-	local(*entry);
-	local(*symver);
-	local(*std);
-	$select = "SELECT * FROM Interface ";
-	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
-	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
-	$select.= "LEFT JOIN Version ON Vid=AIversion ";
-	$select.= "WHERE LGIlibg=$LGid AND Itype='Function' ";
-	$select.= "AND Istatus='Deprecated' ";
-	$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
-	$select.= "ORDER BY Iname";
-	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	print STDERR $select,"\n" if $trace;
-	$i=0;
-	for(1..$inh->numrows) {
-		%entry=$inh->fetchhash;
-		if( $entry[$i] ne $entry{'Iname'} ) {
-			$i++;
-		}
-		$entry[$i]=$entry{'Iname'};
-		if( $entry{'AIarch'} == $Aid ) { 
-			$symver[$i]=$entry{'Vname'};
-		}
-		$std[$i]=$entry{'Istandard'};
-	}
-	if( $i > 0 ) {
-		print "<!--libgroupdepints-->\n";
-		output_table($i,*entry,*symver,*std,"$Lname - $LGname Deprecated Function Interfaces");
-		}
-}
+	getinterfaces($Lname, $LGname, "deprecated functions", 0);
 
 #
 # 11) Make a table of data interfaces
 #
-{
-	local(*sth);
-	local(*entry);
-	local(*symver);
-	local(*std);
-
-	$select = "SELECT DISTINCT * FROM Interface ";
-	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
-	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
-	$select.= "LEFT JOIN Version ON Vid=AIversion ";
-	$select.= "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-	$select.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
-	$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
-	$select.= "ORDER BY Iname";
-	print STDERR $select,"\n" if $trace;
-	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	$i=0;
-	for(1..$sth->numrows) {
-		%entry=$sth->fetchhash;
-		if( $entry[$i] ne $entry{'Iname'} ) {
-			$i++;
-		}
-		$entry[$i]=$entry{'Iname'};
-		if( $entry{'AIarch'} == $Aid ) { 
-			$symver[$i]=$entry{'Vname'};
-		}
-		$std[$i]=$entry{'Istandard'};
-	}
-	if( $i > 0 ) {
-		print "<!--libgroupdata-->\n";
-		output_table($i,*entry,*symver,*std,"$Lname - $LGname Data Interfaces");
-		}
-}
+	getinterfaces($Lname, $LGname, "data interfaces", 0);
 #
 # 12) Make a table of deprecated data interfaces
 #
-{
-	local(*sth);
-	local(*entry);
-	local(*symver);
-	local(*std);
-
-	$select = "SELECT DISTINCT * FROM Interface ";
-	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
-	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
-	$select.= "LEFT JOIN Version ON Vid=AIversion ";
-	$select.= "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-	$select.= "AND Istatus='Deprecated' ";
-	$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
-	$select.= "ORDER BY Iname";
-	print STDERR $select,"\n" if $trace;
-	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	$i=0;
-	for(1..$sth->numrows) {
-		%entry=$sth->fetchhash;
-		if( $entry[$i] ne $entry{'Iname'} ) {
-			$i++;
-		}
-		$entry[$i]=$entry{'Iname'};
-		if( $entry{'AIarch'} == $Aid ) { 
-			$symver[$i]=$entry{'Vname'};
-		}
-		$std[$i]=$entry{'Istandard'};
-	}
-	if( $i > 0 ) {
-		print "<!--libgroupdata-->\n";
-		output_table($i,*entry,*symver,*std,"$Lname - $LGname Deprecated Data Interfaces");
-		}
-
-}
+	getinterfaces($Lname, $LGname, "deprecated data interfaces", 0);
 	print "</SECT3>\n";
 	print "</SECT2>\n";
 }
@@ -532,7 +585,8 @@ if( $hdh->numrows ) {
 	print "of these headers, or their content.";
 	print "</PARA>\n";
 	print "<PARA>\n";
-	print "ISO C serves as the LSB reference programming language, and ";
+	print "ISO/IEC 9899 C Language serves as the LSB reference programming ";
+	print "language, and ";
 	print "data definitions are specified in ISO C format. The C language ";
 	print "is used here as a convenient notation. Using a C language ";
 	print "description of these data objects does not preclude their use ";
@@ -542,7 +596,7 @@ if( $hdh->numrows ) {
 		local(*entry);
 		%entry=$hdh->fetchhash;
 		$Hname=$entry{'Hname'};
-		$headname="../../../src/include//$archname/".$Hname.".defs";
+		$headname="../../../src/include/$archname/".$Hname.".defs";
 		open(HEADER,"<".$headname) ||
 			open(HEADER,"<../".$headname) ||
 			next;
@@ -580,7 +634,7 @@ print STDERR $select,"\n" if $trace;
 $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if($sth->numrows) {
 	print "<SECT1 ID=", $libname, "man>\n";
-	print "<TITLE>Interfaces Definitions for ", $libname, "</TITLE>\n";
+	print "<TITLE>Interface Definitions for ", $libname, "</TITLE>\n";
 	print "<PARA>\n";
 	print "</PARA>\n";
 
@@ -588,11 +642,19 @@ if($sth->numrows) {
 		local(*entry);
 		%entry=$sth->fetchhash;
 		# NB: Footnotes must be unique across the entire document
-		print "include(".$entry{'Iname'}.".sgml)\n";
+		# NB: names are NOT demangled here ...
+		if (-f $entry{'Iname'}.".sgml") {
+			print "include(".$entry{'Iname'}.".sgml)\n";
+		} else {
+			$missing++;
+			print "<!-- MISSING DEFINITION FOR " . $entry{'Iname'} . " -->\n";
+			print "<!-- Lets just hope nobody notices -->\n";
+		}
 	}
 	print "</SECT1>\n";
 }
 
 
+printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.53 2003-06-03 20:38:14 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.54 2004-06-21 21:28:18 nick Exp $- -->\n");
