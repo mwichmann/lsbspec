@@ -81,46 +81,34 @@ the object symbol.
 <SECT1 ID="cmapping">
 <TITLE>C Language</TITLE>
 <PARA>
-Unless otherwise specificed as a Mangle, external C symbols have the same
-names in C and object files' symbol tables.
+External C symbols have the same names in C and object files' symbol tables.
 </PARA>
 </SECT1>
 <SECT1 ID="cppmapping">
 <TITLE>C++ Language</TITLE>
 <PARA>
-Because of the immaturity of C++ ABI's (for name mangling, exception
+Because of the immaturity of the C++ ABI (for name mangling, exception
 handling, and other such issues), we do not standardize any libraries
-for C++ v3.0.
-It seems to be possible, using existing Linux development
-tools, to write an application in C++ which complies with this rule by
-linking statically (or shipping a .so with the application) libstdc++
-and libgcc.
-</PARA>
-<NOTE>
+for C++ in this version of the Linux Standard Base.
+<FOOTNOTE ID="static-cplusplus">
 <PARA>
+It seems to be possible, using existing Linux development tools, to write an
+application in C++ which complies with this rule by linking statically 
+with libstdc++ and all other libraries containig C++. The following command
+illustrated how this may be accomplished
+</PARA>
+<PARA>
+<COMMAND>
 g++ example.cc -Wl,-Bdynamic,-lc,-Bstatic 
+</COMMAND>
 </PARA>
-</NOTE>
-<PARA>
-Constructors: .ctors - this section contains a list of global constructor 
-function pointers.  The __CTOR_LIST__ symbol points to the head of the array
+</FOOTNOTE>
 </PARA>
-<PARA>
-Destructors: .dtors - this section contains a list of global destructor 
-function pointers.  The __DTOR_LIST__ symbol points to the head of the array 
-</PARA>
-<PARA>
-Error Handler: .eh_frame - this section contains information necessary for 
-frame unwinding during exception handling and debugging.  The format is the
-same as .debug_frame as described in DWARF2.
-</PARA>
-<NOTE>
 <PARA>
 In a future version of this specification, name mangling rules will be
 specified so that C++ symbols can be mapped into symbol names in the object
 file.
 </PARA>
-</NOTE>
 </SECT1>
 </CHAPTER>
 
