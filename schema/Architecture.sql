@@ -10,4 +10,6 @@ CREATE TABLE Architecture (
   PRIMARY KEY (Aid)
 );
 
+INSERT INTO Architecture VALUES (1,'IA32','http://www.intel.com/','__i386__');
+INSERT INTO Architecture VALUES (2,'IA64','http://www.intel.com','__ia64__');
 
