@@ -19,13 +19,12 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../mklibspec Lname=libc >libc.sgml
-	../mklibspec Lname=libm >libm.sgml
-	../mklibspec Lname=libpthread >libpthread.sgml
-	../mklibspec Lname=libdb >libdb.sgml
-	../mklibspec Lname=libdl >libdl.sgml
-	../mklibspec Lname=libcrypt >libcrypt.sgml
-	../mkinterfacesgmltable Sname=Unknown >unknown.sgml
+	../mklibspec -l libc >libc.sgml
+	../mklibspec -l libm >libm.sgml
+	../mklibspec -l libpthread >libpthread.sgml
+	../mklibspec -l libdb >libdb.sgml
+	../mklibspec -l libdl >libdl.sgml
+	../mklibspec -l libcrypt >libcrypt.sgml
 
 clean:
 	rm -f $(FILES) $(TABLES)
