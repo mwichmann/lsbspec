@@ -1,3 +1,5 @@
+
+
 	
 	<chapter id="LOW-LEVEL"><title>Low Level System Information</title>
 		<para></para>
@@ -52,49 +54,32 @@
 					numbered from left to right (MSB to LSB), and figures usually show only the big-endian 
 					byte order.</para>
 				</note>
-			<figure><title>Bit and Byte Numbering in Halfwords</title>
-<screen>+-------+-------+
-|0     1|1     0|
-|  msb  |  lsb  |
-|0     7| 8   15|
-+-------+-------+</screen>			
-			</figure>
-			<figure><title>Bit and Byte Numbering in Words</title>
-<screen>+-------+-------+-------+-------+
-|0     3|1     2|2     1|3     0|
-|  msb  |       |       |  lsb  |
-|0     7|8    15|16   23|24   31|
-+-------+-------+-------+-------+</screen>			
-			</figure>
-			<figure><title>Bit and Byte Numbering in Doublewords</title>
-<screen>+-------+-------+-------+-------+
-|0     7|1     6|2     5|3     4|
-|  msb  |       |       |       |
-|0     7|8    15|16   23|24   31|
-+-------+-------+-------+-------+
-|4     3|5     2|6     1|7     0|
-|       |       |       |  lsb  |
-|32   39|40   47|48   55|56   63|
-+-------+-------+-------+-------+</screen>			</figure>
-			<figure><title>Bit and Byte Numbering in Quadwords</title>
-<screen>+-------+-------+-------+-------+
-|0    15|1    14|2    13|3    12|
-|  msb  |       |       |       |
-|0     7|8    15|16   23|24   31|
-+-------+-------+-------+-------+
-|4    11|5    10|6     9|7     8|
-|       |       |       |       |
-|32   39|40   47|48   55|56   63|
-+-------+-------+-------+-------+
-|8     7|9     6|10    5|11    4|
-|       |       |       |       |
-|64   71|72   79|80   87|88   95|
-+-------+-------+-------+-------+
-|12    3|13    2|14    1|15    0|
-|       |       |       |  lsb  |
-|96  103|104 111|112 119|120 127|
-+-------+-------+-------+-------+</screen>			</figure>
-			</sect2>
+<figure><title>Bit and Byte Numbering in Halfwords</title>
+<mediaobject><imageobject><imagedata fileref="graphics/1.png"></imageobject></mediaobject>			
+</figure>
+<figure><title>Bit and Byte Numbering in Words</title>
+<mediaobject>
+<imageobject><imagedata fileref="graphics/2.png">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure><title>Bit and Byte Numbering in Doublewords</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="graphics/3.png">
+</imageobject>
+</mediaobject>
+</figure>
+			
+<figure><title>Bit and Byte Numbering in Quadwords</title>	
+<mediaobject>
+<imageobject>
+<imagedata fileref="graphics/4.png">
+</imageobject>
+</mediaobject>		
+</figure>
+</sect2>
 			<sect2 id="FUND-TYPE"><title>Fundamental Types</title>
 			<para>The following table shows how ANSI C scalar types correspond to those of the 64-bit PowerPC 
 			processor. For all types, a NULL pointer has the value zero.  The alignment column specifies the required 
@@ -194,7 +179,7 @@ vector       16*char         16        quadword     vector of signed bytes
 			 </para></listitem>
 
 			 <listitem><para>
-				 The actual number of bits of percision can vary.  If the
+				 The actual number of bits of precision can vary.  If the
 				 low-order part is much less then 1 ULP of the high-order
 				 part, significant bits (either all 0's or all 1's) are
 				 implied between the significands of high-order and low-order
@@ -257,27 +242,17 @@ vector       16*char         16        quadword     vector of signed bytes
 			 right corners; offsets for big-endian implementations in the upper left corners.
 			</para>
 				<figure><title>Structure Smaller Than a Word</title>
-					
-					
 <programlisting>struct {
-  char c;
-};
-					
-</programlisting>
-				
-				<synopsis>byte aligned, sizeof is 1</synopsis>	
-			
-<screen>
-+-------+
-|0     0|
-|   c   |
-+-------+
-</screen>
-				
-				</figure>
-				<figure><title>No Padding</title>
-					
-<programlisting>struct {
+   char c;
+};</programlisting>
+
+<synopsis>byte aligned, sizeof is 1</synopsis>
+
+<mediaobject><imageobject><imagedata fileref="graphics/5.png"></imageobject></mediaobject>
+</figure>
+
+<figure><title>No Padding</title>
+	<programlisting>struct {
   char  c;
   char  d;
   short s;
@@ -286,29 +261,12 @@ vector       16*char         16        quadword     vector of signed bytes
 					
 </programlisting>
 				
-				<synopsis>word aligned, sizeof is 8</synopsis>
-					
-<screen>little endian:
-
-+-------+-------+-------+-------+
-|              2|      1|      0|
-|       s       |   d   |   c   |
-+-------+-------+-------+-------+
-|                              4|
-|               n               |
-+-------+-------+-------+-------+
-					
-big endian:
-
-+-------+-------+-------+-------+
-|0      |1      |2              |
-|   c   |   d   |       s       |
-+-------+-------+-------+-------+
-|4                              |
-|               n               |
-+-------+-------+-------+-------+
-					</screen>
-				</figure>										
+				<synopsis>word aligned, sizeof is 8</synopsis>							
+	
+		<mediaobject><imageobject><imagedata fileref="graphics/6.png"></imageobject></mediaobject>
+				
+				</figure>
+												
 				<figure><title>Internal Padding</title>
 					
 <programlisting>struct {
@@ -318,23 +276,12 @@ big endian:
 </programlisting>
 				
 					<synopsis>halfword aligned, sizeof is 4</synopsis>
-					
-<screen>little endian:
-
-+-------+-------+-------+-------+
-|              2|      1|      0|
-|       s       |  pad  |   c   |
-+-------+-------+-------+-------+
-
-big endian:
-
-+-------+-------+-------+-------+
-|0      |1      |2              |
-|   c   |  pad  |       s       |
-+-------+-------+-------+-------+
-					</screen>			
+	<mediaobject><imageobject><imagedata fileref="graphics/7.png"></imageobject>
+</mediaobject>				
+			
 					</figure>	
 				<figure><title>Internal and Tail Padding</title>
+
 						
 <programlisting>
 struct {
@@ -347,50 +294,7 @@ struct {
 				
 				<synopsis>doubleword aligned, sizeof is 24</synopsis>
 						
-<screen>little endian:
-
-+-------+-------+-------+-------+
-|                      1|      0|
-|          pad          |   c   |
-+-------+-------+-------+-------+
-|                              4|
-|              pad              |
-+-------+-------+-------+-------+
-|                              8|
-|               d               |
-+-------+-------+-------+-------+
-|                             12|
-|               d               |
-+-------+-------+-------+-------+
-|             18|             16|
-|      pad      |       s       |
-+-------+-------+-------+-------+
-|                             20|
-|              pad              |
-+-------+-------+-------+-------+
-
-big endian:
-
-+-------+-------+-------+-------+
-|0      |1                      |
-|   c   |          pad          |
-+-------+-------+-------+-------+
-|4                              |
-|              pad              |
-+-------+-------+-------+-------+
-|8                              |
-|               d               |
-+-------+-------+-------+-------+
-|12                             |
-|               d               |
-+-------+-------+-------+-------+
-|16             |18             |
-|       s       |      pad      |
-+-------+-------+-------+-------+
-|20                             |
-|             pad               |
-+-------+-------+-------+-------+
-						</screen>	
+<mediaobject><imageobject><imagedata fileref="graphics/8.png"></imageobject></mediaobject>	
 					</figure>					
 					<figure><title>Union Allocation</title>
 						
@@ -403,33 +307,8 @@ union {
 </programlisting>
 					
 					<synopsis>word aligned, sizeof is 4</synopsis>
-						
-<screen>little endian:
-
-+-------+-------+-------+-------+
-|                      1|      0|
-|          pad          |   c   |
-+-------+-------+-------+-------+
-|              2|              0|
-|      pad      |       s       |
-+-------+-------+-------+-------+
-|                              0|
-|               j               |
-+-------+-------+-------+-------+
-
-big endian:
-
-+-------+-------+-------+-------+
-|0      |1                      |
-|   c   |          pad          |
-+-------+-------+-------+-------+
-|0              |2              |
-|       s       |      pad      |
-+-------+-------+-------+-------+
-|0                              |
-|               j               |
-+-------+-------+-------+-------+
-						</screen>
+<mediaobject><imageobject><imagedata fileref="graphics/9.png"></imageobject>
+</mediaobject>						
 					</figure>			
 			</sect2>
 			<sect2 id="BITFIELD"><title>Bit-fields</title>
@@ -497,14 +376,8 @@ unsigned long                            unsigned</screen>
 			appear in the lower corners.
 			</para>
 				<figure><title>Bit Numbering</title>
-<screen>0x01020304
-
-+-------+-------+-------+-------+
-|0     3|1     2|2     1|3     0|
-|  01   |  02   |  03   |  04   |
-|0     7|8    15|16   23|24   31|
-+-------+-------+-------+-------+
-</screen>				
+<mediaobject><imageobject><imagedata fileref="graphics/10.png"></imageobject>
+</mediaobject>				
 				</figure>
 				<figure><title>Bit-field Allocation</title>
 <programlisting>
@@ -515,21 +388,9 @@ struct {
 };</programlisting>
 				
 				<synopsis>word aligned, sizeof is 4</synopsis>
-<screen>little endian:
-
-+----------+-------+------+-----+
-|          |       |      |    0|
-|    pad   |   m   |  k   |  j  |
-|0       13|14   20|21  26|27 31|
-+----------+-------+------+-----+
-
-big endian:
-
-+-----+------+-------+----------+
-|0    |      |       |          |
-|  j  |  k   |   m   |   pad    |
-|0   4|5   10|11   17|18      31|
-+-----+------+-------+----------+</screen>				
+<mediaobject><imageobject><imagedata fileref="graphics/11.png"></imageobject>
+</mediaobject>
+				
 				</figure>
 				<figure><title>Boundary Alignment</title>
 <programlisting>struct {
@@ -542,29 +403,8 @@ big endian:
 };</programlisting>
 				
 				<synopsis>word aligned, sizeof is 8</synopsis>
-<screen>little endian:
-
-+-------+-----+--------+--------+
-|      3|     |        |       0|
-|   c   | pad |   j    |   s    |
-|0     7|8  13|14    22|23    31|
-+-------+-----+--------+--------+
-|      7|     |        |       4|
-|   d   | pad |   u    |   t    |
-|0     7|8  13|14    22|23    31|
-+-------+-----+--------+--------+
-
-big endian:
-
-+--------+--------+-----+-------+
-|0       |        |     |3      |
-|   s    |   j    | pad |   c   |
-|0      8|9     17|18 23|24   31|
-+--------+--------+-----+-------+
-|4       |        |     |7      |
-|   t    |   u    | pad |   d   |
-|0      8|9     17|18 23|24   31|
-+--------+--------+-----+-------+</screen>				
+<mediaobject><imageobject><imagedata fileref="graphics/12.png"></imageobject></mediaobject>
+				
 				</figure>
 				<figure><title>Doubleword Boundary Alignment</title>
 <programlisting>struct {
@@ -573,45 +413,9 @@ big endian:
 };</programlisting>
 				
 				<synopsis>doubleword aligned, sizeof is 16</synopsis>
-<screen>little endian:
+<mediaobject><imageobject><imagedata fileref="graphics/13.png"></imageobject></mediaobject>
 
-+-------------------------------+
-|                              0|
-|              i                |
-|0                            31|
-+-------+-----------------------+
-|       |                      4|
-|  pad  |         i             |
-|32   39|40                   63|
-+-------+--------------+--------+
-|                      |       8|
-|         pad          |   j    |
-|0                   22|23    31|
-+----------------------+--------+
-|                             12|
-|             pad               |
-|0                            31|
-+-------------------------------+
-
-big endian:
-
-+-------------------------------+
-|0                              |
-|              i                |
-|0                            31|
-+-----------------------+-------+
-|4                      |       |
-|           i           |  pad  |
-|32                   55|56   63|
-+--------+--------------+-------+
-|8       |                      |
-|   j    |        pad           |
-|0      8|9                   31|
-+----------------------+--------+
-|12                             |
-|             pad               |
-|0                            31|
-+-------------------------------+</screen>				
+				
 				</figure>	
 				<figure><title>Storage Unit Sharing</title>
 <programlisting>struct {
@@ -620,21 +424,8 @@ big endian:
 };</programlisting>
 				
 				<synopsis>halfword aligned, sizeof is 2</synopsis>
-<screen>little endian:
-
-+-------+-------+
-|      1|      0|
-|   s   |   c   |
-|0     7|8    15|
-+-------+-------+
-
-big endian:
-
-+-------+-------+
-|0      |1      |
-|   c   |   s   |
-|0     7|8    15|
-+-------+-------+</screen>		</figure>
+<mediaobject><imageobject><imagedata fileref="graphics/14.png"></imageobject></mediaobject>
+		</figure>
 				<figure><title>Union Allocation</title>
 <programlisting>union {
   char  c;
@@ -642,29 +433,9 @@ big endian:
 };</programlisting>
 				
 				<synopsis>halfword aligned, sizeof is 2</synopsis>
-<screen>little endian:
+<mediaobject><imageobject><imagedata fileref="graphics/15.png"></imageobject></mediaobject>
 
-+-------+-------+
-|      1|      0|
-|  pad  |   c   |
-|0     7|8    15|
-+-------+-------+
-|      1|      0|
-|  pad  |   s   |
-|0     7|8    15|
-+-------+-------+
-
-big endian:
-
-+-------+-------+
-|0      |1      |
-|   c   |  pad  |
-|0     7|8    15|
-+-------+-------+
-|0      |1      |
-|   s   |  pad  |
-|0     7|8    15|
-+-------+-------+</screen>		</figure>
+		</figure>
 				<figure><title>Unnamed bit-fields</title>
 <programlisting>struct {
   char  c;
@@ -675,29 +446,9 @@ big endian:
 };</programlisting>
 				
 				<synopsis>byte aligned, sizeof is 8</synopsis>
-<screen>little endian:
+<mediaobject><imageobject><imagedata fileref="graphics/16.png"></imageobject></mediaobject>
 
-+-----------------------+-------+
-|                      1|      0|
-|           :0          |   c   |
-|0                    23|24   31|
-+-------+------+--------+-------+
-|      7|      |        |      4|
-|   e   | pad  |   :9   |   d   |
-|0     7|8   14|15    23|24   31|
-+-------+------+--------+-------+
 
-big endian:
-
-+-------+-----------------------+
-|0      |1                      |
-|   c   |          :0           |
-|0     7|8                    31|
-+-------+--------+------+-------+
-|4      |        |      |7      |
-|   d   |   :9   | pad  |   e   |
-|0     7|8     16|17  23|24   31|
-+-------+--------+------+-------+</screen>
 				</figure>
 				<note><title>Note</title>
 				<para>In this example, the presence of the unnamed int and short fields does not affect the 
@@ -1071,7 +822,8 @@ Low Address</screen>
 					<listitem><para>
 					Floating point registers f1 through f13 are used
 					consecutively to pass up to 13 single, double and extended
-					precision floating point values, and to pass the
+					precision floating point values, aggregates
+containing a single floating point number, and to pass the
 					corresponding complex floating point values.  The
 					first 13 of all doublewords in the parameter save area that map
 					floating point arguments, except for arguments corresponding to the
