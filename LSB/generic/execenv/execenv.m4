@@ -371,10 +371,21 @@ collating element expression (such as <literal>[.ch.]</literal>) are optional.</
 <para>Handling of a multi-character collating element is
 optional.</para>
 
-<para>This affects at least the following utilities: <command>grep</command> (<xref
-linkend="grep" >) (including <command>egrep</command>), <command>sed</command>
-(<xref linkend="sed">),
-and <command>awk</command> (<xref linkend="awk">).  </para>
+<para>This affects at least the following utilities: 
+<itemizedlist>
+<listitem><para><command>awk</command> (see <xref linkend="awk">)</para></listitem>
+<listitem><para><command>grep</command> (see <xref
+linkend="grep" >) (including <command>egrep</command>,
+see <xref linkend="egrep">)</para></listitem>
+<listitem><para><command>sed</command>
+(see <xref linkend="sed">)</para></listitem>
+</itemizedlist>
+It also affects the behavior of interfaces in the base libraries, including
+at least 
+<itemizedlist>
+<listitem><para><function>regexec</function> (see <xref linkend="baselib-regexec-2">)</para></listitem>
+</itemizedlist>
+</para>
 
 </section>
 
