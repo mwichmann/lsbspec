@@ -119,14 +119,6 @@ defined here.
 External C symbols have the same names in C and object files' symbol tables.
 </PARA>
 </SECT2>
-<SECT2>
-<TITLE>C++ Language</TITLE>
-<PARA>
-
-External symbol names in a C++ object file shall be encoded according to 
-the "name mangling" rules described in the <XREF LINKEND="std.CXXABI">.
-</PARA>
-</SECT2>
 </SECT1>
 </CHAPTER>
 
