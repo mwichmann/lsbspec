@@ -1,5 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
+<!entity w "<emphasis>w</emphasis>">
+<!entity itanium "Itanium&trade;">
 <!entity specversion "LSBVERSION">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
@@ -11,8 +13,8 @@
 <!entity legal.sgm system "../../gLSB/legal.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
 <!entity appB.sgm system "../../gLSB/appendix/fdl.sgml">
+<!entity buildenv.sgm system "buildenv/buildenv.sgml">
 <!ENTITY w "<emphasis>w</emphasis>">
-<!entity itanium "Itanium&trade;">
 ]>
 
 <BOOK>
@@ -33,4 +35,5 @@
 &execenv.sgm;
 &appA.sgm;
 &appB.sgm;
+&buildenv.sgm;
 </BOOK>
