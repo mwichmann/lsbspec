@@ -141,7 +141,8 @@ be available on 'ARCH` Linux Standard Base systems, with the specified
 runtime names. These names override or supplement the names specified
 in the generic LSB specification. The specified program interpreter,
 referred to as proginterp in this table,
-shall be used to load all shared libraries at run time.
+shall be used to load the shared libraries specified by
+<CONSTANT>DT_NEEDED</CONSTANT> entries at run time.
 ')
 </PARA>
 <TABLE ID=TBLTARGET>
