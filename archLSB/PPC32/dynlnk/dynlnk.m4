@@ -4,12 +4,8 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
-<LINK LINKEND="std.gABI.41">
-<XREF LINKEND="std.gABI.41">
-</LINK>,
-<LINK LINKEND="std.PPC32.ABI">
+<XREF LINKEND="std.gABI.41">,
 <XREF LINKEND="std.PPC32.ABI">
-</LINK>
 and as supplemented by the Linux
 Standard Base Specification and this document.
 </PARA>
@@ -38,9 +34,7 @@ Standard Base Specification and this document.
 <TITLE>Program Loading</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.PPC32.ABI">
-<XREF LINKEND="std.PPC32.ABI">
-</LINK>, Chapter 5.1.
+<XREF LINKEND="std.PPC32.ABI">, Chapter 5.1.
 </PARA>
 
 </CHAPTER>
@@ -49,9 +43,7 @@ See
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.PPC32.ABI">
-<XREF LINKEND="std.PPC32.ABI">
-</LINK>, Chapter 5.4.
+<XREF LINKEND="std.PPC32.ABI">, Chapter 5.4.
 </PARA>
 
 <SECT1 ID=proginterp>
@@ -68,9 +60,7 @@ The LSB specifies the Program Interpreter to be
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
-<LINK LINKEND="std.PPC32.ABI">
-<XREF LINKEND="std.PPC32.ABI">
-</LINK>, Chapter 5.4.
+<XREF LINKEND="std.PPC32.ABI">, Chapter 5.4.
 include(dyntag.sgml)
 </PARA>
 </SECT1>
@@ -79,9 +69,7 @@ include(dyntag.sgml)
 <TITLE>Global Offset Table</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.PPC32.ABI">
-<XREF LINKEND="std.PPC32.ABI">
-</LINK>, Chapter 5.4.
+<XREF LINKEND="std.PPC32.ABI">, Chapter 5.4.
 </PARA>
 </SECT1>
 
