@@ -139,7 +139,7 @@ conform with the Package Naming section of this specification.
 <TERM><STRUCTFIELD>osnum</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value indicating the Operating Systgem for which this package is valid. This
+Value indicating the Operating System for which this package is valid. This
 value must be 1.
 </PARA>
 </LISTITEM>
