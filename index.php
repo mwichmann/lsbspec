@@ -7,20 +7,12 @@
 </head>
 <body bgcolor="#ffffff" text="#000000">
 
-<table cellpadding="0" cellspacing="0" width="90%" align="center" class="head">
-<tr>
 <?
+virtual("/themes/FreeStandards2/contentheader.html");
 virtual("/themes/FreeStandards2/nav.linuxbase.php");
+virtual("/themes/FreeStandards2/contentmail.html");
 ?>
-</td>
-<td width=\"80\">&nbsp;</td>
-</tr>
-</table>
-</td></tr>
-</table>
 
-<table width="90%" align="center" cellspacing="5" class="main2">
-<tr><td>
 <blockquote style="background-color: #ffffdd">
 <p>The LSB specification is composed of a set of specifications:
 a single common specification, and architecture specific specifications. The
@@ -58,7 +50,8 @@ that was designed and is maintained by the LSB. In the spec tree there
 is a <i>build.html </i>file which describes <a href="build.html">how to
 build the specification</a> from the CVS Docbook source.</p>
 
-</td></tr>
-</table>
+<?
+virtual("/themes/FreeStandards2/contentheader.html");
+?>
 </body>
 </html>
