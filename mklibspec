@@ -54,7 +54,7 @@ $Lname=$entry{'Lname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.20 2001-04-25 17:38:13 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.21 2001-04-25 23:58:49 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -247,9 +247,9 @@ for(1..$lgh->numrows) {
 {
 	local(*datasym);
 	local(*std);
-	$select = "SELECT * FROM Interface,LGInt ";
+	$select = "SELECT Iname,Istandard FROM Interface,LGInt ";
 	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype='Data' ";
-	$select.= "AND Iarch=$Aid ";
+	$select.= "AND Iarch=$Aid AND Istatus='Included' ";
 	$select.= "ORDER BY Iname";
 	print STDERR $select,"\n" if $trace;
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -267,19 +267,39 @@ for(1..$lgh->numrows) {
 		print "<TITLE></TITLE>\n";
 		print "<TGROUP COLS=5>\n";
 		print "<TBODY>\n";
-		$inc=($sth->numrows+4)/5;
+		$inc=int(($sth->numrows+4)/5);
 		for(1..$inc) {
 			print "<ROW>";
 			printf "<ENTRY>%s",$datasym[$_];
 			if( $datasym[$_] && $std[$_] ) {
 				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-								$Lid, $std[$_];
+							$Lid, $std[$_];
 			}
 			printf "</ENTRY>";
-			printf "<ENTRY>%s</ENTRY>",$datasym[$_+$inc];
-			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(2*$inc)];
-			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(3*$inc)];
-			printf "<ENTRY>%s</ENTRY>",$datasym[$_+(4*$inc)];
+			printf "<ENTRY>%s",$datasym[$_+$inc];
+			if( $datasym[$_+$inc] && $std[$_+$inc] ) {
+				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_+$inc];
+			}
+			printf "</ENTRY>";
+			printf "<ENTRY>%s",$datasym[$_+(2*$inc)];
+			if( $datasym[$_+(2*$inc)] && $std[$_+(2*$inc)] ) {
+				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_+(2*$inc)];
+			}
+			printf "</ENTRY>";
+			printf "<ENTRY>%s",$datasym[$_+(3*$inc)];
+			if( $datasym[$_+(3*$inc)] && $std[$_+(3*$inc)] ) {
+				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_+(3*$inc)];
+			}
+			printf "</ENTRY>";
+			printf "<ENTRY>%s",$datasym[$_+(4*$inc)];
+			if( $datasym[$_+(4*$inc)] && $std[$_+(4*$inc)] ) {
+				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+							$Lid, $std[$_+(4*$inc)];
+			}
+			printf "</ENTRY>";
 			print "</ROW>\n";
 		}
 		print "</TBODY>\n";
@@ -329,4 +349,4 @@ if( $hdh->numrows ) {
 	print "</SECT1>\n";
 }
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.20 2001-04-25 17:38:13 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.21 2001-04-25 23:58:49 anderson Exp $- -->\n");
