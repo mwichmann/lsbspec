@@ -22,6 +22,5 @@
 
 &graphics-intro;
 &contents;
-&contents-gl;
 
 </BOOK>

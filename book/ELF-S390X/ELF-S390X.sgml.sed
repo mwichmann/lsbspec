@@ -3,21 +3,30 @@
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "contents">
 
+<!entity specversion "ELFVERSION">
+<!entity archspec "S390X">
+<!entity canonicalarch "S390X">
+<!entity specarchitecture "S390X">
+<!entity spectitle "ELF Specification for the S390X Architecture"
+>
+
 %entities;
 
 ]>
 
 <BOOK>
 <BOOKINFO>
-<TITLE>ELF Specification for the S390X Processor</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2003</YEAR>
+<YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
 </BOOKINFO>
 
-&elf-s390x-intro
+&elf-s390x-intro;
 &contents;
+&fdl;
 
 </BOOK>

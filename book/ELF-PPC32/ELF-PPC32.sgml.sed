@@ -3,15 +3,23 @@
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "contents">
 
+<!entity specversion "ELFVERSION">
+<!entity archspec "PPC32">
+<!entity canonicalarch "PPC32">
+<!entity specarchitecture "PPC32">
+<!entity spectitle "ELF Specification for the PPC32 Architecture"
+>
+
 %entities;
 
 ]>
 
 <BOOK>
 <BOOKINFO>
-<TITLE>ELF Specification for the PPC32 Processor</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2003</YEAR>
+<YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
@@ -19,5 +27,6 @@
 
 &elf-ppc32-intro;
 &contents;
+&fdl;
 
 </BOOK>

@@ -4,6 +4,7 @@
 <!entity contents SYSTEM "contents">
 
 <!entity specversion "ELFVERSION">
+<!entity spectitle "Generic ELF Specification">
 
 %entities;
 
@@ -14,6 +15,7 @@
 <TITLE>Generic ELF Specification</TITLE>
 <COPYRIGHT>
 <YEAR>2003</YEAR>
+<YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
@@ -21,5 +23,6 @@
 
 &elf-generic-intro;
 &contents;
+&fdl;
 
 </BOOK>

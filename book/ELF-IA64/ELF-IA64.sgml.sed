@@ -3,15 +3,23 @@
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "contents">
 
+<!entity specversion "ELFVERSION">
+<!entity archspec "IA54">
+<!entity canonicalarch "IA54">
+<!entity specarchitecture "IA54">
+<!entity spectitle "ELF Specification for the IA54 Architecture"
+>
+
 %entities;
 
 ]>
 
 <BOOK>
 <BOOKINFO>
-<TITLE>ELF Specification for the IA64 Processor</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2003</YEAR>
+<YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
@@ -19,5 +27,6 @@
 
 &elf-ia64-intro;
 &contents;
+&fdl;
 
 </BOOK>

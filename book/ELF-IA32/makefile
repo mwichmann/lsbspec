@@ -61,11 +61,11 @@ gensrc:
 
 ELF-IA32.sgml: ELF-IA32.sgml.sed ../../ELF/version
 	echo `cat ../../ELF/version` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../ELF/version`#" <ELF-IA32.sgml.sed >ELF-IA32.sgml
+	sed -e "s#ELFVERSION#`cat ../../ELF/version`#" <ELF-IA32.sgml.sed >ELF-IA32.sgml
 
 autobuild: gensrc source
 	echo `cat ../../ELF/version`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <ELF-IA32.sgml.sed >ELF-IA32.sgml
+	sed -e "s#ELFVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <ELF-IA32.sgml.sed >ELF-IA32.sgml
 	make buildspecs
 	
 clean::

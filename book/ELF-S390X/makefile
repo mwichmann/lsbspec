@@ -61,11 +61,11 @@ gensrc:
 
 ELF-S390X.sgml: ELF-S390X.sgml.sed ../../ELF/version
 	echo `cat ../../ELF/version` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../ELF/version`#" <ELF-S390X.sgml.sed >ELF-S390X.sgml
+	sed -e "s#ELFVERSION#`cat ../../ELF/version`#" <ELF-S390X.sgml.sed >ELF-S390X.sgml
 
 autobuild: gensrc source
 	echo `cat ../../ELF/version`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <ELF-S390X.sgml.sed >ELF-S390X.sgml
+	sed -e "s#ELFVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <ELF-S390X.sgml.sed >ELF-S390X.sgml
 	make buildspecs
 	
 clean::
