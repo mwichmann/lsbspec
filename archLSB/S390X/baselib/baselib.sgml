@@ -20,7 +20,7 @@ corresponding section in the Linux Standard Base Specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Tue Feb 18 15:46:31 2003 -->
+<!--    at Tue Feb 25 18:33:31 2003 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1645,6 +1645,61 @@ ISO C serves as the LSB reference programming language, and data definitions are
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>signal.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct sigaction
+{
+  union
+  {
+    __sighandler_t _sa_handler;
+    void (*_sa_sigaction) (int, siginfo_t *, void *);
+  }
+  __sigaction_handler;
+  unsigned long sa_flags;
+  void (*sa_restorer) (void);
+  __sigset_t sa_mask;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>stddef.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef unsigned long size_t;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/ioctl.h</TITLE>
 <PARA>
 </PARA>
@@ -1652,6 +1707,30 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 #define FIONREAD	21531
 #define TIOCNOTTY	21538
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/ipc.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct ipc_perm
+{
+  __key_t __key;
+  __uid_t uid;
+  __gid_t gid;
+  __uid_t cuid;
+  __gid_t cgid;
+  __mode_t mode;
+  unsigned short __seq;
+  unsigned short __pad2;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1665,12 +1744,86 @@ ISO C serves as the LSB reference programming language, and data definitions are
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>sys/msg.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef unsigned long msgqnum_t;
+typedef unsigned long msglen_t;
+
+
+struct msqid_ds
+{
+  struct ipc_perm msg_perm;
+  __time_t msg_stime;
+  __time_t msg_rtime;
+  __time_t msg_ctime;
+  unsigned long __msg_cbytes;
+  msgqnum_t msg_qnum;
+  msglen_t msg_qbytes;
+  __pid_t msg_lspid;
+  __pid_t msg_lrpid;
+  unsigned long __unused4;
+  unsigned long __unused5;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/sem.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct semid_ds
+{
+  struct ipc_perm sem_perm;
+  __time_t sem_otime;
+  __time_t sem_ctime;
+  unsigned long sem_nsems;
+  unsigned long __unused3;
+  unsigned long __unused4;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/shm.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
 #define SHMLBA	4096
+
+
+
+
+
+typedef unsigned long shmatt_t;
+
+
+struct shmid_ds
+{
+  struct ipc_perm shm_perm;
+  size_t shm_segsz;
+  __time_t shm_atime;
+  __time_t shm_dtime;
+  __time_t shm_ctime;
+  __pid_t shm_cpid;
+  __pid_t shm_lpid;
+  shmatt_t shm_nattch;
+  unsigned long __unused4;
+  unsigned long __unused5;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1680,6 +1833,92 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <SCREEN>
 
 #define _STAT_VER	1
+
+
+struct stat
+{
+  __dev_t st_dev;
+  __ino_t st_ino;
+  __nlink_t st_nlink;
+  __mode_t st_mode;
+  __uid_t st_uid;
+  __gid_t st_gid;
+  int pad0;
+  __dev_t st_rdev;
+  __off_t st_size;
+  __time_t st_atime;
+  long __reserved0;
+  __time_t st_mtime;
+  long __reserved1;
+  __time_t st_ctime;
+  long __reserved2;
+  blksize_t st_blksize;
+  __blkcnt_t st_blocks;
+}
+ ;
+struct stat64
+{
+  __dev_t st_dev;
+  __ino64_t st_ino;
+  __nlink_t st_nlink;
+  __mode_t st_mode;
+  __uid_t st_uid;
+  __gid_t st_gid;
+  int pad0;
+  __dev_t st_rdev;
+  __off_t st_size;
+  __time_t st_atime;
+  int __reserved0;
+  __time_t st_mtime;
+  int __reserved1;
+  __time_t st_ctime;
+  int __reserved2;
+  blksize_t st_blksize;
+  __blkcnt64_t st_blocks;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/statvfs.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct statvfs
+{
+  unsigned long f_bsize;
+  unsigned long f_frsize;
+  __fsblkcnt64_t f_blocks;
+  __fsblkcnt64_t f_bfree;
+  __fsblkcnt64_t f_bavail;
+  __fsfilcnt64_t f_files;
+  __fsfilcnt64_t f_ffree;
+  __fsfilcnt64_t f_favail;
+  unsigned long f_fsid;
+  int __f_unused;
+  unsigned long f_flag;
+  unsigned long f_namemax;
+}
+ ;
+struct statvfs64
+{
+  unsigned long f_bsize;
+  unsigned long f_frsize;
+  __fsblkcnt64_t f_blocks;
+  __fsblkcnt64_t f_bfree;
+  __fsblkcnt64_t f_bavail;
+  __fsfilcnt64_t f_files;
+  __fsfilcnt64_t f_ffree;
+  __fsfilcnt64_t f_favail;
+  unsigned long f_fsid;
+  int __f_unused;
+  unsigned long f_flag;
+  unsigned long f_namemax;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1779,6 +2018,72 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 
 #define NGREG	27
+
+
+
+
+
+
+
+
+
+
+
+typedef union
+{
+  double d;
+  float f;
+}
+fpreg_t;
+
+
+
+
+
+typedef struct
+{
+  unsigned int fpc;
+  fpreg_t fprs[16];
+}
+fpregset_t;
+
+
+typedef struct
+{
+  unsigned long mask;
+  unsigned long addr;
+}
+__psw_t;
+
+
+typedef struct
+{
+  __psw_t psw;
+  unsigned long gregs[16];
+  unsigned int aregs[16];
+  fpregset_t fpregs;
+}
+mcontext_t;
+
+
+struct ucontext
+{
+  unsigned long uc_flags;
+  struct ucontext *uc_link;
+  stack_t uc_stack;
+  mcontext_t uc_mcontext;
+  __sigset_t uc_sigmask;
+}
+ ;
+typedef struct ucontext
+{
+  unsigned long uc_flags;
+  struct ucontext *uc_link;
+  stack_t uc_stack;
+  mcontext_t uc_mcontext;
+  __sigset_t uc_sigmask;
+}
+ucontext_t;
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -1789,7 +2094,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Tue Feb 18 15:46:56 2003 -->
+<!--    at Tue Feb 25 18:33:54 2003 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -2267,7 +2572,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Tue Feb 18 15:47:10 2003 -->
+<!--    at Tue Feb 25 18:34:05 2003 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -2443,7 +2748,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Tue Feb 18 15:47:22 2003 -->
+<!--    at Tue Feb 25 18:34:15 2003 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -2514,7 +2819,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Tue Feb 18 15:47:30 2003 -->
+<!--    at Tue Feb 25 18:34:23 2003 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
