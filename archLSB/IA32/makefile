@@ -1,5 +1,5 @@
 
-SUBDIRS=intro objfmt baselib utillib dynlnk appendix
+SUBDIRS=intro objfmt baselib dynlnk appendix
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
