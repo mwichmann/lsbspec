@@ -19,12 +19,27 @@ releases of the specification.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
-<!--    at Tue Jan 15 16:34:04 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
+<!--    at Mon Mar 25 19:08:02 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
 </PARA>
+<TABLE>
+<TITLE>libc Definition</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Library:</ENTRY>
+<ENTRY>libc</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>SONAME:</ENTRY>
+<ENTRY>See psLSB.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 <PARA>
 The behavior of the interfaces in this library is specified by the following standards.<SIMPLELIST COLUMNS=1>
 <MEMBER>
@@ -633,7 +648,7 @@ struct dirent
   long d_ino;
   off_t d_off;
   unsigned short d_reclen;
-  char d_name[1];
+  char d_name[256];
 }
  ;
 
@@ -795,8 +810,8 @@ struct dirent64
 #define O_APPEND	02000
 #define O_ASYNC	020000
 #define O_NOCTTY	0400
-#define O_NONBLOCK	04000
 #define O_NDELAY	04000
+#define O_NONBLOCK	04000
 
 
 
@@ -1121,6 +1136,8 @@ struct sockaddr_in
 </PARA>
 <SCREEN>
 
+#define NL_SETD	1
+#define NL_CAT_LOCALE	1
 
 typedef void *nl_catd;
 
@@ -1236,6 +1253,10 @@ struct sched_param
   int sched_priority;
 }
  ;
+
+#define SCHED_OTHER	0
+#define SCHED_FIFO	1
+#define SCHED_RR	2
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1300,12 +1321,53 @@ typedef jmp_buf sigjmp_buf;
 </PARA>
 <SCREEN>
 
-struct sigstack;
+typedef __sig_atomic_t sig_atomic_t;
 
-struct sigcontext;
+struct sigstack
+{
+  void *ss_sp;			/* Signal stack pointer. */
+  int ss_onstack;		/* Nonzero if executing on this stack. */
+}
+ ;
+
+struct sigcontext
+{
+  unsigned short gs;
+  unsigned short __gsh;
+  unsigned short fs;
+  unsigned short __fsh;
+  unsigned short es;
+  unsigned short __esh;
+  unsigned short ds;
+  unsigned short __dsh;
+  unsigned long edi;
+  unsigned long esi;
+  unsigned long ebp;
+  unsigned long esp;
+  unsigned long ebx;
+  unsigned long edx;
+  unsigned long ecx;
+  unsigned long eax;
+  unsigned long trapno;
+  unsigned long err;
+  unsigned long eip;
+  unsigned short cs;
+  unsigned short __csh;
+  unsigned long eflags;
+  unsigned long esp_at_signal;
+  unsigned short ss;
+  unsigned short __ssh;
+  struct _fpstate fpstate;
+  unsigned long oldmask;
+  unsigned long cr2;
+}
+ ;
 
 #define SIGRTMAX	(__libc_current_sigrtmax ())
 #define SIGRTMIN	(__libc_current_sigrtmin ())
+#define SIG_BLOCK	0
+#define SIG_UNBLOCK	1
+#define SIG_SETMASK	2
 
 #define SIGHUP	1
 #define SIGUSR1	10
@@ -1359,12 +1421,13 @@ sigval_t;
 #define SV_INTERRUPT	(1<<1)
 #define SV_RESETHAND	(1<<2)
 
+#define SIGEV_NONE	1
 
 typedef struct siginfo
 {
-  int si_signo;
+  int si_signo;			/* Signal number. */
   int si_errno;
-  int si_code;
+  int si_code;			/* Signal code. */
   union _sifields;
 }
 siginfo_t;
@@ -1372,10 +1435,12 @@ siginfo_t;
 
 typedef struct
 {
-  unsigned long sig[1];
+  unsigned long sig[_NSIG_WORDS];
 }
 sigset_t;
 
+#define _NSIG_WORDS	((_NSIG/sizeof(long))>>3)
+#define _NSIG	64
 
 struct sigaction
 {
@@ -1383,6 +1448,18 @@ struct sigaction
   unsigned long sa_flags;
   void (*sa_restorer) ();
   sigset_t sa_mask;
+}
+ ;
+
+union
+{
+  int _pad[__SI_PAD_SIZE];
+  struct _kill;
+  struct _timer;
+  struct _rt;
+  struct _sigchld;
+  struct _sigfault;
+  struct _sigpoll;
 }
  ;
 
@@ -1419,7 +1496,13 @@ typedef __off_t fpos_t;
 typedef __off64_t fpos64_t;
 
 #define EOF	(-1)
+#define L_tmpnam	128
+#define FOPEN_MAX	16
+#define FILENAME_MAX	4095
 #define BUFSIZ	8192
+#define L_ctermid	9
+#define L_cuserid	9
+#define P_tmpdir	"<pathname>"
 
 
 #define _IOFBF	0
@@ -1436,6 +1519,9 @@ typedef __off64_t fpos64_t;
 typedef int (*__compar_fn_t) ();
 
 #define MB_CUR_MAX	(__ctype_get_mb_cur_max())
+#define EXIT_SUCCESS	0
+#define EXIT_FAILURE	1
+#define RAND_MAX	2147483647
 
 typedef struct
 {
@@ -1479,6 +1565,17 @@ lldiv_t;
 #define MAP_SHARED	0x01
 #define MAP_PRIVATE	0x02
 #define PROT_READ	0x1
+#define MCL_CURRENT	1
+#define MCL_FUTURE	2
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/msg.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define MSG_NOERROR	010000
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1489,7 +1586,11 @@ lldiv_t;
 
 struct rusage;
 
+typedef unsigned long rlim_t;
+
 #define RLIM_INFINITY	(~0UL)
+#define RLIM_SAVED_CUR	-1
+#define RLIM_SAVED_MAX	-1
 #define RLIMIT_CPU	0
 #define RLIMIT_FSIZE	1
 #define RLIMIT_DATA	2
@@ -1505,21 +1606,7 @@ struct rusage;
 </PARA>
 <SCREEN>
 
-struct sembuf
-{
-  short sem_num;
-  short sem_op;
-  short sem_flg;
-}
- ;
-
-#define IPC_PRIVATE	((key_t)0)
-#define IPC_RMID	0
-#define IPC_CREAT	00001000
-#define IPC_EXCL	00002000
-#define IPC_NOWAIT	00004000
 #define SEM_UNDO	0x1000
-#define IPC_SET	1
 #define GETPID	11
 #define GETVAL	12
 #define GETALL	13
@@ -1527,7 +1614,6 @@ struct sembuf
 #define GETZCNT	15
 #define SETVAL	16
 #define SETALL	17
-#define IPC_STAT	2
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1707,6 +1793,8 @@ struct stat64
 #define S_ISLNK(m)	(((m)&amp S_IFMT)==S_IFLNK)
 #define S_ISREG(m)	(((m)&amp S_IFMT)==S_IFREG)
 #define S_ISSOCK(m)	(((m)&amp S_IFMT)==S_IFSOCK)
+#define S_TYPEISMQ(buf)	((buf)->st_mode - (buf)->st_mode)
+#define S_TYPEISSHM(buf)	((buf)->st_mode - (buf)->st_mode)
 #define S_IRWXU	(S_IREAD|S_IWRITE|S_IEXEC)
 #define S_IROTH	(S_IRGRP>>3)
 #define S_IRGRP	(S_IRUSR>>3)
@@ -1822,12 +1910,12 @@ struct tms
 
 struct utsname
 {
-  char sysname[1];
-  char nodename[1];
-  char release[1];
-  char version[1];
-  char machine[1];
-  char __domainname[1];
+  char sysname[65];
+  char nodename[65];
+  char release[65];
+  char version[65];
+  char machine[65];
+  char __domainname[65];
 }
  ;
 </SCREEN>
@@ -1864,28 +1952,26 @@ idtype_t;
 </PARA>
 <SCREEN>
 
-typedef int speed_t;
-
 #define TCSANOW	0
 #define TCOOFF	0
 #define TCIFLUSH	0
-#define TAB0	0000000
-#define VT0	0000000
 #define CR0	0000000
 #define FF0	0000000
 #define NL0	0000000
 #define BS0	0000000
+#define TAB0	0000000
+#define VT0	0000000
 #define OPOST	0000001
 #define OLCUC	0000002
-#define XCASE	0000004
 #define ONLCR	0000004
+#define XCASE	0000004
 #define OCRNL	0000010
 #define ONOCR	0000020
 #define ONLRET	0000040
 #define OFILL	0000100
 #define OFDEL	0000200
-#define NLDLY	0000400
 #define NL1	0000400
+#define NLDLY	0000400
 #define IUCLC	0001000
 #define CR1	0001000
 #define CR2	0002000
@@ -1901,13 +1987,20 @@ typedef int speed_t;
 #define VT1	0040000
 #define FFDLY	0100000
 #define FF1	0100000
-#define TCSADRAIN	1
 #define TCOON	1
 #define TCOFLUSH	1
+#define TCSADRAIN	1
 #define TCSAFLUSH	2
 #define TCIOFF	2
 #define TCIOFLUSH	2
 #define TCION	3
+
+typedef int speed_t;
+
+typedef unsigned char cc_t;
+
+typedef unsigned int tcflag_t;
+
 
 #define VINTR	0
 #define VQUIT	1
@@ -1948,10 +2041,12 @@ typedef int speed_t;
 #define CSIZE	0000060
 #define CS8	0000060
 #define CSTOPB	0000100
+#define CREAD	0000200
 #define PARENB	0000400
 #define PARODD	0001000
 #define HUPCL	0002000
 #define CLOCAL	0004000
+#define VTIME	5
 
 #define ISIG	0000001
 #define ICANON	0000002
@@ -1997,9 +2092,6 @@ typedef int speed_t;
 #define CLOCKS_PER_SEC	1000000l
 
 typedef long __clock_t;
-
-
-typedef __clock_t clock_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2008,8 +2100,8 @@ typedef __clock_t clock_t;
 </PARA>
 <SCREEN>
 
-#define UL_GETFSIZE	UL_GETFSIZE
-#define UL_SETFSIZE	UL_SETFSIZE
+#define UL_GETFSIZE	1
+#define UL_SETFSIZE	2
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2018,25 +2110,148 @@ typedef __clock_t clock_t;
 </PARA>
 <SCREEN>
 
-typedef int ssize_t;
-
-typedef int pid_t;
-
 typedef int *intptr_t;
 
 #define SEEK_SET	0
 #define STDIN_FILENO	0
 #define STDOUT_FILENO	1
 #define SEEK_CUR	1
-#define _SC_CLK_TCK	2
 #define SEEK_END	2
 #define STDERR_FILENO	2
-#define _SC_OPEN_MAX	4
 
 #define F_OK	0
 #define X_OK	1
 #define W_OK	2
 #define R_OK	4
+
+#define _POSIX_REALTIME_SIGNALS	1
+#define _POSIX_SHARED_MEMORY_OBJECTS	1
+#define _POSIX_ASYNCHRONOUS_IO	1
+#define _POSIX_TIMERS	1
+#define _POSIX_MEMLOCK	1
+#define _POSIX_MEMORY_PROTECTION	1
+#define _POSIX_PRIORITY_SCHEDULING	1
+#define _POSIX_SEMAPHORES	1
+#define _POSIX_MAPPED_FILES	1
+#define _POSIX_SYNCHRONIZED_IO	1
+#define _POSIX_FSYNC	1
+#define _POSIX_MEMLOCK_RANGE	1
+#define _POSIX_MESSAGE_PASSING	1
+#define _POSIX2_VERSION	199209L
+#define _POSIX2_C_VERSION	199209L
+#define _POSIX_VERSION	199506L
+
+#define _PC_LINK_MAX	0
+#define _PC_MAX_CANON	1
+#define _PC_ASYNC_IO	10
+#define _PC_PRIO_IO	11
+#define _PC_FILESIZEBITS	13
+#define _PC_MAX_INPUT	2
+#define _PC_NAME_MAX	3
+#define _PC_PATH_MAX	4
+#define _PC_PIPE_BUF	5
+#define _PC_CHOWN_RESTRICTED	6
+#define _PC_NO_TRUNC	7
+#define _PC_VDISABLE	8
+#define _PC_SYNC_IO	9
+
+#define _SC_ARG_MAX	0
+#define _SC_CHILD_MAX	1
+#define _SC_PRIORITY_SCHEDULING	10
+#define _SC_TIMERS	11
+#define _SC_ASYNCHRONOUS_IO	12
+#define _SC_XBS5_ILP32_OFF32	125
+#define _SC_XBS5_ILP32_OFFBIG	126
+#define _SC_XBS5_LP64_OFF64	127
+#define _SC_XBS5_LPBIG_OFFBIG	128
+#define _SC_XOPEN_LEGACY	129
+#define _SC_PRIORITIZED_IO	13
+#define _SC_XOPEN_REALTIME	130
+#define _SC_SYNCHRONIZED_IO	14
+#define _SC_MAPPED_FILES	16
+#define _SC_MEMLOCK	17
+#define _SC_MEMLOCK_RANGE	18
+#define _SC_MEMORY_PROTECTION	19
+#define _SC_CLK_TCK	2
+#define _SC_MESSAGE_PASSING	20
+#define _SC_SEMAPHORES	21
+#define _SC_SHARED_MEMORY_OBJECTS	22
+#define _SC_AIO_LISTIO_MAX	23
+#define _SC_AIO_MAX	24
+#define _SC_AIO_PRIO_DELTA_MAX	25
+#define _SC_DELAYTIMER_MAX	26
+#define _SC_MQ_OPEN_MAX	27
+#define _SC_MQ_PRIO_MAX	28
+#define _SC_VERSION	29
+#define _SC_NGROUPS_MAX	3
+#define _SC_RTSIG_MAX	31
+#define _SC_SEM_NSEMS_MAX	32
+#define _SC_SEM_VALUE_MAX	33
+#define _SC_SIGQUEUE_MAX	34
+#define _SC_TIMER_MAX	35
+#define _SC_BC_BASE_MAX	36
+#define _SC_BC_DIM_MAX	37
+#define _SC_BC_SCALE_MAX	38
+#define _SC_BC_STRING_MAX	39
+#define _SC_OPEN_MAX	4
+#define _SC_COLL_WEIGHTS_MAX	40
+#define _SC_EXPR_NEST_MAX	42
+#define _SC_LINE_MAX	43
+#define _SC_RE_DUP_MAX	44
+#define _SC_2_VERSION	46
+#define _SC_2_C_BIND	47
+#define _SC_2_C_DEV	48
+#define _SC_2_FORT_DEV	49
+#define _SC_STREAM_MAX	5
+#define _SC_2_FORT_RUN	50
+#define _SC_2_SW_DEV	51
+#define _SC_2_LOCALEDEF	52
+#define _SC_TZNAME_MAX	6
+#define _SC_THREADS	67
+#define _SC_THREAD_SAFE_FUNCTIONS	68
+#define _SC_JOB_CONTROL	7
+#define _SC_THREAD_DESTRUCTOR_ITERATIONS	73
+#define _SC_THREAD_KEYS_MAX	74
+#define _SC_THREAD_STACK_MIN	75
+#define _SC_THREAD_THREADS_MAX	76
+#define _SC_THREAD_ATTR_STACKADDR	77
+#define _SC_THREAD_ATTR_STACKSIZE	78
+#define _SC_THREAD_PRIORITY_SCHEDULING	79
+#define _SC_SAVED_IDS	8
+#define _SC_THREAD_PRIO_INHERIT	80
+#define _SC_THREAD_PRIO_PROTECT	81
+#define _SC_THREAD_PROCESS_SHARED	82
+#define _SC_PASS_MAX	88
+#define _SC_XOPEN_VERSION	89
+#define _SC_REALTIME_SIGNALS	9
+#define _SC_XOPEN_CRYPT	92
+#define _SC_XOPEN_ENH_I18N	93
+#define _SC_XOPEN_SHM	94
+#define _SC_2_C_VERSION	96
+#define _SC_2_UPE	97
+
+#define _CS_PATH	0
+#define _CS_XBS5_ILP32_OFF32_CFLAGS	1100
+#define _CS_XBS5_ILP32_OFF32_LDFLAGS	1101
+#define _CS_XBS5_ILP32_OFF32_LIBS	1102
+#define _CS_XBS5_ILP32_OFF32_LINTFLAGS	1103
+#define _CS_XBS5_ILP32_OFFBIG_CFLAGS	1104
+#define _CS_XBS5_ILP32_OFFBIG_LDFLAGS	1105
+#define _CS_XBS5_ILP32_OFFBIG_LIBS	1106
+#define _CS_XBS5_ILP32_OFFBIG_LINTFLAGS	1107
+#define _CS_XBS5_LP64_OFF64_CFLAGS	1108
+#define _CS_XBS5_LP64_OFF64_LDFLAGS	1109
+#define _CS_XBS5_LP64_OFF64_LIBS	1110
+#define _CS_XBS5_LP64_OFF64_LINTFLAGS	1111
+#define _CS_XBS5_LPBIG_OFFBIG_CFLAGS	1112
+#define _CS_XBS5_LPBIG_OFFBIG_LDFLAGS	1113
+#define _CS_XBS5_LPBIG_OFFBIG_LIBS	1114
+#define _CS_XBS5_LPBIG_OFFBIG_LINTFLAGS	1115
+
+#define _XOPEN_XPG4	1
+#define _XOPEN_REALTIME	1
+#define _XOPEN_XCU_VERSION	4
+#define _XOPEN_VERSION	500
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -10205,17 +10420,32 @@ Convert initial portion of wide string NPTR to unsigned long long int representa
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
-<!--    at Tue Jan 15 16:34:10 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
+<!--    at Mon Mar 25 19:08:07 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
 </PARA>
+<TABLE>
+<TITLE>libm Definition</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Library:</ENTRY>
+<ENTRY>libm</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>SONAME:</ENTRY>
+<ENTRY>See psLSB.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 <PARA>
 The behavior of the interfaces in this library is specified by the following standards.<SIMPLELIST COLUMNS=1>
 <MEMBER>
@@ -10354,17 +10584,32 @@ struct exception
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
-<!--    at Tue Jan 15 16:34:12 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
+<!--    at Mon Mar 25 19:08:08 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
 </PARA>
+<TABLE>
+<TITLE>libpthread Definition</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Library:</ENTRY>
+<ENTRY>libpthread</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>SONAME:</ENTRY>
+<ENTRY>libpthread.so.0</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 <PARA>
 LSB systems support POSIX threads with the following exceptions.
 This list is intended to match the behavior of historical Linux
@@ -10533,6 +10778,7 @@ struct _pthread_fastlock
 }
  ;
 
+#define PTHREAD_MUTEX_INITIALIZER	{0,0,0,PTHREAD_MUTEX_TIMED_NP,__LOCK_INITIALIZER}
 
 typedef unsigned long pthread_t;
 
@@ -10661,13 +10907,13 @@ sem_timedwait() waits for semaphore object SEM being posted. It is a new functio
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
-<!--    at Tue Jan 15 16:34:16 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
+<!--    at Mon Mar 25 19:08:10 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -10869,13 +11115,13 @@ directory search-path for object files
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
-<!--    at Tue Jan 15 16:34:21 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
+<!--    at Mon Mar 25 19:08:13 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -10931,40 +11177,178 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 </PARA>
 <SCREEN>
 
-typedef int ssize_t;
-
-typedef int pid_t;
-
 typedef int *intptr_t;
 
 #define SEEK_SET	0
 #define STDIN_FILENO	0
 #define STDOUT_FILENO	1
 #define SEEK_CUR	1
-#define _SC_CLK_TCK	2
 #define SEEK_END	2
 #define STDERR_FILENO	2
-#define _SC_OPEN_MAX	4
 
 #define F_OK	0
 #define X_OK	1
 #define W_OK	2
 #define R_OK	4
+
+#define _POSIX_REALTIME_SIGNALS	1
+#define _POSIX_SHARED_MEMORY_OBJECTS	1
+#define _POSIX_ASYNCHRONOUS_IO	1
+#define _POSIX_TIMERS	1
+#define _POSIX_MEMLOCK	1
+#define _POSIX_MEMORY_PROTECTION	1
+#define _POSIX_PRIORITY_SCHEDULING	1
+#define _POSIX_SEMAPHORES	1
+#define _POSIX_MAPPED_FILES	1
+#define _POSIX_SYNCHRONIZED_IO	1
+#define _POSIX_FSYNC	1
+#define _POSIX_MEMLOCK_RANGE	1
+#define _POSIX_MESSAGE_PASSING	1
+#define _POSIX2_VERSION	199209L
+#define _POSIX2_C_VERSION	199209L
+#define _POSIX_VERSION	199506L
+
+#define _PC_LINK_MAX	0
+#define _PC_MAX_CANON	1
+#define _PC_ASYNC_IO	10
+#define _PC_PRIO_IO	11
+#define _PC_FILESIZEBITS	13
+#define _PC_MAX_INPUT	2
+#define _PC_NAME_MAX	3
+#define _PC_PATH_MAX	4
+#define _PC_PIPE_BUF	5
+#define _PC_CHOWN_RESTRICTED	6
+#define _PC_NO_TRUNC	7
+#define _PC_VDISABLE	8
+#define _PC_SYNC_IO	9
+
+#define _SC_ARG_MAX	0
+#define _SC_CHILD_MAX	1
+#define _SC_PRIORITY_SCHEDULING	10
+#define _SC_TIMERS	11
+#define _SC_ASYNCHRONOUS_IO	12
+#define _SC_XBS5_ILP32_OFF32	125
+#define _SC_XBS5_ILP32_OFFBIG	126
+#define _SC_XBS5_LP64_OFF64	127
+#define _SC_XBS5_LPBIG_OFFBIG	128
+#define _SC_XOPEN_LEGACY	129
+#define _SC_PRIORITIZED_IO	13
+#define _SC_XOPEN_REALTIME	130
+#define _SC_SYNCHRONIZED_IO	14
+#define _SC_MAPPED_FILES	16
+#define _SC_MEMLOCK	17
+#define _SC_MEMLOCK_RANGE	18
+#define _SC_MEMORY_PROTECTION	19
+#define _SC_CLK_TCK	2
+#define _SC_MESSAGE_PASSING	20
+#define _SC_SEMAPHORES	21
+#define _SC_SHARED_MEMORY_OBJECTS	22
+#define _SC_AIO_LISTIO_MAX	23
+#define _SC_AIO_MAX	24
+#define _SC_AIO_PRIO_DELTA_MAX	25
+#define _SC_DELAYTIMER_MAX	26
+#define _SC_MQ_OPEN_MAX	27
+#define _SC_MQ_PRIO_MAX	28
+#define _SC_VERSION	29
+#define _SC_NGROUPS_MAX	3
+#define _SC_RTSIG_MAX	31
+#define _SC_SEM_NSEMS_MAX	32
+#define _SC_SEM_VALUE_MAX	33
+#define _SC_SIGQUEUE_MAX	34
+#define _SC_TIMER_MAX	35
+#define _SC_BC_BASE_MAX	36
+#define _SC_BC_DIM_MAX	37
+#define _SC_BC_SCALE_MAX	38
+#define _SC_BC_STRING_MAX	39
+#define _SC_OPEN_MAX	4
+#define _SC_COLL_WEIGHTS_MAX	40
+#define _SC_EXPR_NEST_MAX	42
+#define _SC_LINE_MAX	43
+#define _SC_RE_DUP_MAX	44
+#define _SC_2_VERSION	46
+#define _SC_2_C_BIND	47
+#define _SC_2_C_DEV	48
+#define _SC_2_FORT_DEV	49
+#define _SC_STREAM_MAX	5
+#define _SC_2_FORT_RUN	50
+#define _SC_2_SW_DEV	51
+#define _SC_2_LOCALEDEF	52
+#define _SC_TZNAME_MAX	6
+#define _SC_THREADS	67
+#define _SC_THREAD_SAFE_FUNCTIONS	68
+#define _SC_JOB_CONTROL	7
+#define _SC_THREAD_DESTRUCTOR_ITERATIONS	73
+#define _SC_THREAD_KEYS_MAX	74
+#define _SC_THREAD_STACK_MIN	75
+#define _SC_THREAD_THREADS_MAX	76
+#define _SC_THREAD_ATTR_STACKADDR	77
+#define _SC_THREAD_ATTR_STACKSIZE	78
+#define _SC_THREAD_PRIORITY_SCHEDULING	79
+#define _SC_SAVED_IDS	8
+#define _SC_THREAD_PRIO_INHERIT	80
+#define _SC_THREAD_PRIO_PROTECT	81
+#define _SC_THREAD_PROCESS_SHARED	82
+#define _SC_PASS_MAX	88
+#define _SC_XOPEN_VERSION	89
+#define _SC_REALTIME_SIGNALS	9
+#define _SC_XOPEN_CRYPT	92
+#define _SC_XOPEN_ENH_I18N	93
+#define _SC_XOPEN_SHM	94
+#define _SC_2_C_VERSION	96
+#define _SC_2_UPE	97
+
+#define _CS_PATH	0
+#define _CS_XBS5_ILP32_OFF32_CFLAGS	1100
+#define _CS_XBS5_ILP32_OFF32_LDFLAGS	1101
+#define _CS_XBS5_ILP32_OFF32_LIBS	1102
+#define _CS_XBS5_ILP32_OFF32_LINTFLAGS	1103
+#define _CS_XBS5_ILP32_OFFBIG_CFLAGS	1104
+#define _CS_XBS5_ILP32_OFFBIG_LDFLAGS	1105
+#define _CS_XBS5_ILP32_OFFBIG_LIBS	1106
+#define _CS_XBS5_ILP32_OFFBIG_LINTFLAGS	1107
+#define _CS_XBS5_LP64_OFF64_CFLAGS	1108
+#define _CS_XBS5_LP64_OFF64_LDFLAGS	1109
+#define _CS_XBS5_LP64_OFF64_LIBS	1110
+#define _CS_XBS5_LP64_OFF64_LINTFLAGS	1111
+#define _CS_XBS5_LPBIG_OFFBIG_CFLAGS	1112
+#define _CS_XBS5_LPBIG_OFFBIG_LDFLAGS	1113
+#define _CS_XBS5_LPBIG_OFFBIG_LIBS	1114
+#define _CS_XBS5_LPBIG_OFFBIG_LINTFLAGS	1115
+
+#define _XOPEN_XPG4	1
+#define _XOPEN_REALTIME	1
+#define _XOPEN_XCU_VERSION	4
+#define _XOPEN_VERSION	500
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
-<!--    at Tue Jan 15 16:34:18 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
+<!--    at Mon Mar 25 19:08:12 2002 -->
 <SECT1 ID=librt>
 <TITLE>Interfaces for librt</TITLE>
 <PARA>
 </PARA>
+<TABLE>
+<TITLE>librt Definition</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Library:</ENTRY>
+<ENTRY>librt</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>SONAME:</ENTRY>
+<ENTRY>librt.so.1</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 <PARA>
 The behavior of the interfaces in this library is specified by the following standards.<SIMPLELIST COLUMNS=1>
 <MEMBER>
@@ -11049,18 +11433,18 @@ enum
 
 struct aiocb
 {
-  int aio_fildes;
-  int aio_lio_opcode;
-  int aio_reqprio;
-  void *aio_buf;
-  size_t aio_nbytes;
-  Unknown Type:".." aio_sigevent;
+  int aio_fildes;		/* File desriptor. */
+  int aio_lio_opcode;		/* Operation to be performed. */
+  int aio_reqprio;		/* Request priority offset. */
+  void *aio_buf;		/* Location of buffer. */
+  size_t aio_nbytes;		/* Length of transfer. */
+  struct sigevent aio_sigevent;	/* Signal number and value. */
   struct aiocb *__next_prio;
   int __abs_prio;
   int __policy;
   int __error_code;
   __ssize_t __return_value;
-  __off_t aio_offset;
+  __off_t aio_offset;		/* File offset. */
   char __pad[1];
   char __unused[1];
 }
@@ -11073,7 +11457,7 @@ struct aiocb64
   int aio_reqprio;
   void *aio_buf;
   size_t aio_nbytes;
-  Unknown Type:".." aio_sigevent;
+  struct sigevent aio_sigevent;
   struct aiocb *__next_prio;
   int __abs_prio;
   int __policy;
@@ -11160,14 +11544,11 @@ struct itimerval
 #define CLOCKS_PER_SEC	1000000l
 
 typedef long __clock_t;
-
-
-typedef __clock_t clock_t;
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.32 2001/12/18 21:28:14 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
 
 
 </CHAPTER>
