@@ -189,6 +189,10 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (define %generate-article-toc-on-titlepage%
  #t)
 
+;; Restart page numbers in each component?
+(define %page-number-restart% 
+ #f)
+
 ;;Do you want to start new page numbers with each article?
 (define %article-page-number-restart%
  #f)
@@ -472,6 +476,30 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 	    keep-with-next?: #t
 	    adm-title)
 	  (process-children))))))
+
+;; fix so that books do not
+;; restart page numbering. I.e. a set has pages that run from 1..end
+;; and don't retart at the second book.
+;; trick here is to lie and say that we are never at the start of a book
+;; or in a first chapter.
+;; These two functions are supposed to return #t if we are at the start
+;; of a book or in the first chapter. They are defined in common/dbcommon.dsl.
+;; This might affect any function that uses book-start? or first-chapter?
+;; but at docbook-dsssl-1.79 the only places that these variables are used
+;; are for page numbering decisions. 
+;; [[ these page numbering decisions are in the following:
+;;  (element (book bibliography))
+;;  (element (article))
+;;  $process-partintro$
+;;  (element (index))
+;;  $section$
+;; ]]
+
+(define (book-start?)
+  #f)
+
+(define (first-chapter?)
+  #f)
 
 
 ;;======================================
