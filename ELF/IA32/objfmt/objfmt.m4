@@ -6,7 +6,7 @@ LSB-conforming implementations shall support an object file format, called
 Executable and Linking Format (ELF) as defined by the
 <XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
 <XREF LINKEND="std.IA32.ABI.4"> and as supplemented by the
-<XREF LINKEND="std.LSB"> and this document.
+<XREF LINKEND="std.LSB"> and the generic LSB specification.
 </PARA>
 </PARTINTRO>
 
@@ -22,26 +22,31 @@ Chapter 4 of the
 <SECT2 ID="mifileclass">
 <TITLE>File Class</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT2>
 <SECT2 ID="midataencoding">
 <TITLE>Data Encoding</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT2>
 <SECT2 ID="miosidentification">
 <TITLE>OS Identification</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorident">
 <TITLE>Processor Identification</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorspecialflags">
 <TITLE>Processor Specific Flags</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT2>
 </SECT1>
@@ -93,6 +98,7 @@ Xinclude(linuxsecttypes.sgml)
 <CHAPTER ID=specialsections>
 <TITLE>Special Sections</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 
 <SECT1 ID="elfspecial">
@@ -140,6 +146,7 @@ Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
 <SECT1 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
+See Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT1>
 

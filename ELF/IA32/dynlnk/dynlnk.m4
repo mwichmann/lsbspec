@@ -5,15 +5,16 @@
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the
 <XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
-<XREF LINKEND="std.IA32.ABI.4"> and as supplemented by the
+<XREF LINKEND="std.IA32.ABI.4"> and as supplemented by 
 <XREF LINKEND="std.LSB">
-and this document.
+and the generic LSB specification.
 </PARA>
 </PARTINTRO>
 
 <CHAPTER ID=programheader>
 <TITLE>Program Header</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 
 <SECT1 ID=progheadtypes>
@@ -33,6 +34,7 @@ and this document.
 <CHAPTER ID=programloading>
 <TITLE>Program Loading</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 
 </CHAPTER>
@@ -40,6 +42,7 @@ and this document.
 <CHAPTER ID=dynamiclinking>
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 
 <SECT1 ID=dynsection>
@@ -54,30 +57,35 @@ include(dyntag.sgml)
 <SECT1 ID=globaloffettable>
 <TITLE>Global Offset Table</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT1>
 
 <SECT1 ID=sharedobjectdependencies>
 <TITLE>Shared Object Dependencies</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT1>
 
 <SECT1 ID=functionaddresses>
 <TITLE>Function Addresses</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT1>
 
 <SECT1 ID=procedurelinkagetable>
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT1>
 
 <SECT1 ID=initandfinifunctons>
 <TITLE>Initialization and Termination Functions</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 </PARA>
 </SECT1>
 
