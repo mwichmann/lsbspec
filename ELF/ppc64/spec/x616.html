@@ -1,0 +1,1498 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Coding Examples</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.9"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Low Level System Information"
+HREF="c135.html"><LINK
+REL="PREVIOUS"
+TITLE="Process Initialization"
+HREF="x502.html"><LINK
+REL="NEXT"
+TITLE="DWARF Definition"
+HREF="x810.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>64-bit PowerPC ELF Application Binary Interface Supplement 1.9</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x502.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Low Level System Information</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x810.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CODE-EX"
+>3.5. Coding Examples</A
+></H1
+><P
+>This section describes example code sequences for fundamental
+operations such as calling functions, accessing static objects, and
+transferring control from one part of a program to another.  Previous
+sections discussed how a program may use the machine or the operating
+system, and they specified what a program may and may not assume about
+the execution environment.  Unlike previous material, the information
+in this section illustrates how operations may be done, not how they
+must be done.</P
+><P
+>As before, examples use the ANSI C language.  Other programming
+languages may use the same conventions displayed below, but failure to
+do so does not prevent a program from conforming to the ABI.
+		</P
+><P
+>64-bit PowerPC code is normally position independent.  That is, the
+code is not tied to a specific load address, and may be executed
+properly at various positions in virtual memory.  Although it is
+possible to write position dependent code on the 64-bit PowerPC, these
+code examples only show position independent code.
+		</P
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="/usr/share/sgml/docbook/stylesheet/dsssl/modular/images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Note</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The examples below show code fragments with various simplifications.  They are intended to explain 
+			addressing modes, not to show optimal code sequences or to reproduce compiler output.
+			</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MOD-OVER"
+>3.5.1. Code Model Overview</A
+></H2
+><P
+>When the system creates a process image, the executable file portion
+of the process has fixed addresses and the system chooses shared
+object library virtual addresses to avoid conflicts with other
+segments in the process.  To maximize text sharing, shared objects
+conventionally use position-independent code, in which instructions
+contain no absolute addresses.  Shared object text segments can be
+loaded at various virtual addresses without having to change the
+segment images.  Thus multiple processes can share a single shared
+object text segment, even if the segment resides at a different
+virtual address in each process.</P
+><P
+>Position-independent code relies on two techniques:</P
+><P
+></P
+><UL
+><LI
+><P
+>Control transfer instructions hold addresses relative to the
+  effective address (EA) or use registers that hold the transfer
+  address.  An EA-relative branch computes its destination address in
+  terms of the current EA, not relative to any absolute address.</P
+></LI
+><LI
+><P
+>When the program requires an absolute address, it computes the
+  desired value.  Instead of embedding absolute addresses in
+  instructions (in the text segment), the compiler generates code to
+  calculate an absolute address (in a register or in the stack or data
+  segment) during execution.</P
+></LI
+></UL
+><P
+>Because the 64-bit PowerPC Architecture provides EA-relative branch
+instructions and also branch instructions using registers that hold
+the transfer address, compilers can satisfy the first condition
+easily.
+			</P
+><P
+>A "Global Offset Table," or GOT, provides information for address
+calculation.  Position independent object files (executable and shared
+object files) have a table in their data segment that holds addresses.
+When the system creates the memory image for an object file, the table
+entries are relocated to reflect the absolute virtual address as
+assigned for an individual process.  Because data segments are private
+for each process, the table entries can change--unlike text segments,
+which multiple processes share.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TOC-SEC"
+>3.5.2. The TOC section</A
+></H2
+><P
+>ELF processor-specific supplements normally define a GOT ("Global
+Offset Table") section used to hold addresses for position independent
+code.  Some ELF processor-specific supplements, including the 32-bit
+PowerPC Processor Supplement, define a small data section.  The same
+register is sometimes used to address both the GOT and the small data
+section.
+			</P
+><P
+>The 64-bit PowerOpen ABI defines a TOC ("Table of Contents") section.
+The TOC combines the functions of the GOT and the small data section.
+			</P
+><P
+>This ABI uses the term TOC.  The TOC section defined here is intended
+to be similar to that defined by the 64-bit PowerOpen ABI.  The TOC
+section contains a conventional ELF GOT, and may optionally contain a
+small data area.  The GOT and the small data area may be intermingled
+in the TOC section.
+			</P
+><P
+>The TOC section is accessed via the dedicated TOC pointer register,
+r2.  Accesses are normally made using the register indirect with
+immediate index mode supported by the 64-bit PowerPC processor, which
+limits a single TOC section to 65,536 bytes, enough for 8,192 GOT
+entries.
+			</P
+><P
+>The value of the TOC pointer register is called the TOC base.  The TOC
+base is typically the first address in the TOC plus 0x8000, thus
+permitting a full 64 Kbyte TOC.
+			</P
+><P
+>A relocatable object file must have a single TOC section and a single
+TOC base.  However, when the link editor combines relocatable object
+files to form a single executable or shared object, it may create
+multiple TOC sections.  The link editor is responsible for deciding
+how to associate TOC sections with object files.  Normally the link
+editor will only create multiple TOC sections if it has more than
+65,536 bytes to store in a TOC.
+			</P
+><P
+>All link editors which support this ABI must support a single TOC
+section, but support for multiple TOC sections is optional.
+			</P
+><P
+>Each shared object will have a separate TOC or TOCs.
+			</P
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="/usr/share/sgml/docbook/stylesheet/dsssl/modular/images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Note</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>This ABI does not actually restrict the size of a TOC section.
+It is permissible to use a larger TOC section, if code uses a
+different addressing mode to access it.  The AIX link editor, in
+particular, does not support multiple TOC sections, but instead
+inserts call out code at link time to support larger TOC sections.
+				</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TOCALS"
+>3.5.3. TOC Assembly Language Syntax</A
+></H2
+><P
+>Desire for compatibility with both ELF systems and PowerOpen systems
+suggests two different assembly language syntaxes to be used when
+referring to the TOC section.  This syntax is not part of the official
+ABI.  The description here is only for information purposes.
+Particular assemblers may support both syntaxes, only one, or neither.
+			</P
+><P
+>The ELF syntax uses @got and @toc.  The syntax SYMBOL@got refers to the offset in the TOC at 
+			which the value of SYMBOL (that is, the address of the variable whose name is SYMBOL) is stored, 
+			assuming the offset is no larger than 16 bits.  For example,
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>ld   r3,x@got(r2)</PRE
+><P
+>SYMBOL@got will be an offset within the global offset table, which as
+noted above, forms part of the TOC section.
+			</P
+><P
+>Ordinarily the link editor will avoid having a TOC, and hence a GOT,
+larger than 64 Kbytes, perhaps by support multiple TOC sections, or
+via some other technique.  However, for flexibility, there is a syntax
+for 32 bit offsets to the GOT.  The syntaxes SYMBOL@got@ha,
+SYMBOL@got@h, and SYMBOL@got@l refer to the high adjusted, high, and
+low parts of the GOT offset.  (The meaning of ``high adjusted'' is
+explained in <A
+HREF="x867.html#RELOC-TYPE"
+>Section 4.5.1</A
+>).
+			</P
+><P
+>The syntax SYMBOL@toc refers to the value (SYMBOL - base (TOC)), where
+base (TOC) represents the TOC base for the current object file.  This
+provides the address of the variable whose name is SYMBOL, as an
+offset from the TOC base.  This assumes that the variable may be found
+within the TOC, and that its offset is no larger than 16 bits.
+			</P
+><P
+>As with the GOT, the syntaxes SYMBOL@toc@ha, SYMBOL@toc@h, and
+SYMBOL@toc@l refer to the high adjusted, high, and low parts of the
+TOC offset.
+			</P
+><P
+>The syntax SYMBOL@got@plt may be used to refer to the offset in the
+TOC of a procedure linkage table entry stored in the global offset
+table.  The corresponding syntaxes SYMBOL@got@plt@ha,
+SYMBOL@got@plt@h, and SYMBOL@got@plt@l are also defined.
+			</P
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="/usr/share/sgml/docbook/stylesheet/dsssl/modular/images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Note</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If X is a variable stored in the TOC, then X@got will be the
+offset within the TOC of a doubleword whose value is X@toc.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>The special symbol .TOC.@tocbase is used to represent the TOC base for
+the current object file.  The following might appear in a function
+descriptor definition:
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>      .quad .TOC.@tocbase</PRE
+><P
+>The PowerOpen syntax is more complex.  It is derived from the
+different representation of the TOC section in XCOFF.
+			</P
+><P
+>Assembly code first uses the .toc pseudo-op to enter the TOC section.
+It then uses a label to name a particular element.  It then uses the
+.tc pseudo-op to indicate which GOT entry it wishes to name.  Later in
+the code, the label is used with the TOC register to load the address.  For example:
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>      .toc
+  .L1:
+      .tc  x[TC],x
+      ...
+      ld   r3,.L1(r2)</PRE
+><P
+>This creates a GOT entry for the variable x, and names that entry .L1
+for the remainder of the assembly.  The effect is the same as the
+single ELF-style instruction above.
+			</P
+><P
+>The special value TOC[tc0] is used to represent the TOC base for the
+current object file:
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>      .quad TOC[tc0]</PRE
+><P
+>The PowerOpen syntax permits other data to be stored in the .toc
+section.  The assembler will output this data in a .toc section, and
+convert references as though its address were specified with @toc
+rather than @got.
+			</P
+><P
+>There is a significant difference in representation of the TOC in this
+ABI and in the 64-bit PowerOpen ABI.  Relocatable object files created
+using the 64-bit PowerOpen ABI have a .toc section which contains real
+data.  The link editor uses garbage collection to discard duplicate
+information including in particular TOC entries which refer to the
+same variable.  In this ABI, relocatable object files do not contain
+.got sections holding real data.  Instead, the GOT is created by the
+link editor based on relocations created by @got references.  This ABI
+does not require the link editor to support garbage collection.  This
+ABI does permit real data to exist in .toc sections, but this data
+will never be referred to directly by instructions which use @got
+references.  @got references always refer to the GOT which is created
+by the link editor when creating an executable or a shared object.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PRO-EP"
+>3.5.4. Function Prologue and Epilogue</A
+></H2
+><P
+>This section describes functions' prologue and epilogue code.  A
+function's prologue establishes a stack frame, if necessary, and may
+save any nonvolatile registers it uses.  A function's epilogue
+generally restores registers that were saved in the prologue code,
+restores the previous stack frame, and returns to the caller.
+Except for the rules below, this ABI does not mandate predetermined
+code sequences for function prologues and epilogues.  However, the
+following rules, which permit reliable call chain backtracing, shall
+be followed:
+			</P
+><P
+></P
+><UL
+><LI
+><P
+>If the function uses any nonvolatile general registers, it shall
+save them in the general register save area.  If the function does not
+require a stack frame, this may be done using negative stack offsets
+from the caller's stack pointer.</P
+></LI
+><LI
+><P
+>If the function uses any nonvolatile floating point registers, it
+shall save them in the floating point register save area.  If the
+function does not require a stack frame, this may be done using
+negative stack offsets from the caller's stack pointer.</P
+></LI
+><LI
+><P
+>Before a function calls any other function, it shall establish its
+own stack frame, whose size shall be a multiple of 16 bytes, and shall
+save the link register at the time of entry in the LR save area of its
+caller's stack frame.</P
+></LI
+><LI
+><P
+>If the function uses any nonvolatile fields in the CR, it shall
+save the CR in the CR save area of the caller's stack frame.</P
+></LI
+><LI
+><P
+>If a function establishes a stack frame, it shall update the back
+chain word of the stack frame atomically with the stack pointer (r1)
+using one of the "Store Double Word with Update" instructions.</P
+><P
+></P
+><UL
+><LI
+><P
+>For small (no larger than 32 Kbytes) stack frames, 
+							this may be accomplished with a "Store Double Word with Update" 
+							instruction with an appropriate negative displacement.</P
+></LI
+><LI
+><P
+>For larger stack frames, the prologue shall load a 
+							volatile register with the two's complement of the size of the frame 
+							(computed with addis and addi or ori instructions) and issue a 
+							"Store Double Word with Update Indexed" instruction.</P
+></LI
+></UL
+></LI
+><LI
+><P
+>When a function deallocates its stack frame, it must do so
+atomically, either by loading the stack pointer (r1) with the value in
+the back chain field or by incrementing the stack pointer by the same
+amount by which it has been decremented.</P
+></LI
+></UL
+><P
+>In-line code may be used to save or restore nonvolatile general or
+floating-point registers that the function uses.  However, if there
+are many registers to be saved or restored, it may be more efficient
+to call one of the system subroutines described below.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SAVE-RES"
+>3.5.5. Register Saving and Restoring Functions</A
+></H2
+><P
+>The register saving and restoring functions described in this section
+use nonstandard calling conventions which ordinarily require them to
+be statically linked into any executable or shared object modules in
+which they are used.  Nevertheless, unlike 32-bit PowerPC ELF, these
+functions are considered part of the official ABI.  In particular, the
+link editor is permitted to treat calls to these functions specially,
+such as by changing a call to one of these function into a call to an
+absolute address as in the PowerOpen ABI.
+			</P
+><P
+>As shown in The Stack Frame section above, the general register save
+area is not at a fixed offset from either the caller's SP or the
+callee's SP.  The floating point register save area starts at a fixed
+position from the caller's SP on entry to the callee, but the position
+of the general register save area depends upon the number of floating
+point registers to be saved.  Thus it is impossible to write a general
+register saving routine which uses fixed offsets from the SP.
+			</P
+><P
+>If the routine needs to save both general and floating point
+registers, code can use r12 as the pointer for saving and restoring
+the general purpose registers.  (r12 is a volatile register but does
+not contain input parameters).  This leads to the definition of
+multiple register save and restore routines, each of which saves or
+restores M floating point registers and N general registers.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SAVEREG"
+>3.5.6. Saving General Registers Only</A
+></H2
+><P
+>For a function that saves/restores N general registers and no floating
+point registers, the saving can be done using individual store/load
+instructions or by calling system provided routines as shown below.
+			</P
+><P
+>In the following, the number of registers being saved is N, and &lt;32-N&gt;
+is the first register number to be saved/restored.  All registers from
+&lt;32-N&gt; up to 31, inclusive, are saved/restored.
+			</P
+><P
+>FRAME_SIZE is the size of the stack frame, here assumed to be less
+than 32 Kbytes.
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    mflr  r0                    # Move LR into r0
+    bl    _savegpr0_&lt;32-N&gt;      # Call routine to save general registers
+    stdu  r1,(-FRAME_SIZE)(r1)  # Create stack frame
+    ...
+    (save CR if necessary)
+    ...                         # Body of function
+    ...
+    (reload CR if necessary)
+    ...
+    (reload caller's SP into r1)
+    b     _restgpr0_&lt;32-N&gt;      # Restore registers and return</PRE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SAVE-FLOAT"
+>3.5.7. Saving General Registers and Floating Point Registers</A
+></H2
+><P
+>For a function that saves/restores N general registers and M floating
+point registers, the saving can be done using individual store/load
+instructions or by calling system provided routines as shown below.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    mflr  r0                    # Move LR into r0
+    subi  r12,r1,8*M            # Set r12 to general reg save area
+    bl    _savegpr1_&lt;32-N&gt;      # Call routine to save general registers
+    bl    _savefpr_&lt;32-M&gt;       # Call routine to save floating point regs
+    stdu  r1,(-FRAME_SIZE)(r1)  # Create stack frame
+    ...
+    (save CR if necessary)
+    ...                         # Body of function
+    ...
+    (reload CR if necessary)
+    ...
+    (reload caller's SP into r1)
+    subi  r12,r1,8*M            # Set r12 to general reg save area
+    bl    _restgpr1_&lt;32-N&gt;      # Restore general registers
+    b     _restfpr_&lt;32-M&gt;       # Restore floating point regs and return</PRE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN709"
+>3.5.8. Saving Floating Point Registers Only</A
+></H2
+><P
+>For a function that saves/restores M floating point registers and no
+general registers, the saving can be done using individual store/load
+instructions or by calling system provided routines as shown below.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    mflr  r0                    # Move LR into r0
+    bl    _savefpr_&lt;32-M&gt;       # Call routine to save general registers
+    stdu  r1,(-FRAME_SIZE)(r1)  # Create stack frame
+    ...
+    (save CR if necessary)
+    ...                         # Body of function
+    ...
+    (reload CR if necessary)
+    ...
+    (reload caller's SP into r1)
+    b     _restfpr_&lt;32-M&gt;       # Restore registers and return</PRE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SAVE-RESTORE"
+>3.5.9. Save and Restore Services</A
+></H2
+><P
+>Systems must provide three sets of routines, which may be implemented
+as multiple entry point routines or as individual routines.  They must
+adhere to the following rules.</P
+><P
+>Each _savegpr0_N routine saves the general registers from rN to r31,
+inclusive.  Each routine also saves the LR.  When the routine is
+called, r1 must point to the start of the general register save area,
+and r0 must contain the value of LR on function entry.
+			</P
+><P
+>The _restgpr0_N routines restore the general registers from rN to r31,
+and then return to the caller.  When the routine is called, r1 must
+point to the start of the general register save area.
+			</P
+><P
+>Here is a sample implementation of _savegpr0_N and _restgpr0_N.
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>  _savegpr0_14:  std  r14,-144(r1)
+  _savegpr0_15:  std  r15,-136(r1)
+  _savegpr0_16:  std  r16,-128(r1)
+  _savegpr0_17:  std  r17,-120(r1)
+  _savegpr0_18:  std  r18,-112(r1)
+  _savegpr0_19:  std  r19,-104(r1)
+  _savegpr0_20:  std  r20,-96(r1)
+  _savegpr0_21:  std  r21,-88(r1)
+  _savegpr0_22:  std  r22,-80(r1)
+  _savegpr0_23:  std  r23,-72(r1)
+  _savegpr0_24:  std  r24,-64(r1)
+  _savegpr0_25:  std  r25,-56(r1)
+  _savegpr0_26:  std  r26,-48(r1)
+  _savegpr0_27:  std  r27,-40(r1)
+  _savegpr0_28:  std  r28,-32(r1)
+  _savegpr0_29:  std  r29,-24(r1)
+  _savegpr0_30:  std  r30,-16(r1)
+  _savegpr0_31:  std  r31,-8(r1)
+                 std  r0, 16(r1)
+                 blr
+
+
+  _restgpr0_14:  ld   r14,-144(r1)
+  _restgpr0_15:  ld   r15,-136(r1)
+  _restgpr0_16:  ld   r16,-128(r1)
+  _restgpr0_17:  ld   r17,-120(r1)
+  _restgpr0_18:  ld   r18,-112(r1)
+  _restgpr0_19:  ld   r19,-104(r1)
+  _restgpr0_20:  ld   r20,-96(r1)
+  _restgpr0_21:  ld   r21,-88(r1)
+  _restgpr0_22:  ld   r22,-80(r1)
+  _restgpr0_23:  ld   r23,-72(r1)
+  _restgpr0_24:  ld   r24,-64(r1)
+  _restgpr0_25:  ld   r25,-56(r1)
+  _restgpr0_26:  ld   r26,-48(r1)
+  _restgpr0_27:  ld   r27,-40(r1)
+  _restgpr0_28:  ld   r28,-32(r1)
+  _restgpr0_29:  ld   r0, 16(r1)
+                 ld   r29,-24(r1)
+                 mtlr r0
+                 ld   r30,-16(r1)
+                 ld   r31,-8(r1)
+                 blr
+  _restgpr0_30:  ld   r30,-16(r1)
+  _restgpr0_31:  ld   r0, 16(r1)
+                 ld   r31,-8(r1)
+                 mtlr r0
+                 blr</PRE
+><P
+>Each _savegpr1_N routine saves the general registers from rN to r31,
+inclusive.  When the routine is called, r12 must point to the start of
+the general register save area.
+			</P
+><P
+>The _restgpr1_N routines restore the general registers from rN to r31.
+When the routine is called, r12 must point to the start of the general
+register save area.
+			</P
+><P
+>Here is a sample implementation of _savegpr1_N and _restgpr1_N.
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>  _savegpr1_14:  std  r14,-144(r12)
+  _savegpr1_15:  std  r15,-136(r12)
+  _savegpr1_16:  std  r16,-128(r12)
+  _savegpr1_17:  std  r17,-120(r12)
+  _savegpr1_18:  std  r18,-112(r12)
+  _savegpr1_19:  std  r19,-104(r12)
+  _savegpr1_20:  std  r20,-96(r12)
+  _savegpr1_21:  std  r21,-88(r12)
+  _savegpr1_22:  std  r22,-80(r12)
+  _savegpr1_23:  std  r23,-72(r12)
+  _savegpr1_24:  std  r24,-64(r12)
+  _savegpr1_25:  std  r25,-56(r12)
+  _savegpr1_26:  std  r26,-48(r12)
+  _savegpr1_27:  std  r27,-40(r12)
+  _savegpr1_28:  std  r28,-32(r12)
+  _savegpr1_29:  std  r29,-24(r12)
+  _savegpr1_30:  std  r30,-16(r12)
+  _savegpr1_31:  std  r31,-8(r12)
+                 blr
+
+
+  _restgpr1_14:  ld   r14,-144(r12)
+  _restgpr1_15:  ld   r15,-136(r12)
+  _restgpr1_16:  ld   r16,-128(r12)
+  _restgpr1_17:  ld   r17,-120(r12)
+  _restgpr1_18:  ld   r18,-112(r12)
+  _restgpr1_19:  ld   r19,-104(r12)
+  _restgpr1_20:  ld   r20,-96(r12)
+  _restgpr1_21:  ld   r21,-88(r12)
+  _restgpr1_22:  ld   r22,-80(r12)
+  _restgpr1_23:  ld   r23,-72(r12)
+  _restgpr1_24:  ld   r24,-64(r12)
+  _restgpr1_25:  ld   r25,-56(r12)
+  _restgpr1_26:  ld   r26,-48(r12)
+  _restgpr1_27:  ld   r27,-40(r12)
+  _restgpr1_28:  ld   r28,-32(r12)
+  _restgpr1_29:  ld   r29,-24(r12)
+  _restgpr1_30:  ld   r30,-16(r12)
+  _restgpr1_31:  ld   r31,-8(r12)
+                 blr</PRE
+><P
+>Each _savefpr_M routine saves the floating point registers from fM to
+f31, inclusive.  When the routine is called, r1 must point to the
+start of the floating point register save area, and r0 must contain
+the value of LR on function entry.
+			</P
+><P
+>The _restfpr_M routines restore the floating point registers from fM
+to f31.  When the routine is called, r1 must point to the start of the
+floating point register save area.
+			</P
+><P
+>Here is a sample implementation of _savepr_M and _restfpr_M.
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>  _savefpr_14:  stfd f14,-144(r1)
+  _savefpr_15:  stfd f15,-136(r1)
+  _savefpr_16:  stfd f16,-128(r1)
+  _savefpr_17:  stfd f17,-120(r1)
+  _savefpr_18:  stfd f18,-112(r1)
+  _savefpr_19:  stfd f19,-104(r1)
+  _savefpr_20:  stfd f20,-96(r1)
+  _savefpr_21:  stfd f21,-88(r1)
+  _savefpr_22:  stfd f22,-80(r1)
+  _savefpr_23:  stfd f23,-72(r1)
+  _savefpr_24:  stfd f24,-64(r1)
+  _savefpr_25:  stfd f25,-56(r1)
+  _savefpr_26:  stfd f26,-48(r1)
+  _savefpr_27:  stfd f27,-40(r1)
+  _savefpr_28:  stfd f28,-32(r1)
+  _savefpr_29:  stfd f29,-24(r1)
+  _savefpr_30:  stfd f30,-16(r1)
+  _savefpr_31:  stfd f31,-8(r1)
+                std  r0, 16(r1)
+                blr
+
+
+  _restfpr_14:  lfd  f14,-144(r1)
+  _restfpr_15:  lfd  f15,-136(r1)
+  _restfpr_16:  lfd  f16,-128(r1)
+  _restfpr_17:  lfd  f17,-120(r1)
+  _restfpr_18:  lfd  f18,-112(r1)
+  _restfpr_19:  lfd  f19,-104(r1)
+  _restfpr_20:  lfd  f20,-96(r1)
+  _restfpr_21:  lfd  f21,-88(r1)
+  _restfpr_22:  lfd  f22,-80(r1)
+  _restfpr_23:  lfd  f23,-72(r1)
+  _restfpr_24:  lfd  f24,-64(r1)
+  _restfpr_25:  lfd  f25,-56(r1)
+  _restfpr_26:  lfd  f26,-48(r1)
+  _restfpr_27:  lfd  f27,-40(r1)
+  _restfpr_28:  lfd  f28,-32(r1)
+  _restfpr_29:  ld   r0, 16(r1)
+                lfd  f29,-24(r1)
+                mtlr r0
+                lfd  f30,-16(r1)
+                lfd  f31,-8(r1)
+                blr
+  _restfpr_30:  lfd  f30,-16(r1)
+  _restfpr_31:  ld   r0, 16(r1)
+                lfd  f31,-8(r1)
+                mtlr r0
+                blr</PRE
+><P
+>Each _savevr_M routine saves the vector registers from vM to v31,
+inclusive.  When the routine is called, r0 must point to the word just
+beyond the end of the vector register save area.  On return the value
+of r0 is unchanged while r12 may be modified.</P
+><P
+>The _restvr_M routines restore the vector registers from vM to v31.
+When the routine is called, r0 must point to the word just beyond the
+end of the vector register save area.  On return the value of r0 is
+unchanged while r12 may be modified.</P
+><P
+>Here is a sample implementation of _savevr_M and _restvr_M.</P
+><PRE
+CLASS="PROGRAMLISTING"
+>  _savevr_20:   addi r12,r0,-192
+                stvx v20,r12,r0
+  _savevr_21:   addi r12,r0,-176
+                stvx v21,r12,r0
+  _savevr_22:   addi r12,r0,-160
+                stvx v22,r12,r0
+  _savevr_23:   addi r12,r0,-144
+                stvx v23,r12,r0
+  _savevr_24:   addi r12,r0,-128
+                stvx v24,r12,r0
+  _savevr_25:   addi r12,r0,-112
+                stvx v25,r12,r0
+  _savevr_26:   addi r12,r0,-96
+                stvx v26,r12,r0
+  _savevr_27:   addi r12,r0,-80
+                stvx v27,r12,r0
+  _savevr_28:   addi r12,r0,-64
+                stvx v28,r12,r0
+  _savevr_29:   addi r12,r0,-48
+                stvx v29,r12,r0
+  _savevr_30:   addi r12,r0,-32
+                stvx v30,r12,r0
+  _savevr_31:   addi r12,r0,-16
+                stvx v31,r12,r0
+                blr
+
+
+  _restvr_20:   addi r12,r0,-192
+                lvx  v20,r12,r0
+  _restvr_21:   addi r12,r0,-176
+                lvx  v21,r12,r0
+  _restvr_22:   addi r12,r0,-160
+                lvx  v22,r12,r0
+  _restvr_23:   addi r12,r0,-144
+                lvx  v23,r12,r0
+  _restvr_24:   addi r12,r0,-128
+                lvx  v24,r12,r0
+  _restvr_25:   addi r12,r0,-112
+                lvx  v25,r12,r0
+  _restvr_26:   addi r12,r0,-96
+                lvx  v26,r12,r0
+  _restvr_27:   addi r12,r0,-80
+                lvx  v27,r12,r0
+  _restvr_28:   addi r12,r0,-64
+                lvx  v28,r12,r0
+  _restvr_29:   addi r12,r0,-48
+                lvx  v29,r12,r0
+  _restvr_30:   addi r12,r0,-32
+                lvx  v30,r12,r0
+  _restvr_31:   addi r12,r0,-16
+                lvx  v31,r12,r0
+                blr</PRE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DATA-OBJ"
+>3.5.10. Data Objects</A
+></H2
+><P
+>This section describes only objects with static storage duration. It
+excludes stack-resident objects because programs always compute their
+virtual addresses relative to the stack or frame pointers.
+			</P
+><P
+>In the 64-bit PowerPC Architecture, only load and store instructions
+access memory.  Because 64-bit PowerPC instructions cannot hold 64-bit
+addresses directly, a program normally computes an address into a
+register and accesses memory through the register.
+			</P
+><P
+>It is possible to build addresses using absolute code which puts
+symbol addresses into instructions.  However, the difficulty of
+building a 64-bit address means that 64-bit PowerPC code normally
+loads an address out of a memory location in the TOC section.
+Combining the TOC offset of the symbol with the TOC address in
+register r2 gives the absolute address of the TOC entry holding the
+desired address.
+			</P
+><P
+>The following figures show sample assembly language equivalents to C
+language code.  The @got syntax is explained above, in the section TOC
+Assembly Language Syntax.
+			</P
+><P
+>Load and Store; variables are not in TOC:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>C                             Assembly
+
+extern int src;
+extern int dst;
+extern int *ptr;
+
+dst = src;
+                              ld  r6,src@got(r2)
+                              ld  r7,dst@got(r2)
+                              lwz r0,0(r6)
+                              stw r0,0(r7)
+
+ptr = &amp;dst;
+                              ld  r0,dst@got(r2)
+                              ld  r7,ptr@got(r2)
+                              std r0,0(r7)
+
+*ptr = src;
+                              ld  r6,src@got(r2)
+                              ld  r7,ptr@got(r2)
+                              lwz r0,0(r6)
+                              ld  r7,0(r7)
+                              stw r0,0(r7)</PRE
+><P
+>The next example shows the same code assuming that the variables are
+all stored in the TOC.  Shared objects normally can not assume that
+globally visible variables are stored in the TOC.  If they did, it
+would be impossible for the variable references to be redirected to
+overriding variables in the main program.  Therefore, shared objects
+should normally always use the type of code shown above.
+			</P
+><P
+>Load and Store; variables in TOC:
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>C                             Assembly
+
+extern int src;
+extern int dst;
+extern int *ptr;
+
+dst = src;
+                              lwz r0,src@toc(r2)
+                              stw r0,dst@toc(r2)
+
+ptr = &amp;dst;
+                              la  r0,dst@toc(r2)
+                              std r0,ptr@toc(r2)
+
+*ptr = src;
+                              lwz r0,src@toc(r2)
+                              ld  r7,ptr@toc(r2)
+                              stw r0,0(r7)</PRE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="FUNC-CALLS"
+>3.5.11. Function Calls</A
+></H2
+><P
+>Programs use the 64-bit PowerPC bl instruction to make direct function
+calls.  The bl instruction must be followed by a nop instruction.  For
+PowerOpen compatibility, the nop instruction must be:
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    ori  r0,r0,0</PRE
+><P
+>For PowerOpen compatibility, the link editor must also accept these
+instructions as valid nop instructions:
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    cror 15,15,15
+    cror 31,31,31</PRE
+><P
+>In a relocatable object file, a direct function call should be made to
+the function entry point, which is a symbol beginning with dot (.).
+See <A
+HREF="x324.html#FUNC-DES"
+>Section 3.2.5</A
+> for more information.
+			</P
+><P
+>When the link editor is creating an executable or shared object, and
+it sees a function call followed by a nop instruction, it determines
+whether the caller and the callee share the same TOC.  If they do, it
+leaves the nop instruction unchanged.  If they do not, the link editor
+constructs a linkage function.  The linkage function loads the TOC
+register with the callee TOC and branches to the callee entry point.
+The link editor modifies the bl instruction to branch to the linkage
+function, and modifies the nop instruction to be
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    ld   r2,40(r1)</PRE
+><P
+>This will reload the TOC register from the TOC save area after the
+callee returns.
+			</P
+><P
+>A bl instruction has a self-relative branch displacement that can
+reach 32 Mbytes in either direction.  Hence, the use of a bl
+instruction to effect a call within an executable or shared object
+file limits the size of the executable or shared object file text
+segment.
+			</P
+><P
+>If the callee is in a different shared object, a similar procedure of
+linkage code and a modified nop instruction is used.  In this case,
+the dynamic linker must complete the link by filling in the function
+descriptor at run time.  See <A
+HREF="x998.html#PROC-LINK"
+>Section 5.2.4</A
+> for
+more details.
+			</P
+><P
+>Here is an example of the assembly code generated for a function call:
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>C                             Assembly
+
+extern void func (void);
+func ();
+                              bl   .func
+                              ori  r0,r0,0
+
+Here is an example of how the link editor transforms this code if the
+callee has a different TOC than the caller:
+
+C                             Assembly
+
+extern void func (void);
+func ();
+                              bl   &lt;linkage_for_func&gt;
+                              ld   r2,40(r1)</PRE
+><P
+>Here is an example of the linkage code created by the link editor.
+Remember that func@got@plt contains the address of the procedure
+linkage entry for func, which is a function descriptor.  The function
+descriptor holds the addresses of the function entry point and the
+function TOC base.
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;linkage_for_func&gt;:
+    ld    r12,func@got@plt(r2)
+    std   r2,40(r1)
+    ld    r0,0(r12)
+    ld    r2,8(r12)
+    mtctr r0
+    bctr</PRE
+><P
+>The value of a function pointer is the address of the function
+descriptor, not the address of the function entry point itself.
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>C                             Assembly
+extern void func (void);
+extern void (*ptr) (void);
+ptr = func;
+                              ld    r6,func@got(r2)
+                              ld    r7,ptr@got(r2)
+                              std   r6,0(r7)
+
+(*ptr) ();
+                              ld    r6,ptr@got(r2)
+                              ld    r6,0(r6)
+                              ld    r0,0(r6)
+                              std   r2,40(r1)
+                              mtctr r0
+                              ld    r2,8(r6)
+                              bctrl
+                              ld    r2,40(r1)</PRE
+><P
+>Since most of the code sequence used for a call through a pointer is
+the same no matter what function pointer is being used, it is also
+possible to do it by calling a function with an unusual calling
+convention provided by a library.  With this approach, efficiency
+requires that the function be linked in directly, and not come from a
+shared library.  The PowerOpen ABI uses a function named ._ptrgl for
+this purpose, passing the function pointer value in r11, and it is
+recommended that this name and calling convention be used as well when
+using this approach under ELF.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BRANCH"
+>3.5.12. Branching</A
+></H2
+><P
+>Programs use branch instructions to control their execution flow.  As
+defined by the architecture, branch instructions hold a self-relative
+value with a 64-Mbyte range, allowing a jump to locations up to 32
+Mbytes away in either direction.
+			</P
+><PRE
+CLASS="PROGRAMLISTING"
+>C                             Assembly
+label:
+                              .L01:
+    ...
+    goto label
+                                  b .L01</PRE
+><P
+>C switch statements provide multiway selection.  When the case labels
+of a switch statement satisfy grouping constraints, the compiler
+implements the selection with an address table.  The following example
+uses several simplifying conventions to hide irrelevant details:
+			</P
+><P
+></P
+><UL
+><LI
+><P
+>The selection expression resides in r12, and is of type int.</P
+></LI
+><LI
+><P
+>The case label constants begin at zero.</P
+></LI
+><LI
+><P
+>The case labels, the default, and the address table use assembly
+  names .Lcasei, .Ldef, and .Ltab, respectively.
+					</P
+></LI
+></UL
+><PRE
+CLASS="PROGRAMLISTING"
+>C                             Assembly
+switch (j)
+  {
+  case 0:
+    ...
+  case 1:
+    ...
+  case 3:
+    ...
+  default:
+    ...
+  }
+                                  cmplwi  r12,4
+                                  bge     .Ldef
+                                  bl      .L1
+                              .L1:
+                                  slwi    r12,2
+                                  mflr    r11
+                                  addi    r12,r12,.Ltab-.L1
+                                  add     r0,r12,r11
+                                  mtctr   r0
+                                  bctr
+                              .Ltab:
+                                  b       .Lcase0
+                                  b       .Lcase1
+                                  b       .Ldef
+                                  b       .Lcase3</PRE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DYNAM-STACK"
+>3.5.13. Dynamic Stack Space Allocation</A
+></H2
+><P
+>Unlike some other languages, C does not need dynamic stack allocation
+within a stack frame.  Frames are allocated dynamically on the program
+stack, depending on program execution, but individual stack frames can
+have static sizes.  Nonetheless, the architecture supports dynamic
+allocation for those languages that require it.  The mechanism for
+allocating dynamic space is embedded completely within a function and
+does not affect the standard calling sequence.  Thus languages that
+need dynamic stack frame sizes can call C functions, and vice versa.
+			</P
+><P
+>Here is the stack frame before dynamic stack allocation:</P
+><PRE
+CLASS="SCREEN"
+>High address
+
+          +-&gt; Back chain
+          |   Floating point register save area
+          |   General register save area
+          |   VRSAVE save word (32-bits)
+          |   Alignment padding (4 or 12 bytes)
+          |   Vector register save area (quadword aligned)
+          |   Local variable space
+          |   Parameter save area    (SP + 48)
+          |   TOC save area          (SP + 40)  --+
+          |   link editor doubleword (SP + 32)    |
+          |   compiler doubleword    (SP + 24)    |--stack frame header
+          |   LR save area           (SP + 16)    |
+          |   CR save area           (SP + 8)     |
+SP  ---&gt;  +-- Back chain             (SP + 0)   --+
+
+Low address</PRE
+><P
+>Here is the stack frame after dynamic stack allocation:</P
+><PRE
+CLASS="SCREEN"
+>High address
+
+          +-&gt; Back chain
+          |   Floating point register save area
+          |   General register save area
+          |   VRSAVE save word (32-bits)
+          |   Alignment padding (4 or 12 bytes)
+          |   Vector register save area (quadword aligned)
+          |   Local variable space
+          |   -- Old parameter save area, now allocated space
+          |   -- Old stack frame header, now allocated space
+          |   -- More newly allocated space
+          |   New parameter save area    (SP + 48)
+          |   New TOC save area          (SP + 40)
+          |   New link editor doubleword (SP + 32)
+          |   New compiler doubleword    (SP + 24)
+          |   New LR save area           (SP + 16)
+          |   New CR save area           (SP + 8)
+SP  ---&gt;  +-- New Back chain             (SP + 0)
+
+Low address</PRE
+><P
+>The local variables area is used for storage of function data, such as
+local variables, whose sizes are known to the compiler.  This area is
+allocated at function entry and does not change in size or position
+during the function's activation.
+			</P
+><P
+>The parameter save area is reserved for arguments passed in calls to
+other functions.  See <A
+HREF="x324.html#PARAM-PASS"
+>Section 3.2.3</A
+> for more information.  Its size
+is also known to the compiler and can be allocated along with the
+fixed frame area at function entry.  However, the standard calling
+sequence requires that the parameter save area begin at a fixed offset
+(48) from the stack pointer, so this area must move when dynamic stack
+allocation occurs.
+			</P
+><P
+>The stack frame header must also be at a fixed offset (0) from the
+stack pointer, so this area must also move when dynamic stack
+allocation occurs.
+			</P
+><P
+>Data in the parameter save area are naturally addressed at constant
+offsets from the stack pointer.  However, in the presence of dynamic
+stack allocation, the offsets from the stack pointer to the data in
+the local variables area are not constant.  To provide addressability,
+a frame pointer is established to locate the local variables area
+consistently throughout the function's activation.
+			</P
+><P
+>Dynamic stack allocation is accomplished by "opening" the stack just
+above the parameter save area.  The following steps show the process
+in detail:
+			</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Sometime after a new stack frame is acquired and before the first
+   dynamic space allocation, a new register, the frame pointer, is set
+   to the value of the stack pointer.  The frame pointer is used for
+   references to the function's local, non-static variables.</P
+></LI
+><LI
+><P
+>The amount of dynamic space to be allocated is rounded up to a
+   multiple of 16 bytes, so that quadword stack alignment is
+   maintained.</P
+></LI
+><LI
+><P
+>The stack pointer is decreased by the rounded byte count, and the
+   address of the previous stack frame (the back chain) is stored at
+   the word addressed by the new stack pointer.  This shall be
+   accomplished atomically by using stdu rS,-length(r1) if the length
+   is less than 32768 bytes, or by using stdux rS,r1,rspace, where rS
+   is the contents of the back chain word and rspace contains the
+   (negative) rounded number of bytes to be allocated.</P
+></LI
+></OL
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="/usr/share/sgml/docbook/stylesheet/dsssl/modular/images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Note</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>It is only strictly necessary to copy the back chain.  The
+information in the parameter save area is recreated for each function
+call.  The information in the stack frame header, other than the back
+chain, is only used by a called function.  In some cases, a compiler
+may need to copy the TOC save area as well, depending upon precisely
+how it generates linkage code.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>The above process can be repeated as many times as desired within a
+single function activation.  When it is time to return, the stack
+pointer is set to the value of the back chain, thereby removing all
+dynamically allocated stack space along with the rest of the stack
+frame.  Naturally, a program must not reference the dynamically
+allocated stack area after it has been freed.
+			</P
+><P
+>Even in the presence of signals, the above dynamic allocation scheme
+is "safe."  If a signal interrupts allocation, one of three things can
+happen:
+			</P
+><P
+></P
+><UL
+><LI
+><P
+>The signal handler can return. The process then resumes the dynamic
+  allocation from the point of interruption.</P
+></LI
+><LI
+><P
+>The signal handler can execute a non-local goto or a jump.  This
+  resets the process to a new context in a previous stack frame,
+  automatically discarding the dynamic allocation.</P
+></LI
+><LI
+><P
+>The process can terminate.</P
+></LI
+></UL
+><P
+>Regardless of when the signal arrives during dynamic allocation, the
+result is a consistent (though possibly dead) process.
+			</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x502.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x810.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Process Initialization</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c135.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>DWARF Definition</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
