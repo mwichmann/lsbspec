@@ -14,6 +14,12 @@ least) rely on getpid() returning the same value in different threads.
 </PARA>
 
 <PARA>
+Note: one implication of per-thread signals is that a core dump (for
+example) may not stop all threads in a given process.  This may be an
+issue when designing ways to stop/start applications.
+</PARA>
+
+<PARA>
 Applications which create child processes (using fork() and the like)
 must then wait for them (using waitpid() family of functions) in the
 same thread as they created them.  Note that coding applications this
@@ -63,4 +69,8 @@ thread per process may call them.
 Applications cannot rely on fcntl/lockf locks being visible
 per-process rather than per-thread.  Likewise for mandatory file
 locks.
+</PARA>
+
+<PARA>
+Threaded applications cannot use SIGUSR1 or SIGUSR2.
 </PARA>
