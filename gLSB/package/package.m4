@@ -4,7 +4,7 @@
 <CHAPTER ID=swinstall>
 <TITLE>Software Installation</TITLE>
 <PARA>
-Applications should be provided in the RPM packaging format as defined in
+Applications must be provided in the RPM packaging format as defined in
 this specification.
 </PARA>
 <PARA>
