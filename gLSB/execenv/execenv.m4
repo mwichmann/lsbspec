@@ -220,8 +220,7 @@ sysconf().</para>
 order to succeed, as described as optional behavior in the SUS.</para>
 
 <para>Calling unlink() on a directory shall fail with either EPERM or
-EISDIR.
-<footnote><para>EISDIR seems to be the Linux behavior; EPERM
+EISDIR<footnote><para>EISDIR seems to be the Linux behavior; EPERM
 is specified by the SUS</para></footnote>.
 Likewise if link() is called specifying a directory as the first
 argument.</para>
