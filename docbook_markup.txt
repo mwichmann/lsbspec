@@ -19,14 +19,6 @@ This document:
 + is a work-in-progress and will be updated as needed to reflect
   current text development goals
 
-Some of the document is aimed at being legal for DocBook-XML (most notably
-quotes around attriutes, e.g. <ARG CHOICE="PLAIN"> not <ARG CHOICE=PLAIN>
-).  We probably should discuss this and, if agreed, try to do it more
-consistently.  We'll also need to double-check what DocBook-XML says
-about uppercase vs lowercase in tag and attribute names.
-
-
-
 
 SYNOPSIS MARKUP IN SGML
 =======================
@@ -34,18 +26,18 @@ SYNOPSIS MARKUP IN SGML
 The following <CMDSYNOPSIS> and <FUNCSYNOPSIS> tag structures
 *replace* the <SYNOPSIS> structures in current LSB specifications.
 
-
-SYNOPSIS EXAMPLE - fictional command as appears below with:
+SYNOPSIS EXAMPLE - command (fictional) requiring:
 + standard argument
-+ argument with input (file ital.)
++ argument with input
 + nested arguments
 + mutually exclusive arguments
-+ required bracketed argument (ital.)
-+ required unbracketed argument (ital.)
-+ required unbracketed repeating argument (ital.)
-------------------------------
++ required bracketed argument
++ required unbracketed argument
++ required unbracketed repeating argument
+======= Desired effect =======
 abc [-d] [-e file] [month [year]] [-f | -g] {directory} group file...
-------------------------------
+--[where file & directory & group & file... are italicized]
+=========== Syntax ===========
 <CMDSYNOPSIS>
  <COMMAND>abc</COMMAND>
  <ARG>-d</ARG>
@@ -59,80 +51,242 @@ abc [-d] [-e file] [month [year]] [-f | -g] {directory} group file...
  <ARG CHOICE=PLAIN><REPLACEABLE>group</REPLACEABLE></ARG>
  <ARG REP=REPEAT CHOICE=PLAIN><REPLACEABLE>file</REPLACEABLE></ARG>
 </CMDSYNOPSIS>
+=========== Notes ============
+==============================
+
+SYNOPSIS EXAMPLE - Function requiring header file
+======= Desired effect =======
+#include <xyz.h>
+int abc(int arg1); 
+--[where arg1 is italicized]
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+<FUNCSYNOPSISINFO> 
+#include &lt;xyz.h&gt;
+</FUNCSYNOPSISINFO> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>int 
+   <FUNCTION>abc</FUNCTION></FUNCDEF> 
+  <PARAMDEF>int 
+   <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER></PARAMDEF> 
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text:
+  #include <xyz.h> 
+==============================
+
+SYNOPSIS EXAMPLE - Function requiring absolute arguments only
+======= Desired effect =======
+int abc(int arg1, int arg2); 
+--[where arg1 & arg2 are italicized]
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>int 
+<FUNCTION>abc</FUNCTION></FUNCDEF> 
+  <PARAMDEF>int 
+   <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER></PARAMDEF> 
+  <PARAMDEF>int 
+   <PARAMETER><REPLACEABLE>arg2</REPLACEABLE></PARAMETER></PARAMDEF> 
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text: int arg1, int arg2 
+- The definition clause for this type may be done using funcsynopsis or 
+  synopsis syntax, depending upon requirements of the document. 
+==============================
+
+SYNOPSIS EXAMPLE - Function requiring variable arguments only
+======= Desired effect =======
+int abc(...); 
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>int 
+   <FUNCTION>abc</FUNCTION></FUNCDEF> 
+  <VARARGS> 
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text: ... 
+- The varargs markup requires no closing tag and generates any necessary 
+  function-based punctuation. 
+- The varargs markup is used to specify variable arguments only when the 
+  function contains no absolute arguments. (See "Function requiring both 
+  absolute and variable arguments" for alternate specification of variable 
+  arguments.) 
+==============================
+
+SYNOPSIS EXAMPLE - Function requiring both absolute and variable arguments
+======= Desired effect =======
+int abc(char *arg1, ...); 
+--[where *arg1 is italicized]
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>int 
+   <FUNCTION>abc</FUNCTION></FUNCDEF> 
+  <PARAMDEF>char 
+   <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER> 
+   <PARAMETER>...</PARAMETER></PARAMDEF> 
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text: char *arg1, ... 
+- Ellipses are used to specify variable arguments only when the function 
+  also contains absolute arguments. (See "Function requiring variable 
+  arguments only" for alternate specification of variable arguments.) 
+==============================
+
+SYNOPSIS EXAMPLE - Function requiring zero arguments
+======= Desired effect =======
+int abc(void); 
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>int 
+   <FUNCTION>abc</FUNCTION></FUNCDEF> 
+  <VOID> 
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text: void 
+- The void markup requires no closing tag and generates any necessary 
+  function-based punctuation. 
+==============================
+
+SYNOPSIS EXAMPLE - Function that is defined as a structure
+======= Desired effect =======
+struct hostent *abc(const char arg1); 
+--[where arg1 is italicized]
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>struct 
+   <FUNCTION> 
+   <STRUCTNAME>hostent</STRUCTNAME> *abc</FUNCTION></FUNCDEF> 
+  <PARAMDEF>const char 
+   <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER></PARAMDEF> 
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text:
+  struct hostent *abc 
+==============================
+
+SYNOPSIS EXAMPLE - Function that uses a structure as a parameter
+======= Desired effect =======
+extern int abc(__const char *__restrict __arg1, struct hostent *__restrict 
+__arg2); 
+--[where __arg1 & __arg2 are italicized]
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>extern int 
+   <FUNCTION>abc</FUNCTION></FUNCDEF> 
+  <PARAMDEF>__const char *__restrict 
+   <PARAMETER><REPLACEABLE>__arg1</REPLACEABLE></PARAMETER></PARAMDEF> 
+  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>hostent</STRUCTNAME> *__restrict 
+   <PARAMETER>__arg2</PARAMETER></FUNCPARAMS></PARAMDEF> 
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text:
+  struct hostent *__restrict __arg2 
+==============================
+
+SYNOPSIS EXAMPLE - Function that uses a function as a parameter
+======= Desired effect =======
+int abc(int def, int (*ghi) (const char *, int)); 
+--[where def is italicized]
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+ <FUNCPROTOTYPE> 
+  <FUNCDEF>int 
+   <FUNCTION>abc</FUNCTION></FUNCDEF> 
+  <PARAMDEF>int 
+   <PARAMETER><REPLACEABLE>def</REPLACEABLE></PARAMETER></PARAMDEF> 
+  <PARAMDEF>int 
+   <FUNCPARAMS>*ghi</FUNCPARAMS> 
+   <FUNCPARAMS>const char *, int</FUNCPARAMS></PARAMDEF> 
+ </FUNCPROTOTYPE> 
+</FUNCSYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text:
+  int (*ghi) (const char *, int) 
+==============================
+
+SYNOPSIS EXAMPLE - Structure with preceding name
+======= Desired effect =======
+struct abc_status 
+{ 
+               const char  *abc_field1; 
+               void        *abc_field2; 
+}; 
+=========== Syntax ===========
+<SYNOPSIS> 
+struct <STRUCTNAME>abc_status</STRUCTNAME> 
+{ 
+               const char  <STRUCTFIELD>*abc_field1</STRUCTFIELD>; 
+               void        <STRUCTFIELD>*abc_field2</STRUCTFIELD>; 
+}; 
+</SYNOPSIS> 
+=========== Notes ============
+- The definition clause for this type requires synopsis syntax. 
+==============================
+
+SYNOPSIS EXAMPLE - Structure with trailing name
+======= Desired effect =======
+#include <sys/xyz.h>
+typedef struct 
+{ 
+            const char  *abc_field1; 
+            void        *abc_field2; 
+            const char  *abc_field3; 
+            void        *abc_field4; 
+} abc_info; 
+=========== Syntax ===========
+<SYNOPSIS> 
+#include &lt;sys/xyz.h&gt;
+typedef struct 
+{ 
+            const char  <STRUCTFIELD>*abc_field1</STRUCTFIELD>; 
+            void        <STRUCTFIELD>*abc_field2</STRUCTFIELD>; 
+            const char  <STRUCTFIELD>*abc_field3</STRUCTFIELD>; 
+            void        <STRUCTFIELD>*abc_field4</STRUCTFIELD>; 
+} <STRUCTNAME>abc_info</STRUCTNAME>; 
+</SYNOPSIS> 
+=========== Notes ============
+- For consistency, the LSB will use the funcsynopsis syntax to
+  specify any required include or define clauses.
+- The definition clause for this type requires synopsis syntax. 
+==============================
+
+SYNOPSIS EXAMPLE - Single variable
+======= Desired effect =======
+#include <xyz.h> 
+int __xyz; 
+=========== Syntax ===========
+<FUNCSYNOPSIS> 
+<FUNCSYNOPSISINFO> 
+#include &lt;xyz.h&gt;
+</FUNCSYNOPSISINFO> 
+</FUNCSYNOPSIS> 
+<SYNOPSIS> 
+int <VARNAME>__xyz</VARNAME>; 
+</SYNOPSIS> 
+=========== Notes ============
+- The target of this illustration is in the text: int __xyz 
+- For consistency, the LSB will use the funcsynopsis syntax to
+  specify any required include or define clauses.
+- The definition clause for this type requires synopsis syntax. 
+==============================
 
 
-SYNOPSIS EXAMPLE - function requiring:
-+ preamble header
-+ absolute number of arguments (variable names ital.)
-------------------------------
-#include <varargs.h>
+NOTES ON MAN PAGE TEXT DEVELOPMENT
+==================================
 
-int abc(int def, int ghi);
-------------------------------
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
-#include &lt;varargs.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>int 
-  <FUNCTION>abc</FUNCTION></FUNCDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>def</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>ghi</REPLACEABLE></PARAMETER></PARAMDEF>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-
-
-SYNOPSIS EXAMPLE - function requiring:
-+ variable number of arguments
-------------------------------
-int abc(...);
-------------------------------
-<FUNCSYNOPSIS>
-<FUNCPROTOTYPE>
- <FUNCDEF>int 
-  <FUNCTION>abc</FUNCTION></FUNCDEF>
- <VARARGS>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-
-
-SYNOPSIS EXAMPLE - function requiring:
-+ absolute number of arguments (variable names ital.)
-+ followed by variable number of arguments (ellipses ital.)
-------------------------------
-int abc(char *abc, ...);
-------------------------------
-<FUNCSYNOPSIS>
-<FUNCPROTOTYPE>
- <FUNCDEF>int 
-  <FUNCTION>abc</FUNCTION></FUNCDEF>
- <PARAMDEF><PARAMETER>char *def</PARAMETER>
-  <PARAMETER><REPLACEABLE>...</REPLACEABLE></PARAMETER></PARAMDEF>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-
-
-SYNOPSIS EXAMPLE - function requiring:
-+ zero arguments
-------------------------------
-int abc(void);
-------------------------------
-<FUNCSYNOPSIS>
-<FUNCPROTOTYPE>
- <FUNCDEF>int 
-  <FUNCTION>abc</FUNCTION></FUNCDEF>
- <VOID>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-
-
-
-COMMON LSB USAGES
-=================
-
-NOTES ON MAN PAGE TEXT DEVELOPMENT:
 + External to the Synopsis, references to function names will appear
   sans "()".
 + Command or function elements identified in the synopsis (name,
@@ -147,28 +301,33 @@ NOTES ON MAN PAGE TEXT DEVELOPMENT:
   entity (command, function) described, followed by an action.
   Examples: "memmem finds the start ...", "newgrp changes the current
   group ..."
-+ The use of pronouns ("It", "This") to begin the first sentences of 
++ The use of pronouns ("It", "This") to begin the first sentences of
   Description paragraphs will be avoided.
 
 
-TAGS TO BE PHASED INTO GENERAL USE PRIOR TO LSB V2.0:
+TAGS TO BE PHASED INTO GENERAL USE PRIOR TO LSB V2.0
+====================================================
   <ACRONYM>
   <ACTION>
   <APPLICATION>
+  <CONSTANT>
   <ERRORCODE>, <ERRORNAME> and <ERRORTYPE>
   <EXAMPLE>
   <FILENAME>
   <IMPORTANT>
   <INTERFACENAME>
+  <LITERAL>
   <OPTION>
   <QUOTE> and <BLOCKQUOTE>
   <RETURNVALUE>
   <STRUCTNAME> and <STRUCTFIELD>
   <SYMBOL>
+  <TOKEN>
   <VARNAME>
 
 
-CORRECTIONS TO TAGS NOW IN GENERAL USE:
+CORRECTIONS TO TAGS NOW IN GENERAL USE
+======================================
   <EMPHASIS>     will be replaced whenever a more appropriate tag is
                  required.
   <REPLACEABLE>  will be replaced whenever a more appropriate tag is
@@ -178,16 +337,75 @@ CORRECTIONS TO TAGS NOW IN GENERAL USE:
                  volume text by <COMPUTEROUTPUT> or <USERINPUT>).
 
 
-OFTEN-USED SPEC PHRASES:
+OFTEN-USED SPEC PHRASES
+=======================
 
 <PARA>
-On success, the global variable <VARNAME>errno</VARNAME> is set to 
-<RETURNVALUE>0</RETURNVALUE>. On error, <RETURNVALUE>-1</RETURNVALUE> 
-is returned.
+On success, <RETURNVALUE>0</RETURNVALUE> is returned.
+On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
+the global variable <VARNAME>errno</VARNAME> is set appropriately.
 </PARA>
 
 <PARA>
-<COMMAND>split</COMMAND> is as specified in the Single UNIX Specification, 
+<FUNCTION>__daylight</FUNCTION> is as specified in the
+<CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>,
 but with differences as listed below.
+</PARA>
+
+<PARA>
+<FUNCTION>__daylight</FUNCTION> is as specified in the
+<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
+Version 3</CITETITLE>.
+</PARA>
+
+<PARA>
+<FUNCTION>__getpagesize</FUNCTION> is not in the source standard;
+it is only in the binary standard.
+</PARA>
+
+<PARA>
+<FUNCTION>__getpagesize</FUNCTION> has the same specification as
+<FUNCTION>getpagesize</FUNCTION>.
+</PARA>
+
+<PARA>
+<FUNCTION>__getpagesize</FUNCTION> is an alias for
+<FUNCTION>getpagesize</FUNCTION> - get current page size.
+</PARA>
+
+
+VARIABLES, ARRAY ITEMS
+======================
+
+For these types, <VARNAME> is used in the same context as <FUNCTION>
+for functions and interfaces.  Example:
+
+<PARA>
+<VARNAME>__environ</VARNAME> is an alias for <VARNAME>environ</VARNAME>
+- user environment.
+</PARA>
+
+
+DEPRECATION SAMPLES
+===================
+
+<REFNAMEDIV>
+<REFNAME>fstatfs
+</REFNAME>
+<REFPURPOSE>(deprecated)
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<PARA>
+<FUNCTION>__dcgettext</FUNCTION> has been deprecated from the
+<ACRONYM>LSB</ACRONYM> because it is no longer used by
+<FUNCTION>dcgettext</FUNCTION>. Originally, it was intended
+only for the binary standard.
+</PARA>
+
+<PARA>
+<FUNCTION>fstatfs</FUNCTION> is expected to disappear from a future
+version of the <ACRONYM>LSB</ACRONYM>; applications should call the
+<FUNCTION>fstatvfs</FUNCTION> interface.
 </PARA>
 
