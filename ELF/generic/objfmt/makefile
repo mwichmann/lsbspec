@@ -14,10 +14,10 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mksectiontable -a All -s 'ABIUpdate' -c 4 >elfsect.sgml
-	../../mksectiontable -a All -s 'LSB' -d >linuxsect.sgml
-	../../mksecttypestable -a All -s 'ABIUpdate' -c 4 >elfsecttypes.sgml
-	../../mksecttypestable -a All -s 'LSB' -d >linuxsecttypes.sgml
+	../../mksecttypestable -a All -s 'ABIUpdate' -t 'ELF Section Types' >elfsecttypes.sgml
+	../../mksecttypestable -a All -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
+	../../mksectiontable -a All -s 'ABIUpdate' -t 'ELF Special Sections' >elfsect.sgml
+	../../mksectiontable -a All -s 'LSB' -t 'Additional Special Sections' >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)

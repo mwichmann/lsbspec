@@ -67,7 +67,7 @@ include(linuxsecttypes.sgml)
 Various sections hold program and control information. Sections in the lists below are used by the system and have the indicated types and attributes.
 </PARA>
 <SECT2>
-<TITLE>ELF Section Types</TITLE>
+<TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in the System V Application Binary
 Interface, Edition 4.1.

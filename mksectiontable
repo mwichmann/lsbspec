@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mksectiontable -a <archname> -s <stdname> [-c <numcols>] [-d]\n";
+print STDERR "mksectiontable -a <archname> -s <stdname> -t <tabletitle>\n";
 die;
 }
 
@@ -17,15 +17,13 @@ die;
 #
 # 1) process the arguments
 #
-$numcols=1;
-$dodesc=0;
 GetOptions("a=s" => \$archname,
            "s=s" => \$stdname,
-           "c=i" => \$numcols,
-           "d" => \$dodesc);
+           "t=s" => \$title);
 
 if( !$archname ) { usage(); }
 if( !$stdname ) { usage(); }
+if( !$title ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -58,13 +56,13 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.8 2001-12-24 16:25:54 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.9 2002-06-12 14:19:51 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
 if($sth->numrows) {
 	print "<TABLE>\n";
-	print "<TITLE></TITLE>\n";
+	print "<TITLE>$title</TITLE>\n";
 	print "<TGROUP COLS=3>\n";
 	print "<THEAD>\n";
 	print "<ROW>\n";
@@ -108,5 +106,5 @@ print "</VARIABLELIST>\n";
 }
 
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.8 2001-12-24 16:25:54 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.9 2002-06-12 14:19:51 anderson Exp $- -->\n");
 
