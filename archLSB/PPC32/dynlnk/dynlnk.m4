@@ -2,16 +2,13 @@
 <TITLE>Program Loading and Dynamic Linking</TITLE>
 <PARTINTRO>
 <PARA>
-
-dynlnk/dynlink.m4 has not yet been fixed.
-
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
 <LINK LINKEND="std.gABI.41">
 <XREF LINKEND="std.gABI.41">
 </LINK>,
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
+<LINK LINKEND="std.PPC32.ABI">
+<XREF LINKEND="std.PPC32.ABI">
 </LINK>
 and as supplemented by the Linux
 Standard Base Specification and this document.
@@ -21,29 +18,17 @@ Standard Base Specification and this document.
 <CHAPTER ID=programheader>
 <TITLE>Program Header</TITLE>
 <PARA>
-The program header shall be as defined in the 
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.
 </PARA>
 
 <SECT1 ID=progheadtypes>
 <TITLE>Types</TITLE>
 <PARA>
-See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.1.
 </PARA>
 </SECT1>
 
 <SECT1 ID=progheadflags>
 <TITLE>Flags</TITLE>
 <PARA>
-See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.1.
 </PARA>
 </SECT1>
 
@@ -53,9 +38,9 @@ See
 <TITLE>Program Loading</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.2.
+<LINK LINKEND="std.PPC32.ABI">
+<XREF LINKEND="std.PPC32.ABI">
+</LINK>, Chapter 5.1.
 </PARA>
 
 </CHAPTER>
@@ -64,17 +49,18 @@ See
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.3.
+<LINK LINKEND="std.PPC32.ABI">
+<XREF LINKEND="std.PPC32.ABI">
+</LINK>, Chapter 5.4.
 </PARA>
 
 <SECT1 ID=proginterp>
 <TITLE>Program Intepreter/Dynamic Linker</TITLE>
 <PARA>
 The LSB specifies the Program Interpreter to be
-<FILENAME>/lib/lsb/ld-lsb.so.1</FILENAME>.
-<NOTE><PARA>Editor's note ... check this is correct!</PARA></NOTE>
+<ITEMIZEDLIST>
+<LISTITEM><SCREEN>/lib/ld-lsb.so.1</SCREEN></LISTITEM>
+</ITEMIZEDLIST>
 </PARA>
 </SECT1>
 
@@ -82,9 +68,9 @@ The LSB specifies the Program Interpreter to be
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.3.2.
+<LINK LINKEND="std.PPC32.ABI">
+<XREF LINKEND="std.PPC32.ABI">
+</LINK>, Chapter 5.4.
 include(dyntag.sgml)
 </PARA>
 </SECT1>
@@ -93,49 +79,33 @@ include(dyntag.sgml)
 <TITLE>Global Offset Table</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.3.4.
+<LINK LINKEND="std.PPC32.ABI">
+<XREF LINKEND="std.PPC32.ABI">
+</LINK>, Chapter 5.4.
 </PARA>
 </SECT1>
 
 <SECT1 ID=sharedobjectdependencies>
 <TITLE>Shared Object Dependencies</TITLE>
 <PARA>
-See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.3.3.
 </PARA>
 </SECT1>
 
 <SECT1 ID=functionaddresses>
 <TITLE>Function Addresses</TITLE>
 <PARA>
-See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.3.5.
 </PARA>
 </SECT1>
 
 <SECT1 ID=procedurelinkagetable>
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
-See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.3.6.
 </PARA>
 </SECT1>
 
 <SECT1 ID=initandfinifunctons>
 <TITLE>Initialization and Termination Functions</TITLE>
 <PARA>
-See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 5.3.7.
 </PARA>
 </SECT1>
 
