@@ -7,22 +7,22 @@ MANPAGES=__assert_fail.sgml __errno_location.sgml __strtod_internal.sgml \
 	_IO_puts.sgml  __getpgid.sgml \
 	 __xmknod.sgml acct.sgml adjtimex.sgml\
 	alphasort.sgml cfmakeraw.sgml daemon.sgml endutent.sgml\
-	fgetwc.sgml fgetws.sgml flock.sgml fputwc.sgml fputws.sgml fstatfs.sgml\
-	fwide.sgml fwprintf.sgml fwscanf.sgml \
+	flock.sgml fstatfs.sgml\
+	fwprintf.sgml \
 	gethostbyname.sgml getopt_long.sgml\
 	getopt_long_only.sgml getprotobyname.sgml getprotoent.sgml\
-	getservbyname.sgml getservent.sgml getutent.sgml getwc.sgml htons.sgml\
+	getservbyname.sgml getservent.sgml getutent.sgml htons.sgml\
 	inet_aton.sgml inet_ntoa.sgml  initgroups.sgml ioperm.sgml iopl.sgml\
 	isblank.sgml isinf.sgml iswblank.sgml iswctype.sgml llabs.sgml logwtmp.sgml\
-	mbsnrtowcs.sgml memmem.sgml ntohs.sgml psignal.sgml putwc.sgml putwchar.sgml\
+	mbsnrtowcs.sgml memmem.sgml ntohs.sgml psignal.sgml putwchar.sgml\
 	setbuffer.sgml setegid.sgml seteuid.sgml sethostid.sgml sethostname.sgml \
-	setmntent.sgml setutent.sgml shm_open.sgml shm_unlink.sgml sigreturn.sgml\
+	setmntent.sgml setutent.sgml sigreturn.sgml\
 	sigblock.sgml siggetmask.sgml \
-	sigsetmask.sgml sigvec.sgml sigwaitinfo.sgml statfs.sgml stime.sgml\
+	sigsetmask.sgml sigvec.sgml statfs.sgml stime.sgml\
 	stpcpy.sgml stpncpy.sgml strfry.sgml strnlen.sgml strsep.sgml\
-	strsignal.sgml strtok_r.sgml swscanf.sgml system.sgml timezone.sgml\
-	wcsftime.sgml	wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
-	wcswcs.sgml wcspbrk.sgml fwprintf.sgml psignal.sgml \
+	strsignal.sgml strtok_r.sgml system.sgml \
+	wcsnlen.sgml wcsnrtombs.sgml \
+	fwprintf.sgml psignal.sgml \
 	wait4.sgml wcpcpy.sgml wcpncpy.sgml wcscasecmp.sgml wcsdup.sgml \
 	wcsnrtombs.sgml
 
