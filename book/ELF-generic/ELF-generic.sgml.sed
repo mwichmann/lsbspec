@@ -12,7 +12,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Generic ELF Specification</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2003</YEAR>
 <YEAR>2004</YEAR>
