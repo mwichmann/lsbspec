@@ -1,0 +1,504 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML
+><HEAD
+><TITLE
+>Dynamic Linking</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.4.1"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Program Loading and Dynamic Linking"
+HREF="prog_load_dl.html"><LINK
+REL="PREVIOUS"
+TITLE="Program Loading and Dynamic Linking"
+HREF="prog_load_dl.html"><LINK
+REL="NEXT"
+TITLE="Libraries"
+HREF="lib.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>64-bit PowerPC ELF Application Binary Interface Supplement 1.4.1</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="prog_load_dl.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Program Loading and Dynamic Linking</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="lib.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DYNAM_LINK"
+></A
+>Dynamic Linking</H1
+><P
+></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DYNAM_SECT"
+></A
+>Dynamic Section</H2
+><P
+>Dynamic section entries give information to the dynamic linker.  Some
+of this information is processor-specific, including the
+interpretation of some entries in the dynamic structure.
+			</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>DT_PLTGOT</DT
+><DD
+><P
+>This entry's d_ptr member gives the address of the first
+              byte in the procedure linkage table.</P
+></DD
+><DT
+>DT_JMPREL</DT
+><DD
+><P
+>As explained in the System V ABI, this entry is
+              associated with a table of relocation entries for the
+              procedure linkage table.  For the 64-bit PowerPC, this
+              entry is mandatory both for executable and shared object
+              files.  Moreover, the relocation table's entries must
+              have a one-to-one correspondence with the procedure
+              linkage table.  The table of DT_JMPREL relocation
+              entries is wholly contained within the DT_RELA
+              referenced table.  See <A
+HREF="dynam_link.html#PROC_LINK"
+>the Section called <I
+>Procedure Linkage Table</I
+></A
+> later in
+              this chapter for more information.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="GLOBAL"
+></A
+>Global Offset Table</H2
+><P
+>Position-independent code cannot, in general, contain absolute virtual
+addresses.  The global offset table, which is part of the TOC section,
+holds absolute addresses in private data, thus making the addresses
+available without compromising the position-independence and
+sharability of a program's text.  A program references its TOC using
+position-independent addressing and extracts absolute values, thus
+redirecting position-independent references to absolute locations.
+			</P
+><P
+>When the dynamic linker creates memory segments for a loadable object
+file, it processes the relocation entries, some of which will be of
+type R_PPC64_GLOB_DAT, referring to the global offset table within the
+TOC.  The dynamic linker determines the associated symbol values,
+calculates their absolute addresses, and sets the global offset table
+entries to the proper values.  Although the absolute addresses are
+unknown when the link editor builds an object file, the dynamic linker
+knows the addresses of all memory segments and can thus calculate the
+absolute addresses of the symbols contained therein.
+			</P
+><P
+>A global offset table entry provides direct access to the absolute
+address of a symbol without compromising position-independence and
+sharability.  Because the executable file and shared objects have
+separate global offset tables, a symbol may appear in several tables.
+The dynamic linker processes all the global offset table relocations
+before giving control to any code in the process image, thus ensuring
+the absolute addresses are available during execution.
+			</P
+><P
+>The global offset table is part of the TOC section.  Since different
+functions in a single executable or shared object may have different
+TOC sections, the global offset table may also be replicated, in whole
+or in part.  Each instance of the global offset table will have its
+own set of relocations.  The dynamic linker need not know about the
+replication; it simply processes all the relocations it is given.
+			</P
+><P
+>The dynamic linker may choose different memory segment addresses for
+the same shared object in different programs; it may even choose
+different library addresses for different executions of the same
+program.  Nonetheless, memory segments do not change addresses once
+the process image is established.  As long as a process exists, its
+memory segments reside at fixed virtual addresses.
+			</P
+><P
+>The global offset table normally resides in the ELF .got section in an
+executable or shared object.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="FUNC_ADDRESS"
+></A
+>Function Addresses</H2
+><P
+>References to the address of a function from an executable file and
+the shared objects associated with it need to resolve to the same
+value.
+			</P
+><P
+>In this ABI, the address of a function is actually the address of a
+function descriptor.  A reference to a function, other than a function
+call, will normally load the address of the function descriptor from
+the global offset table.  The dynamic linker will ensure that for a
+given function, the same address is used for all references to the
+function from any global offset table.  Thus, function address
+comparisons will work as expected.
+			</P
+><P
+>When making a call to the function, the code may refer to the
+procedure linkage table entry, in order to permit lazy symbol
+resolution at run time.  In order to support correct function address
+comparisons, the compiler should be careful to only generate
+references to the procedure linkage table entry for function calls.
+For any other use of a function, the compiler should use the real
+address.
+			</P
+><P
+>When using the ELF assembler syntax, this means that the compiler
+should use the @got syntax, rather than the @got@plt syntax, if the
+function address is going to be used without being called.	
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PROC_LINK"
+></A
+>Procedure Linkage Table</H2
+><P
+>The procedure linkage table may be used to redirect function calls
+between the executable and a shared object or between different shared
+objects.  Because all function calls on the 64-bit PowerPC are done via
+function descriptors, the procedure linkage table is simply a special
+case of a function descriptor which is filled in by the dynamic linker
+rather than the link editor.
+			</P
+><P
+>The procedure linkage table is purely an optimization designed to
+permit lazy symbol resolution at run time.  The link editor may
+generate R_PPC64_GLOB_DAT relocations for all function descriptors
+defined in other shared objects, and avoid generating a procedure
+linkage table at all.
+			</P
+><P
+>The procedure linkage table is normally found in the .plt section in
+an executable or shared object.  Its contents are not initialized in
+the executable or shared object file.  Instead, the link editor simply
+reserves space for it, and the dynamic linker initializes it and
+manages it according to its own, possibly implementation-dependent
+needs, subject to the following constraint:
+			</P
+><P
+></P
+><UL
+><LI
+><P
+>If the executable or shared object requires N procedure linkage table
+  entries, the link editor shall reserve 3*(N+1) doublewords (24*(N+1)
+  bytes).  These doublewords will be used to hold function descriptors.
+  When calling function i, the link editor arranges to use the function
+  descriptor at byte 24 * i.  The first procedure linkage table entry
+  is reserved for use by the dynamic linker.</P
+></LI
+></UL
+><P
+>As mentioned before, a relocation table is associated with the
+procedure linkage table.  The DT_JMPREL entry in the dynamic section
+gives the location of the first relocation entry.  The relocation
+table's entries parallel the procedure linkage table entries in a
+one-to-one correspondence.  That is, relocation table entry 1 applies
+to procedure linkage table entry 1, and so on.  The relocation type
+for each entry shall be R_PPC64_JMP_SLOT, the relocation offset shall
+specify the address of the first byte of the associated procedure
+linkage table entry, and the symbol table index shall reference the
+appropriate symbol.
+			</P
+><P
+>The dynamic linker will locate the symbol referenced by the
+R_PPC64_JMP_SLOT relocation.  The value of the symbol will be the
+address of the function descriptor.  The dynamic linker will copy
+these 24 bytes into the procedure linkage table entry.
+			</P
+><P
+>The dynamic linker can resolve the procedure linkage table relocations
+lazily, resolving them only when they are needed.  This can speed up
+program startup time.
+			</P
+><P
+>The following code shows how the dynamic linker might initialize the
+procedure linkage table in order to provide lazy resolution:
+			</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>.GLINK:
+.GLINK0:
+    ld      r2, 40(r1)
+    addis   r12,r2,.PLT0@toc@ha
+    addi    r12,r12,.PLT0@toc@l
+    ld      r11,0(r12)
+    ld      r2, 8(r12)
+    mtctr   r11
+    ld      r11,16(r12)
+    bctr
+.GLINK1:
+    li      r0,0
+    b       .GLINK0
+.GLINKi:			# i &#60;= 32768
+    li      r0,i - 1
+    b       .GLINK0
+.GLINKN:			# N &#62; 32768
+    lis     r0,(N - 1) &#62;&#62; 16
+    ori     r0,r0,(N - 1) &#38; 0xffff
+    b       .GLINK0
+
+...
+
+.PLT:
+.PLT0:
+    .quad   ld_so_fixup_func
+    .quad   ld_so_toc
+    .quad   ld_so_ident
+.PLT1:
+    .quad   .GLINK1
+    .quad   0
+    .quad   0
+    ...
+.PLTi:
+    .quad   .GLINKi
+    .quad   0
+    .quad   0
+    ...
+.PLTN:
+    .quad   .GLINKN
+    .quad   0
+    .quad   0</PRE
+></TD
+></TR
+></TABLE
+><P
+>Following the steps below, the dynamic linker and the program
+cooperate to resolve symbolic references through the procedure linkage
+table.  Again, the steps described below are for explanation only.
+The precise execution-time behavior of the dynamic linker is not
+specified.
+		</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>As shown above, each procedure linkage table entry I, as initialized by
+the link editor, transfers control to the corresponding glink entry I at
+.GLINKI.  The instructions at .GLINKI loads a relocation index into r0 and
+branches to the common .GLINK0 code, the first entry in the GLINK table.
+For example, assume the program calls NAME, which uses the function
+descriptor at the label .PLTi.  The function descriptor causes the program
+to branch to .GLINKi which loads i - 1 into r0 and branches to .GLINK0.</P
+></LI
+><LI
+><P
+>.GLINK0 loads three values from the PLT Reserve area allocated by the
+link editor and initialized by the dynamic linker.  The first doubleword
+is the dynamic linker's lazy binding entry point.  The second doubleword
+is the dynamic linker's own TOC anchor value.  The third doubleword is an
+8-byte identifier unique to the calling module which must be placed into
+r11 (normally the static chain), so that the dynamic linker can identify
+the object from which the call originated, and thereby located that
+object's relocation table.  .GLINK0 then calls into the dynamic linker
+with the PLT index copied into r0 and the identifying information copied
+into r11.</P
+></LI
+><LI
+><P
+>The dynamic linker finds relocation entry i corresponding to the
+index in r0.  It will have type R_PPC_JMP_SLOT, its offset will
+specify the address of .PLTi, and its symbol table index will
+reference NAME.</P
+></LI
+><LI
+><P
+>Knowing this, the dynamic linker finds the symbol's "real" value.
+It then copies the function descriptor into the code at .PLTi.</P
+></LI
+><LI
+><P
+>Subsequent executions of the procedure linkage table entry will
+transfer control directly to the function via the function descriptor
+at .PLTi, without invoking the dynamic linker.</P
+></LI
+></OL
+><P
+>The LD_BIND_NOW environment variable can change dynamic linking
+behavior.  If its value is non-null, the dynamic linker resolves the
+function call binding at load time, before transferring control to the
+program.  That is, the dynamic linker processes relocation entries of
+type R_PPC_JMP_SLOT during process initialization.  Otherwise, the
+dynamic linker evaluates procedure linkage table entries lazily,
+delaying symbol resolution and relocation until the first execution of
+a table entry.
+			</P
+><P
+>Lazy binding generally improves overall application performance
+because unused symbols do not incur the dynamic linking overhead.
+Nevertheless, two situations make lazy binding undesirable for some
+applications:
+			</P
+><P
+></P
+><UL
+><LI
+><P
+>The initial reference to a shared object function takes longer than
+subsequent calls because the dynamic linker intercepts the call to
+resolve the symbol, and some applications cannot tolerate this
+unpredictability.</P
+></LI
+><LI
+><P
+>If an error occurs and the dynamic linker cannot resolve the
+symbol, the dynamic linker will terminate the program.  Under lazy
+binding, this might occur at arbitrary times.  Once again, some
+applications cannot tolerate this unpredictability.  By turning off
+lazy binding, the dynamic linker forces the failure to occur during
+process initialization, before the application receives control.</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="prog_load_dl.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="lib.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Program Loading and Dynamic Linking</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="prog_load_dl.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Libraries</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
