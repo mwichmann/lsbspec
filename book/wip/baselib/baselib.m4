@@ -12,6 +12,7 @@ hardware in the system.
 
 include(libstdcxx.sgml)
 include(libpam.sgml)
+include(libgcc_s.sgml)
 
 </CHAPTER>
 
