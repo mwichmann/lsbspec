@@ -36,4 +36,5 @@
 
 &intro.sgm;
 &baselib.sgm;
+&sysinit.sgm;
 </BOOK>

@@ -1,0 +1,101 @@
+<SECT1 ID=iniscrptfunc>
+
+<TITLE>Init script Functions</TITLE>
+
+<PARA>
+Each LSB-compliant init.d script must source the file
+/lib/lsb/init-functions.  This file must cause the following shell
+script commands to be defined.  This can be done either by adding a
+directory to the PATH variable which defines these commands, or by
+defining sh aliases.  While the distribution-provided aliases may
+choose to use bash extensions (at the distribution's option), the LSB
+init.d files themselves should only depend in /bin/sh features as
+defined by POSIX.2.
+</PARA>
+
+<SIMPLELIST type=horiz columns=2>
+<MEMBER>start_daemon [-f] [-n nicelevel] pathname [args]</MEMBER>
+
+<MEMBER>
+This runs the specified program as a daemon.
+start_daemon will check to see if there is a program
+named "daemon" already running.  If so, it will not
+start another copy of the daemon unless the -f
+option is given. The -n option specifies a nice
+level. See nice(1).
+start_daemon should return the LSB defined exit status codes. It
+shall return 0 if the program has been successfully started or
+is running and not 0 otherwise.
+</MEMBER>
+
+<MEMBER>killproc [-p pidfile] pathname [signal]</MEMBER>
+
+<MEMBER>
+This stops the specified program. The program is 
+found using the algorithm given by pidofproc. If a
+signal is specified, using the
+-<replaceable>signal_name</replaceable> or
+-<replaceable>signal_number</replaceable> syntaxes
+specified by the <command>kill</command> command,
+the program is sent that signal.
+Otherwise, a SIGTERM followed by a SIGKILL
+after some number of seconds is sent.
+Compliant applications may use the basename instead of the 
+pathname.
+killproc should return the LSB defined exit status codes. It
+shall return 0 if the program has been stopped or is not running
+and not 0 otherwise. 
+</MEMBER>
+
+<MEMBER>pidofproc [-p pidfile] pathname</MEMBER>
+
+<MEMBER>
+This function returns one or more pid(s) for a particular
+daemon. If an entry is found in
+/var/run/basename.pid, then that value is returned.
+If the -p option is used, the given pidfile is used instead.
+Compliant applications may use the basename instead of the
+pathname.
+Compliant implementations of the LSB may attempt
+other mechanisms for determining the pid(s),
+although this is not required (and not
+recommended, since a user can trick startup scripts
+by creating processes that appear to be system
+programs in the process list thus creating a
+potential security exposure).  Hence, LSB-complaint
+applications who wish to use the pidofproc function
+in their init scripts must store the pid in
+/var/run/basename.pid.
+pidofproc should return the LSB defined exist status
+codes for "status". It shall return 0 if the program is
+the process is running and not 0 otherwise.
+</MEMBER>
+
+<MEMBER>log_success_msg "message"</MEMBER>
+
+<MEMBER>
+This requests the distribution to print a success
+message.  The message should be relatively short; no
+more than 60 characters is highly desirable.
+</MEMBER>
+
+<MEMBER>log_failure_msg "message"</MEMBER>
+
+<MEMBER>
+This requests the distribution to print a failure
+message.  The message should be relatively short; no
+more than 60 characters is highly desirable.
+</MEMBER>
+
+<MEMBER>log_warning_msg "message"</MEMBER>
+
+<MEMBER>
+This requests the distribution to print a warning
+message.  The message should be relatively short; no
+more than 60 characters is highly desirable.
+</MEMBER>
+
+</SIMPLELIST>
+
+</SECT1>
+
