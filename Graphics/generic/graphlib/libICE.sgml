@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:53:00 2001 -->
+<!--    at Thu May  3 22:46:11 2001 -->
 <SECT1 ID=libICE>
 <TITLE>libICE</TITLE>
 <PARA>
@@ -63,45 +63,30 @@ X11R6.4 X Inter-Client Exchange (ICE) Protocol</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef struct _IceConn *IceConn;
-
-typedef struct _IceListenObj *IceListenObj;
-
-typedef void (*IceIOErrorHandler) ();
-
-typedef void (*IceErrorHandler) ();
-
-typedef void (*IcePingReplyProc) ();
-
-typedef void (*IceIOErrorProc) ();
-
-typedef void (*IceProtocolActivateProc) ();
-
-typedef int (*IceProtocolSetupProc) ();
-
-typedef int (*IceHostBasedAuthProc) ();
-
-typedef void (*IceWatchProc) ();
-
-typedef enum {
-
-    IceProcessMessagesSuccess,
-    IceProcessMessagesIOError,
-    IceProcessMessagesConnectionClosed
-} IceProcessMessagesStatus;
-
-typedef enum {
-
-    IceClosedNow,
-    IceClosedASAP,
-    IceConnectionInUse,
-    IceStartedShutdownNegotiation
-} IceCloseStatus;
-
 typedef void *IcePointer;
 
 typedef enum {
+    IcePoAuthHaveReply,
+    IcePoAuthRejected,
+    IcePoAuthFailed,
+    IcePoAuthDoneCleanup
+} IcePoAuthStatus;
 
+typedef enum {
+    IcePaAuthContinue,
+    IcePaAuthAccepted,
+    IcePaAuthRejected,
+    IcePaAuthFailed
+} IcePaAuthStatus;
+
+typedef enum {
+    IceConnectPending,
+    IceConnectAccepted,
+    IceConnectRejected,
+    IceConnectIOError
+} IceConnectStatus;
+
+typedef enum {
     IceProtocolSetupSuccess,
     IceProtocolSetupFailure,
     IceProtocolSetupIOError,
@@ -109,12 +94,85 @@ typedef enum {
 } IceProtocolSetupStatus;
 
 typedef enum {
+    IceAcceptSuccess,
+    IceAcceptFailure,
+    IceAcceptBadMalloc
+} IceAcceptStatus;
 
-    IceConnectPending,
-    IceConnectAccepted,
-    IceConnectRejected,
-    IceConnectIOError
-} IceConnectStatus;
+typedef enum {
+    IceClosedNow,
+    IceClosedASAP,
+    IceConnectionInUse,
+    IceStartedShutdownNegotiation
+} IceCloseStatus;
+
+typedef enum {
+    IceProcessMessagesSuccess,
+    IceProcessMessagesIOError,
+    IceProcessMessagesConnectionClosed
+} IceProcessMessagesStatus;
+
+typedef struct {
+    unsigned long sequence_of_request;
+    int major_opcode_of_request;
+    int minor_opcode_of_request;
+    IcePointer reply;
+} IceReplyWaitInfo;
+
+typedef struct _IceConn *IceConn;
+
+typedef struct _IceListenObj *IceListenObj;
+
+typedef void (*IceWatchProc) ()
+;
+
+typedef void (*IcePoProcessMsgProc) ()
+;
+
+typedef void (*IcePaProcessMsgProc) ()
+;
+
+typedef IcePoAuthStatus(*IcePoAuthProc) ()
+;
+
+typedef IcePaAuthStatus(*IcePaAuthProc) ()
+;
+
+typedef int (*IceHostBasedAuthProc) ()
+;
+
+typedef int (*IceProtocolSetupProc) ()
+;
+
+typedef void (*IceProtocolActivateProc) ()
+;
+
+typedef void (*IceIOErrorProc) ()
+;
+
+typedef void (*IcePingReplyProc) ()
+;
+
+typedef void (*IceErrorHandler) ()
+;
+
+typedef void (*IceIOErrorHandler) ()
+;
+
+/*
+ * 7 Default HeaderGroup for X11/ICE/ICElib.h
+ */
+typedef struct {
+    int major_version;
+    int minor_version;
+    IcePoProcessMsgProc process_msg_proc;
+} IcePoVersionRec;
+
+typedef struct {
+    int major_version;
+    int minor_version;
+    IcePaProcessMsgProc process_msg_proc;
+} IcePaVersionRec;
 
 
 IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus *);
@@ -176,6 +234,27 @@ char *IceVendor(IceConn);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 8 Default HeaderGroup for X11/ICE/ICEutil.h
+ */
+typedef struct {
+    char *protocol_name;
+    unsigned short protocol_data_length;
+    char *protocol_data;
+    char *network_id;
+    char *auth_name;
+    unsigned short auth_data_length;
+    char *auth_data;
+} IceAuthFileEntry;
+
+typedef struct {
+    char *protocol_name;
+    char *network_id;
+    char *auth_name;
+    unsigned short auth_data_length;
+    char *auth_data;
+} IceAuthDataEntry;
+
 
 char *IceAuthFileName(void);
 void IceFreeAuthFileEntry(IceAuthFileEntry *);

@@ -11,7 +11,7 @@ The X Libraries should be built thread-safe.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:52:36 2001 -->
+<!--    at Thu May  3 22:45:47 2001 -->
 <SECT1 ID=libX11>
 <TITLE>libX11</TITLE>
 <PARA>
@@ -203,29 +203,181 @@ X11R6.4 Xlib - C library</PARA>
 <PARA>
 </PARA>
 <SECT2>
+<TITLE>X11/Xauth.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+/*
+ * 135 Default HeaderGroup for X11/Xauth.h
+ */
+typedef struct xauth {
+    unsigned short family;
+    unsigned short address_length;
+    char *address;
+    unsigned short number_length;
+    char *number;
+    unsigned short name_length;
+    char *name;
+    unsigned short data_length;
+    char *data;
+} Xauth;
+
+
+void XauDisposeAuth(Xauth *);
+char *XauFileName(void);
+Xauth *XauGetBestAuthByAddr(unsigned int, unsigned int, char *,
+			    unsigned int, char *, int, char **, int *);
+Xauth *XauReadAuth(FILE *);
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>X11/Xcms.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
-typedef int (*XcmsWhiteAdjustProc) ();
+typedef unsigned long XcmsColorFormat;
 
-typedef int (*XcmsCompressionProc) ();
+typedef double XcmsFloat;
 
+typedef struct {
+    unsigned short red;
+    unsigned short green;
+    unsigned short blue;
+} XcmsRGB;
+
+typedef struct {
+    XcmsFloat red;
+    XcmsFloat green;
+    XcmsFloat blue;
+} XcmsRGBi;
+
+typedef struct {
+    XcmsFloat X;
+    XcmsFloat Y;
+    XcmsFloat Z;
+} XcmsCIEXYZ;
+
+typedef struct {
+    XcmsFloat u_prime;
+    XcmsFloat v_prime;
+    XcmsFloat Y;
+} XcmsCIEuvY;
+
+typedef struct {
+    XcmsFloat x;
+    XcmsFloat y;
+    XcmsFloat Y;
+} XcmsCIExyY;
+
+typedef struct {
+    XcmsFloat L_star;
+    XcmsFloat a_star;
+    XcmsFloat b_star;
+} XcmsCIELab;
+
+typedef struct {
+    XcmsFloat L_star;
+    XcmsFloat u_star;
+    XcmsFloat v_star;
+} XcmsCIELuv;
+
+typedef struct {
+    XcmsFloat H;
+    XcmsFloat V;
+    XcmsFloat C;
+} XcmsTekHVC;
+
+typedef struct {
+    XcmsFloat pad0;
+    XcmsFloat pad1;
+    XcmsFloat pad2;
+    XcmsFloat pad3;
+} XcmsPad;
+
+/*
+ * 129 XCMS Color Structure
+ */
+typedef union {
+    union spec;
+    XcmsRGB RGB;
+    unsigned long pixel;
+    XcmsRGBi RGBi;
+    XcmsColorFormat ;
+    XcmsCIEXYZ CIEXYZ;
+    XcmsCIEuvY CIEuvY;
+    XcmsCIExyY CIExyY;
+    XcmsCIELab CIELab;
+    XcmsCIELuv CIELuv;
+    XcmsTekHVC TekHVC;
+    XcmsPad Pad;
+} XcmsColor;
+
+/*
+ * 130 XCMS Per Screen related data
+ */
+typedef struct _XcmsPerScrnInfo {
+    XcmsColor screenWhitePt;
+    XPointer functionSet;
+    XPointer screenData;
+    unsigned char state;
+    char pad[1];
+} XcmsPerScrnInfo;
+
+typedef int (*XcmsCompressionProc) ()
+;
+
+typedef int (*XcmsWhiteAdjustProc) ()
+;
+
+typedef int (*XcmsScreenInitProc) ()
+;
+
+typedef void (*XcmsScreenFreeProc) ()
+;
+
+typedef int (*XcmsConversionProc) ()
+;
+
+typedef int (*XcmsParseStringProc) ()
+;
+
+/*
+ * 132 XCMS Color Conversion Context
+ */
 typedef struct _XcmsCCC {
     Display *dpy;
     int screenNumber;
     Visual *visual;
     XcmsColor clientWhitePt;
-     gamutCompProc;
+    XcmsCompressionProc gamutCompProc;
     XPointer gamutCompClientData;
-     whitePtAdjProc;
+    XcmsWhiteAdjustProc whitePtAdjProc;
     XPointer whitePtAdjClientData;
     XcmsPerScrnInfo *pPerScrnInfo;
 } *XcmsCCC;
 
-typedef double XcmsFloat;
+typedef XcmsConversionProc *XcmsFuncListPtr;
 
-typedef unsigned long XcmsColorFormat;
+/*
+ * 133 Color Space -- per Color Space related data (Device-Independent or Device-Dependent)
+ */
+typedef struct _XcmsColorSpace {
+    char *prefix;
+    XcmsColorFormat id;
+    XcmsParseStringProc parseString;
+    XcmsFuncListPtr to_CIEXYZ;
+    XcmsFuncListPtr from_CIEXYZ;
+    int inverse_flag;
+} XcmsColorSpace;
+
+/*
+ * 6 Default HeaderGroup for X11/Xcms.h
+ */
+typedef struct _XcmsFunctionSet {
+    XcmsColorSpace **DDColorSpaces;
+    XcmsScreenInitProc screenInitProc;
+    XcmsScreenFreeProc screenFreeProc;
+} XcmsFunctionSet;
 
 
 int XcmsAddColorSpace(XcmsColorSpace *);
@@ -347,18 +499,800 @@ Visual *XcmsVisualOfCCC(XcmsCCC);
 <PARA>
 </PARA>
 <SCREEN>
-typedef void *XVaNestedList;
+typedef char *XPointer;
 
-typedef struct _XIC *XIC;
+/*
+ * 82 Extensions need a way to hang private data on some structures.
+ */
+typedef struct _XExtData {
+    int number;
+    struct _XExtData *next;
+    int (*free_private) (struct _XExtData * extension);
+    XPointer private_data;
+} XExtData;
 
-typedef struct _XIM *XIM;
+typedef struct {
+    int extension;
+    int major_opcode;
+    int first_event;
+    int first_error;
+} XExtCodes;
 
-typedef struct _XOC *XFontSet;
+/*
+ * 83 Data structure for retrieving info about pixmap formats.
+ */
+typedef struct {
+    int depth;
+    int bits_per_pixel;
+    int scanline_pad;
+} XPixmapFormatValues;
 
-typedef struct _XOC *XOC;
+/*
+ * 84 Data structure for setting graphics context
+ */
+typedef struct {
+    int function;
+    unsigned long plane_mask;
+    unsigned long foreground;
+    unsigned long background;
+    int line_width;
+    int line_style;
+    int cap_style;
+    int join_style;
+    int fill_style;
+    int fill_rule;
+    int arc_mode;
+    Pixmap tile;
+    Pixmap stipple;
+    int ts_x_origin;
+    int ts_y_origin;
+    Font font;
+    int subwindow_mode;
+    int graphics_exposures;
+    int clip_x_origin;
+    int clip_y_origin;
+    Pixmap clip_mask;
+    int dash_offset;
+    char dashes;
+} XGCValues;
+
+/*
+ * 85  Graphics context.  The contents of this structure are implementation dependent.  A GC should be treated as opaque by application code.
+ */
+typedef struct _XGC *GC;
+
+/*
+ * 86 Visual structure; contains information about colormapping possible.
+ */
+typedef struct {
+    XExtData *ext_data;
+    VisualID visualid;
+    int class;
+    unsigned long red_mask;
+    unsigned long green_mask;
+    unsigned long blue_mask;
+    int bits_per_rgb;
+    int map_entries;
+} Visual;
+
+/*
+ * 87 Depth structure; contains information for each possible depth.
+ */
+typedef struct {
+    int depth;
+    int nvisuals;
+    Visual *visuals;
+} Depth;
+
+/*
+ * 88 Information about the screen.  The contents of this structure are implementation dependent.  A Screen should be treated as opaque by application code.
+ */
+typedef struct {
+    XExtData *ext_data;
+    struct _XDisplay *display;
+    Window root;
+    int width;
+    int height;
+    int mwidth;
+    int mheight;
+    int ndepths;
+    Depth *depths;
+    int root_depth;
+    Visual *root_visual;
+    GC default_gc;
+    Colormap cmap;
+    unsigned long white_pixel;
+    unsigned long black_pixel;
+    int max_maps;
+    int min_maps;
+    int backing_store;
+    int save_unders;
+    long root_input_mask;
+} Screen;
+
+/*
+ * 89  Format structure; describes ZFormat data the screen will understand.
+ */
+typedef struct {
+    XExtData *ext_data;
+    int depth;
+    int bits_per_pixel;
+    int scanline_pad;
+} ScreenFormat;
+
+/*
+ * 90 Data structure for setting window attributes.
+ */
+typedef struct {
+    Pixmap background_pixmap;
+    unsigned long background_pixel;
+    Pixmap border_pixmap;
+    unsigned long border_pixel;
+    int bit_gravity;
+    int win_gravity;
+    int backing_store;
+    unsigned long backing_planes;
+    unsigned long backing_pixel;
+    int save_under;
+    long event_mask;
+    long do_not_propagate_mask;
+    int override_redirect;
+    Colormap colormap;
+    Cursor cursor;
+} XSetWindowAttributes;
+
+typedef struct {
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    int depth;
+    Visual *visual;
+    Window root;
+    int class;
+    int bit_gravity;
+    int win_gravity;
+    int backing_store;
+    unsigned long backing_planes;
+    unsigned long backing_pixel;
+    int save_under;
+    Colormap colormap;
+    int map_installed;
+    int map_state;
+    long all_event_masks;
+    long your_event_mask;
+    long do_not_propagate_mask;
+    int override_redirect;
+    Screen *screen;
+} XWindowAttributes;
+
+/*
+ * 91 Data structure for host setting; getting routines.
+ */
+typedef struct {
+    int family;
+    int length;
+    char *address;
+} XHostAddress;
+
+/*
+ * 92 Data structure for 
+ */
+struct XImagefuncs;
+
+typedef struct _XImage {
+    int width;
+    int height;
+    int xoffset;
+    int ;
+    char *data;
+    int byte_order;
+    int bitmap_unit;
+    int bitmap_bit_order;
+    int bitmap_pad;
+    int depth;
+    int bytes_per_line;
+    int bits_per_pixel;
+    unsigned long red_mask;
+    unsigned long green_mask;
+    unsigned long blue_mask;
+    XPointer obdata;
+} XImage;
+
+/*
+ * 93 Data structure for XReconfigureWindow
+ */
+typedef struct {
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    Window sibling;
+    int stack_mode;
+} XWindowChanges;
+
+/*
+ * 94 Data structures for graphics operations.  On most machines, these are congruent with the wire protocol structures, so reformatting the datacan be avoided on these architectures. 
+ */
+typedef struct {
+    short x1;
+    short y1;
+    short x2;
+    short y2;
+} XSegment;
+
+typedef struct {
+    short x;
+    short y;
+} XPoint;
+
+typedef struct {
+    short x;
+    short y;
+    unsigned short width;
+    unsigned short height;
+} XRectangle;
+
+typedef struct {
+    short x;
+    short y;
+    unsigned short width;
+    unsigned short height;
+    short angle1;
+    short angle2;
+} XArc;
+
+/*
+ * 95 Data structure for XChangeKeyboardControl
+ */
+typedef struct {
+    int key_click_percent;
+    int bell_percent;
+    int bell_pitch;
+    int bell_duration;
+    int led;
+    int led_mode;
+    int key;
+    int auto_repeat_mode;
+} XKeyboardControl;
+
+/*
+ * 96 Data structure for XGetKeyboardControl
+ */
+typedef struct {
+    int key_click_percent;
+    int bell_percent;
+    unsigned int bell_pitch;
+    unsigned int bell_duration;
+    unsigned long led_mask;
+    int global_auto_repeat;
+    char auto_repeats[1];
+} XKeyboardState;
+
+/*
+ * 97 Data structure for XGetMotionEvents.
+ */
+typedef struct {
+    Time time;
+    short x;
+    short y;
+} XTimeCoord;
+
+/*
+ * 98 Data structure for X{Set,Get}ModifierMapping
+ */
+typedef struct {
+    int max_keypermod;
+    KeyCode *modifiermap;
+} XModifierKeymap;
+
+/*
+ * 99 Display datatype maintaining display specific data. The contents of this structure are implementation dependent.A Display should be treated as opaque by application code. 
+ */
+typedef struct _XDisplay Display;
+
+/*
+ * 100 Definitions of specific events.
+ */
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Window root;
+    Window subwindow;
+    Time time;
+    int x;
+    int y;
+    int x_root;
+    int y_root;
+    unsigned int state;
+    unsigned int keycode;
+    int same_screen;
+} XKeyEvent;
+
+typedef XKeyEvent XKeyPressedEvent;
+
+typedef XKeyEvent XKeyReleasedEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Window root;
+    Window subwindow;
+    Time time;
+    int x;
+    int y;
+    int x_root;
+    int y_root;
+    unsigned int state;
+    unsigned int button;
+    int same_screen;
+} XButtonEvent;
+
+typedef XButtonEvent XButtonPressedEvent;
+
+typedef XButtonEvent XButtonReleasedEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Window root;
+    Window subwindow;
+    Time time;
+    int x;
+    int y;
+    int x_root;
+    int y_root;
+    unsigned int state;
+    char is_hint;
+    int same_screen;
+} XMotionEvent;
+
+typedef XMotionEvent XPointerMovedEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Window root;
+    Window subwindow;
+    Time time;
+    int x;
+    int y;
+    int x_root;
+    int y_root;
+    int mode;
+    int detail;
+    int same_screen;
+    int focus;
+    unsigned int state;
+} XCrossingEvent;
+
+typedef XCrossingEvent XEnterWindowEvent;
+
+typedef XCrossingEvent XLeaveWindowEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int mode;
+    int detail;
+} XFocusChangeEvent;
+
+typedef XFocusChangeEvent XFocusInEvent;
+
+typedef XFocusChangeEvent XFocusOutEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    char key_vector[1];
+} XKeymapEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int x;
+    int y;
+    int width;
+    int height;
+    int count;
+} XExposeEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Drawable drawable;
+    int x;
+    int y;
+    int width;
+    int height;
+    int count;
+    int major_code;
+    int minor_code;
+} XGraphicsExposeEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Drawable drawable;
+    int major_code;
+    int minor_code;
+} XNoExposeEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int state;
+} XVisibilityEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window parent;
+    Window window;
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    int override_redirect;
+} XCreateWindowEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+} XDestroyWindowEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int from_configure;
+} XUnmapEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int override_redirect;
+} XMapEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window parent;
+    Window window;
+} XMapRequestEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    Window parent;
+    int x;
+    int y;
+    int override_redirect;
+} XReparentEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    Window above;
+    int override_redirect;
+} XConfigureEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int x;
+    int y;
+} XGravityEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int width;
+    int height;
+} XResizeRequestEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window parent;
+    Window window;
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    Window above;
+    int detail;
+    unsigned long value_mask;
+} XConfigureRequestEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int place;
+} XCirculateEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window parent;
+    Window window;
+    int place;
+} XCirculateRequestEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Atom atom;
+    Time time;
+    int state;
+} XPropertyEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Atom selection;
+    Time time;
+} XSelectionClearEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window owner;
+    Window requestor;
+    Atom selection;
+    Atom target;
+    Atom property;
+    Time time;
+} XSelectionRequestEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window requestor;
+    Atom selection;
+    Atom target;
+    Atom property;
+    Time time;
+} XSelectionEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Colormap colormap;
+    int new;
+    int state;
+} XColormapEvent;
 
 typedef union {
+    char b[1];
+    short s[1];
+    long l[1];
+    union data;
+} XClientMessageEvent;
 
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int request;
+    int first_keycode;
+    int count;
+} XMappingEvent;
+
+typedef struct {
+    int type;
+    Display *display;
+    XID resourceid;
+    unsigned long serial;
+    unsigned char error_code;
+    unsigned char request_code;
+    unsigned char minor_code;
+} XErrorEvent;
+
+typedef struct {
+    int type;
+    unsigned long serial;
+    int send_event;
+    Display *display;
+    Window window;
+} XAnyEvent;
+
+/*
+ * 101 this union is defined so Xlib can always use the same sized event structure internally, to avoid memory fragmentation.
+ */
+typedef union _XEvent {
+    int type;
+    XAnyEvent xany;
+    XKeyEvent xkey;
+    XButtonEvent xbutton;
+    XMotionEvent xmotion;
+    XCrossingEvent xcrossing;
+    XFocusChangeEvent xfocus;
+    XExposeEvent xexpose;
+    XGraphicsExposeEvent xgraphicsexpose;
+    XNoExposeEvent xnoexpose;
+    XVisibilityEvent xvisibility;
+    XCreateWindowEvent xcreatewindow;
+    XDestroyWindowEvent xdestroywindow;
+    XUnmapEvent xunmap;
+    XMapEvent xmap;
+    XMapRequestEvent xmaprequest;
+    XReparentEvent xreparent;
+    XConfigureEvent xconfigure;
+    XGravityEvent xgravity;
+    XResizeRequestEvent xresizerequest;
+    XConfigureRequestEvent xconfigurerequest;
+    XCirculateEvent xcirculate;
+    XCirculateRequestEvent xcirculaterequest;
+    XPropertyEvent xproperty;
+    XSelectionClearEvent xselectionclear;
+    XSelectionRequestEvent xselectionrequest;
+    XSelectionEvent xselection;
+    XColormapEvent xcolormap;
+    XClientMessageEvent xclient;
+    XMappingEvent xmapping;
+    XErrorEvent xerror;
+    XKeymapEvent xkeymap;
+    long pad[1];
+} XEvent;
+
+/*
+ * 102 per character font metric information.
+ */
+typedef struct {
+    short lbearing;
+    short rbearing;
+    short width;
+    short ascent;
+    short descent;
+    unsigned short attributes;
+} XCharStruct;
+
+/*
+ * 103 To allow arbitrary information with fonts, there are additional properties returned.
+ */
+typedef struct {
+    Atom name;
+    unsigned long card32;
+} XFontProp;
+
+typedef struct {
+    XExtData *ext_data;
+    Font fid;
+    unsigned int direction;
+    unsigned int min_char_or_byte2;
+    unsigned int max_char_or_byte2;
+    unsigned int min_byte1;
+    unsigned int max_byte1;
+    int all_chars_exist;
+    unsigned int default_char;
+    int n_properties;
+    XFontProp *properties;
+    XCharStruct min_bounds;
+    XCharStruct max_bounds;
+    XCharStruct *per_char;
+    int ascent;
+    int descent;
+} XFontStruct;
+
+typedef struct {
+    XRectangle max_ink_extent;
+    XRectangle max_logical_extent;
+} XFontSetExtents;
+
+/*
+ * 104 PolyText routines take these as arguments.
+ */
+typedef struct {
+    char *chars;
+    int nchars;
+    int delta;
+    Font font;
+} XTextItem;
+
+typedef struct {
+    unsigned char byte1;
+    unsigned char byte2;
+} XChar2b;
+
+typedef struct {
+    XChar2b *chars;
+    int nchars;
+    int delta;
+    Font font;
+} XTextItem16;
+
+typedef union {
     Display *display;
     GC gc;
     Visual *visual;
@@ -369,21 +1303,57 @@ typedef union {
 
 typedef struct _XOM *XOM;
 
-typedef struct _XGC *GC;
+typedef struct _XOC *XOC;
 
-typedef char *XPointer;
+typedef struct _XOC *XFontSet;
 
-typedef void (*XIDProc) ();
+typedef struct {
+    char *chars;
+    int nchars;
+    int delta;
+    XFontSet font_set;
+} XmbTextItem;
 
-int (*XSynchronize) ()
+typedef struct {
+    wchar_t *chars;
+    int nchars;
+    int delta;
+    XFontSet font_set;
+} XwcTextItem;
 
-int (*XSetAfterFunction) ()
+typedef struct _XIM *XIM;
 
-typedef int (*XErrorHandler) ();
+typedef struct _XIC *XIC;
 
-typedef int (*XIOErrorHandler) ();
+typedef void (*XIDProc) ()
+;
 
-typedef void (*XConnectionWatchProc) ();
+/*
+ * 5 Default HeaderGroup for X11/Xlib.h
+ */
+struct _XDisplay;
+
+struct _XrmHashBucketRec;
+
+typedef struct {
+    unsigned long pixel;
+    unsigned short red;
+    unsigned short green;
+    unsigned short blue;
+    char flags;
+    char pad;
+} XColor;
+
+typedef void *XVaNestedList;
+
+typedef int (*XErrorHandler) ()
+;
+
+typedef int (*XIOErrorHandler) ()
+;
+
+typedef void (*XConnectionWatchProc) ()
+;
 
 
 int XActivateScreenSaver(Display *);
@@ -391,7 +1361,7 @@ int XAddConnectionWatch(Display *, XConnectionWatchProc, XPointer);
 XExtCodes *XAddExtension(Display *);
 int XAddHost(Display *, XHostAddress *);
 int XAddHosts(Display *, XHostAddress *, int);
-int XAddToExtensionList(_XExtData * *, XExtData *);
+int XAddToExtensionList(struct _XExtData **, XExtData *);
 int XAddToSaveSet(Display *, Window);
 unsigned long XAllPlanes(void);
 int XAllocColor(Display *, Colormap, XColor *);
@@ -555,7 +1525,7 @@ int XFilterEvent(XEvent *, Window);
 XExtData *XFindOnExtensionList(XExtData * *, int);
 int XFlush(Display *);
 void XFlushGC(Display *, GC);
-int XFontsOfFontSet(XFontSet, XFontStruct ** *, char ***);
+int XFontsOfFontSet(XFontSet, XFontStruct * **, char ***);
 int XForceScreenSaver(Display *, int);
 int XFree(void *);
 int XFreeColormap(Display *, Colormap);
@@ -675,8 +1645,8 @@ unsigned long XNextRequest(Display *);
 int XNoOp(Display *);
 XOM XOMOfOC(XOC);
 Display *XOpenDisplay(char *);
-XIM XOpenIM(Display *, _XrmHashBucketRec *, char *, char *);
-XOM XOpenOM(Display *, _XrmHashBucketRec *, char *, char *);
+XIM XOpenIM(Display *, struct _XrmHashBucketRec *, char *, char *);
+XOM XOpenOM(Display *, struct _XrmHashBucketRec *, char *, char *);
 int XParseColor(Display *, Colormap, char *, XColor *);
 int XParseGeometry(char *, int *, int *, unsigned int *, unsigned int *);
 int XPeekEvent(Display *, XEvent *);
@@ -722,8 +1692,8 @@ int XRecolorCursor(Display *, Cursor, XColor *, XColor *);
 int XReconfigureWMWindow(Display *, Window, int, unsigned int,
 			 XWindowChanges *);
 int XRefreshKeyboardMapping(XMappingEvent *);
-int XRegisterIMInstantiateCallback(Display *, _XrmHashBucketRec *, char *,
-				   char *, XIDProc, XPointer);
+int XRegisterIMInstantiateCallback(Display *, struct _XrmHashBucketRec *,
+				   char *, char *, XIDProc, XPointer);
 void XRemoveConnectionWatch(Display *, XConnectionWatchProc, XPointer);
 int XRemoveFromSaveSet(Display *, Window);
 int XRemoveHost(Display *, XHostAddress *);
@@ -745,8 +1715,6 @@ int XSelectInput(Display *, Window, long);
 int XSendEvent(Display *, Window, int, long, XEvent *);
 char *XServerVendor(Display *);
 int XSetAccessControl(Display *, int);
-
-fptr - XSetAfterFunction XSetAfterFunction(Display *);
 int XSetArcMode(Display *, GC, int);
 void XSetAuthorization(char *, int, char *, int);
 int XSetBackground(Display *, GC, unsigned long);
@@ -803,8 +1771,6 @@ int XStoreNamedColor(Display *, Colormap, char *, unsigned long, int);
 KeySym XStringToKeysym(char *);
 int XSupportsLocale(void);
 int XSync(Display *, int);
-
-fptr - XSynchronize XSynchronize(Display *);
 int XTextExtents(XFontStruct *, char *, int, int *, int *, int *,
 		 XCharStruct *);
 int XTextExtents16(XFontStruct *, XChar2b *, int, int *, int *, int *,
@@ -824,7 +1790,7 @@ int XUnloadFont(Display *, Font);
 void XUnlockDisplay(Display *);
 int XUnmapSubwindows(Display *, Window);
 int XUnmapWindow(Display *, Window);
-int XUnregisterIMInstantiateCallback(Display *, _XrmHashBucketRec *,
+int XUnregisterIMInstantiateCallback(Display *, struct _XrmHashBucketRec *,
 				     char *, char *, XIDProc, XPointer);
 void XUnsetICFocus(XIC);
 XVaNestedList XVaCreateNestedList(int, ...);
@@ -876,18 +1842,93 @@ int XwcTextPerCharExtents(XFontSet, wchar_t *, int, XRectangle *,
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 69 Default HeaderGroup for X11/Xutil.h
+ */
+typedef struct {
+    int x;
+    int y;
+    struct max_aspect;
+    int base_width;
+    int base_height;
+    int win_gravity;
+} XSizeHints;
+
+typedef struct {
+    long flags;
+    int input;
+    int initial_state;
+    Pixmap icon_pixmap;
+    Window icon_window;
+    int icon_x;
+    int icon_y;
+    Pixmap icon_mask;
+    XID window_group;
+} XWMHints;
+
+typedef struct {
+    unsigned char *value;
+    Atom encoding;
+    int ;
+    unsigned long nitems;
+} XTextProperty;
+
+typedef struct {
+    int min_width;
+    int min_height;
+    int max_width;
+    int max_height;
+    int width_inc;
+    int height_inc;
+} XIconSize;
+
+typedef struct {
+    char *res_name;
+    char *res_class;
+} XClassHint;
+
+typedef struct _XComposeStatus {
+    XPointer compose_ptr;
+    int chars_matched;
+} XComposeStatus;
+
 typedef struct _XRegion *Region;
 
-typedef enum {
+typedef struct {
+    Visual *visual;
+    VisualID visualid;
+    int screen;
+    int depth;
+    int class;
+    unsigned long red_mask;
+    unsigned long green_mask;
+    unsigned long blue_mask;
+    int colormap_size;
+    int bits_per_rgb;
+} XVisualInfo;
 
+typedef struct {
+    Colormap colormap;
+    unsigned long red_max;
+    unsigned long red_mult;
+    unsigned long green_max;
+    unsigned long green_mult;
+    unsigned long blue_max;
+    unsigned long blue_mult;
+    unsigned long base_pixel;
+    VisualID visualid;
+    XID killid;
+} XStandardColormap;
+
+typedef int XContext;
+
+typedef enum {
     XStringStyle,
     XCompoundTextStyle,
     XTextStyle,
     XStdICCTextStyle,
     XUTF8StringStyle
 } XICCEncodingStyle;
-
-typedef int XContext;
 
 
 XClassHint *XAllocClassHint(void);
@@ -967,7 +2008,7 @@ int XmbTextPropertyToTextList(Display *, XTextProperty *, char ***, int *);
 void XwcFreeStringList(wchar_t * *);
 int XwcTextListToTextProperty(Display *, wchar_t * *, int,
 			      XICCEncodingStyle, XTextProperty *);
-int XwcTextPropertyToTextList(Display *, XTextProperty *, wchar_t ** *,
+int XwcTextPropertyToTextList(Display *, XTextProperty *, wchar_t * **,
 
 			      int *);
 </SCREEN>
@@ -980,7 +2021,7 @@ int XwcTextPropertyToTextList(Display *, XTextProperty *, wchar_t ** *,
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:52:47 2001 -->
+<!--    at Thu May  3 22:45:59 2001 -->
 <SECT1 ID=libXext>
 <TITLE>libXext</TITLE>
 <PARA>
@@ -1139,16 +2180,19 @@ X Synchronization Extension Library</PARA>
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 76 Default HeaderGroup for X11/extensions/dpms.h
+ */
 
 int DPMSCapable(Display *);
 int DPMSDisable(Display *);
 int DPMSEnable(Display *);
-int DPMSForceLevel(Display *, CARD16);
-int DPMSGetTimeouts(Display *, CARD16 *, CARD16 *, CARD16 *);
+int DPMSForceLevel(Display *,);
+int DPMSGetTimeouts(Display *, *, *, *);
 int DPMSGetVersion(Display *, int *, int *);
-int DPMSInfo(Display *, CARD16 *, BOOL *);
+int DPMSInfo(Display *, *, *);
 int DPMSQueryExtension(Display *, int *, int *);
-int DPMSSetTimeouts(Display *, CARD16, CARD16, CARD16);
+int DPMSSetTimeouts(Display *,,,);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1156,7 +2200,17 @@ int DPMSSetTimeouts(Display *, CARD16, CARD16, CARD16);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 77 Default HeaderGroup for X11/extensions/security.h
+ */
 typedef unsigned long XSecurityAuthorization;
+
+typedef struct {
+    unsigned int timeout;
+    unsigned int trust_level;
+    XID group;
+    long event_mask;
+} XSecurityAuthorizationAttributes;
 
 
 Xauth *XSecurityAllocXauth(void);
@@ -1173,6 +2227,8 @@ int XSecurityRevokeAuthorization(Display *, XSecurityAuthorization);
 <PARA>
 </PARA>
 <SCREEN>
+typedef XID XSyncCounter;
+
 typedef XID XSyncAlarm;
 
 typedef struct _XSyncValue {
@@ -1180,7 +2236,51 @@ typedef struct _XSyncValue {
     unsigned int lo;
 } XSyncValue;
 
-typedef XID XSyncCounter;
+typedef enum {
+    XSyncAbsolute,
+    XSyncRelative
+} XSyncValueType;
+
+typedef enum {
+    XSyncPositiveTransition,
+    XSyncNegativeTransition,
+    XSyncPositiveComparison,
+    XSyncNegativeComparison
+} XSyncTestType;
+
+typedef enum {
+    XSyncAlarmActive,
+    XSyncAlarmInactive,
+    XSyncAlarmDestroyed
+} XSyncAlarmState;
+
+/*
+ * 79 Default HeaderGroup for X11/extensions/sync.h
+ */
+typedef struct _XSyncSystemCounter {
+    char *name;
+    XSyncCounter counter;
+    XSyncValue resolution;
+} XSyncSystemCounter;
+
+typedef struct {
+    XSyncCounter counter;
+    XSyncValueType value_type;
+    XSyncValue wait_value;
+    XSyncTestType test_type;
+} XSyncTrigger;
+
+typedef struct {
+    XSyncTrigger trigger;
+    XSyncValue event_threshold;
+} XSyncWaitCondition;
+
+typedef struct {
+    XSyncTrigger trigger;
+    XSyncValue delta;
+    int events;
+    XSyncAlarmState state;
+} XSyncAlarmAttributes;
 
 
 int XSyncAwait(Display *, XSyncWaitCondition *, int);
@@ -1227,7 +2327,7 @@ void XSyncValueSubtract(XSyncValue *, XSyncValue, XSyncValue, int *);
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:53:11 2001 -->
+<!--    at Thu May  3 22:46:22 2001 -->
 <SECT1 ID=libSM>
 <TITLE>libSM</TITLE>
 <PARA>
@@ -1287,31 +2387,105 @@ X11R6.4 X Session Managment Library</PARA>
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 119 Generic SM pointer, Connection objects.  Defined in SMlibint.h
+ */
+typedef IcePointer SmPointer;
+
+typedef struct _SmcConn *SmcConn;
+
 typedef struct _SmsConn *SmsConn;
 
-typedef void (*SmcPropReplyProc) ();
+/*
+ * 121 Session Management property
+ */
+typedef struct {
+    int length;
+    SmPointer value;
+} SmPropValue;
 
-typedef void (*SmcInteractProc) ();
+typedef struct {
+    char *name;
+    char *type;
+    int num_vals;
+    SmPropValue *vals;
+} SmProp;
 
-typedef void (*SmcSaveYourselfPhase2Proc) ();
-
+/*
+ * 127 SmcCloseConnection status return
+ */
 typedef enum {
-
     SmcClosedNow,
     SmcClosedASAP,
     SmcConnectionInUse
 } SmcCloseStatus;
 
-typedef void (*SmsErrorHandler) ();
+/*
+ * 120 Client callbacks
+ */
+typedef void (*SmcSaveYourselfPhase2Proc) ()
+;
 
-typedef struct _SmcConn *SmcConn;
+typedef void (*SmcInteractProc) ()
+;
 
-typedef IcePointer SmPointer;
+typedef void (*SmcDieProc) ()
+;
 
-typedef void (*SmcErrorHandler) ();
+typedef void (*SmcShutdownCancelledProc) ()
+;
 
-typedef int (*SmsNewClientProc) ();
+typedef void (*SmcSaveCompleteProc) ()
+;
 
+typedef void (*SmcPropReplyProc) ()
+;
+
+/*
+ * 122 Callbacks set up at SmcOpenConnection time
+ */
+typedef struct {
+    SmcShutdownCancelledProc callback;
+    SmPointer client_data;
+    struct shutdown_cancelled;
+} SmcCallbacks;
+
+/*
+ * 123 Session manager callbacks
+ */
+typedef void (*SmsSetPropertiesProc) ()
+;
+
+typedef void (*SmsDeletePropertiesProc) ()
+;
+
+typedef void (*SmsGetPropertiesProc) ()
+;
+
+/*
+ * 124 Callbacks set up by a session manager when a new client connects.
+ */
+typedef struct {
+    SmsGetPropertiesProc callback;
+    SmPointer manager_data;
+    struct get_properties;
+} SmsCallbacks;
+
+typedef int (*SmsNewClientProc) ()
+;
+
+/*
+ * 126 Error handlers
+ */
+typedef void (*SmcErrorHandler) ()
+;
+
+typedef void (*SmsErrorHandler) ()
+;
+
+/*
+ * 9 Default HeaderGroup for X11/SM/SMlib.h
+ */
 
 void SmFreeProperty(SmProp *);
 void SmFreeReasons(int, char **);
@@ -1364,7 +2538,7 @@ void SmsShutdownCancelled(SmsConn);
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:53:00 2001 -->
+<!--    at Thu May  3 22:46:11 2001 -->
 <SECT1 ID=libICE>
 <TITLE>libICE</TITLE>
 <PARA>
@@ -1426,45 +2600,30 @@ X11R6.4 X Inter-Client Exchange (ICE) Protocol</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef struct _IceConn *IceConn;
-
-typedef struct _IceListenObj *IceListenObj;
-
-typedef void (*IceIOErrorHandler) ();
-
-typedef void (*IceErrorHandler) ();
-
-typedef void (*IcePingReplyProc) ();
-
-typedef void (*IceIOErrorProc) ();
-
-typedef void (*IceProtocolActivateProc) ();
-
-typedef int (*IceProtocolSetupProc) ();
-
-typedef int (*IceHostBasedAuthProc) ();
-
-typedef void (*IceWatchProc) ();
-
-typedef enum {
-
-    IceProcessMessagesSuccess,
-    IceProcessMessagesIOError,
-    IceProcessMessagesConnectionClosed
-} IceProcessMessagesStatus;
-
-typedef enum {
-
-    IceClosedNow,
-    IceClosedASAP,
-    IceConnectionInUse,
-    IceStartedShutdownNegotiation
-} IceCloseStatus;
-
 typedef void *IcePointer;
 
 typedef enum {
+    IcePoAuthHaveReply,
+    IcePoAuthRejected,
+    IcePoAuthFailed,
+    IcePoAuthDoneCleanup
+} IcePoAuthStatus;
 
+typedef enum {
+    IcePaAuthContinue,
+    IcePaAuthAccepted,
+    IcePaAuthRejected,
+    IcePaAuthFailed
+} IcePaAuthStatus;
+
+typedef enum {
+    IceConnectPending,
+    IceConnectAccepted,
+    IceConnectRejected,
+    IceConnectIOError
+} IceConnectStatus;
+
+typedef enum {
     IceProtocolSetupSuccess,
     IceProtocolSetupFailure,
     IceProtocolSetupIOError,
@@ -1472,12 +2631,85 @@ typedef enum {
 } IceProtocolSetupStatus;
 
 typedef enum {
+    IceAcceptSuccess,
+    IceAcceptFailure,
+    IceAcceptBadMalloc
+} IceAcceptStatus;
 
-    IceConnectPending,
-    IceConnectAccepted,
-    IceConnectRejected,
-    IceConnectIOError
-} IceConnectStatus;
+typedef enum {
+    IceClosedNow,
+    IceClosedASAP,
+    IceConnectionInUse,
+    IceStartedShutdownNegotiation
+} IceCloseStatus;
+
+typedef enum {
+    IceProcessMessagesSuccess,
+    IceProcessMessagesIOError,
+    IceProcessMessagesConnectionClosed
+} IceProcessMessagesStatus;
+
+typedef struct {
+    unsigned long sequence_of_request;
+    int major_opcode_of_request;
+    int minor_opcode_of_request;
+    IcePointer reply;
+} IceReplyWaitInfo;
+
+typedef struct _IceConn *IceConn;
+
+typedef struct _IceListenObj *IceListenObj;
+
+typedef void (*IceWatchProc) ()
+;
+
+typedef void (*IcePoProcessMsgProc) ()
+;
+
+typedef void (*IcePaProcessMsgProc) ()
+;
+
+typedef IcePoAuthStatus(*IcePoAuthProc) ()
+;
+
+typedef IcePaAuthStatus(*IcePaAuthProc) ()
+;
+
+typedef int (*IceHostBasedAuthProc) ()
+;
+
+typedef int (*IceProtocolSetupProc) ()
+;
+
+typedef void (*IceProtocolActivateProc) ()
+;
+
+typedef void (*IceIOErrorProc) ()
+;
+
+typedef void (*IcePingReplyProc) ()
+;
+
+typedef void (*IceErrorHandler) ()
+;
+
+typedef void (*IceIOErrorHandler) ()
+;
+
+/*
+ * 7 Default HeaderGroup for X11/ICE/ICElib.h
+ */
+typedef struct {
+    int major_version;
+    int minor_version;
+    IcePoProcessMsgProc process_msg_proc;
+} IcePoVersionRec;
+
+typedef struct {
+    int major_version;
+    int minor_version;
+    IcePaProcessMsgProc process_msg_proc;
+} IcePaVersionRec;
 
 
 IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus *);
@@ -1539,6 +2771,27 @@ char *IceVendor(IceConn);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 8 Default HeaderGroup for X11/ICE/ICEutil.h
+ */
+typedef struct {
+    char *protocol_name;
+    unsigned short protocol_data_length;
+    char *protocol_data;
+    char *network_id;
+    char *auth_name;
+    unsigned short auth_data_length;
+    char *auth_data;
+} IceAuthFileEntry;
+
+typedef struct {
+    char *protocol_name;
+    char *network_id;
+    char *auth_name;
+    unsigned short auth_data_length;
+    char *auth_data;
+} IceAuthDataEntry;
+
 
 char *IceAuthFileName(void);
 void IceFreeAuthFileEntry(IceAuthFileEntry *);
@@ -1559,7 +2812,7 @@ int IceWriteAuthFileEntry(FILE *, IceAuthFileEntry *);
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:53:22 2001 -->
+<!--    at Thu May  3 22:46:33 2001 -->
 <SECT1 ID=libXt>
 <TITLE>libXt</TITLE>
 <PARA>
@@ -1694,7 +2947,7 @@ X11R.4 X Toolkit Intrinsics</PARA>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:53:33 2001 -->
+<!--    at Thu May  3 22:46:44 2001 -->
 <SECT1 ID=libGL>
 <TITLE>libGL</TITLE>
 <PARA>
@@ -1849,33 +3102,38 @@ OpenGL® Application Binary Interface for Linux</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef float GLclampf;
+/*
+ * 1 Default HeaderGroup for GL/gl.h
+ */
+typedef unsigned int GLenum;
 
-typedef float GLfloat;
-
-typedef int GLsizei;
-
-typedef unsigned int GLuint;
-
-typedef unsigned short GLushort;
-
-typedef unsigned char GLubyte;
-
-typedef int GLint;
-
-typedef short GLshort;
-
-typedef char GLbyte;
+typedef unsigned char GLboolean;
 
 typedef unsigned int GLbitfield;
 
-typedef unsigned char GLboolean;
+typedef void GLvoid;
+
+typedef char GLbyte;
+
+typedef short GLshort;
+
+typedef int GLint;
+
+typedef unsigned char GLubyte;
+
+typedef unsigned short GLushort;
+
+typedef unsigned int GLuint;
+
+typedef int GLsizei;
+
+typedef float GLfloat;
+
+typedef float GLclampf;
 
 typedef double GLdouble;
 
 typedef double GLclampd;
-
-typedef unsigned int GLenum;
 
 
 void glAccum(GLenum, GLfloat);
@@ -2315,19 +3573,22 @@ void glDrawRangeElements(GLenum, GLuint, GLuint, GLsizei, GLenum,
 <PARA>
 </PARA>
 <SCREEN>
-typedef XID GLXPixmap;
-
+/*
+ * 2 Default HeaderGroup for GL/glx.h
+ */
 typedef struct __GLXcontextRec *GLXContext;
 
 typedef struct __GLXFBConfigRec *GLXFBConfig;
 
 typedef XID GLXContextID;
 
-typedef XID GLXWindow;
+typedef XID GLXPixmap;
+
+typedef XID GLXDrawable;
 
 typedef XID GLXPbuffer;
 
-typedef XID GLXDrawable;
+typedef XID GLXWindow;
 
 
 XVisualInfo *glXChooseVisual(Display *, int, int *);

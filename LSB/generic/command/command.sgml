@@ -805,28 +805,6 @@ output version information and exit.
 
 </REFENTRY>
 
-<REFENTRY id="c89">
-<REFMETA><REFENTRYTITLE>
-c89
-</REFENTRYTITLE></REFMETA>
-<REFNAMEDIV>
-<REFNAME>c89</REFNAME>
-<REFPURPOSE>
-unknown
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSECT1>
-<TITLE>Note</TITLE>
-<PARA>
-While GCC does not by default install a command called "c89", a 
-simple wrapper script can be written that points to "gcc" with 
-the appropriate options to
-compile code following the C89 standard.  FreeBSD has such a script located
-at "/usr/bin/c89".
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
 <REFENTRY id="chfn">
 <REFMETA><REFENTRYTITLE>chfn</REFENTRYTITLE></REFMETA>
 
@@ -4414,7 +4392,7 @@ Equivalent to -l
 <PARA>
 If possible, use the mmap(2) system call to read input, instead of the
 default read(2) system call.  In some situations, --mmap yields better
-perfor- mance.  However, --mmap can cause undefined behav- ior
+performance.  However, --mmap can cause undefined behavior
 (including core dumps) if an input file shrinks while grep is
 operating, or if an I/O error occurs.
 </PARA>
@@ -4454,38 +4432,6 @@ Read all files under each directory, recursively; this is equivalent
 <LISTITEM>
 <PARA>
 Equivalent to -s
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>-U, --binary</TERM>
-<LISTITEM>
-<PARA>
-Treat the file(s) as binary.  By default, under MS-DOS and MS-Windows,
-grep guesses the file type by looking at the contents of the first
-32KB read from the file.  If grep decides the file is a text file, it
-strips the CR characters from the original file contents (to make
-regular expressions with ^ and $ work correctly).  Specifying -U
-overrules this guesswork, causing all files to be read and passed to
-the matching mechanism verbatim; if the file is a text file with CR/LF
-pairs at the end of each line, this will cause some regular
-expressions to fail.  This option has no effect on platforms other
-than MS-DOS and MS-Windows.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>-u, --unix-byte-offsets</TERM>
-<LISTITEM>
-<PARA>
-Report Unix-style byte offsets.  This switch causes grep to report
-byte offsets as if the file were Unix-style text file, i.e.  with CR
-characters stripped off.  This will produce results identical to
-running grep on a Unix machine.  This option has no effect unless -b
-option is also used; it has no effect on platforms other than MS-DOS
-and MS-Windows.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -6199,119 +6145,6 @@ Display this message.
 </VARLISTENTRY>
 </VARIABLELIST>
 
-</REFSECT1>
-<REFSECT1>
-<TITLE>Examples</TITLE>
-<PARA>
-The /etc/lsb-release file contains:
-</PARA>
-<PARA>
-LSB_VERSION="1.0"
-DISTRIB_DESCRIPTION="I enjoy using my distrib"
-</PARA>
-<PARA>
-And the /etc/foobar-release file contains:
-</PARA>
-<PARA>
-       My Linux Distrib release 1.0RC4 (TryIt)
-</PARA>
-<INFORMALEXAMPLE>
-<PROGRAMLISTING>
-       $ ./lsb_release --all
-       LSB Version:    1.0
-       Distributor ID: MyDistrib
-       Description:    I enjoy using my distrib
-       Release:	       1.0RC4
-       Codename:       TryIt
-</PROGRAMLISTING>
-</INFORMALEXAMPLE>
-<INFORMALEXAMPLE>
-<PROGRAMLISTING>
-       $ ./lsb_release -a -s
-       1.0 MyDistrib "I enjoy using my distrib" 1.0RC4 TryIt
-</PROGRAMLISTING>
-</INFORMALEXAMPLE>
-<PARA>
-Then simply  without  the  "/etc/lsb-release"  file,  that
-means result on a non-LSB compliant distrib:
-</PARA>
-<INFORMALEXAMPLE>
-<PROGRAMLISTING>
-       $ ./lsb_release -a
-       LSB Version:    n/a
-       Distributor ID: MyDistrib
-       Description:    My Linux Distrib release 1.0RC4 (TryIt)
-       Release:       1.0RC4
-       Codename:       TryIt
-</PROGRAMLISTING>
-</INFORMALEXAMPLE>
-
-</REFSECT1>
-<REFSECT1>
-<TITLE>Files</TITLE>
-<PARA>
-The "/etc/lsb-release" file should contain the following
-fields:
-</PARA>
-<PARA>
-LSB_VERSION="1.0" (REQUIRED)
-</PARA>
-<PARA>
-And some optional fields like DISTRIB_ID, DISTRIB_RELEASE,
-DISTRIB_CODENAME, DISTRIB_DESCRIPTION to overwrite content
-parsed from next file.
-</PARA>
-<PARA>
-The "/etc/[distrib]-release" file contains  a  description
-line parsed to get information (especially on non-LSB com pliant system).
-</PARA>
-<PARA>
-The required line style is:
-"Distributor release x.x (Codename)"
-</PARA>
-<PARA>
-Distributor can be a couple of words, but then  concatenated (i.e. Linux
-Foo BarLinux Linux -> FooBarLinux),
-x.x  starts with a digit followed by any non-blank characters, Codename
-will also be concatenated (blanks  cleanup only).
-</PARA>
-<PARA>
-And release is a keyword not to be used in DISTRIB_DESCRIPTION if you don't
-want to overwrite "/etc/[distrib]-release" data.
-</PARA>
-<PARA>
-Notice: To support the Debian distributions' lak of information (see
-"/etc/debian_version" file) some  have  been
-directly added into the lsb_release script.
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Author</TITLE>
-<PARA>
-Written by Dominique MASSONIE.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Reporting Bugs</TITLE>
-<PARA>
-Report bugs to <EMAIL>mdomi@users.sourceforge.net</EMAIL>. Include a
-complete, selfcontained example that will allow the bug to
-be  reproduced, and  say which version of lsb_release you
-are using.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Copyright</TITLE>
-<PARA>
-Copyright © 2000 Free Software Foundation, Inc.
-</PARA>
-<PARA>
-This is free software; see the source for  copying  conditions.  
-There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR 
-A PARTICULAR PURPOSE.
-</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -8709,15 +8542,6 @@ following differences as listed below.
 <REFSECT1>
 <TITLE>Differences</TITLE>
 <VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>-d, --directory</TERM>
-<LISTITEM>
-<PARA>
-unling directory, even if non-empty (super-user only).
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>-v, --verbose</TERM>
@@ -11232,8 +11056,8 @@ as the  string.  Otherwise, a built-in default  is used.
 
 <PARA>
 The default  is:
-  %Uuser %Ssystem %Eelapsed %PCPU (%Xtext+%Ddata %Mmax)k
-  %Iinputs+%Ooutputs (%Fmajor+%Rminor)pagefaults %Wswaps
+<LiteralLayout>%Uuser %Ssystem %Eelapsed %PCPU (%Xtext+%Ddata %Mmax)k
+%Iinputs+%Ooutputs (%Fmajor+%Rminor)pagefaults %Wswaps</LiteralLayout>
 </PARA>
 
 <PARA>

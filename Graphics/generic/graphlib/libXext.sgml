@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:52:47 2001 -->
+<!--    at Thu May  3 22:45:59 2001 -->
 <SECT1 ID=libXext>
 <TITLE>libXext</TITLE>
 <PARA>
@@ -160,16 +160,19 @@ X Synchronization Extension Library</PARA>
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 76 Default HeaderGroup for X11/extensions/dpms.h
+ */
 
 int DPMSCapable(Display *);
 int DPMSDisable(Display *);
 int DPMSEnable(Display *);
-int DPMSForceLevel(Display *, CARD16);
-int DPMSGetTimeouts(Display *, CARD16 *, CARD16 *, CARD16 *);
+int DPMSForceLevel(Display *,);
+int DPMSGetTimeouts(Display *, *, *, *);
 int DPMSGetVersion(Display *, int *, int *);
-int DPMSInfo(Display *, CARD16 *, BOOL *);
+int DPMSInfo(Display *, *, *);
 int DPMSQueryExtension(Display *, int *, int *);
-int DPMSSetTimeouts(Display *, CARD16, CARD16, CARD16);
+int DPMSSetTimeouts(Display *,,,);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -177,7 +180,17 @@ int DPMSSetTimeouts(Display *, CARD16, CARD16, CARD16);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 77 Default HeaderGroup for X11/extensions/security.h
+ */
 typedef unsigned long XSecurityAuthorization;
+
+typedef struct {
+    unsigned int timeout;
+    unsigned int trust_level;
+    XID group;
+    long event_mask;
+} XSecurityAuthorizationAttributes;
 
 
 Xauth *XSecurityAllocXauth(void);
@@ -194,6 +207,8 @@ int XSecurityRevokeAuthorization(Display *, XSecurityAuthorization);
 <PARA>
 </PARA>
 <SCREEN>
+typedef XID XSyncCounter;
+
 typedef XID XSyncAlarm;
 
 typedef struct _XSyncValue {
@@ -201,7 +216,51 @@ typedef struct _XSyncValue {
     unsigned int lo;
 } XSyncValue;
 
-typedef XID XSyncCounter;
+typedef enum {
+    XSyncAbsolute,
+    XSyncRelative
+} XSyncValueType;
+
+typedef enum {
+    XSyncPositiveTransition,
+    XSyncNegativeTransition,
+    XSyncPositiveComparison,
+    XSyncNegativeComparison
+} XSyncTestType;
+
+typedef enum {
+    XSyncAlarmActive,
+    XSyncAlarmInactive,
+    XSyncAlarmDestroyed
+} XSyncAlarmState;
+
+/*
+ * 79 Default HeaderGroup for X11/extensions/sync.h
+ */
+typedef struct _XSyncSystemCounter {
+    char *name;
+    XSyncCounter counter;
+    XSyncValue resolution;
+} XSyncSystemCounter;
+
+typedef struct {
+    XSyncCounter counter;
+    XSyncValueType value_type;
+    XSyncValue wait_value;
+    XSyncTestType test_type;
+} XSyncTrigger;
+
+typedef struct {
+    XSyncTrigger trigger;
+    XSyncValue event_threshold;
+} XSyncWaitCondition;
+
+typedef struct {
+    XSyncTrigger trigger;
+    XSyncValue delta;
+    int events;
+    XSyncAlarmState state;
+} XSyncAlarmAttributes;
 
 
 int XSyncAwait(Display *, XSyncWaitCondition *, int);

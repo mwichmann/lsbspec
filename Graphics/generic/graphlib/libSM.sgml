@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:53:11 2001 -->
+<!--    at Thu May  3 22:46:22 2001 -->
 <SECT1 ID=libSM>
 <TITLE>libSM</TITLE>
 <PARA>
@@ -61,31 +61,105 @@ X11R6.4 X Session Managment Library</PARA>
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 119 Generic SM pointer, Connection objects.  Defined in SMlibint.h
+ */
+typedef IcePointer SmPointer;
+
+typedef struct _SmcConn *SmcConn;
+
 typedef struct _SmsConn *SmsConn;
 
-typedef void (*SmcPropReplyProc) ();
+/*
+ * 121 Session Management property
+ */
+typedef struct {
+    int length;
+    SmPointer value;
+} SmPropValue;
 
-typedef void (*SmcInteractProc) ();
+typedef struct {
+    char *name;
+    char *type;
+    int num_vals;
+    SmPropValue *vals;
+} SmProp;
 
-typedef void (*SmcSaveYourselfPhase2Proc) ();
-
+/*
+ * 127 SmcCloseConnection status return
+ */
 typedef enum {
-
     SmcClosedNow,
     SmcClosedASAP,
     SmcConnectionInUse
 } SmcCloseStatus;
 
-typedef void (*SmsErrorHandler) ();
+/*
+ * 120 Client callbacks
+ */
+typedef void (*SmcSaveYourselfPhase2Proc) ()
+;
 
-typedef struct _SmcConn *SmcConn;
+typedef void (*SmcInteractProc) ()
+;
 
-typedef IcePointer SmPointer;
+typedef void (*SmcDieProc) ()
+;
 
-typedef void (*SmcErrorHandler) ();
+typedef void (*SmcShutdownCancelledProc) ()
+;
 
-typedef int (*SmsNewClientProc) ();
+typedef void (*SmcSaveCompleteProc) ()
+;
 
+typedef void (*SmcPropReplyProc) ()
+;
+
+/*
+ * 122 Callbacks set up at SmcOpenConnection time
+ */
+typedef struct {
+    SmcShutdownCancelledProc callback;
+    SmPointer client_data;
+    struct shutdown_cancelled;
+} SmcCallbacks;
+
+/*
+ * 123 Session manager callbacks
+ */
+typedef void (*SmsSetPropertiesProc) ()
+;
+
+typedef void (*SmsDeletePropertiesProc) ()
+;
+
+typedef void (*SmsGetPropertiesProc) ()
+;
+
+/*
+ * 124 Callbacks set up by a session manager when a new client connects.
+ */
+typedef struct {
+    SmsGetPropertiesProc callback;
+    SmPointer manager_data;
+    struct get_properties;
+} SmsCallbacks;
+
+typedef int (*SmsNewClientProc) ()
+;
+
+/*
+ * 126 Error handlers
+ */
+typedef void (*SmcErrorHandler) ()
+;
+
+typedef void (*SmsErrorHandler) ()
+;
+
+/*
+ * 9 Default HeaderGroup for X11/SM/SMlib.h
+ */
 
 void SmFreeProperty(SmProp *);
 void SmFreeReasons(int, char **);

@@ -14,7 +14,7 @@ information such as file formats and device names.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:52:02 2001 -->
+<!--    at Thu May  3 22:45:14 2001 -->
 <SECT1 ID=libz>
 <TITLE>libz</TITLE>
 <PARA>
@@ -72,7 +72,7 @@ zlib 1.1.3 Manual</PARA>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:52:13 2001 -->
+<!--    at Thu May  3 22:45:25 2001 -->
 <SECT1 ID=libncurses>
 <TITLE>libncurses</TITLE>
 <PARA>
@@ -193,11 +193,44 @@ The behaviour of the interfaces in this library is specified by the following St
 <PARA>
 </PARA>
 <SCREEN>
-typedef chtype attr_t;
+typedef unsigned long chtype;
 
 typedef char bool;
 
-typedef unsigned long chtype;
+typedef chtype attr_t;
+
+/*
+ * 70 Default HeaderGroup for curses.h
+ */
+typedef struct screen SCREEN;
+
+typedef struct _win_st {
+    short _cury;
+    short _curx;
+    short _maxy;
+    short _maxx;
+    short _begy;
+    short _begx;
+    short _flags;
+    attr_t _attrs;
+    chtype _bkgd;
+    bool _notimeout;
+    bool _clear;
+    bool _leaveok;
+    bool _scroll;
+    bool _idlok;
+    bool _idcok;
+    bool _immed;
+    bool _sync;
+    bool _use_keypad;
+    int _delay;
+    struct ldat *_line;
+    short _regtop;
+    short _regbottom;
+    int _parx;
+    int _pary;
+    struct _win_st *_parent;
+} WINDOW;
 
 
 int addch(chtype);
@@ -217,28 +250,29 @@ int beep(void);
 int bkgd(chtype);
 void bkgdset(chtype);
 int border(chtype, chtype, chtype, chtype, chtype, chtype, chtype, chtype);
-int box(WINDOW *, chtype, chtype);
+int box(struct _win_st *, chtype, chtype);
 bool can_change_color(void);
 int cbreak(void);
 int chgat(int, attr_t, short, void *);
 int clear(void);
-int clearok(WINDOW *, bool);
+int clearok(struct _win_st *, bool);
 int clrtobot(void);
 int clrtoeol(void);
 int color_content(short, short *, short *, short *);
 int color_set(short, void *);
-int copywin(WINDOW *, WINDOW *, int, int, int, int, int, int, int);
+int copywin(struct _win_st *, struct _win_st *, int, int, int, int, int,
+	    int, int);
 int curs_set(int);
 int def_prog_mode(void);
 int def_shell_mode(void);
 int delay_output(int);
 int delch(void);
 void delscreen(SCREEN *);
-int delwin(WINDOW *);
+int delwin(struct _win_st *);
 int deleteln(void);
-WINDOW *derwin(WINDOW *, int, int, int, int);
+struct _win_st *derwin(struct _win_st *, int, int, int, int);
 int doupdate(void);
-WINDOW *dupwin(WINDOW *);
+struct _win_st *dupwin(struct _win_st *);
 int echo(void);
 int echochar(chtype);
 int erase(void);
@@ -247,23 +281,23 @@ char erasechar(void);
 void filter(void);
 int flash(void);
 int flushinp(void);
-chtype getbkgd(WINDOW *);
+chtype getbkgd(struct _win_st *);
 int getch(void);
 int getnstr(char *, int);
 int getstr(char *);
-WINDOW *getwin(FILE *);
+struct _win_st *getwin(FILE *);
 int halfdelay(int);
 bool has_colors(void);
 bool has_ic(void);
 bool has_il(void);
 int hline(chtype, int);
-void idcok(WINDOW *, bool);
-int idlok(WINDOW *, bool);
-void immedok(WINDOW *, bool);
+void idcok(struct _win_st *, bool);
+int idlok(struct _win_st *, bool);
+void immedok(struct _win_st *, bool);
 chtype inch(void);
 int inchnstr(chtype *, int);
 int inchstr(chtype *);
-WINDOW *initscr(void);
+struct _win_st *initscr(void);
 int init_color(short, short, short, short);
 int init_pair(short, short, short);
 int innstr(char *, int);
@@ -273,16 +307,16 @@ int insertln(void);
 int insnstr(char *, int);
 int insstr(char *);
 int instr(char *);
-int intrflush(WINDOW *, bool);
+int intrflush(struct _win_st *, bool);
 bool isendwin(void);
-bool is_linetouched(WINDOW *, int);
-bool is_wintouched(WINDOW *);
+bool is_linetouched(struct _win_st *, int);
+bool is_wintouched(struct _win_st *);
 char *keyname(int);
-int keypad(WINDOW *, bool);
+int keypad(struct _win_st *, bool);
 char killchar(void);
-int leaveok(WINDOW *, bool);
+int leaveok(struct _win_st *, bool);
 char *longname(void);
-int meta(WINDOW *, bool);
+int meta(struct _win_st *, bool);
 int move(int, int);
 int mvaddch(int, int, chtype);
 int mvaddchnstr(int, int, chtype *, int);
@@ -292,7 +326,7 @@ int mvaddstr(int, int, char *);
 int mvchgat(int, int, int, attr_t, short, void *);
 int mvcur(int, int, int, int);
 int mvdelch(int, int);
-int mvderwin(WINDOW *, int, int);
+int mvderwin(struct _win_st *, int, int);
 int mvgetch(int, int);
 int mvgetnstr(int, int, char *, int);
 int mvgetstr(int, int, char *);
@@ -308,53 +342,53 @@ int mvinstr(int, int, char *);
 int mvprintw(int, int, char *, ...);
 int mvscanw(int, int, char *, ...);
 int mvvline(int, int, chtype, int);
-int mvwaddch(WINDOW *, int, int, chtype);
-int mvwaddchnstr(WINDOW *, int, int, chtype *, int);
-int mvwaddchstr(WINDOW *, int, int, chtype *);
-int mvwaddnstr(WINDOW *, int, int, char *, int);
-int mvwaddstr(WINDOW *, int, int, char *);
-int mvwchgat(WINDOW *, int, int, int, attr_t, short, void *);
-int mvwdelch(WINDOW *, int, int);
-int mvwgetch(WINDOW *, int, int);
-int mvwgetnstr(WINDOW *, int, int, char *, int);
-int mvwgetstr(WINDOW *, int, int, char *);
-int mvwhline(WINDOW *, int, int, chtype, int);
-int mvwin(WINDOW *, int, int);
-chtype mvwinch(WINDOW *, int, int);
-int mvwinchnstr(WINDOW *, int, int, chtype *, int);
-int mvwinchstr(WINDOW *, int, int, chtype *);
-int mvwinnstr(WINDOW *, int, int, char *, int);
-int mvwinsch(WINDOW *, int, int, chtype);
-int mvwinsnstr(WINDOW *, int, int, char *, int);
-int mvwinsstr(WINDOW *, int, int, char *);
-int mvwinstr(WINDOW *, int, int, char *);
-int mvwprintw(WINDOW *, int, int, char *, ...);
-int mvwscanw(WINDOW *, int, int, char *, ...);
-int mvwvline(WINDOW *, int, int, chtype, int);
+int mvwaddch(struct _win_st *, int, int, chtype);
+int mvwaddchnstr(struct _win_st *, int, int, chtype *, int);
+int mvwaddchstr(struct _win_st *, int, int, chtype *);
+int mvwaddnstr(struct _win_st *, int, int, char *, int);
+int mvwaddstr(struct _win_st *, int, int, char *);
+int mvwchgat(struct _win_st *, int, int, int, attr_t, short, void *);
+int mvwdelch(struct _win_st *, int, int);
+int mvwgetch(struct _win_st *, int, int);
+int mvwgetnstr(struct _win_st *, int, int, char *, int);
+int mvwgetstr(struct _win_st *, int, int, char *);
+int mvwhline(struct _win_st *, int, int, chtype, int);
+int mvwin(struct _win_st *, int, int);
+chtype mvwinch(struct _win_st *, int, int);
+int mvwinchnstr(struct _win_st *, int, int, chtype *, int);
+int mvwinchstr(struct _win_st *, int, int, chtype *);
+int mvwinnstr(struct _win_st *, int, int, char *, int);
+int mvwinsch(struct _win_st *, int, int, chtype);
+int mvwinsnstr(struct _win_st *, int, int, char *, int);
+int mvwinsstr(struct _win_st *, int, int, char *);
+int mvwinstr(struct _win_st *, int, int, char *);
+int mvwprintw(struct _win_st *, int, int, char *, ...);
+int mvwscanw(struct _win_st *, int, int, char *, ...);
+int mvwvline(struct _win_st *, int, int, chtype, int);
 int napms(int);
-WINDOW *newpad(int, int);
+struct _win_st *newpad(int, int);
 SCREEN *newterm(char *, FILE *, FILE *);
-WINDOW *newwin(int, int, int, int);
+struct _win_st *newwin(int, int, int, int);
 int nl(void);
 int nocbreak(void);
-int nodelay(WINDOW *, bool);
+int nodelay(struct _win_st *, bool);
 int noecho(void);
 int nonl(void);
 void noqiflush(void);
 int noraw(void);
-int notimeout(WINDOW *, bool);
-int overlay(WINDOW *, WINDOW *);
-int overwrite(WINDOW *, WINDOW *);
+int notimeout(struct _win_st *, bool);
+int overlay(struct _win_st *, struct _win_st *);
+int overwrite(struct _win_st *, struct _win_st *);
 int pair_content(short, short *, short *);
-int pechochar(WINDOW *, chtype);
-int pnoutrefresh(WINDOW *, int, int, int, int, int, int);
-int prefresh(WINDOW *, int, int, int, int, int, int);
+int pechochar(struct _win_st *, chtype);
+int pnoutrefresh(struct _win_st *, int, int, int, int, int, int);
+int prefresh(struct _win_st *, int, int, int, int, int, int);
 int printw(char *, ...);
 int putp(char *);
-int putwin(WINDOW *, FILE *);
+int putwin(struct _win_st *, FILE *);
 void qiflush(void);
 int raw(void);
-int redrawwin(WINDOW *);
+int redrawwin(struct _win_st *);
 int refresh(void);
 int resetty(void);
 int reset_prog_mode(void);
@@ -365,8 +399,8 @@ int scanw(char *, ...);
 int scr_dump(char *);
 int scr_init(char *);
 int scrl(int);
-int scroll(WINDOW *);
-int scrollok(WINDOW *, bool);
+int scroll(struct _win_st *);
+int scrollok(struct _win_st *, bool);
 int scr_restore(char *);
 int scr_set(char *);
 int setscrreg(int, int);
@@ -387,9 +421,9 @@ int slk_touch(void);
 int standout(void);
 int standend(void);
 int start_color(void);
-WINDOW *subpad(WINDOW *, int, int, int, int);
-WINDOW *subwin(WINDOW *, int, int, int, int);
-int syncok(WINDOW *, bool);
+struct _win_st *subpad(struct _win_st *, int, int, int, int);
+struct _win_st *subwin(struct _win_st *, int, int, int, int);
+int syncok(struct _win_st *, bool);
 chtype termattrs(void);
 char *termname(void);
 int tigetflag(char *);
@@ -399,72 +433,72 @@ void timeout(int);
 char *tparm(char *, ...);
 int typeahead(int);
 int ungetch(int);
-int untouchwin(WINDOW *);
+int untouchwin(struct _win_st *);
 void use_env(bool);
 int vidattr(chtype);
 int vidputs(chtype, int);
 int vline(chtype, int);
-int vwprintw(WINDOW *, char *, va_list);
-int vw_printw(WINDOW *, char *, va_list);
-int vwscanw(WINDOW *, char *, va_list);
-int vw_scanw(WINDOW *, char *, va_list);
-int waddch(WINDOW *, chtype);
-int waddchnstr(WINDOW *, chtype *, int);
-int waddchstr(WINDOW *, chtype *);
-int waddnstr(WINDOW *, char *, int);
-int waddstr(WINDOW *, char *);
-int wattron(WINDOW *, int);
-int wattroff(WINDOW *, int);
-int wattrset(WINDOW *, int);
-int wattr_get(WINDOW *, attr_t *, short *, void *);
-int wattr_on(WINDOW *, attr_t, void *);
-int wattr_off(WINDOW *, attr_t, void *);
-int wattr_set(WINDOW *, attr_t, short, void *);
-int wbkgd(WINDOW *, chtype);
-void wbkgdset(WINDOW *, chtype);
-int wborder(WINDOW *, chtype, chtype, chtype, chtype, chtype, chtype,
-	    chtype, chtype);
-int wchgat(WINDOW *, int, attr_t, short, void *);
-int wclear(WINDOW *);
-int wclrtobot(WINDOW *);
-int wclrtoeol(WINDOW *);
-int wcolor_set(WINDOW *, short, void *);
-void wcursyncup(WINDOW *);
-int wdelch(WINDOW *);
-int wdeleteln(WINDOW *);
-int wechochar(WINDOW *, chtype);
-int werase(WINDOW *);
-int wgetch(WINDOW *);
-int wgetnstr(WINDOW *, char *, int);
-int wgetstr(WINDOW *, char *);
-int whline(WINDOW *, chtype, int);
-chtype winch(WINDOW *);
-int winchnstr(WINDOW *, chtype *, int);
-int winchstr(WINDOW *, chtype *);
-int winnstr(WINDOW *, char *, int);
-int winsch(WINDOW *, chtype);
-int winsdelln(WINDOW *, int);
-int winsertln(WINDOW *);
-int winsnstr(WINDOW *, char *, int);
-int winsstr(WINDOW *, char *);
-int winstr(WINDOW *, char *);
-int wmove(WINDOW *, int, int);
-int wnoutrefresh(WINDOW *);
-int wprintw(WINDOW *, char *, ...);
-int wredrawln(WINDOW *, int, int);
-int wrefresh(WINDOW *);
-int wscanw(WINDOW *, char *, ...);
-int wscrl(WINDOW *, int);
-int wsetscrreg(WINDOW *, int, int);
-int wstandout(WINDOW *);
-int wstandend(WINDOW *);
-void wsyncdown(WINDOW *);
-void wsyncup(WINDOW *);
-void wtimeout(WINDOW *, int);
-int wtouchln(WINDOW *, int, int, int);
-int wvline(WINDOW *, chtype, int);
-WINDOW *curscr;
-WINDOW *stdscr;
+int vwprintw(struct _win_st *, char *, va_list);
+int vw_printw(struct _win_st *, char *, va_list);
+int vwscanw(struct _win_st *, char *, va_list);
+int vw_scanw(struct _win_st *, char *, va_list);
+int waddch(struct _win_st *, chtype);
+int waddchnstr(struct _win_st *, chtype *, int);
+int waddchstr(struct _win_st *, chtype *);
+int waddnstr(struct _win_st *, char *, int);
+int waddstr(struct _win_st *, char *);
+int wattron(struct _win_st *, int);
+int wattroff(struct _win_st *, int);
+int wattrset(struct _win_st *, int);
+int wattr_get(struct _win_st *, attr_t *, short *, void *);
+int wattr_on(struct _win_st *, attr_t, void *);
+int wattr_off(struct _win_st *, attr_t, void *);
+int wattr_set(struct _win_st *, attr_t, short, void *);
+int wbkgd(struct _win_st *, chtype);
+void wbkgdset(struct _win_st *, chtype);
+int wborder(struct _win_st *, chtype, chtype, chtype, chtype, chtype,
+	    chtype, chtype, chtype);
+int wchgat(struct _win_st *, int, attr_t, short, void *);
+int wclear(struct _win_st *);
+int wclrtobot(struct _win_st *);
+int wclrtoeol(struct _win_st *);
+int wcolor_set(struct _win_st *, short, void *);
+void wcursyncup(struct _win_st *);
+int wdelch(struct _win_st *);
+int wdeleteln(struct _win_st *);
+int wechochar(struct _win_st *, chtype);
+int werase(struct _win_st *);
+int wgetch(struct _win_st *);
+int wgetnstr(struct _win_st *, char *, int);
+int wgetstr(struct _win_st *, char *);
+int whline(struct _win_st *, chtype, int);
+chtype winch(struct _win_st *);
+int winchnstr(struct _win_st *, chtype *, int);
+int winchstr(struct _win_st *, chtype *);
+int winnstr(struct _win_st *, char *, int);
+int winsch(struct _win_st *, chtype);
+int winsdelln(struct _win_st *, int);
+int winsertln(struct _win_st *);
+int winsnstr(struct _win_st *, char *, int);
+int winsstr(struct _win_st *, char *);
+int winstr(struct _win_st *, char *);
+int wmove(struct _win_st *, int, int);
+int wnoutrefresh(struct _win_st *);
+int wprintw(struct _win_st *, char *, ...);
+int wredrawln(struct _win_st *, int, int);
+int wrefresh(struct _win_st *);
+int wscanw(struct _win_st *, char *, ...);
+int wscrl(struct _win_st *, int);
+int wsetscrreg(struct _win_st *, int, int);
+int wstandout(struct _win_st *);
+int wstandend(struct _win_st *);
+void wsyncdown(struct _win_st *);
+void wsyncup(struct _win_st *);
+void wtimeout(struct _win_st *, int);
+int wtouchln(struct _win_st *, int, int, int);
+int wvline(struct _win_st *, chtype, int);
+struct _win_st *curscr;
+struct _win_st *stdscr;
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -475,7 +509,7 @@ WINDOW *stdscr;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Mon Apr 30 20:52:24 2001 -->
+<!--    at Thu May  3 22:45:36 2001 -->
 <SECT1 ID=libutil>
 <TITLE>libutil</TITLE>
 <PARA>
@@ -544,10 +578,10 @@ Linux Standard Base</PARA>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-int forkpty (int *<replaceable class="parameter" >amaster</replaceable>, 
+int forkpty(int *<replaceable class="parameter" >amaster</replaceable>, 
 	char *<replaceable class="parameter" >name</replaceable>,
 	struct termios *<replaceable class="parameter" >termp</replaceable>,
-	struct winsize *<replaceable class="parameter" >winp</replaceable>)
+	struct winsize *<replaceable class="parameter" >winp</replaceable>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -557,33 +591,16 @@ int forkpty (int *<replaceable class="parameter" >amaster</replaceable>,
 <TITLE>Description
 </TITLE>
 <PARA>
-The forkpty() function joins openpty(), fork(), and login_tty() to
-create a new process operating on a pseudo-tty.  The file descriptor of
-the master side of the pseudo-tty is returned in amaster, and null or the 
-filename of the slave in name.  If non-null, the termp and winp 
-parameters will determine the terminal attributes and window size
-of the slave side of the pseudo-tty.
+The forkpty() function joins openpty(), fork(), and login_tty() to create a new process operating on a pseudo-tty. The file descriptor of the master side of the pseudo-tty is returned in amaster, and null or the filename of the slave in name. If non-null, the termp and winp parameters will determine the terminal attributes and window size of the slave side of the pseudo-tty.
 </PARA>
 </REFSECT1>
-<refsect1>
-<title>
-Return value
-</title>
-<para>
-0         Success for the child process.
-</para>
-<para>
-pid       Parent process receives the PID of its child process.
-</para>
-</refsect1>
-<refsect1>
-<title>
-Errors
-</title>
-<para>
--1        Not successful, see errno.
-</para>
-</refsect1>
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success of the child process, zero is returned. When the parent process receives the PID of its child process, pid is returned. On error, -1 is returned, and errno is set appropriately.
+</PARA>
+</REFSECT1>
 </REFENTRY>
 
 <REFENTRY ID="libutil-getopt-3"> <REFMETA>
@@ -651,12 +668,19 @@ POSIX specifies that:
 <LISTITEM>
 <PARA>
 applications using getopt() must obey the following syntax guidelines:
+</PARA><PARA>
 (1) option name is a single alphanumeric character from the portable character set
+</PARA><PARA>
 (2) option is preceded by the "-" delimiter character
+</PARA><PARA>
 (3) options without option-arguments should be accepted when grouped behind one "-" delimiter
+</PARA><PARA>
 (4) each option and option-argument is a separate argument
+</PARA><PARA>
 (5) option-arguments are not optional
+</PARA><PARA>
 (6) all options should precede operands on the command line
+</PARA><PARA>
 (7) the argument "--" is accepted as a delimiter indicating the end of options and the consideration of subsequent arguments, if any, as operands
 </PARA>
 </LISTITEM>
@@ -852,9 +876,9 @@ POSIX.2 Interpretation 150 reports a technical error in the function of getopt()
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-int getutent_r (
+int getutent_r(
 struct utmp *<replaceable class="parameter" >buffer</replaceable>, 
-struct utmp **<replaceable class="parameter" >result</replaceable>)
+struct utmp **<replaceable class="parameter" >result</replaceable>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -864,8 +888,7 @@ struct utmp **<replaceable class="parameter" >result</replaceable>)
 <TITLE>Description
 </TITLE>
 <PARA>
-Same at described in getutent(3), but storing information in a
-user provided buffer.
+Same at described in getutent(3), but storing information in a user provided buffer.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -886,10 +909,10 @@ user provided buffer.
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-int getutid_r (
+int getutid_r(
 const struct utmp *<replaceable class="parameter" >id</replaceable>,
 struct utmp *<replaceable class="parameter" >buffer</replaceable>, 
-struct utmp **<replaceable class="parameter" >result</replaceable>)
+struct utmp **<replaceable class="parameter" >result</replaceable>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -899,8 +922,7 @@ struct utmp **<replaceable class="parameter" >result</replaceable>)
 <TITLE>Description
 </TITLE>
 <PARA>
-Same at described in getutent(3), but storing information in a
-user provided buffer.
+Same at described in getutent(3), but storing information in a user provided buffer.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -921,10 +943,10 @@ user provided buffer.
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-int getutline_r (
+int getutline_r(
 const struct utmp *<replaceable class="parameter" >id</replaceable>,
 struct utmp *<replaceable class="parameter" >buffer</replaceable>, 
-struct utmp **<replaceable class="parameter" >result</replaceable>)
+struct utmp **<replaceable class="parameter" >result</replaceable>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -934,8 +956,7 @@ struct utmp **<replaceable class="parameter" >result</replaceable>)
 <TITLE>Description
 </TITLE>
 <PARA>
-Same at described in getutent(3), but storing information in a
-user provided buffer.
+Same at described in getutent(3), but storing information in a user provided buffer.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -956,7 +977,7 @@ user provided buffer.
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-int login_tty(int <replaceable class="parameter" >fdr</replaceable>)
+int login_tty(int <replaceable class="parameter" >fdr</replaceable>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -966,28 +987,16 @@ int login_tty(int <replaceable class="parameter" >fdr</replaceable>)
 <TITLE>Description
 </TITLE>
 <PARA>
-The login_tty() function sets up for a login on the tty referenced by the
-file descriptor fd:  create a new session, make the tty for the current
-process the controlling terminal, set the standard input, output, and error
-streams of the current process, and closing fd.
+The login_tty() function sets up for a login on the tty referenced by the file descriptor fd: create a new session, make the tty for the current process the controlling terminal, set the standard input, output, and error streams of the current process, and closing fd.
 </PARA>
 </REFSECT1>
-<refsect1>
-<title>
-Return value
-</title>
-<para>
-0         Success.
-</para>
-</refsect1>
-<refsect1>
-<title>
-Errors
-</title>
-<para>
--1        Not successful, see errno.
-</para>
-</refsect1>
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+</PARA>
+</REFSECT1>
 </REFENTRY>
 
 <REFENTRY ID="libutil-login-3"> <REFMETA>
@@ -1006,7 +1015,7 @@ Errors
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-void login(struct utmp *<replaceable class="parameter" >ut</replaceable>)
+void login(struct utmp *<replaceable class="parameter" >ut</replaceable>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -1016,8 +1025,7 @@ void login(struct utmp *<replaceable class="parameter" >ut</replaceable>)
 <TITLE>Description
 </TITLE>
 <PARA>
-The login() function updates the /var/run/utmp and /var/log/wtmp files
-with user information contained in ut.
+The login() function updates the /var/run/utmp and /var/log/wtmp files with user information contained in ut.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -1038,7 +1046,7 @@ with user information contained in ut.
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-int logout(const char *<replaceable class="parameter" >line</replaceable>)
+int logout(const char *<replaceable class="parameter" >line</replaceable>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -1048,21 +1056,16 @@ int logout(const char *<replaceable class="parameter" >line</replaceable>)
 <TITLE>Description
 </TITLE>
 <PARA>
-Given the device line, the logout() function removes the entry from the
-corresponding /var/run/utmp system file.
+Given the device line, the logout() function removes the entry from the corresponding /var/run/utmp system file.
 </PARA>
 </REFSECT1>
-<refsect1>
-<title>
-Return Values
-</title>
-<para>
-non-zero  Successful.
-</para>
-<para>
-0 If there was not entry to remove.
-</para>
-</refsect1>
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+Zero is returned if there was no entry to remove. A non-zero return value indicates success.
+</PARA>
+</REFSECT1>
 </REFENTRY>
 
 <REFENTRY ID="libutil-mkfifo-3"> <REFMETA>
@@ -1308,11 +1311,11 @@ EIO     an I/O error occurred while accessing the file system
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-int openpty (int *<replaceable class="parameter" >amaster</replaceable>, 
+int openpty(int *<replaceable class="parameter" >amaster</replaceable>, 
 	int *<replaceable class="parameter" >aslave</replaceable>, 
 	char *<replaceable class="parameter" >name</replaceable>,
 	struct termios *<replaceable class="parameter" >termp</replaceable>,
-	struct winsize *<replaceable class="parameter" >winp</replaceable>)
+	struct winsize *<replaceable class="parameter" >winp</replaceable>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -1322,32 +1325,32 @@ int openpty (int *<replaceable class="parameter" >amaster</replaceable>,
 <TITLE>Description
 </TITLE>
 <PARA>
-The openpty() function finds an available pseudo-tty and returns file 
-descriptors for the amaster and aslave.  The filename of the slave is 
-returned in name, otherwise a null.  The terminal parameters of the slave 
-will be set to the values in termp, otherwise a null.  The window size of 
-the slave will be set to the values in winp, otherwise a null.
+The openpty() function finds an available pseudo-tty and returns file descriptors for the amaster and aslave. The filename of the slave is returned in name, otherwise a null. The terminal parameters of the slave will be set to the values in termp, otherwise a null. The window size of the slave will be set to the values in winp, otherwise a null.
 </PARA>
 </REFSECT1>
-<refsect1>
-<title>
-Return value
-</title>
-<para>
-0         Success.
-</para>
-<para>
-[ENOENT]  There are no available ttys.
-</para>
-</refsect1>
-<refsect1>
-<title>
-Errors
-</title>
-<para>
--1        Not successful, see errno.
-</para>
-</refsect1>
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+ENOENT
+</TERM>
+<LISTITEM>
+<PARA>
+There are no available ttys.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
 </REFENTRY>
 
 </SECT1>

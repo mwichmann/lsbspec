@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 15:55:13 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Thu May  3 22:49:50 2001 -->
 <SECT1 ID=libc>
 <TITLE>libc</TITLE>
 <PARA>
@@ -67,6 +67,9 @@ Linux Standard Base</PARA>
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 11 Default HeaderGroup for assert.h
+ */
 
 void __assert_fail(char *, char *, unsigned int, char *);
 </SCREEN>
@@ -76,6 +79,9 @@ void __assert_fail(char *, char *, unsigned int, char *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 14 Default HeaderGroup for ctype.h
+ */
 
 unsigned short *__ctype_b;
 __int32_t *__ctype_tolower;
@@ -104,14 +110,19 @@ int toupper(int);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 15 Default HeaderGroup for dirent.h
+ */
+typedef struct __dirstream DIR;
+
 
 void rewinddir(DIR *);
 void seekdir(DIR *, long);
 long telldir(DIR *);
 int closedir(DIR *);
 DIR *opendir(char *);
-dirent *readdir(DIR *);
-dirent64 *readdir64(DIR *);
+struct dirent *readdir(DIR *);
+struct dirent64 *readdir64(DIR *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -119,6 +130,9 @@ dirent64 *readdir64(DIR *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 18 Default HeaderGroup for fcntl.h
+ */
 
 int creat(char *, __mode_t);
 int creat64(char *, __mode_t);
@@ -132,6 +146,9 @@ int open64(char *, int, ...);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 20 Default HeaderGroup for fnmatch.h
+ */
 
 int fnmatch(char *, char *, int);
 </SCREEN>
@@ -141,13 +158,24 @@ int fnmatch(char *, char *, int);
 <PARA>
 </PARA>
 <SCREEN>
-typedef int __ftw_func_t;
+/*
+ * 21 Default HeaderGroup for ftw.h
+ */
+typedef int (*__ftw_func_t) (char *__filename, struct stat * __status,
+			     int __flag)
+;
 
-typedef int __ftw64_func_t;
+typedef int (*__ftw64_func_t) (char *__filename, struct stat64 * __status,
+			       int __flag)
+;
 
-typedef int __nftw_func_t;
+typedef int (*__nftw_func_t) (char *__filename, struct stat * __status,
+			      int __flag, struct FTW * __info)
+;
 
-typedef int __nftw64_func_t;
+typedef int (*__nftw64_func_t) (char *__filename, struct stat64 * __status,
+				int __flag, struct FTW * __info)
+;
 
 
 int ftw(char *, __ftw_func_t, int);
@@ -161,6 +189,33 @@ int nftw64(char *, __nftw64_func_t, int, int);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 3 Default HeaderGroup for glob.h
+ */
+typedef struct {
+    __size_t gl_pathc;
+    char **gl_pathv;
+    __size_t gl_offs;
+    int gl_flags;
+    void (*gl_closedir) ();
+    struct dirent64 *(*gl_readdir) ();
+    void *(*gl_opendir) ();
+    int (*gl_lstat) ();
+    int (*gl_stat) ();
+} glob_t;
+
+typedef struct {
+    __size_t gl_pathc;
+    char **gl_pathv;
+    __size_t gl_offs;
+    int gl_flags;
+    void (*gl_closedir) ();
+    struct dirent64 *(*gl_readdir) ();
+    void *(*gl_opendir) ();
+    int (*gl_lstat) ();
+    int (*gl_stat) ();
+} glob64_t;
+
 
 int glob(char *, int, int, glob_t *);
 int glob64(char *, int, int, glob64_t *);
@@ -173,11 +228,21 @@ void globfree64(glob64_t *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 4 Default HeaderGroup for grp.h
+ */
+struct group {
+    char *gr_name;
+    char *gr_passwd;
+    __gid_t gr_gid;
+    char **gr_mem;
+};
+
 
 void endgrent(void);
-group *getgrent(void);
-group *getgrgid(__gid_t);
-group *getgrnam(char *);
+struct group *getgrent(void);
+struct group *getgrgid(__gid_t);
+struct group *getgrnam(char *);
 void setgrent(void);
 </SCREEN>
 </SECT2>
@@ -186,7 +251,10 @@ void setgrent(void);
 <PARA>
 </PARA>
 <SCREEN>
-typedef *void void *iconv_t;
+/*
+ * 22 Default HeaderGroup for iconv.h
+ */
+typedef void *iconv_t;
 
 
 size_t iconv(iconv_t, char **, size_t *, char **, size_t *);
@@ -199,13 +267,14 @@ iconv_t iconv_open(char *, char *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef typedef struct {
+/*
+ * 23 Default HeaderGroup for inttypes.h
+ */
+typedef lldiv_t imaxdiv_t;
 
-    long quot;
-    long rem;
-} lldiv_t;
+typedef long long intmax_t;
 
-imaxdiv_t;
+typedef unsigned long long uintmax_t;
 
 
 intmax_t strtoimax(char *, char **, int);
@@ -221,8 +290,11 @@ imaxdiv_t imaxdiv(intmax_t, intmax_t);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 25 Default HeaderGroup for langinfo.h
+ */
 
-char *nl_langinfo();
+char *nl_langinfo(nl_item);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -230,8 +302,32 @@ char *nl_langinfo();
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 27 Default HeaderGroup for locale.h
+ */
+struct lconv {
+    char *decimal_point;
+    char *thousands_sep;
+    char *grouping;
+    char *int_curr_symbol;
+    char *currency_symbol;
+    char *mon_decimal_point;
+    char *mon_thousands_sep;
+    char *mon_grouping;
+    char *positive_sign;
+    char *negative_sign;
+    char int_frac_digits;
+    char frac_digits;
+    char p_cs_precedes;
+    char p_sep_by_space;
+    char n_cs_precedes;
+    char n_sep_by_space;
+    char p_sign_posn;
+    char n_sign_posn;
+};
 
-lconv *localeconv(void);
+
+struct lconv *localeconv(void);
 char *setlocale(int, char *);
 </SCREEN>
 </SECT2>
@@ -240,6 +336,11 @@ char *setlocale(int, char *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 30 Default HeaderGroup for monetary.h
+ */
+
+ssize_t strfmon(char *, size_t, char *, ...);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -247,7 +348,12 @@ char *setlocale(int, char *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef *void void *nl_catd;
+/*
+ * 32 Default HeaderGroup for nl_types.h
+ */
+typedef void *nl_catd;
+
+typedef int nl_item;
 
 
 int catclose(nl_catd);
@@ -260,11 +366,24 @@ nl_catd catopen(char *, int);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 34 Default HeaderGroup for pwd.h
+ */
+struct passwd {
+    char *pw_name;
+    char *pw_passwd;
+    __uid_t pw_uid;
+    __gid_t pw_gid;
+    char *pw_gecos;
+    char *pw_dir;
+    char *pw_shell;
+};
+
 
 void endpwent(void);
-passwd *getpwent(void);
-passwd *getpwnam(char *);
-passwd *getpwuid(__uid_t);
+struct passwd *getpwent(void);
+struct passwd *getpwnam(char *);
+struct passwd *getpwuid(__uid_t);
 void setpwent(void);
 </SCREEN>
 </SECT2>
@@ -273,8 +392,31 @@ void setpwent(void);
 <PARA>
 </PARA>
 <SCREEN>
-typedef struct {
+/*
+ * 35 Default HeaderGroup for regex.h
+ */
+typedef unsigned long reg_syntax_t;
 
+typedef struct re_pattern_buffer {
+    unsigned char *buffer;
+    unsigned long allocated;
+    unsigned long used;
+    reg_syntax_t syntax;
+    char *fastmap;
+    char *translate;
+    size_t re_nsub;
+    unsigned int can_be_null;
+    unsigned int regs_allocated;
+    unsigned int fastmap_accurate;
+    unsigned int no_sub;
+    unsigned int not_bol;
+    unsigned int not_eol;
+    unsigned int newline_anchor;
+} regex_t;
+
+typedef int regoff_t;
+
+typedef struct {
     regoff_t rm_so;
     regoff_t rm_eo;
 } regmatch_t;
@@ -291,6 +433,9 @@ void regfree(regex_t *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 36 Default HeaderGroup for regexp.h
+ */
 
 char *loc1;
 char *loc2;
@@ -304,14 +449,17 @@ int step(char *, char *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 37 Default HeaderGroup for sched.h
+ */
 
 int sched_get_priority_max(int);
 int sched_get_priority_min(int);
-int sched_getparam(__pid_t, sched_param *);
+int sched_getparam(__pid_t, struct sched_param *);
 int sched_getscheduler(__pid_t);
-int sched_rr_get_interval(__pid_t, timespec *);
-int sched_setparam(__pid_t, sched_param *);
-int sched_setscheduler(__pid_t, int, sched_param *);
+int sched_rr_get_interval(__pid_t, struct timespec *);
+int sched_setparam(__pid_t, struct sched_param *);
+int sched_setscheduler(__pid_t, int, struct sched_param *);
 int sched_yield(void);
 </SCREEN>
 </SECT2>
@@ -320,26 +468,39 @@ int sched_yield(void);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown ACTION;
+typedef enum {
+    FIND,
+    ENTER
+} ACTION;
 
+typedef enum {
+    preorder,
+    postorder,
+    endorder,
+    leaf
+} VISIT;
+
+/*
+ * 38 Default HeaderGroup for search.h
+ */
 typedef struct entry {
-
     char *key;
     void *data;
 } ENTRY;
 
-typedef void __action_fn_t;
+typedef void (*__action_fn_t) (void *__nodep, VISIT __value, int __level)
+;
 
 
 int hcreate(size_t);
 ENTRY *hsearch(ENTRY, ACTION);
 void insque(void *, void *);
-void *lfind(void *, void *, size_t *, size_t);
-void *lsearch(void *, void *, size_t *, size_t);
+void *lfind(void *, void *, size_t *, size_t, __compar_fn_t);
+void *lsearch(void *, void *, size_t *, size_t, __compar_fn_t);
 void remque(void *);
 void hdestroy(void);
-void *tfind(void *, void **);
-void *tsearch(void *, void **);
+void *tfind(void *, void **, __compar_fn_t);
+void *tsearch(void *, void **, __compar_fn_t);
 void twalk(void *, __action_fn_t);
 </SCREEN>
 </SECT2>
@@ -348,21 +509,18 @@ void twalk(void *, __action_fn_t);
 <PARA>
 </PARA>
 <SCREEN>
+typedef int __jmp_buf;
+
+/*
+ * 40 Default HeaderGroup for setjmp.h
+ */
 typedef struct __jmp_buf_tag {
-
-    Unknown Type:"" unknown __jmpbuf;
+    __jmp_buf __jmpbuf;
     int __mask_was_saved;
-    Unknown Type:"" unknown __saved_mask;
+    __sigset_t __saved_mask;
 } jmp_buf;
 
-typedef typedef struct __jmp_buf_tag {
-
-    Unknown Type:"" unknown __jmpbuf;
-    int __mask_was_saved;
-    Unknown Type:"" unknown __saved_mask;
-} jmp_buf;
-
-sigjmp_buf;
+typedef jmp_buf sigjmp_buf;
 
 
 int __sigsetjmp(jmp_buf, int);
@@ -376,7 +534,48 @@ void _longjmp(jmp_buf, int);
 <PARA>
 </PARA>
 <SCREEN>
-typedef void __sighandler_t;
+typedef union sigval {
+    int sival_int;
+    void *sival_ptr;
+} sigval_t;
+
+/*
+ * 41 Default HeaderGroup for signal.h
+ */
+typedef void (*__sighandler_t) ()
+;
+
+struct sigevent {
+    sigval_t sigev_value;
+    int sigev_signo;
+    int sigev_notify;
+};
+
+typedef struct {
+    unsigned long __val[1];
+} __sigset_t;
+
+typedef __sigset_t sigset_t;
+
+struct sigaction;
+
+typedef struct {
+    int si_band;
+    int si_fd;
+    struct _sifields;
+    struct _sigpoll;
+} siginfo_t;
+
+struct sigaltstack {
+    void *ss_sp;
+    int ss_flags;
+    size_t ss_size;
+};
+
+struct sigstack {
+    void *ss_sp;
+    int ss_onstack;
+};
 
 
 int __libc_current_sigrtmax(void);
@@ -396,17 +595,17 @@ int sigismember(sigset_t *, int);
 int sigpending(sigset_t *);
 int sigrelse(int);
 __sighandler_t sigset(int, __sighandler_t);
-int sigstack(sigstack *, sigstack *);
-int sigaction(int, sigaction *, sigaction *);
+int sigstack(struct sigstack *, struct sigstack *);
+int sigaction(int, struct sigaction *, struct sigaction *);
 int sigwait(sigset_t *, int *);
 int kill(__pid_t, int);
-int sigaltstack(sigaltstack *, sigaltstack *);
+int sigaltstack(struct sigaltstack *, struct sigaltstack *);
 __sighandler_t signal(int, __sighandler_t);
 int sigprocmask(int, sigset_t *, sigset_t *);
 int sigsuspend(sigset_t *);
-int sigqueue(__pid_t, int,, enum sigval);
+int sigqueue(__pid_t, int, union sigval);
 int sigwaitinfo(sigset_t *, siginfo_t *);
-int sigtimedwait(sigset_t *, siginfo_t *, timespec *);
+int sigtimedwait(sigset_t *, siginfo_t *, struct timespec *);
 __sighandler_t bsd_signal(int, __sighandler_t);
 </SCREEN>
 </SECT2>
@@ -415,6 +614,15 @@ __sighandler_t bsd_signal(int, __sighandler_t);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 42 Default HeaderGroup for stdio.h
+ */
+typedef struct _IO_FILE FILE;
+
+typedef __off_t fpos_t;
+
+typedef __off64_t fpos64_t;
+
 
 void clearerr(FILE *);
 int fclose(FILE *);
@@ -491,25 +699,26 @@ int getc_unlocked(FILE *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 43 Default HeaderGroup for stdlib.h
+ */
 typedef struct {
-
     long quot;
     long rem;
 } lldiv_t;
 
 typedef struct {
-
     int quot;
     int rem;
 } div_t;
 
 typedef struct {
-
     long quot;
     long rem;
 } ldiv_t;
 
-typedef int __compar_fn_t;
+typedef int (*__compar_fn_t) ()
+;
 
 
 char *__secure_getenv(char *);
@@ -562,10 +771,12 @@ int unlockpt(int);
 size_t wcstombs(char *, wchar_t *, size_t);
 int wctomb(char *, wchar_t);
 int system(char *);
+void setkey(char *);
 void *calloc(size_t, size_t);
 void free(void *);
 void *initstate(unsigned int, void *, size_t);
 void *malloc(size_t);
+int32_t random(void);
 void *realloc(void *, size_t);
 void *setstate(void *);
 void srand(unsigned int);
@@ -587,6 +798,9 @@ char *realpath(char *, char *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 44 Default HeaderGroup for string.h
+ */
 
 void __bzero(void *, size_t);
 char *__strdup(char *);
@@ -617,7 +831,7 @@ size_t strxfrm(char *, char *, size_t);
 int bcmp(void *, void *, size_t);
 void bzero(void *, size_t);
 int ffs(int);
-char *-1;
+char *index(char *, int);
 void *memccpy(void *, void *, int, size_t);
 char *rindex(char *, int);
 int strcasecmp(char *, char *);
@@ -631,6 +845,11 @@ char *strtok_r(char *, char *, char **);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 49 Default HeaderGroup for sys/ipc.h
+ */
+
+key_t ftok(char *, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -638,6 +857,9 @@ char *strtok_r(char *, char *, char **);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 56 Default HeaderGroup for sys/mman.h
+ */
 
 int msync(void *, size_t, int);
 int mlock(void *, size_t);
@@ -655,9 +877,12 @@ void *mmap64(void *, size_t, int, int, int, __off64_t);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 50 Default HeaderGroup for sys/msg.h
+ */
 
-int msgctl(int, int, msqid_ds *);
-int msgget(int);
+int msgctl(int, int, struct msqid_ds *);
+int msgget(key_t, int);
 int msgrcv(int, void *, size_t, long, int);
 int msgsnd(int, void *, size_t, int);
 </SCREEN>
@@ -667,13 +892,16 @@ int msgsnd(int, void *, size_t, int);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 57 Default HeaderGroup for sys/resource.h
+ */
 
-int getpriority(enum, enum __priority_which, int);
-int getrlimit64(enum, enum __rlimit_resource, rlimit64 *);
-int setpriority(enum, enum __priority_which, int, int);
-int setrlimit(enum, enum __rlimit_resource, rlimit *);
-int getrlimit(enum, enum __rlimit_resource, rlimit *);
-int getrusage(enum, enum __rusage_who, rusage *);
+int getpriority(,, int);
+int getrlimit64(,, struct rlimit64 *);
+int setpriority(,, int, int);
+int setrlimit(,, struct rlimit *);
+int getrlimit(,, struct rlimit *);
+int getrusage(,, struct rusage *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -681,10 +909,19 @@ int getrusage(enum, enum __rusage_who, rusage *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 47 Default HeaderGroup for sys/sem.h
+ */
+struct sembuf {
+    short sem_num;
+    short sem_op;
+    short sem_flg;
+};
+
 
 int semctl(int, int, int, ...);
-int semget(int, int);
-int semop(int, sembuf *, unsigned int);
+int semget(key_t, int, int);
+int semop(int, struct sembuf *, unsigned int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -692,11 +929,14 @@ int semop(int, sembuf *, unsigned int);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 51 Default HeaderGroup for sys/shm.h
+ */
 
 void *shmat(int, void *, int);
-int shmctl(int, int, shmid_ds *);
+int shmctl(int, int, struct shmid_ds *);
 int shmdt(void *);
-int shmget(size_t, int);
+int shmget(key_t, size_t, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -704,54 +944,42 @@ int shmget(size_t, int);
 <PARA>
 </PARA>
 <SCREEN>
-typedef union {
+typedef unsigned short sa_family_t;
 
-    sockaddr *__sockaddr__;
-    sockaddr_at *__sockaddr_at__;
-    sockaddr_ax25 *__sockaddr_ax25__;
-    sockaddr_dl *__sockaddr_dl__;
-    sockaddr_eon *__sockaddr_eon__;
-    sockaddr_in *__sockaddr_in__;
-    sockaddr_in6 *__sockaddr_in6__;
-    sockaddr_inarp *__sockaddr_inarp__;
-    sockaddr_ipx *__sockaddr_ipx__;
-    sockaddr_iso *__sockaddr_iso__;
-    sockaddr_ns *__sockaddr_ns__;
-    sockaddr_un *__sockaddr_un__;
-    sockaddr_x25 *__sockaddr_x25__;
-} __SOCKADDR_ARG;
+typedef unsigned int socklen_t;
 
-typedef union {
+/*
+ * 48 Default HeaderGroup for sys/socket.h
+ */
+struct sockaddr {
+    sa_family_t sa_family;
+    char sa_data[1];
+};
 
-    sockaddr *__sockaddr__;
-    sockaddr_at *__sockaddr_at__;
-    sockaddr_ax25 *__sockaddr_ax25__;
-    sockaddr_dl *__sockaddr_dl__;
-    sockaddr_eon *__sockaddr_eon__;
-    sockaddr_in *__sockaddr_in__;
-    sockaddr_in6 *__sockaddr_in6__;
-    sockaddr_inarp *__sockaddr_inarp__;
-    sockaddr_ipx *__sockaddr_ipx__;
-    sockaddr_iso *__sockaddr_iso__;
-    sockaddr_ns *__sockaddr_ns__;
-    sockaddr_un *__sockaddr_un__;
-    sockaddr_x25 *__sockaddr_x25__;
-} __CONST_SOCKADDR_ARG;
+struct msghdr {
+    void *msg_name;
+    socklen_t msg_namelen;
+    struct iovec *msg_iov;
+    size_t msg_iovlen;
+    void *msg_control;
+    size_t msg_controllen;
+    int msg_flags;
+};
 
 
-int bind(int, __CONST_SOCKADDR_ARG, socklen_t);
-int getsockname(int, __SOCKADDR_ARG, socklen_t *);
+int bind(int, struct sockaddr *, socklen_t);
+int getsockname(int, struct sockaddr *, socklen_t *);
 int listen(int, unsigned int);
 int setsockopt(int, int, int, void *, socklen_t);
-int accept(int, __SOCKADDR_ARG, socklen_t *);
-int connect(int, __CONST_SOCKADDR_ARG, socklen_t);
+int accept(int, struct sockaddr *, socklen_t *);
+int connect(int, struct sockaddr *, socklen_t);
 int recv(int, void *, size_t, int);
-int recvfrom(int, void *, size_t, int, __SOCKADDR_ARG, socklen_t *);
-int recvmsg(int, msghdr *, int);
+int recvfrom(int, void *, size_t, int, struct sockaddr *, socklen_t *);
+int recvmsg(int, struct msghdr *, int);
 int send(int, void *, size_t, int);
-int sendmsg(int, msghdr *, int);
-int sendto(int, void *, size_t, int, __CONST_SOCKADDR_ARG, socklen_t);
-int getpeername(int, __SOCKADDR_ARG, socklen_t *);
+int sendmsg(int, struct msghdr *, int);
+int sendto(int, void *, size_t, int, struct sockaddr *, socklen_t);
+int getpeername(int, struct sockaddr *, socklen_t *);
 int getsockopt(int, int, int, void *, socklen_t *);
 int shutdown(int, int);
 int socket(int, int, int);
@@ -763,14 +991,17 @@ int socketpair(int, int, int, int);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 52 Default HeaderGroup for sys/stat.h
+ */
 
-int __fxstat(int, int, stat *);
-int __fxstat64(int, int, stat64 *);
-int __lxstat(int, char *, stat *);
-int __lxstat64(int, char *, stat64 *);
+int __fxstat(int, int, struct stat *);
+int __fxstat64(int, int, struct stat64 *);
+int __lxstat(int, char *, struct stat *);
+int __lxstat64(int, char *, struct stat64 *);
 int __xmknod(int, char *, __mode_t, __dev_t *);
-int __xstat(int, char *, stat *);
-int __xstat64(int, char *, stat64 *);
+int __xstat(int, char *, struct stat *);
+int __xstat64(int, char *, struct stat64 *);
 int mkfifo(char *, __mode_t);
 int chmod(char *, __mode_t);
 int fchmod(int, __mode_t);
@@ -783,6 +1014,18 @@ __mode_t umask(__mode_t);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 53 Default HeaderGroup for sys/times.h
+ */
+struct tms {
+    clock_t tms_utime;
+    clock_t tms_stime;
+    clock_t tms_cutime;
+    clock_t tms_cstime;
+};
+
+
+clock_t times(struct tms *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -790,8 +1033,20 @@ __mode_t umask(__mode_t);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 54 Default HeaderGroup for sys/utsname.h
+ */
+struct utsname {
+    char sysname[1];
+    char nodename[1];
+    char release[1];
+    char version[1];
+    char machine[1];
+    char __domainname[1];
+};
 
-int uname(utsname *);
+
+int uname(struct utsname *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -799,13 +1054,20 @@ int uname(utsname *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown idtype_t;
+/*
+ * 55 Default HeaderGroup for sys/wait.h
+ */
+typedef enum {
+    P_ALL,
+    P_PID,
+    P_PGID
+} idtype_t;
 
 
 int waitid(idtype_t, __id_t, siginfo_t *, int);
 __pid_t wait(int *);
 __pid_t waitpid(__pid_t, int *, int);
-__pid_t wait3(int *, int, rusage *);
+__pid_t wait3(int *, int, struct rusage *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -813,18 +1075,21 @@ __pid_t wait3(int *, int, rusage *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 59 Default HeaderGroup for termios.h
+ */
 
-speed_t cfgetispeed(termios *);
-speed_t cfgetospeed(termios *);
-int cfsetispeed(termios *, speed_t);
-int cfsetospeed(termios *, speed_t);
+cfgetispeed(struct termios *);
+cfgetospeed(struct termios *);
+int cfsetispeed(struct termios *,);
+int cfsetospeed(struct termios *,);
 int tcflow(int, int);
 int tcflush(int, int);
 __pid_t tcgetsid(int);
 int tcsendbreak(int, int);
-int tcsetattr(int, int, termios *);
+int tcsetattr(int, int, struct termios *);
 int tcdrain(int);
-int tcgetattr(int, termios *);
+int tcgetattr(int, struct termios *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -832,24 +1097,48 @@ int tcgetattr(int, termios *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown clock_t;
+typedef long __clock_t;
 
-typedef Unknown Type:"" unknown time_t;
+/*
+ * 60 Default HeaderGroup for time.h
+ */
+struct timespec {
+    long tv_sec;
+    long tv_nsec;
+};
+
+struct tm {
+    int tm_sec;
+    int tm_min;
+    int tm_hour;
+    int tm_mday;
+    int tm_mon;
+    int tm_year;
+    int tm_wday;
+    int tm_yday;
+    int tm_isdst;
+    long __tm_gmtoff;
+    char *__tm_zone;
+};
+
+typedef __clock_t clock_t;
+
+typedef __time_t time_t;
 
 
-char *asctime(tm *);
+char *asctime(struct tm *);
 clock_t clock(void);
 char *ctime(time_t *);
 double difftime(time_t, time_t);
-tm *getdate(char *);
+struct tm *getdate(char *);
 int getdate_err;
-tm *gmtime(time_t *);
-tm *localtime(time_t *);
-time_t mktime(tm *);
-size_t strftime(char *, size_t, char *, tm *);
-char *strptime(char *, char *, tm *);
+struct tm *gmtime(time_t *);
+struct tm *localtime(time_t *);
+time_t mktime(struct tm *);
+size_t strftime(char *, size_t, char *, struct tm *);
+char *strptime(char *, char *, struct tm *);
 time_t time(time_t *);
-int nanosleep(timespec *, timespec *);
+int nanosleep(struct timespec *, struct timespec *);
 int daylight();
 long timezone;
 char *tzname();
@@ -861,6 +1150,9 @@ void tzset(void);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 61 Default HeaderGroup for ulimit.h
+ */
 
 long ulimit(int, ...);
 </SCREEN>
@@ -870,7 +1162,14 @@ long ulimit(int, ...);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown ssize_t;
+/*
+ * 62 Default HeaderGroup for unistd.h
+ */
+typedef __ssize_t ssize_t;
+
+typedef __pid_t pid_t;
+
+typedef __off_t off_t;
 
 
 char **__environ;
@@ -920,7 +1219,6 @@ ssize_t read(int, void *, size_t);
 ssize_t write(int, void *, size_t);
 char *crypt(char *, char *);
 void encrypt(char *, int);
-void setkey(char *);
 int access(char *, int);
 int brk(void *);
 int chdir(char *);
@@ -974,8 +1272,80 @@ int ttyname_r(int, char *, size_t);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 63 Default HeaderGroup for utime.h
+ */
+struct utimbuf {
+    __time_t actime;
+    __time_t modtime;
+};
 
-int utime(char *, utimbuf *);
+
+int utime(char *, struct utimbuf *);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>wchar.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+/*
+ * 64 Default HeaderGroup for wchar.h
+ */
+typedef long wchar_t;
+
+typedef unsigned int wint_t;
+
+typedef struct {
+    int count;
+    wint_t value;
+} mbstate_t;
+
+
+size_t __mbrlen(char *, size_t, mbstate_t *);
+double __wcstod_internal(wchar_t *, wchar_t * *, int);
+float __wcstof_internal(wchar_t *, wchar_t * *, int);
+long __wcstol_internal(wchar_t *, wchar_t * *, int, int);
+long double __wcstold_internal(wchar_t *, wchar_t * *, int);
+long long __wcstoll_internal(wchar_t *, wchar_t * *, int, int);
+unsigned long __wcstoul_internal(wchar_t *, wchar_t * *, int, int);
+unsigned long long __wcstoull_internal(wchar_t *, wchar_t * *, int, int);
+wchar_t *wcscat(wchar_t *, wchar_t *);
+wchar_t *wcschr(wchar_t *, wchar_t);
+int wcscmp(wchar_t *, wchar_t *);
+int wcscoll(wchar_t *, wchar_t *);
+wchar_t *wcscpy(wchar_t *, wchar_t *);
+size_t wcscspn(wchar_t *, wchar_t *);
+wchar_t *wcsncat(wchar_t *, wchar_t *, size_t);
+int wcsncmp(wchar_t *, wchar_t *, size_t);
+wchar_t *wcsncpy(wchar_t *, wchar_t *, size_t);
+wchar_t *wcspbrk(wchar_t *, wchar_t *);
+wchar_t *wcsrchr(wchar_t *, wchar_t);
+size_t wcsspn(wchar_t *, wchar_t *);
+wchar_t *wcsstr(wchar_t *, wchar_t *);
+wchar_t *wcstok(wchar_t *, wchar_t *, wchar_t * *);
+int wcswidth(wchar_t *, size_t);
+size_t wcsxfrm(wchar_t *, wchar_t *, size_t);
+int wctob(wint_t);
+int wcwidth(wint_t);
+wchar_t *wmemchr(wchar_t *, wchar_t, size_t);
+int wmemcmp(wchar_t *, wchar_t *, size_t);
+wchar_t *wmemcpy(wchar_t *, wchar_t *, size_t);
+wchar_t *wmemmove(wchar_t *, wchar_t *, size_t);
+wchar_t *wmemset(wchar_t *, wchar_t, size_t);
+size_t mbrlen(char *, size_t, mbstate_t *);
+size_t mbrtowc(wchar_t *, char *, size_t, mbstate_t *);
+int mbsinit(mbstate_t *);
+size_t mbsrtowcs(wchar_t *, char **, size_t, mbstate_t *);
+size_t wcrtomb(char *, wchar_t, mbstate_t *);
+size_t wcslen(wchar_t *);
+size_t wcsrtombs(char *, wchar_t * *, size_t, mbstate_t *);
+double wcstod(wchar_t *, wchar_t * *);
+long wcstol(wchar_t *, wchar_t * *, int);
+unsigned long wcstoul(wchar_t *, wchar_t * *, int);
+long long wcstoll(wchar_t *, wchar_t * *, int);
+unsigned long long wcstoull(wchar_t *, wchar_t * *, int);
+wint_t btowc(int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -983,9 +1353,12 @@ int utime(char *, utimbuf *);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 65 Default HeaderGroup for wctype.h
+ */
 typedef unsigned long wctype_t;
 
-typedef *Unknown Type:"" unknown __int32_t * wctrans_t;
+typedef __int32_t *wctrans_t;
 
 
 wint_t towlower(wint_t);
@@ -1012,6 +1385,15 @@ wint_t towctrans(wint_t, wctrans_t);
 <PARA>
 </PARA>
 <SCREEN>
+/*
+ * 66 Default HeaderGroup for wordexp.h
+ */
+typedef struct {
+    int we_wordc;
+    char **we_wordv;
+    int we_offs;
+} wordexp_t;
+
 
 int wordexp(char *, wordexp_t *, int);
 void wordfree(wordexp_t *);
@@ -1019,4 +1401,4 @@ void wordfree(wordexp_t *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
