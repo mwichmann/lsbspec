@@ -4,49 +4,31 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the
-<XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
-<XREF LINKEND="std.IA32.ABI.4"> and as supplemented by the
-<XREF LINKEND="std.LSB">
+<XREF LINKEND="std.gABI41"></XREF> , <XREF LINKEND="std.ABIUpdate"></XREF> ,
+<XREF LINKEND="std.S390X.ABI"></XREF> and as supplemented by the
+<XREF LINKEND="std.LSB"></XREF>
 and this document.
 </PARA>
 </PARTINTRO>
 
-<CHAPTER ID=programheader>
-<TITLE>Program Header</TITLE>
-<PARA>
-</PARA>
-
-<SECT1 ID=progheadtypes>
-<TITLE>Types</TITLE>
-<PARA>
-</PARA>
-</SECT1>
-
-<SECT1 ID=progheadflags>
-<TITLE>Flags</TITLE>
-<PARA>
-</PARA>
-</SECT1>
-
-</CHAPTER>
 
 <CHAPTER ID=programloading>
 <TITLE>Program Loading</TITLE>
-<PARA>
+<PARA>See Chapter 3 of the <XREF LINKEND="std.S390X.ABI"></XREF>.
 </PARA>
 
 </CHAPTER>
 
 <CHAPTER ID=dynamiclinking>
 <TITLE>Dynamic Linking</TITLE>
-<PARA>
+<PARA>See Chapter 3 of the <XREF LINKEND="std.S390X.ABI"></XREF>.
 </PARA>
 
 <SECT1 ID=proginterp>
 <TITLE>Program Interpreter/Dynamic Linker</TITLE>
 <PARA>
 The LSB specifies the Program Interpreter to be
-<application><XREF LINKEND="lib.proginterp"></application>.
+<application><XREF LINKEND="lib.proginterp"></XREF></application>.
 </PARA>
 </SECT1>
 
@@ -54,20 +36,14 @@ The LSB specifies the Program Interpreter to be
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the
-<XREF LINKEND="std.IA32.ABI.4">.
+<XREF LINKEND="std.S390X.ABI"></XREF>.
 include(dyntag.sgml)
 </PARA>
 </SECT1>
 
 <SECT1 ID=globaloffettable>
 <TITLE>Global Offset Table</TITLE>
-<PARA>
-</PARA>
-</SECT1>
-
-<SECT1 ID=sharedobjectdependencies>
-<TITLE>Shared Object Dependencies</TITLE>
-<PARA>
+<PARA>See Chapter 3 of the <XREF LINKEND="std.S390X.ABI"></XREF>.
 </PARA>
 </SECT1>
 
@@ -79,12 +55,6 @@ include(dyntag.sgml)
 
 <SECT1 ID=proceedurelinkagetable>
 <TITLE>Procedure Linkage Table</TITLE>
-<PARA>
-</PARA>
-</SECT1>
-
-<SECT1 ID=initandfinifunctons>
-<TITLE>Initialization and Termination Functions</TITLE>
 <PARA>
 </PARA>
 </SECT1>
