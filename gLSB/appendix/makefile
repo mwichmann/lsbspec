@@ -13,7 +13,7 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mklibapnd -a All >liblist.sgml
+	../../mklibapnd -a All | sed -e 's/ID=app-libgcc_s/ID=lapp-ibgcc-s/' >liblist.sgml
 
 clean:
 	rm -f $(FILES)
