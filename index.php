@@ -95,10 +95,11 @@ include("refspecs/LSB_1.3.0/PPC32/lsbversion.PPC32")
 <TD>LSB Errata</TD>
 <TD ALIGN=center><B></B></TD>
 <TD><a href="errata/errata/book1.html">HTML</a></TD>
-<TD ALIGN=center></TD>
-<TD ALIGN=center></TD>
-<TD ALIGN=center></TD>
-<TD ALIGN=center></TD>
+<TD><a href="errata/errata.rtf">RTF</a></TD>
+<TD></TD>
+<TD><a href="errata/errata.html">HTML</a></TD>
+<TD><a href="errata/errata.txt">TXT</a></TD>
+<TD><a href="errata/errata_line.txt">TXT</a></TD>
 <TD ALIGN=center></TD>
 </TR>
 </TABLE>
