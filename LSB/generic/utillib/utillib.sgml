@@ -5,7 +5,7 @@
 <TITLE>Libraries</TITLE>
 
 <PARA>
-An LSB-conforming implementation may also support some utility libraries which
+An LSB-conforming implementation shall also support some utility libraries which
 are built on top of the interfaces provided by the base libraries. These
 libraries implement common functionality, and hide additional system dependent
 information such as file formats and device names.
@@ -14,7 +14,7 @@ information such as file formats and device names.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Thu Sep 23 03:42:18 2004 -->
+<!--    at Thu Sep 30 22:21:59 2004 -->
 <SECT1 ID=libz>
 <TITLE>Interfaces for libz</TITLE>
 <PARA>
@@ -231,7 +231,7 @@ typedef voidp gzFile;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Thu Sep 23 03:42:18 2004 -->
+<!--    at Thu Sep 30 22:22:00 2004 -->
 <SECT1 ID=libncurses>
 <TITLE>Interfaces for libncurses</TITLE>
 <PARA>
@@ -968,7 +968,7 @@ struct _win_st
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Thu Sep 23 03:42:19 2004 -->
+<!--    at Thu Sep 30 22:22:01 2004 -->
 <SECT1 ID=libutil>
 <TITLE>Interfaces for libutil</TITLE>
 <PARA>
@@ -1433,19 +1433,28 @@ that records all logins and logouts. The record to be appended
 shall be constructed as follows:
 <ORDEREDLIST>
 <LISTITEM><PARA>The <varname>ut_line</varname> field shall be intitialized
-from <parameter>line</parameter>. If <parameter>line</parameter> refers to
-a string of more than <CONSTANT>UT_LINESIZE</CONSTANT>, it shall be 
-truncated to <CONSTANT>UT_LINESIZE</CONSTANT>-1 bytes, and null terminated.
+from <parameter>line</parameter>.
+If the user accounting database imposes a limit on the size of the 
+<structfield>ut_line</structfield> field, it shall
+truncate the value, but any such limit shall not be smaller than 
+<CONSTANT>UT_LINESIZE</CONSTANT>
+(including a terminating null character).
 </PARA></LISTITEM>
 <LISTITEM><PARA>The <varname>ut_name</varname> field shall be intitialized
-from <parameter>name</parameter>. If <parameter>name</parameter> refers to
-a string of more than <CONSTANT>UT_NAMESIZE</CONSTANT>, it shall be 
-truncated to <CONSTANT>UT_NAMESIZE</CONSTANT>-1 bytes, and null terminated.
+from <parameter>name</parameter>.
+If the user accounting database imposes a limit on the size of the 
+<structfield>ut_name</structfield> field, it shall
+truncate the value, but any such limit shall not be smaller than 
+<CONSTANT>UT_NAMESIZE</CONSTANT>
+(including a terminating null character).
 </PARA></LISTITEM>
 <LISTITEM><PARA>The <varname>ut_host</varname> field shall be intitialized
-from <parameter>host</parameter>. If <parameter>host</parameter> refers to
-a string of more than <CONSTANT>UT_HOSTSIZE</CONSTANT>, it shall be 
-truncated to <CONSTANT>UT_HOSTSIZE</CONSTANT>-1 bytes, and null terminated.
+from <parameter>host</parameter>.
+If the user accounting database imposes a limit on the size of the 
+<structfield>ut_host</structfield> field, it shall
+truncate the value, but any such limit shall not be smaller than 
+<CONSTANT>UT_HOSTSIZE</CONSTANT>
+(including a terminating null character).
 </PARA></LISTITEM>
 <LISTITEM><PARA>If the <parameter>name</parameter> parameter does not refer
 to an empty string (i.e. <constant>""</constant>), 
@@ -1462,14 +1471,11 @@ current time of day.
 </PARA></LISTITEM>
 </ORDEREDLIST>
 <NOTE><PARA>If a process does not have write access to the 
-<filename>/var/log/wtmp</filename> file, the
-<function>logwtmp()</function> function will not update the file. 
+the user accounting database, the
+<function>logwtmp</function> function will not update it. 
 Since the function does not return
 any value, an application has no way of knowing whether it succeeded or failed.
-Applications should check that they can update the 
-<filename>/var/log/wtmp</filename> file (e.g. using the
-<function>access()</function> function)
-before calling this interface.</PARA></NOTE>
+</PARA></NOTE>
 </PARA>
 </REFSECT1>
 

@@ -25,6 +25,6 @@ spotless: clean
 
 
 utillib.sgml:  libz.sgml libcurses.sgml libutil.sgml \
-	forkpty.sgml getutent_r.sgml getutid_r.sgml getutline_r.sgml \
+	forkpty.sgml \
 	login.sgml login_tty.sgml logout.sgml openpty.sgml \
 	mkfifo.sgml mknod.sgml logwtmp.sgml
