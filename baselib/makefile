@@ -40,4 +40,4 @@ clean:
 
 baselib.sgml: libc.sgml libcman.sgml datadefs.sgml libm.sgml libpthread.sgml
 baselib.sgml: libdb.sgml libdl.sgml libcrypt.sgml $(MANPAGES)
-datadefs.sgml: ../../code/headers/datadefs.sgml
+# datadefs.sgml: ../../code/headers/datadefs.sgml
