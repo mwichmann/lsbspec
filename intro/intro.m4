@@ -34,7 +34,13 @@ include(standards.sgml)
 <PARA></PARA>
 <TABLE>
 <TITLE>Relevent Libraries</TITLE>
-<TGROUP COLS=3>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Library</ENTRY>
+<ENTRY>Runtime Name</ENTRY>
+</ROW>
+</THEAD>
 include(libraries.sgml)
 </TGROUP>
 </TABLE>
