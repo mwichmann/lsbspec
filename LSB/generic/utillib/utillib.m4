@@ -5,7 +5,7 @@
 <TITLE>Libraries</TITLE>
 
 <PARA>
-An LSB-conforming implementation may also support some utility libraries which
+An LSB-conforming implementation shall also support some utility libraries which
 are built on top of the interfaces provided by the base libraries. These
 libraries implement common functionality, and hide additional system dependent
 information such as file formats and device names.

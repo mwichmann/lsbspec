@@ -5,8 +5,10 @@
 <TITLE>Libraries</TITLE>
 
 <PARA>
-The Utility libraries are those that are commonly used, but not part of
-the Single Unix Specification.
+An LSB-conforming implementation shall also support some utility libraries which
+are built on top of the interfaces provided by the base libraries. These
+libraries implement common functionality, and hide additional system dependent
+information such as file formats and device names.
 </PARA>
 
 include(libz.sgml)
