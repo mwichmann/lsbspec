@@ -13,7 +13,7 @@ hardware in the system.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
-<!--    at Fri Feb 14 10:15:44 2003 -->
+<!--    at Thu Mar  6 15:07:34 2003 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1943,6 +1943,35 @@ struct flock64
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>features.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+#define _ISOC99_SOURCE	1
+#define __USE_BSD	1
+#define __USE_ISOC99	1
+#define __USE_LARGEFILE	1
+#define __USE_LARGEFILE64	1
+#define __USE_MISC	1
+#define __USE_POSIX	1
+#define __USE_POSIX199309	1
+#define __USE_POSIX199506	1
+#define __USE_POSIX2	1
+#define __USE_REENTRANT	1
+#define __USE_SVID	1
+#define __USE_UNIX98	1
+#define __USE_XOPEN	1
+#define __USE_XOPEN_EXTENDED	1
+#define _POSIX_C_SOURCE	199506L
+#define __STDC_ISO_10646__	200009L
+#define _XOPEN_SOURCE	600
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>fmtmsg.h</TITLE>
 <PARA>
 </PARA>
@@ -2161,7 +2190,6 @@ typedef void *iconv_t;
 
 
 typedef lldiv_t imaxdiv_t;
-typedef unsigned int u_int;
 typedef unsigned int uint;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -2371,15 +2399,8 @@ typedef struct __locale_struct
   const unsigned short *__ctype_b;
   const int *__ctype_tolower;
   const int *__ctype_toupper;
-  const char *__names[13];
 }
  *__locale_t;
-
-
-
-
-
-typedef __locale_t locale_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3402,7 +3423,7 @@ stack_t;
 <SCREEN>
 
 #define offsetof(TYPE,MEMBER)	((size_t)&amp ((TYPE*)0)->MEMBER)
-#define NULL	((void *)0)
+#define NULL	(0L)
 
 
 typedef int wchar_t;
@@ -3962,6 +3983,7 @@ typedef unsigned long off_t;
 typedef int key_t;
 typedef unsigned int id_t;
 typedef long suseconds_t;
+typedef unsigned int u_int;
 typedef struct
 {
   int __val[2];
@@ -4081,6 +4103,7 @@ idtype_t;
 
 
 #define LOG_EMERG	0
+#define LOG_PRIMASK	0x07
 #define LOG_ALERT	1
 #define LOG_CRIT	2
 #define LOG_ERR	3
@@ -4103,6 +4126,7 @@ idtype_t;
 #define LOG_NEWS	(7&lt;&lt;3)
 #define LOG_UUCP	(8&lt;&lt;3)
 #define LOG_CRON	(9&lt;&lt;3)
+#define LOG_FACMASK	0x03f8
 
 
 
@@ -4525,33 +4549,27 @@ struct utmp
 
 
 
+
+
+
+
+
+
 struct utmpx
 {
   short ut_type;
   pid_t ut_pid;
-  char ut_line;
-  char ut_id;
-  char ut_user;
+  char ut_line[UT_LINESIZE];
+  char ut_id[4];
+  char ut_user[UT_NAMESIZE];
+  char ut_host[UT_HOSTSIZE];
+  struct exit_status ut_exit;
+  long ut_session;
+  struct timeval ut_tv;
+  int32_t ut_addr_v6[4];
+  char __unused[20];
 }
  ;
-struct utmpx
-{
-  short ut_type;
-  pid_t ut_pid;
-  char ut_line;
-  char ut_id;
-  char ut_user;
-}
- *;
-struct utmpx
-{
-  short ut_type;
-  pid_t ut_pid;
-  char ut_line;
-  char ut_id;
-  char ut_user;
-}
- *;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -15952,7 +15970,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
-<!--    at Fri Feb 14 10:16:25 2003 -->
+<!--    at Thu Mar  6 15:08:56 2003 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -16465,7 +16483,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
-<!--    at Fri Feb 14 10:16:45 2003 -->
+<!--    at Thu Mar  6 15:09:38 2003 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -16944,7 +16962,7 @@ is similar to <FUNCTION>sem_wait</FUNCTION> but waits only until
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
-<!--    at Fri Feb 14 10:17:42 2003 -->
+<!--    at Thu Mar  6 15:11:37 2003 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -17758,7 +17776,7 @@ routine identified by the unwind <PARAMETER>context</PARAMETER>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
-<!--    at Fri Feb 14 10:17:00 2003 -->
+<!--    at Thu Mar  6 15:10:10 2003 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -17804,11 +17822,11 @@ CAE Specification, January 1997, System Interfaces and Headers (XSH),Issue 5 (IS
 <TGROUP COLS=5>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>dladdr</primary></indexterm>dladdr(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-27-10"></ENTRY>
-<ENTRY><indexterm><primary>dlclose</primary></indexterm>dlclose(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-27-5"></ENTRY>
-<ENTRY><indexterm><primary>dlerror</primary></indexterm>dlerror(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-27-5"></ENTRY>
-<ENTRY><indexterm><primary>dlopen</primary></indexterm>dlopen(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-27-5"></ENTRY>
-<ENTRY><indexterm><primary>dlsym</primary></indexterm>dlsym(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-27-5"></ENTRY>
+<ENTRY><indexterm><primary>dladdr</primary></indexterm>dladdr<FOOTNOTEREF LINKEND="std-27-10"></ENTRY>
+<ENTRY><indexterm><primary>dlclose</primary></indexterm>dlclose<FOOTNOTEREF LINKEND="std-27-5"></ENTRY>
+<ENTRY><indexterm><primary>dlerror</primary></indexterm>dlerror<FOOTNOTEREF LINKEND="std-27-5"></ENTRY>
+<ENTRY><indexterm><primary>dlopen</primary></indexterm>dlopen<FOOTNOTEREF LINKEND="std-27-5"></ENTRY>
+<ENTRY><indexterm><primary>dlsym</primary></indexterm>dlsym<FOOTNOTEREF LINKEND="std-27-5"></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -17998,7 +18016,7 @@ directory search-path for object files
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
-<!--    at Fri Feb 14 10:17:14 2003 -->
+<!--    at Thu Mar  6 15:10:38 2003 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -18038,9 +18056,9 @@ CAE Specification, January 1997, System Interfaces and Headers (XSH),Issue 5 (IS
 <TGROUP COLS=5>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>crypt</primary></indexterm>crypt(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-29-5"></ENTRY>
-<ENTRY><indexterm><primary>encrypt</primary></indexterm>encrypt(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-29-5"></ENTRY>
-<ENTRY><indexterm><primary>setkey</primary></indexterm>setkey(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-29-5"></ENTRY>
+<ENTRY><indexterm><primary>crypt</primary></indexterm>crypt<FOOTNOTEREF LINKEND="std-29-5"></ENTRY>
+<ENTRY><indexterm><primary>encrypt</primary></indexterm>encrypt<FOOTNOTEREF LINKEND="std-29-5"></ENTRY>
+<ENTRY><indexterm><primary>setkey</primary></indexterm>setkey<FOOTNOTEREF LINKEND="std-29-5"></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -18063,7 +18081,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
-<!--    at Fri Feb 14 10:17:28 2003 -->
+<!--    at Thu Mar  6 15:11:07 2003 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
@@ -18302,7 +18320,7 @@ Success.
 </VARLISTENTRY>
 <VARLISTENTRY>
 <TERM>
-PAM_NEW_AUTHTOKEN_REQD
+PAM_NEW_AUTHTOK_REQD
 </TERM>
 <LISTITEM>
 <PARA>

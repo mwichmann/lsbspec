@@ -15,8 +15,8 @@ DB2RTF=sgmltools -b rtf
 DB2PS=sgmltools -b ps
 #DB2PS=docbook2ps -d ../docbook-utils.dsl\#print
 
-DB2PDF=sgmltools -b pdf
-#DB2PDF=docbook2pdf -d ../docbook-utils.dsl\#print
+#DB2PDF=sgmltools -b pdf
+DB2PDF=docbook2pdf -d ../docbook-utils.dsl\#print
 
 DB2ONEHTML=sgmltools -b onehtml
 #DB2ONEHTML=docbook2html -d ../docbook-utils.dsl\#html -u -p '/usr/bin/jade -V %use-id-as-filename%'
