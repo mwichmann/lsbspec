@@ -1,0 +1,90 @@
+#!/usr/bin/perl
+
+#use Getopt::Long;
+#use Mysql;
+
+#use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+
+sub usage()
+{
+print STDERR "fixc++spec\n";
+die;
+}
+
+# Uncomment to trace SQL statments
+#$trace=1;
+
+#
+# 1) process the arguments
+#
+#GetOptions("l=s" => \$libname,
+#	   "a=s" => \$archname);
+
+#if( !$libname ) { usage(); }
+#if( !$archname ) { usage(); }
+
+while(<>) {
+	#
+	# Top level loop that looks for the tables on which to work.
+	#
+	s/std:://g;
+	if(/<!--libgroup-->/) {
+		$title=<>;
+		$title=~s/std:://g;
+		$group=$title;
+		$group=~/<TITLE>(.+)<\/TITLE>/;
+		print STDERR "Title: $title\n";
+		print STDERR "Group: $1\n";
+		$group=$1;
+		$title=$1;
+		$title=~s/\</&lt;/g;
+		print "<TITLE>$title</TITLE>\n";
+		#
+		# Skip down to the next TITLE
+		#
+		while(<>) {
+			if(/<TITLE>/) {
+				$title=$_;
+				$title=~/<TITLE>(.+)<\/TITLE>/;
+				$title=$1;
+				$title=~s/std:://g;
+				$title=~s/\</&lt;/g;
+				print "<TITLE>$title</TITLE>\n";
+				last;
+				}
+			print $_;
+			}
+		#
+		# Skip down to the start of the table
+		#
+		while(<>) {
+			s/std:://g;
+			if(/<ROW>/) {
+				print $_;
+				last;
+				}
+			print $_;
+			}
+		#
+		# Process each entry in the table
+		#
+		while(<>) {
+			if(/<\/ROW>/) {
+				last;
+				}
+			$entry=$_;
+			$entry=~s/std:://g;
+			$entry=~/<ENTRY>(.+)<\/ENTRY>/;
+			print STDERR "Entry: $1\n";
+			$entry=$1;
+			$entry=~s/$group\:\://;
+			$entry=~s/\</&lt;/g;
+			print "<ENTRY>$entry</ENTRY>\n";
+			}
+	}
+	if(/<!--libgroupdata-->/) {
+	}
+	#s/\</&lt;/g;
+	print $_;
+}
+
