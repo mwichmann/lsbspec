@@ -34,7 +34,7 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	wcstoq.sgml wcstouq.sgml
 
 FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
-	libdl.sgml libcrypt.sgml librt.sgml
+	libdl.sgml libcrypt.sgml librt.sgml libdb.sgml
 TABLES=
 
 .cpp.sgml:
