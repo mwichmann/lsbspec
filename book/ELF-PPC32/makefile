@@ -31,6 +31,7 @@ htmlspec: ELF-PPC32.sgml source
 
 onehtmlspec: ELF-PPC32.sgml source
 	$(DB2ONEHTML) ELF-PPC32.sgml
+	cp ../../ELF/PPC32/lowlevel/initial_process_stack.jpg .
 
 txtspec: ELF-PPC32.sgml source
 	$(DB2TXT) ELF-PPC32.sgml
