@@ -9,6 +9,7 @@
 
 FILES=command.sgml
 TABLES= cmdsutils.sgml
+BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 
 .cpp.sgml:
 	cpp -I../../code/headers $*.cpp | grep -v '^# ' >$@
@@ -27,6 +28,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-
-command.sgml: $(TABLES)
-
+command.sgml: $(TABLES) $(BASEFILES)
