@@ -18,8 +18,6 @@ include(libICE.sgml)
 
 include(libXt.sgml)
 
-include(libGL.sgml)
-
 </CHAPTER>
 
 </PART>

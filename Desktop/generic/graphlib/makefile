@@ -5,7 +5,7 @@ MANPAGES=_XtCopyFromArg.sgml _XtInheritTranslations.sgml _XtInherit.sgml \
 	_XtIsSubclassOf.sgml
 
 FILES=graphlib.sgml
-TABLES= libICE.sgml libSM.sgml libX11.sgml libXext.sgml libXt.sgml libGL.sgml
+TABLES= libICE.sgml libSM.sgml libX11.sgml libXext.sgml libXt.sgml
 
 .cpp.sgml:
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
@@ -21,7 +21,6 @@ gensrc:
 	../../mklibspec -a All -c 4 -l libICE >libICE.sgml
 	../../mklibspec -a All -c 4 -l libSM >libSM.sgml
 	../../mklibspec -a All -c 4 -l libXt >libXt.sgml
-	../../mklibspec -a All -l libGL >libGL.sgml
 
 clean:
 	rm -f $(FILES)
@@ -30,5 +29,5 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-graphlib.sgml: libX11.sgml libXext.sgml libICE.sgml libSM.sgml libXt.sgml libGL.sgml
+graphlib.sgml: libX11.sgml libXext.sgml libICE.sgml libSM.sgml libXt.sgml
 graphlib.sgml: $(MANPAGES)
