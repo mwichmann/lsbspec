@@ -20,7 +20,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the &canicalarch; Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the &canonicalarch; Architecture &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2002</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
