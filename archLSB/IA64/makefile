@@ -11,6 +11,10 @@ DB2PS=sgmltools -b ps
 
 DB2PDF=sgmltools -b pdf
 
+DB2ONEHTML=sgmltools -b onehtml
+
+DB2TXT=sgmltools -b txt
+
 all:: htmlspec rtfspec onehtmlspec txtspec
 
 htmlspec: source
