@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.39 2002/05/30 20:02:24 anderson Exp 0 -->
-<!--    at Thu Jun 13 16:13:17 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
+<!--    at Thu Mar 13 11:14:58 2003 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -22,229 +22,20 @@
 </TGROUP>
 </TABLE>
 <PARA>
-LSB systems support POSIX threads with the following exceptions.
-This list is intended to match the behavior of historical Linux
-implementations.  Applications should be written to deal with either
-POSIX threads or the thread behaviors described here.
-</PARA>
-
-<PARA>
-POSIX specifies a concept of per-process rather than per-thread
-signals.  The LSB does not require this behavior; traditional Linux
-implementations have had per-thread signals only.  A related issue is
-that applications cannot (using legacy Linux implementations, at
-least) rely on getpid() returning the same value in different threads.
-</PARA>
-
-<PARA>
-Note: one implication of per-thread signals is that a core dump (for
-example) may not stop all threads in a given process.  This may be an
-issue when designing ways to stop/start applications.
-</PARA>
-
-<PARA>
-Applications which create child processes (using fork() and the like)
-must then wait for them (using waitpid() family of functions) in the
-same thread as they created them.  Note that coding applications this
-way will work both with full POSIX threads and legacy Linux thread
-implementations.
-</PARA>
-
-<PARA>
-POSIX specifies that changing the user or group id instantly affects
-the behavior of all threads.  This behavior is not specified;
-applications must use their own lock if they need this behavior.
-Rationale: it seems unnecessary and it is a performance hit (an SMP
-kernel must lock the user id).  (FIXME: is this our current
-understanding?  It was discussed on lsb-spec on January 2000 but I'm
-not sure we reached a consensus).
-</PARA>
-
-<PARA>
-Although this standard doesn't have a way to list processes (/proc or
-"ps" command line isn't in, right?), it is our intention to not
-specify one way or the other whether multiple threads appear as
-separate processes or as a single process.
-</PARA>
-
-<PARA>
-Applications cannot rely on resource limits (getrusage and setrusage)
-being maintained per-process rather than per-thread.
-</PARA>
-
-<PARA>
-Applications must disconnect from the controlling tty before
-pthread_create (FIXME: have I summarized this correctly?).
-</PARA>
-
-<PARA>
-times() doesn't account for all threads, just the caller.
-</PARA>
-
-<PARA>
-Applications must not call pthread_cancel if they call any system
-libraries (most notably X windows), as system libraries are not
-guaranteed to be thread safe.  Likewise, for such libraries, only one
-thread per process may call them.
-</PARA>
-
-<PARA>
-Applications cannot rely on fcntl/lockf locks being visible
-per-process rather than per-thread.  Likewise for mandatory file
-locks.
-</PARA>
-
-<PARA>
-Threaded applications cannot use SIGUSR1 or SIGUSR2.
-</PARA>
-<PARA>
-The behavior of the interfaces in this library is specified by the following standards.<SIMPLELIST COLUMNS=1>
-<MEMBER>
-Linux Standard Base<FOOTNOTE ID="std-132-10">
-<PARA>
-Linux Standard Base</PARA>
-</FOOTNOTE>
-</MEMBER>
-<MEMBER>
-CAE Specification, January 1997, System Interfaces and Headers (XSH),
-Issue 5 (ISBN: 1-85912-181-0, C606)<FOOTNOTE ID="std-132-5">
-<PARA>
-CAE Specification, January 1997, System Interfaces and Headers (XSH),
-Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
-</FOOTNOTE>
-</MEMBER>
-</SIMPLELIST>
 </PARA>
 <SECT2>
+<!--libgroup-->
 <TITLE>Posix Threads</TITLE>
 <PARA>
 </PARA>
-<TABLE>
-<TITLE>libpthread - Posix Threads Function Interfaces</TITLE>
-<TGROUP COLS=5>
-<TBODY>
-<ROW><ENTRY>pthread_attr_destroy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_attr_setstackaddr(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_getspecific(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_once(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setcanceltype(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getdetachstate(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_attr_setstacksize(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_join(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_destroy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setconcurrency(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getguardsize(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cancel(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_key_create(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_init(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setschedparam(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getinheritsched(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_broadcast(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_key_delete(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_rdlock(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setspecific(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getschedparam(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_destroy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_kill(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_timedrdlock(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_sigmask(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getschedpolicy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_init(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_destroy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_timedwrlock(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_testcancel(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getscope(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_signal(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_init(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_tryrdlock(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_close(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getstackaddr(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_timedwait(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_lock(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_trywrlock(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_destroy(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getstacksize(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_wait(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_trylock(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_unlock(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_getvalue(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_init(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_condattr_destroy(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_unlock(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_wrlock(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_init(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setdetachstate(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_condattr_init(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_destroy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_destroy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_open(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setguardsize(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_create(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_getpshared(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_getpshared(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_post(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setinheritsched(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_detach(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_gettype(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_init(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_timedwait(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-10"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setschedparam(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_equal(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_init(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_setpshared(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_trywait(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setschedpolicy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_exit(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_setpshared(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_self(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_unlink(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setscope(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_getschedparam(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_settype(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setcancelstate(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_wait(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
 </SECT2>
 </SECT1>
 <SECT1 ID=libpthread-ddefs>
 <TITLE>Data Definitions for libpthread</TITLE>
 <PARA>
-</PARA>
-<SECT2>
-<TITLE>signal.h</TITLE>
+This section contains standard data definitions that describe system data. These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
 <PARA>
-</PARA>
-<SCREEN>
-
-
-
-
-#define SIGUSR1	10
-#define SIGUSR2	12
-#define SIGSTKFLT	16
-#define SIGCHLD	17
-#define SIGCONT	18
-#define SIGSTOP	19
-#define SIGTSTP	20
-#define SIGTTIN	21
-#define SIGTTOU	22
-#define SIGURG	23
-#define SIGXCPU	24
-#define SIGXFSZ	25
-#define SIGVTALRM	26
-#define SIGPROF	27
-#define SIGWINCH	28
-#define SIGIO	29
-#define SIGPWR	30
-#define SIGUNUSED	31
-#define SIGSYS	31
-#define SIGBUS	7
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct _fpreg
-{
-  unsigned short significand[4];
-  unsigned short exponent;
-}
- ;
-struct _fpxreg
-{
-  unsigned short significand[4];
-  unsigned short exponent;
-  unsigned short padding[3];
-}
- ;
-struct _xmmreg
-{
-  unsigned long element[4];
-}
- ;
-
-
-struct _fpstate
-{
-  unsigned long cw;
-  unsigned long sw;
-  unsigned long tag;
-  unsigned long ipoff;
-  unsigned long cssel;
-  unsigned long dataoff;
-  unsigned long datasel;
-  struct _fpreg _st[8];
-  unsigned short status;
-  unsigned short magic;
-  unsigned long _fxsr_env[6];
-  unsigned long mxcsr;
-  unsigned long reserved;
-  struct _fpxreg _fxsr_st[8];
-  struct _xmmreg _xmm[8];
-  unsigned long padding[56];
-}
- ;
-</SCREEN>
-</SECT2>
+ISO C serves as the LSB reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.39 2002/05/30 20:02:24 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
