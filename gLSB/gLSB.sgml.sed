@@ -46,6 +46,7 @@ Portions of the text were taken from other copyrighted documents in accordance
 with the respective license of those documents.
 </PARA>
 </LEGALNOTICE>
+&changes.sgm;
 </BOOKINFO>
 
 &intro.sgm;
