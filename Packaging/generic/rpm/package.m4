@@ -810,7 +810,7 @@ required. The following dependencies may be used.
 <TERM>lsb-core</TERM>
 <LISTITEM>
 <PARA>
-This dependency is used to indicate that the application is only dependent
+This dependency is used to indicate that the application is dependent
 on features contained in the LSB-Core specification.
 </PARA>
 </LISTITEM>
