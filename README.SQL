@@ -45,5 +45,7 @@ you are editing Linux.sql as the master data source and using mysql as
 a slave to that.  So if you are making modifications in the database
 you don't want those rules.
 
-6.  Next step: figure out all the sgml generating scripts
+6.  Need sgmltools.
+
+7.  Next step: figure out all the sgml generating scripts
 (e.g. makefile in this directory) and such.
