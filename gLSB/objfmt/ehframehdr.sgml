@@ -1,0 +1,229 @@
+<CHAPTER ID="ehframehdr">
+<TITLE>EH Frame Header</TITLE>
+<PARA>
+The <COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> section contains additional
+information about the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section.
+A pointer to the start of the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> data,
+and optionally, a binary search table of pointers to the .eh_frame records
+are found in this section.
+</PARA>
+<PARA>
+Data in this section is encoded according to the DWARF Exception Header
+Encoding described below.
+</PARA>
+<TABLE>
+<TITLE><COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> Section Format</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Encoding</ENTRY>
+<ENTRY>Field</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>unsigned byte</ENTRY>
+<ENTRY>version</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>unsigned byte</ENTRY>
+<ENTRY>eh_frame_ptr_enc</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>unsigned byte</ENTRY>
+<ENTRY>fde_count_enc</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>unsigned byte</ENTRY>
+<ENTRY>table_enc</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>encoded</ENTRY>
+<ENTRY>eh_frame_ptr</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>encoded</ENTRY>
+<ENTRY>fde_count</ENTRY>
+</ROW>
+<ROW>
+<ENTRY></ENTRY>
+<ENTRY>binary search table</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>version</TERM>
+<LISTITEM><PARA>
+Version of the <COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> format. This
+value must be 1.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>eh_frame_ptr_enc</TERM>
+<LISTITEM><PARA>
+The encoding format of the eh_frame_ptr field.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>fde_count_enc</TERM>
+<LISTITEM><PARA>
+The encoding format of the fde_count field.
+A value of DW_EH_PE_omit indicates the binary search table is not present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>table_enc</TERM>
+<LISTITEM><PARA>
+The encoding format of the entries in the binary search table.
+A value of DW_EH_PE_omit indicates the binary search table is not present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>eh_frame_ptr</TERM>
+<LISTITEM><PARA>
+The encoded value of the pointer to the start of the
+<COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>fde_count</TERM>
+<LISTITEM><PARA>
+The encoded value of the count of entries in the binary search table.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>binary search table</TERM>
+<LISTITEM><PARA>
+A binary search table containing fde_count entries. Each entry of the table
+consist of two encoded values, the initial location, and the address.
+The entries are sorted in an increasing order by the initial location value.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
+<SECT1 ID="dwarfehencoding">
+<TITLE>DWARF Exception Header Encoding</TITLE>
+<PARA>
+The DWARF Exception Header Encoding is used to describe the type of data used
+in the <COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> section. The upper 4
+bits indicate how the value is to be applied. The lower 4 bits indicate the
+format of the data.
+</PARA>
+<TABLE>
+<TITLE>DWARF Exception Header value format</TITLE>
+<TGROUP COLS=3>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY>
+<ENTRY>Value</ENTRY>
+<ENTRY>Meaning</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>DW_EH_PE_omit</ENTRY>
+<ENTRY>0xff</ENTRY>
+<ENTRY>No value is present.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_uleb128</ENTRY>
+<ENTRY>0x01</ENTRY>
+<ENTRY>
+Unsigned value is encoded using the Little Endian Base 128 (LEB12)
+as defined by <XREF LINKEND="std.DWARF2">.
+</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_udata2</ENTRY>
+<ENTRY>0x02</ENTRY>
+<ENTRY>A 2 bytes unsigned value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_udata4</ENTRY>
+<ENTRY>0x03</ENTRY>
+<ENTRY>A 4 bytes unsigned value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_udata8</ENTRY>
+<ENTRY>0x04</ENTRY>
+<ENTRY>An 8 bytes unsigned value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_sleb128</ENTRY>
+<ENTRY>0x01</ENTRY>
+<ENTRY>
+Signed value is encoded using the Little Endian Base 128 (LEB12)
+as defined by <XREF LINKEND="std.DWARF2">.
+</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_sdata2</ENTRY>
+<ENTRY>0x02</ENTRY>
+<ENTRY>A 2 bytes signed value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_sdata4</ENTRY>
+<ENTRY>0x03</ENTRY>
+<ENTRY>A 4 bytes signed value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_sdata8</ENTRY>
+<ENTRY>0x04</ENTRY>
+<ENTRY>An 8 bytes signed value.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<TABLE>
+<TITLE>DWARF Exception Header application</TITLE>
+<TGROUP COLS=3>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY>
+<ENTRY>Value</ENTRY>
+<ENTRY>Meaning</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>DW_EH_PE_absptr</ENTRY>
+<ENTRY>0x00</ENTRY>
+<ENTRY>Value is used with no modification.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_pcrel</ENTRY>
+<ENTRY>0x10</ENTRY>
+<ENTRY>Value is reletive to the current program counter.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_textrel</ENTRY>
+<ENTRY>0x20</ENTRY>
+<ENTRY>Value is reletive to the beginning of the .text section.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_datarel</ENTRY>
+<ENTRY>0x30</ENTRY>
+<ENTRY>Value is reletive to the beginning of the .eh_frame_hdr section.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_omit</ENTRY>
+<ENTRY>0xff</ENTRY>
+<ENTRY>No value is present.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+</SECT1>
+
+
+</CHAPTER>

@@ -26,4 +26,5 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-objfmt.sgml: elfsect.sgml linuxsect.sgml elfsecttypes.sgml  linuxsecttypes.sgml
+objfmt.sgml: abinote.sgml ehframehdr.sgml elfsect.sgml elfsecttypes.sgml
+objfmt.sgml: linuxsect.sgml linuxsecttypes.sgml symversion.sgml
