@@ -32,7 +32,7 @@ architecture-specific LSB specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.67 2005/03/23 16:47:39 anderson Exp 0 -->
-<!--    at Thu Mar 24 06:49:06 2005 -->
+<!--    at Mon Mar 28 16:22:23 2005 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2403,10 +2403,10 @@ typedef unsigned int uint32_t;
 
 #define LONG_MIN	(-LONG_MAX-1L)
 
-#define PTHREAD_DESTRUCTOR_ITERATIONS	10
+#define PTHREAD_KEYS_MAX	1024
 #define PTHREAD_STACK_MIN	16384
 #define PTHREAD_THREADS_MAX	16384
-#define PTHREAD_KEYS_MAX	7
+#define PTHREAD_DESTRUCTOR_ITERATIONS	4
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4392,6 +4392,14 @@ struct itimerspec
 <SECT2>
 <TITLE>unistd.h</TITLE>
 <PARA>
+The LSB requires  
+<constant>_XOPEN_REALTIME</constant>
+to be defined to 1, but does not require
+all the set of functions  required by the 
+<xref linkend="std.susv3"> XSI Option Group _XOPEN_REALTIME.  
+For example,
+the asynchronous input/output functions are optional for LSB 
+conforming systems.
 </PARA>
 <SCREEN>
 
@@ -4579,7 +4587,6 @@ typedef long long int off64_t;
 #define _CS_XBS5_LPBIG_OFFBIG_LIBS	1114
 #define _CS_XBS5_LPBIG_OFFBIG_LINTFLAGS	1115
 
-#define _XOPEN_REALTIME	1
 #define _XOPEN_XPG4	1
 
 #define F_ULOCK	0
@@ -10831,11 +10838,11 @@ are accepted:
 
 <VARLISTENTRY>
 <TERM>
-SIOCGIFCONF (Deprecated)
+<SYMBOL>SIOCGIFCONF</SYMBOL> (Deprecated)
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface configuration list for the system.
+Get the interface configuration list for the system.
 <NOTE>
 <PARA>
 The <SYMBOL>SIOCGIFCONF</SYMBOL> interface is
@@ -10872,11 +10879,11 @@ Historical UNIX systems disagree on the meaning of the return value.
 
 <VARLISTENTRY>
 <TERM>
-SIOCGIFFLAGS  
+<SYMBOL>SIOCGIFFLAGS</SYMBOL>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface flags for the indicated interface.
+Get the interface flags for the indicated interface.
 <PARAMETER>argp</PARAMETER> shall point to a 
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -10889,11 +10896,11 @@ with the interface flags.
 
 <VARLISTENTRY>
 <TERM>
-SIOCGIFADDR  
+<SYMBOL>SIOCGIFADDR</SYMBOL>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface address for the given interface.
+Get the interface address for the given interface.
 <PARAMETER>argp</PARAMETER> shall point to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -10906,11 +10913,11 @@ with the interface address.
 
 <VARLISTENTRY>
 <TERM>
-SIOCGIFBRDADDR  
+<SYMBOL>SIOCGIFBRDADDR</SYMBOL>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface broadcast address for the given interface.
+Get the interface broadcast address for the given interface.
 <PARAMETER>argp</PARAMETER> shall point to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -10923,11 +10930,11 @@ with the interface broadcast address.
 
 <VARLISTENTRY>
 <TERM>
-SIOCGIFNETMASK  
+<SYMBOL>SIOCGIFNETMASK</SYMBOL>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the network mask for the given interface. 
+Get the network mask for the given interface. 
 <PARAMETER>argp</PARAMETER> shall point to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -10940,11 +10947,11 @@ with the network mask.
 
 <VARLISTENTRY>
 <TERM>
-SIOCGIFMTU  
+<SYMBOL>SIOCGIFMTU</SYMBOL>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the MTU for the given interface. 
+Get the Maximum Transmission Unit (MTU) size for the given interface. 
 <PARAMETER>argp</PARAMETER> shall point to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -10957,11 +10964,11 @@ with the MTU.
 
 <VARLISTENTRY>
 <TERM>
-FIONREAD  
+<SYMBOL>FIONREAD</SYMBOL>
 </TERM>
 <LISTITEM>
 <PARA>
-Returns the amount of queued unread data in the receive buffer.
+Get the amount of queued unread data in the receive buffer.
 <PARAMETER>argp</PARAMETER> shall point to an integer where the result is to be placed.
 </PARA>
 </LISTITEM>
@@ -11110,11 +11117,11 @@ The following <FUNCTION>ioctl</FUNCTION>s are provided:
 
 <VARLISTENTRY>
 <TERM>
-TIOCGWINSZ
+<SYMBOL>TIOCGWINSZ</SYMBOL>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the size attributes of the tty. <PARAMETER>argp</PARAMETER> is a pointer
+Get the size attributes of the tty. <PARAMETER>argp</PARAMETER> is a pointer
 to a <STRUCTNAME>winsize</STRUCTNAME> structure.
 </PARA>
 </LISTITEM>
@@ -16288,7 +16295,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.67 2005/03/23 16:47:39 anderson Exp 0 -->
-<!--    at Thu Mar 24 06:49:11 2005 -->
+<!--    at Mon Mar 28 16:22:25 2005 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -16975,7 +16982,7 @@ it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.67 2005/03/23 16:47:39 anderson Exp 0 -->
-<!--    at Thu Mar 24 06:49:11 2005 -->
+<!--    at Mon Mar 28 16:22:26 2005 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -17466,7 +17473,7 @@ source standard; it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.67 2005/03/23 16:47:39 anderson Exp 0 -->
-<!--    at Thu Mar 24 06:49:14 2005 -->
+<!--    at Mon Mar 28 16:22:27 2005 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -17566,7 +17573,7 @@ struct _Unwind_Exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.67 2005/03/23 16:47:39 anderson Exp 0 -->
-<!--    at Thu Mar 24 06:49:12 2005 -->
+<!--    at Mon Mar 28 16:22:26 2005 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -17931,7 +17938,7 @@ with the behavior as described in <XREF LINKEND="std.SUSv3">.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.67 2005/03/23 16:47:39 anderson Exp 0 -->
-<!--    at Thu Mar 24 06:49:12 2005 -->
+<!--    at Mon Mar 28 16:22:27 2005 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -18004,7 +18011,7 @@ underlying specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.67 2005/03/23 16:47:39 anderson Exp 0 -->
-<!--    at Thu Mar 24 06:49:13 2005 -->
+<!--    at Mon Mar 28 16:22:27 2005 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>

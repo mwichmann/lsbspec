@@ -542,7 +542,7 @@ process, they have no effect when executed as a file.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Thu Mar 24 14:09:39 2005 -->
+<!--    at Mon Mar 28 16:22:36 2005 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -1889,8 +1889,8 @@ differences as listed below.
 <refsect1>
 <title>LSB Differences</title>
 <para>
-Some elements of the Pattern Matching Notation are optional;
-see <xref linkend="localization-glob">.
+Certain aspects of regular expression matching are optional;
+see <xref linkend="localization-regex">.
 </para>
 </refsect1>
 
@@ -2845,17 +2845,21 @@ print all resource types.  Therefore, applications shall not use the
 </PARA>
 <PARA>
 Some implementations of <command>ipcs</command>
-implement more output formats than are
+provide more output formats than are
 specified here.  These options are not consistent between differing
 implementations of <command>ipcs</command>.
 Therefore, only the 
 <parameter>-t</parameter>,
 <parameter>-c</parameter> and 
 <parameter>-p</parameter> option
-flags may be used.  At least one of the 
+formatting flags may be used.  At least one of the 
 <parameter>-t</parameter>,
 <parameter>-c</parameter> and 
-<parameter>-p</parameter> options
+<parameter>-p</parameter> options, 
+and at least one of 
+<parameter>-m</parameter>,
+<parameter>-q</parameter> and 
+<parameter>-s</parameter> options, 
 shall be specified.
 </PARA>
 </REFSECT1>
@@ -3336,7 +3340,7 @@ installation tool for various types of data
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <CMDSYNOPSIS>
-<COMMAND>lsbinstall</COMMAND> <ARG rep=repeat>OPTION</ARG>
+<COMMAND>/usr/lib/lsb/lsbinstall</COMMAND> <ARG rep=repeat>OPTION</ARG>
 </CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -3346,6 +3350,7 @@ The <COMMAND>lsbinstall</COMMAND> command may be used to install certain types
 of files into system specific locations. This command may be used during a
 package post installation script to add package specific data to system wide
 repositories.
+A user may need appropriate privilege to invoke <command>lsbinstall</command>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -3356,6 +3361,7 @@ repositories.
 <LISTITEM>
 <PARA>
 install a font file into the systemwide font repository.
+There shall be one operand, that names a font file.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3364,6 +3370,7 @@ install a font file into the systemwide font repository.
 <LISTITEM>
 <PARA>
 install an init script into the system specific location.
+There shall be one operand, that names an init script file.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3372,6 +3379,9 @@ install an init script into the system specific location.
 <LISTITEM>
 <PARA>
 install a profile script into the system specific location.
+There shall be one operand, that names a profile shell script.
+The behavior is unspecified if this name does not have the suffix
+<literal>.sh</literal>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3380,6 +3390,11 @@ install a profile script into the system specific location.
 <LISTITEM>
 <PARA>
 ensure a service name and number pair is know to the system service database.
+There must be at least two operands.
+The first operand shall have the format <literal>%d/%s</literal> with the port
+number and protocol values (e.g. <literal>22/tcp</literal>), and the second
+operand shall be the name of the service. Any subsequent operands 
+provide aliases for this service.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3388,6 +3403,15 @@ ensure a service name and number pair is know to the system service database.
 <LISTITEM>
 <PARA>
 add an entry to the systems inet super daemon configuration.
+There shall be one operand, that names a file with the following format:
+<programlisting>
+service &lt;service_name&gt;
+{
+	&lt;attribute&gt; &lt;assign-op&gt; &lt;value ...&gt;
+}
+</programlisting>
+Add a list here of supported attributes. Explain that assign-opt
+must be at least =, but others may be supported.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3395,7 +3419,9 @@ add an entry to the systems inet super daemon configuration.
 <TERM>-c, --crontab</TERM>
 <LISTITEM>
 <PARA>
-Install a crontab into the system specific location
+Install a crontab into the system specific location.
+There shall be one operand, that names a crontab file. See
+<xref linkend=cronjobs endterm=cronjobs.title>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3404,6 +3430,7 @@ Install a crontab into the system specific location
 <LISTITEM>
 <PARA>
 install a desktop menu entry into the system menu database.
+There shall be one operand, that names a menu file.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3411,7 +3438,8 @@ install a desktop menu entry into the system menu database.
 <TERM>-l, --ldconfig</TERM>
 <LISTITEM>
 <PARA>
-Register a directory that contained shared libraries with the system.
+Register a directory that contains shared libraries with the system.
+There shall be one operand, that names a directory.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3422,6 +3450,8 @@ Register a directory that contained shared libraries with the system.
 <TITLE>Examples</TITLE>
 <PARA>
 </PARA>
+<PROGRAMLISTING>
+add something here!
 </PROGRAMLISTING>
 </REFSECT1>
 </REFENTRY>
@@ -5882,7 +5912,7 @@ going down by the signal <constant>SIGTERM</constant>. After an interval
 If neither the <parameter>-h</parameter> or the 
 <parameter>-r</parameter> argument is specified, then the default behavior
 shall be to take the system to a runlevel where administrative tasks can
-be run.
+be run. See also <xref linkend="runlevels">.
 <note>
 <para>This is sometimes referred to as "single user mode".
 </para>
