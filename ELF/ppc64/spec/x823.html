@@ -1,14 +1,15 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Relocation</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
 REL="HOME"
 TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.7"
-HREF="index.html"><LINK
+HREF="book1.html"><LINK
 REL="UP"
 TITLE="Object Files"
 HREF="c783.html"><LINK
@@ -47,13 +48,13 @@ VALIGN="bottom"
 ><A
 HREF="x816.html"
 ACCESSKEY="P"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 4. Object Files</TD
+>Object Files</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -61,7 +62,7 @@ VALIGN="bottom"
 ><A
 HREF="c917.html"
 ACCESSKEY="N"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -74,8 +75,8 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="RELOC"
->4.5. Relocation</A
-></H1
+></A
+>Relocation</H1
 ><P
 ></P
 ><DIV
@@ -84,14 +85,20 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RELOC-TYPE"
->4.5.1. Relocation Types</A
-></H2
+></A
+>Relocation Types</H2
 ><P
 >Relocation entries describe how to alter the instruction and data
 relocation fields shown below.  Bit numbers appear in the lower box
 corners; little-endian byte numbers appear in the upper right box
 corners; big-endian numbers appear in the upper left box corners.
 			</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
 ><PRE
 CLASS="SCREEN"
 >+-------+-------+-------+-------+-------+-------+-------+-------+
@@ -167,6 +174,9 @@ half16         This specifies a 16-bit field occupying 2 bytes with
 half16ds       Similar to half16, but really just 14 bits since the
                two least significant bits must be zero, and are not really
                part of the field.  (Used by for example the ldu instruction.)</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Calculations in the relocation table assume the actions are
 transforming a relocatable file into either an executable or a shared
@@ -183,6 +193,12 @@ arithmetic.  This is to support using the low 16 bits as a signed
 offset when loading the value.  For example, a value could be loaded
 from an absolute 64 bit address SYM as follows:
 			</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >    lis   r3,SYM@highesta
@@ -190,12 +206,21 @@ CLASS="PROGRAMLISTING"
     sldi  r3,r3,32
     oris  r3,r3,SYM@ha
     ld    r4,SYM@l(r3)</PRE
+></TD
+></TR
+></TABLE
 ><P
 >The adjusted forms mean that this will work correctly even if SYM@l is
 negative when interpreted as a signed 16 bit number.  Compare this to
 building the same 64 bit address using ori, in which case the adjusted
 forms are not used:
 			</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >    lis   r3,SYM@highest
@@ -204,6 +229,9 @@ CLASS="PROGRAMLISTING"
     oris  r3,r3,SYM@h
     ori   r3,r3,SYM@l
     ld    r4,0(r3)</PRE
+></TD
+></TR
+></TABLE
 ><P
 >These code samples are not meant to encourage people to write code
 which builds absolute 64 bit addresses in this manner.  It is normally
@@ -215,6 +243,12 @@ this usage possible when it is required.
 and accomplish the same result.  The following notations are used in
 the relocation table:
 			</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
 ><PRE
 CLASS="SCREEN"
 >A    Represents the addend used to compute the value of the
@@ -230,11 +264,19 @@ G    Represents the offset into the global offset table, relative to
      the TOC base, at which the address of the relocation entry's symbol
      plus addend will reside during execution.  See <A
 HREF="x572.html"
->Section 3.5</A
+>the Section called <I
+>Coding Examples</I
+> in the chapter called <I
+>Low Level System Information</I
+></A
 > 
      and <A
 HREF="x954.html#GLOBAL"
->Section 5.2.2</A
+>the Section called <I
+>Global Offset Table</I
+> in the chapter called <I
+>Program Loading and Dynamic Linking</I
+></A
 > for more information.
 
 L    Represents the section offset or address of the procedure linkage
@@ -244,7 +286,11 @@ L    Represents the section offset or address of the procedure linkage
      dynamic linker modifies the entries during execution.  See
      <A
 HREF="x954.html#PROC-LINK"
->Section 5.2.4</A
+>the Section called <I
+>Procedure Linkage Table</I
+> in the chapter called <I
+>Program Loading and Dynamic Linking</I
+></A
 > for more information.
 
 M    Similar to G, except that the address which is stored may be the
@@ -258,9 +304,18 @@ R    Represents the offset of the symbol within the section in which
 
 S    Represents the value of the symbol whose index resides in the
      relocation entry.</PRE
+></TD
+></TR
+></TABLE
 ><P
 >The following notations are used for relocations used with thread-local 
 symbols.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
 ><PRE
 CLASS="SCREEN"
 >@dtpmod
@@ -293,6 +348,9 @@ CLASS="SCREEN"
 @got@tprel
      Allocates an entry in the GOT with value @tprel, and computes the
      offset to the entry relative to the TOC base (r2).</PRE
+></TD
+></TR
+></TABLE
 ><P
 >Relocation entries apply to halfwords, words, or doublewords.  In all
 cases, the r_offset value designates the offset or virtual address of
@@ -314,7 +372,7 @@ relocation types in the relocation table:
 ><LI
 ><P
 >"+" and "-" denote 64-bit modulus addition and subtraction,
-  respectively.  "&gt;&gt;" denotes arithmetic right-shifting (shifting with
+  respectively.  "&#62;&#62;" denotes arithmetic right-shifting (shifting with
   sign copying) of the value of the left operand by the number of bits
   given by the right operand.</P
 ></LI
@@ -334,65 +392,128 @@ relocation types in the relocation table:
 >#lo(value) denotes the least significant 16 bits of the indicated
   value:
 						</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->    #lo(x) = (x &amp; 0xffff).
+>    #lo(x) = (x &#38; 0xffff).
 						</PRE
+></TD
+></TR
+></TABLE
 ></LI
 ><LI
 ><P
 >#hi(value) denotes bits 16 through 31 of the indicated value:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->    #hi(x) = ((x &gt;&gt; 16) &amp; 0xffff).
+>    #hi(x) = ((x &#62;&#62; 16) &#38; 0xffff).
 						</PRE
+></TD
+></TR
+></TABLE
 ></LI
 ><LI
 ><P
 >#ha(value) denotes the high adjusted value: bits 16 through 31 of
   the indicated value, compensating for #lo() being treated as a
   signed number:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >				
-    #ha(x) = (((x &gt;&gt; 16) + ((x &amp; 0x8000) ? 1 : 0)) &amp; 0xffff)
+    #ha(x) = (((x &#62;&#62; 16) + ((x &#38; 0x8000) ? 1 : 0)) &#38; 0xffff)
 					</PRE
+></TD
+></TR
+></TABLE
 ></LI
 ><LI
 ><P
 >#higher(value) denotes bits 32 through 47 of the indicated value:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->    #higher(x) = ((x &gt;&gt; 32) &amp; 0xffff)
+>    #higher(x) = ((x &#62;&#62; 32) &#38; 0xffff)
 						</PRE
+></TD
+></TR
+></TABLE
 ></LI
 ><LI
 ><P
 >#highera(value) denotes bits 32 through 47 of the indicated value,
   compensating for #lo() being treated as a signed number:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >    #highera(x) =
-      (((x &gt;&gt; 32) + (((x &amp; 0xffff8000) == 0xffff8000) ? 1 : 0)) &amp; 0xffff)
+      (((x &#62;&#62; 32) + (((x &#38; 0xffff8000) == 0xffff8000) ? 1 : 0)) &#38; 0xffff)
 						</PRE
+></TD
+></TR
+></TABLE
 ></LI
 ><LI
 ><P
 >#highest(value) denotes bits 48 through 63 of the indicated value:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->    #highest(x) = ((x &gt;&gt; 48) &amp; 0xffff)
+>    #highest(x) = ((x &#62;&#62; 48) &#38; 0xffff)
 						</PRE
+></TD
+></TR
+></TABLE
 ></LI
 ><LI
 ><P
 >#highesta(value) denotes bits 48 through 63 of the indicated value,
   compensating for #lo being treated as a signed number:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >    #highesta(value) =
-      (((x &gt;&gt; 48) + (((x &amp; 0xffffffff8000) == 0xffffffff8000) ? 1 : 0)) &amp; 0xffff)
+      (((x &#62;&#62; 48) + (((x &#38; 0xffffffff8000) == 0xffffffff8000) ? 1 : 0)) &#38; 0xffff)
 						</PRE
+></TD
+></TR
+></TABLE
 ></LI
 ><LI
 ><P
@@ -404,7 +525,9 @@ CLASS="PROGRAMLISTING"
 >.TOC. refers to the TOC base of the TOC section for the object being
   relocated.  See <A
 HREF="x804.html"
->Section 4.3</A
+>the Section called <I
+>TOC</I
+></A
 > for additional information.  The dynamic linker does not
   have this information, and hence relocation types that refer to
   .TOC. may only appear in relocatable object files, not in
@@ -416,28 +539,30 @@ CLASS="FIGURE"
 ><A
 NAME="AEN876"
 ></A
-><P
-><B
->Figure 4-1. Relocation Table</B
-></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
 ><PRE
 CLASS="SCREEN"
 >Name                      Value    Field         Calculation
 
 R_PPC64_NONE              0        none          none
 R_PPC64_ADDR32            1        word32*       S + A
-R_PPC64_ADDR24            2        low24*        (S + A) &gt;&gt; 2
+R_PPC64_ADDR24            2        low24*        (S + A) &#62;&#62; 2
 R_PPC64_ADDR16            3        half16*       S + A
 R_PPC64_ADDR16_LO         4        half16        #lo(S + A)
 R_PPC64_ADDR16_HI         5        half16        #hi(S + A)
 R_PPC64_ADDR16_HA         6        half16        #ha(S + A)
-R_PPC64_ADDR14            7        low14*        (S + A) &gt;&gt; 2
-R_PPC64_ADDR14_BRTAKEN    8        low14*        (S + A) &gt;&gt; 2
-R_PPC64_ADDR14_BRNTAKEN   9        low14*        (S + A) &gt;&gt; 2
-R_PPC64_REL24             10       low24*        (S + A - P) &gt;&gt; 2
-R_PPC64_REL14             11       low14*        (S + A - P) &gt;&gt; 2
-R_PPC64_REL14_BRTAKEN     12       low14*        (S + A - P) &gt;&gt; 2
-R_PPC64_REL14_BRNTAKEN    13       low14*        (S + A - P) &gt;&gt; 2
+R_PPC64_ADDR14            7        low14*        (S + A) &#62;&#62; 2
+R_PPC64_ADDR14_BRTAKEN    8        low14*        (S + A) &#62;&#62; 2
+R_PPC64_ADDR14_BRNTAKEN   9        low14*        (S + A) &#62;&#62; 2
+R_PPC64_REL24             10       low24*        (S + A - P) &#62;&#62; 2
+R_PPC64_REL14             11       low14*        (S + A - P) &#62;&#62; 2
+R_PPC64_REL14_BRTAKEN     12       low14*        (S + A - P) &#62;&#62; 2
+R_PPC64_REL14_BRNTAKEN    13       low14*        (S + A - P) &#62;&#62; 2
 R_PPC64_GOT16             14     	 half16*       G
 R_PPC64_GOT16_LO          15     	 half16        #lo(G)
 R_PPC64_GOT16_HI          16     	 half16        #hi(G)
@@ -458,7 +583,7 @@ R_PPC64_SECTOFF           33       half16*       R + A
 R_PPC64_SECTOFF_LO        34       half16        #lo(R + A)
 R_PPC64_SECTOFF_HI        35       half16        #hi(R + A)
 R_PPC64_SECTOFF_HA        36       half16        #ha(R + A)
-R_PPC64_ADDR30            37       word30        (S + A - P) &gt;&gt; 2
+R_PPC64_ADDR30            37       word30        (S + A - P) &#62;&#62; 2
 R_PPC64_ADDR64            38       doubleword64  S + A
 R_PPC64_ADDR16_HIGHER     39       half16        #higher(S + A)
 R_PPC64_ADDR16_HIGHERA    40       half16        #highera(S + A)
@@ -477,17 +602,17 @@ R_PPC64_PLTGOT16          52     	 half16*       M
 R_PPC64_PLTGOT16_LO       53     	 half16        #lo(M)
 R_PPC64_PLTGOT16_HI       54     	 half16        #hi(M)
 R_PPC64_PLTGOT16_HA       55     	 half16        #ha(M)
-R_PPC64_ADDR16_DS         56       half16ds*     (S + A) &gt;&gt; 2
-R_PPC64_ADDR16_LO_DS      57       half16ds      #lo(S + A) &gt;&gt; 2
-R_PPC64_GOT16_DS          58     	 half16ds*     G &gt;&gt; 2
-R_PPC64_GOT16_LO_DS       59     	 half16ds      #lo(G) &gt;&gt; 2
-R_PPC64_PLT16_LO_DS       60     	 half16ds      #lo(L) &gt;&gt; 2
-R_PPC64_SECTOFF_DS        61       half16ds*     (R + A) &gt;&gt; 2
-R_PPC64_SECTOFF_LO_DS     62       half16ds      #lo(R + A) &gt;&gt; 2
-R_PPC64_TOC16_DS          63       half16ds*     (S + A - .TOC.) &gt;&gt; 2
-R_PPC64_TOC16_LO_DS       64       half16ds      #lo(S + A - .TOC.) &gt;&gt; 2
-R_PPC64_PLTGOT16_DS       65     	 half16ds*     M &gt;&gt; 2
-R_PPC64_PLTGOT16_LO_DS    66     	 half16ds      #lo(M) &gt;&gt; 2
+R_PPC64_ADDR16_DS         56       half16ds*     (S + A) &#62;&#62; 2
+R_PPC64_ADDR16_LO_DS      57       half16ds      #lo(S + A) &#62;&#62; 2
+R_PPC64_GOT16_DS          58     	 half16ds*     G &#62;&#62; 2
+R_PPC64_GOT16_LO_DS       59     	 half16ds      #lo(G) &#62;&#62; 2
+R_PPC64_PLT16_LO_DS       60     	 half16ds      #lo(L) &#62;&#62; 2
+R_PPC64_SECTOFF_DS        61       half16ds*     (R + A) &#62;&#62; 2
+R_PPC64_SECTOFF_LO_DS     62       half16ds      #lo(R + A) &#62;&#62; 2
+R_PPC64_TOC16_DS          63       half16ds*     (S + A - .TOC.) &#62;&#62; 2
+R_PPC64_TOC16_LO_DS       64       half16ds      #lo(S + A - .TOC.) &#62;&#62; 2
+R_PPC64_PLTGOT16_DS       65     	 half16ds*     M &#62;&#62; 2
+R_PPC64_PLTGOT16_LO_DS    66     	 half16ds      #lo(M) &#62;&#62; 2
 R_PPC64_TLS               67     	 none          none
 R_PPC64_DTPMOD64          68     	 doubleword64  @dtpmod
 R_PPC64_TPREL16           69     	 half16*       @tprel
@@ -528,6 +653,13 @@ R_PPC64_DTPREL16_HIGHER   103      half16        #higher(@dtprel)
 R_PPC64_DTPREL16_HIGHERA  104      half16        #highera(@dtprel)
 R_PPC64_DTPREL16_HIGHEST  105      half16        #highest(@dtprel)
 R_PPC64_DTPREL16_HIGHESTA 106      half16        #highesta(@dtprel)</PRE
+></TD
+></TR
+></TABLE
+><P
+><B
+>Figure 1. Relocation Table</B
+></P
 ></DIV
 ><DIV
 CLASS="NOTE"
@@ -543,7 +675,7 @@ WIDTH="25"
 ALIGN="CENTER"
 VALIGN="TOP"
 ><IMG
-SRC="/usr/share/sgml/docbook/stylesheet/dsssl/modular/images/note.gif"
+SRC="./stylesheet-images/note.gif"
 HSPACE="5"
 ALT="Note"></TD
 ><TH
@@ -657,7 +789,11 @@ CLASS="VARIABLELIST"
                 transfer control to the designated symbol's address
                 (see <A
 HREF="x954.html#PROC-LINK"
->Section 5.2.4</A
+>the Section called <I
+>Procedure Linkage Table</I
+> in the chapter called <I
+>Program Loading and Dynamic Linking</I
+></A
 >).</P
 ></DD
 ><DT
@@ -704,14 +840,14 @@ VALIGN="top"
 ><A
 HREF="x816.html"
 ACCESSKEY="P"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="index.html"
+HREF="book1.html"
 ACCESSKEY="H"
 >Home</A
 ></TD
@@ -722,7 +858,7 @@ VALIGN="top"
 ><A
 HREF="c917.html"
 ACCESSKEY="N"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR
