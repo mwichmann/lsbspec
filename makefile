@@ -36,11 +36,13 @@ source:
 
 autobuild:
 	find . -name '*.m4' | xargs touch
+	find . -name '*.sed' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
 	tar czf LSBrtfs.tar.gz `find book booksets -name '*.rtf' -o -name '*.eps'`
 
 relbuild:
 	find . -name '*.m4' | xargs touch
+	find . -name '*.sed' | xargs touch
 	for dir in $(DOCDIRS);do (cd $$dir && make gensrc source);done
 	for dir in $(BOOKDIRS);do (cd $$dir && make all);done
 	tar czf LSBrtfs.tar.gz `find book booksets -name '*.rtf' -o -name '*.eps'`
