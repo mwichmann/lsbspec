@@ -7,6 +7,7 @@
 <!entity objfmt.sgm system "objfmt/objfmt.sgml">
 <!entity dynlnk.sgm system "dynlnk/dynlnk.sgml">
 <!entity baselib.sgm system "baselib/baselib.sgml">
+<!entity package.sgm system "package/package.sgml">
 <!entity execenv.sgm system "execenv/execenv.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
 ]>
@@ -16,6 +17,7 @@
 <TITLE>Linux Standard Base Specification for the IA32 Architecture &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2001</YEAR>
+<YEAR>2002</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 <LEGALNOTICE>
@@ -43,5 +45,6 @@ with the respective license of those documents.
 &objfmt.sgm;
 &dynlnk.sgm;
 &baselib.sgm;
+&package.sgm;
 &appA.sgm;
 </BOOK>
