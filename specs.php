@@ -46,13 +46,6 @@ function addProject($project) {
  <head>
   <title>LSB Specifications</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-  <style type="text/css">
-table  { border-collapse: collapse; margin-top: 12px; border-spacing: 0px; border: thin solid black; }
-td, th { padding: 3px; margin: 0px; border: thin solid black; } 
-#nav { font-size: small; vertical-align: middle; border: thin solid black; padding: 5px; }
-.project { padding: 10px; margin-bottom: 20px; }
-select,input { font-size: small; }
-  </style>
  </head>
  <body>
 <?
