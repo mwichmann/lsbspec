@@ -1,12 +1,41 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN"[
+<!ENTITY specversion "v0.9.1">
 <!ENTITY supn   SDATA "[supn  ]"--=superscript n-->
 <!ENTITY supminus   SDATA "[supminus  ]"--=superscript minus-sign-->
 ]>
 <book>
 
-<title>zSeries ELF Application Binary Interface Supplement</title>
+<BOOKINFO>
+<title>zSeries ELF Application Binary Interface Supplement &specversion</title>
 
 <titleabbrev>Linux for zSeries: ELF ABI Supplement</titleabbrev>
+<COPYRIGHT>
+<YEAR>2001</YEAR>
+<YEAR>2002</YEAR>
+<HOLDER>International Business Machines</HOLDER>
+</COPYRIGHT>
+<COPYRIGHT>
+<YEAR>2002</YEAR>
+<HOLDER>Free Standards Group</HOLDER>
+</COPYRIGHT>
+<LEGALNOTICE>
+<PARA>
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1;
+with no Invariant Sections, with no Front-Cover Texts, and with no
+Back-Cover Texts.  A copy of the license is included in the section
+entitled "GNU Free Documentation License".
+</PARA>
+</LEGALNOTICE>
+<LEGALNOTICE>
+<PARA>
+Linux is a trademark of Linus Torvalds.
+</PARA>
+<PARA>
+LSB is a trademark of the Free Standards Group in the USA and other countries.
+</PARA>
+</LEGALNOTICE>
+</BOOKINFO>
 
 <chapter>
 
@@ -1364,10 +1393,17 @@ registers.</para>
 
 </listitem>
 
-<listitem><para>Structures with a size of 1, 2, 4, or 8 bytes are passed as
+<listitem><para>
+Structures equivalent to a floating point type are passed in floating
+point registers.  A structure is equivalent to a floating point type
+if and only if it has exactly one member, which is either of floating
+point type of itself a structure equivalent to a floating point type.
+</para>
+</listitem>
 
-integral values.</para>
-
+<listitem><para>Structures with a size of 1, 2, 4, or 8 bytes which are not 
+equivalent to a floating point type are passed as integral values.
+</para>
 </listitem>
 
 <listitem><para>All other structures are passed by reference. If needed, the
@@ -1440,6 +1476,10 @@ the following depending on the type of the next argument: <variablelist>
 
 </listitem>
 
+<listitem><para>
+A structure equivalent to a floating point type.
+</para></listitem>
+
 </itemizedlist>If fr>6, that is, if there are no more available floating-point
 
 registers, go to OTHER. Otherwise, load the argument value into floating-point
@@ -1466,7 +1506,8 @@ register fr, set fr to fr+2, and go to SCAN.</para>
 
 </listitem>
 
-<listitem><para>A struct or a union of 1, 2, 4 or 8 bytes.</para>
+<listitem><para>A struct or a union of 1, 2, 4 or 8 bytes
+which is not a structure equivalent to a floating point type.</para>
 
 </listitem>
 
@@ -1508,17 +1549,13 @@ sign- or zero-extended (as appropriate) to 64 bits.</para>
 
 of the caller's stack frame. SIMPLE_ARGs, as defined above, are considered
 
-to have 8-byte size, with simple integer types shorter than 64 bits sign-
+to have size of 8 bytes, where simple integer types shorter than 8 bytes
+are signed or zero-extended (as appropriate) to 8 bytes, and other arguments
+of size less than 8 bytes will be placed right-justified into a 8 byte
+slot.  float and double arguments are considered to have a size of 8 bytes,
+where float arguments will be placed right-justified into an 8 byte slot.
 
-or zero-extended (as appropriate) to 64 bits. float and double arguments are
-
-considered to have 8-byte size. Pad the stack by increasing starg  to satisfy
-
-the alignment requirements of the argument, and copy the argument byte for
-
-byte to the new stack position. Update starg to point to the next byte after
-
-this copy, then go to SCAN.</para>
+</para>
 
 </listitem>
 
@@ -1666,12 +1703,6 @@ deal with variable argument lists on zSeries and other machines as well.</para>
 
 </row></tbody></tgroup></table>
 
-<para>Structures are returned on the stack, in the segment allocated by the
-
-caller. The pointer to the stack is passed as an invisible first argument
-
-in register 2.</para>
-
 <para>Functions shall return float or double values in f0, with float values
 
 rounded to single precision. Functions shall return values of type int, long,
@@ -1680,23 +1711,13 @@ long long, enum, short and char, or a pointer to any type as unsigned or signed
 
 integers as appropriate, zero- or sign-extended to 64 bits if necessary, in
 
-r2. A structure or union whose size is 1, 2, 4 or 8 bytes shall be returned
+r2. 
 
-in r2 as if it were first stored in an 8-byte aligned memory area and then
+</para>
 
- loaded into r2. Bits beyond the last member of the structure or union are
-
-not defined.</para>
-
-<para>Values of type long double and structures or unions that do not meet
-
-the requirements for being returned in registers are returned in a storage
-
-buffer allocated by the caller. The address of this buffer is passed as a
-
-hidden argument in r2 as if it were the first argument, causing gr in the
-
-argument passing algorithm above to be initialized to 3 instead of 2.</para>
+<para>Values of type long double and structures or unions 
+are returned in a storage buffer allocated by the caller.
+</para>
 
 </sect2></sect1>
 
