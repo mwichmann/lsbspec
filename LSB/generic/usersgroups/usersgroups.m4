@@ -20,7 +20,7 @@ group is associated with a process, agroup ID value is referred to as a real
 group ID, or an effective group ID.  [POSIX 1003.1-1996]
 </PARA>
 
-<SECT1 ID="passwd">
+<SECT1 ID="password">
 <TITLE>User Database</TITLE>
 <PARA>
 The passwd(5) user database should only be read and updated form the 
