@@ -1,0 +1,222 @@
+<refentry id="zlib-inflate-1">
+
+<refmeta>
+<refentrytitle>inflate</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>inflate</refname>
+<refpurpose>decompress data</refpurpose>
+<indexterm id="ix-utillib-inflate-1">
+  <primary>inflate</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>inflate</function>
+</funcdef>
+<paramdef>z_streamp
+<parameter>stream</parameter>
+</paramdef>
+<paramdef>int
+<parameter>flush</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>inflate</function> function shall attempt to decompress
+data until either the input buffer is empty or the output buffer is full.
+The <parameter>stream</parameter> references a
+<structname>z_stream</structname> structure. Before the first call to
+<function>inflate</function>, this structure
+should have been initialized by a call to 
+<function>inflateInit2_</function>.
+<note><para>
+<function>inflateInit2_</function> is only in the binary standard; source
+level applications should initialize <parameter>stream</parameter>
+via a call to <function>inflateInit</function> or 
+<function>inflateInit2</function>.
+</para></note>
+In addition, the <parameter>stream</parameter> input and output buffers
+should have been initialized as follows:
+<variablelist>
+<varlistentry>
+<term><structfield>next_in</structfield></term>
+<listitem><para>
+should point to the data to be decompressed.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>avail_in</structfield></term>
+<listitem><para>
+should contain the number of bytes of data in the
+buffer referenced by <structfield>next_in</structfield>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>next_out</structfield></term>
+<listitem><para>
+should point to a buffer where decompressed data may be placed.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>avail_out</structfield></term>
+<listitem><para>
+should contain the size in bytes of the
+buffer referenced by <structfield>next_out</structfield>
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+The <function>inflate</function> function
+shall perform one or both of the following actions:
+<orderedlist>
+<listitem><para>
+Decompress input data from <structfield>next_in</structfield>
+and update <structfield>next_in</structfield>,
+<structfield>avail_in</structfield> and
+<structfield>total_in</structfield> to reflect the data that has been 
+decompressed.
+</para></listitem>
+<listitem><para>
+Fill the output buffer referenced by <structfield>next_out</structfield>,
+and update <structfield>next_out</structfield>,
+<structfield>avail_out</structfield>, and
+<structfield>total_out</structfield> to reflect the decompressed data that 
+has been placed there. If <parameter>flush</parameter> is not
+<constant>Z_NO_FLUSH</constant>, and
+<structfield>avail_out</structfield> indicates that there is still space in
+output buffer, this action shall always occur (see below for further details).
+</para></listitem>
+</orderedlist>
+</para>
+<para>
+The <function>inflate</function> function shall return when either
+<structfield>avail_in</structfield> reaches zero (indicating that all the input
+data has been compressed), or <structfield>avail_out</structfield> reaches
+zero (indicating that the output buffer is full).
+</para>
+<para>
+On success, the <function>inflate</function> function shall set the
+<structfield>adler</structfield> field of the <parameter>stream</parameter>
+to the Adler-32 checksum of all the input data compressed
+so far (represented by <structfield>total_in</structfield>).
+</para>
+<refsect2>
+<title>Flush Operation</title>
+<para>
+The parameter <parameter>flush</parameter> determines when uncompressed bytes
+are added to the output buffer in <structfield>next_out</structfield>.
+If <parameter>flush</parameter> is <constant>Z_NO_FLUSH</constant>,
+<function>inflate</function>
+may return with some data pending output, and not yet added to the 
+output buffer.
+</para>
+<para>
+If <parameter>flush</parameter> is <constant>Z_SYNC_FLUSH</constant>,
+<function>inflate</function> shall flush all pending output to
+<structfield>next_out</structfield>, and update 
+<structfield>next_out</structfield>
+and <structfield>avail_out</structfield> accordingly.
+</para>
+<para>
+If <parameter>flush</parameter> is set to <constant>Z_BLOCK</constant>,
+<function>inflate</function> shall stop adding data to the output
+buffer if and when the next compressed block boundary is reached
+(see <xref linkend="std.rfc1951">).
+</para>
+<para>
+If <parameter>flush</parameter> is set to <constant>Z_FINISH</constant>,
+all of the compressed input shall be decompressed and added to
+the output. If there is insufficient output space (i.e. the compressed
+input data uncompresses to more than <structfield>avail_out</structfield>
+bytes), then <function>inflate</function> shall fail and return
+<returnvalue>Z_BUF_ERROR</returnvalue>.
+</para>
+</refsect2>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>inflate</function> shall return  
+<returnvalue>Z_OK</returnvalue> if decompression progress has been made,
+or <returnvalue>Z_STREAM_END</returnvalue> if all of the input data
+has been decompressed and there was sufficient space in the output
+buffer to store the uncompressed result.
+
+On error, <function>inflate</function> shall return a value to indicate
+the error.
+<note><para>
+If <function>inflate</function> returns <returnvalue>Z_OK</returnvalue>
+and has set <structfield>avail_out</structfield> to zero, the function should
+be called again with the same value for <parameter>flush</parameter>, and with
+updated <structfield>next_out</structfield> and 
+<structfield>avail_out</structfield> until <function>inflate</function>
+returns with either <returnvalue>Z_OK</returnvalue> 
+or <returnvalue>Z_STREAM_END</returnvalue>
+and a non-zero 
+<structfield>avail_out</structfield>.
+</para>
+</note>
+</para>
+<para>
+On success, <function>inflate</function> shall set the 
+<structfield>adler</structfield> to the Adler-32 checksum of
+the output produced so far (i.e. <structfield>total_out</structfield>
+bytes).
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>inflate</function> shall return a value as described 
+below, and may set the <structfield>msg</structfield> field of 
+<parameter>stream</parameter> to point to a string describing the error:
+<variablelist>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+No progress is possible; either <structfield>avail_in</structfield>
+or <structfield>avail_out</structfield> was zero.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The state (as represented in <parameter>stream</parameter>) is inconsistent, or
+<parameter>stream</parameter> was <constant>NULL</constant>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_NEED_DICT</constant></term>
+<listitem><para>
+A preset dictionary is required. The <structfield>adler</structfield>
+field shall be set to the Adler-32 checksum of the dictionary chosen
+by the compressor.
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+

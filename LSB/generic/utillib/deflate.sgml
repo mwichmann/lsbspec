@@ -1,0 +1,246 @@
+<refentry id="zlib-deflate-1">
+
+<refmeta>
+<refentrytitle>deflate</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>deflate</refname>
+<refpurpose>compress data</refpurpose>
+<indexterm id="ix-utillib-deflate-1">
+  <primary>deflate</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>deflate</function>
+</funcdef>
+<paramdef>z_streamp
+<parameter>stream</parameter>
+</paramdef>
+<paramdef>int
+<parameter>flush</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>deflate</function> function shall attempt to compress
+data until either the input buffer is empty or the output buffer is full.
+The <parameter>stream</parameter> references a
+<structname>z_stream</structname> structure. Before the first call to
+<function>deflate</function>, this structure
+should have been initialized by a call to 
+<function>deflateInit2_</function>.
+<note><para>
+<function>deflateInit2_</function> is only in the binary standard; source
+level applications should initialize <parameter>stream</parameter>
+via a call to <function>deflateInit</function> or 
+<function>deflateInit2</function>.
+</para></note>
+In addition, the <parameter>stream</parameter> input and output buffers
+should have been initialized as follows:
+<variablelist>
+<varlistentry>
+<term><structfield>next_in</structfield></term>
+<listitem><para>
+should point to the data to be compressed.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>avail_in</structfield></term>
+<listitem><para>
+should contain the number of bytes of data in the
+buffer referenced by <structfield>next_in</structfield>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>next_out</structfield></term>
+<listitem><para>
+should point to a buffer where compressed data may be placed.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>avail_out</structfield></term>
+<listitem><para>
+should contain the size in bytes of the
+buffer referenced by <structfield>next_out</structfield>
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+The <function>deflate</function> function
+shall perform one or both of the following actions:
+<orderedlist>
+<listitem><para>
+Compress input data from <structfield>next_in</structfield>
+and update <structfield>next_in</structfield>,
+<structfield>avail_in</structfield> and
+<structfield>total_in</structfield> to reflect the data that has been 
+compressed.
+</para></listitem>
+<listitem><para>
+Fill the output buffer referenced by <structfield>next_out</structfield>,
+and update <structfield>next_out</structfield>,
+<structfield>avail_out</structfield> and
+<structfield>total_out</structfield> to reflect the compressed data that 
+has been placed there. If <parameter>flush</parameter> is not
+<constant>Z_NO_FLUSH</constant>, and
+<structfield>avail_out</structfield> indicates that there is still space in
+output buffer, this action shall always occur (see below for further details).
+</para></listitem>
+</orderedlist>
+</para>
+<para>
+The <function>deflate</function> function shall return when either
+<structfield>avail_in</structfield> reaches zero (indicating that all the input
+data has been compressed), or <structfield>avail_out</structfield> reaches
+zero (indicating that the output buffer is full).
+</para>
+<para>
+On success, the <function>deflate</function> function shall set the
+<structfield>adler</structfield> field of the <parameter>stream</parameter>
+to the <function>adler32</function> checksum of all the input data compressed
+so far (represented by <structfield>total_in</structfield>).
+</para>
+<para>
+If the <function>deflate</function> function shall attempt to determine
+the type of input data, and set field <structfield>data_type</structfield>
+in <parameter>stream</parameter> to <constant>Z_ASCII</constant> if the
+majority of the data bytes fall within the ASCII (ISO 646) printable
+character range. Otherwise, it shall set <structfield>data_type</structfield>
+to <constant>Z_BINARY</constant>.
+This data type is informational only, and does not affect the compression
+algorithm.
+<note><para>
+Future versions of the LSB may remove this requirement, since it is based
+on an outdated character set that does not support Internationalization,
+and does not affect the algorithm. It is included for information
+only at this release. Applications should not depend on this field.
+</para></note>
+</para>
+<refsect2>
+<title>Flush Operation</title>
+<para>
+The parameter <parameter>flush</parameter> determines when compressed bits 
+are added to the output buffer in <structfield>next_out</structfield>.
+If <parameter>flush</parameter> is <constant>Z_NO_FLUSH</constant>,
+<function>deflate</function>
+may return with some data pending output, and not yet added to the 
+output buffer.
+</para>
+<para>
+If <parameter>flush</parameter> is <constant>Z_SYNC_FLUSH</constant>,
+<function>deflate</function> shall flush all pending output to
+<structfield>next_out</structfield> and align the output to a byte 
+boundary.
+</para>
+<para>
+If <parameter>flush</parameter> is <constant>Z_FULL_FLUSH</constant>,
+all output shall be flushed, as for <constant>Z_SYNC_FLUSH</constant>,
+and the compression state shall be reset.
+<note><title>Rationale</title>
+<para>
+<constant>Z_SYNC_FLUSH</constant> is intended to ensure that the compressed
+data contains all the data compressed so far, and allows a decompressor
+to reconstruct all of the input data. <constant>Z_FULL_FLUSH</constant>
+allows decompression to restart from this point if the previous compressed
+data has been lost or damaged. Flushing is likely to degrade the
+performance of the compression system, and should only be used where
+necessary.
+</para>
+</note>
+</para>
+<para>
+If <parameter>flush</parameter> is set to <constant>Z_FINISH</constant>,
+all pending input shall be processed and <function>deflate</function>
+shall return with <returnvalue>Z_STREAM_END</returnvalue> if there is
+sufficient space in the output buffer at <structfield>next_out</structfield>,
+as indicated by <structfield>avail_out</structfield>. If
+<function>deflate</function> is called with <parameter>flush</parameter>
+set to <constant>Z_FINISH</constant> and there is insufficient space to store
+the compressed data, and no other error has occurred during compression,
+<function>deflate</function> shall return <returnvalue>Z_OK</returnvalue>,
+and the application should call <function>deflate</function> again with
+<parameter>flush</parameter> unchanged, and having updated <structfield>
+next_out</structfield> and <structfield>avail_out</structfield>.
+</para>
+<para>
+If all the compression is to be done in a single step, 
+<function>deflate</function>
+may be called with <parameter>flush</parameter> set to 
+<constant>Z_FINISH</constant> immediately after the stream
+has been initialized if <structfield>avail_out</structfield>
+is set to at least the value returned by <function>deflateBound</function>.
+</para>
+
+</refsect2>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>deflate</function> shall return  
+<returnvalue>Z_OK</returnvalue>, unless <parameter>flush</parameter> was set 
+to <constant>Z_FINISH</constant> and there was sufficient space in the output buffer
+to compress all of the input data. In this case, <function>deflate</function>
+shall return <returnvalue>Z_STREAM_END</returnvalue>.
+On error, <function>deflate</function> shall return a value to indicate
+the error.
+<note><para>
+If <function>deflate</function> returns <returnvalue>Z_OK</returnvalue>
+and has set <structfield>avail_out</structfield> to zero, the function should
+be called again with the same value for <parameter>flush</parameter>, and with
+updated <structfield>next_out</structfield> and 
+<structfield>avail_out</structfield> until <function>deflate</function>
+returns with <returnvalue>Z_OK</returnvalue> (or <returnvalue>Z_STREAM_END</returnvalue>
+if <parameter>flush</parameter> is set to <constant>Z_FINISH</constant>) and a non-zero 
+<structfield>avail_out</structfield>.
+</para>
+</note>
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>deflate</function> shall return a value as described 
+below, and set the <structfield>msg</structfield> field of 
+<parameter>stream</parameter> to point to a string describing the error:
+<variablelist>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+No progress is possible; either <structfield>avail_in</structfield>
+or <structfield>avail_out</structfield> was zero.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The state (as represented in <parameter>stream</parameter>) is inconsistent, or
+<parameter>stream</parameter> was <constant>NULL</constant>.
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+

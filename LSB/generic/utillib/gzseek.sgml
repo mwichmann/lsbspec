@@ -1,0 +1,120 @@
+<refentry id="zlib-gzseek-1">
+
+<refmeta>
+<refentrytitle>gzseek</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzseek</refname>
+<refpurpose>reposition a file-position indicator in a compressed file stream</refpurpose>
+<indexterm id="ix-utillib-gzseek-1">
+  <primary>gzseek</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>z_off_t
+<function>gzseek</function>
+</funcdef>
+<paramdef>gzFile
+<parameter>file</parameter>
+</paramdef>
+<paramdef>z_off_t
+<parameter>offset</parameter>
+</paramdef>
+<paramdef>int
+<parameter>whence</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzseek</function> function shall set the file-position
+indicator for the compressed file stream <parameter>file</parameter>.
+The file-position indicator controls where the next
+read or write operation on the compressed file stream shall take place.
+The <parameter>offset</parameter> indicates a byte offset in the
+uncompressed data. The <parameter>whence</parameter> parameter
+may be one of:
+<variablelist>
+<varlistentry>
+<term><constant>SEEK_SET</constant></term>
+<listitem><para>
+the offset is relative to the start of the uncompressed data.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>SEEK_CUR</constant></term>
+<listitem><para>
+the offset is relative to the current positition in the uncompressed data.
+</para></listitem>
+</varlistentry>
+</variablelist>
+<note><para>
+The value <constant>SEEK_END</constant> need not be supported.
+</para></note>
+</para>
+<para>
+If the <parameter>file</parameter> is open for writing, the new offset
+must be greater than or equal to the current offset. In this case, 
+<function>gzseek</function> shall compress a sequence of null bytes
+to fill the gap from the previous offset to the new offset.
+</para>
+
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzseek</function> shall return the resulting
+offset in the file expressed
+as a byte position in the <emphasis>uncompressed</emphasis> data stream.
+On error, <function>gzseek</function> shall return -1, and
+may set the error value for <parameter>file</parameter> accordingly.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzseek</function> shall return 
+<returnvalue>-1</returnvalue>.
+The following conditions shall always result in an error:
+<itemizedlist>
+<listitem><para>
+<parameter>file</parameter> is <constant>NULL</constant>
+</para></listitem>
+<listitem><para>
+<parameter>file</parameter> does not represent
+an open compressed file stream.
+</para></listitem>
+<listitem><para>
+<parameter>file</parameter> refers to a compressed file stream that is open
+for writing, and the newly computed offset is less than the current offset.
+</para></listitem>
+<listitem><para>
+The newly computed offset is less than zero.
+</para></listitem>
+<listitem><para>
+<parameter>whence</parameter> is not one of the supported values.
+</para></listitem>
+</itemizedlist>
+</para>
+</refsect1>
+<refsect1>
+<title>Application Usage (informative)</title>
+<para>
+If <parameter>file</parameter> is open for reading, the implementation
+may still need to uncompress all of the data up to the new offset.
+As a result, <function>gzseek</function> may be extremely slow
+in some circumstances.
+</para>
+</refsect1>
+</refentry>
