@@ -43,6 +43,5 @@ with the respective license of those documents.
 &objfmt.sgm;
 &dynlnk.sgm;
 &baselib.sgm;
-&execenv.sgm;
 &appA.sgm;
 </BOOK>
