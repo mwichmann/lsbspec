@@ -6,7 +6,7 @@ LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
 <XREF LINKEND="std.gABI41">,
 <XREF LINKEND="std.PPC32.ABI">
-and as supplemented by the Linux
+and as supplemented by the generic Linux
 Standard Base Specification and this document.
 </PARA>
 </PARTINTRO>
@@ -46,6 +46,14 @@ See
 <XREF LINKEND="std.PPC32.ABI">, Chapter 5.4.
 </PARA>
 
+<SECT1 ID=proginterp>
+<TITLE>Program Interpreter/Dynamic Linker</TITLE>
+<PARA>
+The LSB specifies the Program Interpreter to be
+<application><XREF LINKEND="lib.proginterp"></application>.
+</PARA>
+</SECT1>
+
 <SECT1 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
@@ -73,18 +81,21 @@ See
 <SECT1 ID=sharedobjectdependencies>
 <TITLE>Shared Object Dependencies</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
 </SECT1>
 
 <SECT1 ID=functionaddresses>
 <TITLE>Function Addresses</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
 </SECT1>
 
 <SECT1 ID=procedurelinkagetable>
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
+See Chapter 5 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
 </SECT1>
 
