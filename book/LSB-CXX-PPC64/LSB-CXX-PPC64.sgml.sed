@@ -7,7 +7,7 @@
 <!entity archspec "PPC64">
 <!entity canonicalarch "PPC64">
 <!entity specarchitecture "PPC64&trade;">
-<!entity spectitle "Linux Standard Base C++ Specification for the PPC64 Architecture">
+<!entity spectitle "Linux Standard Base C++ Specification for PPC64">
 
 %entities;
 

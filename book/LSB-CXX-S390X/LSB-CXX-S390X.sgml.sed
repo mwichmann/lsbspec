@@ -7,7 +7,7 @@
 <!entity archspec "S390X">
 <!entity canonicalarch "S390X">
 <!entity specarchitecture "S390X&trade;">
-<!entity spectitle "Linux Standard Base C++ Specification for the S390X Architecture">
+<!entity spectitle "Linux Standard Base C++ Specification for S390X">
 
 %entities;
 

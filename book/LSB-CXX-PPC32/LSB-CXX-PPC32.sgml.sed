@@ -7,7 +7,7 @@
 <!entity archspec "PPC32">
 <!entity canonicalarch "PPC32">
 <!entity specarchitecture "PPC32&trade;">
-<!entity spectitle "Linux Standard Base C++ Specification for the PPC32 Architecture">
+<!entity spectitle "Linux Standard Base C++ Specification for PPC32">
 
 %entities;
 
