@@ -45,14 +45,11 @@ sub lsbCloseDB {
 
 sub lsbCommands {
 
-		$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid FROM Standard,Command WHERE Standard.Sid=Command.Cstand AND Command.Cstd='Y' ORDER BY Sname");
+		$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid FROM Standard,Command WHERE Standard.Sid=Command.Cstandard AND Command.Cstatus='Included' ORDER BY Sname");
 		$sth->execute;
 
-#		if ($sth->rows < 1) {
-#			printf("<PARA>No Commands or Utilities found!</PARA>\n");
-#			return;
-#		} 
-#
+		if ($sth->rows > 0) {
+
 		printf("<PARA>\n");
 		printf("The behaviour of the interfaces described in this\n");
 		printf("section are specified by the following Standards.");
@@ -83,8 +80,9 @@ sub lsbCommands {
 #			}
 		}
 		printf("</SIMPLELIST>\n");
+		}
 
-		$sth = $dbh->prepare("SELECT Cname, Cstand, Sfull, Sid FROM Command LEFT JOIN Standard ON Command.Cstand=Standard.Sid WHERE Command.Cstd='Y' ORDER BY Command.Cname");
+		$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid FROM Command LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE Command.Cstatus='Included' ORDER BY Command.Cname");
 		$sth->execute;
 
 		if ($sth->rows < 1) {
