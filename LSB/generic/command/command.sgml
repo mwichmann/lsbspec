@@ -136,8 +136,19 @@ specification, with the following execptions:
 <ORDEREDLIST>
 <LISTITEM><PARA>
 The built in commands and utilities shall be provided by the
-<command>sh</command> utility itself, and need not be separate executable files
-located in the <ENVAR>PATH</ENVAR>.
+<command>sh</command> utility itself, and need not 
+be implemented in a manner so that they can be accessed via the 
+exec family of functions as defined in <XREF LINKEND="STD.SUSv3">
+and should not be invoked directly by those standard utilities 
+that execute other utilities (
+<SIMPLELIST type=inline>
+<MEMBER><COMMAND>env</COMMAND></MEMBER>
+<MEMBER><COMMAND>find</COMMAND></MEMBER>
+<MEMBER><COMMAND>nice</COMMAND></MEMBER>
+<MEMBER><COMMAND>nohup</COMMAND></MEMBER>
+<MEMBER><COMMAND>time</COMMAND></MEMBER>
+<MEMBER><COMMAND>xargs</COMMAND></MEMBER>
+</SIMPLELIST>).
 <NOTE>
 <TITLE>Rationale (Informative)</TITLE>
 <PARA>
@@ -167,7 +178,7 @@ process, they have no effect when executed as a file.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Fri Mar 18 08:30:58 2005 -->
+<!--    at Mon Mar 21 07:26:15 2005 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -694,7 +705,7 @@ filter reverse line feeds from input
 <TITLE>Description</TITLE>
 <PARA>
 <COMMAND>col</COMMAND> is as specified in 
-<XREF LINKEND=STD.SUSv3> but with differences as listed below.
+<XREF LINKEND=STD.SUSv2> but with differences as listed below.
 </PARA>
 </REFSECT1>
 
@@ -1137,8 +1148,7 @@ search for files in a directory hierarchy
 <TITLE>Description</TITLE>
 <PARA>
 <COMMAND>find</COMMAND> shall behave as specified in 
-<XREF LINKEND=STD.SUSv3>, except as
-described specified below.
+<XREF LINKEND=STD.SUSv3>, but with differences as listed below.
 </PARA>
 
 </REFSECT1>
@@ -1208,6 +1218,12 @@ differences as listed below.
 <REFSECT1>
 <TITLE>Differences</TITLE>
 
+<PARA>
+The <command>fuser</command> command is a system administration utility,
+see <XREF LINKEND="FHS-SYSADMIN">.
+</PARA>
+<REFSECT2>
+<TITLE>Option Differences</TITLE>
 <VARIABLELIST>
 
 <VARLISTENTRY>
@@ -1229,6 +1245,7 @@ has unspecified behavior.
 </VARLISTENTRY>
 
 </VARIABLELIST>
+</REFSECT2>
 </REFSECT1>
 
 </REFENTRY>
@@ -1544,6 +1561,10 @@ The group name shall be unique in the group database. If no
 <PARAMETER Class=option>gid</PARAMETER> is specified, 
 <COMMAND>groupadd</COMMAND> shall create the new group with a unique group ID.
 </PARA>
+<PARA>
+The <command>groupadd</command> command is a system administration utility,
+see <XREF LINKEND="FHS-SYSADMIN">.
+</PARA>
 </REFSECT1>
 <REFSECT1>
 <title>Options</title>
@@ -1594,6 +1615,10 @@ If the group named <PARAMETER Class=Option>group</PARAMETER> does not exist,
 <COMMAND>groupdel</COMMAND> shall issue a diagnostic message and exit
 with a non-zero exit status.
 </PARA>
+<PARA>
+The <command>groupdel</command> command is a system administration utility,
+see <XREF LINKEND="FHS-SYSADMIN">.
+</PARA>
 
 </REFSECT1>
 
@@ -1626,6 +1651,10 @@ If the caller has appropriate privilege, the
 <COMMAND>groupmod</COMMAND> command shall modify the entry in the system
 group database corresponding to a group named 
 <PARAMETER Class=option>group</PARAMETER>.
+</PARA>
+<PARA>
+The <command>groupmod</command> command is a system administration utility,
+see <XREF LINKEND="FHS-SYSADMIN">.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -4941,6 +4970,10 @@ behavior of various implementations concerning whether program is a
 full pathname, the basename only, the program as named by argv[0], or
 what.</para></footnote>-->
 </para>
+<PARA>
+The <command>pidof</command> command is a system administration utility,
+see <XREF LINKEND="FHS-SYSADMIN">.
+</PARA>
 </refsect1>
 
 <REFSECT1>
@@ -5145,7 +5178,7 @@ This is the default mode of operation.
 <listitem>
 <para>
 If the user has sufficient privilege,
-list information about messages currently in the input mail queue.
+list information about messages currently in the mail queue.
 </para>
 </listitem>
 </varlistentry>
@@ -5847,21 +5880,33 @@ create a new user or update default new user information
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-useradd [-c comment] [-d home_dir]
-        [-g initial_group] [-G group[,...]]
-        [-m [-k skeleton_dir]] [-p passwd] [-r]
-        [-s shell] [-u uid [ -o]] login
-
-useradd -D [-g default_group] [-b default_home]
-           [-s default_shell]
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>useradd</COMMAND>
+<ARG>-c comment</ARG>
+<ARG>-d home_dir</ARG>
+<ARG>-g initial_group</ARG>
+<ARG rep=repeat>-G group</ARG>
+<ARG>-m <ARG>-k skeleton_dir</ARG></ARG>
+<ARG>-p passwd</ARG>
+<ARG>-r</ARG>
+<ARG>-s shell</ARG>
+<ARG>-u uid <ARG>-o</ARG></ARG> 
+<ARG choice=plain>login</ARG>
+<SBR>
+<COMMAND>useradd</COMMAND>
+<ARG choice=plain>-D</ARG>
+<ARG>-g default_group</ARG>
+<ARG>-b default_home</ARG>
+<ARG>-s default_shell</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-When invoked without the -D option, <COMMAND>useradd</COMMAND> creates a new
+When invoked without the <parameter>-D</parameter>
+option, and with appropriate privilege, 
+<COMMAND>useradd</COMMAND> creates a new
 user account using the values specified on the command line and the
 default values from the system.  The new user account will be entered
 into the system files as needed, the home directory will be created,
@@ -5869,10 +5914,16 @@ and initial files copied, depending on the command line options.
 </PARA>
 
 <PARA>
-When invoked with the -D option, <COMMAND>useradd</COMMAND> will either 
-display the current default values, or update the default values from 
+When invoked with the <parameter>-D</parameter>
+option, <COMMAND>useradd</COMMAND> will either 
+display the current default values, or,
+with appropriate privilege, update the default values from 
 the command line.  If no options are specified, <COMMAND>useradd</COMMAND> 
 displays the current default values.
+</PARA>
+<PARA>
+The <command>useradd</command> command is a system administration utility,
+see <XREF LINKEND="FHS-SYSADMIN">.
 </PARA>
 </REFSECT1>
 
@@ -5906,23 +5957,26 @@ default_home and use that as the login directory name.
 <para>
 specifies the group name or number of the user's initial login group. 
 The group name shall exist. A group number shall refer to an already 
-existing group. If -g is not specified, the implementation will follow 
+existing group. If <parameter>-g</parameter>
+is not specified, the implementation will follow 
 the normal user
 default for that system. This may create a new group or choose a default
 group that normal users are placed in. Applications which require control
-of the groups into which a user is placed should specify -g.
+of the groups into which a user is placed should specify 
+<parameter>-g</parameter>.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>-G group,[...]</term>
+<term>-G group[,...]</term>
 <listitem>
 <para>
 specifies a list of supplementary groups which the user is also a member of.
 Each group is separated from the next by a comma, with no intervening
 whitespace.  The groups are subject to the same restrictions as the
-group given with the -g option.  The default is for the user to belong
+group given with the 
+<parameter>-g</parameter> option.  The default is for the user to belong
 only to the initial group.
 </para>
 </listitem>
@@ -5933,11 +5987,18 @@ only to the initial group.
 <listitem>
 <para>
 specifies the user's home directory will be created if it does not exist. 
-The files contained in skeleton_dir will be copied to the home directory
-if the -k option is used, otherwise the files contained in /etc/skel
-will be used instead.  Any directories contained in skeleton_dir or
-/etc/skel will be created in the user's home directory as well.  The
--k option is only valid in conjunction with the -m option.  The
+The files contained in <filename>skeleton_dir</filename>
+will be copied to the home directory
+if the <parameter>-k</parameter>
+option is used, otherwise the files contained in 
+<filename>/etc/skel</filename>
+will be used instead.  Any directories contained in 
+<filename>skeleton_dir</filename> or
+<filename>/etc/skel</filename> 
+will be created in the user's home directory as well.  The
+<parameter>-k</parameter> 
+option is only valid in conjunction with the 
+<parameter>-m</parameter> option.  The
 default is to not create the directory and to not copy any files.
 </para>
 </listitem>
@@ -5947,7 +6008,8 @@ default is to not create the directory and to not copy any files.
 <term>-p passwd</term>
 <listitem>
 <para>
-is the encrypted password, as returned by crypt(3).  The default is to
+is the encrypted password, as returned by <function>crypt</function>.
+The default is to
 disable the account.
 </para>
 </listitem>
@@ -5980,7 +6042,7 @@ shell.
 <listitem>
 <para>
 specifies the numerical value of the user's ID.  This value shall be unique,
-unless the -o option is used.  The value shall be non-negative.
+unless the <parameter>-o</parameter> option is used.  The value shall be non-negative.
 The default is the smallest ID value greater than 499 which is not yet used. 
 </para>
 </listitem>
@@ -6039,7 +6101,8 @@ specifies the new user's password file comment field value.
 <REFSECT1>
 <TITLE>Application Usage</TITLE>
 <PARA>
-The -D option will typically be used by system administration
+The <parameter>-D</parameter> 
+option will typically be used by system administration
 packages.  Most applications should not change defaults which will
 affect other applications and users.
 </PARA>
@@ -6073,6 +6136,10 @@ Delete the user account named <REPLACEABLE
 CLASS="PARAMETER">login</REPLACEABLE>.  If there is also a group named
 <REPLACEABLE CLASS="PARAMETER">login</REPLACEABLE>, this command may
 delete the group as well, or may leave it alone.
+</PARA>
+<PARA>
+The <command>userdel</command> command is a system administration utility,
+see <XREF LINKEND="FHS-SYSADMIN">.
 </PARA>
 </REFSECT1>
 
@@ -6109,14 +6176,31 @@ modify a user account
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-usermod [-c comment] [-d home_dir [ -m]]
-        [-g initial_group] [-G group[,...]]
-        [-l login_name] [-p passwd]
-        [-s shell] [-u uid [ -o]] login
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>usermod</COMMAND> 
+<ARG>-c comment</ARG> 
+<ARG>-d home_dir <ARG> -m</ARG></ARG>
+<ARG>-g initial_group</ARG> 
+<ARG>-G group<ARG>,...</ARG></ARG>
+<ARG>-l login_name</ARG> 
+<ARG>-p passwd</ARG>
+<ARG>-s shell</ARG> 
+<ARG>-u uid <ARG> -o</ARG></ARG> 
+<ARG choice=plain>login</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The <COMMAND>usermod</COMMAND> command shall modify an entry in the user
+account database.
+</PARA>
+<PARA>
+The <command>usermod</command> command is a system administration utility,
+see <XREF LINKEND="FHS-SYSADMIN">.
+</PARA>
+</REFSECT1>
 <REFSECT1>
 <title>Options</title>
 <variablelist>
