@@ -803,8 +803,8 @@ by LANANA shall only consist of the ASCII characters [a-z0-9].
 <SECT1 ID=pkgdepend>
 <TITLE>Package Dependencies</TITLE>
 <PARA>
-Packages shall have a dependency which indicates which LSB profile is
-required.  The following dependencies may be used.
+Packages shall have a dependency that indicates which LSB profile is
+required. The following dependencies may be used.
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>lsb-core</TERM>
@@ -837,10 +837,10 @@ on features contained in the LSB-Workstation specification.
 </VARIABLELIST>
 </PARA>
 <PARA>
-Packages may not depend on other system-provided dependencies.  They
-shall not depend on non-system-provided dependencies unless the dependencies
-are fulfilled by packages which are part of the same application.  If a
-package includes "Provides" it shall only provide a virtual package name
+Packages shall not depend on other system-provided dependencies.  They
+shall not depend on non-system-provided dependencies unless those dependencies
+are fulfilled by packages which are part of the same application. 
+A package may only provide a virtual package name
 which is registered to that application.
 </PARA>
 <PARA>
