@@ -43,12 +43,6 @@
 </BOOK>
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Desktop Specification</TITLE>
-</BOOKINFO>
-&desktop-contents;
-</BOOK>
-<BOOK>
-<BOOKINFO>
 <TITLE>Linux Packaging Specification</TITLE>
 </BOOKINFO>
 &packaging-contents;
