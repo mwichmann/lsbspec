@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:42:18 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:50:39 2001 -->
 <SECT1 ID=libc>
 <TITLE>libc</TITLE>
 <PARA>
@@ -266,7 +266,7 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 <TITLE></TITLE>
 <TGROUP COLS=5>
 <TBODY>
-<ROW><ENTRY>_nl_msg_cat_cntr</ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>_nl_msg_cat_cntr<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
@@ -394,7 +394,7 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 <TITLE></TITLE>
 <TGROUP COLS=5>
 <TBODY>
-<ROW><ENTRY>loc1<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>loc2<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>locs<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>rexecoptions<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>loc1<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>loc2<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>locs<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
@@ -621,13 +621,19 @@ int fnmatch(char *, char *, int);
 <PARA>
 </PARA>
 <SCREEN>
-typedef int __ftw_func_t;
+typedef int (*__ftw_func_t) (char *__filename, stat * __status,
 
-typedef int __ftw64_func_t;
+			     int __flag);
 
-typedef int __nftw_func_t;
+typedef int (*__ftw64_func_t) (char *__filename, stat64 * __status,
 
-typedef int __nftw64_func_t;
+			       int __flag);
+
+typedef int (*__nftw_func_t) (char *__filename, stat * __status,
+			      int __flag, FTW * __info);
+
+typedef int (*__nftw64_func_t) (char *__filename, stat64 * __status,
+				int __flag, FTW * __info);
 
 
 int ftw(char *, __ftw_func_t, int);
@@ -641,8 +647,7 @@ int nftw64(char *, __nftw64_func_t, int, int);
 <PARA>
 </PARA>
 <SCREEN>
-
-int glob(char *, int, int, glob_t *);
+Unknown Type:".." int glob(char *, int, int, glob_t *);
 int glob64(char *, int, int, glob64_t *);
 void globfree(glob_t *);
 void globfree64(glob64_t *);
@@ -666,7 +671,7 @@ void setgrent(void);
 <PARA>
 </PARA>
 <SCREEN>
-typedef *void void *iconv_t;
+typedef void *iconv_t;
 
 
 size_t iconv(iconv_t, char **, size_t *, char **, size_t *);
@@ -679,13 +684,7 @@ iconv_t iconv_open(char *, char *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef typedef struct {
-
-    long quot;
-    long rem;
-} lldiv_t;
-
-imaxdiv_t;
+typedef lldiv_t imaxdiv_t;
 
 
 intmax_t strtoimax(char *, char **, int);
@@ -702,7 +701,7 @@ imaxdiv_t imaxdiv(intmax_t, intmax_t);
 </PARA>
 <SCREEN>
 
-char *nl_langinfo();
+char *nl_langinfo(nl_item);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -720,6 +719,8 @@ char *setlocale(int, char *);
 <PARA>
 </PARA>
 <SCREEN>
+
+ssize_t strfmon(char *, size_t, char *, ...);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -727,7 +728,9 @@ char *setlocale(int, char *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef *void void *nl_catd;
+typedef void *nl_catd;
+
+typedef int nl_item;
 
 
 int catclose(nl_catd);
@@ -754,7 +757,6 @@ void setpwent(void);
 </PARA>
 <SCREEN>
 typedef struct {
-
     regoff_t rm_so;
     regoff_t rm_eo;
 } regmatch_t;
@@ -800,26 +802,29 @@ int sched_yield(void);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown ACTION;
+typedef void __action_fn_t;
 
 typedef struct entry {
-
     char *key;
     void *data;
 } ENTRY;
 
-typedef void __action_fn_t;
+typedef enum {
+
+    FIND,
+    ENTER
+} ACTION;
 
 
 int hcreate(size_t);
 ENTRY *hsearch(ENTRY, ACTION);
 void insque(void *, void *);
-void *lfind(void *, void *, size_t *, size_t);
-void *lsearch(void *, void *, size_t *, size_t);
+void *lfind(void *, void *, size_t *, size_t, __compar_fn_t);
+void *lsearch(void *, void *, size_t *, size_t, __compar_fn_t);
 void remque(void *);
 void hdestroy(void);
-void *tfind(void *, void **);
-void *tsearch(void *, void **);
+void *tfind(void *, void **, __compar_fn_t);
+void *tsearch(void *, void **, __compar_fn_t);
 void twalk(void *, __action_fn_t);
 </SCREEN>
 </SECT2>
@@ -828,21 +833,13 @@ void twalk(void *, __action_fn_t);
 <PARA>
 </PARA>
 <SCREEN>
+typedef jmp_buf sigjmp_buf;
+
 typedef struct __jmp_buf_tag {
-
-    Unknown Type:"" unknown __jmpbuf;
+    Unknown Type:".." __jmpbuf;
     int __mask_was_saved;
-    Unknown Type:"" unknown __saved_mask;
+    Unknown Type:".." __saved_mask;
 } jmp_buf;
-
-typedef typedef struct __jmp_buf_tag {
-
-    Unknown Type:"" unknown __jmpbuf;
-    int __mask_was_saved;
-    Unknown Type:"" unknown __saved_mask;
-} jmp_buf;
-
-sigjmp_buf;
 
 
 int __sigsetjmp(jmp_buf, int);
@@ -972,24 +969,21 @@ int getc_unlocked(FILE *);
 </PARA>
 <SCREEN>
 typedef struct {
-
     long quot;
     long rem;
 } lldiv_t;
 
 typedef struct {
-
-    int quot;
-    int rem;
-} div_t;
-
-typedef struct {
-
     long quot;
     long rem;
 } ldiv_t;
 
-typedef int __compar_fn_t;
+typedef int (*__compar_fn_t) ();
+
+typedef struct {
+    int quot;
+    int rem;
+} div_t;
 
 
 char *__secure_getenv(char *);
@@ -1042,10 +1036,12 @@ int unlockpt(int);
 size_t wcstombs(char *, wchar_t *, size_t);
 int wctomb(char *, wchar_t);
 int system(char *);
+void setkey(char *);
 void *calloc(size_t, size_t);
 void free(void *);
 void *initstate(unsigned int, void *, size_t);
 void *malloc(size_t);
+int32_t random(void);
 void *realloc(void *, size_t);
 void *setstate(void *);
 void srand(unsigned int);
@@ -1111,6 +1107,8 @@ char *strtok_r(char *, char *, char **);
 <PARA>
 </PARA>
 <SCREEN>
+
+key_t ftok(char *, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1137,7 +1135,7 @@ void *mmap64(void *, size_t, int, int, int, __off64_t);
 <SCREEN>
 
 int msgctl(int, int, msqid_ds *);
-int msgget(int);
+int msgget(key_t, int);
 int msgrcv(int, void *, size_t, long, int);
 int msgsnd(int, void *, size_t, int);
 </SCREEN>
@@ -1163,7 +1161,7 @@ int getrusage(enum, enum __rusage_who, rusage *);
 <SCREEN>
 
 int semctl(int, int, int, ...);
-int semget(int, int);
+int semget(key_t, int, int);
 int semop(int, sembuf *, unsigned int);
 </SCREEN>
 </SECT2>
@@ -1176,7 +1174,7 @@ int semop(int, sembuf *, unsigned int);
 void *shmat(int, void *, int);
 int shmctl(int, int, shmid_ds *);
 int shmdt(void *);
-int shmget(size_t, int);
+int shmget(key_t, size_t, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1199,7 +1197,7 @@ typedef union {
     sockaddr_ns *__sockaddr_ns__;
     sockaddr_un *__sockaddr_un__;
     sockaddr_x25 *__sockaddr_x25__;
-} __SOCKADDR_ARG;
+} __CONST_SOCKADDR_ARG;
 
 typedef union {
 
@@ -1216,7 +1214,7 @@ typedef union {
     sockaddr_ns *__sockaddr_ns__;
     sockaddr_un *__sockaddr_un__;
     sockaddr_x25 *__sockaddr_x25__;
-} __CONST_SOCKADDR_ARG;
+} __SOCKADDR_ARG;
 
 
 int bind(int, __CONST_SOCKADDR_ARG, socklen_t);
@@ -1263,6 +1261,8 @@ __mode_t umask(__mode_t);
 <PARA>
 </PARA>
 <SCREEN>
+
+clock_t times(tms *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1279,7 +1279,12 @@ int uname(utsname *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown idtype_t;
+typedef enum {
+
+    P_ALL,
+    P_PID,
+    P_PGID
+} idtype_t;
 
 
 int waitid(idtype_t, __id_t, siginfo_t *, int);
@@ -1312,9 +1317,10 @@ int tcgetattr(int, termios *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown clock_t;
-
-typedef Unknown Type:"" unknown time_t;
+Unknown Type:".."
+    Unknown Type:".."
+    Unknown Type:".."
+    Unknown Type:".." Unknown Type:".." typedef Unknown Type:".." time_t;
 
 
 char *asctime(tm *);
@@ -1350,10 +1356,7 @@ long ulimit(int, ...);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown ssize_t;
-
-
-char **__environ;
+Unknown Type:".." char **__environ;
 __pid_t __getpgid(__pid_t);
 void _exit(int);
 int acct(char *);
@@ -1400,7 +1403,6 @@ ssize_t read(int, void *, size_t);
 ssize_t write(int, void *, size_t);
 char *crypt(char *, char *);
 void encrypt(char *, int);
-void setkey(char *);
 int access(char *, int);
 int brk(void *);
 int chdir(char *);
@@ -1465,7 +1467,7 @@ int utime(char *, utimbuf *);
 <SCREEN>
 typedef unsigned long wctype_t;
 
-typedef *Unknown Type:"" unknown __int32_t * wctrans_t;
+typedef Unknown Type:".." * wctrans_t;
 
 
 wint_t towlower(wint_t);
@@ -1499,4 +1501,4 @@ void wordfree(wordexp_t *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->

@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:44:39 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:53:00 2001 -->
 <SECT1 ID=libICE>
 <TITLE>libICE</TITLE>
 <PARA>
@@ -63,35 +63,58 @@ X11R6.4 X Inter-Client Exchange (ICE) Protocol</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef *void void *IcePointer;
+typedef struct _IceConn *IceConn;
 
-typedef Unknown Type:"" unknown IceConnectStatus;
+typedef struct _IceListenObj *IceListenObj;
 
-typedef Unknown Type:"" unknown IceProtocolSetupStatus;
+typedef void (*IceIOErrorHandler) ();
 
-typedef Unknown Type:"" unknown IceCloseStatus;
+typedef void (*IceErrorHandler) ();
 
-typedef Unknown Type:"" unknown IceProcessMessagesStatus;
+typedef void (*IcePingReplyProc) ();
 
-typedef *Unknown Type:"" unknown _IceConn * IceConn;
+typedef void (*IceIOErrorProc) ();
 
-typedef *Unknown Type:"" unknown _IceListenObj * IceListenObj;
+typedef void (*IceProtocolActivateProc) ();
 
-typedef void IceWatchProc;
+typedef int (*IceProtocolSetupProc) ();
 
-typedef int IceHostBasedAuthProc;
+typedef int (*IceHostBasedAuthProc) ();
 
-typedef int IceProtocolSetupProc;
+typedef void (*IceWatchProc) ();
 
-typedef void IceProtocolActivateProc;
+typedef enum {
 
-typedef void IceIOErrorProc;
+    IceProcessMessagesSuccess,
+    IceProcessMessagesIOError,
+    IceProcessMessagesConnectionClosed
+} IceProcessMessagesStatus;
 
-typedef void IcePingReplyProc;
+typedef enum {
 
-typedef void IceErrorHandler;
+    IceClosedNow,
+    IceClosedASAP,
+    IceConnectionInUse,
+    IceStartedShutdownNegotiation
+} IceCloseStatus;
 
-typedef void IceIOErrorHandler;
+typedef void *IcePointer;
+
+typedef enum {
+
+    IceProtocolSetupSuccess,
+    IceProtocolSetupFailure,
+    IceProtocolSetupIOError,
+    IceProtocolAlreadyActive
+} IceProtocolSetupStatus;
+
+typedef enum {
+
+    IceConnectPending,
+    IceConnectAccepted,
+    IceConnectRejected,
+    IceConnectIOError
+} IceConnectStatus;
 
 
 IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus *);
@@ -167,4 +190,4 @@ int IceWriteAuthFileEntry(FILE *, IceAuthFileEntry *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->

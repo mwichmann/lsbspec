@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:44:15 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:52:36 2001 -->
 <SECT1 ID=libX11>
 <TITLE>libX11</TITLE>
 <PARA>
@@ -197,15 +197,25 @@ X11R6.4 Xlib - C library</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef unsigned long XcmsColorFormat;
+typedef int (*XcmsWhiteAdjustProc) ();
+
+typedef int (*XcmsCompressionProc) ();
+
+typedef struct _XcmsCCC {
+    Display *dpy;
+    int screenNumber;
+    Visual *visual;
+    XcmsColor clientWhitePt;
+     gamutCompProc;
+    XPointer gamutCompClientData;
+     whitePtAdjProc;
+    XPointer whitePtAdjClientData;
+    XcmsPerScrnInfo *pPerScrnInfo;
+} *XcmsCCC;
 
 typedef double XcmsFloat;
 
-typedef *Unknown Type:"" unknown _XcmsCCC * XcmsCCC;
-
-typedef int XcmsCompressionProc;
-
-typedef int XcmsWhiteAdjustProc;
+typedef unsigned long XcmsColorFormat;
 
 
 int XcmsAddColorSpace(XcmsColorSpace *);
@@ -263,7 +273,9 @@ int XcmsConvertColors(XcmsCCC, XcmsColor *, unsigned int, XcmsColorFormat,
 
 		      int *);
 XcmsCCC XcmsCreateCCC(Display *, int, Visual *, XcmsColor *,
-		      XcmsCompressionProc, XcmsWhiteAdjustProc);
+		      XcmsCompressionProc, XPointer, XcmsWhiteAdjustProc,
+
+		      XPointer);
 XcmsCCC XcmsDefaultCCC(Display *, int);
 Display *XcmsDisplayOfCCC(XcmsCCC);
 XcmsColorFormat XcmsFormatOfPrefix(char *);
@@ -287,8 +299,12 @@ int XcmsRGBiToRGB(XcmsCCC, XcmsColor *, unsigned int, int *);
 int XcmsScreenNumberOfCCC(XcmsCCC);
 XcmsColor *XcmsScreenWhitePointOfCCC(XcmsCCC);
 XcmsCCC XcmsSetCCCOfColormap(Display *, Colormap, XcmsCCC);
-XcmsCompressionProc XcmsSetCompressionProc(XcmsCCC, XcmsCompressionProc);
-XcmsWhiteAdjustProc XcmsSetWhiteAdjustProc(XcmsCCC, XcmsWhiteAdjustProc);
+XcmsCompressionProc XcmsSetCompressionProc(XcmsCCC, XcmsCompressionProc,
+
+					   XPointer);
+XcmsWhiteAdjustProc XcmsSetWhiteAdjustProc(XcmsCCC, XcmsWhiteAdjustProc,
+
+					   XPointer);
 int XcmsSetWhitePoint(XcmsCCC, XcmsColor *);
 int XcmsStoreColor(Display *, Colormap, XcmsColor *);
 int XcmsStoreColors(Display *, Colormap, XcmsColor *, unsigned int, int *);
@@ -321,9 +337,15 @@ Visual *XcmsVisualOfCCC(XcmsCCC);
 <PARA>
 </PARA>
 <SCREEN>
-typedef *char char *XPointer;
+typedef void *XVaNestedList;
 
-typedef *Unknown Type:"" unknown _XGC * GC;
+typedef struct _XIC *XIC;
+
+typedef struct _XIM *XIM;
+
+typedef struct _XOC *XFontSet;
+
+typedef struct _XOC *XOC;
 
 typedef union {
 
@@ -335,25 +357,23 @@ typedef union {
     XFontStruct *font;
 } XEDataObject;
 
-typedef *Unknown Type:"" unknown _XOM * XOM;
+typedef struct _XOM *XOM;
 
-typedef *Unknown Type:"" unknown _XOC * XOC;
+typedef struct _XGC *GC;
 
-typedef *Unknown Type:"" unknown _XOC * XFontSet;
+typedef char *XPointer;
 
-typedef *Unknown Type:"" unknown _XIM * XIM;
+typedef void (*XIDProc) ();
 
-typedef *Unknown Type:"" unknown _XIC * XIC;
+int (*XSynchronize) ()
 
-typedef void XIDProc;
+int (*XSetAfterFunction) ()
 
-typedef *void void *XVaNestedList;
+typedef int (*XErrorHandler) ();
 
-typedef int XErrorHandler;
+typedef int (*XIOErrorHandler) ();
 
-typedef int XIOErrorHandler;
-
-typedef void XConnectionWatchProc;
+typedef void (*XConnectionWatchProc) ();
 
 
 int XActivateScreenSaver(Display *);
@@ -715,7 +735,8 @@ int XSelectInput(Display *, Window, long);
 int XSendEvent(Display *, Window, int, long, XEvent *);
 char *XServerVendor(Display *);
 int XSetAccessControl(Display *, int);
-int XSetAfterFunction(Display *);
+
+fptr - XSetAfterFunction XSetAfterFunction(Display *);
 int XSetArcMode(Display *, GC, int);
 void XSetAuthorization(char *, int, char *, int);
 int XSetBackground(Display *, GC, unsigned long);
@@ -772,7 +793,8 @@ int XStoreNamedColor(Display *, Colormap, char *, unsigned long, int);
 KeySym XStringToKeysym(char *);
 int XSupportsLocale(void);
 int XSync(Display *, int);
-int XSynchronize(Display *);
+
+fptr - XSynchronize XSynchronize(Display *);
 int XTextExtents(XFontStruct *, char *, int, int *, int *, int *,
 		 XCharStruct *);
 int XTextExtents16(XFontStruct *, XChar2b *, int, int *, int *, int *,
@@ -844,9 +866,16 @@ int XwcTextPerCharExtents(XFontSet, wchar_t *, int, XRectangle *,
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown XICCEncodingStyle;
+typedef struct _XRegion *Region;
 
-typedef *Unknown Type:"" unknown _XRegion * Region;
+typedef enum {
+
+    XStringStyle,
+    XCompoundTextStyle,
+    XTextStyle,
+    XStdICCTextStyle,
+    XUTF8StringStyle
+} XICCEncodingStyle;
 
 typedef int XContext;
 
@@ -894,7 +923,7 @@ int XSetClassHint(Display *, Window, XClassHint *);
 int XSetIconSizes(Display *, Window, XIconSize *, int);
 int XSetNormalHints(Display *, Window, XSizeHints *);
 void XSetRGBColormaps(Display *, Window, XStandardColormap *, int, Atom);
-int XSetRegion(Display *, Region);
+int XSetRegion(Display *, GC, Region);
 int XSetSizeHints(Display *, Window, XSizeHints *, Atom);
 void XSetStandardColormap(Display *, Window, XStandardColormap *, Atom);
 int XSetStandardProperties(Display *, Window, char *, char *, Pixmap,
@@ -935,4 +964,4 @@ int XwcTextPropertyToTextList(Display *, XTextProperty *, wchar_t ** *,
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->

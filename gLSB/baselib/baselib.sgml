@@ -12,8 +12,8 @@ hardware in the system.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:42:18 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:50:39 2001 -->
 <SECT1 ID=libc>
 <TITLE>libc</TITLE>
 <PARA>
@@ -278,7 +278,7 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 <TITLE></TITLE>
 <TGROUP COLS=5>
 <TBODY>
-<ROW><ENTRY>_nl_msg_cat_cntr</ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>_nl_msg_cat_cntr<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
@@ -352,7 +352,7 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 <TGROUP COLS=5>
 <TBODY>
 <ROW><ENTRY>__rawmemchr(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY>ffs(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strcat(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strncat(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strtok(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY></ROW>
-<ROW><ENTRY>__stpcpy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY><FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strchr(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strncmp(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strtok_r(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY></ROW>
+<ROW><ENTRY>__stpcpy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY>index(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strchr(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strncmp(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strtok_r(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY></ROW>
 <ROW><ENTRY>__strdup(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY>memccpy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strcmp(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strncpy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strtold(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-25"></ENTRY></ROW>
 <ROW><ENTRY>__strtod_internal(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY>memchr(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strcoll(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strndup(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY>strtoll(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-25"></ENTRY></ROW>
 <ROW><ENTRY>__strtof_internal(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY>memcmp(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strcpy(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>strnlen(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY>strtoq(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY></ROW>
@@ -406,7 +406,7 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 <TITLE></TITLE>
 <TGROUP COLS=5>
 <TBODY>
-<ROW><ENTRY>loc1<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>loc2<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>locs<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>rexecoptions<FOOTNOTEREF LINKEND="std-131-10"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>loc1<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>loc2<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY>locs<FOOTNOTEREF LINKEND="std-131-5"></ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
@@ -633,13 +633,19 @@ int fnmatch(char *, char *, int);
 <PARA>
 </PARA>
 <SCREEN>
-typedef int __ftw_func_t;
+typedef int (*__ftw_func_t) (char *__filename, stat * __status,
 
-typedef int __ftw64_func_t;
+			     int __flag);
 
-typedef int __nftw_func_t;
+typedef int (*__ftw64_func_t) (char *__filename, stat64 * __status,
 
-typedef int __nftw64_func_t;
+			       int __flag);
+
+typedef int (*__nftw_func_t) (char *__filename, stat * __status,
+			      int __flag, FTW * __info);
+
+typedef int (*__nftw64_func_t) (char *__filename, stat64 * __status,
+				int __flag, FTW * __info);
 
 
 int ftw(char *, __ftw_func_t, int);
@@ -653,8 +659,7 @@ int nftw64(char *, __nftw64_func_t, int, int);
 <PARA>
 </PARA>
 <SCREEN>
-
-int glob(char *, int, int, glob_t *);
+Unknown Type:".." int glob(char *, int, int, glob_t *);
 int glob64(char *, int, int, glob64_t *);
 void globfree(glob_t *);
 void globfree64(glob64_t *);
@@ -678,7 +683,7 @@ void setgrent(void);
 <PARA>
 </PARA>
 <SCREEN>
-typedef *void void *iconv_t;
+typedef void *iconv_t;
 
 
 size_t iconv(iconv_t, char **, size_t *, char **, size_t *);
@@ -691,13 +696,7 @@ iconv_t iconv_open(char *, char *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef typedef struct {
-
-    long quot;
-    long rem;
-} lldiv_t;
-
-imaxdiv_t;
+typedef lldiv_t imaxdiv_t;
 
 
 intmax_t strtoimax(char *, char **, int);
@@ -714,7 +713,7 @@ imaxdiv_t imaxdiv(intmax_t, intmax_t);
 </PARA>
 <SCREEN>
 
-char *nl_langinfo();
+char *nl_langinfo(nl_item);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -732,6 +731,8 @@ char *setlocale(int, char *);
 <PARA>
 </PARA>
 <SCREEN>
+
+ssize_t strfmon(char *, size_t, char *, ...);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -739,7 +740,9 @@ char *setlocale(int, char *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef *void void *nl_catd;
+typedef void *nl_catd;
+
+typedef int nl_item;
 
 
 int catclose(nl_catd);
@@ -766,7 +769,6 @@ void setpwent(void);
 </PARA>
 <SCREEN>
 typedef struct {
-
     regoff_t rm_so;
     regoff_t rm_eo;
 } regmatch_t;
@@ -812,26 +814,29 @@ int sched_yield(void);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown ACTION;
+typedef void __action_fn_t;
 
 typedef struct entry {
-
     char *key;
     void *data;
 } ENTRY;
 
-typedef void __action_fn_t;
+typedef enum {
+
+    FIND,
+    ENTER
+} ACTION;
 
 
 int hcreate(size_t);
 ENTRY *hsearch(ENTRY, ACTION);
 void insque(void *, void *);
-void *lfind(void *, void *, size_t *, size_t);
-void *lsearch(void *, void *, size_t *, size_t);
+void *lfind(void *, void *, size_t *, size_t, __compar_fn_t);
+void *lsearch(void *, void *, size_t *, size_t, __compar_fn_t);
 void remque(void *);
 void hdestroy(void);
-void *tfind(void *, void **);
-void *tsearch(void *, void **);
+void *tfind(void *, void **, __compar_fn_t);
+void *tsearch(void *, void **, __compar_fn_t);
 void twalk(void *, __action_fn_t);
 </SCREEN>
 </SECT2>
@@ -840,21 +845,13 @@ void twalk(void *, __action_fn_t);
 <PARA>
 </PARA>
 <SCREEN>
+typedef jmp_buf sigjmp_buf;
+
 typedef struct __jmp_buf_tag {
-
-    Unknown Type:"" unknown __jmpbuf;
+    Unknown Type:".." __jmpbuf;
     int __mask_was_saved;
-    Unknown Type:"" unknown __saved_mask;
+    Unknown Type:".." __saved_mask;
 } jmp_buf;
-
-typedef typedef struct __jmp_buf_tag {
-
-    Unknown Type:"" unknown __jmpbuf;
-    int __mask_was_saved;
-    Unknown Type:"" unknown __saved_mask;
-} jmp_buf;
-
-sigjmp_buf;
 
 
 int __sigsetjmp(jmp_buf, int);
@@ -984,24 +981,21 @@ int getc_unlocked(FILE *);
 </PARA>
 <SCREEN>
 typedef struct {
-
     long quot;
     long rem;
 } lldiv_t;
 
 typedef struct {
-
-    int quot;
-    int rem;
-} div_t;
-
-typedef struct {
-
     long quot;
     long rem;
 } ldiv_t;
 
-typedef int __compar_fn_t;
+typedef int (*__compar_fn_t) ();
+
+typedef struct {
+    int quot;
+    int rem;
+} div_t;
 
 
 char *__secure_getenv(char *);
@@ -1054,10 +1048,12 @@ int unlockpt(int);
 size_t wcstombs(char *, wchar_t *, size_t);
 int wctomb(char *, wchar_t);
 int system(char *);
+void setkey(char *);
 void *calloc(size_t, size_t);
 void free(void *);
 void *initstate(unsigned int, void *, size_t);
 void *malloc(size_t);
+int32_t random(void);
 void *realloc(void *, size_t);
 void *setstate(void *);
 void srand(unsigned int);
@@ -1123,6 +1119,8 @@ char *strtok_r(char *, char *, char **);
 <PARA>
 </PARA>
 <SCREEN>
+
+key_t ftok(char *, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1149,7 +1147,7 @@ void *mmap64(void *, size_t, int, int, int, __off64_t);
 <SCREEN>
 
 int msgctl(int, int, msqid_ds *);
-int msgget(int);
+int msgget(key_t, int);
 int msgrcv(int, void *, size_t, long, int);
 int msgsnd(int, void *, size_t, int);
 </SCREEN>
@@ -1175,7 +1173,7 @@ int getrusage(enum, enum __rusage_who, rusage *);
 <SCREEN>
 
 int semctl(int, int, int, ...);
-int semget(int, int);
+int semget(key_t, int, int);
 int semop(int, sembuf *, unsigned int);
 </SCREEN>
 </SECT2>
@@ -1188,7 +1186,7 @@ int semop(int, sembuf *, unsigned int);
 void *shmat(int, void *, int);
 int shmctl(int, int, shmid_ds *);
 int shmdt(void *);
-int shmget(size_t, int);
+int shmget(key_t, size_t, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1211,7 +1209,7 @@ typedef union {
     sockaddr_ns *__sockaddr_ns__;
     sockaddr_un *__sockaddr_un__;
     sockaddr_x25 *__sockaddr_x25__;
-} __SOCKADDR_ARG;
+} __CONST_SOCKADDR_ARG;
 
 typedef union {
 
@@ -1228,7 +1226,7 @@ typedef union {
     sockaddr_ns *__sockaddr_ns__;
     sockaddr_un *__sockaddr_un__;
     sockaddr_x25 *__sockaddr_x25__;
-} __CONST_SOCKADDR_ARG;
+} __SOCKADDR_ARG;
 
 
 int bind(int, __CONST_SOCKADDR_ARG, socklen_t);
@@ -1275,6 +1273,8 @@ __mode_t umask(__mode_t);
 <PARA>
 </PARA>
 <SCREEN>
+
+clock_t times(tms *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1291,7 +1291,12 @@ int uname(utsname *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown idtype_t;
+typedef enum {
+
+    P_ALL,
+    P_PID,
+    P_PGID
+} idtype_t;
 
 
 int waitid(idtype_t, __id_t, siginfo_t *, int);
@@ -1324,9 +1329,10 @@ int tcgetattr(int, termios *);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown clock_t;
-
-typedef Unknown Type:"" unknown time_t;
+Unknown Type:".."
+    Unknown Type:".."
+    Unknown Type:".."
+    Unknown Type:".." Unknown Type:".." typedef Unknown Type:".." time_t;
 
 
 char *asctime(tm *);
@@ -1362,10 +1368,7 @@ long ulimit(int, ...);
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown ssize_t;
-
-
-char **__environ;
+Unknown Type:".." char **__environ;
 __pid_t __getpgid(__pid_t);
 void _exit(int);
 int acct(char *);
@@ -1412,7 +1415,6 @@ ssize_t read(int, void *, size_t);
 ssize_t write(int, void *, size_t);
 char *crypt(char *, char *);
 void encrypt(char *, int);
-void setkey(char *);
 int access(char *, int);
 int brk(void *);
 int chdir(char *);
@@ -1477,7 +1479,7 @@ int utime(char *, utimbuf *);
 <SCREEN>
 typedef unsigned long wctype_t;
 
-typedef *Unknown Type:"" unknown __int32_t * wctrans_t;
+typedef Unknown Type:".." * wctrans_t;
 
 
 wint_t towlower(wint_t);
@@ -1511,7 +1513,7 @@ void wordfree(wordexp_t *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 <SECT1 ID=libcman>
 <TITLE>Interface Definitions for libc</TITLE>
@@ -1568,6 +1570,47 @@ This function is part of the ABI, and not the API.
 </PARA>
 </REFSECT1>
 </REFENTRY>
+
+<REFENTRY ID="baselib---ctype-b"> <REFMETA>
+<REFENTRYTITLE>__ctype_b</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__ctype_c</REFNAME>
+<REFPURPOSE>
+Array index for ctype functions.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;ctype.h>
+
+extern const unsigned short int *ctype_b;
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Array index for ctype functions.
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
 
 <REFENTRY ID="libutil---ctype-tolower-2"> <REFMETA>
 <REFENTRYTITLE>__ctype_tolower</REFENTRYTITLE>
@@ -1633,6 +1676,49 @@ The __ctype_toupper() function converts a lowercase letter to the corresponding 
 </REFSECT1>
 </REFENTRY>
 
+<REFENTRY ID="baselib---cxa-atexit"> <REFMETA>
+<REFENTRYTITLE>__cxa_atexi</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__cxa_atexi</REFNAME>
+<REFPURPOSE>
+Register a function to be called by exit or when a shared library
+is unloaded.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+
+int __cxa_atexit (void (*func) (void *), void *arg, void *d)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Register a function to be called by exit or when a shared library
+is unloaded.  This function is only called from code generated by
+the C++ compiler. 
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
 <REFENTRY ID="baselib---dcgettext"> <REFMETA>
 <REFENTRYTITLE>__dcgettex</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -1678,6 +1764,81 @@ DOMAINNAME message catalog for the current locale.
 
 
 
+<REFENTRY ID="baselib---divdi3-3"> <REFMETA>
+<REFENTRYTITLE>__divdi3</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__divdi3
+</REFNAME>
+<REFPURPOSE>
+mathematic operation
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>24 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+
+DItype
+__divdi3 (DItype u, DItype v);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>24 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+__divdi3() divides two DItypes(unsigned ints).
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib---environ"> <REFMETA>
+<REFENTRYTITLE>__environ</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__environ</REFNAME>
+<REFPURPOSE>
+alias to environ -  user environment 
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+
+extern char **__environ;
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+alias to environ -  user environment
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
 <REFENTRY ID="baselib-errno-location-1"> <REFMETA>
 <REFENTRYTITLE>__errno_location</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -1709,6 +1870,48 @@ the source standard, not the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
+
+<REFENTRY ID="baselib---fpending"> <REFMETA>
+<REFENTRYTITLE>__fpending</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__fpending</REFNAME>
+<REFPURPOSE>
+Returns in bytes the amount of output pending on a stream.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;stdio_ext.h>
+
+size_t __fpending(FILE *stream);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The __fpending function returns the amount of output in bytes pending
+on a stream.
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
 
 <REFENTRY ID="baselib---getpgid-1"> <REFMETA>
 <REFENTRYTITLE>__getpgid</REFENTRYTITLE>
@@ -1743,186 +1946,449 @@ __getpgid is not in the source standard; it is only in the binary standard.
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib--IO-2-1-stderr--1"> <REFMETA>
+<REFENTRY ID="baselib---mempcpy"> <REFMETA>
+<REFENTRYTITLE>__mempcpy</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__mempcpy</REFNAME>
+<REFPURPOSE>
+Copy N bytes of SRC to DEST
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;string.h>
+
+extern ptr_t __mempcpy (ptr_t restrict dest,
+                        const ptr_t restrict src, size_t n));
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Copy N bytes of SRC to DEST, return pointer to bytes after the
+last written byte.
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib---rawmemchr"> <REFMETA>
+<REFENTRYTITLE>__rawmemch</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__rawmemchr</REFNAME>
+<REFPURPOSE>
+Scan memory - Similar to memchr but there is no length limit
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;string.h>
+
+extern ptr_t __rawmemchr(const ptr_t s, int c);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+This is a weak alias to rawmemchr. Search in S for C.
+Similar to memchr but there is no length limit. 
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib---sysconf"> <REFMETA>
+<REFENTRYTITLE>__sysconf</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__sysconf</REFNAME>
+<REFPURPOSE>
+Get configuration information at runtime.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;unistd.h>
+
+long __sysconf(int name);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Get configuration information at runtime.
+This is weak alias to sysconf.
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib--environ"> <REFMETA>
+<REFENTRYTITLE>_environ</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>_environ</REFNAME>
+<REFPURPOSE>
+alias to environ -  user environment 
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+
+extern char **_environ;
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+alias to environ -  user environment
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib--IO-2-1-stderr--"> <REFMETA>
 <REFENTRYTITLE>_IO_2_1_stderr_</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>_IO_2_1_stderr_</REFNAME>
-<REFPURPOSE>What is this?
+<REFNAME>_IO_2_1_stderr_
+</REFNAME>
+<REFPURPOSE>
+standard I/O stream
 </REFPURPOSE>
 </REFNAMEDIV>
+
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type _IO_2_1_stderr_(parameters) </SYNOPSIS>
+<SYNOPSIS>
+#include &lt;libio.h>
+
+extern struct _IO_FILE_plus _IO_2_1_stderr_;
+</SYNOPSIS>
 </REFSYNOPSISDIV>
+
 <REFSECT1>
 <REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April 2001</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
+_IO_2_1_stderr is an object whose address becomes stderr.
 </PARA>
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib--IO-2-1-stdin--1"> <REFMETA>
+<REFENTRY ID="baselib--IO-2-1-stdin--"> <REFMETA>
 <REFENTRYTITLE>_IO_2_1_stdin_</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>_IO_2_1_stdin_</REFNAME>
-<REFPURPOSE>What is this?
+<REFNAME>_IO_2_1_stdin_
+</REFNAME>
+<REFPURPOSE>
+standard I/O stream
 </REFPURPOSE>
 </REFNAMEDIV>
+
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type _IO_2_1_stdin_(parameters) </SYNOPSIS>
+<SYNOPSIS>
+#include &lt;libio.h>
+
+extern struct _IO_FILE_plus _IO_2_1_stdin_;
+</SYNOPSIS>
 </REFSYNOPSISDIV>
+
 <REFSECT1>
 <REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April 2001</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
+_IO_2_1_stdin is an object whose address becomes stdin.
 </PARA>
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib--IO-2-1-stdout--1"> <REFMETA>
+<REFENTRY ID="baselib--IO-2-1-stdout--"> <REFMETA>
 <REFENTRYTITLE>_IO_2_1_stdout_</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>_IO_2_1_stdout_</REFNAME>
-<REFPURPOSE>What is this?
+<REFNAME>_IO_2_1_stdout_
+</REFNAME>
+<REFPURPOSE>
+standard I/O stream
 </REFPURPOSE>
 </REFNAMEDIV>
+
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type _IO_2_1_stdout_(parameters) </SYNOPSIS>
+<SYNOPSIS>
+#include &lt;libio.h>
+
+extern struct _IO_FILE_plus _IO_2_1_stdout_;
+</SYNOPSIS>
 </REFSYNOPSISDIV>
+
 <REFSECT1>
 <REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April 2001</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
+_IO_2_1_stdout is an object whose address becomes stdout.
 </PARA>
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib--IO-feof-1"> <REFMETA>
+<REFENTRY ID="baselib--IO-feof-3"> <REFMETA>
 <REFENTRYTITLE>_IO_feof</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>_IO_feof</REFNAME>
-<REFPURPOSE>What is this?
+<REFNAME>_IO_feof
+</REFNAME>
+<REFPURPOSE>
+mangle of feof
 </REFPURPOSE>
 </REFNAMEDIV>
+
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type _IO_feof(parameters) </SYNOPSIS>
+<SYNOPSIS>
+ int _IO_feof (_IO_FILE *__fp);
+</SYNOPSIS>
 </REFSYNOPSISDIV>
+
 <REFSECT1>
 <REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April 2001</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
+The  function _IO_feof() tests the end-of-file indicator for the
+       stream pointed to by __fp, returning non-zero if  it  is
+       set.  
 </PARA>
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib--IO-getc-1"> <REFMETA>
+<REFENTRY ID="baselib--IO-getc-3"> <REFMETA>
 <REFENTRYTITLE>_IO_getc</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>_IO_getc</REFNAME>
-<REFPURPOSE>What is this?
+<REFNAME>_IO_getc
+</REFNAME>
+<REFPURPOSE>
+mangle of getc
 </REFPURPOSE>
 </REFNAMEDIV>
+
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type _IO_getc(parameters) </SYNOPSIS>
+<SYNOPSIS>
+ int _IO_getc (_IO_FILE *__fp);
+</SYNOPSIS>
 </REFSYNOPSISDIV>
+
 <REFSECT1>
 <REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April 2001</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
+_IO_getc() reads the next character form __fp and returns it as an unsigned char
+cast to an int, or EOF on end of file or error.
 </PARA>
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib--IO-putc-1"> <REFMETA>
+<REFENTRY ID="baselib--IO-putc-3"> <REFMETA>
 <REFENTRYTITLE>_IO_putc</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>_IO_putc</REFNAME>
-<REFPURPOSE>What is this?
+<REFNAME>_IO_putc
+</REFNAME>
+<REFPURPOSE>
+mangle of putc
 </REFPURPOSE>
 </REFNAMEDIV>
+
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type _IO_putc(parameters) </SYNOPSIS>
+<SYNOPSIS>
+ int _IO_putc (int __c, _IO_FILE *__fp);
+</SYNOPSIS>
 </REFSYNOPSISDIV>
+
 <REFSECT1>
 <REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April 2001</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
+_IO_putc() writes the character __c, cast to an unsigned char, to __fp.
 </PARA>
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib--IO-puts-1"> <REFMETA>
+<REFENTRY ID="baselib--IO-puts-3"> <REFMETA>
 <REFENTRYTITLE>_IO_puts</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>_IO_puts</REFNAME>
-<REFPURPOSE>What is this?
+<REFNAME>_IO_puts
+</REFNAME>
+<REFPURPOSE>
+mangle of puts
 </REFPURPOSE>
 </REFNAMEDIV>
+
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type _IO_puts(parameters) </SYNOPSIS>
+<SYNOPSIS>
+ int _IO_puts (const char *__c);
+</SYNOPSIS>
 </REFSYNOPSISDIV>
+
 <REFSECT1>
 <REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
+<DATE>24 April 2001</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
+_IO_puts() writes the string __s and a trailing newline to  stdout.
+
 </PARA>
 </REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib---libc-start-main-"> <REFMETA>
+<REFENTRYTITLE>__libc_start_main</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__libc_start_main
+</REFNAME>
+<REFPURPOSE>
+initialization routine
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>24 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	BP_SYM __libc_start_main (int (*main) (int, char**, char**),
+		int argc, char *__unbounded *__unbounded ubp_av,
+		void (*init) (void), void (*fini) (void),
+		void (*rtld_fini) (void), void (*__unbounded stack_end);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>24 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Initialize glibc.
+</PARA>
+</REFSECT1>
+
 </REFENTRY>
 
 <REFENTRY ID="libutil---lxstat-2"> <REFMETA>
@@ -1988,6 +2454,90 @@ extern int _nl_msg_cat_cntr;
 Used by Message catalogs for internationalization.
 A variable defined  which gets incremented every time a
 new catalog is loaded.  
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib--obstack-begin"> <REFMETA>
+<REFENTRYTITLE>_obstack_begin</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>_obstack_begin</REFNAME>
+<REFPURPOSE>
+Initialize an obstack for use.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;obstack.h>
+
+extern int _obstack_begin (struct obstack *, int, int,
+                           void *(*) (long), void (*) (void *));
+
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Initialize an obstack for use.
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib--obstack-newchunk"> <REFMETA>
+<REFENTRYTITLE>_obstack_newchunk</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>_obstack_newchunk</REFNAME>
+<REFPURPOSE>
+Allocate a new current chunk of memory for the obstack.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;obstack.h>
+
+extern void _obstack_newchunk (struct obstack *, int);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Allocate a new current chunk of memory for the obstack. 
 </PARA>
 
 </REFSECT1>
@@ -2113,6 +2663,92 @@ source standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
+
+<REFENTRY ID="baselib--sys-errlist"> <REFMETA>
+<REFENTRYTITLE>_sys_errlist</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>_sys_errlist</REFNAME>
+<REFPURPOSE>
+An array containing the "C" locale strings used by strerror().
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;stdio.h>
+
+extern const char *const _sys_errlist[];
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+An array containing the "C" locale strings used by strerror().
+This normally should not be used directly.  The strerror
+function provides all the needed functionality.
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib--sys-siglist"> <REFMETA>
+<REFENTRYTITLE>_sys_siglist</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>_sys_siglist</REFNAME>
+<REFPURPOSE>
+An array containing the names of the signal names.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;signal.h>
+
+extern const char *const _sys_siglist[NSIG];
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+An array containing the names of the signal names.
+This  exists only for compatibility.
+Use strsignal instead (see &lt;string.h>).
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
 
 <REFENTRY ID="baselib---xmknod-1"> <REFMETA>
 <REFENTRYTITLE>__xmknod</REFENTRYTITLE>
@@ -2678,6 +3314,50 @@ This function is like alphasort but it uses the 64bit dirent structure.
 
 
 
+<REFENTRY ID="baselib-bindtextdomain"> <REFMETA>
+<REFENTRYTITLE>bindtextdomain</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>bindtextdomain</REFNAME>
+<REFPURPOSE>
+Specify that the DOMAINNAME message catalog will be found
+in DIRNAME rather than in the system locale data base.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;unistd.h>
+
+extern char *bindtextdomain(const char *domainname,
+                                  const char *dirname);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Specify that the DOMAINNAME message catalog will be found
+in DIRNAME rather than in the system locale data base.
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
 <REFENTRY ID="baselib-cfmakeraw-3"> <REFMETA>
 <REFENTRYTITLE>cfmakeraw</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -2992,123 +3672,6 @@ CATEGORY locale.
 
 
 
-<REFENTRY ID="baselib-dladdr-3"> <REFMETA>
-<REFENTRYTITLE>dladdr</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>dladdr
-</REFNAME>
-<REFPURPOSE>
-library routine for dynamic linking of object files
-</REFPURPOSE>
-</REFNAMEDIV>
-
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>24 April  2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-     cc ... -ldl ...
-
-     #include &lt;dlfcn.h>
-
-     typedef struct {
-             const char      *dli_fname;
-             void            *dli_fbase;
-             const char      *dli_sname;
-             void            *dli_saddr;
-     } Dl_info;
-
-     int dladdr(void *address, Dlinfo *dlip);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>24 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-     This function implements the System V dynamic linking routines.
-</PARA><PARA>
-
-The dladdr() function is the inverse of the dlsym() function.  If the
-     given address is successfully located inside a module, dladdr() returns
-     nonzero, otherwise 0.  On a successful return, the fields of dlip are
-     filled in as follows:
-</PARA>
-
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-     dlifname   
-</TERM>
-<LISTITEM>
-<PARA>
-the pathname of the module
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-     dlifbase   
-</TERM>
-<LISTITEM>
-<PARA>
-the base address of the module
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-     dlisname   
-</TERM>
-<LISTITEM>
-<PARA>
-the name of the highest addressed symbol whose address precedes the given address 
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-     dlifaddr   
-</TERM>
-<LISTITEM>
-<PARA>
-the address of that symbol
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
-
-<PARA>
-     Shared objects must be linked using the -shared option to the linker
-     ld(1).  The linker flag -rpath may be used to add a directory to the default 
-     search path for shared objects and shared libraries.  The linker
-     flag -E or the C compiler flag -rdynamic should be used to cause the application 
-     to export its symbols to the shared objects. 
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>
-ENVIRONMENT
-</TITLE>
-<PARA>
-     LD_LIBRARY_PATH        directory search-path for object files
-</PARA>
-</REFSECT1>
-<!--      BSDI BSD/OS                    February 9, 1998    -->
-<!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
-<!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
-<!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
-</REFENTRY>
-
 <REFENTRY ID="baselib-endutent-3"> <REFMETA>
 <REFENTRYTITLE>endutent</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -3162,7 +3725,7 @@ functions
 <REFNAMEDIV>
 <REFNAME>err
 </REFNAME>
-<REFPURPOSE> error messages
+<REFPURPOSE>display formatted error messages
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -3706,6 +4269,8 @@ get system load averages
 <DATE>4 April  2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
+#include &lt;stdlib.h>
+
 int getloadavg(double loadavg[], int nelem);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
@@ -5332,6 +5897,48 @@ last byte of haystack. This is fixed in glibc 2.1.
 
 
 
+<REFENTRY ID="baselib-memrchr"> <REFMETA>
+<REFENTRYTITLE>memrchr</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>memrchr</REFNAME>
+<REFPURPOSE>
+scan memory for a character
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;string.h>
+
+void *memrchr(const void *s, int c, size_t n);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The memrchr() function returns a pointer to the last occurrence of the 
+character "c" in the first "n" characters of string "s"
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
 <REFENTRY ID="baselib-ntohs-3"> <REFMETA>
 <REFENTRYTITLE>ntohs</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -5364,6 +5971,47 @@ from network byte order to host byte order.
 
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
 <!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-obstack-free"> <REFMETA>
+<REFENTRYTITLE>obstack_free</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>obstack_free</REFNAME>
+<REFPURPOSE>
+Free an object in the obstack.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;obstack.h>
+
+void obstack_free (struct obstack *obstack, void *block);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Free an object in the obstack.
+</PARA>
 
 </REFSECT1>
 </REFENTRY>
@@ -5611,6 +6259,43 @@ character wc.
 
 
 
+
+<REFENTRY ID="baselib-sem-timedwait-3"> <REFMETA>
+<REFENTRYTITLE>sem_timedwait</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sem_timedwait
+</REFNAME>
+<REFPURPOSE>
+operation on  semaphore
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>24 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;semaphore.h>
+int sem_timedwait (sem_t *__restrict __sem, 
+		   __const struct timespec *__restrict __abstime)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>24 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+sem_timedwait() waits for semaphore object SEM being posted.
+It is aew function from IEEE Std. 1003.1-200x that is similar to sem_wait but waits only
+until ABSTIME.  
+</PARA>
+</REFSECT1>
+</REFENTRY>
 
 
 <REFENTRY ID="baselib-setbuffer-3"> <REFMETA>
@@ -7833,7 +8518,7 @@ Write formatted output to a file descriptor.
 <REFNAMEDIV>
 <REFNAME>verrx
 </REFNAME>
-<REFPURPOSE> error messages
+<REFPURPOSE>display formatted error messages
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -8823,8 +9508,8 @@ representation.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:42:34 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:50:55 2001 -->
 <SECT1 ID=libm>
 <TITLE>libm</TITLE>
 <PARA>
@@ -8958,13 +9643,13 @@ int signgam;
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:42:45 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:51:06 2001 -->
 <SECT1 ID=libpthread>
 <TITLE>libpthread</TITLE>
 <PARA>
@@ -9201,13 +9886,13 @@ int sem_wait(sem_t *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:43:08 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:51:29 2001 -->
 <SECT1 ID=libdl>
 <TITLE>libdl</TITLE>
 <PARA>
@@ -9277,13 +9962,136 @@ void *dlsym(void *, char *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+
+<SECT1 ID=libdlman>
+<TITLE>Interface Definitions for libdl</TITLE>
+<PARA>
+</PARA>
+<REFENTRY ID="baselib-dladdr-3"> <REFMETA>
+<REFENTRYTITLE>dladdr</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>dladdr
+</REFNAME>
+<REFPURPOSE>
+library routine for dynamic linking of object files
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>24 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+     cc ... -ldl ...
+
+     #include &lt;dlfcn.h>
+
+     typedef struct {
+             const char      *dli_fname;
+             void            *dli_fbase;
+             const char      *dli_sname;
+             void            *dli_saddr;
+     } Dl_info;
+
+     int dladdr(void *address, Dlinfo *dlip);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>24 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+     This function implements the System V dynamic linking routines.
+</PARA><PARA>
+
+The dladdr() function is the inverse of the dlsym() function.  If the
+     given address is successfully located inside a module, dladdr() returns
+     nonzero, otherwise 0.  On a successful return, the fields of dlip are
+     filled in as follows:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+     dlifname   
+</TERM>
+<LISTITEM>
+<PARA>
+the pathname of the module
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+     dlifbase   
+</TERM>
+<LISTITEM>
+<PARA>
+the base address of the module
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+     dlisname   
+</TERM>
+<LISTITEM>
+<PARA>
+the name of the highest addressed symbol whose address precedes the given address 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+     dlifaddr   
+</TERM>
+<LISTITEM>
+<PARA>
+the address of that symbol
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
+<PARA>
+     Shared objects must be linked using the -shared option to the linker
+     ld(1).  The linker flag -rpath may be used to add a directory to the default 
+     search path for shared objects and shared libraries.  The linker
+     flag -E or the C compiler flag -rdynamic should be used to cause the application 
+     to export its symbols to the shared objects. 
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ENVIRONMENT
+</TITLE>
+<PARA>
+     LD_LIBRARY_PATH        directory search-path for object files
+</PARA>
+</REFSECT1>
+<!--      BSDI BSD/OS                    February 9, 1998    -->
+<!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
+<!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
+<!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
+</REFENTRY>
+
+</SECT1>
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:43:30 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:51:51 2001 -->
 <SECT1 ID=libcrypt>
 <TITLE>libcrypt</TITLE>
 <PARA>
@@ -9334,14 +10142,106 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 <PARA>
 </PARA>
 <SECT2>
+<TITLE>stdlib.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+typedef struct {
+    long quot;
+    long rem;
+} lldiv_t;
+
+typedef struct {
+    long quot;
+    long rem;
+} ldiv_t;
+
+typedef int (*__compar_fn_t) ();
+
+typedef struct {
+    int quot;
+    int rem;
+} div_t;
+
+
+char *__secure_getenv(char *);
+double __strtod_internal(char *, char **, int);
+float __strtof_internal(char *, char **, int);
+long __strtol_internal(char *, char **, int, int);
+long double __strtold_internal(char *, char **, int);
+long long __strtoll_internal(char *, char **, int, int);
+unsigned long __strtoul_internal(char *, char **, int, int);
+unsigned long long __strtoull_internal(char *, char **, int, int);
+long a64l(char *);
+void abort(void);
+int abs(int);
+int atexit(void);
+double atof(char *);
+int atoi(char *);
+long atol(char *);
+void *bsearch(void *, void *, size_t, size_t, __compar_fn_t);
+div_t div(int, int);
+double drand48(void);
+char *ecvt(double, int, int *, int *);
+double erand48(unsigned short);
+void exit(int);
+char *fcvt(double, int, int *, int *);
+char *gcvt(double, int, char *);
+char *getenv(char *);
+int getsubopt(char **, char **, char **);
+int grantpt(int);
+long jrand48(unsigned short);
+char *l64a(long);
+long labs(long);
+ldiv_t ldiv(long, long);
+long long llabs(long long);
+lldiv_t lldiv(long long, long long);
+long lrand48(void);
+int mblen(char *, size_t);
+size_t mbstowcs(wchar_t *, char *, size_t);
+int mbtowc(wchar_t *, char *, size_t);
+int mkstemp(char *);
+char *mktemp(char *);
+long mrand48(void);
+long nrand48(unsigned short);
+char *ptsname(int);
+int putenv(char *);
+void qsort(void *, size_t, size_t, __compar_fn_t);
+int rand(void);
+unsigned short *seed48(unsigned short);
+void srand48(long);
+int unlockpt(int);
+size_t wcstombs(char *, wchar_t *, size_t);
+int wctomb(char *, wchar_t);
+int system(char *);
+void setkey(char *);
+void *calloc(size_t, size_t);
+void free(void *);
+void *initstate(unsigned int, void *, size_t);
+void *malloc(size_t);
+int32_t random(void);
+void *realloc(void *, size_t);
+void *setstate(void *);
+void srand(unsigned int);
+void srandom(unsigned int);
+double strtod(char *, char **);
+float strtof(char *, char **);
+long strtol(char *, char **, int);
+long double strtold(char *, char **);
+long long strtoll(char *, char **, int);
+unsigned long strtoul(char *, char **, int);
+unsigned long long strtoull(char *, char **, int);
+void _Exit(int);
+size_t __ctype_get_mb_cur_max(void);
+char *realpath(char *, char *);
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>unistd.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown ssize_t;
-
-
-char **__environ;
+Unknown Type:".." char **__environ;
 __pid_t __getpgid(__pid_t);
 void _exit(int);
 int acct(char *);
@@ -9388,7 +10288,6 @@ ssize_t read(int, void *, size_t);
 ssize_t write(int, void *, size_t);
 char *crypt(char *, char *);
 void encrypt(char *, int);
-void setkey(char *);
 int access(char *, int);
 int brk(void *);
 int chdir(char *);
@@ -9439,13 +10338,13 @@ int ttyname_r(int, char *, size_t);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:43:19 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:51:40 2001 -->
 <SECT1 ID=librt>
 <TITLE>librt</TITLE>
 <PARA>
@@ -9531,7 +10430,7 @@ int lio_listio64(int, aiocb64 *, int, sigevent *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 </CHAPTER>

@@ -10,8 +10,8 @@ The X Libraries should be built thread-safe.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:44:15 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:52:36 2001 -->
 <SECT1 ID=libX11>
 <TITLE>libX11</TITLE>
 <PARA>
@@ -207,15 +207,25 @@ X11R6.4 Xlib - C library</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef unsigned long XcmsColorFormat;
+typedef int (*XcmsWhiteAdjustProc) ();
+
+typedef int (*XcmsCompressionProc) ();
+
+typedef struct _XcmsCCC {
+    Display *dpy;
+    int screenNumber;
+    Visual *visual;
+    XcmsColor clientWhitePt;
+     gamutCompProc;
+    XPointer gamutCompClientData;
+     whitePtAdjProc;
+    XPointer whitePtAdjClientData;
+    XcmsPerScrnInfo *pPerScrnInfo;
+} *XcmsCCC;
 
 typedef double XcmsFloat;
 
-typedef *Unknown Type:"" unknown _XcmsCCC * XcmsCCC;
-
-typedef int XcmsCompressionProc;
-
-typedef int XcmsWhiteAdjustProc;
+typedef unsigned long XcmsColorFormat;
 
 
 int XcmsAddColorSpace(XcmsColorSpace *);
@@ -273,7 +283,9 @@ int XcmsConvertColors(XcmsCCC, XcmsColor *, unsigned int, XcmsColorFormat,
 
 		      int *);
 XcmsCCC XcmsCreateCCC(Display *, int, Visual *, XcmsColor *,
-		      XcmsCompressionProc, XcmsWhiteAdjustProc);
+		      XcmsCompressionProc, XPointer, XcmsWhiteAdjustProc,
+
+		      XPointer);
 XcmsCCC XcmsDefaultCCC(Display *, int);
 Display *XcmsDisplayOfCCC(XcmsCCC);
 XcmsColorFormat XcmsFormatOfPrefix(char *);
@@ -297,8 +309,12 @@ int XcmsRGBiToRGB(XcmsCCC, XcmsColor *, unsigned int, int *);
 int XcmsScreenNumberOfCCC(XcmsCCC);
 XcmsColor *XcmsScreenWhitePointOfCCC(XcmsCCC);
 XcmsCCC XcmsSetCCCOfColormap(Display *, Colormap, XcmsCCC);
-XcmsCompressionProc XcmsSetCompressionProc(XcmsCCC, XcmsCompressionProc);
-XcmsWhiteAdjustProc XcmsSetWhiteAdjustProc(XcmsCCC, XcmsWhiteAdjustProc);
+XcmsCompressionProc XcmsSetCompressionProc(XcmsCCC, XcmsCompressionProc,
+
+					   XPointer);
+XcmsWhiteAdjustProc XcmsSetWhiteAdjustProc(XcmsCCC, XcmsWhiteAdjustProc,
+
+					   XPointer);
 int XcmsSetWhitePoint(XcmsCCC, XcmsColor *);
 int XcmsStoreColor(Display *, Colormap, XcmsColor *);
 int XcmsStoreColors(Display *, Colormap, XcmsColor *, unsigned int, int *);
@@ -331,9 +347,15 @@ Visual *XcmsVisualOfCCC(XcmsCCC);
 <PARA>
 </PARA>
 <SCREEN>
-typedef *char char *XPointer;
+typedef void *XVaNestedList;
 
-typedef *Unknown Type:"" unknown _XGC * GC;
+typedef struct _XIC *XIC;
+
+typedef struct _XIM *XIM;
+
+typedef struct _XOC *XFontSet;
+
+typedef struct _XOC *XOC;
 
 typedef union {
 
@@ -345,25 +367,23 @@ typedef union {
     XFontStruct *font;
 } XEDataObject;
 
-typedef *Unknown Type:"" unknown _XOM * XOM;
+typedef struct _XOM *XOM;
 
-typedef *Unknown Type:"" unknown _XOC * XOC;
+typedef struct _XGC *GC;
 
-typedef *Unknown Type:"" unknown _XOC * XFontSet;
+typedef char *XPointer;
 
-typedef *Unknown Type:"" unknown _XIM * XIM;
+typedef void (*XIDProc) ();
 
-typedef *Unknown Type:"" unknown _XIC * XIC;
+int (*XSynchronize) ()
 
-typedef void XIDProc;
+int (*XSetAfterFunction) ()
 
-typedef *void void *XVaNestedList;
+typedef int (*XErrorHandler) ();
 
-typedef int XErrorHandler;
+typedef int (*XIOErrorHandler) ();
 
-typedef int XIOErrorHandler;
-
-typedef void XConnectionWatchProc;
+typedef void (*XConnectionWatchProc) ();
 
 
 int XActivateScreenSaver(Display *);
@@ -725,7 +745,8 @@ int XSelectInput(Display *, Window, long);
 int XSendEvent(Display *, Window, int, long, XEvent *);
 char *XServerVendor(Display *);
 int XSetAccessControl(Display *, int);
-int XSetAfterFunction(Display *);
+
+fptr - XSetAfterFunction XSetAfterFunction(Display *);
 int XSetArcMode(Display *, GC, int);
 void XSetAuthorization(char *, int, char *, int);
 int XSetBackground(Display *, GC, unsigned long);
@@ -782,7 +803,8 @@ int XStoreNamedColor(Display *, Colormap, char *, unsigned long, int);
 KeySym XStringToKeysym(char *);
 int XSupportsLocale(void);
 int XSync(Display *, int);
-int XSynchronize(Display *);
+
+fptr - XSynchronize XSynchronize(Display *);
 int XTextExtents(XFontStruct *, char *, int, int *, int *, int *,
 		 XCharStruct *);
 int XTextExtents16(XFontStruct *, XChar2b *, int, int *, int *, int *,
@@ -854,9 +876,16 @@ int XwcTextPerCharExtents(XFontSet, wchar_t *, int, XRectangle *,
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown XICCEncodingStyle;
+typedef struct _XRegion *Region;
 
-typedef *Unknown Type:"" unknown _XRegion * Region;
+typedef enum {
+
+    XStringStyle,
+    XCompoundTextStyle,
+    XTextStyle,
+    XStdICCTextStyle,
+    XUTF8StringStyle
+} XICCEncodingStyle;
 
 typedef int XContext;
 
@@ -904,7 +933,7 @@ int XSetClassHint(Display *, Window, XClassHint *);
 int XSetIconSizes(Display *, Window, XIconSize *, int);
 int XSetNormalHints(Display *, Window, XSizeHints *);
 void XSetRGBColormaps(Display *, Window, XStandardColormap *, int, Atom);
-int XSetRegion(Display *, Region);
+int XSetRegion(Display *, GC, Region);
 int XSetSizeHints(Display *, Window, XSizeHints *, Atom);
 void XSetStandardColormap(Display *, Window, XStandardColormap *, Atom);
 int XSetStandardProperties(Display *, Window, char *, char *, Pixmap,
@@ -945,13 +974,13 @@ int XwcTextPropertyToTextList(Display *, XTextProperty *, wchar_t ** *,
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:44:27 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:52:47 2001 -->
 <SECT1 ID=libXext>
 <TITLE>libXext</TITLE>
 <PARA>
@@ -1144,19 +1173,14 @@ int XSecurityRevokeAuthorization(Display *, XSecurityAuthorization);
 <PARA>
 </PARA>
 <SCREEN>
-typedef typedef unsigned long XID;
-
-XSyncCounter;
-
-typedef typedef unsigned long XID;
-
-XSyncAlarm;
+typedef XID XSyncAlarm;
 
 typedef struct _XSyncValue {
-
     int hi;
     unsigned int lo;
 } XSyncValue;
+
+typedef XID XSyncCounter;
 
 
 int XSyncAwait(Display *, XSyncWaitCondition *, int);
@@ -1197,13 +1221,13 @@ void XSyncValueSubtract(XSyncValue *, XSyncValue, XSyncValue, int *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:44:50 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:53:11 2001 -->
 <SECT1 ID=libSM>
 <TITLE>libSM</TITLE>
 <PARA>
@@ -1263,27 +1287,30 @@ X11R6.4 X Session Managment Library</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef typedef *void void *IcePointer;
+typedef struct _SmsConn *SmsConn;
 
-SmPointer;
+typedef void (*SmcPropReplyProc) ();
 
-typedef *Unknown Type:"" unknown _SmcConn * SmcConn;
+typedef void (*SmcInteractProc) ();
 
-typedef *Unknown Type:"" unknown _SmsConn * SmsConn;
+typedef void (*SmcSaveYourselfPhase2Proc) ();
 
-typedef Unknown Type:"" unknown SmcCloseStatus;
+typedef enum {
 
-typedef void SmcSaveYourselfPhase2Proc;
+    SmcClosedNow,
+    SmcClosedASAP,
+    SmcConnectionInUse
+} SmcCloseStatus;
 
-typedef void SmcInteractProc;
+typedef void (*SmsErrorHandler) ();
 
-typedef void SmcPropReplyProc;
+typedef struct _SmcConn *SmcConn;
 
-typedef int SmsNewClientProc;
+typedef IcePointer SmPointer;
 
-typedef void SmcErrorHandler;
+typedef void (*SmcErrorHandler) ();
 
-typedef void SmsErrorHandler;
+typedef int (*SmsNewClientProc) ();
 
 
 void SmFreeProperty(SmProp *);
@@ -1331,13 +1358,13 @@ void SmsShutdownCancelled(SmsConn);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:44:39 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:53:00 2001 -->
 <SECT1 ID=libICE>
 <TITLE>libICE</TITLE>
 <PARA>
@@ -1399,35 +1426,58 @@ X11R6.4 X Inter-Client Exchange (ICE) Protocol</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef *void void *IcePointer;
+typedef struct _IceConn *IceConn;
 
-typedef Unknown Type:"" unknown IceConnectStatus;
+typedef struct _IceListenObj *IceListenObj;
 
-typedef Unknown Type:"" unknown IceProtocolSetupStatus;
+typedef void (*IceIOErrorHandler) ();
 
-typedef Unknown Type:"" unknown IceCloseStatus;
+typedef void (*IceErrorHandler) ();
 
-typedef Unknown Type:"" unknown IceProcessMessagesStatus;
+typedef void (*IcePingReplyProc) ();
 
-typedef *Unknown Type:"" unknown _IceConn * IceConn;
+typedef void (*IceIOErrorProc) ();
 
-typedef *Unknown Type:"" unknown _IceListenObj * IceListenObj;
+typedef void (*IceProtocolActivateProc) ();
 
-typedef void IceWatchProc;
+typedef int (*IceProtocolSetupProc) ();
 
-typedef int IceHostBasedAuthProc;
+typedef int (*IceHostBasedAuthProc) ();
 
-typedef int IceProtocolSetupProc;
+typedef void (*IceWatchProc) ();
 
-typedef void IceProtocolActivateProc;
+typedef enum {
 
-typedef void IceIOErrorProc;
+    IceProcessMessagesSuccess,
+    IceProcessMessagesIOError,
+    IceProcessMessagesConnectionClosed
+} IceProcessMessagesStatus;
 
-typedef void IcePingReplyProc;
+typedef enum {
 
-typedef void IceErrorHandler;
+    IceClosedNow,
+    IceClosedASAP,
+    IceConnectionInUse,
+    IceStartedShutdownNegotiation
+} IceCloseStatus;
 
-typedef void IceIOErrorHandler;
+typedef void *IcePointer;
+
+typedef enum {
+
+    IceProtocolSetupSuccess,
+    IceProtocolSetupFailure,
+    IceProtocolSetupIOError,
+    IceProtocolAlreadyActive
+} IceProtocolSetupStatus;
+
+typedef enum {
+
+    IceConnectPending,
+    IceConnectAccepted,
+    IceConnectRejected,
+    IceConnectIOError
+} IceConnectStatus;
 
 
 IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus *);
@@ -1503,13 +1553,13 @@ int IceWriteAuthFileEntry(FILE *, IceAuthFileEntry *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:45:02 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:53:22 2001 -->
 <SECT1 ID=libXt>
 <TITLE>libXt</TITLE>
 <PARA>
@@ -1638,13 +1688,13 @@ X11R.4 X Toolkit Intrinsics</PARA>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
-<!--    at Wed Apr 25 19:45:13 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    at Mon Apr 30 20:53:33 2001 -->
 <SECT1 ID=libGL>
 <TITLE>libGL</TITLE>
 <PARA>
@@ -1799,33 +1849,33 @@ OpenGL® Application Binary Interface for Linux</PARA>
 <PARA>
 </PARA>
 <SCREEN>
-typedef unsigned int GLenum;
-
-typedef unsigned char GLboolean;
-
-typedef unsigned int GLbitfield;
-
-typedef char GLbyte;
-
-typedef short GLshort;
-
-typedef int GLint;
-
-typedef unsigned char GLubyte;
-
-typedef unsigned short GLushort;
-
-typedef unsigned int GLuint;
-
-typedef int GLsizei;
+typedef float GLclampf;
 
 typedef float GLfloat;
 
-typedef float GLclampf;
+typedef int GLsizei;
+
+typedef unsigned int GLuint;
+
+typedef unsigned short GLushort;
+
+typedef unsigned char GLubyte;
+
+typedef int GLint;
+
+typedef short GLshort;
+
+typedef char GLbyte;
+
+typedef unsigned int GLbitfield;
+
+typedef unsigned char GLboolean;
 
 typedef double GLdouble;
 
 typedef double GLclampd;
+
+typedef unsigned int GLenum;
 
 
 void glAccum(GLenum, GLfloat);
@@ -2265,25 +2315,25 @@ void glDrawRangeElements(GLenum, GLuint, GLuint, GLsizei, GLenum,
 <PARA>
 </PARA>
 <SCREEN>
-typedef Unknown Type:"" unknown GLXContextID;
+typedef XID GLXPixmap;
 
-typedef Unknown Type:"" unknown GLXPixmap;
+typedef struct __GLXcontextRec *GLXContext;
 
-typedef Unknown Type:"" unknown GLXDrawable;
+typedef struct __GLXFBConfigRec *GLXFBConfig;
 
-typedef Unknown Type:"" unknown GLXPbuffer;
+typedef XID GLXContextID;
 
-typedef Unknown Type:"" unknown GLXWindow;
+typedef XID GLXWindow;
 
-typedef *Unknown Type:"" unknown __GLXcontextRec * GLXContext;
+typedef XID GLXPbuffer;
 
-typedef *Unknown Type:"" unknown __GLXFBConfigRec * GLXFBConfig;
+typedef XID GLXDrawable;
 
 
 XVisualInfo *glXChooseVisual(Display *, int, int *);
 void glXCopyContext(Display *, GLXContext, GLXContext, unsigned long);
 GLXContext glXCreateContext(Display *, XVisualInfo *, GLXContext, int);
-GLXPixmap glXCreateGLXPixmap(Display *, XVisualInfo *);
+GLXPixmap glXCreateGLXPixmap(Display *, XVisualInfo *, Pixmap);
 void glXDestroyContext(Display *, GLXContext);
 void glXDestroyGLXPixmap(Display *, GLXPixmap);
 void glXFreeContextEXT(Display *, GLXContext);
@@ -2302,7 +2352,7 @@ char *glXQueryExtensionsString(Display *, int);
 char *glXQueryServerString(Display *, int, int);
 int glXQueryVersion(Display *, int *, int *);
 void glXSwapBuffers(Display *, GLXDrawable);
-void glXUseXFont(int, int, int);
+void glXUseXFont(Font, int, int, int);
 void glXWaitGL(void);
 void glXWaitX(void);
 void glXGetSelectedEvent(Display *, GLXDrawable, unsigned long *);
@@ -2317,9 +2367,9 @@ void glXQueryDrawable(Display *, GLXDrawable, int, unsigned int *);
 void glXDestroyPbuffer(Display *, GLXPbuffer);
 GLXPbuffer glXCreatePbuffer(Display *, GLXFBConfig, int *);
 void glXDestroyPixmap(Display *, GLXPixmap);
-GLXPixmap glXCreatePixmap(Display *, GLXFBConfig, int *);
+GLXPixmap glXCreatePixmap(Display *, GLXFBConfig, Pixmap, int *);
 void glXDestroyWindow(Display *, GLXWindow);
-GLXWindow glXCreateWindow(Display *, GLXFBConfig, int *);
+GLXWindow glXCreateWindow(Display *, GLXFBConfig, Window, int *);
 XVisualInfo *glXGetVisualFromFBConfig(Display *, GLXFBConfig);
 int glXGetFBConfigAttrib(Display *, GLXFBConfig, int, int *);
 GLXFBConfig *glXChooseFBConfig(Display *, int, int *, int *);
@@ -2327,7 +2377,7 @@ GLXFBConfig *glXChooseFBConfig(Display *, int, int *, int *);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.20 2001/04/25 17:38:13 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
 
 
 </CHAPTER>
