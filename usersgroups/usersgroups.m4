@@ -8,43 +8,26 @@ A "user name" is a string that is used to identify a user.  A "login name" is
 a user name that is associated with a system login.   A "user id" is a non
 negative integer, which can be contained in an object of type
 uid_t, that is used to identify a system user.  
-When the identify of a user is associated with a process, a user ID value is referred to as a real user ID, or an effective user ID.  [POSIX 1.003.1-1996]
+When the identify of a user is associated with a process, a user ID value is 
+referred to as a real user ID, or an effective user ID.  [POSIX 1.003.1-1996]
 </PARA>
 <PARA>
 A "group name" is a string that is used to identify a set of users.  
-A "group id" is a non negative interger, which can be contained in a object of type gid_t, that is used to identify a group of system users.
+A "group id" is a non negative interger, which can be contained in a object 
+of type gid_t, that is used to identify a group of system users.
 Each system user is a member of at least one group.   When the identity of a
-group is associated with a process, agroup ID value is referred to as a real group ID, or an effective group ID.  [POSIX 1003.1-1996]
+group is associated with a process, agroup ID value is referred to as a real 
+group ID, or an effective group ID.  [POSIX 1003.1-1996]
 </PARA>
 
 <SECT1 ID="passwd">
 <TITLE>User Database</TITLE>
 <PARA>
-The user database, "/etc/passwd", consists of newline separated records, one
-per user, conaining six colon (":") separated fields.  Each field is described 
-in the POSIX.1 header file "pwd.h".
-</PARA>
-<TABLE>
-<TITLE>passwd</TITLE>
-<TGROUP COLS=3>
-<TBODY>
-<ROW><ENTRY>Field</ENTRY><ENTRY>Type</ENTRY><ENTRY>API</ENTRY></ROW>
-<ROW><ENTRY>name</ENTRY><ENTRY>char *</ENTRY><ENTRY>pw_name</ENTRY></ROW>
-<ROW><ENTRY>password</ENTRY><ENTRY>char *</ENTRY><ENTRY>pw_passwd</ENTRY></ROW>
-<ROW><ENTRY>uid</ENTRY><ENTRY>uid_t</ENTRY><ENTRY>pw_uid</ENTRY></ROW>
-<ROW><ENTRY>gid</ENTRY><ENTRY>gid_t</ENTRY><ENTRY>pw_gid</ENTRY></ROW>
-<ROW><ENTRY>gecos</ENTRY><ENTRY>char *</ENTRY><ENTRY>pw_gecos</ENTRY></ROW>
-<ROW><ENTRY>home dir</ENTRY><ENTRY>char *</ENTRY><ENTRY>pw_dir</ENTRY></ROW>
-<ROW><ENTRY>shell</ENTRY><ENTRY>char *</ENTRY><ENTRY>pw_shell</ENTRY></ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
-<PARA>
 The passwd(5) user database should only be read and updated form the 
 following APIs: getpwent(3), setpwent(3), endpwent(3), getpwnam(3),
 getpwuid(3), putpwent(3), and passwd(1).  
-The layout of the passwd(5) file is not specified by this standard; 
-however, it is shown to illustrate what is retrievable from APIs.
+The layout of the passwd(5) file is not specified by this standard,
+because it is access via an API.
 </PARA>
 <PARA>
 If the initial user program field is null, the system default is used.  
@@ -56,26 +39,10 @@ that field is implementation defined.
 <SECT1 ID="group">
 <TITLE>Group Database</TITLE>
 <PARA>
-The group database, "/etc/group", consists of newline separated records, 
-one per group, containing two colon (":") separated fields.  Each field is 
-described in the POSIX.1 header file "grp.h".
-</PARA>
-<TABLE>
-<TITLE>group</TITLE>
-<TGROUP COLS=3>
-<TBODY>
-<ROW><ENTRY>Field</ENTRY><ENTRY>Type</ENTRY><ENTRY>API</ENTRY></ROW>
-<ROW><ENTRY>group</ENTRY><ENTRY>char *</ENTRY><ENTRY>gr_name</ENTRY></ROW>
-<ROW><ENTRY>gid</ENTRY><ENTRY>gid_t</ENTRY><ENTRY>gr_gid</ENTRY></ROW>
-<ROW><ENTRY>member</ENTRY><ENTRY>char **</ENTRY><ENTRY>gr_mem</ENTRY></ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
-<PARA>
 The group(5) user database should only be red from the following APIs:
 getgrent(3), setgrent(3), sendgrent(3), and groups(1).
-The layout of the group(5) file is not specified by this standard; 
-however, it is shown to illustrate what is retrievable from APIs.
+The layout of the group(5) file is not specified by this standard, because
+it is access via an API.
 </PARA>
 <NOTE>
 <PARA>
@@ -107,20 +74,33 @@ UNIX-like systems.
 <SECT1 ID="usernames">
 <TITLE>User & Group Names</TITLE>
 <PARA>
-Below is a table of default mnemonic user and group names.   This 
-specification makes no attempt to numerically assign uid or gid numbers,
-nor try to numericially group them.  The exception is the uid and gid for 
-"root" which are equal to 0, and the uid and gid for "bin" which are equal 
-to 1.
+Below is a table of required mnemonic user and group names.   This 
+specification makes no attempt to numerically assign uid or gid numbers.
+The exceptions are the uid and gid for "root" which is equal to 0, and 
+the uid and gid for "bin" which is equal to 1.
 </PARA>
 <TABLE>
-<TITLE>User & Group Names</TITLE>
+<TITLE>Required User & Group Names</TITLE>
 <TGROUP COLS=3>
 <TBODY>
 <ROW><ENTRY>User</ENTRY><ENTRY>Group</ENTRY><ENTRY>Comments</ENTRY></ROW>
 <ROW><ENTRY>root</ENTRY><ENTRY>root</ENTRY><ENTRY>Administrative user with no restrictions</ENTRY></ROW>
 <ROW><ENTRY>bin</ENTRY><ENTRY>bin</ENTRY><ENTRY>Administrative user with some restrictions</ENTRY></ROW>
 <ROW><ENTRY>daemon</ENTRY><ENTRY>daemon</ENTRY><ENTRY>Subprocess special privileges</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+Below is a table of optional mnemonic user and group names.   This 
+specification makes no attempt to numerically assign uid or gid numbers.
+If the username exists on a system, then they should be in the suggested
+corresponding group.
+</PARA>
+<TABLE>
+<TITLE>Optional User & Group Names</TITLE>
+<TGROUP COLS=3>
+<TBODY>
+<ROW><ENTRY>User</ENTRY><ENTRY>Group</ENTRY><ENTRY>Comments</ENTRY></ROW>
 <ROW><ENTRY>adm</ENTRY><ENTRY>adm</ENTRY><ENTRY>Administrative special privileges</ENTRY></ROW>
 <ROW><ENTRY>lp</ENTRY><ENTRY>lp</ENTRY><ENTRY>Printer special privileges</ENTRY></ROW>
 <ROW><ENTRY>sync</ENTRY><ENTRY>sync</ENTRY><ENTRY>Login to sync the system</ENTRY></ROW>
@@ -155,6 +135,17 @@ directory permissions a user may have. Applications should enforce user
 only file permissions on private files such as mailboxes.  The location of
 the users home directory is also not defined by policy other than the
 recommendations of the FHS and must be obtained by the *pwnam(3) calls.
+</PARA>
+</SECT1>
+<SECT1 ID="uidrange">
+<TITLE>UID Ranges</TITLE>
+<PARA>
+The system UIDs from 0 to 99 should be statically allocated by the system.
+These static assignments should be defined by a common registry.
+</PARA>
+<PARA>
+The system UIDs form 100 to 499 should be reserved for dynamically
+allocation by system administrators and post install scripts using useradd(1).
 </PARA>
 </SECT1>
 
