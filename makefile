@@ -35,12 +35,14 @@ source:
 autobuild:
 	find . -name '*.m4' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
+	tar czf LSBrtfs.tar.gz `find . -name '*rtf'`
 
 relbuild:
 	find . -name '*.m4' | xargs touch
 	make gensrc 
 	make source 
 	make all
+	tar czf LSBrtfs.tar.gz `find . -name '*rtf'`
 
 clean::
 	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
