@@ -21,7 +21,7 @@ gensrc:
 	../../../mklibspec -a PPC32 -l libpthread >libpthread.sgml
 	../../../mklibspec -a PPC32 -l libdl >libdl.sgml
 	../../../mklibspec -a PPC32 -l libcrypt >libcrypt.sgml
-	../../../mklibspec -a PPC32 -c 2 -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
+	../../../mklibspec -a PPC32 -c 2 -l libstdcxx | c++filt | ../../../fixc++spec >libstdcxx.sgml
 
 clean:
 	rm -f $(FILES)
