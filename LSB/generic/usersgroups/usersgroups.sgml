@@ -36,8 +36,7 @@ be made using the provided commands.
 <PARA>
 Below is a table of required mnemonic user and group names.   This 
 specification makes no attempt to numerically assign uid or gid numbers.
-The exceptions are the uid and gid for "root" which is equal to 0, and 
-the uid and gid for "bin" which is equal to 1.
+The exception is the uid and gid for "root" which are equal to 0.
 </PARA>
 <TABLE>
 <TITLE>Required User & Group Names</TITLE>

@@ -18,8 +18,8 @@ the Linux Standard Base Specification.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
-<!--    at Mon Mar 25 19:09:04 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
+<!--    at Mon Apr 15 19:52:14 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -80,6 +80,1402 @@ Linux Standard Base</PARA>
 <TITLE>Data Definitions for libc</TITLE>
 <PARA>
 </PARA>
+<SECT2>
+<TITLE>ctype.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+enum
+{
+  _ISupper, _ISlower, _ISalpha, _ISdigit, _ISxdigit, _ISspace, _ISprint,
+    _ISgraph, _ISblank, _IScntrl, _ISpunct, _ISalnum
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>dirent.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef struct __dirstream DIR;
+
+
+
+
+
+struct dirent
+{
+  long d_ino;
+  off_t d_off;
+  unsigned short d_reclen;
+  char d_name[256];
+}
+ ;
+struct dirent64
+{
+  uint64_t d_ino;
+  int64_t d_off;
+  unsigned short d_reclen;
+  unsigned char d_type;
+  char d_name[1];
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>fcntl.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct flock
+{
+  short l_type;
+  short l_whence;
+  off_t l_start;
+  off_t l_len;
+  pid_t l_pid;
+}
+ ;
+struct flock64
+{
+  short l_type;
+  short l_whence;
+  loff_t l_start;
+  loff_t l_len;
+  pid_t l_pid;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>ftw.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+enum
+{
+  FTW_F, FTW_D, FTW_DNR, FTW_NS, FTW_SL, FTW_DP, FTW_SLN
+}
+ ;
+
+
+enum
+{
+  FTW_PHYS, FTW_MOUNT, FTW_CHDIR, FTW_DEPTH
+}
+ ;
+
+
+struct FTW
+{
+  int base;
+  int level;
+}
+ ;
+
+
+typedef int (*__ftw_func_t) (char *__filename, struct stat * __status,
+			     int __flag);
+typedef int (*__ftw64_func_t) (char *__filename, struct stat64 * __status,
+			       int __flag);
+typedef int (*__nftw_func_t) (char *__filename, struct stat * __status,
+			      int __flag, struct FTW * __info);
+typedef int (*__nftw64_func_t) (char *__filename, struct stat64 * __status,
+				int __flag, struct FTW * __info);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>getopt.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct option
+{
+  char *name;
+  int has_arg;
+  int *flag;
+  int val;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>glob.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef struct
+{
+  __size_t gl_pathc;
+  char **gl_pathv;
+  __size_t gl_offs;
+  int gl_flags;
+  void (*gl_closedir) (void);
+  struct dirent *(*gl_readdir) (void);
+  void *(*gl_opendir) (void);
+  int (*gl_lstat) (void);
+  int (*gl_stat) (void);
+}
+glob_t;
+
+
+typedef struct
+{
+  __size_t gl_pathc;
+  char **gl_pathv;
+  __size_t gl_offs;
+  int gl_flags;
+  void (*gl_closedir) (void);
+  struct dirent *(*gl_readdir) (void);
+  void *(*gl_opendir) (void);
+  int (*gl_lstat) (void);
+  int (*gl_stat) (void);
+}
+glob64_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>grp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct group
+{
+  char *gr_name;
+  char *gr_passwd;
+  gid_t gr_gid;
+  char **gr_mem;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>iconv.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef void *iconv_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>inttypes.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef lldiv_t imaxdiv_t;
+typedef int int32_t;
+typedef long long intmax_t;
+typedef unsigned long long uintmax_t;
+typedef unsigned int uint32_t;
+typedef long long uint64_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>locale.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+struct lconv
+{
+  char *decimal_point;
+  char *thousands_sep;
+  char *grouping;
+  char *int_curr_symbol;
+  char *currency_symbol;
+  char *mon_decimal_point;
+  char *mon_thousands_sep;
+  char *mon_grouping;
+  char *positive_sign;
+  char *negative_sign;
+  char int_frac_digits;
+  char frac_digits;
+  char p_cs_precedes;
+  char p_sep_by_space;
+  char n_cs_precedes;
+  char n_sep_by_space;
+  char p_sign_posn;
+  char n_sign_posn;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>math.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct exception
+{
+  int type;
+  char *name;
+  double arg1;
+  double arg2;
+  double retval;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>netdb.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct servent
+{
+  char *s_name;
+  char **s_aliases;
+  int s_port;
+  char *s_proto;
+}
+ ;
+struct hostent
+{
+  char *h_name;
+  char **h_aliases;
+  int h_addrtype;
+  socklen_t h_length;
+  char **h_addr_list;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>netinet/in.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+struct in_addr
+{
+  uint32_t s_addr;
+}
+ ;
+
+
+struct sockaddr_in
+{
+  sa_family_t sin_family;
+  unsigned short sin_port;
+  struct in_addr sin_addr;
+  unsigned char __pad[1];
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>nl_types.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef void *nl_catd;
+
+
+typedef int nl_item;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>pwd.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+struct passwd
+{
+  char *pw_name;
+  char *pw_passwd;
+  uid_t pw_uid;
+  gid_t pw_gid;
+  char *pw_gecos;
+  char *pw_dir;
+  char *pw_shell;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>regex.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef unsigned long reg_syntax_t;
+
+
+
+
+
+typedef struct re_pattern_buffer
+{
+  unsigned char *buffer;
+  unsigned long allocated;
+  unsigned long used;
+  reg_syntax_t syntax;
+  char *fastmap;
+  char *translate;
+  size_t re_nsub;
+  unsigned int can_be_null;
+  unsigned int regs_allocated;
+  unsigned int fastmap_accurate;
+  unsigned int no_sub;
+  unsigned int not_bol;
+  unsigned int not_eol;
+  unsigned int newline_anchor;
+}
+regex_t;
+typedef int regoff_t;
+typedef struct
+{
+  regoff_t rm_so;
+  regoff_t rm_eo;
+}
+regmatch_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>search.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef struct entry
+{
+  char *key;
+  void *data;
+}
+ENTRY;
+typedef void (*__action_fn_t) (void *__nodep, VISIT __value, int __level);
+typedef enum
+{
+  FIND, ENTER
+}
+ACTION;
+typedef enum
+{
+  preorder, postorder, endorder, leaf
+}
+VISIT;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>setjmp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef int __jmp_buf[6];
+
+
+struct __jmp_buf_tag
+{
+  __jmp_buf __jmpbuf;
+  int __mask_was_saved;
+  sigset_t __saved_mask;
+}
+ ;
+
+
+typedef struct __jmp_buf_tag jmp_buf[1];
+typedef jmp_buf sigjmp_buf;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>signal.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef int sig_atomic_t;
+struct sigstack
+{
+  void *ss_sp;
+  int ss_onstack;
+}
+ ;
+
+
+
+
+
+typedef void (*__sighandler_t) (void);
+
+
+typedef union sigval
+{
+  int sival_int;
+  void *sival_ptr;
+}
+sigval_t;
+
+
+union _sigev_un
+{
+  int _pad[SI_PAD_SIZE];
+  struct
+  {
+    void (*sigev_thread_func) (void);
+    void *_attribute;
+  }
+  _sigev_thread;
+}
+ ;
+typedef struct sigevent
+{
+  sigval_t sigev_value;
+  int sigev_signo;
+  int sigev_notify;
+  union _sigev_un _sigev_un;
+}
+sigevent_t;
+
+
+typedef struct siginfo
+{
+  int si_signo;
+  int si_errno;
+  int si_code;
+  union
+  {
+    int _pad[SI_PAD_SIZE];
+    struct
+    {
+      pid_t si_pid;
+      uid_t si_uid;
+    }
+    _kill;
+    struct
+    {
+      unsigned int _timer1;
+      unsigned int _timer2;
+    }
+    _timer;
+    struct
+    {
+      pid_t _pid;
+      uid_t _uid;
+      sigval_t _sigval;
+    }
+    _rt;
+    struct
+    {
+      pid_t _pid;
+      uid_t _uid;
+      int _status;
+      clock_t _utime;
+      clock_t _stime;
+    }
+    _sigchld;
+    struct
+    {
+      void *_addr;
+    }
+    _sigfault;
+    struct
+    {
+      int _band;
+      int _fd;
+    }
+    _sigpoll;
+  }
+  _sifields;
+}
+siginfo_t;
+
+
+typedef struct
+{
+  unsigned long sig[_NSIG_WORDS];
+}
+sigset_t;
+
+
+struct sigaction
+{
+  union
+  {
+    __sighandler_t _sa_handler;
+    void (*_sa_sigaction) (void);
+  }
+  __sigaction_handler;
+  unsigned long sa_flags;
+  void (*sa_restorer) (void);
+  sigset_t sa_mask;
+}
+ ;
+
+
+typedef struct sigaltstack
+{
+  void *ss_sp;
+  int ss_flags;
+  size_t ss_size;
+}
+stack_t;
+
+
+struct _fpreg
+{
+  unsigned short significand[4];
+  unsigned short exponent;
+}
+ ;
+struct _fpxreg
+{
+  unsigned short significand[4];
+  unsigned short exponent;
+  unsigned short padding[3];
+}
+ ;
+struct _xmmreg
+{
+  unsigned long element[4];
+}
+ ;
+
+
+struct _fpstate
+{
+  unsigned long cw;
+  unsigned long sw;
+  unsigned long tag;
+  unsigned long ipoff;
+  unsigned long cssel;
+  unsigned long dataoff;
+  unsigned long datasel;
+  struct _fpreg _st[8];
+  unsigned short status;
+  unsigned short magic;
+  unsigned long _fxsr_env[6];
+  unsigned long mxcsr;
+  unsigned long reserved;
+  struct _fpxreg _fxsr_st[8];
+  struct _xmmreg _xmm[8];
+  unsigned long padding[56];
+}
+ ;
+
+
+struct sigcontext
+{
+  unsigned short gs;
+  unsigned short __gsh;
+  unsigned short fs;
+  unsigned short __fsh;
+  unsigned short es;
+  unsigned short __esh;
+  unsigned short ds;
+  unsigned short __dsh;
+  unsigned long edi;
+  unsigned long esi;
+  unsigned long ebp;
+  unsigned long esp;
+  unsigned long ebx;
+  unsigned long edx;
+  unsigned long ecx;
+  unsigned long eax;
+  unsigned long trapno;
+  unsigned long err;
+  unsigned long eip;
+  unsigned short cs;
+  unsigned short __csh;
+  unsigned long eflags;
+  unsigned long esp_at_signal;
+  unsigned short ss;
+  unsigned short __ssh;
+  struct _fpstate fpstate;
+  unsigned long oldmask;
+  unsigned long cr2;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>stdio.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef struct _IO_FILE *FILE;
+typedef off_t fpos_t;
+typedef off64_t fpos64_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>stdlib.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef int (*__compar_fn_t) (void);
+
+
+typedef struct
+{
+  int quot;
+  int rem;
+}
+div_t;
+
+
+typedef struct
+{
+  long quot;
+  long rem;
+}
+ldiv_t;
+
+
+typedef struct
+{
+  long quot;
+  long rem;
+}
+lldiv_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/ioctl.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define TIOCNOTTY	0x5422
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/ipc.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct sembuf
+{
+  short sem_num;
+  short sem_op;
+  short sem_flg;
+}
+ ;
+struct ipc_perm
+{
+  key_t key;
+  uid_t uid;
+  gid_t gid;
+  uid_t cuid;
+  gid_t cgid;
+  mode_t mode;
+  unsigned short seq;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/msg.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef unsigned long msgqnum_t;
+typedef unsigned long msglen_t;
+
+
+struct msqid_ds
+{
+  struct ipc_perm msg_perm;
+  time_t msg_stime;
+  unsigned long __unused1;
+  time_t msg_rtime;
+  unsigned long __unused2;
+  time_t msg_ctime;
+  unsigned long __unused3;
+  unsigned long __msg_cbytes;
+  msgqnum_t msg_qnum;
+  msglen_t msg_qbytes;
+  pid_t msg_lspid;
+  pid_t msg_lrpid;
+  unsigned long __unused4;
+  unsigned long __unused5;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/resource.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef unsigned long rlim_t;
+
+
+struct rlimit
+{
+  rlim_t rlim_cur;
+  rlim_t rlim_max;
+}
+ ;
+struct rlimit64
+{
+  rlim_t rlim_cur;
+  rlim_t rlim_max;
+}
+ ;
+
+
+struct rusage
+{
+  struct timeval ru_utime;
+  struct timeval ru_stime;
+  long ru_maxrss;
+  long ru_ixrss;
+  long ru_idrss;
+  long ru_isrss;
+  long ru_minflt;
+  long ru_majflt;
+  long ru_nswap;
+  long ru_inblock;
+  long ru_oublock;
+  long ru_msgsnd;
+  long ru_msgrcv;
+  long ru_nsignals;
+  long ru_nvcsw;
+  long ru_nivcsw;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/sem.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct semid_ds
+{
+  struct ipc_perm sem_perm;
+  time_t sem_otime;
+  unsigned long __unused1;
+  time_t sem_ctime;
+  unsigned long __unused2;
+  unsigned long sem_nsems;
+  unsigned long __unused3;
+  unsigned long __unused4;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/shm.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef unsigned long shmatt_t;
+
+
+struct shmid_ds
+{
+  struct ipc_perm shm_perm;
+  int shm_segsz;
+  time_t shm_atime;
+  unsigned long __unused1;
+  time_t shm_dtime;
+  unsigned long __unused2;
+  time_t shm_ctime;
+  unsigned long __unused3;
+  pid_t shm_cpid;
+  pid_t shm_lpid;
+  shmatt_t shm_nattch;
+  unsigned long __unused4;
+  unsigned long __unused5;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/socket.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct linger
+{
+  int l_onoff;
+  int l_linger;
+}
+ ;
+struct cmsghdr
+{
+  size_t cmsg_len;
+  int cmsg_level;
+  int cmsg_type;
+}
+ ;
+struct iovec
+{
+  void *iov_base;
+  size_t iov_len;
+}
+ ;
+
+
+typedef unsigned short sa_family_t;
+typedef unsigned int socklen_t;
+
+
+struct sockaddr
+{
+  sa_family_t sa_family;
+  char sa_data[14];
+}
+ ;
+
+
+struct msghdr
+{
+  void *msg_name;
+  int msg_namelen;
+  struct iovec *msg_iov;
+  size_t msg_iovlen;
+  void *msg_control;
+  size_t msg_controllen;
+  unsigned int msg_flags;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/stat.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct stat
+{
+  unsigned short st_dev;
+  unsigned short __pad1;
+  unsigned long st_ino;
+  unsigned short st_mode;
+  unsigned short st_nlink;
+  unsigned short st_uid;
+  unsigned short st_gid;
+  unsigned short st_rdev;
+  unsigned short __pad2;
+  unsigned long st_size;
+  unsigned long st_blksize;
+  unsigned long st_blocks;
+  unsigned long st_atime;
+  unsigned long __unused1;
+  unsigned long st_mtime;
+  unsigned long __unused2;
+  unsigned long st_ctime;
+  unsigned long __unused3;
+  unsigned long __unused4;
+  unsigned long __unused5;
+}
+ ;
+struct stat64
+{
+  unsigned short st_dev;
+  unsigned char __pad0[1];
+  unsigned long __st_ino;
+  unsigned int st_mode;
+  unsigned int st_nlink;
+  unsigned long st_uid;
+  unsigned long st_gid;
+  unsigned short st_rdev;
+  unsigned char __pad3[1];
+  long st_size;
+  unsigned long st_blksize;
+  unsigned long st_blocks;
+  unsigned long __pad4;
+  unsigned long st_atime;
+  unsigned long __pad5;
+  unsigned long st_mtime;
+  unsigned long __pad6;
+  unsigned long st_ctime;
+  unsigned long __pad7;
+  unsigned long st_ino;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/time.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct timezone
+{
+  int tz_minuteswest;
+  int tz_dsttime;
+}
+ ;
+
+
+
+
+
+
+
+
+struct timespec
+{
+  time_t tv_sec;
+  long tv_nsec;
+}
+ ;
+
+
+
+
+
+struct timeval
+{
+  time_t tv_sec;
+  suseconds_t tv_usec;
+}
+ ;
+
+
+struct itimerval
+{
+  struct timeval it_interval;
+  struct timeval it_value;
+}
+ ;
+struct itimerspec
+{
+  struct timespec it_interval;
+  struct timespec it_value;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/timeb.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct timeb
+{
+  time_t time;
+  unsigned short millitm;
+  short timezone;
+  short dstflag;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/times.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct tms
+{
+  clock_t tms_utime;
+  clock_t tms_stime;
+  clock_t tms_cutime;
+  clock_t tms_cstime;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/utsname.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct utsname
+{
+  char sysname[65];
+  char nodename[65];
+  char release[65];
+  char version[65];
+  char machine[65];
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/wait.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef enum
+{
+  P_ALL, P_PID, P_PGID
+}
+idtype_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>termios.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef int speed_t;
+typedef unsigned char cc_t;
+typedef unsigned int tcflag_t;
+
+
+struct termios
+{
+  tcflag_t c_iflag;
+  tcflag_t c_oflag;
+  tcflag_t c_cflag;
+  tcflag_t c_lflag;
+  cc_t c_line;
+  cc_t c_cc[NCCS];
+  speed_t c_ispeed;
+  speed_t c_ospeed;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>time.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct tm
+{
+  int tm_sec;
+  int tm_min;
+  int tm_hour;
+  int tm_mday;
+  int tm_mon;
+  int tm_year;
+  int tm_wday;
+  int tm_yday;
+  int tm_isdst;
+  long tm_gmtoff;
+  char *tm_zone;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>ucontext.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef int greg_t;
+#define NGREG	19
+
+
+
+
+
+typedef greg_t gregset_t[19];
+
+
+
+
+
+struct _libc_fpreg
+{
+  unsigned short significand[4];
+  unsigned short exponent;
+}
+ ;
+
+
+
+
+
+struct _libc_fpstate
+{
+  unsigned long cw;
+  unsigned long sw;
+  unsigned long tag;
+  unsigned long ipoff;
+  unsigned long cssel;
+  unsigned long dataoff;
+  unsigned long datasel;
+  struct _libc_fpreg _st[8];
+  unsigned long status;
+}
+ ;
+typedef struct _libc_fpstate
+{
+  unsigned long cw;
+  unsigned long sw;
+  unsigned long tag;
+  unsigned long ipoff;
+  unsigned long cssel;
+  unsigned long dataoff;
+  unsigned long datasel;
+  struct _libc_fpreg _st[8];
+  unsigned long status;
+}
+fpregset_t;
+
+
+typedef struct mcontext
+{
+  gregset_t gregs;
+  fpregset_t fpregs;
+  unsigned long oldmask;
+  unsigned long cr2;
+}
+mcontext_t;
+
+
+typedef struct ucontext
+{
+  unsigned long uc_flags;
+  struct ucontext *uc_link;
+  stack_t uc_stack;
+  mcontext_t uc_mcontext;
+  sigset_t uc_sigmask;
+  struct _libc_fpstate __fpregs_mem;
+}
+ucontext_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>unistd.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef long long off64_t;
+typedef int *intptr_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>utime.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct utimbuf
+{
+  time_t actime;
+  time_t modtime;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>wchar.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef struct
+{
+  int count;
+  wint_t value;
+}
+mbstate_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>wctype.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef unsigned long wctype_t;
+typedef int wctrans_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>wordexp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+enum
+{
+  WRDE_DOOFFS, WRDE_APPEND, WRDE_NOCMD, WRDE_REUSE, WRDE_SHOWERR, WRDE_UNDEF,
+    __WRDE_FLAGS
+}
+ ;
+
+
+typedef struct
+{
+  int we_wordc;
+  char **we_wordv;
+  int we_offs;
+}
+wordexp_t;
+
+
+enum
+{
+  WRDE_NOSYS, WRDE_NOSPACE, WRDE_BADCHAR, WRDE_BADVAL, WRDE_CMDSUB,
+    WRDE_SYNTAX
+}
+ ;
+</SCREEN>
+</SECT2>
 </SECT1>
 <SECT1 ID=libcman>
 <TITLE>Interfaces Definitions for libc</TITLE>
@@ -278,13 +1674,13 @@ Libc5 treats it as a system call and has a prototype in &lt;unistd.h>. Glibc1 do
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
-<!--    at Mon Mar 25 19:09:08 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
+<!--    at Mon Apr 15 19:52:19 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -311,9 +1707,28 @@ Libc5 treats it as a system call and has a prototype in &lt;unistd.h>. Glibc1 do
 <TITLE>Data Definitions for libm</TITLE>
 <PARA>
 </PARA>
+<SECT2>
+<TITLE>math.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct exception
+{
+  int type;
+  char *name;
+  double arg1;
+  double arg2;
+  double retval;
+}
+ ;
+</SCREEN>
+</SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.33 2002/01/15 21:36:26 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
 
 
 </CHAPTER>
