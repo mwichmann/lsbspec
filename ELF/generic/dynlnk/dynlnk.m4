@@ -99,20 +99,4 @@ include(linuxtag.sgml)
 </SECT1>
 </CHAPTER>
 
-<CHAPTER ID=ProgramInterpreter>
-<TITLE>
-Program Interpreter
-</TITLE>
-<PARA>
-</PARA>
-<SECT1 ID=proginterp>
-<TITLE>
-</TITLE>
-<PARA>
-The Program Interpreter is specified in the appropriate
-architecture-specific LSB specification.
-</PARA>
-</SECT1>
-</CHAPTER>
-
 </PART>

@@ -19,14 +19,6 @@ See
 <XREF LINKEND="std.PPC64.ABI">, Chapter 5.1.
 </PARA>
 
-<SECT1 ID=programinterpreter>
-<TITLE>Program Interpreter</TITLE>
-<PARA>
-The LSB specifies the Program Interpreter to be
-<application><XREF LINKEND="lib.proginterp"></application>.
-</PARA>
-</SECT1>
-
 </CHAPTER>
 
 <CHAPTER ID=dynamiclinking>

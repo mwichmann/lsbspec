@@ -24,14 +24,6 @@ and this document.
 <PARA>See Chapter 3 of the <XREF LINKEND="std.S390X.ABI">.
 </PARA>
 
-<SECT1 ID=proginterp>
-<TITLE>Program Interpreter/Dynamic Linker</TITLE>
-<PARA>
-The LSB specifies the Program Interpreter to be
-<application><XREF LINKEND="lib.proginterp"></application>.
-</PARA>
-</SECT1>
-
 <SECT1 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>

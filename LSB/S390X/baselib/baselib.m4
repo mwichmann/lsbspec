@@ -17,6 +17,15 @@ defined here. This section should be used in conjunction with the
 corresponding section in the Linux Standard Base Specification.
 </PARA>
 
+<SECT1 ID=proginterp>
+<TITLE>Program Interpreter/Dynamic Linker</TITLE>
+<PARA>
+The LSB specifies the Program Interpreter to be
+<application><XREF LINKEND="lib.proginterp"></application>.
+</PARA>
+</SECT1>
+
+
 include(libc.sgml)
 
 include(libm.sgml)
