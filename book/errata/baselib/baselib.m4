@@ -28,6 +28,20 @@ On the IA32 platform, the functions <FUNCTION>__divdi3</FUNCTION>,
 <FUNCTION>__umoddi3</FUNCTION> have been deprecated.
 </PARA>
 
+<PARA>
+The following RPC functions were ommitted and should be included:
+<FUNCTION>svc_sendreplay</FUNCTION>,
+<FUNCTION>svc_getargs</FUNCTION>,
+<FUNCTION>svc_freeargs</FUNCTION>,
+<FUNCTION>svc_register</FUNCTION>,
+<FUNCTION>svc_run</FUNCTION>,
+<FUNCTION>svctcp_create</FUNCTION>,
+<FUNCTION>svcudp_create</FUNCTION>,
+<FUNCTION>pmap_set</FUNCTION>,
+<FUNCTION>pmap_unset</FUNCTION>,
+<FUNCTION>pmap_getport</FUNCTION>.
+</PARA>
+
 </CHAPTER>
 
 </PART>
