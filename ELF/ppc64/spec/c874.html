@@ -1,0 +1,383 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Program Loading and Dynamic Linking</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.6"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Relocation"
+HREF="x783.html"><LINK
+REL="NEXT"
+TITLE="Dynamic Linking"
+HREF="x911.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>64-bit PowerPC ELF Application Binary Interface Supplement 1.6</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x783.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x911.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="PROG-LOAD-DL"
+></A
+>Chapter 5. Program Loading and Dynamic Linking</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PROG-DL"
+>5.1. Program Loading</A
+></H1
+><P
+>As the system creates or augments a process image, it logically copies
+a file's segment to a virtual memory segment.  When--and if--the
+system physically reads the file depends on the program's execution
+behavior, system load, and so on.  A process does not require a
+physical page unless it references the logical page during execution,
+and processes commonly leave many pages unreferenced.  Therefore,
+delaying physical reads frequently obviates them, improving system
+performance.  To obtain this efficiency in practice, executable and
+shared object files must have segment images whose offsets and virtual
+addresses are congruent, modulo the page size.
+		</P
+><P
+>Virtual addresses and file offsets for the 64-bit PowerPC processor
+family segments are congruent modulo 64 Kbytes (0x10000) or larger
+powers of 2.  Although 4096 bytes is currently the 64-bit PowerPC page
+size, this allows files to be suitable for paging even if
+implementations appear with larger page sizes.  The value of the
+p_align member of each program header in a shared object file must be
+0x10000.
+		</P
+><P
+>It is normally desirable to put segments with different
+characteristics in separate 256 Mbyte portions of the address space,
+to give the operating system full paging flexibility in the 64-bit
+address space.
+		</P
+><P
+>Here is an example of an executable file assuming an executable
+program linked with a base address of 0x10000000.
+		</P
+><PRE
+CLASS="SCREEN"
+>File Offset                             Virtual Address
+
+0
+            ELF header
+            Program header table
+            Other information
+0x100                                   0x10000100
+            Text segment
+            . . .
+            0x2be00 bytes
+                                        0x1002beff
+0x2bf00                                 0x2003bf00
+            Data segment
+            . . .
+            0x4e00 bytes
+                                        0x20040cff
+0x30d00
+            Other information</PRE
+><P
+>Here are possible corresponding program header segments:
+		</P
+><PRE
+CLASS="SCREEN"
+>Member      Text            Data
+
+p_type      PT_LOAD         PT_LOAD
+p_offset    0x100           0x2bf00
+p_vaddr     0x10000100      0x2003bf00
+p_paddr     unspecified     unspecified
+p_filesz    0x2be00         0x4e00
+p_memsz     0x2be00         0x5e24
+p_flags     PF_R+PF_X       PF_R+PF_W
+p_align     0x10000         0x10000</PRE
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="/usr/share/sgml/docbook/stylesheet/dsssl/modular/images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Note</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The example addresses for the text and data segments are chosen
+for compatibility with AIX, and it is suggested, though not required,
+that tools supporting this ABI use similar addresses.
+			</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Although the file offsets and virtual addresses are congruent modulo
+64 Kbytes for both text and data, up to four file pages can hold
+impure text or data (depending on page size and file system block
+size).
+		</P
+><P
+></P
+><UL
+><LI
+><P
+>The first text page contains the ELF header, the program header
+  table, and other information.</P
+></LI
+><LI
+><P
+>The last text page may hold a copy of the beginning of data.</P
+></LI
+><LI
+><P
+>The first data page may have a copy of the end of text.</P
+></LI
+><LI
+><P
+>The last data page may contain file information not relevant to the
+  running process.</P
+></LI
+></UL
+><P
+>Logically, the system enforces memory permissions as if each segment
+were complete and separate; segment addresses are adjusted to ensure
+that each logical page in the address space has a single set of
+permissions.  In the example above, the file region holding the end of
+text and the beginning of data is mapped twice; at one virtual address
+for text and at a different virtual address for data.
+		</P
+><P
+>The end of the data segment requires special handling for
+uninitialized data, which the system defines to begin with zero
+values.  Thus if the last data page of a file includes information not
+in the logical memory page, the extraneous data must be set to zero,
+rather than to the unknown contents of the executable file.
+"Impurities" in the other three pages are not logically part of the
+process image; whether the system expunges them is unspecified.  The
+memory image for the program above is shown here, assuming 4096
+(0x1000) byte pages.
+		</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN900"
+></A
+><P
+><B
+>Figure 5-1. Virtual Address</B
+></P
+><PRE
+CLASS="SCREEN"
+>Text segment:
+0x02000000
+            Header padding
+            0x100 bytes
+0x02000100
+            Text segment
+            ...
+            0x2be00 bytes
+0x0202bf00
+            Data padding
+            0x100 bytes
+
+Data segment:
+0x0203b000
+            Text padding
+            0xf00 bytes
+0x0203bf00
+            Data segment
+            ...
+            0x4e00 bytes
+0x02040d00
+            Uninitialized data
+            0x1024 bytes
+0x02041d24
+            Page padding
+            0x2dc zero bytes</PRE
+></DIV
+><P
+>One aspect of segment loading differs between executable files and
+shared objects.  Executable file segments may contain absolute code.
+For the process to execute correctly, the segments must reside at the
+virtual addresses assigned when building the executable file, with the
+system using the p_vaddr values unchanged as virtual addresses.
+		</P
+><P
+>On the other hand, shared object segments typically contain
+position-independent code.  This allows a segment's virtual address to
+change from one process to another, without invalidating execution
+behavior.
+		</P
+><P
+>Though the system chooses virtual addresses for individual processes,
+most systems will maintain the "relative positions" of the segments.
+Any use of relative addressing between segments should be indicated by
+an appropriate dynamic relocation.  If the dynamic linker does not
+maintain the relative position of segments at load time, it must be
+careful in its handling of R_PPC64_RELATIVE relocations, examining the
+relative address in order to determine the appropriate base address to
+use.
+		</P
+><P
+>The following table shows possible shared object virtual address
+assignments for several processes, illustrating constant relative
+positioning.  The table also illustrates the base address
+computations.
+		</P
+><PRE
+CLASS="SCREEN"
+>Source       Text        Data       Base Address
+File         0x000200    0x02a400
+Process 1    0x100200    0x12a400    0x100000
+Process 2    0x200200    0x22a400    0x200000
+Process 3    0x300200    0x32a400    0x300000
+Process 4    0x400200    0x42a400    0x400000</PRE
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PROG-INT"
+>5.1.1. Program Interpreter</A
+></H2
+><P
+>The standard program interpreter is /usr/lib/ld.so.1.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x783.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x911.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Relocation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dynamic Linking</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
