@@ -1,11 +1,11 @@
 <REFENTRY ID="libutil-forkpty-3"> <REFMETA>
 <REFENTRYTITLE>forkpty</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
+<REFMISCINFO>Utility Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
 <REFNAME>forkpty
 </REFNAME>
-<REFPURPOSE>find and open an available pseudo-tty
+<REFPURPOSE>Create a new process attached to an available pseudo-terminal
 </REFPURPOSE>
 <INDEXTERM ID="ix-libutil-forkpty-3"><PRIMARY>forkpty</PRIMARY></INDEXTERM>
 </REFNAMEDIV>
@@ -13,12 +13,26 @@
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int forkpty(int *<replaceable class="parameter" >amaster</replaceable>, 
-	char *<replaceable class="parameter" >name</replaceable>,
-	struct termios *<replaceable class="parameter" >termp</replaceable>,
-	struct winsize *<replaceable class="parameter" >winp</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;pty.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+<FUNCDEF>int
+<FUNCTION>
+forkpty
+</FUNCTION>
+</FUNCDEF>
+  <PARAMDEF>int *
+    <PARAMETER><REPLACEABLE>amaster</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMDEF>char *
+    <PARAMETER><REPLACEABLE>name</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMDEF>struct termios *
+    <PARAMETER><REPLACEABLE>termp</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMDEF>struct winsize *
+    <PARAMETER><REPLACEABLE>winp</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -27,14 +41,73 @@ int forkpty(int *<replaceable class="parameter" >amaster</replaceable>,
 <TITLE>Description
 </TITLE>
 <PARA>
-The forkpty() function joins openpty(), fork(), and login_tty() to create a new process operating on a pseudo-tty. The file descriptor of the master side of the pseudo-tty is returned in amaster, and null or the filename of the slave in name. If non-null, the termp and winp parameters will determine the terminal attributes and window size of the slave side of the pseudo-tty.
+The <FUNCTION>forkpty()</FUNCTION>
+function shall find and open a pseudo-terminal device pair in the
+same manner as the <FUNCTION>openpty()</FUNCTION> function. 
+If a pseudo-terminal is available,
+<FUNCTION>forkpty</FUNCTION>
+shall create a new process in the same manner as the <FUNCTION>fork()</FUNCTION>
+function, and prepares the new process for login in the same manner as 
+<FUNCTION>login_tty()</FUNCTION>.
+</PARA>
+<PARA>
+If <PARAMETER>termp</PARAMETER> is not null, 
+it shall refer to a <VARNAME>termios</VARNAME> structure that shall be used
+to initialize the characteristics of the slave device. 
+If <PARAMETER>winp</PARAMETER> is not null, it
+shall refer to a <VARNAME>winsize</VARNAME> structure used to 
+initialize the window size of the
+slave device.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success of the child process, zero is returned. When the parent process receives the PID of its child process, pid is returned. On error, -1 is returned, and errno is set appropriately.
+On success, the parent process shall return the process id of the child, and the
+child shall return 0. On error, no new process shall be created, -1 shall be
+returned, and <VARNAME>errno</VARNAME> shall be set appropriately.
+On success, the parent process shall receive the file descriptor of the master
+side of the pseudo-terminal in the location referenced by 
+<PARAMETER>amaster</PARAMETER>, and, if <PARAMETER>name</PARAMETER> is
+not NULL, the filename of the slave device in 
+<PARAMETER>name</PARAMETER>. 
 </PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EAGAIN
+</TERM>
+<LISTITEM>
+<PARA>
+Unable to create a new process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+ENOENT
+</TERM>
+<LISTITEM>
+<PARA>
+There are no available pseudo-terminals.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+ENOMEM
+</TERM>
+<LISTITEM>
+<PARA>
+Insufficient memory was available.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </REFSECT1>
 </REFENTRY>

@@ -1,11 +1,11 @@
 <REFENTRY ID="libutil-login-tty-3"> <REFMETA>
 <REFENTRYTITLE>login_tty</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
+<REFMISCINFO>Utility Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
 <REFNAME>login_tty
 </REFNAME>
-<REFPURPOSE>find and open an available pseudo-tty
+<REFPURPOSE>Prepare a terminal for login
 </REFPURPOSE>
 <INDEXTERM ID="ix-libutil-login-tty-3"><PRIMARY>login_tty</PRIMARY></INDEXTERM>
 </REFNAMEDIV>
@@ -13,9 +13,17 @@
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int login_tty(int <replaceable class="parameter" >fdr</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;utmp.h&gt;
+</FUNCSYNOPSISINFO>
+ <FUNCPROTOTYPE>
+  <FUNCDEF>int
+    <FUNCTION>login_tty</FUNCTION>
+  </FUNCDEF>
+  <PARAMDEF>int <PARAMETER><replaceable>fdr</replaceable></PARAMETER></PARAMDEF>
+ </FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -24,17 +32,38 @@ int login_tty(int <replaceable class="parameter" >fdr</replaceable>);
 <TITLE>Description
 </TITLE>
 <PARA>
-login_tty() sets up for a login on the tty referenced by the file 
-descriptor fdr. This function creates a new session, makes the tty 
-for the current process the controlling terminal, sets the standard 
-input, output, and error streams of the current process, and closes fdr.
+The <function>login_tty()</function> function
+shall prepare the terminal device referenced by the file
+descriptor <parameter>fdr</parameter>. 
+This function shall create a new session, make the terminal 
+the controlling terminal for the current process, and set the standard 
+input, output, and error streams of the current process to the terminal.
+If <parameter>fdr</parameter> is not the standard input, output or error stream,
+then <function>login_tty()</function> shall close <parameter>fdr</parameter>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, <function>login_tty()</function> shall return zero;
+otherwise -1 is returned, and errno shall be set appropriately.
 </PARA>
+</REFSECT1>
+<REFSECT1>
+<REFSECT1INFO><DATE>Aug 16 2004</DATE></REFSECT1INFO>
+<TITLE>Errors</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+ENOTTY
+</TERM>
+<LISTITEM>
+<PARA>
+<parameter>fdr</parameter> does not refer to a terminal device.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </REFSECT1>
 </REFENTRY>

@@ -13,9 +13,19 @@
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int logout(const char *<replaceable class="parameter" >line</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;utmp.h&gt;
+</FUNCSYNOPSISINFO>
+  <FUNCPROTOTYPE>
+    <FUNCDEF>int
+      <FUNCTION>logout</FUNCTION>
+    </FUNCDEF>
+    <PARAMDEF>const char *
+      <PARAMETER><REPLACEABLE>line</REPLACEABLE></PARAMETER>
+    </PARAMDEF>
+  </FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -24,14 +34,31 @@ int logout(const char *<replaceable class="parameter" >line</replaceable>);
 <TITLE>Description
 </TITLE>
 <PARA>
-Given the device line, the logout() function removes the entry from the corresponding /var/run/utmp system file.
+Given the device <parameter>line</parameter>,
+the <function>logout()</function> function shall search
+the <filename>/var/run/utmp</filename> user accounting database
+for an entry with the corresponding line,
+and with the type of <CONSTANT>USER_PROCESS</CONSTANT>.
+If a corresponding entry is located, it shall be updated as follows:
+<ORDEREDLIST>
+<LISTITEM><PARA>The <varname>ut_name</varname> field shall be set to zeroes
+(<Constant>UT_NAMESIZE</constant> NUL bytes).</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_host</varname> field shall be set to zeroes
+(<Constant>UT_HOSTSIZE</constant> NUL bytes).</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_tv</varname> shall be set to the current 
+time of day.</PARA></LISTITEM>
+<LISTITEM><PARA>The <varname>ut_type</varname> field shall be set to
+<constant>DEAD_PROCESS</constant>.</PARA></LISTITEM>
+</ORDEREDLIST>
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-Zero is returned if there was no entry to remove. A non-zero return value indicates success.
+On success, the <function>logout()</function> function shall return non-zero.
+Zero is returned if there was no entry to remove, or if the utmp file
+could not be opened or updated.
 </PARA>
 </REFSECT1>
 </REFENTRY>

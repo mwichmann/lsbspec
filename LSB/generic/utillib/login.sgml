@@ -13,9 +13,19 @@
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-void login(struct utmp *<replaceable class="parameter" >ut</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;utmp.h&gt;
+</FUNCSYNOPSISINFO>
+  <FUNCPROTOTYPE>
+    <FUNCDEF>void
+      <FUNCTION>login</FUNCTION>
+    </FUNCDEF>
+    <PARAMDEF>struct utmp *
+      <PARAMETER><REPLACEABLE>ut</REPLACEABLE></PARAMETER>
+    </PARAMDEF>
+  </FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -24,7 +34,46 @@ void login(struct utmp *<replaceable class="parameter" >ut</replaceable>);
 <TITLE>Description
 </TITLE>
 <PARA>
-The login() function updates the /var/run/utmp and /var/log/wtmp files with user information contained in ut.
+The <function>login()</function> function shall update the user accounting databases in
+<filename>/var/run/utmp</filename> and 
+<filename>/var/log/wtmp</filename>.
+The <parameter>ut</parameter> parameter shall reference a 
+<VarName>utmp</VarName> structure that shall be updated as follows before 
+the accounting files are written:
+<ORDEREDLIST>
+<LISTITEM>
+<PARA>
+The <varname>ut_type</varname> field shall be set to <constant>
+USER_PROCESS</constant>.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+The <varname>ut_pid</varname> field shall be set to the process identifier
+for the current process.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+The <varname>ut_line</varname> field shall be set to the name of the 
+controlling terminal device.
+The name shall be found by examaning the device associated with the
+standard input, output and error streams in sequence, until one associated with
+a terminal device is found.
+If none of these streams refers to a terminal device, the 
+<varname>ut_line</varname> field shall be set to <constant>"???"</constant>.
+If the terminal device is in the <filename>/dev</filename> directory
+hierarchy, the <varname>ut_line</varname> field shall not contain the leading
+<constant>"/dev/"</constant>, otherwise it shall be set to the final component
+of the pathname of the device. If the <varname>ut_line</varname> field
+is not of sufficient size to hold the terminal device name, the name 
+shall be truncated to <CONSTANT>UT_LINESIZE</CONSTANT>-1 bytes.
+</PARA></LISTITEM>
+</ORDEREDLIST>
 </PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>None</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>None</PARA>
 </REFSECT1>
 </REFENTRY>

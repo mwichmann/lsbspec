@@ -1,11 +1,11 @@
 <REFENTRY ID="libutil-openpty-3"> <REFMETA>
 <REFENTRYTITLE>openpty</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
+<REFMISCINFO>Utility Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
 <REFNAME>openpty
 </REFNAME>
-<REFPURPOSE>find and open an available pseudo-tty
+<REFPURPOSE>find and open an available pseudo-terminal
 </REFPURPOSE>
 <INDEXTERM ID="ix-libutil-openpty-3"><PRIMARY>openpty</PRIMARY></INDEXTERM>
 </REFNAMEDIV>
@@ -13,13 +13,21 @@
 <REFSYNOPSISDIVINFO>
 <DATE>08 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int openpty(int *<replaceable class="parameter" >amaster</replaceable>, 
-	int *<replaceable class="parameter" >aslave</replaceable>, 
-	char *<replaceable class="parameter" >name</replaceable>,
-	struct termios *<replaceable class="parameter" >termp</replaceable>,
-	struct winsize *<replaceable class="parameter" >winp</replaceable>);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;pty.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+  <FUNCDEF>int
+    <FUNCTION>openpty</FUNCTION></FUNCDEF>
+    <PARAMDEF>int *<parameter><replaceable>amaster</replaceable></parameter></PARAMDEF>
+    <PARAMDEF>int *<parameter><replaceable>aslave</replaceable></parameter></PARAMDEF>
+    <PARAMDEF>char *<parameter><replaceable>name</replaceable></parameter></PARAMDEF>
+    <PARAMDEF>struct termios *<parameter><replaceable>termp</replaceable></parameter></PARAMDEF>
+    <PARAMDEF>struct winsize *<parameter><replaceable>winp</replaceable></parameter></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -28,7 +36,21 @@ int openpty(int *<replaceable class="parameter" >amaster</replaceable>,
 <TITLE>Description
 </TITLE>
 <PARA>
-The openpty() function finds an available pseudo-tty and returns file descriptors for the amaster and aslave. The filename of the slave is returned in name, otherwise a null. The terminal parameters of the slave will be set to the values in termp, otherwise a null. The window size of the slave will be set to the values in winp, otherwise a null.
+The <function>openpty()</function>
+function shall find an available pseudo-terminal
+and return file descriptors for the master and slave devices in
+the locations referenced by 
+<parameter>amaster</parameter> and <parameter>aslave</parameter>
+respectively. 
+If <parameter>name</parameter> is not NULL,
+the filename of the slave shall be placed in the user supplied buffer 
+referenced by <parameter>name</parameter>.
+If <parameter>termp</parameter> is not NULL, it shall
+point to a <varname>termios</varname> structure used to initialize
+the terminal parameters of the slave pseudo-terminal device.
+If <parameter>winp</parameter> is not NULL, it shall
+point to a <varname>winsize</varname> structure used to initialize
+the window size parameters of the slave pseudo-terminal device.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -48,7 +70,7 @@ ENOENT
 </TERM>
 <LISTITEM>
 <PARA>
-There are no available ttys.
+There are no available pseudo-terminals.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
