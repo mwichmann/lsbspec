@@ -3,6 +3,7 @@
 use Carp;
 use Getopt::Long;
 use Mysql;
+use HTML::Entities;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
@@ -44,7 +45,7 @@ if( $archname ) {
 }
 
 $select = "SELECT * FROM Standard ";
-$select.= "WHERE Stype='Standard' ";
+$select.= "WHERE (Stype='Standard' ";
 $select.= "AND ( Sarch=$Aid OR Sarch=1 ) ";
 if( $specids ) {
 	$select.= "AND Sname IN ( $specids ) ";
@@ -52,6 +53,8 @@ if( $specids ) {
 if( $exclids ) {
 	$select.= "AND Sname NOT IN ( $exclids ) ";
 }
+# Always include SUSv3 ... it is used in the intro stuff for all docs
+$select.= ") OR Sname='SUSv3' ";
 $select.= "ORDER BY Sshort";
 
 #printf $select,"\n";
@@ -59,7 +62,7 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.13 2004-09-20 18:31:52 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.14 2004-11-30 20:44:36 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -77,13 +80,14 @@ for(1..$sth->numrows) {
 	printf "<ENTRY ID=\"std.%s\" XREFLABEL=\"%s\">%s</ENTRY>",makeid($entry{'Sname'}),$entry{'Sshort'},$entry{'Sshort'};
 	printf "<ENTRY>%s</ENTRY", $entry{'Sfull'};
 	printf "<ENTRY><ULINK URL=\"%s\">%s</ULINK></ENTRY>",
-					$entry{'Surl'}, $entry{'Surl'};
+					encode_entities($entry{'Surl'},"%&"), 
+					encode_entities($entry{'Surl'});
 	#printf "<ENTRY>%s</ENTRY>",$entry{'Scomment'};
 	print "</ROW>\n";
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.13 2004-09-20 18:31:52 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.14 2004-11-30 20:44:36 nick Exp $- -->\n");
 
 sub makeid {
 	my ($name) = @_;
