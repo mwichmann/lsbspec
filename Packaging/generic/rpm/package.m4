@@ -766,36 +766,80 @@ documentation for installing LSB packages.
 <SECT1 ID=pkgnameconv>
 <TITLE>Package Naming</TITLE>
 <PARA>
-Because there is no consistent packaging naming among the various
-Linux distributions, it is necessary for LSB-conformant packages to
-adhere the following naming rules to avoid conflicts with packages 
-provided by the distributions.
+Packages supplied by distributions and applications must follow the
+following rules for the name field within the package.  These rules
+are not required for the filename of the package file itself.<footnote>
+<para>For example, there are discrepancies among distributions
+concerning whether the name might be frobnicator-1.7-21-ppc32.rpm or
+frobnicator-1.7-21-powerpc32.rpm.  The architecture aside, recommended
+practice is for the filename of the package file to match the name
+within the package.
+</para></footnote>
+
 </PARA>
+
+<para>
+The following rules apply to the name field alone, not including any
+release or version.<footnote><para>For example, if the name with the
+release and version is frobnicator-1.7-21, the name part is
+frobnicator and falls under the rules for a name with no
+hyphens.</para></footnote>
+</para>
 
 <ITEMIZEDLIST MARK="bullet">
 <LISTITEM> <PARA>
-All LSB package names shall begin with the prefix "lsb-" to avoid conflicting
-with existing packages used by Linux distributions.
-</PARA>
-</LISTITEM>
-
-<LISTITEM><PARA>
-If the package name contains only one hyphen (including the one in the 
-"lsb-" prefix) then the package name shall be assigned by the 
+If the name begins with "lsb-" and contains no other hyphens, the name
+shall be assigned by the 
 <ULINK URL="http://www.lanana.org">Linux Assigned Names and 
 Numbers Authority</ULINK> (LANANA), which shall maintain a
 registry of LSB names.
+The name may be registered by either a distribution or an application.
 </PARA></LISTITEM>
 
 <LISTITEM><PARA>
-If the package name contains more than one hyphen (i.e., 
-"lsb-www.redhat.com-redhat-database", "lsb-gnome-gnumeric"), then 
+If the package name begins with "lsb-" and
+contains more than one hyphen (for example
+"lsb-distro.example.com-database" or "lsb-gnome-gnumeric"), then 
 the portion of the package name between first and second hyphens shall 
 either be an LSB provider name assigned by the LANANA, or it may be 
 one of the owners' fully-qualified domain name in lower case (e.g., 
 "debian.org", "staroffice.sun.com"). The LSB provider name assigned 
 by LANANA shall only consist of the ASCII characters [a-z0-9].
+The provider name or domain name may be either that of a distribution
+or an application.
 </PARA></LISTITEM>
+
+<listitem><para>
+Package names containing no hyphens are reserved for use by
+distributions.  Applications must not use such names.<footnote><para>
+For example, "frobnicator".</para></footnote>
+</para></listitem>
+
+<listitem><para>
+
+Package names which do not start with "lsb-" and which contain a
+hyphen are open to both distributions and applications.  Distributions
+may name packages in any part of this namespace.  They are encouraged
+to use names from one of the other namespaces available to them, but
+this is not required due to the large amount of current practice to
+the contrary.<footnote><para>For example, ssh-common, ssh-client,
+kernel-pcmcia, and the like.  Possible alternative names include
+sshcommon, foolinux-ssh-common (where foolinux is registered to the
+distribution), or lsb-foolinux-ssh-common.</para></footnote>
+Applications may name their packages this way, but only if the portion
+of the name before the first hyphen is a provider name or registered
+domain name as described above.<footnote><para>For example, if an
+application vendor has domain name visicalc.example.com and has
+registered visicalc as a provider name, they might name packages
+visicalc-base, visicalc.example.com-charting, and the
+like.</para></footnote>Note that package names in this namespace are
+available to both the distribution and an application.  Distributions
+and applications will need to consider this potential for conflicts
+when deciding to use these names rather than the alternatives (such as
+names starting with "lsb-").
+
+</para></listitem>
+
 </ITEMIZEDLIST>
 
 </SECT1>
