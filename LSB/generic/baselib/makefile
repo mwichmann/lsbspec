@@ -1,7 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.sgml \
+MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_toupper_loc.sgml \
 	__cxa_atexit.sgml __environ.sgml \
 	__errno_location.sgml __fpending.sgml __getpgid.sgml __mempcpy.sgml \
 	__rawmemchr.sgml __sysconf.sgml _environ.sgml _IO_feof.sgml \
