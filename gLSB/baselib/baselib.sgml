@@ -13,7 +13,7 @@ hardware in the system.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Nov 14 09:35:55 2002 -->
+<!--    at Fri Nov 22 10:29:38 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -520,7 +520,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <TBODY>
 <ROW>
 <ENTRY>alphasort<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
-<ENTRY>gets<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
@@ -1098,7 +1098,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>_toupper<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>islower<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>iswblank<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>iswblank<FOOTNOTEREF LINKEND="std-131-67"></ENTRY>
 <ENTRY>iswpunct<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>toupper<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 </ROW>
@@ -1549,7 +1549,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>abort<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>gcvt<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>isblank<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>isblank<FOOTNOTEREF LINKEND="std-131-67"></ENTRY>
 <ENTRY>putenv<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>unlockpt<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 </ROW>
@@ -3388,7 +3388,6 @@ stack_t;
 
 
 typedef int wchar_t;
-typedef long ptrdiff_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3440,6 +3439,17 @@ typedef struct _IO_FILE FILE;
 
 
 typedef int (*__compar_fn_t) (const void *, const void *);
+struct random_data
+{
+  int32_t *fptr;
+  int32_t *rptr;
+  int32_t *state;
+  int rand_type;
+  int rand_deg;
+  int rand_sep;
+  int32_t *end_ptr;
+}
+ ;
 
 
 typedef struct
@@ -4519,7 +4529,7 @@ struct utmp
 typedef unsigned long wctype_t;
 typedef unsigned int wint_t;
 typedef const int32_t *wctrans_t;
-typedef struct
+typedef struct __mbstate_t
 {
   int count;
   wint_t value;
@@ -7991,7 +8001,7 @@ specify the locale of a message catalog
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
-#include &lt;unistd.h&gt;
+#include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>extern char 
@@ -8899,34 +8909,64 @@ print error message
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-void error (int exitstatus, int errnum, const char *format, ...)
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>void 
+  <FUNCTION>error</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>exitstatus</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>errnum</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*format</REPLACEABLE></PARAMETER>
+  <PARAMETER>...</PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <TITLE>Description
 </TITLE>
 <PARA>
-Print a message to standard error.  First print the name of the
-program.  If there is a function called error_print_progname (which
-would be provided by the application), call it to print the program
-name.  If not, print the contents of the global variable program_name
-as the program name.
+<FUNCTION>error</FUNCTION> prints a message to standard error.
 </PARA>
 <PARA>
-Then print a colon, a space, and the result of using the printf-style
-<replaceable>format</replaceable> and the optional arguments.
+<FUNCTION>error</FUNCTION> builds the message from the following 
+elements in their specified order:
+<ORDEREDLIST NUMERATION="ARABIC">
+<LISTITEM>
+<PARA>
+the program name. If the application has provided a function named 
+<FUNCTION>error_print_progname</FUNCTION>, <FUNCTION>error</FUNCTION> 
+calls this to supply the program name; otherwise, <FUNCTION>error</FUNCTION> 
+uses the content of the global variable <VARNAME>program_name</VARNAME>.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+the <TOKEN>COLON</TOKEN> and <TOKEN>SPACE</TOKEN> characters, then 
+the result of using the printf-style <PARAMETER>format</PARAMETER> 
+and the optional arguments.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+if <PARAMETER>errnum</PARAMETER> is non-<LITERAL>ZERO</LITERAL>, 
+<FUNCTION>error</FUNCTION> adds the <TOKEN>COLON</TOKEN> and 
+<TOKEN>SPACE</TOKEN> characters, then the result of 
+<FUNCTION>strerror(<VARNAME>errnum</VARNAME>)</FUNCTION>.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+a newline.
+</PARA>
+</LISTITEM>
+</ORDEREDLIST>
 </PARA>
 <PARA>
-Then, if errnum is nonzero, print a colon, a space, and the result of
-<computeroutput>strerror(errnum)</computeroutput>.
-</PARA>
-<PARA>
-Then print a newline.
-</PARA>
-<PARA>
-Then, if exitstatus is nonzero, call
-<computeroutput>exit(exitstatus)</computeroutput>.
+If <PARAMETER>exitstatus</PARAMETER> is non-<LITERAL>ZERO</LITERAL>, 
+<FUNCTION>error</FUNCTION> calls
+<FUNCTION>exit(<VARNAME>exitstatus</VARNAME>)</FUNCTION>.
 </PARA>
 <!-- There's an interaction with wide characters(?): this call makes
 stderr narrow-oriented. Should put that in once we figure out what it
@@ -11204,156 +11244,6 @@ EINVAL
 
 </REFENTRY>
 
-
-<REFENTRY ID="baselib-isblank-3"> <REFMETA>
-<REFENTRYTITLE>isblank</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>isblank
-</REFNAME>
-<REFPURPOSE>
-character classification routine
-</REFPURPOSE>
-</REFNAMEDIV>
-
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>13 April 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
-#include &lt;ctype.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>int 
-  <FUNCTION>isblank</FUNCTION></FUNCDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>c</REPLACEABLE></PARAMETER></PARAMDEF>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
-
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>13 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-<FUNCTION>isblank</FUNCTION> checks if <PARAMETER>c</PARAMETER>, 
-which must have the value of an unsigned char or <TOKEN>EOF</TOKEN>, 
-falls into a certain character class according to the current locale.
-</PARA><PARA>
-<FUNCTION>isblank</FUNCTION> checks for a blank character; that is, 
-a <TOKEN>SPACE</TOKEN> or a <TOKEN>TAB</TOKEN>. This function is a 
-<EMPHASIS>GNU</EMPHASIS> extension.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return Value
-</TITLE>
-<PARA>
-If the character <PARAMETER>c</PARAMETER> falls into the tested 
-class, <RETURNVALUE>0</RETURNVALUE> is returned. Otherwise, a 
-non-<LITERAL>ZERO</LITERAL> value is returned.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Notes
-</TITLE>
-<PARA>
-The details of which characters belong to which class depend on the 
-current locale. For example, <FUNCTION>isupper</FUNCTION> will not 
-recognize the character <TOKEN>A-umlaut</TOKEN> as an uppercase 
-letter in the default C locale.
-</PARA>
-</REFSECT1>
-<!--	  LDP GENERAL PUBLIC LICENSE  -->
-<!--        Version 1a, November 1998   -->
-</REFENTRY>
-
-<REFENTRY ID="baselib-iswblank-3"> <REFMETA>
-<REFENTRYTITLE>iswblank</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>iswblank
-</REFNAME>
-<REFPURPOSE>
-test for whitespace wide character
-</REFPURPOSE>
-</REFNAMEDIV>
-
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>13 April 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
-#include &lt;wctype.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>int 
-  <FUNCTION>iswblank</FUNCTION></FUNCDEF>
- <PARAMDEF>wint_t 
-  <PARAMETER><REPLACEABLE>wc</REPLACEABLE></PARAMETER></PARAMDEF>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
-
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>13 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-<FUNCTION>iswblank</FUNCTION> is the wide-character equivalent of 
-<FUNCTION>isblank</FUNCTION>. It tests whether <PARAMETER>wc</PARAMETER> 
-is a wide character belonging to the wide character class "blank".
-</PARA>
-<PARA>
-The wide character class <EMPHASIS>blank</EMPHASIS> is a subclass of 
-the wide character class <EMPHASIS>space</EMPHASIS>, and is therefore
-disjoint from the wide character class <EMPHASIS>graph</EMPHASIS>.
-<EMPHASIS>blank</EMPHASIS> is also therefore disjoint from the
-<EMPHASIS>graph</EMPHASIS> subclasses <EMPHASIS>alnum</EMPHASIS>, 
-<EMPHASIS>alpha</EMPHASIS>, <EMPHASIS>upper</EMPHASIS>, 
-<EMPHASIS>lower</EMPHASIS>, <EMPHASIS>digit</EMPHASIS>, 
-<EMPHASIS>xdigit</EMPHASIS>, and <EMPHASIS>punct</EMPHASIS>.
-</PARA>
-<PARA>
-The wide character class <EMPHASIS>blank</EMPHASIS> always contains 
-at least the <TOKEN>SPACE</TOKEN> character and the control character 
-<TOKEN>\t</TOKEN>.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return Value
-</TITLE>
-<PARA>
-If <PARAMETER>wc</PARAMETER> is a wide character belonging
-to the wide character class <EMPHASIS>blank</EMPHASIS>, a 
-non-<LITERAL>ZERO</LITERAL> value is returned. Otherwise, 
-<RETURNVALUE>0</RETURNVALUE> is returned. 
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Notes
-</TITLE>
-<PARA>
-The behavior of <FUNCTION>iswblank</FUNCTION> depends on the 
-<VARNAME>LC_CTYPE</VARNAME> category of the current locale.
-</PARA>
-</REFSECT1>
-<!--	  LDP GENERAL PUBLIC LICENSE  -->
-<!--        Version 1a, November 1998   -->
-</REFENTRY>
 
 <REFENTRY ID="baselib-iswctype-3"> <REFMETA>
 <REFENTRYTITLE>iswctype</REFENTRYTITLE>
@@ -16024,7 +15914,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Nov 14 09:36:30 2002 -->
+<!--    at Fri Nov 22 10:30:14 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -16537,7 +16427,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Nov 14 09:36:47 2002 -->
+<!--    at Fri Nov 22 10:30:32 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -17007,7 +16897,7 @@ is similar to <FUNCTION>sem_wait</FUNCTION> but waits only until
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Nov 14 09:37:40 2002 -->
+<!--    at Fri Nov 22 10:31:25 2002 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -17821,7 +17711,7 @@ routine identified by the unwind <PARAMETER>context</PARAMETER>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Nov 14 09:37:02 2002 -->
+<!--    at Fri Nov 22 10:30:46 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -18061,7 +17951,7 @@ directory search-path for object files
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Nov 14 09:37:14 2002 -->
+<!--    at Fri Nov 22 10:30:59 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -18126,7 +18016,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Nov 14 09:37:27 2002 -->
+<!--    at Fri Nov 22 10:31:11 2002 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>

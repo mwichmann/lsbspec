@@ -429,6 +429,11 @@ in the payload. This information is provided in the header to allow more
 efficient access of the information.
 </PARA>
 include(filetags.sgml)
+<PARA>
+One of RPMTAG_OLDFILENAMES or the tuple
+RPMTAG_DIRINDEXES,RPMTAG_BASENAMES,RPMTAG_DIRNAMES must be present, but not
+both.
+</PARA>
 </SECT3>
 <SECT3>
 <TITLE>Dependency Information</TITLE>

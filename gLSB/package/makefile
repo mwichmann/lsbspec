@@ -4,7 +4,8 @@
 MANPAGES=
 
 FILES=package.sgml
-TABLES=privtags.sgml sigtags.sgml hdrtags.sgml
+TABLES=privtags.sgml sigtags.sgml hdrtags.sgml pkgtags.sgml insttags.sgml \
+       filetags.sgml deptags.sgml othtags.sgml
 
 .m4.sgml:
 	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
