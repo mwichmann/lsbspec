@@ -30,6 +30,9 @@ gensrc:
 source:
 	for dir in $(SUBDIRS);do (cd $$dir && make source);done
 
+autobuild:
+	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
+
 clean::
 	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
 
