@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.39 2002/05/30 20:02:24 anderson Exp 0 -->
-<!--    at Thu Jun 13 16:07:34 2002 -->
+<!--    at Thu Jun 20 16:21:38 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -179,9 +179,15 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 </PARA>
 <SCREEN>
 
+#define PTHREAD_MUTEX_DEFAULT	1
+#define PTHREAD_MUTEX_NORMAL	1
 #define PTHREAD_MUTEX_TIMED_NP	1
+#define PTHREAD_RWLOCK_INITIALIZER	1
+#define PTHREAD_MUTEX_RECURSIVE	2
+#define PTHREAD_MUTEX_ERRORCHECK	3
 #define __LOCK_INITIALIZER	{ 0, 0 }
 #define PTHREAD_MUTEX_INITIALIZER	{0,0,0,PTHREAD_MUTEX_TIMED_NP,__LOCK_INITIALIZER}
+#define PTHREAD_COND_INITIALIZER	{__LOCK_INITIALIZER,0}
 
 
 typedef unsigned int pthread_key_t;
@@ -261,23 +267,23 @@ pthread_rwlockattr_t;
 
 
 
-#define PTHREAD_ONCE_INIT	0
 #define PTHREAD_CREATE_JOINABLE	0
 #define PTHREAD_INHERIT_SCHED	0
-#define PTHREAD_SCOPE_SYSTEM	0
+#define PTHREAD_ONCE_INIT	0
 #define PTHREAD_PROCESS_PRIVATE	0
+#define PTHREAD_SCOPE_SYSTEM	0
 #define PTHREAD_CREATE_DETACHED	1
 #define PTHREAD_EXPLICIT_SCHED	1
-#define PTHREAD_SCOPE_PROCESS	1
 #define PTHREAD_PROCESS_SHARED	1
+#define PTHREAD_SCOPE_PROCESS	1
 
 
 
 #define PTHREAD_CANCELED	((void*)-1)
-#define PTHREAD_CANCEL_ENABLE	0
 #define PTHREAD_CANCEL_DEFERRED	0
-#define PTHREAD_CANCEL_DISABLE	1
+#define PTHREAD_CANCEL_ENABLE	0
 #define PTHREAD_CANCEL_ASYNCHRONOUS	1
+#define PTHREAD_CANCEL_DISABLE	1
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -316,8 +322,9 @@ sem_t;
 #define SIGEV_SIGNAL	0
 #define SIG_BLOCK	0
 #define SIG_UNBLOCK	1
-#define SIG_SETMASK	2
 #define SIGEV_THREAD	2
+#define SIG_SETMASK	2
+#define NSIG	64
 
 
 typedef int sig_atomic_t;
@@ -495,46 +502,6 @@ typedef struct sigaltstack
   size_t ss_size;
 }
 stack_t;
-
-
-
-
-
-
-
-
-struct sigcontext
-{
-  unsigned short gs;
-  unsigned short __gsh;
-  unsigned short fs;
-  unsigned short __fsh;
-  unsigned short es;
-  unsigned short __esh;
-  unsigned short ds;
-  unsigned short __dsh;
-  unsigned long edi;
-  unsigned long esi;
-  unsigned long ebp;
-  unsigned long esp;
-  unsigned long ebx;
-  unsigned long edx;
-  unsigned long ecx;
-  unsigned long eax;
-  unsigned long trapno;
-  unsigned long err;
-  unsigned long eip;
-  unsigned short cs;
-  unsigned short __csh;
-  unsigned long eflags;
-  unsigned long esp_at_signal;
-  unsigned short ss;
-  unsigned short __ssh;
-  struct _fpstate fpstate;
-  unsigned long oldmask;
-  unsigned long cr2;
-}
- ;
 </SCREEN>
 </SECT2>
 </SECT1>

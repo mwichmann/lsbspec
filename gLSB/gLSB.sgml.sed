@@ -44,6 +44,19 @@ entitled "GNU Free Documentation License".
 Portions of the text were taken from other copyrighted documents in accordance
 with the respective license of those documents.
 </PARA>
+<PARA>
+Linux is a trademark of Linus Torvalds.
+</PARA>
+<PARA>
+UNIX is a registered trademark of the Open Group in the United States and
+other countries.
+</PARA>
+<PARA>
+Intel386 and Itanium trademarks of Intel Corporation.
+</PARA>
+<PARA>
+OpenGL is a registered trademark of Silicon Graphics, Inc.
+</PARA>
 </LEGALNOTICE>
 &changes.sgm;
 </BOOKINFO>
