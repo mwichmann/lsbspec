@@ -9,7 +9,7 @@ The Base libraries correspond to those libraries needed to implement
 the Single Unix Specification.
 </PARA>
 
-<SECT1>
+<SECT1 ID=libc>
 <TITLE>libc</TITLE>
 <PARA>
 </PARA>
@@ -418,7 +418,7 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </TABLE>
 </SECT2>
 </SECT1>
-<SECT1>
+<SECT1 ID=libc-ddefs>
 <TITLE> Data Definitions for libc</TITLE>
 <PARA>
 </PARA>
@@ -454,17 +454,17 @@ int toupper(int);
 </PARA>
 <SCREEN>
 
-int alphasort(const void *, const void *);
-int dirfd(DIR *);
-__ssize_t getdirentries(int, char *, size_t, __off_t *);
-void rewinddir(DIR *);
-int scandir(const char *, struct dirent ** *, int ( *, const struct dirent *);
-void seekdir(DIR *, long);
-long telldir(DIR *);
-int closedir(DIR *);
-DIR * opendir(const char *);
-struct dirent * readdir(DIR *);
-int readdir_r(DIR *, struct dirent *, struct dirent * *);
+int alphasort(void, void);
+int dirfd(DIR);
+__ssize_t getdirentries(int, char, size_t, __off_t);
+void rewinddir(DIR);
+int scandir(char, struct dirent, int (, int ();
+void seekdir(DIR, long);
+long telldir(DIR);
+int closedir(DIR);
+DIR opendir(char);
+dirent readdir(DIR);
+int readdir_r(DIR, struct dirent, struct dirent);
 
 </SCREEN>
 </SECT2>
@@ -513,11 +513,11 @@ struct flock {
 	pid_t l_pid;
 };
 
-int creat(const char *, __mode_t);
+int creat(char, __mode_t);
 int __fcntl(int, int, ...);
-int __open(const char *, int, ...);
+int __open(char, int, ...);
 int fcntl(int, int, ...);
-int open(const char *, int, ...);
+int open(char, int, ...);
 
 </SCREEN>
 </SECT2>
@@ -527,6 +527,18 @@ int open(const char *, int, ...);
 </PARA>
 <SCREEN>
 
+void endgrent(void);
+group fgetgrent();
+group getgrent(void);
+group getgrgid(__gid_t);
+group getgrnam(char);
+int initgroups(char, __gid_t);
+void setgrent(void);
+int setgroups(size_t, __gid_t);
+int getgrgid_r(__gid_t, struct group, char, size_t, struct group);
+int getgrnam_r(char, struct group, char, size_t, struct group);
+int fgetgrent_r(struct group, char, size_t, struct group);
+int getgrent_r(struct group, char, size_t, struct group);
 
 </SCREEN>
 </SECT2>
@@ -596,6 +608,8 @@ struct lconv
   char n_sign_posn;
 };
 
+lconv localeconv(void);
+char setlocale(int, char);
 
 </SCREEN>
 </SECT2>
@@ -605,7 +619,7 @@ struct lconv
 </PARA>
 <SCREEN>
 
-ssize_t strfmon(char *, size_t, const char *, ...);
+ssize_t strfmon(char, size_t, char, ...);
 
 </SCREEN>
 </SECT2>
@@ -618,8 +632,8 @@ ssize_t strfmon(char *, size_t, const char *, ...);
 
 
 int catclose(nl_catd);
-char * catgets(nl_catd, int, int, const char *);
-nl_catd catopen(const char *, int);
+char catgets(nl_catd, int, int, char);
+nl_catd catopen(char, int);
 
 </SCREEN>
 </SECT2>
@@ -629,6 +643,35 @@ nl_catd catopen(const char *, int);
 </PARA>
 <SCREEN>
 
+void endpwent(void);
+passwd fgetpwent();
+passwd getpwent(void);
+passwd getpwnam(char);
+passwd getpwuid(__uid_t);
+int putpwent(struct passwd);
+void setpwent(void);
+int getpwnam_r(char, struct passwd, char, size_t, struct passwd);
+int getpwuid_r(__uid_t, struct passwd, char, size_t, struct passwd);
+int fgetpwent_r(struct passwd, char, size_t, struct passwd);
+int getpwent_r(struct passwd, char, size_t, struct passwd);
+
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>regex.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>regexp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+int advance(char, char);
+int step(char, char);
 
 </SCREEN>
 </SECT2>
@@ -638,6 +681,22 @@ nl_catd catopen(const char *, int);
 </PARA>
 <SCREEN>
 
+int __sched_get_priority_max(int);
+int __sched_get_priority_min(int);
+int __sched_getparam(__pid_t, struct sched_param);
+int __sched_getscheduler(__pid_t);
+int __sched_setscheduler(__pid_t, int, struct sched_param);
+int __sched_yield(void);
+int sched_get_priority_max(int);
+int sched_get_priority_min(int);
+int sched_getparam(__pid_t, struct sched_param);
+int sched_getscheduler(__pid_t);
+int sched_rr_get_interval(__pid_t, struct timespec);
+int sched_setparam(__pid_t, struct sched_param);
+int sched_setscheduler(__pid_t, int, struct sched_param);
+int sched_yield(void);
+int __sched_setparam(__pid_t, struct sched_param);
+int __sched_rr_get_interval(__pid_t, struct timespec);
 
 </SCREEN>
 </SECT2>
@@ -647,8 +706,17 @@ nl_catd catopen(const char *, int);
 </PARA>
 <SCREEN>
 
-void insque(void *, void *);
-void remque(void *);
+int hcreate(size_t);
+ENTRY hsearch(ENTRY, ACTION);
+void insque(void, void);
+void lfind(void, void, size_t, size_t, __compar_fn_t);
+void lsearch(void, void, size_t, size_t, __compar_fn_t);
+void remque(void);
+void hdestroy(void);
+void tdelete(void, void, __compar_fn_t);
+void tfind(void, void, __compar_fn_t);
+void tsearch(void, void, __compar_fn_t);
+void twalk(void, __action_fn_t);
 
 </SCREEN>
 </SECT2>
@@ -658,6 +726,10 @@ void remque(void *);
 </PARA>
 <SCREEN>
 
+int __sigsetjmp(jmp_buf, int);
+void longjmp(jmp_buf, int);
+void siglongjmp(sigjmp_buf, int);
+void _longjmp(jmp_buf, int);
 
 </SCREEN>
 </SECT2>
@@ -715,31 +787,38 @@ void remque(void *);
 #define SIG_SETMASK     2
 
 
-int __sigaction(int, const struct sigaction *, struct sigaction *);
+int __libc_current_sigrtmax(void);
+int __libc_current_sigrtmin(void);
+int __sigaction(int, struct sigaction, struct sigaction);
 int __sigpause(int, int);
 __sighandler_t __sysv_signal(int, __sighandler_t);
 int killpg(__pid_t, int);
-void psignal(int, const char *);
+void psignal(int, char);
 int raise(int);
-int sigaddset(sigset_t *, int);
-int sigdelset(sigset_t *, int);
-int sigemptyset(sigset_t *);
-int sigfillset(sigset_t *);
+int sigaddset(sigset_t, int);
+int sigdelset(sigset_t, int);
+int sigemptyset(sigset_t);
+int sigfillset(sigset_t);
 int siggetmask(void);
-int sigismember(const sigset_t *, int);
-int sigpending(sigset_t *);
-int sigaction(int, const struct sigaction *, struct sigaction *);
-int sigwait(const sigset_t *, int *);
+int siginterrupt(int, int);
+int sigismember(sigset_t, int);
+int sigpending(sigset_t);
+int sigstack(struct sigstack, struct sigstack);
+int sigaction(int, struct sigaction, struct sigaction);
+int sigwait(sigset_t, int);
 int kill(__pid_t, int);
+int sigaltstack(struct sigaltstack, struct sigaltstack);
 int sigblock(int);
 __sighandler_t signal(int, __sighandler_t);
 int sigpause(int);
-int sigprocmask(int, const sigset_t *, sigset_t *);
+int sigprocmask(int, sigset_t, sigset_t);
+int sigreturn(struct sigcontext);
 int sigsetmask(int);
-int sigsuspend(const sigset_t *);
-int sigqueue(__pid_t, int, const union sigval);
-int sigwaitinfo(const sigset_t *, siginfo_t *);
-int sigtimedwait(const sigset_t *, siginfo_t *, const struct timespec *);
+int sigsuspend(sigset_t);
+int sigvec(int, struct sigvec, struct sigvec);
+int sigqueue(__pid_t, int, , enum sigval);
+int sigwaitinfo(sigset_t, siginfo_t);
+int sigtimedwait(sigset_t, siginfo_t, struct timespec);
 int gsignal(int);
 __sighandler_t ssignal(int, __sighandler_t);
 
@@ -776,77 +855,78 @@ extern FILE *stdin;
 extern FILE *stdout;
 
 
-void clearerr(FILE *);
-void clearerr_unlocked(FILE *);
-char * ctermid(char *);
-int fclose(FILE *);
-FILE * fdopen(int, const char *);
-int feof_unlocked(FILE *);
-int ferror_unlocked(FILE *);
-int fflush_unlocked(FILE *);
-int fileno(FILE *);
-FILE * fopen(const char *, const char *);
-int fprintf(FILE *, const char *, ...);
-int fputc(int, FILE *);
-int fputc_unlocked(int, FILE *);
-size_t fread_unlocked(void *, size_t, size_t, FILE *);
-FILE * freopen(const char *, const char *, FILE *);
-int fscanf(FILE *, const char *, ...);
-int fseek(FILE *, long, int);
-size_t fwrite_unlocked(const void *, size_t, size_t, FILE *);
+void clearerr(FILE);
+void clearerr_unlocked(FILE);
+char ctermid(char);
+int fclose(FILE);
+FILE fdopen(int, char);
+int feof_unlocked(FILE);
+int ferror_unlocked(FILE);
+int fflush_unlocked(FILE);
+int fileno(FILE);
+FILE fopen(char, char);
+int fprintf(FILE, char, ...);
+int fputc(int, FILE);
+int fputc_unlocked(int, FILE);
+size_t fread_unlocked(void, size_t, size_t, FILE);
+FILE freopen(char, char, FILE);
+int fscanf(FILE, char, ...);
+int fseek(FILE, long, int);
+size_t fwrite_unlocked(void, size_t, size_t, FILE);
 int getchar(void);
 int getchar_unlocked(void);
-int getw(FILE *);
-int pclose(FILE *);
-void perror(const char *);
-FILE * popen(const char *, const char *);
-int printf(const char *, ...);
-int putc_unlocked(int, FILE *);
+int getw(FILE);
+int pclose(FILE);
+void perror(char);
+FILE popen(char, char);
+int printf(char, ...);
+int putc_unlocked(int, FILE);
 int putchar(int);
 int putchar_unlocked(int);
-int putw(int, FILE *);
-int remove(const char *);
-int rename(const char *, const char *);
-void rewind(FILE *);
-int scanf(const char *, ...);
-void setbuf(FILE *, char *);
-void setlinebuf(FILE *);
-int sprintf(char *, const char *, ...);
-int sscanf(const char *, const char *, ...);
-char * tempnam(const char *, const char *);
-FILE * tmpfile(void);
-char * tmpnam(char *);
-char * tmpnam_r(char *);
-int vfprintf(FILE *, const char *, __gnuc_va_list);
-int vprintf(const char *, __gnuc_va_list);
-int feof(FILE *);
-int ferror(FILE *);
-int fflush(FILE *);
-int fgetc(FILE *);
-int fgetpos(FILE *, fpos_t *);
-char * fgets(char *, int, FILE *);
-int fputs(const char *, FILE *);
-size_t fread(void *, size_t, size_t, FILE *);
-int fsetpos(FILE *, const fpos_t *);
-long ftell(FILE *);
-size_t fwrite(const void *, size_t, size_t, FILE *);
-int getc(FILE *);
-char * gets(char *);
-int putc(int, FILE *);
-int puts(const char *);
-int setvbuf(FILE *, char *, int, size_t);
-int snprintf(char *, size_t, const char *, ...);
-int ungetc(int, FILE *);
-int vsnprintf(char *, size_t, const char *, __gnuc_va_list);
-int vsprintf(char *, const char *, __gnuc_va_list);
-void flockfile(FILE *);
-int __vsnprintf(char *, size_t, const char *, __gnuc_va_list);
-int fgetc_unlocked(FILE *);
-int fileno_unlocked(FILE *);
-int ftrylockfile(FILE *);
-void funlockfile(FILE *);
-int getc_unlocked(FILE *);
-void setbuffer(FILE *, char *, size_t);
+int putw(int, FILE);
+int remove(char);
+int rename(char, char);
+void rewind(FILE);
+int scanf(char, ...);
+void setbuf(FILE, char);
+void setlinebuf(FILE);
+int sprintf(char, char, ...);
+int sscanf(char, char, ...);
+char tempnam(char, char);
+FILE tmpfile(void);
+char tmpnam(char);
+char tmpnam_r(char);
+int vfprintf(FILE, char, __gnuc_va_list);
+int vprintf(char, __gnuc_va_list);
+int feof(FILE);
+int ferror(FILE);
+int fflush(FILE);
+int fgetc(FILE);
+int fgetpos(FILE, fpos_t);
+char fgets(char, int, FILE);
+int fputs(char, FILE);
+size_t fread(void, size_t, size_t, FILE);
+int fsetpos(FILE, fpos_t);
+long ftell(FILE);
+size_t fwrite(void, size_t, size_t, FILE);
+int getc(FILE);
+char gets(char);
+int putc(int, FILE);
+int puts(char);
+int setvbuf(FILE, char, int, size_t);
+int snprintf(char, size_t, char, ...);
+int ungetc(int, FILE);
+int vsnprintf(char, size_t, char, __gnuc_va_list);
+int vsprintf(char, char, __gnuc_va_list);
+void flockfile(FILE);
+int __vsnprintf(char, size_t, char, __gnuc_va_list);
+int fgetc_unlocked(FILE);
+int fileno_unlocked(FILE);
+int ftrylockfile(FILE);
+void funlockfile(FILE);
+int getc_unlocked(FILE);
+void setbuffer(FILE, char, size_t);
+char sys_errlist();
 int sys_nerr();
 
 </SCREEN>
@@ -862,6 +942,98 @@ int sys_nerr();
 #define RAND_MAX        2147483647
 
 
+int __on_exit(void (, void);
+char __secure_getenv(char);
+double __strtod_internal(char, char, int);
+float __strtof_internal(char, char, int);
+long __strtol_internal(char, char, int, int);
+long double __strtold_internal(char, char, int);
+long long __strtoll_internal(char, char, int, int);
+unsigned long __strtoul_internal(char, char, int, int);
+unsigned long long __strtoull_internal(char, char, int, int);
+long a64l(char);
+void abort(void);
+int abs(int);
+int atexit(void ();
+double atof(char);
+int atoi(char);
+long atol(char);
+long long atoll(char);
+void bsearch(void, void, size_t, size_t, __compar_fn_t);
+div_t div(int, int);
+double drand48(void);
+int drand48_r(struct drand48_data, double);
+char ecvt(double, int, int, int);
+int ecvt_r(double, int, int, int, char, size_t);
+double erand48(unsigned short);
+void exit(int);
+char fcvt(double, int, int, int);
+int fcvt_r(double, int, int, int, char, size_t);
+char gcvt(double, int, char);
+char getenv(char);
+long jrand48(unsigned short);
+char l64a(long);
+long labs(long);
+void lcong48(unsigned short);
+ldiv_t ldiv(long, long);
+long lrand48(void);
+int lrand48_r(struct drand48_data, long);
+int mblen(char, size_t);
+size_t mbstowcs(wchar_t, char, size_t);
+int mbtowc(wchar_t, char, size_t);
+int mkstemp(char);
+char mktemp(char);
+long mrand48(void);
+int mrand48_r(struct drand48_data, long);
+long nrand48(unsigned short);
+int putenv(char);
+char qecvt(long double, int, int, int);
+int qecvt_r(long double, int, int, int, char, size_t);
+char qfcvt(long double, int, int, int);
+int qfcvt_r(long double, int, int, int, char, size_t);
+char qgcvt(long double, int, char);
+void qsort(void, size_t, size_t, __compar_fn_t);
+int rand(void);
+int rand_r(unsigned int);
+int rpmatch(char);
+unsigned short seed48(unsigned short);
+void srand48(long);
+size_t wcstombs(char, wchar_t, size_t);
+int wctomb(char, wchar_t);
+int system(char);
+void calloc(size_t, size_t);
+void free(void);
+void initstate(unsigned int, void, size_t);
+void malloc(size_t);
+void realloc(void, size_t);
+void setstate(void);
+void srand(unsigned int);
+void srandom(unsigned int);
+double strtod(char, char);
+long strtol(char, char, int);
+long long strtoll(char, char, int);
+long long strtoq(char, char, int);
+unsigned long strtoul(char, char, int);
+unsigned long long strtoull(char, char, int);
+unsigned long long strtouq(char, char, int);
+size_t __ctype_get_mb_cur_max(void);
+void cfree(void);
+int clearenv(void);
+int erand48_r(unsigned short, struct drand48_data, double);
+int initstate_r(unsigned int, void, size_t, struct random_data);
+int jrand48_r(unsigned short, struct drand48_data, long);
+int lcong48_r(unsigned short, struct drand48_data);
+int nrand48_r(unsigned short, struct drand48_data, long);
+int on_exit(void (, void);
+int random_r(struct random_data);
+char realpath(char, char);
+int seed48_r(unsigned short, struct drand48_data);
+int setenv(char, char, int);
+int setstate_r(void, struct random_data);
+int srand48_r(long, struct drand48_data);
+int srandom_r(unsigned int, struct random_data);
+void unsetenv(char);
+void valloc(size_t);
 
 </SCREEN>
 </SECT2>
@@ -872,39 +1044,47 @@ int sys_nerr();
 <SCREEN>
 #define NULL    0
 
-void __bzero(void *, size_t);
+void __bzero(void, size_t);
 int __ffs(int);
-int __strcasecmp(const char *, const char *);
-char * __strdup(const char *);
-char * __strerror_r(int, char *, size_t);
-char * __strtok_r(char *, const char *, char * *);
-void * memchr(const void *, int, size_t);
-int memcmp(const void *, const void *, size_t);
-void * memcpy(void *, const void *, size_t);
-void * memmove(void *, const void *, size_t);
-void * memset(void *, int, size_t);
-char * strcat(char *, const char *);
-char * strchr(const char *, int);
-int strcmp(const char *, const char *);
-int strcoll(const char *, const char *);
-char * strcpy(char *, const char *);
-size_t strcspn(const char *, const char *);
-char * strerror(int);
-size_t strlen(const char *);
-char * strncat(char *, const char *, size_t);
-int strncmp(const char *, const char *, size_t);
-char * strncpy(char *, const char *, size_t);
-char * strpbrk(const char *, const char *);
-char * strrchr(const char *, int);
-size_t strspn(const char *, const char *);
-char * strstr(const char *, const char *);
-char * strtok(char *, const char *);
-size_t strxfrm(char *, const char *, size_t);
-void * memccpy(void *, const void *, int, size_t);
-char * strdup(const char *);
-char * strsep(char * *, const char *);
-char * strerror_r(int, char *, size_t);
-char * strtok_r(char *, const char *, char * *);
+int __strcasecmp(char, char);
+char __strdup(char);
+char __strerror_r(int, char, size_t);
+char __strtok_r(char, char, char);
+void bcopy(void, void, size_t);
+void memchr(void, int, size_t);
+int memcmp(void, void, size_t);
+void memcpy(void, void, size_t);
+void memmove(void, void, size_t);
+void memset(void, int, size_t);
+char strcat(char, char);
+char strchr(char, int);
+int strcmp(char, char);
+int strcoll(char, char);
+char strcpy(char, char);
+size_t strcspn(char, char);
+char strerror(int);
+size_t strlen(char);
+char strncat(char, char, size_t);
+int strncmp(char, char, size_t);
+char strncpy(char, char, size_t);
+char strpbrk(char, char);
+char strrchr(char, int);
+size_t strspn(char, char);
+char strstr(char, char);
+char strtok(char, char);
+size_t strxfrm(char, char, size_t);
+int bcmp(void, void, size_t);
+void bzero(void, size_t);
+int ffs(int);
+char -1;
+void memccpy(void, void, int, size_t);
+char rindex(char, int);
+int strcasecmp(char, char);
+char strdup(char);
+int strncasecmp(char, char, size_t);
+char strsep(char, char);
+char strerror_r(int, char, size_t);
+char strtok_r(char, char, char);
 
 </SCREEN>
 </SECT2>
@@ -914,16 +1094,16 @@ char * strtok_r(char *, const char *, char * *);
 </PARA>
 <SCREEN>
 
-int madvise(void *, size_t, int);
-int msync(void *, size_t, int);
-int mlock(const void *, size_t);
+int madvise(void, size_t, int);
+int msync(void, size_t, int);
+int mlock(void, size_t);
 int mlockall(int);
-void * mmap(void *, size_t, int, int, int, __off_t);
-int mprotect(void *, size_t, int);
-int munlock(const void *, size_t);
+void mmap(void, size_t, int, int, int, __off_t);
+int mprotect(void, size_t, int);
+int munlock(void, size_t);
 int munlockall(void);
-int munmap(void *, size_t);
-void * mremap(void *, size_t, size_t, int);
+int munmap(void, size_t);
+void mremap(void, size_t, size_t, int);
 
 </SCREEN>
 </SECT2>
@@ -933,6 +1113,10 @@ void * mremap(void *, size_t, size_t, int);
 </PARA>
 <SCREEN>
 
+int msgctl(int, int, struct msqid_ds);
+int msgget(int);
+int msgrcv(int, void, size_t, long, int);
+int msgsnd(int, void, size_t, int);
 
 </SCREEN>
 </SECT2>
@@ -942,11 +1126,11 @@ void * mremap(void *, size_t, size_t, int);
 </PARA>
 <SCREEN>
 
-int getpriority(ENUM=__priority_which, int);
-int setpriority(ENUM=__priority_which, int, int);
-int setrlimit(ENUM=__rlimit_resource, const struct rlimit *);
-int getrlimit(ENUM=__rlimit_resource, struct rlimit *);
-int getrusage(ENUM=__rusage_who, struct rusage *);
+int getpriority(enum, enum __priority_which, int);
+int setpriority(enum, enum __priority_which, int, int);
+int setrlimit(enum, enum __rlimit_resource, struct rlimit);
+int getrlimit(enum, enum __rlimit_resource, struct rlimit);
+int getrusage(enum, enum __rusage_who, struct rusage);
 
 </SCREEN>
 </SECT2>
@@ -956,6 +1140,9 @@ int getrusage(ENUM=__rusage_who, struct rusage *);
 </PARA>
 <SCREEN>
 
+int semctl(int, int, int, ...);
+int semget(int, int);
+int semop(int, struct sembuf, unsigned int);
 
 </SCREEN>
 </SECT2>
@@ -965,10 +1152,10 @@ int getrusage(ENUM=__rusage_who, struct rusage *);
 </PARA>
 <SCREEN>
 
-void * shmat(int, const void *, int);
-int shmctl(int, int, struct shmid_ds *);
-int shmdt(const void *);
-int shmget(key_t, size_t, int);
+void shmat(int, void, int);
+int shmctl(int, int, struct shmid_ds);
+int shmdt(void);
+int shmget(size_t, int);
 
 </SCREEN>
 </SECT2>
@@ -978,6 +1165,26 @@ int shmget(key_t, size_t, int);
 </PARA>
 <SCREEN>
 
+int bind(int, __CONST_SOCKADDR_ARG, socklen_t);
+int getsockname(int, __SOCKADDR_ARG, socklen_t);
+int isfdtype(int, int);
+int listen(int, unsigned int);
+int setsockopt(int, int, int, void, socklen_t);
+int __connect(int, __CONST_SOCKADDR_ARG, socklen_t);
+int __send(int, void, size_t, int);
+int accept(int, __SOCKADDR_ARG, socklen_t);
+int connect(int, __CONST_SOCKADDR_ARG, socklen_t);
+int recv(int, void, size_t, int);
+int recvfrom(int, void, size_t, int, __SOCKADDR_ARG, socklen_t);
+int recvmsg(int, struct msghdr, int);
+int send(int, void, size_t, int);
+int sendmsg(int, struct msghdr, int);
+int sendto(int, void, size_t, int, __CONST_SOCKADDR_ARG, socklen_t);
+int getpeername(int, __SOCKADDR_ARG, socklen_t);
+int getsockopt(int, int, int, void, socklen_t);
+int shutdown(int, int);
+int socket(int, int, int);
+int socketpair(int, int, int, int);
 
 </SCREEN>
 </SECT2>
@@ -1013,6 +1220,19 @@ int shmget(key_t, size_t, int);
 #define S_IFREG 0100000
 
 
+int __fxstat(int, int, struct stat);
+int __lxstat(int, char, struct stat);
+int __xmknod(int, char, __mode_t, __dev_t);
+int __xstat(int, char, struct stat);
+int mkfifo(char, __mode_t);
+int chmod(char, __mode_t);
+int fchmod(int, __mode_t);
+int mkdir(char, __mode_t);
+__mode_t umask(__mode_t);
+int stat(char, struct stat);
+int fstat(int, struct stat);
+int lstat(char, struct stat);
+int mknod(char, __mode_t, __dev_t);
 
 </SCREEN>
 </SECT2>
@@ -1022,8 +1242,6 @@ int shmget(key_t, size_t, int);
 </PARA>
 <SCREEN>
 
-_G_int16_t __poll(struct _IO_str_fields, _G_uint16_t, _G_int16_t);
-_G_int16_t poll(struct _IO_str_fields, _G_uint16_t, _G_int16_t);
 
 </SCREEN>
 </SECT2>
@@ -1033,6 +1251,7 @@ _G_int16_t poll(struct _IO_str_fields, _G_uint16_t, _G_int16_t);
 </PARA>
 <SCREEN>
 
+int uname(struct utsname);
 
 </SCREEN>
 </SECT2>
@@ -1053,6 +1272,12 @@ _G_int16_t poll(struct _IO_str_fields, _G_uint16_t, _G_int16_t);
 #define WTERMSIG(s)     ((s) & 0x7f)
 
 
+int waitid(idtype_t, __id_t, siginfo_t, int);
+__pid_t __wait(__WAIT_STATUS);
+__pid_t wait(__WAIT_STATUS);
+__pid_t waitpid(__pid_t, int, int);
+__pid_t wait3(__WAIT_STATUS, int, struct rusage);
+__pid_t wait4(__pid_t, __WAIT_STATUS, int, struct rusage);
 
 </SCREEN>
 </SECT2>
@@ -1153,22 +1378,18 @@ typedef unsigned char cc_t;
 typedef unsigned int  tcflag_t;
 
 
-_G_int16_t __adjtimex(GifByteType);
-speed_t cfgetispeed(const struct termios *);
-speed_t cfgetospeed(const struct termios *);
-void cfmakeraw(struct termios *);
-int cfsetispeed(struct termios *, speed_t);
-int cfsetospeed(struct termios *, speed_t);
-int cfsetspeed(struct termios *, speed_t);
-_G_int16_t ntp_gettime(GifColorType *);
+speed_t cfgetispeed(struct termios);
+speed_t cfgetospeed(struct termios);
+void cfmakeraw(struct termios);
+int cfsetispeed(struct termios, speed_t);
+int cfsetospeed(struct termios, speed_t);
+int cfsetspeed(struct termios, speed_t);
 int tcflow(int, int);
 int tcflush(int, int);
 int tcsendbreak(int, int);
-int tcsetattr(int, int, const struct termios *);
+int tcsetattr(int, int, struct termios);
 int tcdrain(int);
-int tcgetattr(int, struct termios *);
-_G_int16_t adjtimex(GifByteType);
-_G_int16_t ntp_adjtime(GifByteType);
+int tcgetattr(int, struct termios);
 
 </SCREEN>
 </SECT2>
@@ -1179,6 +1400,29 @@ _G_int16_t ntp_adjtime(GifByteType);
 <SCREEN>
 #define NULL    0
 
+tm __gmtime_r(time_t, struct tm);
+char asctime(struct tm);
+clock_t clock(void);
+char ctime(time_t);
+char ctime_r(time_t, char);
+double difftime(time_t, time_t);
+int dysize(int);
+tm gmtime(time_t);
+tm localtime(time_t);
+time_t mktime(struct tm);
+int stime(time_t);
+size_t strftime(char, size_t, char, struct tm);
+time_t time(time_t);
+time_t timegm(struct tm);
+int nanosleep(struct timespec, struct timespec);
+int daylight();
+long timezone();
+char tzname();
+void tzset(void);
+char asctime_r(struct tm, char);
+tm gmtime_r(time_t, struct tm);
+tm localtime_r(time_t, struct tm);
+time_t timelocal(struct tm);
 
 </SCREEN>
 </SECT2>
@@ -1335,46 +1579,46 @@ long ulimit(int, ...);
 int __getpagesize(void);
 __pid_t __getpgid(__pid_t);
 __pid_t __getpid(void);
-void * __sbrk(ptrdiff_t);
+void __sbrk(ptrdiff_t);
 int __setpgid(__pid_t, __pid_t);
 void _exit(int);
-int acct(const char *);
+int acct(char);
 unsigned int alarm(unsigned int);
-int chown(const char *, __uid_t, __gid_t);
-int chroot(const char *);
-size_t confstr(int, char *, size_t);
+int chown(char, __uid_t, __gid_t);
+int chroot(char);
+size_t confstr(int, char, size_t);
 int daemon(int, int);
 void endusershell(void);
-int execl(const char *, const char *, ...);
-int execle(const char *, const char *, ...);
-int execlp(const char *, const char *, ...);
-int execv(const char *, char *const);
-int execvp(const char *, char *const);
+int execl(char, char, ...);
+int execle(char, char, ...);
+int execlp(char, char, ...);
+int execv(char, char);
+int execvp(char, char);
 int fdatasync(int);
-int getdomainname(char *, size_t);
+int getdomainname(char, size_t);
 long gethostid(void);
-char * getlogin(void);
-char * getpass(const char *);
+char getlogin(void);
+char getpass(char);
 __pid_t getpgrp(void);
-char * getusershell(void);
-char * getwd(char *);
+char getusershell(void);
+char getwd(char);
 int lockf(int, int, __off_t);
 int nice(int);
-int revoke(const char *);
-int setdomainname(const char *, size_t);
+int revoke(char);
+int setdomainname(char, size_t);
 int setegid(__gid_t);
 int seteuid(__uid_t);
 int sethostid(long);
-int sethostname(const char *, size_t);
-int setlogin(const char *);
+int sethostname(char, size_t);
+int setlogin(char);
 int setpgrp(void);
 void setusershell(void);
 int sync(void);
 long syscall(long, ...);
 __pid_t tcgetpgrp(int);
 int tcsetpgrp(int, __pid_t);
-int truncate(int, __off_t);
-char * ttyname(int);
+int truncate(char, __off_t);
+char ttyname(int);
 int ttyslot(void);
 unsigned int ualarm(unsigned int, unsigned int);
 void usleep(unsigned int);
@@ -1382,21 +1626,21 @@ int vhangup(void);
 int __close(int);
 __pid_t __fork(void);
 __off_t __lseek(int, __off_t, int);
-ssize_t __read(int, void *, size_t);
-ssize_t __write(int, const void *, size_t);
+ssize_t __read(int, void, size_t);
+ssize_t __write(int, void, size_t);
 int close(int);
 int fsync(int);
 __off_t lseek(int, __off_t, int);
 int pause(void);
-int pthread_atfork(void ( *, void);
-ssize_t read(int, void *, size_t);
-ssize_t write(int, const void *, size_t);
-int access(const char *, int);
-int brk(void *);
-int chdir(const char *);
+int pthread_atfork(void (, void (, void ();
+ssize_t read(int, void, size_t);
+ssize_t write(int, void, size_t);
+int access(char, int);
+int brk(void);
+int chdir(char);
 int dup(int);
 int dup2(int, int);
-int execve(const char *, char *const, char *const);
+int execve(char, char, char);
 int fchdir(int);
 int fchown(int, __uid_t, __gid_t);
 __pid_t fork(void);
@@ -1404,16 +1648,16 @@ __gid_t getegid(void);
 __uid_t geteuid(void);
 __gid_t getgid(void);
 int getgroups(int, __gid_t);
-int gethostname(char *, size_t);
+int gethostname(char, size_t);
 __pid_t getpid(void);
 __uid_t getuid(void);
-int lchown(const char *, __uid_t, __gid_t);
-int link(const char *, const char *);
-long pathconf(const char *, int);
+int lchown(char, __uid_t, __gid_t);
+int link(char, char);
+long pathconf(char, int);
 int pipe(int);
-int readlink(const char *, char *, size_t);
-int rmdir(const char *);
-void * sbrk(ptrdiff_t);
+int readlink(char, char, size_t);
+int rmdir(char);
+void sbrk(ptrdiff_t);
 int setgid(__gid_t);
 int setpgid(__pid_t, __pid_t);
 int setregid(__gid_t, __gid_t);
@@ -1421,19 +1665,20 @@ int setreuid(__uid_t, __uid_t);
 __pid_t setsid(void);
 int setuid(__uid_t);
 unsigned int sleep(unsigned int);
-int symlink(const char *, const char *);
+int symlink(char, char);
 long sysconf(int);
-int unlink(const char *);
+int unlink(char);
 __pid_t vfork(void);
 long fpathconf(int, int);
 int ftruncate(int, __off_t);
-char * getcwd(char *, size_t);
+char getcwd(char, size_t);
 int getdtablesize(void);
 int getpagesize(void);
 __pid_t getppid(void);
 int isatty(int);
-int profil(unsigned short *, size_t, size_t, unsigned int);
-int ttyname_r(int, char *, size_t);
+int profil(unsigned short, size_t, size_t, unsigned int);
+int ttyname_r(int, char, size_t);
+int __ftruncate(int, __off_t);
 
 </SCREEN>
 </SECT2>
@@ -1447,7 +1692,7 @@ struct utimbuf {
 	time_t modtime;           /* Modification time.  */
 };
 
-_G_int16_t vtimes(const GifByteType, const GifByteType);
+int utime(char, struct utimbuf);
 
 </SCREEN>
 </SECT2>
@@ -1457,6 +1702,47 @@ _G_int16_t vtimes(const GifByteType, const GifByteType);
 </PARA>
 <SCREEN>
 
+size_t __mbrlen(char, size_t, mbstate_t);
+double __wcstod_internal(wchar_t, wchar_t, int);
+float __wcstof_internal(wchar_t, wchar_t, int);
+long __wcstol_internal(wchar_t, wchar_t, int, int);
+long double __wcstold_internal(wchar_t, wchar_t, int);
+long long __wcstoll_internal(wchar_t, wchar_t, int, int);
+unsigned long __wcstoul_internal(wchar_t, wchar_t, int, int);
+unsigned long long __wcstoull_internal(wchar_t, wchar_t, int, int);
+wchar_t wcscat(wchar_t, wchar_t);
+wchar_t wcschr(wchar_t, wchar_t);
+int wcscmp(wchar_t, wchar_t);
+int wcscoll(wchar_t, wchar_t);
+wchar_t wcscpy(wchar_t, wchar_t);
+size_t wcscspn(wchar_t, wchar_t);
+wchar_t wcsncat(wchar_t, wchar_t, size_t);
+int wcsncmp(wchar_t, wchar_t, size_t);
+wchar_t wcsncpy(wchar_t, wchar_t, size_t);
+wchar_t wcspbrk(wchar_t, wchar_t);
+wchar_t wcsrchr(wchar_t, wchar_t);
+size_t wcsspn(wchar_t, wchar_t);
+wchar_t wcsstr(wchar_t, wchar_t);
+wchar_t wcstok(wchar_t, wchar_t, wchar_t);
+size_t wcsxfrm(wchar_t, wchar_t, size_t);
+int wctob(wint_t);
+wchar_t wmemchr(wchar_t, wchar_t, size_t);
+int wmemcmp(wchar_t, wchar_t, size_t);
+wchar_t wmemcpy(wchar_t, wchar_t, size_t);
+wchar_t wmemmove(wchar_t, wchar_t, size_t);
+wchar_t wmemset(wchar_t, wchar_t, size_t);
+size_t mbrlen(char, size_t, mbstate_t);
+size_t mbrtowc(wchar_t, char, size_t, mbstate_t);
+int mbsinit(mbstate_t);
+size_t mbsrtowcs(wchar_t, char, size_t, mbstate_t);
+size_t wcrtomb(char, wchar_t, mbstate_t);
+size_t wcslen(wchar_t);
+size_t wcsrtombs(char, wchar_t, size_t, mbstate_t);
+double wcstod(wchar_t, wchar_t);
+long wcstol(wchar_t, wchar_t, int);
+unsigned long wcstoul(wchar_t, wchar_t, int);
+wint_t btowc(int);
+size_t __wcslen(wchar_t);
 
 </SCREEN>
 </SECT2>
@@ -1470,7 +1756,7 @@ int __iswctype(wint_t, wctype_t);
 wint_t __towctrans(wint_t, wctrans_t);
 wint_t towlower(wint_t);
 wint_t towupper(wint_t);
-wctrans_t wctrans(const char *);
+wctrans_t wctrans(char);
 int iswalnum(wint_t);
 int iswalpha(wint_t);
 int iswcntrl(wint_t);
@@ -1482,15 +1768,16 @@ int iswprint(wint_t);
 int iswpunct(wint_t);
 int iswspace(wint_t);
 int iswupper(wint_t);
-int iswxdigit(const char *);
-wctype_t wctype(const char *);
+int iswxdigit(wint_t);
+wctype_t wctype(char);
 wint_t towctrans(wint_t, wctrans_t);
+wctype_t __wctype(char);
 
 </SCREEN>
 </SECT2>
 </SECT1>
 
-<SECT1>
+<SECT1 ID=libcman>
 <TITLE>Interface Definitions for libc</TITLE>
 <PARA>
 </PARA>
@@ -2028,7 +2315,7 @@ This behavior may be deprecated in the future.
 </SECT1>
 
 
-<SECT1>
+<SECT1 ID=libm>
 <TITLE>libm</TITLE>
 <PARA>
 </PARA>
@@ -2094,7 +2381,7 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </TABLE>
 </SECT2>
 </SECT1>
-<SECT1>
+<SECT1 ID=libm-ddefs>
 <TITLE> Data Definitions for libm</TITLE>
 <PARA>
 </PARA>
@@ -2133,6 +2420,7 @@ static __huge_val_t __huge_val = { __HUGE_VAL_bytes };
 #define M_SQRT2		1.41421356237309504880
 
 
+int matherr(struct exception);
 
 </SCREEN>
 </SECT2>
@@ -2147,13 +2435,105 @@ static __huge_val_t __huge_val = { __HUGE_VAL_bytes };
 #define RAND_MAX        2147483647
 
 
+int __on_exit(void (, void);
+char __secure_getenv(char);
+double __strtod_internal(char, char, int);
+float __strtof_internal(char, char, int);
+long __strtol_internal(char, char, int, int);
+long double __strtold_internal(char, char, int);
+long long __strtoll_internal(char, char, int, int);
+unsigned long __strtoul_internal(char, char, int, int);
+unsigned long long __strtoull_internal(char, char, int, int);
+long a64l(char);
+void abort(void);
+int abs(int);
+int atexit(void ();
+double atof(char);
+int atoi(char);
+long atol(char);
+long long atoll(char);
+void bsearch(void, void, size_t, size_t, __compar_fn_t);
+div_t div(int, int);
+double drand48(void);
+int drand48_r(struct drand48_data, double);
+char ecvt(double, int, int, int);
+int ecvt_r(double, int, int, int, char, size_t);
+double erand48(unsigned short);
+void exit(int);
+char fcvt(double, int, int, int);
+int fcvt_r(double, int, int, int, char, size_t);
+char gcvt(double, int, char);
+char getenv(char);
+long jrand48(unsigned short);
+char l64a(long);
+long labs(long);
+void lcong48(unsigned short);
+ldiv_t ldiv(long, long);
+long lrand48(void);
+int lrand48_r(struct drand48_data, long);
+int mblen(char, size_t);
+size_t mbstowcs(wchar_t, char, size_t);
+int mbtowc(wchar_t, char, size_t);
+int mkstemp(char);
+char mktemp(char);
+long mrand48(void);
+int mrand48_r(struct drand48_data, long);
+long nrand48(unsigned short);
+int putenv(char);
+char qecvt(long double, int, int, int);
+int qecvt_r(long double, int, int, int, char, size_t);
+char qfcvt(long double, int, int, int);
+int qfcvt_r(long double, int, int, int, char, size_t);
+char qgcvt(long double, int, char);
+void qsort(void, size_t, size_t, __compar_fn_t);
+int rand(void);
+int rand_r(unsigned int);
+int rpmatch(char);
+unsigned short seed48(unsigned short);
+void srand48(long);
+size_t wcstombs(char, wchar_t, size_t);
+int wctomb(char, wchar_t);
+int system(char);
+void calloc(size_t, size_t);
+void free(void);
+void initstate(unsigned int, void, size_t);
+void malloc(size_t);
+void realloc(void, size_t);
+void setstate(void);
+void srand(unsigned int);
+void srandom(unsigned int);
+double strtod(char, char);
+long strtol(char, char, int);
+long long strtoll(char, char, int);
+long long strtoq(char, char, int);
+unsigned long strtoul(char, char, int);
+unsigned long long strtoull(char, char, int);
+unsigned long long strtouq(char, char, int);
+size_t __ctype_get_mb_cur_max(void);
+void cfree(void);
+int clearenv(void);
+int erand48_r(unsigned short, struct drand48_data, double);
+int initstate_r(unsigned int, void, size_t, struct random_data);
+int jrand48_r(unsigned short, struct drand48_data, long);
+int lcong48_r(unsigned short, struct drand48_data);
+int nrand48_r(unsigned short, struct drand48_data, long);
+int on_exit(void (, void);
+int random_r(struct random_data);
+char realpath(char, char);
+int seed48_r(unsigned short, struct drand48_data);
+int setenv(char, char, int);
+int setstate_r(void, struct random_data);
+int srand48_r(long, struct drand48_data);
+int srandom_r(unsigned int, struct random_data);
+void unsetenv(char);
+void valloc(size_t);
 
 </SCREEN>
 </SECT2>
 </SECT1>
 
 
-<SECT1>
+<SECT1 ID=libpthread>
 <TITLE>libpthread</TITLE>
 <PARA>
 </PARA>
@@ -2286,7 +2666,7 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </TABLE>
 </SECT2>
 </SECT1>
-<SECT1>
+<SECT1 ID=libpthread-ddefs>
 <TITLE> Data Definitions for libpthread</TITLE>
 <PARA>
 </PARA>
@@ -2296,6 +2676,70 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </PARA>
 <SCREEN>
 
+int __pthread_atfork(void (, void (, void ();
+void __pthread_getspecific(pthread_key_t);
+void __pthread_initialize(void);
+int __pthread_key_create(pthread_key_t, void ();
+int __pthread_mutex_destroy(pthread_mutex_t);
+int __pthread_mutex_init(pthread_mutex_t, pthread_mutexattr_t);
+int __pthread_mutex_lock(pthread_mutex_t);
+int __pthread_mutex_trylock(pthread_mutex_t);
+int __pthread_mutex_unlock(pthread_mutex_t);
+int __pthread_mutexattr_destroy(pthread_mutexattr_t);
+int __pthread_mutexattr_init(pthread_mutexattr_t);
+int __pthread_once(pthread_once_t, void ();
+int __pthread_setspecific(pthread_key_t, void);
+void _pthread_cleanup_pop(struct _pthread_cleanup_buffer, int);
+void _pthread_cleanup_push(struct _pthread_cleanup_buffer, void (, void);
+int pthread_attr_destroy(pthread_attr_t);
+int pthread_attr_getdetachstate(pthread_attr_t, int);
+int pthread_attr_getinheritsched(pthread_attr_t, int);
+int pthread_attr_getschedparam(pthread_attr_t, struct sched_param);
+int pthread_attr_getschedpolicy(pthread_attr_t, int);
+int pthread_attr_getscope(pthread_attr_t, int);
+int pthread_attr_init(pthread_attr_t);
+int pthread_attr_setdetachstate(pthread_attr_t, int);
+int pthread_attr_setinheritsched(pthread_attr_t, int);
+int pthread_attr_setschedparam(pthread_attr_t, struct sched_param);
+int pthread_attr_setschedpolicy(pthread_attr_t, int);
+int pthread_attr_setscope(pthread_attr_t, int);
+int pthread_cancel(pthread_t);
+int pthread_cond_broadcast(pthread_cond_t);
+int pthread_cond_destroy(pthread_cond_t);
+int pthread_cond_init(pthread_cond_t, pthread_condattr_t);
+int pthread_cond_signal(pthread_cond_t);
+int pthread_cond_timedwait(pthread_cond_t, pthread_mutex_t, struct timespec);
+int pthread_cond_wait(pthread_cond_t, pthread_mutex_t);
+int pthread_condattr_destroy(pthread_condattr_t);
+int pthread_condattr_init(pthread_condattr_t);
+int pthread_create(pthread_t, pthread_attr_t, void (, void);
+int pthread_detach(pthread_t);
+int pthread_equal(pthread_t, pthread_t);
+void pthread_exit(void);
+int pthread_getschedparam(pthread_t, int, struct sched_param);
+void pthread_getspecific(pthread_key_t);
+int pthread_join(pthread_t, void);
+int pthread_key_create(pthread_key_t, void ();
+int pthread_key_delete(pthread_key_t);
+int pthread_mutex_destroy(pthread_mutex_t);
+int pthread_mutex_init(pthread_mutex_t, pthread_mutexattr_t);
+int pthread_mutex_lock(pthread_mutex_t);
+int pthread_mutex_trylock(pthread_mutex_t);
+int pthread_mutex_unlock(pthread_mutex_t);
+int pthread_mutexattr_destroy(pthread_mutexattr_t);
+int pthread_mutexattr_init(pthread_mutexattr_t);
+int pthread_once(pthread_once_t, void ();
+pthread_t pthread_self(void);
+int pthread_setcancelstate(int, int);
+int pthread_setcanceltype(int, int);
+int pthread_setschedparam(pthread_t, int, struct sched_param);
+int pthread_setspecific(pthread_key_t, void);
+void pthread_testcancel(void);
+int pthread_attr_setstackaddr(pthread_attr_t, void);
+int pthread_attr_getstackaddr(pthread_attr_t, void);
+int pthread_attr_setstacksize(pthread_attr_t, size_t);
+int pthread_attr_getstacksize(pthread_attr_t, size_t);
+void pthread_kill_other_threads_np(void);
 
 </SCREEN>
 </SECT2>
@@ -2309,7 +2753,7 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </SECT1>
 
 
-<SECT1>
+<SECT1 ID=libdb>
 <TITLE>libdb</TITLE>
 <PARA>
 </PARA>
@@ -2347,7 +2791,7 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </SECT1>
 
 
-<SECT1>
+<SECT1 ID=libdl>
 <TITLE>libdl</TITLE>
 <PARA>
 </PARA>
@@ -2390,7 +2834,7 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </TABLE>
 </SECT2>
 </SECT1>
-<SECT1>
+<SECT1 ID=libdl-ddefs>
 <TITLE> Data Definitions for libdl</TITLE>
 <PARA>
 </PARA>
@@ -2404,7 +2848,7 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </SECT1>
 
 
-<SECT1>
+<SECT1 ID=libcrypt>
 <TITLE>libcrypt</TITLE>
 <PARA>
 </PARA>
@@ -2447,7 +2891,7 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 </TABLE>
 </SECT2>
 </SECT1>
-<SECT1>
+<SECT1 ID=libcrypt-ddefs>
 <TITLE> Data Definitions for libcrypt</TITLE>
 <PARA>
 </PARA>

@@ -1,7 +1,7 @@
 <PART ID="tocsysinit">
 <TITLE>System Initialization</TITLE>
 
-<CHAPTER id=sysinit>
+<CHAPTER ID=sysinit>
 <TITLE>System Initialization</TITLE>
 
 include(cron.sgml)

@@ -1,9 +1,9 @@
 <PART ID="toccommand">
 <TITLE>Commands and Utilities</TITLE>
 
-<CHAPTER id=command>
+<CHAPTER ID=command>
 <TITLE>Command and Utilities</TITLE>
-<SECT1>
+<SECT1 ID=cmdutil>
 <TITLE>Command and Utilities</TITLE>
 <PARA>
 The following table lists all the Commands and Utilities described in the
@@ -18,7 +18,7 @@ and modified as needed.
 </NOTE>
 include(cmdsutils.sgml)
 </SECT1>
-<SECT1>
+<SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
 This section contains descriptions of commands that are not documented by other
