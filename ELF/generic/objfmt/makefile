@@ -14,9 +14,9 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mksectiontable -a All -s 'ELF Specification' -c 4 >elfsect.sgml
+	../../mksectiontable -a All -s 'ABIUpdate' -c 4 >elfsect.sgml
 	../../mksectiontable -a All -s 'LSB' -d >linuxsect.sgml
-	../../mksecttypestable -a All -s 'ELF Specification' -c 4 >elfsecttypes.sgml
+	../../mksecttypestable -a All -s 'ABIUpdate' -c 4 >elfsecttypes.sgml
 	../../mksecttypestable -a All -s 'LSB' -d >linuxsecttypes.sgml
 
 clean:
