@@ -2,11 +2,9 @@
 error_reporting(0);
 include("objects.php");
 
-$ftproot = "/var/www/lsbnuke/spec/";
-$baseroot = "/var/www/lsbnuke/spec";
-$removeroot = "/var/www/lsbnuke/spec";
-$addroot = "ftp://ftp.freestandards.org";
-$addroot = "http://www.linuxbase.org/spec";
+$baseroot = dirname($_SERVER['PATH_TRANSLATED']);
+$removeroot = dirname($_SERVER['PATH_TRANSLATED']);
+$addroot = "http://".$_SERVER['SERVER_NAME'].dirname($_SERVER['SCRIPT_NAME'])."/";
 
 /* a root project. all projects belong to this. */
 $r = new Project("lsb");
@@ -14,13 +12,13 @@ $r->name = "Linux Standard Base Specifications";
 
 $p = new Project("booksets");
 $p->name = "LSB Specification Modules";
-$p->url = "http://www.linuxbase.org/spec/";
+$p->url = $addroot;
 $p->indexDir($baseroot.'/booksets');
 addProject($p);
 
 $p = new Project("book");
 $p->name = "Individual Specification";
-$p->url = "http://www.linuxbase.org/spec/";
+$p->url = $addroot;
 $p->indexDir($baseroot.'/book');
 addProject($p);
 
