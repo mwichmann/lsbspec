@@ -4,11 +4,13 @@
 <!entity contents SYSTEM "contents">
 
 <!entity specversion "ELFVERSION">
-<!entity archspec "IA54">
-<!entity canonicalarch "IA54">
-<!entity specarchitecture "IA54">
-<!entity spectitle "ELF Specification for the IA54 Architecture"
->
+<!entity archspec "IA64">
+<!entity canonicalarch "IA64">
+<!entity specarchitecture "IA64">
+<!entity spectitle "ELF Specification for the IA64 Architecture">
+
+<!entity itanium "Itanium&trade;">
+<!entity w "<emphasis>w</emphasis>">
 
 %entities;
 
