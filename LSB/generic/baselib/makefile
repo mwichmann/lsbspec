@@ -4,9 +4,9 @@
 MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.sgml \
 	__cxa_atexit.sgml __dcgettext.sgml __environ.sgml \
 	__errno_location.sgml __fpending.sgml __getpgid.sgml __mempcpy.sgml \
-	__rawmemchr.sgml __sysconf.sgml _environ.sgml _IO_2_1_stderr_.sgml \
-	_IO_2_1_stdin_.sgml _IO_2_1_stdout_.sgml _IO_feof.sgml _IO_getc.sgml \
-	_IO_putc.sgml _IO_puts.sgml __libc_start_main.sgml __lxstat.sgml \
+	__rawmemchr.sgml __sysconf.sgml _environ.sgml _IO_feof.sgml \
+	_IO_getc.sgml _IO_putc.sgml _IO_puts.sgml __libc_start_main.sgml \
+	__lxstat.sgml \
 	_nl_msg_cat_cntr.sgml _obstack_begin.sgml _obstack_newchunk.sgml \
 	__stpcpy.sgml __strtod_internal.sgml __strtol_internal.sgml _sys_errlist.sgml \
 	_sys_siglist.sgml __xmknod.sgml acct.sgml adjtime.sgml adjtimex.sgml \
