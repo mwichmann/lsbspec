@@ -122,7 +122,8 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;Generate Book LOT for figures
 (define (%generate-book-lot-list$)
-  (list (normalize "figure")))
+  (list (normalize "figure")
+        (normalize "table")))
 
 ;;What depth should the TOC generate?
 ;;!Only top level of appendixes!
@@ -151,7 +152,8 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;What elements should have a LOT?
 (define ($generate-book-lot-list$)
-  (list (normalize "equation")))
+  (list (normalize "equation")
+        (normalize "table")))
 
 ;;Do you want chapters enumerated?
 (define %chapter-autolabel% 
@@ -747,7 +749,8 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;What elements should have an LOT?
 (define ($generate-book-lot-list$)
-  (list (normalize "figure")))
+  (list (normalize "figure")
+        (normalize "table")))
 
 ;;Do you want a title page for your Book?
 (define %generate-book-titlepage%
