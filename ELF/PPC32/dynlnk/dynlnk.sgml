@@ -46,14 +46,6 @@ See
 <XREF LINKEND="std.PPC32.ABI">, Chapter 5.4.
 </PARA>
 
-<SECT1 ID=proginterp>
-<TITLE>Program Interpreter/Dynamic Linker</TITLE>
-<PARA>
-The LSB specifies the Program Interpreter to be
-<application><XREF LINKEND="lib.proginterp"></application>.
-</PARA>
-</SECT1>
-
 <SECT1 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
