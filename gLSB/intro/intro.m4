@@ -7,9 +7,8 @@
 <TITLE>Introduction</TITLE>
 <PARA>
 This is version &specversion of the Linux Standard Base Specification. This 
-version contained all of the sections that will apear in the final 1.0
-Specfication. Behavioral specifications for some interfaces have not yet
-been incorporated, but will be present in the 1.0 Specification.
+version contains all of the material that will apear in the final 1.0
+Specfication and should be reviewed thoroughly.
 </PARA>
 <PARA>
 Those wishing to implement this standard should use this specification with

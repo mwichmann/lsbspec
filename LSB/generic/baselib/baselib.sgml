@@ -12,8 +12,8 @@ hardware in the system.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Fri May  4 14:16:15 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
+<!--    at Mon May  7 11:50:01 2001 -->
 <SECT1 ID=libc>
 <TITLE>libc</TITLE>
 <PARA>
@@ -1026,7 +1026,7 @@ typedef struct {
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
 
 <SECT1 ID=libcman>
 <TITLE>Interface Definitions for libc</TITLE>
@@ -3523,160 +3523,6 @@ Insufficient memory to allocate group information structure.
 /etc/group group database file
 </PARA>
 </REFSECT1>
-<!--	  LDP GENERAL PUBLIC LICENSE  -->
-<!--        Version 1a, November 1998   -->
-</REFENTRY>
-
-<REFENTRY ID="baselib-ioperm-2"> <REFMETA>
-<REFENTRYTITLE>ioperm</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>ioperm
-</REFNAME>
-<REFPURPOSE>
-set port input/output permissions
-</REFPURPOSE>
-</REFNAMEDIV>
-
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>13 April 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;unistd.h> /* for libc5 */
-#include &lt;sys/io.h> /* for glibc */
-
-int ioperm(unsigned long from, unsigned long num, int turn_on);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>13 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-ioperm sets the port access permission bits for the process for num bytes starting from port address from to the value turn_on. The use of ioperm requires root privileges.
-</PARA><PARA>
-Only the first 0x3ff I/O ports can be specified in this manner. For more ports, the iopl function must be used. Permissions are not inherited on fork, but on exec they are. This is useful for giving port access permissions to non-privileged tasks.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return Value
-</TITLE>
-<PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Notes
-</TITLE>
-<PARA>
-Libc5 treats it as a system call and has a prototype in &lt;unistd.h>. Glibc1 does not have a prototype. Glibc2 has a prototype both in &lt;sys/io.h> and in &lt;sys/perm.h>. Avoid the latter, it is available on i386 only.
-</PARA>
-</REFSECT1>
-<!--	  LDP GENERAL PUBLIC LICENSE  -->
-<!--        Version 1a, November 1998   -->
-</REFENTRY>
-
-<REFENTRY ID="baselib-iopl-2"> <REFMETA>
-<REFENTRYTITLE>iopl</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>iopl
-</REFNAME>
-<REFPURPOSE>
-change I/O privilege level
-</REFPURPOSE>
-</REFNAMEDIV>
-
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>13 April 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;unistd.h> /* for libc5 */
-#include &lt;sys/io.h> /* for glibc */
-
-int iopl(int level);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>13 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-iopl changes the I/O privilege level of the current process, as specified in level.
-</PARA><PARA>
-This call is necessary to allow 8514-compatible X servers to run under Linux. Since these X servers require access to all 65536 I/O ports, the ioperm call is not sufficient.
-</PARA><PARA>
-In addition to granting unrestricted I/O port access, running at a higher I/O privilege level also allows the process to disable interrupts. This will probably crash the system, and is not recommended.
-</PARA><PARA>
-Permissions are inherited by fork and exec.
-</PARA><PARA>
-The I/O privilege level for a normal process is 0.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return Value
-</TITLE>
-<PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Errors
-</TITLE>
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-EINVAL 
-</TERM>
-<LISTITEM>
-<PARA>
-level is greater than 3.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-EPERM  
-</TERM>
-<LISTITEM>
-<PARA>
-The current user is not the super-user.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Notes from the Kernel Source
-</TITLE>
-<PARA>
-iopl has to be used when you want to access the I/O ports beyond the 0x3ff range: to get the full 65536 ports bitmapped you'd need 8kB of bitmaps/process, which is a bit excessive.
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Notes
-</TITLE>
-<PARA>
-Libc5 treats it as a system call and has a prototype in &lt;unistd.h>. Glibc1 does not have a prototype. Glibc2 has a prototype both in &lt;sys/io.h> and in &lt;sys/perm.h>. Avoid the latter, it is available on i386 only.
-</PARA>
-</REFSECT1>
-
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
 <!--        Version 1a, November 1998   -->
 </REFENTRY>
@@ -7923,8 +7769,8 @@ __xmknod is not in the source standard; it is only in the binary standard.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Fri May  4 14:16:30 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
+<!--    at Mon May  7 11:50:18 2001 -->
 <SECT1 ID=libm>
 <TITLE>libm</TITLE>
 <PARA>
@@ -8049,13 +7895,13 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 </PARA>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Fri May  4 14:16:41 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
+<!--    at Mon May  7 11:50:29 2001 -->
 <SECT1 ID=libpthread>
 <TITLE>libpthread</TITLE>
 <PARA>
@@ -8217,13 +8063,13 @@ typedef struct {
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
-<!--    at Fri May  4 14:17:03 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
+<!--    at Mon May  7 11:50:52 2001 -->
 <SECT1 ID=libdl>
 <TITLE>libdl</TITLE>
 <PARA>
@@ -8281,7 +8127,7 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 </PARA>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.21 2001/04/25 23:58:49 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
 
 <SECT1 ID=libdlman>
 <TITLE>Interface Definitions for libdl</TITLE>
@@ -8411,7 +8257,7 @@ directory search-path for object files
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
-<!--    at Fri May  4 14:17:25 2001 -->
+<!--    at Mon May  7 11:51:14 2001 -->
 <SECT1 ID=libcrypt>
 <TITLE>libcrypt</TITLE>
 <PARA>
@@ -8505,7 +8351,7 @@ typedef __off_t off_t;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.22 2001/05/04 18:17:07 anderson Exp 0 -->
-<!--    at Fri May  4 14:17:14 2001 -->
+<!--    at Mon May  7 11:51:03 2001 -->
 <SECT1 ID=librt>
 <TITLE>librt</TITLE>
 <PARA>
