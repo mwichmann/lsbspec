@@ -4,17 +4,8 @@
 <CHAPTER ID=swinstall>
 <TITLE>Software Installation</TITLE>
 <PARA>
-Applications should be provided in the RPM packaging format as defined in this specification.
-<FOOTNOTE ID="pkg-1">
-<PARA>
-Some versions of RPM may produce packages which contain extensions or 
-modifications to the RPM package format beyond what has been documented 
-in this specification.  An LSB-conformant package must 
-not contain any of these extensions, in order to assure interoperability
-with the largest number of versions of RPM and packaging systems which
-understand how to import RPM format packages.
-</PARA>
-</FOOTNOTE>
+Applications should be provided in the RPM packaging format as defined in
+this specification.
 </PARA>
 <PARA>
 Distributions must provide a mechanism for installing applications in
@@ -139,7 +130,7 @@ is specified in the architecture-specific LSB specification.
 <TERM><STRUCTFIELD>name</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-A NULL terminated string that provides the package name. This name must
+A NUL terminated string that provides the package name. This name must
 conform with the Package Naming section of this specification.
 </PARA>
 </LISTITEM>
@@ -178,7 +169,7 @@ Reserved space. The value is undefined.
 <TITLE>Header Structure</TITLE>
 <PARA>
 The Header structure is used for both the Signature and Header Sections. A
-Header Structure consista of 3 parts, a Header record, followed by 0 or more
+Header Structure consists of 3 parts, a Header record, followed by 1 or more
 Index records, followed by 0 or more bytes of data associated with the Index
 records. A Header structure must be aligned to an 8 byte boundary.
 </PARA>
@@ -205,7 +196,8 @@ records. A Header structure must be aligned to an 8 byte boundary.
 </PARA>
 <SCREEN>
 struct rpmheader {
-    unsigned char magic[8];
+    unsigned char magic[4];
+    unsigned char reserved[4];
     int nindex;
     int hsize;
     } ;
@@ -217,7 +209,15 @@ struct rpmheader {
 <LISTITEM>
 <PARA>
 Value identifying this record as an RPM header record. This value must be
-"\216\255\350\001\000\000\000\000".
+"\216\255\350\001".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>reserved</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Reserved space.  This value must be "\000\000\000\000".
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -225,7 +225,7 @@ Value identifying this record as an RPM header record. This value must be
 <TERM><STRUCTFIELD>nindex</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-The number of Index Records that follow this Header Record. There must be at
+The number of Index Records that follow this Header Record. There should be at
 least 1 Index Record.
 </PARA>
 </LISTITEM>
@@ -263,102 +263,17 @@ struct rpmhdrindex {
 <PARA>
 Value identifying the purpose of the data associated with this Index Record.
 This value of this field is dependent on the context in which the Index Record
-is used, and is defined in this and later sections.
+is used, and is defined below and in later sections.
 </PARA>
-<PARA>
-Some values are designated as header private, and may appear in any header
-structure.
-</PARA>
-<PARA>
-An index whose status is Required must be present.
-An index whose status is Optional may be present.
-An index whose status is Deprecated may be present, but it's use should
-be discontinued.
-An index whose status is Obsolete may not be present.
-</PARA>
-include(privtags.sgml)
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
 <TERM><STRUCTFIELD>type</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value identifying the type of the data associated with this Index Record. This value must be one of the following:
+Value identifying the type of the data associated with this Index Record. The
+possible <STRUCTFIELD>type</STRUCTFIELD> values are defined below.
 </PARA>
-<TABLE>
-<TITLE>Index Type values</TITLE>
-<TGROUP COLS=4>
-<THEAD>
-<ROW>
-<ENTRY>Type</ENTRY>
-<ENTRY>Value</ENTRY>
-<ENTRY>Size (in bytes)</ENTRY>
-<ENTRY>Alignment</ENTRY>
-</ROW>
-</THEAD>
-<TBODY>
-<ROW>
-<ENTRY>RPM_NULL_TYPE</ENTRY>
-<ENTRY>0</ENTRY>
-<ENTRY>Not Implemented.</ENTRY>
-<ENTRY></ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_CHAR_TYPE</ENTRY>
-<ENTRY>1</ENTRY>
-<ENTRY>1</ENTRY>
-<ENTRY>1</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_INT8_TYPE</ENTRY>
-<ENTRY>2</ENTRY>
-<ENTRY>1</ENTRY>
-<ENTRY>1</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_INT16_TYPE</ENTRY>
-<ENTRY>3</ENTRY>
-<ENTRY>2</ENTRY>
-<ENTRY>2</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_INT32_TYPE</ENTRY>
-<ENTRY>4</ENTRY>
-<ENTRY>4</ENTRY>
-<ENTRY>4</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_INT64_TYPE</ENTRY>
-<ENTRY>5</ENTRY>
-<ENTRY>Reserved.</ENTRY>
-<ENTRY></ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_STRING_TYPE</ENTRY>
-<ENTRY>6</ENTRY>
-<ENTRY>variable, NULL terminated</ENTRY>
-<ENTRY>1</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_BIN_TYPE</ENTRY>
-<ENTRY>7</ENTRY>
-<ENTRY>1</ENTRY>
-<ENTRY>1</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_STRING_ARRAY_TYPE</ENTRY>
-<ENTRY>8</ENTRY>
-<ENTRY>Variable, sequence of NULL terminated strings</ENTRY>
-<ENTRY>1</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>RPM_I18NSTRING_TYPE</ENTRY>
-<ENTRY>9</ENTRY>
-<ENTRY>variable, sequence of NULL terminated strings</ENTRY>
-<ENTRY>1</ENTRY>
-</ROW>
-</TBODY>
-</TABLE>
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
@@ -382,19 +297,74 @@ defined by the type of this Record.
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
+<SECT4>
+<TITLE>Index Type Values</TITLE>
+<PARA>
+The possible values for the <STRUCTFIELD>type</STRUCTFIELD> field are defined
+in this table.
+</PARA>
+include(indextypes.sgml)
 <PARA>
 The string arrays specified for enties of type
 <CONSTANT>RPM_STRING_ARRAY_TYPE</CONSTANT> and
 <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT>
 are vectors of strings in a contiguous block of memory, each element separated
-from its neighbors by a NULL character.
+from its neighbors by a NUL character.
 </PARA>
 <PARA>
-The array entries in an index of type <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT>
-correspond to the locale names contained in the
-<CONSTANT>HDRTAG_HDRI18NTABLE</CONSTANT> index.
-
+Index records with type <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT> must always
+have a <STRUCTFIELD>count</STRUCTFIELD> if 1. The array entries in an index of
+type <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT> correspond to the locale names
+contained in the <CONSTANT>HDRTAG_HDRI18NTABLE</CONSTANT> index.
 </PARA>
+</SECT4>
+<SECT4>
+<TITLE>Index Tag Values</TITLE>
+<PARA>
+Some values are designated as header private, and may appear in any header
+structure. These are defined here. Additional values are defined in later
+sections.
+</PARA>
+include(privtags.sgml)
+<PARA>
+Not all Index records defined here will be present in all packages. Each tag
+value has a status which indicated is defined here.
+</PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>Required</TERM>
+<LISTITEM>
+<PARA>
+This Index Record must be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>Optional</TERM>
+<LISTITEM>
+<PARA>
+This Index Record may be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>Deprecated</TERM>
+<LISTITEM>
+<PARA>
+This Index Record should not be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>Obsolete</TERM>
+<LISTITEM>
+<PARA>
+This Index Record must not be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</SECT4>
 </SECT3>
 
 <SECT3>
