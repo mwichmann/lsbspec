@@ -19,6 +19,7 @@
 &legal;
 </BOOKINFO>
 
+&packaging-intro
 &contents;
 
 </BOOK>
