@@ -92,12 +92,21 @@ include(linuxsect.sgml)
 <TITLE>Symbol Table</TITLE>
 
 <PARA>
+LSB-conforming applications shall use the Symbol Table as defined in
+Chapter 4 of the System V Application Binary Interface - Intel386 Architecture
+Processor Supplement.
 </PARA>
 
 </CHAPTER>
 
 <CHAPTER ID=relocation>
 <TITLE>Relocation</TITLE>
+
+<PARA>
+LSB-conforming applications shall use Relocations as defined in
+Chapter 4 of the System V Application Binary Interface - Intel386 Architecture
+Processor Supplement.
+</PARA>
 
 <SECT1 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
