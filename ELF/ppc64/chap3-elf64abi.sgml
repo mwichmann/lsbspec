@@ -750,7 +750,7 @@ CR0-CR1   Volatile condition code register fields
 CR2-CR4   Nonvolatile condition code register fields
 CR5-CR7   Volatile condition code register fields</screen>
 
-<para>On processors with the VMS feature.</para>
+<para>On processors with the VMX feature.</para>
 
 <screen>
 v0-v1     Volatile scratch registers
@@ -1032,6 +1032,9 @@ Low Address</screen>
 						mapped to a single doubleword.  Values shorter than a doubleword are sign 
 						or zero extended as necessary.</para>
 						</listitem>
+						<listitem><para>Complex floating point and complex integer types are mapped
+						as if the argument was specified as separate real and imaginary parts.
+						</para></listitem>
 						<listitem><para>Pointers are mapped to a single doubleword.</para>
 						</listitem>
 						<listitem><para>
@@ -1051,10 +1054,10 @@ Low Address</screen>
 						is padded so that it appears in the least significant bits of the
 						doubleword.  All others are padded, if necessary, at their tail.
 						Variable size aggregates or unions are passed by reference.
-						</para>
-						</listitem>
-						<listitem><para>Other scalar values, such as FORTRAN complex numbers, 
-						are mapped to the number of doublewords required by their size.</para>						</listitem>
+						</para></listitem>
+						<listitem><para>Other scalar values are mapped to the number of doublewords
+						required by their size.
+						</para></listitem>
 					</itemizedlist>
 					</listitem>
 					<listitem><para>If the callee has a known prototype, arguments are converted to the 
@@ -1068,18 +1071,15 @@ Low Address</screen>
 					Floating point registers f1 through f13 are used
 					consecutively to pass up to 13 single, double and extended
 					precision floating point values, and to pass the
-					corresponding complex floating point values.  A single
+					corresponding complex floating point values.  The
+					first 13 of all doublewords in the parameter save area that map
+					floating point arguments, except for arguments corresponding to the
+					variable argument part of a callee with a prototype containing an
+					ellipsis, will be passed in floating point registers.  A single
 					precision value occupies one register as does a double
 					precision value.  Extended precision values occupy two
 					consecutively numbered registers.  The corresponding complex
-					values occupy twice as many registers.  If the number of
-					floating point values passed is such that an argument cannot
-					be passed fully in floating point registers, that argument
-					and all following floating point arguments are passed in the
-					parameter save area.  Also, arguments corresponding to the
-					variable argument part of a callee with a prototype
-					containing an ellipsis are passed in the parameter save
-					area.
+					values occupy twice as many registers.
 					</para></listitem>
 
 					<listitem><para>
@@ -1102,7 +1102,7 @@ Low Address</screen>
 
 					<listitem><para>
 					General registers are used to pass some values.  The first
-					eight doublewords are mapped to the parameter save area
+					eight doublewords mapped to the parameter save area
 					correspond to the registers r3 through r10.  An argument
 					other than floating point and vector values fully described
 					by a prototype, that maps to this area either fully or
@@ -1150,10 +1150,10 @@ s             r8,r9        40-55  (not stored)
 gg            f4           56-63  (not stored)
 t             (none)       64-79  (stored in parameter save area)
 e             (none)       80-87  (stored)
-hh            f5           88-95  (stored)</screen>
+hh            f5           88-95  (not stored)</screen>
 				</figure>
 			<note><title>Note</title><para>  
-			Note: If a prototype is not in scope, then the floating point
+			If a prototype is not in scope, then the floating point
 			argument ff is also passed in r4, the long double argument ld is
 			also passed in r6 and r7, the floating point argument gg is also
 			passing in r10, and the floating point argument gg is also

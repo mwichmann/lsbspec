@@ -211,8 +211,8 @@ Chapter 1. Introduction
        Microsystems, 1995.
      * The [32-bit] AltiVec Technology Programming Interface
        Manual, Motorola, 1999.
-     * The 64-bit AIX ABI
-     * The PowerOpen ABI
+     * The 64-bit AIX ABI.
+     * The PowerOpen ABI.
      _________________________________________________________
 
 Chapter 2. Software Installation
@@ -983,7 +983,7 @@ CR0-CR1   Volatile condition code register fields
 CR2-CR4   Nonvolatile condition code register fields
 CR5-CR7   Volatile condition code register fields
 
-   On processors with the VMS feature.
+   On processors with the VMX feature.
 v0-v1     Volatile scratch registers
 v2-v13    Volatile vector parameters registers
 v14-v19   Volatile scratch registers
@@ -1272,6 +1272,9 @@ Low Address
             are mapped to a single doubleword. Values shorter
             than a doubleword are sign or zero extended as
             necessary.
+          + Complex floating point and complex integer types are
+            mapped as if the argument was specified as separate
+            real and imaginary parts.
           + Pointers are mapped to a single doubleword.
           + Vectors are mapped to a single quadword, quadword
             aligned. This may result in skipped doublewords in
@@ -1287,9 +1290,8 @@ Low Address
             significant bits of the doubleword. All others are
             padded, if necessary, at their tail. Variable size
             aggregates or unions are passed by reference.
-          + Other scalar values, such as FORTRAN complex numbers,
-            are mapped to the number of doublewords required by
-            their size.
+          + Other scalar values are mapped to the number of
+            doublewords required by their size.
      * If the callee has a known prototype, arguments are
        converted to the type of the corresponding parameter
        before being mapped into the parameter save area. For
@@ -1300,18 +1302,16 @@ Low Address
      * Floating point registers f1 through f13 are used
        consecutively to pass up to 13 single, double and extended
        precision floating point values, and to pass the
-       corresponding complex floating point values. A single
-       precision value occupies one register as does a double
-       precision value. Extended precision values occupy two
-       consecutively numbered registers. The corresponding
-       complex values occupy twice as many registers. If the
-       number of floating point values passed is such that an
-       argument cannot be passed fully in floating point
-       registers, that argument and all following floating point
-       arguments are passed in the parameter save area. Also,
-       arguments corresponding to the variable argument part of a
-       callee with a prototype containing an ellipsis are passed
-       in the parameter save area.
+       corresponding complex floating point values. The first 13
+       of all doublewords in the parameter save area that map
+       floating point arguments, except for arguments
+       corresponding to the variable argument part of a callee
+       with a prototype containing an ellipsis, will be passed in
+       floating point registers. A single precision value
+       occupies one register as does a double precision value.
+       Extended precision values occupy two consecutively
+       numbered registers. The corresponding complex values
+       occupy twice as many registers.
      * Vector registers v2 through v13 are used to consecutively
        pass up to 12 vector values, except for arguments
        corresponding to the variable argument part of a callee
@@ -1325,7 +1325,7 @@ Low Address
        no known prototype this may result in two copies of
        floating and vector argument values being passed.
      * General registers are used to pass some values. The first
-       eight doublewords are mapped to the parameter save area
+       eight doublewords mapped to the parameter save area
        correspond to the registers r3 through r10. An argument
        other than floating point and vector values fully
        described by a prototype, that maps to this area either
@@ -1363,12 +1363,12 @@ s             r8,r9        40-55  (not stored)
 gg            f4           56-63  (not stored)
 t             (none)       64-79  (stored in parameter save area)
 e             (none)       80-87  (stored)
-hh            f5           88-95  (stored)
+hh            f5           88-95  (not stored)
 
    Note Note
 
 
-   Note: If a prototype is not in scope, then the floating point
+   If a prototype is not in scope, then the floating point
    argument ff is also passed in r4, the long double argument ld
    is also passed in r6 and r7, the floating point argument gg is
    also passing in r10, and the floating point argument gg is
@@ -3479,11 +3479,11 @@ S    Represents the value of the symbol whose index resides in the
                                                      * #ha(value)
        denotes the high adjusted value: bits 16 through 31 of the
        indicated value, compensating for #lo() being treated as a
-       signed number.
+       signed number:
 
     #ha(x) = (((x >> 16) + ((x & 0x8000) ? 1 : 0)) & 0xffff)
                                              * #higher(value)
-       denotes bits 32 through 47 of the indicated value.
+       denotes bits 32 through 47 of the indicated value:
     #higher(x) = ((x >> 32) & 0xffff)
                                                      * #highera(v
        alue) denotes bits 32 through 47 of the indicated value,
