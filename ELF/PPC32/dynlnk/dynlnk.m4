@@ -61,6 +61,13 @@ The following dynamic entries are defined in the
 <XREF LINKEND="std.PPC32.ABI">, Chapter 5.4.
 include(dyntag.sgml)
 </PARA>
+
+<PARA>
+In addtion the following dynamic entries are also supported:
+include(linuxtag.sgml)
+</PARA>
+
+
 </SECT1>
 
 <SECT1 ID=globaloffsettable>
