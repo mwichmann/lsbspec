@@ -31,11 +31,12 @@ LSB-conforming implementations. Therefore, the LSB is a family of
 specifications, rather than a single one.
 </PARA>
 <PARA>
-The LSB is composed of two basic parts: A common part of the specification
-describes those parts of the interface that remain constant across all hardware
-implementations of the LSB, and an architecture-specific part of the
-specification describes the parts of the specification that are specific to a
-particular processor architecture. Together, the generic LSB and the
+The LSB is composed of two basic parts: A common specification
+("generic LSB" or "gLSB") describing those parts of the interface that
+remain constant across all implementations of the LSB, and an
+architecture-specific specification ("archLSB") describing the
+parts of the interface that vary by processor architecture.
+Together, the generic LSB and the
 architecture-specific supplement for a single hardware architecture provide a
 complete interface specification for compiled application programs on systems
 that share a common hardware architecture.
