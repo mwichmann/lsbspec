@@ -219,11 +219,11 @@ sysconf().</para>
 <para>The link() function shall require access to the existing file in
 order to succeed, as described as optional behavior in the SUS.</para>
 
-<para>Calling unlink() on a directory shall fail with either EPERM or
-EISDIR<footnote><para>EISDIR seems to be the Linux behavior; EPERM
-is specified by the SUS</para></footnote>.
-Likewise if link() is called specifying a directory as the first
-argument.</para>
+<para id="exec-link-unlink"
+XRefLabel="Additional behaviors: unlink/link on directory"
+>Calling unlink() on a directory shall fail.
+Calling link() specifying a directory as the first
+argument shall fail.  See also <xref linkend="baselib-unlink-3" />.</para>
 
 <para>The link() function shall not work across file systems, and
 shall return with EXDEV as described as optional behavior in the

@@ -28,7 +28,8 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	sigreturn.sgml sigsetmask.sgml sigvec.sgml statfs.sgml stime.sgml stpcpy.sgml \
 	stpncpy.sgml strcasestr.sgml strerror_r.sgml strfry.sgml strndup.sgml \
 	strnlen.sgml strsep.sgml strsignal.sgml strtok_r.sgml strtoq.sgml strtouq.sgml \
-	strverscmp.sgml system.sgml textdomain.sgml vasprintf.sgml vdprintf.sgml \
+	strverscmp.sgml system.sgml textdomain.sgml unlink.sgml \
+	vasprintf.sgml vdprintf.sgml \
 	verrx.sgml wait4.sgml warn.sgml warnx.sgml wcpcpy.sgml wcpncpy.sgml \
 	wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
 	wcstoq.sgml wcstouq.sgml
