@@ -18,7 +18,8 @@ SUBDIRS=intro objfmt baselib utillib graphlib sysinit
 all:: htmlspec rtfspec
 
 htmlspec: source
-	rm -rf spec.junk;mv spec spec.junk
+	rm -rf spec.junk
+	-mv spec spec.junk
 	sgmltools -b html spec.sgml
 	if [ -d spec.junk/CVS -a ! -d spec/CVS ];then mv spec.junk/CVS spec; fi
 	cp images/*.gif spec
