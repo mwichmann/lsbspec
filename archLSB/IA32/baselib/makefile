@@ -3,7 +3,7 @@
 
 MANPAGES=
 
-FILES=baselib.sgml datadefs.sgml libc.sgml libm.sgml 
+FILES=baselib.sgml libc.sgml libm.sgml 
 
 TABLES=
 
