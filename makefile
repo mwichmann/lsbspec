@@ -1,5 +1,7 @@
 
-SUBDIRS=Desktop ELF Graphics LSB Packaging book booksets
+DOCDIRS=Desktop ELF Graphics LSB Packaging 
+BOOKDIRS=book booksets
+SUBDIRS= $(DOCDIRS) $(BOOKDIRS)
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
@@ -39,9 +41,8 @@ autobuild:
 
 relbuild:
 	find . -name '*.m4' | xargs touch
-	make gensrc 
-	make source 
-	make all
+	for dir in $(DOCDIRS);do (cd $$dir && make gensrc source);done
+	for dir in $(BOOKDIRS);do (cd $$dir && make all);done
 	tar czf LSBrtfs.tar.gz `find book booksets -name '*.rtf' -o -name '*.eps'`
 
 clean::
