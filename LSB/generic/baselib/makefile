@@ -15,9 +15,12 @@ MANPAGES=__assert_fail.sgml __errno_location.sgml __strtod_internal.sgml \
 	inet_aton.sgml inet_ntoa.sgml  initgroups.sgml ioperm.sgml iopl.sgml\
 	isblank.sgml isinf.sgml iswblank.sgml iswctype.sgml llabs.sgml logwtmp.sgml\
 	mbsnrtowcs.sgml memmem.sgml ntohs.sgml psignal.sgml putwc.sgml putwchar.sgml\
-	setbuffer.sgml setegid.sgml seteuid.sgml sethostid.sgml sigreturn.sgml\
+	setbuffer.sgml setegid.sgml seteuid.sgml sethostid.sgml sethostname.sgml \
+	setmntent.sgml setutent.sgml shm_open.sgml shm_unlink.sgml sigreturn.sgml\
+	sigblock.sgml siggetmask.sgml \
 	sigsetmask.sgml sigvec.sgml sigwaitinfo.sgml statfs.sgml stime.sgml\
 	stpcpy.sgml stpncpy.sgml strfry.sgml strnlen.sgml strsep.sgml\
+	strsignal.sgml strtok_r.sgml swscanf.sgml system.sgml timezone.sgml\
 	wcsftime.sgml	wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
 	wcswcs.sgml wcspbrk.sgml
 
