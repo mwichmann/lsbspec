@@ -1,0 +1,434 @@
+	
+	<chapter id="PROG_LOAD_DL"><title>Program Loading and Dynamic Linking</title>
+		<sect1 id="PROG_DL"><title>Program Loading</title>
+		<para>As the system creates or augments a process image, it logically copies
+a file's segment to a virtual memory segment.  When--and if--the
+system physically reads the file depends on the program's execution
+behavior, system load, and so on.  A process does not require a
+physical page unless it references the logical page during execution,
+and processes commonly leave many pages unreferenced.  Therefore,
+delaying physical reads frequently obviates them, improving system
+performance.  To obtain this efficiency in practice, executable and
+shared object files must have segment images whose offsets and virtual
+addresses are congruent, modulo the page size.
+		</para>
+		<para>Virtual addresses and file offsets for the 64-bit PowerPC processor
+family segments are congruent modulo 64 Kbytes (0x10000) or larger
+powers of 2.  Although 4096 bytes is currently the 64-bit PowerPC page
+size, this allows files to be suitable for paging even if
+implementations appear with larger page sizes.  The value of the
+p_align member of each program header in a shared object file must be
+0x10000.
+		</para>
+		<para>It is normally desirable to put segments with different
+characteristics in separate 256 Mbyte portions of the address space,
+to give the operating system full paging flexibility in the 64-bit
+address space.
+		</para>
+		<para>Here is an example of an executable file assuming an executable
+program linked with a base address of 0x10000000.
+		</para>
+<screen>File Offset                             Virtual Address
+
+0
+            ELF header
+            Program header table
+            Other information
+0x100                                   0x10000100
+            Text segment
+            . . .
+            0x2be00 bytes
+                                        0x1002beff
+0x2bf00                                 0x2003bf00
+            Data segment
+            . . .
+            0x4e00 bytes
+                                        0x20040cff
+0x30d00
+            Other information</screen>
+		<para>Here are possible corresponding program header segments:
+		</para>
+<screen>Member      Text            Data
+
+p_type      PT_LOAD         PT_LOAD
+p_offset    0x100           0x2bf00
+p_vaddr     0x10000100      0x2003bf00
+p_paddr     unspecified     unspecified
+p_filesz    0x2be00         0x4e00
+p_memsz     0x2be00         0x5e24
+p_flags     PF_R+PF_X       PF_R+PF_W
+p_align     0x10000         0x10000</screen>
+		<note><title>Note</title>
+			<para>The example addresses for the text and data segments are chosen
+for compatibility with AIX, and it is suggested, though not required,
+that tools supporting this ABI use similar addresses.
+			</para>
+		</note>
+		<para>Although the file offsets and virtual addresses are congruent modulo
+64 Kbytes for both text and data, up to four file pages can hold
+impure text or data (depending on page size and file system block
+size).
+		</para>
+			<itemizedlist>
+				<listitem><para>The first text page contains the ELF header, the program header
+  table, and other information.</para>
+				</listitem>
+				<listitem><para>The last text page may hold a copy of the beginning of data.</para>
+				</listitem>
+				<listitem><para>The first data page may have a copy of the end of text.</para>
+				</listitem>
+				<listitem><para>The last data page may contain file information not relevant to the
+  running process.</para>
+				</listitem>
+			</itemizedlist>
+
+
+		<para>Logically, the system enforces memory permissions as if each segment
+were complete and separate; segment addresses are adjusted to ensure
+that each logical page in the address space has a single set of
+permissions.  In the example above, the file region holding the end of
+text and the beginning of data is mapped twice; at one virtual address
+for text and at a different virtual address for data.
+		</para>
+		<para>The end of the data segment requires special handling for
+uninitialized data, which the system defines to begin with zero
+values.  Thus if the last data page of a file includes information not
+in the logical memory page, the extraneous data must be set to zero,
+rather than to the unknown contents of the executable file.
+"Impurities" in the other three pages are not logically part of the
+process image; whether the system expunges them is unspecified.  The
+memory image for the program above is shown here, assuming 4096
+(0x1000) byte pages.
+		</para>
+			<figure><title>Virtual Address</title>
+<screen>
+Text segment:
+0x02000000
+            Header padding
+            0x100 bytes
+0x02000100
+            Text segment
+            ...
+            0x2be00 bytes
+0x0202bf00
+            Data padding
+            0x100 bytes
+
+Data segment:
+0x0203b000
+            Text padding
+            0xf00 bytes
+0x0203bf00
+            Data segment
+            ...
+            0x4e00 bytes
+0x02040d00
+            Uninitialized data
+            0x1024 bytes
+0x02041d24
+            Page padding
+            0x2dc zero bytes
+</screen>
+			</figure>
+
+		<para>One aspect of segment loading differs between executable files and
+shared objects.  Executable file segments may contain absolute code.
+For the process to execute correctly, the segments must reside at the
+virtual addresses assigned when building the executable file, with the
+system using the p_vaddr values unchanged as virtual addresses.
+		</para>
+		<para>On the other hand, shared object segments typically contain
+position-independent code.  This allows a segment's virtual address to
+change from one process to another, without invalidating execution
+behavior.
+		</para>
+		<para>Though the system chooses virtual addresses for individual processes,
+most systems will maintain the "relative positions" of the segments.
+Any use of relative addressing between segments should be indicated by
+an appropriate dynamic relocation.  If the dynamic linker does not
+maintain the relative position of segments at load time, it must be
+careful in its handling of R_PPC64_RELATIVE relocations, examining the
+relative address in order to determine the appropriate base address to
+use.
+		</para>
+		<para>The following table shows possible shared object virtual address
+assignments for several processes, illustrating constant relative
+positioning.  The table also illustrates the base address
+computations.
+		</para>
+<screen>
+Source       Text        Data       Base Address
+File         0x000200    0x02a400
+Process 1    0x100200    0x12a400    0x100000
+Process 2    0x200200    0x22a400    0x200000
+Process 3    0x300200    0x32a400    0x300000
+Process 4    0x400200    0x42a400    0x400000
+</screen>
+			<sect2 id="PROG_INT"><title>Program Interpreter</title>
+			<para>The standard program interpreter is /usr/lib/ld.so.1.</para>
+			</sect2>
+		</sect1>
+		<sect1 id="DYNAM_LINK"><title>Dynamic Linking</title>
+		<para></para>
+			<sect2 id="DYNAM_SECT"><title>Dynamic Section</title>
+			<para>Dynamic section entries give information to the dynamic linker.  Some
+of this information is processor-specific, including the
+interpretation of some entries in the dynamic structure.
+			</para>
+				<variablelist>
+					<varlistentry><term>DT_PLTGOT</term>
+					<listitem><para>This entry's d_ptr member gives the address of the first
+              byte in the procedure linkage table.</para>
+					</listitem>
+					</varlistentry>
+					<varlistentry><term>DT_JMPREL</term>
+					<listitem><para>As explained in the System V ABI, this entry is
+              associated with a table of relocation entries for the
+              procedure linkage table.  For the 64-bit PowerPC, this
+              entry is mandatory both for executable and shared object
+              files.  Moreover, the relocation table's entries must
+              have a one-to-one correspondence with the procedure
+              linkage table.  The table of DT_JMPREL relocation
+              entries is wholly contained within the DT_RELA
+              referenced table.  See <xref linkend="PROC_LINK"> later in
+              this chapter for more information.</para>
+					</listitem>
+					</varlistentry>
+				</variablelist>
+			</sect2>
+			<sect2 id="GLOBAL"><title>Global Offset Table</title>
+			<para>Position-independent code cannot, in general, contain absolute virtual
+addresses.  The global offset table, which is part of the TOC section,
+holds absolute addresses in private data, thus making the addresses
+available without compromising the position-independence and
+sharability of a program's text.  A program references its TOC using
+position-independent addressing and extracts absolute values, thus
+redirecting position-independent references to absolute locations.
+			</para>
+			<para>When the dynamic linker creates memory segments for a loadable object
+file, it processes the relocation entries, some of which will be of
+type R_PPC64_GLOB_DAT, referring to the global offset table within the
+TOC.  The dynamic linker determines the associated symbol values,
+calculates their absolute addresses, and sets the global offset table
+entries to the proper values.  Although the absolute addresses are
+unknown when the link editor builds an object file, the dynamic linker
+knows the addresses of all memory segments and can thus calculate the
+absolute addresses of the symbols contained therein.
+			</para>
+			<para>A global offset table entry provides direct access to the absolute
+address of a symbol without compromising position-independence and
+sharability.  Because the executable file and shared objects have
+separate global offset tables, a symbol may appear in several tables.
+The dynamic linker processes all the global offset table relocations
+before giving control to any code in the process image, thus ensuring
+the absolute addresses are available during execution.
+			</para>
+			<para>The global offset table is part of the TOC section.  Since different
+functions in a single executable or shared object may have different
+TOC sections, the global offset table may also be replicated, in whole
+or in part.  Each instance of the global offset table will have its
+own set of relocations.  The dynamic linker need not know about the
+replication; it simply processes all the relocations it is given.
+			</para>
+			<para>The dynamic linker may choose different memory segment addresses for
+the same shared object in different programs; it may even choose
+different library addresses for different executions of the same
+program.  Nonetheless, memory segments do not change addresses once
+the process image is established.  As long as a process exists, its
+memory segments reside at fixed virtual addresses.
+			</para>
+			<para>The global offset table normally resides in the ELF .got section in an
+executable or shared object.
+			</para>
+			</sect2>
+			<sect2 id="FUNC_ADDRESS"><title>Function Addresses</title>
+			<para>References to the address of a function from an executable file and
+the shared objects associated with it need to resolve to the same
+value.
+			</para>
+			<para>In this ABI, the address of a function is actually the address of a
+function descriptor.  A reference to a function, other than a function
+call, will normally load the address of the function descriptor from
+the global offset table.  The dynamic linker will ensure that for a
+given function, the same address is used for all references to the
+function from any global offset table.  Thus, function address
+comparisons will work as expected.
+			</para>
+			<para>When making a call to the function, the code may refer to the
+procedure linkage table entry, in order to permit lazy symbol
+resolution at run time.  In order to support correct function address
+comparisons, the compiler should be careful to only generate
+references to the procedure linkage table entry for function calls.
+For any other use of a function, the compiler should use the real
+address.
+			</para>
+			<para>When using the ELF assembler syntax, this means that the compiler
+should use the @got syntax, rather than the @got@plt syntax, if the
+function address is going to be used without being called.	
+			</para>
+			</sect2>
+			<sect2 id="PROC_LINK"><title>Procedure Linkage Table</title>
+			<para>The procedure linkage table may be used to redirect function calls
+between the executable and a shared object or between different shared
+objects.  Because all function calls on the 64-bit PowerPC are done via
+function descriptors, the procedure linkage table is simply a special
+case of a function descriptor which is filled in by the dynamic linker
+rather than the link editor.
+			</para>
+			<para>The procedure linkage table is purely an optimization designed to
+permit lazy symbol resolution at run time.  The link editor may
+generate R_PPC64_GLOB_DAT relocations for all function descriptors
+defined in other shared objects, and avoid generating a procedure
+linkage table at all.
+			</para>
+			<para>The procedure linkage table is normally found in the .plt section in
+an executable or shared object.  Its contents are not initialized in
+the executable or shared object file.  Instead, the link editor simply
+reserves space for it, and the dynamic linker initializes it and
+manages it according to its own, possibly implementation-dependent
+needs, subject to the following constraint:
+			</para>
+				<itemizedlist>
+					<listitem><para>If the executable or shared object requires N procedure linkage table
+  entries, the link editor shall reserve 3*(N+1) doublewords (24*(N+1)
+  bytes).  These doublewords will be used to hold function descriptors.
+  When calling function i, the link editor arranges to use the function
+  descriptor at byte 24 * i.  The first procedure linkage table entry
+  is reserved for use by the dynamic linker.</para>
+					</listitem>
+				</itemizedlist>
+			<para>As mentioned before, a relocation table is associated with the
+procedure linkage table.  The DT_JMPREL entry in the dynamic section
+gives the location of the first relocation entry.  The relocation
+table's entries parallel the procedure linkage table entries in a
+one-to-one correspondence.  That is, relocation table entry 1 applies
+to procedure linkage table entry 1, and so on.  The relocation type
+for each entry shall be R_PPC64_JMP_SLOT, the relocation offset shall
+specify the address of the first byte of the associated procedure
+linkage table entry, and the symbol table index shall reference the
+appropriate symbol.
+			</para>
+			<para>The dynamic linker will locate the symbol referenced by the
+R_PPC64_JMP_SLOT relocation.  The value of the symbol will be the
+address of the function descriptor.  The dynamic linker will copy
+these 24 bytes into the procedure linkage table entry.
+			</para>
+			<para>The dynamic linker can resolve the procedure linkage table relocations
+lazily, resolving them only when they are needed.  This can speed up
+program startup time.
+			</para>
+			<para>The following code shows how the dynamic linker might initialize the
+procedure linkage table in order to provide lazy resolution:
+			</para>
+<programlisting>.GLINK:
+.GLINK0:
+    ld      r2, 40(r1)
+    addis   r12,r2,.PLT0@toc@ha
+    addi    r12,r12,.PLT0@toc@l
+    ld      r11,0(r12)
+    ld      r2, 8(r12)
+    mtctr   r11
+    ld      r11,16(r12)
+    bctr
+.GLINK1:
+    li      r0,0
+    b       .GLINK0
+.GLINKi:			# i &lt;= 32768
+    li      r0,i - 1
+    b       .GLINK0
+.GLINKN:			# N &gt; 32768
+    lis     r0,(N - 1) &gt;&gt; 16
+    ori     r0,r0,(N - 1) &amp; 0xffff
+    b       .GLINK0
+
+...
+
+.PLT:
+.PLT0:
+    .quad   ld_so_fixup_func
+    .quad   ld_so_toc
+    .quad   ld_so_ident
+.PLT1:
+    .quad   .GLINK1
+    .quad   0
+    .quad   0
+    ...
+.PLTi:
+    .quad   .GLINKi
+    .quad   0
+    .quad   0
+    ...
+.PLTN:
+    .quad   .GLINKN
+    .quad   0
+    .quad   0</programlisting>
+		<para>Following the steps below, the dynamic linker and the program
+cooperate to resolve symbolic references through the procedure linkage
+table.  Again, the steps described below are for explanation only.
+The precise execution-time behavior of the dynamic linker is not
+specified.
+		</para>
+			<orderedlist>
+				<listitem><para>As shown above, each procedure linkage table entry I, as initialized by
+the link editor, transfers control to the corresponding glink entry I at
+.GLINKI.  The instructions at .GLINKI loads a relocation index into r0 and
+branches to the common .GLINK0 code, the first entry in the GLINK table.
+For example, assume the program calls NAME, which uses the function
+descriptor at the label .PLTi.  The function descriptor causes the program
+to branch to .GLINKi which loads i - 1 into r0 and branches to .GLINK0.</para>
+				</listitem>
+				<listitem><para>.GLINK0 loads three values from the PLT Reserve area allocated by the
+link editor and initialized by the dynamic linker.  The first doubleword
+is the dynamic linker's lazy binding entry point.  The second doubleword
+is the dynamic linker's own TOC anchor value.  The third doubleword is an
+8-byte identifier unique to the calling module which must be placed into
+r11 (normally the static chain), so that the dynamic linker can identify
+the object from which the call originated, and thereby located that
+object's relocation table.  .GLINK0 then calls into the dynamic linker
+with the PLT index copied into r0 and the identifying information copied
+into r11.</para>
+				</listitem>
+				<listitem><para>The dynamic linker finds relocation entry i corresponding to the
+index in r0.  It will have type R_PPC_JMP_SLOT, its offset will
+specify the address of .PLTi, and its symbol table index will
+reference NAME.</para>
+				</listitem>
+				<listitem><para>Knowing this, the dynamic linker finds the symbol's "real" value.
+It then copies the function descriptor into the code at .PLTi.</para>
+				</listitem>
+				<listitem><para>Subsequent executions of the procedure linkage table entry will
+transfer control directly to the function via the function descriptor
+at .PLTi, without invoking the dynamic linker.</para>
+				</listitem>
+			</orderedlist>
+			<para>The LD_BIND_NOW environment variable can change dynamic linking
+behavior.  If its value is non-null, the dynamic linker resolves the
+function call binding at load time, before transferring control to the
+program.  That is, the dynamic linker processes relocation entries of
+type R_PPC_JMP_SLOT during process initialization.  Otherwise, the
+dynamic linker evaluates procedure linkage table entries lazily,
+delaying symbol resolution and relocation until the first execution of
+a table entry.
+			</para>
+			<para>Lazy binding generally improves overall application performance
+because unused symbols do not incur the dynamic linking overhead.
+Nevertheless, two situations make lazy binding undesirable for some
+applications:
+			</para>
+				<itemizedlist>
+					<listitem><para>The initial reference to a shared object function takes longer than
+subsequent calls because the dynamic linker intercepts the call to
+resolve the symbol, and some applications cannot tolerate this
+unpredictability.</para>
+					</listitem>
+					<listitem><para>If an error occurs and the dynamic linker cannot resolve the
+symbol, the dynamic linker will terminate the program.  Under lazy
+binding, this might occur at arbitrary times.  Once again, some
+applications cannot tolerate this unpredictability.  By turning off
+lazy binding, the dynamic linker forces the failure to occur during
+process initialization, before the application receives control.</para>
+					</listitem>
+				</itemizedlist>
+			</sect2>
+		</sect1>
+	</chapter>
