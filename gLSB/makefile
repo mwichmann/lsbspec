@@ -46,6 +46,11 @@ pdfspec: source
 psspec: source
 	$(DB2PS) gLSB.sgml
 
+index: source
+	collateindex.pl -N -o index.sgml
+	jade -t sgml -V html-index -d /usr/share/sgml/docbook/dsssl-stylesheets-1.76/html/docbook.dsl gLSB.sgml
+	collateindex.pl -o index.sgml HTML.index
+
 source:
 	sed -e "s#LSBVERSION#`cat ../lsbversion`#" <gLSB.sgml.sed >gLSB.sgml
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done

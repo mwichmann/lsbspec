@@ -20,6 +20,7 @@
 <!entity appB.sgm system "appendix/fdl.sgml">
 <!entity appZ.sgm system "appendix/howtocompliant.sgml">
 <!entity legal.sgm system "legal.sgml">
+<!entity index.sgm system "index.sgml">
 ]>
 
 <BOOK>
@@ -49,4 +50,5 @@
 &sysinit.sgm;
 &appA.sgm;
 &appB.sgm;
+&index.sgm;
 </BOOK>
