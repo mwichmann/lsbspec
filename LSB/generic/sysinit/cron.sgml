@@ -15,7 +15,7 @@ the configuration file <FILENAME>/etc/crontab</FILENAME>.
 </PARA>
 <PARA>
 If a package wishes to install a job that has to be executed periodically,
-it shall place a file in one of the
+it shall place an executable file in one of the
 following directories:
 </PARA>
 <SIMPLELIST>
@@ -26,10 +26,12 @@ following directories:
 <PARA>
 As these directory names suggest, the files within them are executed on a
 daily, weekly, or monthly basis, respectively, under the control of an
-entry in one of the system <filename>crontab</filename> files.
+entry in one of the system <filename>crontab</filename> files, at an
+unspecified time of day.
 See below for the rules concerning the names of files in these directories.
 </PARA>
 
+<NOTE>
 <PARA>
 It is recommended that files installed in any of these directories be
 scripts (e.g. shell scripts, Perl scripts, etc.) so that they may be
@@ -41,13 +43,29 @@ programs are installed before they try to execute them. Otherwise,
 problems will arise if a package is removed (but not purged), since
 the configuration files are kept on the system in this situation.
 </PARA>
+</NOTE>
 <PARA>
-If a certain job has to be executed at a different frequency (e.g. more
+If a certain task has to be executed at a different frequency (e.g. more
 frequently than daily), the
 package shall install a file
-<FILENAME>/etc/cron.d/<replaceable>cron-name</replaceable></FILENAME>
-tagged as a configuration file. This file uses the same syntax as
-<FILENAME>/etc/crontab</FILENAME> and is processed by the system automatically.
+<FILENAME>/etc/cron.d/<replaceable>cron-name</replaceable></FILENAME>.
+The file shall have  the same format as that described for the 
+<command>crontab</command> command in <xref linkend="std.susv3">, except that 
+there shall be an additional field, <parameter>username</parameter>, before
+the name of the command to execute. For completeness, the seven fields shall
+be:
+<orderedlist>
+<listitem><para>Minute [0,59]</para></listitem>
+<listitem><para>Hour [0,23]</para></listitem>
+<listitem><para>Day of the month [1,31]</para></listitem>
+<listitem><para>Month of the year [1,12]</para></listitem>
+<listitem><para>Day of the week [0,6] (with 0=Sunday)</para></listitem>
+<listitem><para>Username</para></listitem>
+<listitem><para>command [args ...]</para></listitem>
+</orderedlist>
+
+This file shall be processed by the system automatically, with the named
+command being run at the specified time, as the specified username.
 </PARA>
 
 <PARA>
@@ -65,9 +83,9 @@ These filenames may be assigned using one of the following methods:
 
 <ITEMIZEDLIST MARK="bullet">
 <LISTITEM><PARA>
-	Assigned namespace.  This namespace consists of names which
-		only use the character set <literal>[a-z0-9]</literal>.
-		In order to avoid conflicts these cron script
+	Assigned names.  Such names must be chosen from
+		the character set <literal>[a-z0-9]</literal>.
+		In order to avoid conflicts these 
 		names shall be reserved
 		through the Linux Assigned Names and Numbers
 		Authority (LANANA).
@@ -76,19 +94,23 @@ These filenames may be assigned using one of the following methods:
 		<ULINK URL="http://www.lanana.org">www.lanana.org</ULINK>.
 	</PARA>
 
+<NOTE>
 	<PARA>
-		Commonly used names shall be reserved in advance; 
+		Commonly used names should be reserved in advance; 
 		developers for projects should be encouraged reserve names
 		from LANANA, so that each distribution can use the same
 		name, and to avoid conflicts with other projects.
-</PARA></LISTITEM>
+</PARA></NOTE></LISTITEM>
 
 <LISTITEM><PARA>
-	Hierarchical namespace.  This namespace consists of script
-		names of the form: <filename>[hier1]-[hier2]-...-[name]</>,
-		where name is again taken from the character set <literal>[a-z0-9],</> 
-		and where there may be one or more <filename>[hier-n]</> components.  
-		<filename>[hier1]</> may either be an LSB provider name assigned
+	Hierarchical names.  Script names in this category take
+		the form: 
+		<filename>&lt;hier1&gt;-&lt;hier2&gt;-...-&lt;name&gt;</>,
+		where name is taken from the character set 
+		<literal>[a-z0-9],</> 
+		and where there may be one or more 
+		<filename>&lt;hier-n&gt;</> components.  
+		<filename>&lt;hier1&gt;</> may either be an LSB provider name assigned
 		by the LANANA, or
 		it may be owners' DNS name in lower case, with at
 		least one <literal>'.'</>.  
@@ -98,10 +120,10 @@ These filenames may be assigned using one of the following methods:
 </PARA></LISTITEM>
 
 <LISTITEM><PARA>
-	Reserved namespace.  This namespace consists of script names
-		which begin with the character '<literal>_</>', and is reserved for
-		distribution use only.  This namespace should be used
-		for core packages only.
+	Reserved names.  Names that
+		begin with the character '<literal>_</>' are reserved for
+		distribution use only.  These names should be used
+		for essential system packages only.
 </PARA></LISTITEM>
 </ITEMIZEDLIST>
 
