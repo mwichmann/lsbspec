@@ -20,20 +20,12 @@ complete specification for a platform consists of the common specification plus
 one of the architecture specifications.</p>
 </blockquote>
 
-<H1>LSB 2.0 Release Candiate 3 has been published </H1>
+<H1>LSB 2.0 is the Current Specification</H1>
 <p>
-Release Candidate 3 of LSB 2.0 can be found <A HREF="specs.php">HERE</A>.
-The revision completes the seperation of the C++ sections into a seperate module.
-<p>
-Contributors are encouraged to use this version to verify that all issues
-have been satisfactorily resolved. 
-This will be the final specification unless a major issue is discovered in
-the next few days.
-Please file comments using the
-<A HREF="http://bugs.linuxbase.org">LSB Project bugzilla</A>.
+LSB 2.0 can be found <A HREF="specs.php">HERE</A>.
 </p>
 
-<H1>LSB 1.3 is the Current Specification</H1>
+<H1>LSB 1.3 is the Previous Specification</H1>
 <p>
 The 1.3 version of the LSB can be found <A HREF=oldspecs.shtml>Here</A>.</p>
 
