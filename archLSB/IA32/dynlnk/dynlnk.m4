@@ -57,12 +57,7 @@ The LSB specifies the Program Interpreter to be
 <PARA>
 The following dynamic entries are defined in the System V Application Binary
 Interface - Intel386 Architecture Processor Supplement.
-<TABLE>
-<TITLE>Dynamic Section Entries</TITLE>
-<TGROUP COLS=4>
 include(dyntag.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 
