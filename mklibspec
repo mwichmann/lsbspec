@@ -54,7 +54,7 @@ $Lname=$entry{'Lname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.19 2001-04-25 17:17:25 anderson Exp $ -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.20 2001-04-25 17:38:13 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -103,7 +103,7 @@ if(open(DESC,"<$Lname.txt" )) {
 print "<PARA>\n";
 $select = "SELECT DISTINCT Sfull,Sid FROM Standard,LibGroup,LGInt,Interface ";
 $select.= "WHERE Sid=Istandard AND Iid=LGIint AND LGIlibg=LGid ";
-$select.= "AND LGlib=$Lid ORDER BY Sname";
+$select.= "AND LGlib=$Lid AND Iarch=$Aid ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
 $lsh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $lsh->numrows) {
@@ -142,12 +142,7 @@ for(1..$lgh->numrows) {
 	local(*mangle);
 	%entry=$lgh->fetchhash;
 	$LGid=$entry{'LGid'};
-	print "<SECT2>\n";
-	print "<TITLE>";
-	print $entry{'LGname'};
-	print "</TITLE>\n";
-	print "<PARA>\n";
-	print "</PARA>\n";
+	$LGname=$entry{'LGname'};
 #
 # 8) Foreach group, make a table of the interfaces
 #
@@ -165,6 +160,12 @@ for(1..$lgh->numrows) {
 		$symver[$_]=$entry{'Vname'};
 	}
 	if( $inh->numrows > 0 ) {
+	print "<SECT2>\n";
+	print "<TITLE>";
+	print $LGname;
+	print "</TITLE>\n";
+	print "<PARA>\n";
+	print "</PARA>\n";
 	print "<TABLE>\n";
 	print "<TITLE></TITLE>\n";
 	print "<TGROUP COLS=5>\n";
@@ -237,42 +238,8 @@ for(1..$lgh->numrows) {
 	print "</TBODY>\n";
 	print "</TGROUP>\n";
 	print "</TABLE>\n";
-	}
-
-#
-# 9) Get the mangles for this libgroup
-#
-
-# Leave out the Mangles until it is reimplemented in the DB
-
-#	$select = "SELECT DISTINCT * FROM Mangle ";
-#	$select.= "WHERE Mlibgroup=$LGid ";
-#	$select.= "ORDER BY Mname";
-#	print STDERR $select,"\n" if $trace;
-#	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-#	if ($sth->numrows > 0 ) {
-#		print "<TABLE>\n";
-#		print "<TITLE>Mangled Symbol Mappings</TITLE>\n";
-#		print "<TGROUP COLS=2>\n";
-#		print "<THEAD>";
-#		print "<ROW>";
-#		print "<ENTRY>Symbol</ENTRY>";
-#		print "<ENTRY>Implements</ENTRY>";
-#		print "</ROW>";
-#		print "</THEAD>\n";
-#		print "<TBODY>\n";
-#		for(1..$sth->numrows) {
-#			%mangle=$sth->fetchhash;
-#			print "<ROW>";
-#			printf "<ENTRY>%s</ENTRY>",$mangle{'Mmname'};
-#			printf "<ENTRY>%s</ENTRY>",$mangle{'Mname'};
-#			print "</ROW>\n";
-#		}
-#		print "</TBODY>\n";
-#		print "</TGROUP>\n";
-#		print "</TABLE>\n";
-#	}
 	print "</SECT2>\n";
+	}
 
 #
 # 10) Make a table of data interfaces
@@ -362,4 +329,4 @@ if( $hdh->numrows ) {
 	print "</SECT1>\n";
 }
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.19 2001-04-25 17:17:25 anderson Exp $ -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.20 2001-04-25 17:38:13 anderson Exp $- -->\n");
