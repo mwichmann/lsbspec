@@ -22,7 +22,9 @@ DB2ONEHTML=sgmltools -b onehtml
 DB2TXT=sgmltools -b txt
 #DB2TXT=docbook2txt -d ../../docbook-utils.dsl\#print
 
-all:: htmlspec rtfspec onehtmlspec txtspec
+all:: buildspecs
+
+buildspecs: htmlspec rtfspec onehtmlspec txtspec
 
 onehtmlspec: source
 	$(DB2ONEHTML) spec.sgml
@@ -41,12 +43,22 @@ psspec: source
 	$(DB2PS) spec.sgml
 
 source:
+	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+
+spec.sgml: spec.sgml.sed 
 	(pwd=`pwd`;\
 	echo "pwd=$$pwd";\
 	arch=`basename $$pwd`;\
 	echo "arch=$$arch";\
 	sed -e "s#LSBVERSION#`cat ../../lsbversion.$$arch`#" <spec.sgml.sed >spec.sgml)
-	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+
+autobuild: gensrc source
+	(pwd=`pwd`;\
+	echo "pwd=$$pwd";\
+	arch=`basename $$pwd`;\
+	echo "arch=$$arch";\
+	sed -e "s#LSBVERSION#`cat ../../lsbversion.$$arch`-`date +"%Y%m%d"`#" <spec.sgml.sed >spec.sgml)
+	make buildspecs
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done

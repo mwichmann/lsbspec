@@ -1,8 +1,11 @@
 
-SUBDIRS= IA32 IA64 PPC32 PPC64 S390 AMD64 #MIPS SPARC alpha
+SUBDIRS= IA32 IA64 PPC32 PPC64 S390 S390X AMD64 #MIPS SPARC alpha
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+
+autobuild:
+	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
