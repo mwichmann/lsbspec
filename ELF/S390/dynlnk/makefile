@@ -13,8 +13,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkdyntagtable -a IA32 -s 'IA32-ABI-4' -c 4 >dyntag.sgml
-	../../../mkdyntagtable -a IA32 -s 'LSB' -d >linuxtag.sgml
+	../../../mkdyntagtable -a S390 -s 'S390 ABI' -c 4 >dyntag.sgml
+	../../../mkdyntagtable -a S390 -s 'LSB' -d >linuxtag.sgml
 
 clean:
 	rm -f $(FILES)
