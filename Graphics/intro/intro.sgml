@@ -34,36 +34,9 @@ the information explicitly included here.
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
-<!--
 <PARA>
-The Linux Standard Base (LSB) defines a system interface for compiled
-applications and a minimal environment for support of installation scripts.
-Its purpose is to enable a uniform industry standard environment for
-high-volume applications conforming to the LSB.
-</PARA>
-
-<PARA>
-The LSB is composed of two basic parts: A common specification
-("generic LSB" or "gLSB") describing those parts of the interface that
-remain constant across all implementations of the LSB, and an
-architecture-specific specification ("archLSB") describing the
-parts of the interface that vary by processor architecture.
-Together, the generic LSB and the
-architecture-specific supplement for a single hardware architecture provide a
-complete interface specification for compiled application programs on systems
-that share a common hardware architecture.
-</PARA>
-
-<PARA>
-This document is the generic LSB. It shall be used in conjunction with an
-architecture-specific supplement. Whenever a section of this specification
-shall be supplemented by architecture-specific information, this document
-includes a reference to the architecture supplement. Architecture supplements
-may also contain additional information that is not referenced here.
-</PARA>
--->
-<PARA>
-This section needs to be written.
+The LSB Graphics defines the graphical interface found on an LSB conforming
+system.
 </PARA>
 </CHAPTER>
 

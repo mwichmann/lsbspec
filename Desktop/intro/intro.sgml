@@ -62,7 +62,8 @@ may also contain additional information that is not referenced here.
 </PARA>
 -->
 <PARA>
-This section needs to be written.
+The Linux Desktop Specification (LDS) defines interfaces for implementing
+desktop applications.
 </PARA>
 </CHAPTER>
 
