@@ -48,6 +48,13 @@ complete specification for a platform consists of the common specification plus
 one of the architecture specifications.</p>
 </blockquote>
 
+<H1>LSB 2.0 is in Public Review</H1>
+<P>
+Public Review of the LSB 2.0 Specifications run from Jan 29, 2004 to
+Feb 28, 2004. The review documents are marked as version 1.9.5 and can be found
+<A HREF="specs.php">HERE</A>. Please file comments using the
+<A HREF="http://bugs.linuxbase.org">LSB Project bugzilla</A>.
+
 <H1>LSB 1.3 is the Current Specification</H1>
 <p>
 The 1.3 version of the LSB can be found <A HREF=oldspecs.shtml>Here</A>.</p>
