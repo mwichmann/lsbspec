@@ -15,7 +15,7 @@ DB2ONEHTML=sgmltools -b onehtml
 
 DB2TXT=sgmltools -b txt
 
-all:: htmlspec 
+all:: htmlspec onehtmlspec txtspec rtfspec
 
 htmlspec: source
 	rm -rf wip.junk
