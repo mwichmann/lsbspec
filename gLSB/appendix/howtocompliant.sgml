@@ -118,7 +118,7 @@ LSB-conforming implementation should follow this procedure:
 <ORDEREDLIST NUMERATION="arabic">
 <LISTITEM>
 <PARA>
-Link your binary application with the LSB's filter libraries found in
+Link your binary application with the LSB's stub libraries found in
 <FILENAME class=directory>/usr/lsb/lib</FILENAME>
 to determine at compile time if your application is using
 only LSB defined APIs.
@@ -140,11 +140,11 @@ tool to determine at runtime if your application is using only LSB defined APIs.
 </LISTITEM>
 </ORDEREDLIST>
 </SECT1>
-<SECT1 ID=app-B-LSB-Enviornment>
+<SECT1 ID=app-B-LSB-Environment>
 <TITLE>LSB Setup and Environment</TITLE>
 <PARA>
 There is an LSB development environment, <FILENAME>lsbdev</FILENAME>,
-with compile time filter libraries, and there is an LSB loader,
+with compile time stub libraries, and there is an LSB loader,
 <FILENAME>ld-lsb.so.1</FILENAME>, that needs to be installed.  Follow
 the example below to install these LSB tools.
 </PARA>
@@ -215,8 +215,23 @@ $ lsbappchk hw
 <PARA>
 If there is any output from <FILENAME>lsbappchk</FILENAME>, 
 then it detected API calls that are not specified by the LSB.  
-To correct this, the application should discontinue the use of 
-those APIs, or a trouble report should be sent to the LSB. 
+</PARA><PARA>
+To correct this, the programmer has the following options:
+</PARA><PARA>
+  To satisfy this API calls link these functions statically 
+  (last resort for SUID/SGID programms).
+  To make this less annoying, we recommend to concentrate the privileged
+  activity (e.g. opening port 80 for a web server) on a small binary, which 
+  is called by a non privileged binary and can do its work after
+  the small SUID/GID binary has done its job.
+</PARA><PARA>  
+  Supply a vendor private dynamic library. When linking, explicitely
+  add this library path with the -rpath linker option. This will 
+  eventually not work with SUID/SGID programms.  
+</PARA><PARA>
+  Supply a vendor private dynamic library and get it loaded at runtime
+  by setting the Environment variable LD_LIBRARY_PATH. This will not
+  work with SUID/SGID programms.
 </PARA>
 </SECT1>
 <SECT1 ID=app-B-LSB-Non-Compliance-Example>
@@ -236,7 +251,7 @@ main(int argc, char *argv[]) {
 	char domain[BUFSIZ];
 	int rc;
 
-	rc = getdomainname((char *)&amp;domain, BUFSIZ);
+	rc = call_my_non_lsb_getdomainname((char *)&amp;domain, BUFSIZ);
 
 	if (0 == rc) {
 		printf("domainname is: %s\n", domain);
@@ -257,13 +272,13 @@ $ gcc -o dn -Wall dn.c -L/usr/lib/lsb -Wl,--dynamic-linker=/lib/ld-lsb.so.1
   domain.c: In function `main':
   domain.c:14: warning: control reaches end of non-void function
   /tmp/ccHpOeFD.o: In function `main':
-  /tmp/ccHpOeFD.o(.text+0x16): undefined reference to `getdomainname'
+  /tmp/ccHpOeFD.o(.text+0x16): undefined reference to `call_my_non_lsb_getdomainname'
   collect2: ld returned 1 exit status
 </PROGRAMLISTING>
 
 <PARA>
 The <FILENAME>dn.c</FILENAME> failed to link with the LSB filters libraries,
-because the API <EMPHASIS>getdomainname</EMPHASIS> is not defined.
+because the API <EMPHASIS>call_my_non_lsb_getdomainname</EMPHASIS> is not defined.
 </PARA>
 <PARA>
 Let's assume that we were able to compile & link some libraries, and
@@ -275,12 +290,12 @@ application is using only LSB specified APIs.
 <PROGRAMLISTING>
 $ lsbappchk hw
 
-  getdomainname
+  call_my_non_lsb_getdomainname
 </PROGRAMLISTING>
 
 <PARA>
 The LSB's <FILENAME>lsbappchk</FILENAME> outputed 
-<EMPHASIS>getdomainname</EMPHASIS>, so it detected an API call that 
+<EMPHASIS>call_my_non_lsb_getdomainname</EMPHASIS>, so it detected an API call that 
 is not specified by the LSB.  
 To correct this, the application should discontinue the use of 
 those APIs, or a trouble report should be sent to the LSB. 
