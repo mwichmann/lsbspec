@@ -26,5 +26,6 @@
 
 &lsb-generic-intro;
 &contents;
+&lsb-generic-appA;
 
 </BOOK>
