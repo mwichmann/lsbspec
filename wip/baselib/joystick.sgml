@@ -40,9 +40,10 @@ joystick ioctl commands
 <PARA>
 Joystick <function>ioctl</function> commands are a subset of the 
 <FUNCTION>ioctl</FUNCTION> calls, which can perform a variety of 
-functions on sockets. <PARAMETER>fd</PARAMETER> shall contain 
+functions on special files controlling input pointer
+devices. <PARAMETER>fd</PARAMETER> shall contain 
 the value of a file descriptor that was created with the 
-<FUNCTION>open</FUNCTION>.
+<FUNCTION>open</FUNCTION> function.
 </PARA>
 <PARA>
 The following values for <parameter>request</parameter>
@@ -52,14 +53,54 @@ are accepted:
 
 <VARLISTENTRY>
 <TERM>
-JSIOCGVERSION
+<symbol>JSIOCGVERSION</symbol>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the version of the underlying driver.
+Get the version of the underlying driver.
 <PARAMETER>argp</PARAMETER> shall point to a
-32 bit integer.  The return value has the major, minor and revision values
-encoded in the 32 bit integer as described by the following example.  A return value of 0x01020f coresponds to driver version 1.2.15.
+32 bit integer.  On return, the value at this location shall be set
+with the major, minor and revision values of the version number
+encoded in the 32 bit integer as follows:
+<TABLE frame=all>
+<title>Version Number Layout</title>
+<tgroup cols=8 align=center colsep=1 rowsep=1>
+<colspec colname=b1>
+<colspec colname=b2>
+<colspec colname=b3>
+<colspec colname=b4>
+<colspec colname=b5>
+<colspec colname=b6>
+<colspec colname=b7>
+<colspec colname=b8>
+<thead>
+<row>
+<entry>31 - 28</entry>
+<entry>27 - 24</entry>
+<entry>23 - 20</entry>
+<entry>19 - 16</entry>
+<entry>15 - 12</entry>
+<entry>11 - 08</entry>
+<entry>07 - 04</entry>
+<entry>03 - 00</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Reserved</entry>
+<entry>Reserved</entry>
+<entry>Reserved</entry>
+<entry>Reserved</entry>
+<entry>Reserved</entry>
+<entry>Major Version</entry>
+<entry>Minor Version</entry>
+<entry>Revision</entry>
+</row>
+</tbody>
+</tgroup>
+</TABLE>
+For example, a return value of <constant>0x01020f</constant>
+corresponds to driver version 1.2.15.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -67,11 +108,11 @@ encoded in the 32 bit integer as described by the following example.  A return v
 
 <VARLISTENTRY>
 <TERM>
-JSIOCGAXES
+<symbol>JSIOCGAXES</symbol>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the number of axes supported by the underlying driver.
+Get the number of axes supported by the underlying driver.
 <PARAMETER>argp</PARAMETER> shall point to a 8 bit integer. 
 </PARA>
 </LISTITEM>
@@ -80,11 +121,11 @@ Gets the number of axes supported by the underlying driver.
 
 <VARLISTENTRY>
 <TERM>
-JSIOCGBUTTONS
+<symbol>JSIOCGBUTTONS</symbol>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the number of buttons supported by the underlying driver.
+Get the number of buttons supported by the underlying driver.
 <PARAMETER>argp</PARAMETER> shall point to a
 8 bit integer.
 </PARA>
@@ -94,20 +135,22 @@ Gets the number of buttons supported by the underlying driver.
 
 <VARLISTENTRY>
 <TERM>
-JSIOCGNAME(len)
+<symbol>JSIOCGNAME(<replaceable>len</replaceable>)</symbol>
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the identifying string of the underlying driver.
+Get the identifying name string of the underlying driver.
 <PARAMETER>argp</PARAMETER> shall point to a
-character array at least <PARAMETER>len</PARAMETER> octets in length.
+character array of at least <PARAMETER>len</PARAMETER> bytes in length.
 </PARA>
 <PARA>
-If the identifying string of the driver is longer than <PARAMETER>len</PARAMETER>, <SYMBOL>JSIOCGNAME</SYMBOL> shall return EFAULT.
+If the identifying string of the driver is longer than 
+<PARAMETER>len</PARAMETER>, it shall be truncated to
+<PARAMETER>len</PARAMETER> bytes.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
-
+</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
@@ -115,8 +158,8 @@ If the identifying string of the driver is longer than <PARAMETER>len</PARAMETER
 </TITLE>
 <PARA>
 On success, if <parameter>request</parameter> is
-<TOKEN>JSIOCGNAME</TOKEN>, a non-negative integer shall be returned.
-If request is not <TOKEN>JSIOCGNAME</TOKEN>, on success 
+<symbol>JSIOCGNAME</symbol>, a non-negative integer shall be returned.
+If request is not <symbol>JSIOCGNAME</symbol>, on success 
 <RETURNVALUE>0</RETURNVALUE> is returned. 
 On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
 the global variable <VARNAME>errno</VARNAME> is set appropriately.
@@ -129,7 +172,7 @@ the global variable <VARNAME>errno</VARNAME> is set appropriately.
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-EBADF  
+<errorname>EBADF</errorname>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -140,23 +183,30 @@ EBADF
 
 <VARLISTENTRY>
 <TERM>
-EFAULT 
+<errorname>EFAULT</errorname>
 </TERM>
 <LISTITEM>
 <PARA>
-<PARAMETER>argp</PARAMETER> references an inaccessible memory area.
+The specified number of bits or bytes referenced by 
+<parameter>argp</parameter> was not accessible for writing.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-EINVAL 
+<errorname>EINVAL</errorname>
 </TERM>
 <LISTITEM>
 <PARA>
+<!-- since all the above ioctls are READ type, argp cannot be invalid
+(EFAULT happens if it points somewhere bad, but nothing cares
+what it points to on entry
 Either <PARAMETER>request</PARAMETER> or <PARAMETER>argp</PARAMETER>
 is invalid.
+-->
+<parameter>fd</parameter> does not reference a joystick pointer device,
+or <parameter>request</parameter> is not valid.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
