@@ -727,17 +727,17 @@ archive.
 <SECT1 ID=pkgscripts>
 <TITLE>Package Script Restrictions</TITLE>
 <PARA>
-Scripts used as part of the package install and uninstall may only use
+Scripts used as part of the package install and uninstall shall only use
 commands and interfaces that are specified by the LSB. All other commands are
 not guaranteed to be present, or to behave in expected ways.
 </PARA>
 
 <PARA>
-Packages may not use RPM triggers.
+Packages shall not use RPM triggers.
 </PARA>
 
 <PARA>
-Packages may not depend on the order in which scripts are executed
+Packages shall not depend on the order in which scripts are executed
 (pre-install, pre-uninstall, &amp;c), when doing an upgrade.
 </PARA>
 </SECT1>
