@@ -1,0 +1,386 @@
+<REFENTRY id="time">
+<REFMETA><REFENTRYTITLE>
+time
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>time</REFNAME>
+<REFPURPOSE>
+run programs and summarize system resource usage
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "time" is as specified in the SUS but with the
+following differences as listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-o FILE, --output=FILE</TERM>
+<LISTITEM>
+<PARA>
+Write the resource use statistics to FILE instead of to the standard
+error stream.  By default, this overwrites the file, destroying the
+file's previous contents.  
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-a, --append</TERM>
+<LISTITEM>
+<PARA>
+Append the resource use information to the output file instead of
+overwriting it.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-f FORMAT, --format=FORMAT</TERM>
+<LISTITEM>
+<PARA>
+Use FORMAT as the format string that controls the output of time.  See
+the below more information.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--portability</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -p option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-v, --verbose</TERM>
+<LISTITEM>
+<PARA>
+Use the built-in verbose format, which displays each available piece
+of information on the program's resource use on its own line, with an
+English description of its meaning.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-V, --version</TERM>
+<LISTITEM>
+<PARA>
+Print the version number of time and exit.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Formatting the Output</TITLE>
+<PARA>
+The format string FORMAT controls the contents of the time output.
+The format string can be set using the `-f' or `--format', `-v' or
+`--verbose', or `-p' or `--portabili­ ty' options.  If they are not
+given, but the TIME environ­ ment variable is set, its value is used
+as the format string.  Otherwise, a built-in default format is used.
+</PARA>
+
+<PARA>
+The default format is:
+  %Uuser %Ssystem %Eelapsed %PCPU (%Xtext+%Ddata %Mmax)k
+  %Iinputs+%Ooutputs (%Fmajor+%Rminor)pagefaults %Wswaps
+</PARA>
+
+<PARA>
+The format string usually consists of `resource specifiers'
+interspersed with plain text.  A percent sign (`%') in the format
+string causes the following character to be interpreted as a resource
+specifier, which is similar to the formatting characters in the
+printf(3) function.
+</PARA>
+
+<PARA>
+A backslash (`\') introduces a `backslash escape', which is translated
+into a single printing character upon output.  `\t' outputs a tab
+character, `\n' outputs a newline, and `\\' outputs a backslash.  A
+backslash followed by any other character outputs a question mark
+(`?') followed by a backslash, to indicate that an invalid backslash
+escape was given.
+</PARA>
+
+<PARA>
+Other text in the format string is copied verbatim to the output.
+time always prints a newline after printing the resource use
+information, so normally format strings do not end with a newline
+character (or `0).
+</PARA>
+
+<PARA>
+There are many resource specifications.  Not all resources are
+measured by all versions of Unix, so some of the values might be
+reported as zero.  Any character following a percent sign that is not
+listed in the table below causes a question mark (`?') to be output,
+followed by that character, to indicate that an invalid resource
+listed in the table below causes a question mark (`?')  to be output,
+followed by that character, to indicate that an invalid resource
+specifier was given.
+</PARA>
+
+<PARA>
+The resource specifiers, which are  a  superset  of  those
+recognized by the tcsh(1) builtin `time' command, are:
+</PARA>
+
+<variablelist>
+
+<VARLISTENTRY>
+<TERM>%</TERM>
+<LISTITEM>
+<PARA>
+A literal `%'.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>C</TERM>
+<LISTITEM>
+<PARA>
+Name and command line arguments of the command being timed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>D</TERM>
+<LISTITEM>
+<PARA>
+Average size of the process's unshared data area, in Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>E</TERM>
+<LISTITEM>
+<PARA>
+Elapsed real (wall clock) time used by the process, in
+[hours:]minutes:seconds.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>F</TERM>
+<LISTITEM>
+<PARA>
+Number of major, or I/O-requiring, page faults that occurred while the
+process was running.  These are faults where the page has actually
+migrated out of primary memory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>I</TERM>
+<LISTITEM>
+<PARA>
+Number of file system inputs by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>K</TERM>
+<LISTITEM>
+<PARA>
+Average total (data+stack+text) memory use of the process, in
+Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>M</TERM>
+<LISTITEM>
+<PARA>
+Maximum resident set size of the process during its lifetime, in
+Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>O</TERM>
+<LISTITEM>
+<PARA>
+Number of file system outputs by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>P</TERM>
+<LISTITEM>
+<PARA>
+Percentage of the CPU that this job got.  This is just user + system
+times divided by the total running time.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>R</TERM>
+<LISTITEM>
+<PARA>
+Number of minor, or recoverable, page faults.  These are pages that
+are not valid (so they fault) but which have not yet been claimed by
+other virtual pages.  Thus the data in the page is still valid but the
+system tables must be updated.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>S</TERM>
+<LISTITEM>
+<PARA>
+Total number of CPU-seconds used by the system on behalf of the
+process (in kernel mode), in seconds.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>U</TERM>
+<LISTITEM>
+<PARA>
+Total number of CPU-seconds that the process used directly (in user
+mode), in seconds.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>W</TERM>
+<LISTITEM>
+<PARA>
+Number of times the process was swapped out of main memory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>X</TERM>
+<LISTITEM>
+<PARA>
+Average amount of shared text in the process, in Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>Z</TERM>
+<LISTITEM>
+<PARA>
+System's page size, in bytes.  This is a per-system constant, but
+varies between systems.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>c</TERM>
+<LISTITEM>
+<PARA>
+Number of times the process was context-switched involuntarily
+(because the time slice expired).
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>e</TERM>
+<LISTITEM>
+<PARA>
+Elapsed real (wall clock) time used by the process, in seconds.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>k</TERM>
+<LISTITEM>
+<PARA>
+Number of signals delivered to the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>p</TERM>
+<LISTITEM>
+<PARA>
+Average unshared stack size of the process, in Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>r</TERM>
+<LISTITEM>
+<PARA>
+Number of socket messages received by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>s</TERM>
+<LISTITEM>
+<PARA>
+Number of socket messages sent by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>t</TERM>
+<LISTITEM>
+<PARA>
+Average resident set size of the process, in Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>w</TERM>
+<LISTITEM>
+<PARA>
+Number of times that the program was context-switched voluntarily, for
+instance while waiting for an I/O operation to complete.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>x</TERM>
+<LISTITEM>
+<PARA>
+Exit status of the command.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
+</REFSECT1>
+
+</REFENTRY>
