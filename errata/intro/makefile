@@ -10,6 +10,7 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
+	../../mkstandardsgmltable -s "'SUSV3'" >standards.sgml
 
 clean:
 	rm -f $(FILES)

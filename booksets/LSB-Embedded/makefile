@@ -59,13 +59,13 @@ source:
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
-LSB-Embedded.sgml: LSB-Embedded.sgml.sed ../../LSB/version
-	echo `cat ../../LSB/version` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../LSB/version`#" <LSB-Embedded.sgml.sed >LSB-Embedded.sgml
+LSB-Embedded.sgml: LSB-Embedded.sgml.sed ../../LSB/version.generic
+	echo `cat ../../LSB/version.generic` >buildversion
+	sed -e "s#LSBVERSION#`cat ../../LSB/version.generic`#" <LSB-Embedded.sgml.sed >LSB-Embedded.sgml
 
 autobuild: gensrc source
-	echo `cat ../../LSB/version`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../LSB/version`-`date +"%Y%m%d"`#" <LSB-Embedded.sgml.sed >LSB-Embedded.sgml
+	echo `cat ../../LSB/version.generic`-`date +"%Y%m%d"` >buildversion
+	sed -e "s#LSBVERSION#`cat ../../LSB/version.generic`-`date +"%Y%m%d"`#" <LSB-Embedded.sgml.sed >LSB-Embedded.sgml
 	make buildspecs
 	
 clean::
