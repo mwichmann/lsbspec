@@ -10,32 +10,53 @@ create a message object from a message file
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-msgfmt [ options ] filename.po ...
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>msgfmt</COMMAND>
+<ARG rep=repeat>options</ARG>
+<ARG choice=plain rep=repeat><replaceable>filename</replaceable></ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-msgfmt creates message object files from portable object files
-(filename.po), without changing the portable object files.
+The <command>msgfmt</command> command
+generates a binary message catalog from a textual translation description.
+Message catalogs, or 
+message object files, are stored in files with a <filename>.mo</filename>" extension.
+<NOTE><PARA>The format of message object files is not guaranteed to be portable.
+Message catalogs should always be generated on the target architecture using the
+<command>msgfmt</command> command.
+</PARA></NOTE>
 </PARA>
 <PARA>
-The .po file contains messages displayed to users by system utilities or by
-application programs. .po files can be edited, and the messages in them can
+The source files, otherwise known as portable object files, have a
+<filename>.po</filename> extension.
+<!-- The the portable object files are not changed by this process.-->
+</PARA>
+<PARA>
+The <PARAMETER>filename</PARAMETER> operands shall be portable object files.
+The <filename>.po</filename> file contains messages to be
+displayed to users by system utilities or by
+application programs. The portable object files are text files, 
+and the messages in them can
 be rewritten in any language supported by the system.
 </PARA>
 <PARA>
-If input file is -, standard input is read.
+If any <PARAMETER>filename</PARAMETER> is <filename>-</filename>, 
+a portable object file shall be read from the standard input.
 </PARA>
+<!--
 <PARA>
-The xgettext utility can be used to create .po files from script or
+The <command>xgettext</command> utility can be used to create 
+<filename>.po</filename> files from script or
 programs.
 </PARA>
+-->
 <PARA>
-msgfmt interprets data as characters according to the current setting of the
-LC_CTYPE locale category.
+The <command>msgfmt</command> command interprets data as characters 
+according to the current setting of the
+<CONSTANT>LC_CTYPE</CONSTANT> locale category.
 </PARA>
 
 </REFSECT1>
@@ -47,14 +68,19 @@ LC_CTYPE locale category.
 
 <VARLISTENTRY>
 <TERM>
--D directory
+-D <PARAMETER>directory</PARAMETER>
 </TERM>
 <TERM>
---directory=directory
+--directory=<PARAMETER>directory</PARAMETER>
 </TERM>
 <LISTITEM>
 <PARA>
-Add directory to list for input files search.
+Add directory to list for input files search. 
+If <parameter>filename</> is not an absolute pathname
+and <parameter>filename</> cannot be opened, search for it
+in <parameter>directory</>. This option may be
+repeated. Directories shall be searched in order, with the leftmost
+<parameter>directory</> searched first.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -68,8 +94,9 @@ Add directory to list for input files search.
 </TERM>
 <LISTITEM>
 <PARA>
-Use fuzzy entries in output. If this option is not specified, fuzzy entries
-are not included into the output.
+Use entries marked as <literal>fuzzy</literal>
+in output. If this option is not specified, such entries
+are not included into the output. See special comments below.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -77,17 +104,17 @@ are not included into the output.
 
 <VARLISTENTRY>
 <TERM>
--o output-file
+-o <PARAMETER>output-file</PARAMETER>
 </TERM>
 <TERM>
---output-file=output-file
+--output-file=<PARAMETER>output-file</PARAMETER>
 </TERM>
 <LISTITEM>
 <PARA>
-Specify output file name as output-file. If multiple domains or
+Specify the output file name as <filename>output-file</filename>. If multiple domains or
 duplicate
-msgids in the .po file are present, the behavior is unspecified.
-If output-file is -, output is written
+msgids in the <filename>.po</filename> file are present, the behavior is unspecified.
+If output-file is <filename>-</filename>, output is written
 to standard output.
 </PARA>
 </LISTITEM>
@@ -102,7 +129,8 @@ to standard output.
 Direct the utility to work strictly following the UniForum/Sun
 implementation. Currently this only affects the naming of the output file.
 If this option is not given the name of the output file is the same as the
-domain name. If the strict UniForum mode is enabled the suffix .mo is added
+domain name. If the strict UniForum mode is enabled the suffix 
+<filename>.mo</filename> is added
 to the file name if it is not already present.
 </PARA>
 </LISTITEM>
@@ -140,7 +168,8 @@ check will diagnose using %.*s against %s, or %d against %s, or %d against
 <REFSECT1>
 <TITLE>Operands</TITLE>
 <PARA>
-The filename.po operands are treated as portable object files. The format of
+The <PARAMETER>filename</PARAMETER> operands are treated as portable object files. 
+The format of
 portable object files is defined in EXTENDED DESCRIPTION.
 </PARA>
 </REFSECT1>
@@ -148,7 +177,8 @@ portable object files is defined in EXTENDED DESCRIPTION.
 <REFSECT1>
 <TITLE>Standard Input</TITLE>
 <PARA>
-The standard input is not used unless a filename.po operand is specified as
+The standard input is not used unless a <PARAMETER>filename</PARAMETER>
+operand is specified as
 "-".
 </PARA>
 </REFSECT1>
@@ -162,11 +192,11 @@ The standard input is not used unless a filename.po operand is specified as
 
 <VARLISTENTRY>
 <TERM>
-LANGUAGE
+<ENVAR>LANGUAGE</ENVAR>
 </TERM>
 <LISTITEM>
 <PARA>
-Specifies one or more locale names. See <emphasis>gettext</emphasis> message
+Specifies one or more locale names. See <function>gettext</function> message
 handling functions for more information.
 </PARA>
 </LISTITEM>
@@ -174,7 +204,7 @@ handling functions for more information.
 
 <VARLISTENTRY>
 <TERM>
-LANG
+<ENVAR>LANG</ENVAR>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -185,19 +215,19 @@ Specifies locale name.
 
 <VARLISTENTRY>
 <TERM>
-LC_ALL
+<ENVAR>LC_ALL</ENVAR>
 </TERM>
 <LISTITEM>
 <PARA>
-Specifies locale name for all categories. If defined, overrides LANG,
-LC_CTYPE and LC_MESSAGES.
+Specifies locale name for all categories. If defined, overrides <ENVAR>LANG</ENVAR>,
+<ENVAR>LC_CTYPE</ENVAR> and <ENVAR>LC_MESSAGES</ENVAR>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-LC_CTYPE
+<ENVAR>LC_CTYPE</ENVAR>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -208,11 +238,11 @@ Specifies locale name for character handling.
 
 <VARLISTENTRY>
 <TERM>
-LC_MESSAGES
+<ENVAR>LC_MESSAGES</ENVAR>
 </TERM>
 <LISTITEM>
 <PARA>
-Specifies messaging locale, and if present overrides LANG for messages.
+Specifies messaging locale, and if present overrides <ENVAR>LANG</ENVAR> for messages.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -223,19 +253,24 @@ Specifies messaging locale, and if present overrides LANG for messages.
 <REFSECT1>
 <TITLE>Standard Output</TITLE>
 <PARA>
-The standard output is not used unless the option-argument of the -o option
-is specified as -.
+The standard output is not used unless the option-argument of the 
+<PARAMETER>-o</PARAMETER> option
+is specified as <filename>-</filename>.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Extended Description</TITLE>
 <PARA>
-The format of portable object files (.po files) is defined as follows. Each
-.po file contains one or more lines, with each line containing either a
-comment or a statement. Comments start the line with a hash mark (#) and end
-with the newline character. All comments and empty lines are ignored. The
-format of a statement is:
+The format of portable object files (<filename>.po</> files) is defined as follows. Each
+<filename>.po</> file contains one or more lines, with each line containing either a
+comment or a statement. Comments start the line with a hash mark (<literal>#</>) and end
+with the newline character. Empty lines, or lines containing only white-space,
+shall be ignored. 
+Comments can in certain circumstances alter the behavior of 
+<COMMAND>msgfmt</COMMAND>.  See 
+<XREF LINKEND=msgfmt-comments> below for details on comment processing.
+The format of a statement is:
 </PARA>
 <PARA>
 <emphasis>directive value</emphasis>
@@ -245,7 +280,8 @@ Each directive starts at the beginning of the line and is separated from
 value by white space (such as one or more space or tab characters). value
 consists of one or more quoted strings separated by white space. If two or
 more strings are specified as value, they are normalized into single string
-using the string normalization syntax the same as the ISO C language. Use
+using the string normalization syntax the same as the <XREF LINKEND=STD.ISOC99>
+language. Use
 any of the following types of directives:
 </PARA>
 
@@ -261,58 +297,111 @@ any of the following types of directives:
 
 <PARA>
 The behavior of the domain directive is affected by the options used. See
-OPTIONS for the behavior when the -o option is specified. If the -o option
-is not specified, the behavior of the domain directive is as follows:
-(1) All msgids from the beginning of each .po file to the first domain
-     directive are put into a default message object file, messages (or
-     messages.mo if --strict option is specified).
+OPTIONS for the behavior when the <PARAMETER>-o</> option is specified. 
+If the <PARAMETER>-o</> option
+is not specified, the behavior of the <literal>domain</> directive is as follows:
+<ORDEREDLIST>
+<LISTITEM><PARA>
+All msgids from the beginning of each <filename>.po</> file to the first 
+<literal>domain</>
+directive are put into a default message object file, messages (or
+<filename>messages.mo</filename> if <parameter>--strict</parameter> option is specified).
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+When <command>msgfmt</command> encounters a 
+<literal>domain domainname</literal> directive in the <filename>.po</> file,
+all following <parameter>msgids</> until the next <literal>domain</> directive are put into the
+message object file <filename>domainname</> (or 
+<filename>domainname.mo</> if <parameter>--strict</> option is
+specified).
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+Duplicate <parameter>msgids</> are defined in the scope of each domain. That is, a
+<parameter>msgid</> is considered a duplicate only if the identical <parameter>msgid</>
+exists in the same domain.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+All duplicate <parameter>msgids</> are ignored.
+</PARA></LISTITEM>
+</ORDEREDLIST>
 
-(2) When msgfmt encounters a domain domainname directive in the .po file,
-     all following msgids until the next domain directive are put into the
-     message object file domainname (or domainname.mo if --strict option is
-     specified).
-
-(3) Duplicate msgids are defined in the scope of each domain. That is, a
-     msgid is considered a duplicate only if the identical msgid exists in
-     the same domain.
-
-(4) All duplicate msgids are ignored.
 </PARA>
 
 <PARA>
-The msgid directive specifies the value of a message identifier associated
-with the directive that follows it. The msgid_plural directive specifies the
+The <literal>msgid</> directive specifies the value of a message identifier associated
+with the directive that follows it. The <literal>msgid_plural</> directive specifies the
 plural form message specified to the plural message handling functions
-ngettext(), dngettext() or dcngettext(). The message_identifier string
+<function>ngettext</>, <function>dngettext</> or <function>dcngettext</>. 
+The message_identifier string
 identifies a target string to be used at retrieval time. Each statement
-containing a msgid directive shall be followed by a statement containing a
-msgstr directive or msgstr[n] directives.
+containing a <literal>msgid</literal> directive shall be followed by a statement containing a
+<literal>msgstr</literal> directive or <literal>msgstr[n]</literal> directives.
 </PARA>
 
 <PARA>
-The msgstr directive specifies the target string associated with the
-message_identifier string declared in the immediately preceding msgid
-directive.
+The <literal>msgstr</literal> directive specifies the target string associated with the
+<parameter>message_identifier</> string declared in the immediately preceding 
+<literal>msgid</literal> directive.
 </PARA>
 
 <PARA>
-The msgstr[n] (where n = 0, 1, 2, ...) directive specifies the target string
-to be used with plural form handling functions ngettext(), dngettext() and
-dcngettext().
+The <literal>msgstr[<parameter>n</>]</> (where 
+<parameter>n</> = 0, 1, 2, ...) directive specifies the target string
+to be used with plural form handling functions 
+<function>ngettext</>, <function>dngettext</> and
+<function>dcngettext</>.
 </PARA>
 
 <PARA>
-Message strings can contain the escape sequences \n for newline, \t for tab,
-\v for vertical tab, \b for backspace, \r for carriage return, \f for
-formfeed, \\ for backslash, \" for double quote, \ddd for octal bit pattern,
-and \xHH for hexadecimal bit pattern.
+Message strings can contain the following escape sequences:
+<TABLE><TITLE>Escape Sequences</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY><literal>\n</literal></ENTRY><ENTRY>newline</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\t</literal></ENTRY><ENTRY>tab</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\v</literal></ENTRY><ENTRY>vertical tab</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\b</literal></ENTRY><ENTRY>backspace</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\r</literal></ENTRY><ENTRY>carriage return</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\f</literal></ENTRY><ENTRY>formfeed</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\\</literal></ENTRY><ENTRY>backslash</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\"</literal></ENTRY><ENTRY>double quote</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\ddd</literal></ENTRY><ENTRY>octal bit pattern</ENTRY>
+</ROW>
+<ROW>
+<ENTRY><literal>\xHH</literal></ENTRY><ENTRY>hexadecimal bit pattern</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 </PARA>
 
+<REFSECT2 ID=msgfmt-comments xreflabel="Comment Handling">
+<TITLE>Comment Handling</TITLE>
 <PARA>
-Comments should be in one of the following formats:
+Comments are introduced by a <literal>#</literal>, and continue to the
+end of the line. The second character (i.e. the character following the
+<literal>#</>) has special meaning. Regular comments should
+follow a space character. Other comment types include:
 </PARA>
 
-<PARA><emphasis># translator-comments</emphasis></PARA>
+<PARA><emphasis># normal-comments</emphasis></PARA>
 
 <PARA><emphasis>#. automatic-comments</emphasis></PARA>
 
@@ -321,15 +410,14 @@ Comments should be in one of the following formats:
 <PARA><emphasis>#, flag</emphasis></PARA>
 
 <PARA>
-The comments that starts with #. and #: are automatically generated by
-xgettext utility. The #: comments indicate the location of the msgid string
-in the source files in filename:line format. The #. comments are generated
-when -c option of the xgettext utility is specified. These comments are
-informative only and silently ignored by the msgfmt utility.
+Automatic and reference comments are typically generated by external utilities,
+and are not specified by the LSB. The <command>msgfmt</command> command
+shall ignore such comments.
 </PARA>
 
 <PARA>
-The #, comments requires one or more flags separated by comma (,) character.
+The <literal>#,</> comments require one or more flags separated by 
+the comma (<literal>,</>) character.
 The following flags can be specified:
 </PARA>
 
@@ -341,17 +429,15 @@ fuzzy
 </TERM>
 <LISTITEM>
 <PARA>
-This flag can be generated by the msgmerge utility or can be inserted by the
-translator. It shows that the msgstr string might not be a correct
-translation (anymore). Only the translator can judge if the translation
+This flag shows that the following <literal>msgstr</> string might not be a correct
+translation. Only the translator can judge if the translation
 requires further modification, or is acceptable as is. Once satisfied with
-the translation, the translator then removes this fuzzy flag. The msgmerge
-programs inserts this when it combined the msgid and msgstr entries after
-fuzzy search only.
+the translation, the translator then removes this fuzzy flag. 
 </PARA>
 <PARA>
-If this flag is specified, the msgfmt utility will not generate the entry
-for the immediately following msgid in the output message catalog.
+If this flag is specified, the <command>msgfmt</> utility will not generate the entry
+for the immediately following <literal>msgid</> in the output message catalog,
+unless the <parameter>--use-fuzzy</> is specified.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -366,33 +452,40 @@ no-c-format
 </TERM>
 <LISTITEM>
 <PARA>
-The flags are automatically added by the xgettext utility and they should
-not be added manually. The c-format flag indicates that the msgid string is
-used as format string by printf-like functions. In case the c-format flag is
-given for a string the msgfmt utility does some more tests to check to
+The <literal>c-format</> flag indicates that the <literal>msgid</literal> string is
+used as format string by <function>printf</>-like functions. 
+If the <literal>c-format</> flag is
+given for a string the <command>msgfmt</> utility may perform additional 
+tests to check to
 validity of the translation.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 
+</REFSECT2>
+<REFSECT2>
+<TITLE>Plurals</TITLE>
 <PARA>
 The msgid entry with empty string ("") is called the header entry and
-treated specially. If the message string for the header entry contains
-nplurals=value, the value indicates the number of plural forms. For example,
-if nplurals=4, there are 4 plural forms. If nplurals is defined, there
-should be plural=expression in the same line, separated by a semicolon (;)
+is treated specially. If the message string for the header entry contains
+<literal>nplurals=value</>, the value indicates the number of plural forms. For example,
+if <literal>nplurals=4</>, there are 4 plural forms. If <literal>nplurals</>
+is defined, there
+should be a <literal>plural=expression</> on the same line, separated by a semicolon (;)
 character. The expression is a C language expression to determine which
-version of msgstr[n] to be used based on the value of n, the last argument
-of ngettext(), dngettext() or dcngettext(). For example:
+version of <literal>msgstr[n]</> to be used based on the value of <literal>n</>,
+the last argument
+of <function>ngettext</>, <function>dngettext</> or <function>dcngettext</>.
+For example:
 </PARA>
 <PROGRAMLISTING>
 nplurals=2; plural=n == 1 ? 0 : 1
 </PROGRAMLISTING>
 
 <PARA>
-indicates that there are 2 plural forms in the language; msgstr[0] is used
-if n == 1, otherwise msgstr[1] is used. Another example:
+indicates that there are 2 plural forms in the language; <literal>msgstr[0]</literal> is used
+if <literal>n == 1</>, otherwise <literal>msgstr[1]</> is used. Another example:
 </PARA>
 
 <PROGRAMLISTING>
@@ -400,21 +493,25 @@ nplurals=3; plural=n==1 ? 0 : n==2 ? 1 : 2
 </PROGRAMLISTING>
 
 <PARA>
-indicates that there are 3 plural forms in the language; msgstr[0] is used
-if n == 1, msgstr[1] is used if n == 2, otherwise msgstr[2] is used.
+indicates that there are 3 plural forms in the language; <literal>msgstr[0]</> is used
+if <literal>n == 1</>, <literal>msgstr[1]</> is used if 
+<literal>n == 2</>, otherwise <literal>msgstr[2]</> is used.
 </PARA>
 
 <PARA>
-If the header entry contains charset=codeset string, the codeset is used to
+If the header entry contains <literal>charset=<parameter>codeset</></> string, the 
+<parameter>codeset</> is used to
 indicate the codeset to be used to encode the message strings. If the output
 string's codeset is different from the message string's codeset, codeset
 conversion from the message strings's codeset to the output string's codeset
-will be performed upon the call of gettext(), dgettext(), dcgettext(),
-ngettext(), dngettext(), and dcngettext(). The output string's codeset is
+will be performed upon the call of <function>gettext</>, <function>dgettext</>,
+<function>dcgettext</>, <function>ngettext</>, <function>dngettext</>, and 
+<function>dcngettext</>. The output string's codeset is
 determined by the current locale's codeset (the return value of
 nl_langinfo(CODESET)) by default, and can be changed by the call of
-bind_textdomain_codeset().
+<function>bind_textdomain_codeset</>.
 </PARA>
+</REFSECT2>
 </REFSECT1>
 
 <REFSECT1>
@@ -427,7 +524,7 @@ The following exit values are returned:
 
 <VARLISTENTRY>
 <TERM>
-0
+<returnvalue>0</>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -438,7 +535,7 @@ Successful completion.
 
 <VARLISTENTRY>
 <TERM>
->0
+<returnvalue>&gt;0</>
 </TERM>
 <LISTITEM>
 <PARA>
@@ -453,7 +550,8 @@ An error occurred.
 <REFSECT1>
 <TITLE>Application Usage</TITLE>
 <PARA>
-Neither msgfmt nor any gettext() routine imposes a limit on the total length
+Neither <command>msgfmt</> nor any <function>gettext</> function
+imposes a limit on the total length
 of a message. Installing message catalogs under the C locale is pointless,
 since they are ignored for the sake of efficiency.
 </PARA>
@@ -465,7 +563,8 @@ since they are ignored for the sake of efficiency.
 Example 1: Examples of creating message objects from message files.
 </PARA>
 <PARA>
-In this example module1.po and module2.po are portable message objects
+In this example <filename>module1.po</> and 
+<filename>module2.po</> are portable message object
 files.
 </PARA>
 
@@ -520,8 +619,8 @@ msgstr "window 6 translation"
 </PROGRAMLISTING>
 
 <PARA>
-The following command will produce the output files, messages, help_domain,
-and error_domain.
+The following command will produce the output files <filename>messages</>, 
+<filename>help_domain</>, and <filename>error_domain</>.
 </PARA>
 
 <PROGRAMLISTING>
@@ -529,8 +628,8 @@ example% msgfmt module1.po
 </PROGRAMLISTING>
 
 <PARA>
-The following command will produce the output files, messages, help_domain,
-error_domain, and window_domain.
+The following command will produce the output files <filename>messages</>,
+<filename>help_domain</>, <filename>error_domain</>, and <filename>window_domain</>.
 </PARA>
 
 <PROGRAMLISTING>
@@ -538,7 +637,7 @@ example% msgfmt module1.po module2.po
 </PROGRAMLISTING>
 
 <PARA>
-The following example will produce the output file hello.mo.
+The following example will produce the output file <filename>hello.mo</>.
 </PARA>
 
 <PROGRAMLISTING>
