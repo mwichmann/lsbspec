@@ -11,6 +11,84 @@ print STDERR "mklibspec -l <libname> -a <archname>\n";
 die;
 }
 
+sub output_table($$$$$)
+{
+local ($i,*int,*symver,*std,$title) = @_;
+
+print "<TABLE>\n";
+print "<TITLE>$title</TITLE>\n";
+print "<TGROUP COLS=5>\n";
+print "<TBODY>\n";
+$inc=int(($i+4)/5);
+for(1..$inc) {
+	print "<ROW>\n";
+	printf "<ENTRY>";
+	if( $int[$_] ) {
+		printf "%s", $int[$_];
+		if( $symver[$_] ) {
+			printf "(%s)", $symver[$_];
+			}
+		if( $std[$_] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+						$Lid, $std[$_];
+			}
+		}
+	printf "</ENTRY>\n";
+	printf "<ENTRY>";
+	if( $int[$_+$inc] ) {
+		printf "%s", $int[$_+$inc];
+		if( $symver[$_+$inc] ) {
+			printf "(%s)", $symver[$_];
+			}
+		if( $std[$_+$inc] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+						$Lid, $std[$_+$inc];
+			}
+		}
+	printf "</ENTRY>\n";
+	printf "<ENTRY>";
+	if( $int[$_+(2*$inc)] ) {
+		printf "%s", $int[$_+(2*$inc)];
+		if( $symver[$_+(2*$inc)] ) {
+			printf "(%s)", $symver[$_];
+			}
+		if( $std[$_+(2*$inc)] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+						$Lid, $std[$_+(2*$inc)];
+			}
+		}
+	printf "</ENTRY>\n";
+	printf "<ENTRY>";
+	if( $int[$_+(3*$inc)] ) {
+		printf "%s", $int[$_+(3*$inc)];
+		if( $symver[$_+(3*$inc)] ) {
+			printf "(%s)", $symver[$_];
+			}
+		if( $std[$_+(3*$inc)] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+						$Lid, $std[$_+(3*$inc)];
+			}
+		}
+	printf "</ENTRY>\n";
+	printf "<ENTRY>";
+	if( $int[$_+(4*$inc)] ) {
+		printf "%s", $int[$_+(4*$inc)];
+		if( $symver[$_+(4*$inc)] ) {
+			printf "(%s)", $symver[$_];
+			}
+		if( $std[$_+(4*$inc)] ) {
+			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
+						$Lid, $std[$_+(4*$inc)];
+			}
+		}
+	printf "</ENTRY>\n";
+	print "</ROW>\n";
+	}
+print "</TBODY>\n";
+print "</TGROUP>\n";
+print "</TABLE>\n";
+}
+
 # Uncomment to trace SQL statements
 #$trace=1;
 
@@ -42,7 +120,7 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.43 2002-08-23 11:10:23 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.44 2002-09-19 19:58:30 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -160,6 +238,10 @@ for(1..$lgh->numrows) {
 #
 # 8) For each group, make a table of the interfaces
 #
+{
+	local(*entry);
+	local(*symver);
+	local(*std);
 	$select = "SELECT * FROM Interface ";
 	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
 	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
@@ -183,88 +265,53 @@ for(1..$lgh->numrows) {
 		$std[$i]=$entry{'Istandard'};
 	}
 	if( $i > 0 ) {
-	print "<TABLE>\n";
-	print "<TITLE>$Lname - $LGname Function Interfaces</TITLE>\n";
-	print "<TGROUP COLS=5>\n";
-	print "<TBODY>\n";
-	$inc=int(($i+4)/5);
-	for(1..$inc) {
-		print "<ROW>\n";
-		printf "<ENTRY>";
-		if( $entry[$_] ) {
-		printf "%s", $entry[$_];
-		if( $symver[$_] ) {
-			printf "(%s)", $symver[$_];
+		output_table($i,*entry,*symver,*std,"$Lname - $LGname Function Interfaces");
 		}
-		if( $std[$_] ) {
-			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_];
+}
+#
+# 9) For each group, make a table of the deprecated interfaces
+#
+{
+	local(*entry);
+	local(*symver);
+	local(*std);
+	$select = "SELECT * FROM Interface ";
+	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
+	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+	$select.= "LEFT JOIN Version ON Vid=AIversion ";
+	$select.= "WHERE LGIlibg=$LGid AND Itype='Function' ";
+	$select.= "AND Istatus='Deprecated' ";
+	$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+	$select.= "ORDER BY Iname";
+	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	print STDERR $select,"\n" if $trace;
+	$i=0;
+	for(1..$inh->numrows) {
+		%entry=$inh->fetchhash;
+		if( $entry[$i] ne $entry{'Iname'} ) {
+			$i++;
 		}
+		$entry[$i]=$entry{'Iname'};
+		if( $entry{'AIarch'} == $Aid ) { 
+			$symver[$i]=$entry{'Vname'};
 		}
-		printf "</ENTRY>\n";
-		printf "<ENTRY>";
-		if( $entry[$_+$inc] ) {
-		printf "%s", $entry[$_+$inc];
-		if( $symver[$_+$inc] ) {
-			printf "(%s)", $symver[$_];
-		}
-		if( $std[$_+$inc] ) {
-			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+$inc];
-		}
-		}
-		printf "</ENTRY>\n";
-		printf "<ENTRY>";
-		if( $entry[$_+(2*$inc)] ) {
-		printf "%s", $entry[$_+(2*$inc)];
-		if( $symver[$_+(2*$inc)] ) {
-			printf "(%s)", $symver[$_];
-		}
-		if( $std[$_+(2*$inc)] ) {
-			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+(2*$inc)];
-		}
-		}
-		printf "</ENTRY>\n";
-		printf "<ENTRY>";
-		if( $entry[$_+(3*$inc)] ) {
-		printf "%s", $entry[$_+(3*$inc)];
-		if( $symver[$_+(3*$inc)] ) {
-			printf "(%s)", $symver[$_];
-		}
-		if( $std[$_+(3*$inc)] ) {
-			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+(3*$inc)];
-		}
-		}
-		printf "</ENTRY>\n";
-		printf "<ENTRY>";
-		if( $entry[$_+(4*$inc)] ) {
-		printf "%s", $entry[$_+(4*$inc)];
-		if( $symver[$_+(4*$inc)] ) {
-			printf "(%s)", $symver[$_];
-		}
-		if( $std[$_+(4*$inc)] ) {
-			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+(4*$inc)];
-		}
-		}
-		printf "</ENTRY>\n";
-		print "</ROW>\n";
+		$std[$i]=$entry{'Istandard'};
 	}
-	print "</TBODY>\n";
-	print "</TGROUP>\n";
-	print "</TABLE>\n";
-	}
+	if( $i > 0 ) {
+		output_table($i,*entry,*symver,*std,"$Lname - $LGname Deprecated Function Interfaces");
+		}
+}
 
 #
 # 10) Make a table of data interfaces
 #
 {
-	local(*datasym);
+	local(*sth);
+	local(*entry);
+	local(*symver);
 	local(*std);
 
-	$select = "SELECT DISTINCT Iname,Istandard FROM Interface ";
+	$select = "SELECT DISTINCT * FROM Interface ";
 	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
 	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 	$select.= "LEFT JOIN Version ON Vid=AIversion ";
@@ -274,57 +321,59 @@ for(1..$lgh->numrows) {
 	$select.= "ORDER BY Iname";
 	print STDERR $select,"\n" if $trace;
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	if ($sth->numrows > 0 ) {
-		$i=1;
-		for(1..$sth->numrows) {
-			%datasym=$sth->fetchhash;
-			$datasym[$i]=$datasym{'Iname'};
-			$std[$i++]=$datasym{'Istandard'};
+	$i=0;
+	for(1..$sth->numrows) {
+		%entry=$sth->fetchhash;
+		if( $entry[$i] ne $entry{'Iname'} ) {
+			$i++;
 		}
-		print "<TABLE>\n";
-		print "<!--libgroupdata-->\n";
-		print "<TITLE>$Lname - $LGname Data Interfaces</TITLE>\n";
-		print "<TGROUP COLS=5>\n";
-		print "<TBODY>\n";
-		$inc=int(($i+4)/5);
-		for(1..$inc) {
-			print "<ROW>\n";
-			printf "<ENTRY>%s",$datasym[$_];
-			if( $datasym[$_] && $std[$_] ) {
-				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_];
-			}
-			printf "</ENTRY>\n";
-			printf "<ENTRY>%s",$datasym[$_+$inc];
-			if( $datasym[$_+$inc] && $std[$_+$inc] ) {
-				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+$inc];
-			}
-			printf "</ENTRY>\n";
-			printf "<ENTRY>%s",$datasym[$_+(2*$inc)];
-			if( $datasym[$_+(2*$inc)] && $std[$_+(2*$inc)] ) {
-				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+(2*$inc)];
-			}
-			printf "</ENTRY>\n";
-			printf "<ENTRY>%s",$datasym[$_+(3*$inc)];
-			if( $datasym[$_+(3*$inc)] && $std[$_+(3*$inc)] ) {
-				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+(3*$inc)];
-			}
-			printf "</ENTRY>\n";
-			printf "<ENTRY>%s",$datasym[$_+(4*$inc)];
-			if( $datasym[$_+(4*$inc)] && $std[$_+(4*$inc)] ) {
-				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+(4*$inc)];
-			}
-			printf "</ENTRY>\n";
-			print "</ROW>\n";
+		$entry[$i]=$entry{'Iname'};
+		if( $entry{'AIarch'} == $Aid ) { 
+			$symver[$i]=$entry{'Vname'};
 		}
-		print "</TBODY>\n";
-		print "</TGROUP>\n";
-		print "</TABLE>\n";
+		$std[$i]=$entry{'Istandard'};
 	}
+	if( $i > 0 ) {
+		print "<!--libgroupdata-->\n";
+		output_table($i,*entry,*symver,*std,"$Lname - $LGname Data Interfaces");
+		}
+}
+#
+# 11) Make a table of deprecated data interfaces
+#
+{
+	local(*sth);
+	local(*entry);
+	local(*symver);
+	local(*std);
+
+	$select = "SELECT DISTINCT * FROM Interface ";
+	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
+	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+	$select.= "LEFT JOIN Version ON Vid=AIversion ";
+	$select.= "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
+	$select.= "AND Istatus='Deprecated' ";
+	$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+	$select.= "ORDER BY Iname";
+	print STDERR $select,"\n" if $trace;
+	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	$i=0;
+	for(1..$sth->numrows) {
+		%entry=$sth->fetchhash;
+		if( $entry[$i] ne $entry{'Iname'} ) {
+			$i++;
+		}
+		$entry[$i]=$entry{'Iname'};
+		if( $entry{'AIarch'} == $Aid ) { 
+			$symver[$i]=$entry{'Vname'};
+		}
+		$std[$i]=$entry{'Istandard'};
+	}
+	if( $i > 0 ) {
+		print "<!--libgroupdata-->\n";
+		output_table($i,*entry,*symver,*std,"$Lname - $LGname Deprecated Data Interfaces");
+		}
+
 }
 	print "</SECT2>\n";
 }
@@ -413,4 +462,4 @@ if($sth->numrows) {
 
 
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.43 2002-08-23 11:10:23 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.44 2002-09-19 19:58:30 anderson Exp $- -->\n");
