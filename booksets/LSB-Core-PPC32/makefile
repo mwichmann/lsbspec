@@ -25,6 +25,7 @@ htmlspec: LSB-Core-PPC32.sgml source
 	rm -rf LSB-Core-PPC32.junk
 	-mv LSB-Core-PPC32 LSB-Core-PPC32.junk
 	$(DB2HTML) LSB-Core-PPC32.sgml
+	cp ../../ELF/PPC32/lowlevel/initial_process_stack.jpg LSB-Core-PPC32
 	if [ -d LSB-Core-PPC32.junk/CVS -a ! -d LSB-Core-PPC32/CVS ];then mv LSB-Core-PPC32.junk/CVS LSB-Core-PPC32; fi
 	rm -rf LSB-Core-PPC32.junk
 
@@ -40,6 +41,7 @@ LSB-Core-PPC32_lines.txt: LSB-Core-PPC32.txt
 	nl -ba LSB-Core-PPC32.txt > LSB-Core-PPC32_lines.txt
 
 rtfspec: LSB-Core-PPC32.sgml source
+	cp ../../ELF/PPC32/lowlevel/initial_process_stack.eps .
 	$(DB2RTF) LSB-Core-PPC32.sgml
 
 pdfspec: LSB-Core-PPC32.sgml source
