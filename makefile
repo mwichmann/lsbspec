@@ -61,10 +61,10 @@ libXext-60.html::
 	./mkinterfacetable Lname=libXext-60 >libXext-60.html
 
 glibcnotsys.html::
-	./diffinterfacetable nLname=libsys Lname=glibcx86-210 >glibcnotsys.html
+	./diffinterfacetable nLname=libc Lname=glibcx86-210 >glibcnotsys.html
 
 sysnotglibc.html::
-	./diffinterfacetable Lname=libsys nLname=glibcx86-210 >sysnotglibc.html
+	./diffinterfacetable Lname=libc nLname=glibcx86-210 >sysnotglibc.html
 
 pthread0notpthread.html::
 	./diffinterfacetable nLname=libpthread Lname=libpthreadx86-07 >pthread0notpthread.html
@@ -79,16 +79,20 @@ SUSnotglibc.html::
 	./diffinterfacetable Lname=SUS nLname=glibcx86-210 nLname=libmx86 nLname=libpthreadx86-07 nLname=libdbx86-207 nLname=libnslx86-207 nLname=libdlx86-2 nLname-libcryptx86-2.1.1>SUSnotglibc.html
 
 SUSnotsys.html::
-	./diffinterfacetable Lname=SUS nLname=libsys >SUSnotsys.html
+	./diffinterfacetable Lname=SUS nLname=libc >SUSnotsys.html
 
 sysnotSUS.html::
-	./diffinterfacetable nLname=SUS Lname=libsys >sysnotSUS.html
+	./diffinterfacetable nLname=SUS Lname=libc >sysnotSUS.html
 
+#
+# Note: libxti is explicitely not part of the LSB, but even that means
+# the interfaces have been accounted for
+#
 SUSnotLSB.html::
-	./diffinterfacetable Lname=SUS nLname=libsys nLname=libm nLname=libpthread nLname=libdb nLname=libnsl nLname=libdl nLname=libcrypt >SUSnotLSB.html
+	./diffinterfacetable Lname=SUS nLname=libc nLname=libm nLname=libpthread nLname=libdb nLname=libnsl nLname=libdl nLname=libcrypt nLname=libxti >SUSnotLSB.html
 
 LSBnotSUS.html::
-	./diffinterfacetable nLname=SUS Lname=libsys Lname=libm Lname=libpthread Lname=libdb Lname=libnsl Lname=libdl Lname=libcrypt >LSBnotSUS.html
+	./diffinterfacetable nLname=SUS Lname=libc Lname=libm Lname=libpthread Lname=libdb Lname=libnsl Lname=libdl Lname=libcrypt >LSBnotSUS.html
 
 libm6notlibm.html::
 	./diffinterfacetable nLname=libm Lname=libmx86 >libm6notlibm.html
