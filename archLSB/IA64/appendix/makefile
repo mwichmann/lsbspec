@@ -13,7 +13,7 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a IA32 >liblist.sgml
+	../../../mklibapnd -a IA64 >liblist.sgml
 
 clean:
 	rm -f $(FILES)
