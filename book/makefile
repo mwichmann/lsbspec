@@ -5,7 +5,7 @@ SUBDIRS= Desktop Graphics Packaging errata wip \
 	LSB-AMD64 LSB-IA32 LSB-IA64 LSB-PPC32 LSB-PPC64 LSB-S390 LSB-S390X \
 	LSB-generic \
 	Packaging-AMD64 Packaging-IA32 Packaging-IA64 Packaging-PPC32 \
-	Packaging-PPC64 Packaging-S390 Packaging-S390X Packaging-generic
+	Packaging-PPC64 Packaging-S390 Packaging-S390X
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
