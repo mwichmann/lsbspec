@@ -58,12 +58,13 @@ you are editing Linux.sql as the master data source and using mysql as
 a slave to that.  So if you are making modifications in the database
 you don't want those rules.
 
-6.  Get a copy of the DocBook tools from
-http://sourceware.cygnus.com/docbook-tools/ .  I installed all of
-their packages: docbook, psgml, jade, sgml-common, jadetex, and
+6.  Install DocBook tools for Red Hat 6.2 by running the LSB provided
+installsgml.sh script. Otherwise, get a copy of the DocBook tools from
+http://sourceware.cygnus.com/docbook-tools/ .  Install the following 
+packages: docbook, psgml, jade, sgml-common, jadetex, and
 stylesheets (of course check the documentation at the web site for up
-to date details).  The tools at http://www.sgmltools.org/ are older
-versions (I believe) but have also been made to work.
+to date details).  Also install the sgmltools-lite from Sourceforge.Net
+located at http://download.sourceforge.net/sgmltools-lite/
 
 7.  To produce postscript, type "make spec.sgml" followed by "db2ps
 spec.sgml" which will put the output in spec.ps.  To produce HTML,

@@ -1,45 +1,98 @@
 #!/bin/sh
 #
-#	Linux Standard Base, http://www.linuxbase.org/
-#	George Kraft IV, gk4@us.ibm.com, 02/23/2000
+#	Copyright 2000, Free Standards Group, Inc.
+#	George Kraft IV, gk4@us.ibm.com
 #
-#	Download & install the necessary docbook RPMs to build the LSB spec.
+#	Install DocBook and SGML tools for building the 
+#	LSB written specification.
+#
+#	SYSTEM REQUIREMENTS:  RedHat 6.2
 #
 
-RUNSOCKS=runsocks # FTP through the firewall
-DIR=rh62b
+#REDHAT=/mnt/cdrom/RedHat/RPMS
+REDHAT=ftp://download.sourceforge.net/pub/mirrors/redhat/redhat/redhat-6.2/i386/RedHat/RPMS/
+SGMLLITE=http://download.sourceforge.net/sgmltools-lite/
 
-if [ ! -d $DIR ]; then
-	mkdir $DIR
-fi
+RPMS="	\
+$REDHAT/sgml-common-0.1-7.noarch.rpm \
+$REDHAT/docbook-3.1-3.noarch.rpm \
+$REDHAT/stylesheets-0.13rh-4.noarch.rpm \
+$REDHAT/jade-1.2.1-9.i386.rpm \
+$REDHAT/jadetex-2.7-2.i386.rpm \
+$SGMLLITE/sgmltools-lite-3.0.1.cvs20000625-1.i386.rpm \
+	"
+##############################################################################
+# fixiso
+##############################################################################
 
-if [  -d $DIR ]; then
-	cd $DIR
-fi
+fixiso() {
 
-RPMS="\
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/sgml-common-0.1-7.noarch.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/docbook-3.1-3.noarch.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/tetex-fonts-1.0.6-8.i386.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/tetex-1.0.6-8.i386.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/tetex-latex-1.0.6-8.i386.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/emacs-20.5-4.i386.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/psgml-1.2.1-4.noarch.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/jade-1.2.1-8.i386.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/jadetex-2.7-2.i386.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/stylesheets-0.13rh-1.noarch.rpm \
-ftp://ftp.valinux.com/pub/mirrors/redhat/redhat-6.2beta/i386/RedHat/RPMS/sgml-tools-1.0.9-3.i386.rpm \
-"
+	D=/usr/lib/sgml
 
-for F in $RPMS; do
-	if [ ! -f $(basename $F) ]; then
-		$RUNSOCKS ncftpget $F
+	for I in $D/ISO*; do
+		F=$(basename $I)
+		ln -fs $D/$F $D/iso-${F#ISO}.gml
+	done
+}
+
+##############################################################################
+# preinstall
+##############################################################################
+
+preinstall() {
+
+	isredhat
+
+	rpm -qa | egrep "docbook|stylesheet|jade|sgml"
+
+	if [ $? -eq 0 ]; then
+		echo "Please remove existing DocBook and SGML packages first."
+		echo -n "Remove these packages now? [y/n] "
+		read query
+		if [ "$query" = "y" ]; then
+			rpm -qa | egrep "docbook|stylesheet|jade|sgml" \
+				| xargs rpm -e
+			echo "Packages were removed."
+		else
+			exit 1
+		fi
 	fi
-done
+}
 
-for F in $RPMS; do
-	echo Installing $(basename $F)
-	rpm -i $(basename $F)
-done
+##############################################################################
+# postinstall
+##############################################################################
 
-# EOF
+postinstall() {
+
+	fixiso
+
+	echo "Installation completed."
+	echo "See man page for sgmltools for more details."
+}
+
+##############################################################################
+# isredhat
+##############################################################################
+
+isredhat() {
+	grep "6.2" /etc/redhat-release > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		echo "Script written for Red Hat 6.2"
+		exit 1
+	fi
+}
+
+##############################################################################
+# main
+##############################################################################
+
+preinstall
+
+echo "Installing..."
+rpm -i $RPMS
+echo "Finished..."
+
+postinstall
+
+#EOF
