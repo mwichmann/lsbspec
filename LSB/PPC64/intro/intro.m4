@@ -75,7 +75,7 @@ the dynamic linker shall search by default.
 </SECT1>
 <SECT1 ID="Implementation"><TITLE>LSB Implementation Conformance </TITLE>
 <PARA>
-An implementation shall satisfy the following requirements:</PARA><PARA>
+A conforming implementation shall satisfy the following requirements:</PARA><PARA>
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
 The implementation shall implement fully the architecture described in the hardware manual for the target processor architecture. 
@@ -143,7 +143,7 @@ The implementation may provide additional interfaces with different names. It ma
 </SECT1>
 <SECT1 ID="Application"><TITLE>LSB Application Conformance </TITLE>
 <PARA>
-An application shall satisfy the following requirements: </PARA><PARA>
+A conforming application shall satisfy the following requirements: </PARA><PARA>
 
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
