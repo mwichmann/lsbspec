@@ -59,6 +59,36 @@ See
 <XREF LINKEND="std.IA64.ABI">,
 Chapter 4.1.1.6.
 </PARA>
+<PARA>
+The following additional processor-specific flags are defined:
+</PARA>
+<TABLE>
+<TITLE>Additional Processor-Specific Flags</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY>
+<ENTRY ALIGN=center>Value</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>EF_IA_64_LINUX_EXECUTABLE_STACK</ENTRY>
+<ENTRY>0x00000001</ENTRY>
+</ROW>
+</TBODY>
+</TABLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>EF_IA_64_LINUX_EXECUTABLE_STACK</TERM>
+<LISTITEM>
+<PARA>
+The stack section is executable.  If this flag
+is not set, the stack is not executable.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </SECT2>
 </SECT1>
 </CHAPTER>
