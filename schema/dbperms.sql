@@ -22,6 +22,7 @@ GRANT INSERT,UPDATE,DELETE on lsb.Library TO lsbadmin;
 GRANT INSERT,UPDATE,DELETE on lsb.Parameter TO lsbadmin;
 GRANT INSERT,UPDATE,DELETE on lsb.Standard TO lsbadmin;
 GRANT INSERT,UPDATE,DELETE on lsb.Version TO lsbadmin;
+GRANT INSERT,DELETE        on lsb.VerInt TO lsbadmin;
 #
 # The rest should be "read Only" from the localhost
 #
