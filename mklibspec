@@ -345,7 +345,7 @@ sub getinterfaces($$$$)
 		print "underlying specification.\n";
 		print "</PARA>\n";
 		if ($type =~ /deprecated.*/) {
-			print "<NOTE><TITLE>NOTE</TITLE>";
+			print "<NOTE>";
 			print "<PARA>These interfaces are deprecated, and applications\n";
 			print "should avoid using them.\n";
 			print "These interfaces may be withdrawn\n";
@@ -374,6 +374,33 @@ sub nmhash($)
 	}
 	$namehash{$sname} = $name;
 	return $sname;
+}
+
+sub data_def_header()
+{
+	print "<SECT1 ID=", $safelibname, "-ddefs>\n";
+	print "<TITLE>Data Definitions for $Lname</TITLE>\n";
+	print "<PARA>\n";
+	print "This section defines global identifiers and their values that are associated ";
+	print "with interfaces contained in $Lname.\n";
+	print "These definitions are organized into groups that ";
+	print "correspond to system headers. This convention is used as a ";
+	print "convenience for the reader, and does not imply the existence ";
+	print "of these headers, or their content.";
+	print "</PARA>\n";
+	print "<PARA>\n";
+	print "These definitions are intended to supplement those provided ";
+	print "in the referenced underlying specifications.\n";
+	print "</PARA>\n";
+	print "<PARA>\n";
+	print "This specification uses ISO/IEC 9899 C Language as the reference programming ";
+	print "language, and ";
+	print "data definitions are specified in ISO C format. The C language ";
+	print "is used here as a convenient notation. Using a C language ";
+	print "description of these data objects does not preclude their use ";
+	print "by other programming languages.";
+	print "</PARA>\n";
+	$done_data_def_header++;
 }
 
 # the main program ...
@@ -420,7 +447,7 @@ $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.60 2004-07-13 18:49:08 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.61 2004-07-20 01:38:38 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -482,7 +509,7 @@ if(open(DESC,"<$Lname.txt" )) {
 # 6) Get a list of the Standards that are used by this library
 #
 print "<PARA>\n";
-$select = "SELECT DISTINCT Sfull,Sid FROM Standard ";
+$select = "SELECT DISTINCT Sname,Sid FROM Standard ";
 $select.= "LEFT JOIN Interface ON Sid=Istandard ";
 $select.= "LEFT JOIN LGInt ON LGIint=Iid ";
 $select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
@@ -500,10 +527,8 @@ if( $lsh->numrows) {
 	for(1..$lsh->numrows) {
 		local(*entry);
 		%entry=$lsh->fetchhash;
-		# Footnotes removed from here ... in line references are now used
-		# should add a link or xref back to the normative refs table here ...
 		print "<MEMBER>\n";
-		print $entry{'Sfull'};
+		printf "<XREF LINKEND=\"std.%s\">\n", makeid($entry{'Sname'});
 		print "</MEMBER>\n";
 		}
 	print "</SIMPLELIST>\n";
@@ -581,33 +606,13 @@ print "</SECT1>\n";
 #
 # Now, get a list of all headers associate with this library
 #
+local ($data_def_header);
+$data_def_header = 0;
 $select = "SELECT DISTINCT Hname,Hid FROM Header ";
 $select.= "WHERE Hlib=$Lid ";
 $select.= "ORDER BY Hname";
 $hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $hdh->numrows ) {
-	print "<SECT1 ID=", $safelibname, "-ddefs>\n";
-	print "<TITLE>Data Definitions for $Lname</TITLE>\n";
-	print "<PARA>\n";
-	print "This section defines global identifiers and their values that are associated ";
-	print "with interfaces contained in $Lname.\n";
-	print "These definitions are organized into groups that ";
-	print "correspond to system headers. This convention is used as a ";
-	print "convenience for the reader, and does not imply the existence ";
-	print "of these headers, or their content.";
-	print "</PARA>\n";
-	print "<PARA>\n";
-	print "These definitions are intended to supplement those provided ";
-	print "in the referenced underlying specifications.\n";
-	print "</PARA>\n";
-	print "<PARA>\n";
-	print "This specification uses ISO/IEC 9899 C Language as the reference programming ";
-	print "language, and ";
-	print "data definitions are specified in ISO C format. The C language ";
-	print "is used here as a convenient notation. Using a C language ";
-	print "description of these data objects does not preclude their use ";
-	print "by other programming languages.";
-	print "</PARA>\n";
 	for(1..$hdh->numrows) {
 		local(*entry);
 		%entry=$hdh->fetchhash;
@@ -620,6 +625,7 @@ if( $hdh->numrows ) {
 			next;
 		}
 		if( -s HEADER ) { # Make sure it's not empty
+			data_def_header() if (!$done_data_def_header);
 			print "<SECT2>\n";
 			print "<TITLE>";
 			print $entry{'Hname'};
@@ -648,7 +654,7 @@ if( $hdh->numrows ) {
 			#
 		}
 	}
-	print "</SECT1>\n";
+	print "</SECT1>\n" if ($done_data_def_header);
 }
 #
 # List the Interface Definitions of things specified by the LSB document.
@@ -697,4 +703,4 @@ if($sth->numrows) {
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.60 2004-07-13 18:49:08 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.61 2004-07-20 01:38:38 nick Exp $- -->\n");
