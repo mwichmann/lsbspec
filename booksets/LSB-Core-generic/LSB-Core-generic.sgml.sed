@@ -49,7 +49,7 @@
 </BOOKINFO>
 &packaging-contents;
 </BOOK>
-<BOOK>
+<BOOK ID="licensing">
 <BOOKINFO>
 <TITLE>Free Documentation License</TITLE>
 </BOOKINFO>
