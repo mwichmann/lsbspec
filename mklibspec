@@ -145,7 +145,8 @@ for(1..$lgh->numrows) {
 #
 # 8) Foreach group, make a table of the interfaces
 #
-	$select = "SELECT Interface.* FROM Interface,LGInt ";
+	$select = "SELECT Version.Vname,Interface.* FROM Interface,LGInt ";
+	$select.= "LEFT JOIN Version ON Vid=Iversion ";
 	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype='Function' ";
 	$select.= "AND Iarch=$Aid AND Istatus='Included' ";
 	$select.= "ORDER BY Iname";
@@ -155,7 +156,7 @@ for(1..$lgh->numrows) {
 		%entry=$inh->fetchhash;
 		$entry[$_]=$entry{'Iname'};
 		$std[$_]=$entry{'Istandard'};
-		$symver[$_]=$entry{'Iversion'};
+		$symver[$_]=$entry{'Vname'};
 	}
 	if( $inh->numrows > 0 ) {
 	print "<TABLE>\n";
@@ -165,7 +166,9 @@ for(1..$lgh->numrows) {
 	$inc=int(($inh->numrows+4)/5);
 	for(1..$inc) {
 		print "<ROW>";
-		printf "<ENTRY>%s", $entry[$_];
+		printf "<ENTRY>";
+		if( $entry[$_] ) {
+		printf "%s", $entry[$_];
 		if( $symver[$_] ) {
 			printf "(%s)", $symver[$_];
 		}
@@ -173,8 +176,11 @@ for(1..$lgh->numrows) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_];
 		}
+		}
 		printf "</ENTRY>";
-		printf "<ENTRY>%s", $entry[$_+$inc];
+		printf "<ENTRY>";
+		if( $entry[$_+$inc] ) {
+		printf "%s", $entry[$_+$inc];
 		if( $symver[$_+$inc] ) {
 			printf "(%s)", $symver[$_];
 		}
@@ -182,8 +188,11 @@ for(1..$lgh->numrows) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_+$inc];
 		}
+		}
 		printf "</ENTRY>";
-		printf "<ENTRY>%s", $entry[$_+(2*$inc)];
+		printf "<ENTRY>";
+		if( $entry[$_+(2*$inc)] ) {
+		printf "%s", $entry[$_+(2*$inc)];
 		if( $symver[$_+(2*$inc)] ) {
 			printf "(%s)", $symver[$_];
 		}
@@ -191,8 +200,11 @@ for(1..$lgh->numrows) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_+(2*$inc)];
 		}
+		}
 		printf "</ENTRY>";
-		printf "<ENTRY>%s", $entry[$_+(3*$inc)];
+		printf "<ENTRY>";
+		if( $entry[$_+(3*$inc)] ) {
+		printf "%s", $entry[$_+(3*$inc)];
 		if( $symver[$_+(3*$inc)] ) {
 			printf "(%s)", $symver[$_];
 		}
@@ -200,14 +212,18 @@ for(1..$lgh->numrows) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_+(3*$inc)];
 		}
+		}
 		printf "</ENTRY>";
-		printf "<ENTRY>%s", $entry[$_+(4*$inc)];
+		printf "<ENTRY>";
+		if( $entry[$_+(4*$inc)] ) {
+		printf "%s", $entry[$_+(4*$inc)];
 		if( $symver[$_+(4*$inc)] ) {
 			printf "(%s)", $symver[$_];
 		}
 		if( $std[$_+(4*$inc)] ) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_+(4*$inc)];
+		}
 		}
 		printf "</ENTRY>";
 		print "</ROW>\n";
