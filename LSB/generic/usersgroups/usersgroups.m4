@@ -44,6 +44,14 @@ getgrent(3), setgrent(3), sendgrent(3), and groups(1).
 The layout of the group(5) file is not specified by this standard, because
 it is access via an API.
 </PARA>
+<PARA>
+There are no group write APIs. To change
+the group database, use the system adminstration commands
+groupadd(1), groupdel(1), groupmod(1) instead of API calls.
+Use the usermod(1) command to add or remove a user to/from
+supplementary groups.
+Do not change a present group database file directly.
+</PARA>
 </SECT1>
 
 <SECT1 ID="userlibs">
