@@ -3,10 +3,10 @@ Private Sub update_fields()
 Attribute update_fields.VB_Description = "Macro recorded 10/7/2004 by MSB"
 Attribute update_fields.VB_ProcData.VB_Invoke_Func = "Normal.NewMacros.find_toc"
 
-    Selection.HomeKey unit:=wdStory
+    Selection.HomeKey Unit:=wdStory
     Dim allDoc As Range
     
-    Set allDoc = ActiveDocument.Range(Start:=0, End:=Selection.EndKey(unit:=wdStory))
+    Set allDoc = ActiveDocument.Range(Start:=0, End:=Selection.EndKey(Unit:=wdStory))
     
     allDoc.Fields.Update
     
@@ -24,7 +24,7 @@ Private Sub add_linenos()
     '
     ' look for the SECOND occurence of "Foreword" (the first is in the TOC)
     '
-    Selection.HomeKey unit:=wdStory
+    Selection.HomeKey Unit:=wdStory
     Selection.Find.ClearFormatting
     With Selection.Find
         .Text = "Foreword"
@@ -36,7 +36,7 @@ Private Sub add_linenos()
     Selection.Find.Execute
     Selection.Find.Execute
     ' Selection.MoveDown Unit:=wdScreen, Count:=12
-    Selection.EndKey unit:=wdStory, Extend:=wdExtend
+    Selection.EndKey Unit:=wdStory, Extend:=wdExtend
     With Selection.PageSetup
         With .LineNumbering
             .StartingNumber = 1
@@ -50,7 +50,7 @@ Private Sub add_linenos()
 End Sub
 
 Private Sub unnumber_toc(title As String)
-    Selection.HomeKey unit:=wdStory
+    Selection.HomeKey Unit:=wdStory
     On Error GoTo out
     Do
         Selection.Find.ClearFormatting
@@ -65,7 +65,7 @@ Private Sub unnumber_toc(title As String)
         If Not Selection.Find.Found Then
             GoTo out
         End If
-        Selection.MoveDown unit:=wdLine, Count:=1
+        Selection.MoveDown Unit:=wdLine, Count:=1
         Dim tocStart As Range
         Set tocStart = Selection.Range
         Selection.Find.ClearFormatting
@@ -74,7 +74,7 @@ Private Sub unnumber_toc(title As String)
             .Text = ""
         End With
         Selection.Find.Execute
-        Selection.MoveLeft unit:=wdCharacter, Count:=2
+        Selection.MoveLeft Unit:=wdCharacter, Count:=2
         tocStart.End = Selection.End
         tocStart.ParagraphFormat.NoLineNumber = True
     Loop
@@ -134,9 +134,9 @@ Attribute update_title.VB_ProcData.VB_Invoke_Func = "Normal.NewMacros.update_tit
 ' update_title Macro
 ' update the title page
 '
-    Selection.HomeKey unit:=wdStory
-    Selection.MoveDown unit:=wdLine, Count:=1
-    Selection.MoveDown unit:=wdLine, Count:=2, Extend:=wdExtend
+    Selection.HomeKey Unit:=wdStory
+    Selection.MoveDown Unit:=wdLine, Count:=1
+    Selection.MoveDown Unit:=wdLine, Count:=2, Extend:=wdExtend
     With ActiveDocument.Styles("Title").Font
         .NameFarEast = "Batang"
         .NameAscii = "Times New Roman"
@@ -172,3 +172,62 @@ Attribute update_title.VB_ProcData.VB_Invoke_Func = "Normal.NewMacros.update_tit
     End With
     Selection.Style = ActiveDocument.Styles("Title")
 End Sub
+
+Private Sub Diffmk(doc1 As Variant)
+    Dim doc2 As Variant
+    Dim doc3 As Variant
+    ' on entry, doc1 is the base stem of the file name ... e.g. LSB-Core-IA32
+    ' modify this:
+    ' doc2 is the second version (the base version)
+    ' while doc1 is the original (old) version
+    ' doc3 is the diff marked version, and the name of the PostScript file
+    '
+    doc2 = doc1 + ".2.rtf"
+    doc3 = doc1 + ".diff"
+    doc1 = doc1 + ".1.rtf"
+
+    Documents.Open FileName:=doc2, ConfirmConversions:=False, _
+            ReadOnly:=False, AddToRecentFiles:=False, PasswordDocument:="", _
+            PasswordTemplate:="", Revert:=False, WritePasswordDocument:="", _
+            WritePasswordTemplate:="", Format:=wdOpenFormatAuto
+    
+    Call convert_doc
+        
+    With Options
+        .InsertedTextMark = wdInsertedTextMarkColorOnly
+        .InsertedTextColor = wdRed
+        .DeletedTextMark = wdDeletedTextMarkStrikeThrough
+        .DeletedTextColor = wdRed
+        .RevisedPropertiesMark = wdRevisedPropertiesMarkNone
+        .RevisedPropertiesColor = wdRed
+        .RevisedLinesMark = wdRevisedLinesMarkLeftBorder
+        .RevisedLinesColor = wdAuto
+    End With
+    ActiveDocument.Compare Name:=doc1, AuthorName:="", _
+        CompareTarget:=wdMergeTargetNew, DetectFormatChanges:=False, _
+        IgnoreAllComparisonWarnings:=False, AddToRecentFiles:=False
+    Call ActiveDocument.PrintOut(printtofile:=True, outputfilename:="C:\" + doc3 + ".ps", Background:=False)
+    Call ActiveDocument.SaveAs(doc3 + ".doc", fileformat:=wdFormatDocument)
+End Sub
+
+Sub diffmk_all()
+    ChangeFileOpenDirectory "C:\SFU\tmp\"
+    Dim lsb_docs(7) As String
+    Dim file As Variant
+    
+    lsb_docs(0) = "LSB-Core"
+    lsb_docs(1) = "LSB-Core-IA32"
+    lsb_docs(2) = "LSB-Core-IA64"
+    lsb_docs(3) = "LSB-Core-AMD64"
+    lsb_docs(4) = "LSB-Core-PPC32"
+    lsb_docs(5) = "LSB-Core-PPC64"
+    lsb_docs(6) = "LSB-Core-S390"
+    lsb_docs(7) = "LSB-Core-S390X"
+    
+    For Each file In lsb_docs
+        Call Diffmk(file)
+        ActiveWindow.Close (True)   ' close the diff window
+        ActiveWindow.Close (True)   ' close the base doc window
+    Next
+End Sub
+
