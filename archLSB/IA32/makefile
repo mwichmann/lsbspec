@@ -11,6 +11,10 @@ DB2PS=sgmltools -b ps
 
 DB2PDF=sgmltools -b pdf
 
+DB2ONEHTML=sgmltools -b onehtml
+
+DB2TXT=sgmltools -b txt
+
 all:: htmlspec rtfspec 
 
 htmlspec: source
@@ -19,6 +23,13 @@ htmlspec: source
 	$(DB2HTML) spec.sgml
 	if [ -d spec.junk/CVS -a ! -d spec/CVS ];then mv spec.junk/CVS spec; fi
 	rm -rf spec.junk
+
+onehtmlspec: source
+	$(DB2ONEHTML) spec.sgml
+
+txtspec: source
+	$(DB2TXT) spec.sgml
+	nl -ba spec.txt > spec_lines.txt
 
 rtfspec: source
 	$(DB2RTF) spec.sgml
