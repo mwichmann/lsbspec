@@ -4,9 +4,9 @@
 <PARA>
 LSB-conforming implementations shall support an object file format, called
 Executable and Linking Format (ELF) as defined by the
-<XREF LINKEND="std.gABI41"></XREF> , <XREF LINKEND="std.ABIUpdate"></XREF> ,
-<XREF LINKEND="std.S390.ABI"></XREF> and as supplemented by the
-<XREF LINKEND="std.LSB"></XREF> and this document.
+<XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate">,
+<XREF LINKEND="std.S390.ABI"> and as supplemented by the
+<XREF LINKEND="std.LSB"> and this document.
 </PARA>
 </PARTINTRO>
 
@@ -17,7 +17,7 @@ Executable and Linking Format (ELF) as defined by the
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
 Chapter 2 of the
-<XREF LINKEND="std.S390.ABI"></XREF>.
+<XREF LINKEND="std.S390.ABI">.
 </PARA>
 </SECT1>
 </CHAPTER>
@@ -31,7 +31,7 @@ Chapter 2 of the
 <SECT1 ID="elfspecial">
 <TITLE>Special Sections</TITLE>
 <PARA>
-The following sections are defined in the <XREF LINKEND="std.S390.ABI"></XREF>.
+The following sections are defined in the <XREF LINKEND="std.S390.ABI">.
 include(elfsect.sgml)
 </PARA>
 </SECT1>
@@ -43,7 +43,7 @@ include(elfsect.sgml)
 
 <PARA>
 LSB-conforming applications shall use the Symbol Table as defined in
-Chapter 2 of the <XREF LINKEND="std.S390.ABI"></XREF>.
+Chapter 2 of the <XREF LINKEND="std.S390.ABI">.
 </PARA>
 
 </CHAPTER>
@@ -53,7 +53,7 @@ Chapter 2 of the <XREF LINKEND="std.S390.ABI"></XREF>.
 
 <PARA>
 LSB-conforming applications shall use Relocations as defined in
-Chapter 2 of the <XREF LINKEND="std.S390.ABI"></XREF>.
+Chapter 2 of the <XREF LINKEND="std.S390.ABI">.
 </PARA>
 
 <SECT1 ID="relocationtypes">
