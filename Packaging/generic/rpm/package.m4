@@ -359,6 +359,14 @@ This Index Record may be present.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
+<TERM>Informational</TERM>
+<LISTITEM>
+<PARA>
+This Index Record may be present, but does not contribute to the processing of the package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
 <TERM>Deprecated</TERM>
 <LISTITEM>
 <PARA>
