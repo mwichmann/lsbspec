@@ -36,6 +36,8 @@ defined in this specification:
 	# Provides: boot_facility_1 [ boot_facility_2 ...]
 	# Required-Start: boot_facility_1 [ boot_facility_2 ...]
 	# Required-Stop: boot_facility_1 [ boot_facility_2 ...]
+	# Should-Start: boot_facility_1 [ boot_facility_2 ...]
+	# Should-Stop: boot_facility_1 [ boot_facility_2 ...]
 	# Default-Start: run_level_1 [ run_level_2 ...]
 	# Default-Stop: run_level_1 [ run_level_2 ...]
 	# Short-Description: short_description
@@ -72,6 +74,19 @@ those facilities until this shell script is stopped.
 </PARA>
 
 <PARA>
+The "Should-Start:" header defines which facilities if present should
+be started before this service. This allows for weak dependencies which
+do not cause the service to fail if a facility is not available.
+But may cause reduced functionality of the service.
+Compliant applications should not rely on the existence of this feature.
+</PARA>
+
+<PARA>
+The "Should-Stop:" header defines which facilities should be still
+available during the shutdown of that service.
+</PARA>
+
+<PARA>
 The "Default-Start" and "Default-Stop" headers define which run levels
 should by default run the script with a start or stop argument,
 respectively, to start or stop the services controlled by the init script.
@@ -94,17 +109,6 @@ The comment conventions described in this session are only required for
 use by LSB-compliant applications; system init scripts as provided by
 LSB-compliant run-time environments are <emphasis>not</emphasis> 
 required to use the scheme outlined here.
-<FOOTNOTE><PARA>
-While these comment conventions do not prohibited in system
-init scripts, they do not provide sufficient functionality for most
-distributions' needs.  Extensions which would addressed these needs (for 
-example, "Should-Start:" and "Should-Stop:") would have substantially
-complicated the design of the install_initd script, which is why they
-were not included in this specification.  Future versions of this
-specification may extend these comment conventions to add this
-functionality, if and when reference implementations which implement
-these extensions become available for use by distributions.
-</PARA></FOOTNOTE>
 </PARA>
 
 </SECT1>

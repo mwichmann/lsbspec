@@ -3,7 +3,6 @@
 
 FILES= sysinit.sgml
 
-
 TABLES=
 
 .cpp.sgml:
@@ -15,6 +14,7 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
+	@:
 
 clean:
 	rm -f $(FILES)

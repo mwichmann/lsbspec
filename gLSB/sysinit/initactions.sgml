@@ -9,6 +9,8 @@ saying what to do:
 <MEMBER>stop</MEMBER><MEMBER>stop the service</MEMBER>
 <MEMBER>restart</MEMBER><MEMBER>stop and restart the service if the service
 is already running, otherwise start the service</MEMBER>
+<MEMBER>try-restart</MEMBER><MEMBER>restart the service if the service
+is already running</MEMBER>
 <MEMBER>reload</MEMBER><MEMBER>cause the configuration of the service to be
 reloaded without actually stopping and restarting the service</MEMBER>
 <MEMBER>force-reload</MEMBER><MEMBER>cause the configuration to be reloaded
@@ -16,9 +18,10 @@ if the service supports this, otherwise restart the service</MEMBER>
 <MEMBER>status</MEMBER><MEMBER>print the current status of the service</MEMBER>
 </SIMPLELIST>
 <PARA>
-The start, stop, restart, force-reload, and status commands must be
-supported by all init files; the reload option is optional.  Other init 
-script actions may be defined by the init script.
+The start, stop, restart, force-reload, and status commands must be supported
+by all init files; the reload and the try-restart options are optional. Other
+init script actions may be defined by the init script.  If the service is not
+running the reload and the force-reload commands should not start the service.
 </PARA>
 <PARA>
 Init files must ensure that they will behave sensibly if invoked
@@ -53,7 +56,7 @@ exit status codes.
 <MEMBER>0</MEMBER><MEMBER>program is running or service is OK</MEMBER>
 <MEMBER>1</MEMBER><MEMBER>program is dead and /var/run pid file exists</MEMBER>
 <MEMBER>2</MEMBER><MEMBER>program is dead and /var/lock lock file exists</MEMBER>
-<MEMBER>3</MEMBER><MEMBER>program is stopped</MEMBER>
+<MEMBER>3</MEMBER><MEMBER>program is not running</MEMBER>
 <MEMBER>4</MEMBER><MEMBER>program or service status is unknown</MEMBER>
 <MEMBER>5-99</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
 <MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
@@ -107,10 +110,11 @@ one of the following non-zero exit status codes.
 </SIMPLELIST>
 </PARA>
 <PARA>
-All error messages must be printed on standard error.  All status
-messages must be printed on standard output.
-(This does not prevent scripts from calling the logging functions such
-as log_failure_msg).
+Error and status messages should be printed with the logging
+functions such as log_failure_msg and so on.  Scripts may write to
+standard error or standard output, but implementations need not
+present text written to standard error/output to the user or do
+anything else with it.
 </PARA>
 <PARA>
 Since init files may be run manually by a system administrator with

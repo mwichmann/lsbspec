@@ -14,18 +14,21 @@ defined by POSIX.2.
 </PARA>
 
 <SIMPLELIST type=horiz columns=2>
-<MEMBER>start_daemon [-f] [-n nicelevel] pathname [args]</MEMBER>
+<MEMBER>start_daemon [-f] [-n nicelevel] [-p pidfile] pathname [args]</MEMBER>
 
 <MEMBER>
 This runs the specified program as a daemon.
-start_daemon will check to see if there is a program
-named "daemon" already running.  If so, it will not
+start_daemon will check to see if the program is already running
+using the algorithm given by pidofproc. If so, it will not
 start another copy of the daemon unless the -f
 option is given. The -n option specifies a nice
 level. See nice(1).
+start_daemon should return the LSB defined exit status codes. It
+shall return 0 if the program has been successfully started or
+is running and not 0 otherwise.
 </MEMBER>
 
-<MEMBER>killproc basename [signal]</MEMBER>
+<MEMBER>killproc [-p pidfile] pathname [signal]</MEMBER>
 
 <MEMBER>
 This stops the specified program. The program is 
@@ -37,14 +40,23 @@ specified by the <command>kill</command> command,
 the program is sent that signal.
 Otherwise, a SIGTERM followed by a SIGKILL
 after some number of seconds is sent.
+Compliant applications may use the basename instead of the 
+pathname.
+killproc should return the LSB defined exit status codes. If called
+without a signal, it shall return 0 if the program has been stopped or
+is not running and not 0 otherwise. If a signal is given, it shall return 0
+only if the program is running. 
 </MEMBER>
 
-<MEMBER>pidofproc basename</MEMBER>
+<MEMBER>pidofproc [-p pidfile] pathname</MEMBER>
 
 <MEMBER>
 This function returns one or more pid(s) for a particular
 daemon. If an entry is found in
 /var/run/basename.pid, then that value is returned.
+If the -p option is used, the given pidfile is used instead.
+Compliant applications may use the basename instead of the
+pathname.
 Compliant implementations of the LSB may attempt
 other mechanisms for determining the pid(s),
 although this is not required (and not
@@ -54,7 +66,10 @@ programs in the process list thus creating a
 potential security exposure).  Hence, LSB-complaint
 applications who wish to use the pidofproc function
 in their init scripts must store the pid in
-/var/run/basename.pid.
+/var/run/basename.pid. multiple pids should be separated by a single space.
+pidofproc should return the LSB defined exist status
+codes for "status". It shall return 0 if the program is
+running and not 0 otherwise.
 </MEMBER>
 
 <MEMBER>log_success_msg "message"</MEMBER>
