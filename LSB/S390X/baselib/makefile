@@ -32,7 +32,7 @@ gensrc:
 	../../../mklibspec -a S390X -l libdl >libdl.sgml
 	../../../mklibspec -a S390X -l libcrypt >libcrypt.sgml
 	../../../mklibspec -a S390X -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../../mklibspec -a S390X -c 2 -l libstdcxx | c++filt | ../../../fixc++spec >libstdcxx.sgml
+	../../../mklibspec -a S390X -c 1 -l libstdcxx -d | ../../../fixc++spec >libstdcxx.sgml
 
 _Unwind_%.sgml: 
 	cp ../../generic/baselib/$@ .
