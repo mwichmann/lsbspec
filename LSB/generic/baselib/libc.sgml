@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Wed Oct 30 14:45:10 2002 -->
+<!--    at Wed Nov  6 09:56:30 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1794,14 +1794,71 @@ struct dirent64
 #define EPIPE	32
 #define EDOM	33
 #define ERANGE	34
+#define EDEADLK	35
+#define ENAMETOOLONG	36
+#define ENOLCK	37
+#define ENOSYS	38
+#define ENOTEMPTY	39
 #define EINTR	4
+#define ELOOP	40
+#define ENOMSG	42
+#define EIDRM	43
+#define ECHRNG	44
+#define EL2NSYNC	45
+#define EL3HLT	46
+#define EL3RST	47
+#define ELNRNG	48
+#define EUNATCH	49
 #define EIO	5
+#define ENOANO	55
+#define EBADRQC	56
+#define EBADSLT	57
+#define EBFONT	59
 #define ENXIO	6
+#define ENOSTR	60
+#define ENODATA	61
+#define ETIME	62
+#define ENOSR	63
+#define ENONET	64
+#define ENOPKG	65
+#define EREMOTE	66
+#define ENOLINK	67
+#define EADV	68
+#define ESRMNT	69
 #define E2BIG	7
+#define ECOMM	70
+#define EPROTO	71
+#define EMULTIHOP	72
+#define EDOTDOT	73
+#define EBADMSG	74
+#define EOVERFLOW	75
+#define ENOTUNIQ	76
+#define EBADFD	77
+#define EREMCHG	78
+#define ELIBACC	79
 #define ENOEXEC	8
+#define ELIBBAD	80
+#define ELIBSCN	81
+#define ELIBMAX	82
+#define ELIBEXEC	83
+#define EILSEQ	84
+#define ERESTART	85
+#define ESTRPIPE	86
+#define EUSERS	87
+#define ENOTSOCK	88
+#define EDESTADDRREQ	89
 #define EBADF	9
+#define EMSGSIZE	90
+#define EPROTOTYPE	91
+#define ENOPROTOOPT	92
+#define EPROTONOSUPPORT	93
+#define ESOCKTNOSUPPORT	94
+#define EOPNOTSUPP	95
+#define EPFNOSUPPORT	96
+#define EAFNOSUPPORT	97
+#define EADDRINUSE	98
+#define EADDRNOTAVAIL	99
 #define EWOULDBLOCK	EAGAIN
-#define EDEADLOCK	EDEADLK
 #define ENOTSUP	EOPNOTSUPP
 </SCREEN>
 </SECT2>
@@ -2203,6 +2260,7 @@ typedef long long uint64_t;
 </PARA>
 <SCREEN>
 
+#define ULONG_MAX	0xFFFFFFFFUL
 #define OPEN_MAX	256
 #define PATH_MAX	4096
 
@@ -2216,8 +2274,6 @@ typedef long long uint64_t;
 #define SCHAR_MAX	127
 #define UCHAR_MAX	255
 #define CHAR_BIT	8
-#define CHAR_MAX	SCHAR_MAX
-#define CHAR_MIN	SCHAR_MIN
 
 
 
@@ -2229,6 +2285,7 @@ typedef long long uint64_t;
 
 #define INT_MIN	(-INT_MAX-1)
 #define INT_MAX	2147483647
+#define __INT_MAX__	2147483647
 #define UINT_MAX	4294967295U
 
 
@@ -2469,6 +2526,7 @@ struct addrinfo
 #define INADDR_BROADCAST	(0xffffffff)
 #define INADDR_ANY	0
 #define IPPROTO_IP	0
+#define SOL_IP	0
 #define IPPROTO_ICMP	1
 #define IP_TOS	1
 #define IPPROTO_UDP	17
@@ -2505,6 +2563,16 @@ struct sockaddr_in
 <SCREEN>
 
 #define TCP_NODELAY	1
+#define SOL_TCP	6
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>netinet/udp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define SOL_UDP	17
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3114,17 +3182,36 @@ struct sigstack
 #define SIG_DFL	((__sighandler_t)0)
 #define SIG_IGN	((__sighandler_t)1)
 #define SIGHUP	1
+#define SIGUSR1	10
 #define SIGSEGV	11
+#define SIGUSR2	12
 #define SIGPIPE	13
 #define SIGALRM	14
 #define SIGTERM	15
+#define SIGSTKFLT	16
+#define SIGCHLD	17
+#define SIGCONT	18
+#define SIGSTOP	19
 #define SIGINT	2
+#define SIGTSTP	20
+#define SIGTTIN	21
+#define SIGTTOU	22
+#define SIGURG	23
+#define SIGXCPU	24
+#define SIGXFSZ	25
+#define SIGVTALRM	26
 #define SIGPROF	27
+#define SIGWINCH	28
+#define SIGIO	29
 #define SIGQUIT	3
+#define SIGPWR	30
+#define SIGSYS	31
+#define SIGUNUSED	31
 #define SIGILL	4
 #define SIGTRAP	5
 #define SIGABRT	6
 #define SIGIOT	6
+#define SIGBUS	7
 #define SIGFPE	8
 #define SIGKILL	9
 #define SIGCLD	SIGCHLD
@@ -3281,7 +3368,7 @@ stack_t;
 
 
 typedef int wchar_t;
-typedef unsigned int size_t;
+typedef unsigned long size_t;
 typedef long ptrdiff_t;
 </SCREEN>
 </SECT2>
@@ -3373,15 +3460,6 @@ lldiv_t;
 </SCREEN>
 </SECT2>
 <SECT2>
-<TITLE>sys/ioctl.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-#define FIONREAD	0x541B
-</SCREEN>
-</SECT2>
-<SECT2>
 <TITLE>sys/ipc.h</TITLE>
 <PARA>
 </PARA>
@@ -3411,9 +3489,7 @@ lldiv_t;
 #define PROT_WRITE	0x2
 #define MAP_ANONYMOUS	0x20
 #define PROT_EXEC	0x4
-#define MCL_CURRENT	1
 #define MS_ASYNC	1
-#define MCL_FUTURE	2
 #define MS_INVALIDATE	2
 #define MS_SYNC	4
 #define MAP_ANON	MAP_ANONYMOUS
@@ -3672,20 +3748,17 @@ struct msghdr
 
 
 
-#define SOL_IP	0
 #define SOL_SOCKET	1
 #define SO_DEBUG	1
 #define SO_OOBINLINE	10
 #define SO_NO_CHECK	11
 #define SO_PRIORITY	12
 #define SO_LINGER	13
-#define SOL_UDP	17
 #define SO_REUSEADDR	2
 #define SOL_RAW	255
 #define SO_TYPE	3
 #define SO_ERROR	4
 #define SO_DONTROUTE	5
-#define SOL_TCP	6
 #define SO_BROADCAST	6
 #define SO_SNDBUF	7
 #define SO_RCVBUF	8
@@ -3845,7 +3918,7 @@ typedef long long int64_t;
 typedef unsigned char u_int8_t;
 typedef unsigned short u_int16_t;
 typedef unsigned int u_int32_t;
-typedef int ssize_t;
+typedef long ssize_t;
 typedef unsigned int uid_t;
 typedef int pid_t;
 typedef unsigned long off_t;
@@ -4036,31 +4109,12 @@ idtype_t;
 #define TAB0	0000000
 #define VT0	0000000
 #define OPOST	0000001
-#define OLCUC	0000002
-#define ONLCR	0000004
-#define XCASE	0000004
 #define OCRNL	0000010
 #define ONOCR	0000020
 #define ONLRET	0000040
 #define OFILL	0000100
 #define OFDEL	0000200
 #define NL1	0000400
-#define NLDLY	0000400
-#define CR1	0001000
-#define IUCLC	0001000
-#define CR2	0002000
-#define CR3	0003000
-#define CRDLY	0003000
-#define TAB1	0004000
-#define TAB2	0010000
-#define TAB3	0014000
-#define TABDLY	0014000
-#define BS1	0020000
-#define BSDLY	0020000
-#define VT1	0040000
-#define VTDLY	0040000
-#define FF1	0100000
-#define FFDLY	0100000
 #define TCOFLUSH	1
 #define TCOON	1
 #define TCSADRAIN	1
@@ -4100,20 +4154,10 @@ struct termios
  ;
 #define VINTR	0
 #define VQUIT	1
-#define VSUSP	10
-#define VEOL	11
-#define VREPRINT	12
-#define VDISCARD	13
-#define VWERASE	14
 #define VLNEXT	15
-#define VEOL2	16
 #define VERASE	2
 #define VKILL	3
 #define VEOF	4
-#define VMIN	6
-#define VSWTC	7
-#define VSTART	8
-#define VSTOP	9
 
 
 
@@ -4126,9 +4170,7 @@ struct termios
 #define INLCR	0000100
 #define IGNCR	0000200
 #define ICRNL	0000400
-#define IXON	0002000
 #define IXANY	0004000
-#define IXOFF	0010000
 #define IMAXBEL	0020000
 
 
@@ -4137,34 +4179,10 @@ struct termios
 
 
 #define CS5	0000000
-#define CS6	0000020
-#define CS7	0000040
-#define CS8	0000060
-#define CSIZE	0000060
-#define CSTOPB	0000100
-#define CREAD	0000200
-#define PARENB	0000400
-#define PARODD	0001000
-#define HUPCL	0002000
-#define CLOCAL	0004000
-#define VTIME	5
 
 
 
-#define ISIG	0000001
-#define ICANON	0000002
 #define ECHO	0000010
-#define ECHOE	0000020
-#define ECHOK	0000040
-#define ECHONL	0000100
-#define NOFLSH	0000200
-#define TOSTOP	0000400
-#define ECHOCTL	0001000
-#define ECHOPRT	0002000
-#define ECHOKE	0004000
-#define FLUSHO	0010000
-#define PENDIN	0040000
-#define IEXTEN	0100000
 
 
 

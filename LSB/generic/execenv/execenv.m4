@@ -295,7 +295,7 @@ and awk (<xref linkend="awk" />).  </para>
 </section>
 
 <section id="localization-glob"
- XRefLabel="Internationalization and Filename Globbing>
+ XRefLabel="Internationalization and Filename Globbing">
 <title>Filename Globbing</title>
 <para>
 Utilities that perform filename globbing (also known as Pattern
@@ -311,9 +311,11 @@ collating element expression (such as [.ch.]) are optional.</para>
 <para>Handling of a multi-character collating element is
 optional.</para>
 
-<para>This affects at least the following utilities: cpio (<xref
-linkend="cpio" />), find (<xref linkend="find" />), ls (<xref
-linkend="ls" />) and tar (<xref linkend="tar" />).</para>
+<para>This affects at least the following utilities: cpio
+(<xref linkend="cpio" />), find (<xref linkend="find" />),
+ls (<xref linkend="ls" />) and tar (<xref linkend="tar" />).</para>
+
+</section>
 
 </CHAPTER>
 
