@@ -153,6 +153,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 ;;What elements should have a LOT?
 (define ($generate-book-lot-list$)
   (list (normalize "equation")
+	(normalize "figure")
         (normalize "table")))
 
 ;;Do you want chapters enumerated?
@@ -551,7 +552,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element literal ($mono-seq$))
 (element parameter ($italic-mono-seq$))
 (element prompt ($mono-seq$))
-(element symbol ($charseq$))
+(element symbol ($mono-seq$))
 (element emphasis ($italic-seq$))
 (element cmdsynopsis ($mono-seq$))
 (element structname ($mono-seq$))
@@ -1102,7 +1103,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element literal ($mono-seq$))
 (element parameter ($italic-mono-seq$))
 (element prompt ($mono-seq$))
-(element symbol ($charseq$))
+(element symbol ($mono-seq$))
 (element emphasis ($italic-seq$))
 (element cmdsynopsis ($mono-seq$))
 (element structname ($mono-seq$))
