@@ -7,6 +7,7 @@ CREATE TABLE Standard (
   Sname varchar(60) DEFAULT '' NOT NULL,
   Sfull varchar(120),
   Surl varchar(60),
+  Scomment varchar(60),
   PRIMARY KEY (Sid),
   UNIQUE k_Sname (Sname)
 );
