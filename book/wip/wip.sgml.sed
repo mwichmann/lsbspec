@@ -20,7 +20,7 @@
 <!entity appA.sgm system "appendix/liblist.sgml">
 <!entity appB.sgm system "appendix/fdl.sgml">
 <!entity appZ.sgm system "appendix/howtocompliant.sgml">
-<!entity legal.sgm system "../gLSB/legal.sgml">
+<!entity legal.sgm system "../../matters/legal.sgml">
 ]>
 
 <BOOK>
