@@ -4,8 +4,18 @@
 <CHAPTER id=utillib>
 <TITLE>Libraries</TITLE>
 
-<PARA></PARA>
+<PARA>
+The Utility libraries are those that are commonly used, but not part of
+the Single Unix Specification.
+</PARA>
 
+include(libz.sgml)
+
+include(libcurses.sgml)
+
+include(libresolv.sgml)
+
+include(libutil.sgml)
 
 </CHAPTER>
 
