@@ -1,4 +1,4 @@
-     1	Linux Standard Base Work In Progress 20030617
+     1	Linux Standard Base Work In Progress 20030620
      2	
      3	Copyright © 2000, 2001, 2002 by Free Standards Group
      4	
@@ -561,7 +561,7 @@
    561	
    562	Introduction
    563	
-   564	This is the Linux Standard Base Work In Progress 20030617 . An implementation
+   564	This is the Linux Standard Base Work In Progress 20030620 . An implementation
    565	of anything in this document may not claim to be an implementation of the Linux
    566	Standard Base until such time as the feature moves into the Linux Standards
    567	Base Specification.
@@ -9987,7 +9987,7 @@
   9987	0       program is running or service is OK           
   9988	1       program is dead and /var/run pid file exists  
   9989	2       program is dead and /var/lock lock file exists
-  9990	3       program is stopped                            
+  9990	3       program is not running                        
   9991	4       program or service status is unknown          
   9992	5-99    reserved for future LSB use                   
   9993	100-149 reserved for distribution use                 
@@ -10028,293 +10028,296 @@
  10028	150-199 reserved for application use                   
  10029	200-254 reserved                                       
  10030	
- 10031	All error messages must be printed on standard error. All status messages must
- 10032	be printed on standard output. (This does not prevent scripts from calling the
- 10033	logging functions such as log_failure_msg).
- 10034	
- 10035	Since init files may be run manually by a system administrator with
- 10036	non-standard environment variable values for PATH, USER, LOGNAME, etc. init
- 10037	files must not depend on the values of these environment variables. They should
- 10038	set them to some known/default values if they are needed. 
- 10039	
- 10040	-------------------------------------------------------------------------------
- 10041	
- 10042	Comment conventions for init scripts
- 10043	
- 10044	LSB applications which need to execute script(s) at bootup and/or shutdown may
- 10045	provide one or more init.d files. These files are installed by the
- 10046	install_initd program described below, which copies it into a standard
- 10047	directory and makes whatever other adjustments (creation of symlinks, creation
- 10048	of entries in a database, etc.) are necessary so that the script can be run at
- 10049	boot-time. [3]
- 10050	
- 10051	In the init.d file, information about the shell script shall be delimited by
- 10052	the lines "### BEGIN INIT INFO" and "### END INIT INFO". These delimiter lines
- 10053	may containg trailing whitespace, which shall be ignored. Inside this block
- 10054	there shall be lines of the form "# {keyword}: [arg1] [arg2] ...". (All lines
- 10055	inside this block start with a hash ('#') character in the first column, so
- 10056	that shell treats them as comments.) There must be exactly one space character
- 10057	between "#" and the keyword.[4] The following keywords, with their arguments
- 10058	are defined in this specification:
- 10059	
- 10060	        # Provides: boot_facility_1 [ boot_facility_2 ...]
- 10061	        # Required-Start: boot_facility_1 [ boot_facility_2 ...]
- 10062	        # Required-Stop: boot_facility_1 [ boot_facility_2 ...]
- 10063	        # Should-Start: boot_facility_1 [ boot_facility_2 ...]
- 10064	        # Should-Stop: boot_facility_1 [ boot_facility_2 ...]
- 10065	        # Default-Start: run_level_1 [ run_level_2 ...]
- 10066	        # Default-Stop: run_level_1 [ run_level_2 ...]
- 10067	        # Short-Description: short_description
- 10068	        # Description: multiline_description
- 10069	
- 10070	Additional keywords may be defined in future LSB specifications. Distributions
- 10071	may define local extensions by using the prefix "X-[distribution name]" --- for
- 10072	example, "X-RedHat-foobardecl", or "X-Debian-xyzzydecl".
- 10073	
- 10074	An init.d shell script may declare using the "Required-Start: " header that it
- 10075	must not be run until certain boot facilities are provided. This information is
- 10076	used by the installation tool or the boot-time boot-script execution facility
- 10077	to assure that init scripts are run in the correct order. When an init script
- 10078	is run with a "start" argument, the boot facility or facilities specified in
- 10079	the "Provides" header shall be considered present, and hence init scripts which
- 10080	require those boot facilities would then be eligble to be run. When an init
- 10081	script is run with a "stop" argument, the boot facilities specified in the
- 10082	"Provides" header are considered no longer present. There are naming
- 10083	conventions for boot facilities and system facilities, as described in a
- 10084	following section.
- 10085	
- 10086	Similarly, the "Required-Stop:" header defines which facilities must still be
- 10087	available during the shutdown of that service. Hence, the init script system
- 10088	should avoid stopping shell scripts which provide those facilities until this
- 10089	shell script is stopped.
- 10090	
- 10091	The "Should-Start:" header defines which facilities if present should be
- 10092	started before this service. This allows for weak dependencies which do not
- 10093	cause the service to fail if a facility is not available. But may cause reduced
- 10094	functionality of the service. Compliant applications should not rely on the
- 10095	existence of this feature.
- 10096	
- 10097	The "Should-Stop:" header defines which facilities should be still available
- 10098	during the shutdown of that service.
- 10099	
- 10100	The "Default-Start" and "Default-Stop" headers define which run levels should
- 10101	by default run the script with a start or stop argument, respectively, to start
- 10102	or stop the services controlled by the init script.
- 10103	
- 10104	The "Short-Description" and "Description" header fields are used to provide
- 10105	text which describes the actions of the init script. The "short_description"
- 10106	shall be a relatively short, pithy description of the init script, where as the
- 10107	"multiline_description" can be a much longer piece of text that may span
- 10108	mulitple lines. In a multiline description, each continuation line must begin
- 10109	with a '#' followed by tab character or a '#' followed by at least two space
- 10110	characters. The multiline description is terminated by the first line that does
- 10111	not match this criteria.
- 10112	
- 10113	The comment conventions described in this session are only required for use by
- 10114	LSB-compliant applications; system init scripts as provided by LSB-compliant
- 10115	run-time environments are not required to use the scheme outlined here.
- 10116	
- 10117	-------------------------------------------------------------------------------
- 10118	
- 10119	Installation and removal of init.d files
- 10120	
- 10121	An init.d file is installed by copying it into /etc/init.d (which may be a
- 10122	symlink to another location). This can be done by the package installer. During
- 10123	the package's postinstall script, the program "/usr/lib/lsb/install_initd"
- 10124	configures the distribution's boot script system to call the package's init.d
- 10125	file at the appropriate time.
- 10126	
- 10127	The install_initd program takes a single argument, the pathanme to the /etc/
- 10128	init.d file. For example:
- 10129	
- 10130	        /usr/lib/lsb/install_initd /etc/init.d/example.com-coffeed
- 10131	
- 10132	When a software package is removed, the package's preuninstall script shall
- 10133	call /usr/lib/lsb/remove_initd and pass the pathname to the /etc/init.d file.
- 10134	The package manager is still responsible for removing the /etc/init.d file; the
- 10135	remove_initd program is provided in case the distribution needs to clean up any
- 10136	other modifications in the distribution's boot script system that might have
- 10137	been made by the install_initd program. For example:
- 10138	
- 10139	        /usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
- 10140	
- 10141	There should be a tool available to the user (e.g., RedHat's chkconfig) which
- 10142	can be used by the system administrator to easily manipulate at which init
- 10143	levels a particular init.d script is started or stopped. This specification
- 10144	currently does not specify such an interface, however.
- 10145	
- 10146	-------------------------------------------------------------------------------
- 10147	
- 10148	Run Levels
- 10149	
- 10150	 The following run levels are specified for use by the "Default-Start:" and
- 10151	"Default-Stop:" specifiers as defined by the section Comment conventions for
- 10152	init scripts>. Many LSB run-time environments commonly use these run level
- 10153	definitions, and in the absence of other considerations, providers of run-time
- 10154	environments are strongly encouraged to follow this convention to provide
- 10155	consistency for system administrators who need to work with multiple
- 10156	distributions. However, it is not required that LSB-compliant run-time
- 10157	environments use these run levels; the distribution-provided install_initd
- 10158	script may map the run levels specified below to whatever
- 10159	distribution-specified run levels are most appropriate. 
- 10160	
- 10161	0 halt                                                    
- 10162	1 single user mode                                        
- 10163	2 multiuser with no network services exported             
- 10164	3 normal/full multiuser                                   
- 10165	4 reserved for local use, default is normal/full multiuser
- 10166	5 multiuser with xdm or equivalent                        
- 10167	6 reboot                                                  
- 10168	
- 10169	-------------------------------------------------------------------------------
- 10170	
- 10171	Facility names
- 10172	
- 10173	Boot facilities are used to indicate dependencies in init scripts, as defined
- 10174	in a previous section. Facility names that begin with a dollar sign ('$') are
- 10175	system facility names, defined by the LSB, and MUST be provided by
- 10176	distributions. [5] LSB applications must not provide facilities that begin with
- 10177	a dollar sign. This document defines the following facility names:
- 10178	
- 10179	$local_fs  all local filesystems are mounted                                   
- 10180	$network   low level networking (ethernet card; may imply PCMCIA running)      
- 10181	$named     daemons which may provide hostname resolution (if present) are      
- 10182	           running                                                             
- 10183	$portmap   daemons providing SunRPC/ONCRPC portmapping service[6] (if present) 
- 10184	           are running                                                         
- 10185	$remote_fs all remote filesystems are mounted[7].                              
- 10186	$syslog    system logger is operational                                        
- 10187	$time      the system time has been set [8]                                    
- 10188	
- 10189	Other (non-system) facilities may be defined by other LSB applications. These
- 10190	facilities shall be named using the same conventions defined for naming init.d
- 10191	script names. Commonly, the facility provided by an LSB application init.d
- 10192	script will have the same name as the name assigned to the init.d script.
- 10193	
- 10194	-------------------------------------------------------------------------------
- 10195	
- 10196	Script names
- 10197	
- 10198	Since the init.d scripts must live in a single directory, they must come from a
- 10199	single namespace. Three means of assigning names from this namespace are
- 10200	available:
- 10201	
- 10202	  * Assigned namespace. This namespace consists of names which only use the
- 10203	    character set [a-z0-9]. This space is desirable for scripts which system
- 10204	    administrators may often wish to run manually: e.g., "/etc/init.d/named
- 10205	    restart" In order to avoid conflicts these init.d names must be reserved
- 10206	    through the Linux Assigned Names and Numbers Authority (LANANA).
- 10207	    Information about the LANANA may be found at www.lanana.org.
- 10208	   
- 10209	    Commonly used names shall be reserved in advance; developers for projects
- 10210	    should be encouraged to reserve names from LANANA, so that each
- 10211	    distribution can use the same name, and to avoid conflicts with other
- 10212	    projects.
- 10213	   
- 10214	  * Hierarchical namespace. This namespace consists of scripts names which look
- 10215	    like this: [hier1]-[hier2]-...-[name], where name is again taken the
- 10216	    character set [a-z0-9], and where there may be one or more [hier-n]
- 10217	    components. [hier1] may either be an LSB provider name assigned by the
- 10218	    LANANA, or it may be owners' DNS name in lower case, with at least one '.'
- 10219	    (e.g., "debian.org", "staroffice.sun.com"). The LSB provider name assigned
- 10220	    by LANANA must only consist of the ASCII characters [a-z0-9].
- 10221	   
- 10222	  * Reserved namespace. This namespace consists of script names which begin
- 10223	    with the character '_', and is reserved for distribution use only. This
- 10224	    namespace should be used for core packages only, and in general use of this
- 10225	    namespace is highly discouraged.  
- 10226	   
- 10227	In general, if a package or some system function is likely to be used on
- 10228	multiple systems, the package developers or the distribution SHOULD get a
- 10229	registered name through LANANA, and distributions should strive to use the same
- 10230	name whenever possible. For applications which may not be "core" or may not be
- 10231	commonly installed, the hierarchical namespace may be more appropriate. An
- 10232	advantage to the hierarchical namespace is that there is no need to consult
- 10233	with the LANANA before obtaining an assigned name.
- 10234	
- 10235	Short names are highly desirable, since many system administrators like to use
- 10236	them to manually start and stop services. Given this, they should be
- 10237	standardized on a per-package basis. This is the rationale behind having a
- 10238	LANANA organization to assign these names. The LANANA may be called upon to
- 10239	handle other namespace issues, such as package/prerequisites naming (which is
- 10240	essential to making prerequisites to work correctly).
- 10241	
- 10242	-------------------------------------------------------------------------------
- 10243	
- 10244	Init script Functions
- 10245	
- 10246	Each LSB-compliant init.d script must source the file /lib/lsb/init-functions.
- 10247	This file must cause the following shell script commands to be defined. This
- 10248	can be done either by adding a directory to the PATH variable which defines
- 10249	these commands, or by defining sh aliases. While the distribution-provided
- 10250	aliases may choose to use bash extensions (at the distribution's option), the
- 10251	LSB init.d files themselves should only depend in /bin/sh features as defined
- 10252	by POSIX.2.
- 10253	
- 10254	                This runs the specified program as a daemon. start_daemon will 
- 10255	start_daemon    check to see if there is a program named "daemon" already      
- 10256	[-f] [-n        running. If so, it will not start another copy of the daemon   
- 10257	nicelevel]      unless the -f option is given. The -n option specifies a nice  
- 10258	pathname [args] level. See nice(1). start_daemon should return the LSB defined 
- 10259	                exit status codes. It shall return 0 if the program has been   
- 10260	                successfully started or is running and not 0 otherwise.        
- 10261	                This stops the specified program. The program is found using   
- 10262	                the algorithm given by pidofproc. If a signal is specified,    
- 10263	killproc [-p    using the -signal_name or -signal_number syntaxes specified by 
- 10264	pidfile]        the kill command, the program is sent that signal. Otherwise, a
- 10265	pathname        SIGTERM followed by a SIGKILL after some number of seconds is  
- 10266	[signal]        sent. Compliant applications may use the basename instead of   
- 10267	                the pathname. killproc should return the LSB defined exit      
- 10268	                status codes. It shall return 0 if the program has been stopped
- 10269	                or is not running and not 0 otherwise.                         
- 10270	                This function returns one or more pid(s) for a particular      
- 10271	                daemon. If an entry is found in /var/run/basename.pid, then    
- 10272	                that value is returned. If the -p option is used, the given    
- 10273	                pidfile is used instead. Compliant applications may use the    
- 10274	                basename instead of the pathname. Compliant implementations of 
- 10275	                the LSB may attempt other mechanisms for determining the pid   
- 10276	pidofproc [-p   (s), although this is not required (and not recommended, since 
- 10277	pidfile]        a user can trick startup scripts by creating processes that    
- 10278	pathname        appear to be system programs in the process list thus creating 
- 10279	                a potential security exposure). Hence, LSB-complaint           
- 10280	                applications who wish to use the pidofproc function in their   
- 10281	                init scripts must store the pid in /var/run/basename.pid.      
- 10282	                pidofproc should return the LSB defined exist status codes for 
- 10283	                "status". It shall return 0 if the program is the process is   
- 10284	                running and not 0 otherwise.                                   
- 10285	log_success_msg This requests the distribution to print a success message. The 
- 10286	"message"       message should be relatively short; no more than 60 characters 
- 10287	                is highly desirable.                                           
- 10288	log_failure_msg This requests the distribution to print a failure message. The 
+ 10031	Error and status messages should be printed with the logging functions such as
+ 10032	log_failure_msg and so on. Scripts may write to standard error or standard
+ 10033	output, but implementations need not present text written to standard error/
+ 10034	output to the user or do anything else with it.
+ 10035	
+ 10036	Since init files may be run manually by a system administrator with
+ 10037	non-standard environment variable values for PATH, USER, LOGNAME, etc. init
+ 10038	files must not depend on the values of these environment variables. They should
+ 10039	set them to some known/default values if they are needed. 
+ 10040	
+ 10041	-------------------------------------------------------------------------------
+ 10042	
+ 10043	Comment conventions for init scripts
+ 10044	
+ 10045	LSB applications which need to execute script(s) at bootup and/or shutdown may
+ 10046	provide one or more init.d files. These files are installed by the
+ 10047	install_initd program described below, which copies it into a standard
+ 10048	directory and makes whatever other adjustments (creation of symlinks, creation
+ 10049	of entries in a database, etc.) are necessary so that the script can be run at
+ 10050	boot-time. [3]
+ 10051	
+ 10052	In the init.d file, information about the shell script shall be delimited by
+ 10053	the lines "### BEGIN INIT INFO" and "### END INIT INFO". These delimiter lines
+ 10054	may containg trailing whitespace, which shall be ignored. Inside this block
+ 10055	there shall be lines of the form "# {keyword}: [arg1] [arg2] ...". (All lines
+ 10056	inside this block start with a hash ('#') character in the first column, so
+ 10057	that shell treats them as comments.) There must be exactly one space character
+ 10058	between "#" and the keyword.[4] The following keywords, with their arguments
+ 10059	are defined in this specification:
+ 10060	
+ 10061	        # Provides: boot_facility_1 [ boot_facility_2 ...]
+ 10062	        # Required-Start: boot_facility_1 [ boot_facility_2 ...]
+ 10063	        # Required-Stop: boot_facility_1 [ boot_facility_2 ...]
+ 10064	        # Should-Start: boot_facility_1 [ boot_facility_2 ...]
+ 10065	        # Should-Stop: boot_facility_1 [ boot_facility_2 ...]
+ 10066	        # Default-Start: run_level_1 [ run_level_2 ...]
+ 10067	        # Default-Stop: run_level_1 [ run_level_2 ...]
+ 10068	        # Short-Description: short_description
+ 10069	        # Description: multiline_description
+ 10070	
+ 10071	Additional keywords may be defined in future LSB specifications. Distributions
+ 10072	may define local extensions by using the prefix "X-[distribution name]" --- for
+ 10073	example, "X-RedHat-foobardecl", or "X-Debian-xyzzydecl".
+ 10074	
+ 10075	An init.d shell script may declare using the "Required-Start: " header that it
+ 10076	must not be run until certain boot facilities are provided. This information is
+ 10077	used by the installation tool or the boot-time boot-script execution facility
+ 10078	to assure that init scripts are run in the correct order. When an init script
+ 10079	is run with a "start" argument, the boot facility or facilities specified in
+ 10080	the "Provides" header shall be considered present, and hence init scripts which
+ 10081	require those boot facilities would then be eligble to be run. When an init
+ 10082	script is run with a "stop" argument, the boot facilities specified in the
+ 10083	"Provides" header are considered no longer present. There are naming
+ 10084	conventions for boot facilities and system facilities, as described in a
+ 10085	following section.
+ 10086	
+ 10087	Similarly, the "Required-Stop:" header defines which facilities must still be
+ 10088	available during the shutdown of that service. Hence, the init script system
+ 10089	should avoid stopping shell scripts which provide those facilities until this
+ 10090	shell script is stopped.
+ 10091	
+ 10092	The "Should-Start:" header defines which facilities if present should be
+ 10093	started before this service. This allows for weak dependencies which do not
+ 10094	cause the service to fail if a facility is not available. But may cause reduced
+ 10095	functionality of the service. Compliant applications should not rely on the
+ 10096	existence of this feature.
+ 10097	
+ 10098	The "Should-Stop:" header defines which facilities should be still available
+ 10099	during the shutdown of that service.
+ 10100	
+ 10101	The "Default-Start" and "Default-Stop" headers define which run levels should
+ 10102	by default run the script with a start or stop argument, respectively, to start
+ 10103	or stop the services controlled by the init script.
+ 10104	
+ 10105	The "Short-Description" and "Description" header fields are used to provide
+ 10106	text which describes the actions of the init script. The "short_description"
+ 10107	shall be a relatively short, pithy description of the init script, where as the
+ 10108	"multiline_description" can be a much longer piece of text that may span
+ 10109	mulitple lines. In a multiline description, each continuation line must begin
+ 10110	with a '#' followed by tab character or a '#' followed by at least two space
+ 10111	characters. The multiline description is terminated by the first line that does
+ 10112	not match this criteria.
+ 10113	
+ 10114	The comment conventions described in this session are only required for use by
+ 10115	LSB-compliant applications; system init scripts as provided by LSB-compliant
+ 10116	run-time environments are not required to use the scheme outlined here.
+ 10117	
+ 10118	-------------------------------------------------------------------------------
+ 10119	
+ 10120	Installation and removal of init.d files
+ 10121	
+ 10122	An init.d file is installed by copying it into /etc/init.d (which may be a
+ 10123	symlink to another location). This can be done by the package installer. During
+ 10124	the package's postinstall script, the program "/usr/lib/lsb/install_initd"
+ 10125	configures the distribution's boot script system to call the package's init.d
+ 10126	file at the appropriate time.
+ 10127	
+ 10128	The install_initd program takes a single argument, the pathanme to the /etc/
+ 10129	init.d file. For example:
+ 10130	
+ 10131	        /usr/lib/lsb/install_initd /etc/init.d/example.com-coffeed
+ 10132	
+ 10133	When a software package is removed, the package's preuninstall script shall
+ 10134	call /usr/lib/lsb/remove_initd and pass the pathname to the /etc/init.d file.
+ 10135	The package manager is still responsible for removing the /etc/init.d file; the
+ 10136	remove_initd program is provided in case the distribution needs to clean up any
+ 10137	other modifications in the distribution's boot script system that might have
+ 10138	been made by the install_initd program. For example:
+ 10139	
+ 10140	        /usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
+ 10141	
+ 10142	There should be a tool available to the user (e.g., RedHat's chkconfig) which
+ 10143	can be used by the system administrator to easily manipulate at which init
+ 10144	levels a particular init.d script is started or stopped. This specification
+ 10145	currently does not specify such an interface, however.
+ 10146	
+ 10147	-------------------------------------------------------------------------------
+ 10148	
+ 10149	Run Levels
+ 10150	
+ 10151	 The following run levels are specified for use by the "Default-Start:" and
+ 10152	"Default-Stop:" specifiers as defined by the section Comment conventions for
+ 10153	init scripts>. Many LSB run-time environments commonly use these run level
+ 10154	definitions, and in the absence of other considerations, providers of run-time
+ 10155	environments are strongly encouraged to follow this convention to provide
+ 10156	consistency for system administrators who need to work with multiple
+ 10157	distributions. However, it is not required that LSB-compliant run-time
+ 10158	environments use these run levels; the distribution-provided install_initd
+ 10159	script may map the run levels specified below to whatever
+ 10160	distribution-specified run levels are most appropriate. 
+ 10161	
+ 10162	0 halt                                                    
+ 10163	1 single user mode                                        
+ 10164	2 multiuser with no network services exported             
+ 10165	3 normal/full multiuser                                   
+ 10166	4 reserved for local use, default is normal/full multiuser
+ 10167	5 multiuser with xdm or equivalent                        
+ 10168	6 reboot                                                  
+ 10169	
+ 10170	-------------------------------------------------------------------------------
+ 10171	
+ 10172	Facility names
+ 10173	
+ 10174	Boot facilities are used to indicate dependencies in init scripts, as defined
+ 10175	in a previous section. Facility names that begin with a dollar sign ('$') are
+ 10176	system facility names, defined by the LSB, and MUST be provided by
+ 10177	distributions. [5] LSB applications must not provide facilities that begin with
+ 10178	a dollar sign. This document defines the following facility names:
+ 10179	
+ 10180	$local_fs  all local filesystems are mounted                                   
+ 10181	$network   low level networking (ethernet card; may imply PCMCIA running)      
+ 10182	$named     daemons which may provide hostname resolution (if present) are      
+ 10183	           running                                                             
+ 10184	$portmap   daemons providing SunRPC/ONCRPC portmapping service[6] (if present) 
+ 10185	           are running                                                         
+ 10186	$remote_fs all remote filesystems are mounted[7].                              
+ 10187	$syslog    system logger is operational                                        
+ 10188	$time      the system time has been set [8]                                    
+ 10189	
+ 10190	Other (non-system) facilities may be defined by other LSB applications. These
+ 10191	facilities shall be named using the same conventions defined for naming init.d
+ 10192	script names. Commonly, the facility provided by an LSB application init.d
+ 10193	script will have the same name as the name assigned to the init.d script.
+ 10194	
+ 10195	-------------------------------------------------------------------------------
+ 10196	
+ 10197	Script names
+ 10198	
+ 10199	Since the init.d scripts must live in a single directory, they must come from a
+ 10200	single namespace. Three means of assigning names from this namespace are
+ 10201	available:
+ 10202	
+ 10203	  * Assigned namespace. This namespace consists of names which only use the
+ 10204	    character set [a-z0-9]. This space is desirable for scripts which system
+ 10205	    administrators may often wish to run manually: e.g., "/etc/init.d/named
+ 10206	    restart" In order to avoid conflicts these init.d names must be reserved
+ 10207	    through the Linux Assigned Names and Numbers Authority (LANANA).
+ 10208	    Information about the LANANA may be found at www.lanana.org.
+ 10209	   
+ 10210	    Commonly used names shall be reserved in advance; developers for projects
+ 10211	    should be encouraged to reserve names from LANANA, so that each
+ 10212	    distribution can use the same name, and to avoid conflicts with other
+ 10213	    projects.
+ 10214	   
+ 10215	  * Hierarchical namespace. This namespace consists of scripts names which look
+ 10216	    like this: [hier1]-[hier2]-...-[name], where name is again taken the
+ 10217	    character set [a-z0-9], and where there may be one or more [hier-n]
+ 10218	    components. [hier1] may either be an LSB provider name assigned by the
+ 10219	    LANANA, or it may be owners' DNS name in lower case, with at least one '.'
+ 10220	    (e.g., "debian.org", "staroffice.sun.com"). The LSB provider name assigned
+ 10221	    by LANANA must only consist of the ASCII characters [a-z0-9].
+ 10222	   
+ 10223	  * Reserved namespace. This namespace consists of script names which begin
+ 10224	    with the character '_', and is reserved for distribution use only. This
+ 10225	    namespace should be used for core packages only, and in general use of this
+ 10226	    namespace is highly discouraged.  
+ 10227	   
+ 10228	In general, if a package or some system function is likely to be used on
+ 10229	multiple systems, the package developers or the distribution SHOULD get a
+ 10230	registered name through LANANA, and distributions should strive to use the same
+ 10231	name whenever possible. For applications which may not be "core" or may not be
+ 10232	commonly installed, the hierarchical namespace may be more appropriate. An
+ 10233	advantage to the hierarchical namespace is that there is no need to consult
+ 10234	with the LANANA before obtaining an assigned name.
+ 10235	
+ 10236	Short names are highly desirable, since many system administrators like to use
+ 10237	them to manually start and stop services. Given this, they should be
+ 10238	standardized on a per-package basis. This is the rationale behind having a
+ 10239	LANANA organization to assign these names. The LANANA may be called upon to
+ 10240	handle other namespace issues, such as package/prerequisites naming (which is
+ 10241	essential to making prerequisites to work correctly).
+ 10242	
+ 10243	-------------------------------------------------------------------------------
+ 10244	
+ 10245	Init script Functions
+ 10246	
+ 10247	Each LSB-compliant init.d script must source the file /lib/lsb/init-functions.
+ 10248	This file must cause the following shell script commands to be defined. This
+ 10249	can be done either by adding a directory to the PATH variable which defines
+ 10250	these commands, or by defining sh aliases. While the distribution-provided
+ 10251	aliases may choose to use bash extensions (at the distribution's option), the
+ 10252	LSB init.d files themselves should only depend in /bin/sh features as defined
+ 10253	by POSIX.2.
+ 10254	
+ 10255	                This runs the specified program as a daemon. start_daemon will 
+ 10256	start_daemon    check to see if there is a program named "daemon" already      
+ 10257	[-f] [-n        running. If so, it will not start another copy of the daemon   
+ 10258	nicelevel] [-p  unless the -f option is given. The -n option specifies a nice  
+ 10259	pidfile]        level. See nice(1). start_daemon should return the LSB defined 
+ 10260	pathname [args] exit status codes. It shall return 0 if the program has been   
+ 10261	                successfully started or is running and not 0 otherwise.        
+ 10262	                This stops the specified program. The program is found using   
+ 10263	                the algorithm given by pidofproc. If a signal is specified,    
+ 10264	                using the -signal_name or -signal_number syntaxes specified by 
+ 10265	killproc [-p    the kill command, the program is sent that signal. Otherwise, a
+ 10266	pidfile]        SIGTERM followed by a SIGKILL after some number of seconds is  
+ 10267	pathname        sent. Compliant applications may use the basename instead of   
+ 10268	[signal]        the pathname. killproc should return the LSB defined exit      
+ 10269	                status codes. If called without a signal, it shall return 0 if 
+ 10270	                the program has been stopped or is not running and not 0       
+ 10271	                otherwise. If a signal is given, it shall return 0 only if the 
+ 10272	                program is running.                                            
+ 10273	                This function returns one or more pid(s) for a particular      
+ 10274	                daemon. If an entry is found in /var/run/basename.pid, then    
+ 10275	                that value is returned. If the -p option is used, the given    
+ 10276	                pidfile is used instead. Compliant applications may use the    
+ 10277	                basename instead of the pathname. Compliant implementations of 
+ 10278	                the LSB may attempt other mechanisms for determining the pid   
+ 10279	pidofproc [-p   (s), although this is not required (and not recommended, since 
+ 10280	pidfile]        a user can trick startup scripts by creating processes that    
+ 10281	pathname        appear to be system programs in the process list thus creating 
+ 10282	                a potential security exposure). Hence, LSB-complaint           
+ 10283	                applications who wish to use the pidofproc function in their   
+ 10284	                init scripts must store the pid in /var/run/basename.pid.      
+ 10285	                pidofproc should return the LSB defined exist status codes for 
+ 10286	                "status". It shall return 0 if the program is the process is   
+ 10287	                running and not 0 otherwise.                                   
+ 10288	log_success_msg This requests the distribution to print a success message. The 
  10289	"message"       message should be relatively short; no more than 60 characters 
  10290	                is highly desirable.                                           
- 10291	log_warning_msg This requests the distribution to print a warning message. The 
+ 10291	log_failure_msg This requests the distribution to print a failure message. The 
  10292	"message"       message should be relatively short; no more than 60 characters 
  10293	                is highly desirable.                                           
- 10294	
- 10295	Notes
- 10296	
- 10297	[1]  ISO/IEC 14882: 1998(E) Programming languages --C++                        
- 10298	                                                                               
- 10299	[2]  Linux Standard Base                                                       
- 10300	                                                                               
- 10301	[3]  This specification does not require, but is designed to allow, the        
- 10302	     development of a system which runs boot scripts in parallel. Hence,       
- 10303	     enforced-serialization of scripts is avoided unless it is explicitly      
- 10304	     necessary.                                                                
- 10305	                                                                               
- 10306	[4]  More than one space, or a tab character, indicates the continuation line. 
- 10307	                                                                               
- 10308	[5]  The dollar sign does not indicate variable expansion as in many Linux     
- 10309	     utilities. Starting a facility name with a dollar sign is merely a way of 
- 10310	     dividing the namespace between the system and applications.               
- 10311	                                                                               
- 10312	[6]  as defined in RFC 1833                                                    
- 10313	                                                                               
- 10314	[7]  In some LSB run-time environments, filesystems such as /usr may be remote.
- 10315	     Many applications that require $local_fs will probably require also       
- 10316	     require $remote_fs                                                        
- 10317	                                                                               
- 10318	[8]  i.e., using a network-based time program such as ntp or rdate, or via the 
- 10319	     hardware Real Time Clock                                                  
- 10320	
+ 10294	log_warning_msg This requests the distribution to print a warning message. The 
+ 10295	"message"       message should be relatively short; no more than 60 characters 
+ 10296	                is highly desirable.                                           
+ 10297	
+ 10298	Notes
+ 10299	
+ 10300	[1]  ISO/IEC 14882: 1998(E) Programming languages --C++                        
+ 10301	                                                                               
+ 10302	[2]  Linux Standard Base                                                       
+ 10303	                                                                               
+ 10304	[3]  This specification does not require, but is designed to allow, the        
+ 10305	     development of a system which runs boot scripts in parallel. Hence,       
+ 10306	     enforced-serialization of scripts is avoided unless it is explicitly      
+ 10307	     necessary.                                                                
+ 10308	                                                                               
+ 10309	[4]  More than one space, or a tab character, indicates the continuation line. 
+ 10310	                                                                               
+ 10311	[5]  The dollar sign does not indicate variable expansion as in many Linux     
+ 10312	     utilities. Starting a facility name with a dollar sign is merely a way of 
+ 10313	     dividing the namespace between the system and applications.               
+ 10314	                                                                               
+ 10315	[6]  as defined in RFC 1833                                                    
+ 10316	                                                                               
+ 10317	[7]  In some LSB run-time environments, filesystems such as /usr may be remote.
+ 10318	     Many applications that require $local_fs will probably require also       
+ 10319	     require $remote_fs                                                        
+ 10320	                                                                               
+ 10321	[8]  i.e., using a network-based time program such as ntp or rdate, or via the 
+ 10322	     hardware Real Time Clock                                                  
+ 10323	

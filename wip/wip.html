@@ -1,7 +1,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Linux Standard Base Work In Progress 20030617</TITLE
+>Linux Standard Base Work In Progress 20030620</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
@@ -16,7 +16,7 @@ CLASS="TITLEPAGE"
 ><H1
 CLASS="TITLE"
 ><A
-NAME="AEN2">Linux Standard Base Work In Progress 20030617</H1
+NAME="AEN2">Linux Standard Base Work In Progress 20030620</H1
 ><P
 CLASS="COPYRIGHT"
 >Copyright &copy; 2000, 2001, 2002 by Free Standards Group</P
@@ -2247,7 +2247,7 @@ CLASS="SECT1"
 ><A
 NAME="OVERVIEW">Introduction</H2
 ><P
->This is the Linux Standard Base Work In Progress 20030617 .
+>This is the Linux Standard Base Work In Progress 20030620 .
 An implementation of anything in this document may not claim
 to be an implementation of the Linux Standard Base until such time as the
 feature moves into the Linux Standards Base Specification.</P
@@ -35646,7 +35646,7 @@ BORDER="0"
 ><TD
 >3</TD
 ><TD
->program is stopped</TD
+>program is not running</TD
 ></TR
 ><TR
 ><TD
@@ -35799,10 +35799,11 @@ BORDER="0"
 ></P
 ></P
 ><P
->All error messages must be printed on standard error.  All status
-messages must be printed on standard output.
-(This does not prevent scripts from calling the logging functions such
-as log_failure_msg).</P
+>Error and status messages should be printed with the logging
+functions such as log_failure_msg and so on.  Scripts may write to
+standard error or standard output, but implementations need not
+present text written to standard error/output to the user or do
+anything else with it.</P
 ><P
 >Since init files may be run manually by a system administrator with
 non-standard environment variable values for PATH, USER, LOGNAME,
@@ -36244,7 +36245,7 @@ BORDER="0"
 ><TBODY
 ><TR
 ><TD
->start_daemon [-f] [-n nicelevel] pathname [args]</TD
+>start_daemon [-f] [-n nicelevel] [-p pidfile] pathname [args]</TD
 ><TD
 >This runs the specified program as a daemon.
 start_daemon will check to see if there is a program
@@ -36284,9 +36285,10 @@ Otherwise, a SIGTERM followed by a SIGKILL
 after some number of seconds is sent.
 Compliant applications may use the basename instead of the 
 pathname.
-killproc should return the LSB defined exit status codes. It
-shall return 0 if the program has been stopped or is not running
-and not 0 otherwise. </TD
+killproc should return the LSB defined exit status codes. If called
+without a signal, it shall return 0 if the program has been stopped or
+is not running and not 0 otherwise. If a signal is given, it shall return 0
+only if the program is running. </TD
 ></TR
 ><TR
 ><TD

@@ -155,7 +155,7 @@ exit status codes.
 <MEMBER>0</MEMBER><MEMBER>program is running or service is OK</MEMBER>
 <MEMBER>1</MEMBER><MEMBER>program is dead and /var/run pid file exists</MEMBER>
 <MEMBER>2</MEMBER><MEMBER>program is dead and /var/lock lock file exists</MEMBER>
-<MEMBER>3</MEMBER><MEMBER>program is stopped</MEMBER>
+<MEMBER>3</MEMBER><MEMBER>program is not running</MEMBER>
 <MEMBER>4</MEMBER><MEMBER>program or service status is unknown</MEMBER>
 <MEMBER>5-99</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
 <MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
@@ -209,10 +209,11 @@ one of the following non-zero exit status codes.
 </SIMPLELIST>
 </PARA>
 <PARA>
-All error messages must be printed on standard error.  All status
-messages must be printed on standard output.
-(This does not prevent scripts from calling the logging functions such
-as log_failure_msg).
+Error and status messages should be printed with the logging
+functions such as log_failure_msg and so on.  Scripts may write to
+standard error or standard output, but implementations need not
+present text written to standard error/output to the user or do
+anything else with it.
 </PARA>
 <PARA>
 Since init files may be run manually by a system administrator with
@@ -578,7 +579,7 @@ defined by POSIX.2.
 </PARA>
 
 <SIMPLELIST type=horiz columns=2>
-<MEMBER>start_daemon [-f] [-n nicelevel] pathname [args]</MEMBER>
+<MEMBER>start_daemon [-f] [-n nicelevel] [-p pidfile] pathname [args]</MEMBER>
 
 <MEMBER>
 This runs the specified program as a daemon.
@@ -606,9 +607,10 @@ Otherwise, a SIGTERM followed by a SIGKILL
 after some number of seconds is sent.
 Compliant applications may use the basename instead of the 
 pathname.
-killproc should return the LSB defined exit status codes. It
-shall return 0 if the program has been stopped or is not running
-and not 0 otherwise. 
+killproc should return the LSB defined exit status codes. If called
+without a signal, it shall return 0 if the program has been stopped or
+is not running and not 0 otherwise. If a signal is given, it shall return 0
+only if the program is running. 
 </MEMBER>
 
 <MEMBER>pidofproc [-p pidfile] pathname</MEMBER>

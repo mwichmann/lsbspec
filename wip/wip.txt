@@ -1,4 +1,4 @@
-Linux Standard Base Work In Progress 20030617
+Linux Standard Base Work In Progress 20030620
 
 Copyright © 2000, 2001, 2002 by Free Standards Group
 
@@ -561,7 +561,7 @@ Chapter 1. Introduction
 
 Introduction
 
-This is the Linux Standard Base Work In Progress 20030617 . An implementation
+This is the Linux Standard Base Work In Progress 20030620 . An implementation
 of anything in this document may not claim to be an implementation of the Linux
 Standard Base until such time as the feature moves into the Linux Standards
 Base Specification.
@@ -9987,7 +9987,7 @@ status codes.
 0       program is running or service is OK           
 1       program is dead and /var/run pid file exists  
 2       program is dead and /var/lock lock file exists
-3       program is stopped                            
+3       program is not running                        
 4       program or service status is unknown          
 5-99    reserved for future LSB use                   
 100-149 reserved for distribution use                 
@@ -10028,9 +10028,10 @@ following non-zero exit status codes.
 150-199 reserved for application use                   
 200-254 reserved                                       
 
-All error messages must be printed on standard error. All status messages must
-be printed on standard output. (This does not prevent scripts from calling the
-logging functions such as log_failure_msg).
+Error and status messages should be printed with the logging functions such as
+log_failure_msg and so on. Scripts may write to standard error or standard
+output, but implementations need not present text written to standard error/
+output to the user or do anything else with it.
 
 Since init files may be run manually by a system administrator with
 non-standard environment variable values for PATH, USER, LOGNAME, etc. init
@@ -10254,19 +10255,21 @@ by POSIX.2.
                 This runs the specified program as a daemon. start_daemon will 
 start_daemon    check to see if there is a program named "daemon" already      
 [-f] [-n        running. If so, it will not start another copy of the daemon   
-nicelevel]      unless the -f option is given. The -n option specifies a nice  
-pathname [args] level. See nice(1). start_daemon should return the LSB defined 
-                exit status codes. It shall return 0 if the program has been   
+nicelevel] [-p  unless the -f option is given. The -n option specifies a nice  
+pidfile]        level. See nice(1). start_daemon should return the LSB defined 
+pathname [args] exit status codes. It shall return 0 if the program has been   
                 successfully started or is running and not 0 otherwise.        
                 This stops the specified program. The program is found using   
                 the algorithm given by pidofproc. If a signal is specified,    
-killproc [-p    using the -signal_name or -signal_number syntaxes specified by 
-pidfile]        the kill command, the program is sent that signal. Otherwise, a
-pathname        SIGTERM followed by a SIGKILL after some number of seconds is  
-[signal]        sent. Compliant applications may use the basename instead of   
-                the pathname. killproc should return the LSB defined exit      
-                status codes. It shall return 0 if the program has been stopped
-                or is not running and not 0 otherwise.                         
+                using the -signal_name or -signal_number syntaxes specified by 
+killproc [-p    the kill command, the program is sent that signal. Otherwise, a
+pidfile]        SIGTERM followed by a SIGKILL after some number of seconds is  
+pathname        sent. Compliant applications may use the basename instead of   
+[signal]        the pathname. killproc should return the LSB defined exit      
+                status codes. If called without a signal, it shall return 0 if 
+                the program has been stopped or is not running and not 0       
+                otherwise. If a signal is given, it shall return 0 only if the 
+                program is running.                                            
                 This function returns one or more pid(s) for a particular      
                 daemon. If an entry is found in /var/run/basename.pid, then    
                 that value is returned. If the -p option is used, the given    
