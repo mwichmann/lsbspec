@@ -121,7 +121,11 @@ include("refspecs/LSB_1.3.0/S390X/lsbversion.S390X")
 </TR>
 <TR>
 <TD>LSB Errata</TD>
-<TD ALIGN=center><B></B></TD>
+<TD ALIGN=center><B>
+<?
+include("errata/buildversion")
+?>
+</B></TD>
 <TD><a href="errata/errata/book1.html">HTML</a></TD>
 <TD><a href="errata/errata.rtf">RTF</a></TD>
 <TD></TD>
