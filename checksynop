@@ -1,0 +1,305 @@
+#! /usr/bin/perl
+
+#
+# checksyn.pl
+#  - read an SGML/XML page (usually a fragemnt of a doc, with no DTD)
+#  - locate the function synopsis, if there is one
+#  - check the synopsis against the LSB database.
+#
+#
+# (c) 2004, Nick Stoughton, MSB Associates
+#
+# 
+use XML::Simple;
+use Mysql;
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+use File::Temp qw(tempfile);
+use Data::Dumper;
+use strict;
+
+my $dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) 
+	|| die $Mysql::db_errstr;
+
+foreach my $file (@ARGV) {
+	checksynopsis($file, $dbh);
+}
+1;
+
+sub checksynopsis($$)
+{
+	my ($file, $dbh) = @_;
+
+	$file = convert_to_xml($file);
+	my $parsed = XMLin($file);
+	my $funcname = $parsed->
+				{'REFSYNOPSISDIV'}->
+				{'FUNCSYNOPSIS'}->
+				{'FUNCPROTOTYPE'}->
+				{'FUNCDEF'}->
+				{'FUNCTION'}->
+				{'content'};
+	my $functype = trim($parsed->
+				{'REFSYNOPSISDIV'}->
+				{'FUNCSYNOPSIS'}->
+				{'FUNCPROTOTYPE'}->
+				{'FUNCDEF'}->
+				{'content'});
+	my $args = $parsed->
+				{'REFSYNOPSISDIV'}->
+				{'FUNCSYNOPSIS'}->
+				{'FUNCPROTOTYPE'}->
+				{'PARAMDEF'};
+	#
+	# we want $args to be an array ref, even if there was only one
+	# paramdef (it can be undef if this is a <void> or <varargs>
+	# case)
+	#
+	if (defined ($args) && ref($args) ne "ARRAY") {
+		$args = [ $args ];
+	}
+	#
+	# also check for <void> and <varargs> cases
+	#
+	my $void = $parsed->
+				{'REFSYNOPSISDIV'}->
+				{'FUNCSYNOPSIS'}->
+				{'FUNCPROTOTYPE'}->
+				{'VOID'};
+	my $tvarargs = $parsed->
+				{'REFSYNOPSISDIV'}->
+				{'FUNCSYNOPSIS'}->
+				{'FUNCPROTOTYPE'}->
+				{'VARARGS'};
+	#
+	# add varargs to the params ...
+	#
+	if (defined($tvarargs)) {
+		push (@$args, { 'content' => '...' });
+	}
+	if (defined($void)) {
+		$args = [ { 'content' => "void", } ];
+	}
+	#
+	# now find the Interface in the DB
+	#
+	my $sql = "select * from Interface ";
+	$sql .= "LEFT JOIN Type on Tid=Ireturn ";
+	$sql .= "where ";
+	$sql .= "Iname='$funcname' and ";
+	$sql .= "Itype='function' and ";
+	$sql .= "Istatus in ('Included','SrcOnly')";
+
+	my $sth = $dbh->query($sql) || die $dbh->errmsg();
+	if ($sth->numrows() == 0) {
+		printf STDERR "%s: no such interface\n", $funcname;
+		return;
+	}
+	my %entry = $sth->fetchhash();
+	my $dbtype = displaytyperef(\%entry);
+	if ($dbtype ne $functype) {
+		printf("%s: doc has return type '%s', db has '%s'\n",
+			$funcname, $functype, $dbtype);
+	}
+	#
+	# and now the args ...
+	#
+	# we need to check this stuff both ways: 
+	# i.e. are all the params in the doc in the database that way?
+	# AND are all the params in the database also in the doc?
+	#
+	my @dbtypes = ();
+	my $Iid = $entry{'Iid'};
+	$sql = "select * from Type, Parameter ";
+	$sql .= "where Pint=$Iid and Ptype=Tid order by Ppos";
+	$sth = $dbh->query($sql);
+	while ((%entry = $sth->fetchhash())) {
+		push (@dbtypes, displaytyperef(\%entry));
+	}
+	my $pos = 0;
+	foreach my $arg (@$args) {
+		my $argtype = trim($arg->{'content'});
+		$dbtype = $dbtypes[$pos];
+		if ($dbtype ne $argtype) {
+			printf("%s: arg %d: according to the doc type is '%s', db has '%s'\n",
+					$funcname, $pos, $argtype, $dbtype);
+		}
+		$pos++;
+	}
+	# and the other way too ...
+	$pos = 0;
+	foreach my $dbtype (@dbtypes) {
+		my $argtype = trim($args->[$pos]->{'content'});
+		if ($dbtype ne $argtype) {
+			printf("%s: arg %d: according to the db type is '%s', doc has '%s'\n",
+					$funcname, $pos, $dbtype, $argtype);
+		}
+		$pos++;
+	}
+}
+
+sub convert_to_xml($)
+{
+	my ($file) = @_;
+	my $xml;
+	my $fh;
+	
+	$fh = new File::Temp("/tmp/toxmlXXXXXX");
+	$xml = $fh->filename;
+
+	my $hdr = 
+'<!DOCTYPE REFENTRY PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!ENTITY % funcprototype.element "IGNORE">
+<!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
+<!ENTITY % entities SYSTEM "/home/nick/LSB/lsbspec/entities">
+%entities;
+]>
+';
+	print $fh $hdr;
+	open IN,"<$file" || die "unable to open $file";
+	while (<IN>) {
+		print $fh $_;
+	}
+	close IN;
+	close $fh;
+	$xml = `osx -c /etc/sgml/catalog -xno-nl-in-tag $xml`;
+	return $xml;
+}
+	
+sub displaytyperef($)
+{
+my ($param) = @_;
+my($select,$sth,%type);
+my ($tselect, $tmselect, $Tid, $tmh, %tmentry, $nameonly);
+my ($tth, $TMtypeid, $th, %entry);
+my $retval = "";
+
+if( $$param{'Pconst'} eq "Y" ) {
+	$retval .= "const ";
+	}
+
+if( $$param{'Ttype'} eq "Intrinsic" ) {
+	$retval .= $$param{'Tname'};
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "Literal" ) {
+	$retval .= $$param{'Tname'};
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "Const" ) {
+	$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+	$sth = $dbh->query($select) || die $dbh->errmsg();
+	%type=$sth->fetchhash;
+	if( $type{'Ttype'} eq "Pointer" ) {
+		$retval .= displaytyperef(\%type);
+		$retval .= "const ";
+	} else {
+		$retval .= "const ";
+		$retval .= displaytyperef(\%type);
+	}
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "Pointer" ) {
+	$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+	$sth = $dbh->query($select) || die $dbh->errmsg();
+	%type=$sth->fetchhash;
+	$retval .= displaytyperef(\%type);
+	$retval .= " *";
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "Struct" ) {
+	$retval .= "struct ".$$param{'Tname'};
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "Typedef" ) {
+	$retval .= $$param{'Tname'};
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "Union" ) {
+	$retval .= "union ".$$param{'Tname'};
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "Enum" ) {
+	$retval .= "enum ".$$param{'Tname'};
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "Array" ) {
+	my $basetype=$$param{'Tbasetype'};
+	$tselect="SELECT * FROM Type WHERE Tid=$basetype";
+	$tth = $dbh->query($tselect) || die $dbh->errmsg();
+	%type=$tth->fetchhash;
+	if( !$nameonly ) {
+		$nameonly=1;
+		$retval .= displaytyperef(\%type);
+		$nameonly=0;
+	} else {
+		$retval .= displaytyperef(\%type);
+		}
+	if( $$param{'Tname'} =~ "fptr" ) {
+		$$param{'Tname'} =~ s/fptr-//;
+		}
+	return $retval;
+	}
+
+if( $$param{'Ttype'} eq "FuncPtr" ) {
+	$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+	$sth = $dbh->query($select) || die $dbh->errmsg();
+	%type=$sth->fetchhash;
+	$Tid=$$param{'Tid'};
+	$retval .= displaytyperef(\%type);
+	$retval .= "(*";
+	if( $$param{'Tname'} =~ "fptr" ) {
+		$$param{'Tname'} =~ s/fptr-//;
+		}
+	#print $$param{'Tname'};
+	$retval .= ")";
+
+	$retval .= "(";
+
+	$tmselect="SELECT * FROM TypeMember WHERE TMmemberof=$Tid";
+	$tmselect.=" ORDER BY TMposition";
+	$tmh = $dbh->query($tmselect) || die $dbh->errmsg();
+	if($tmh->numrows == 0) {
+		$retval .= "void";
+		}
+	for(1..$tmh->numrows) {
+		%tmentry=$tmh->fetchhash;
+		$TMtypeid=$tmentry{'TMtypeid'};
+		$tselect="SELECT * FROM Type WHERE Tid=$TMtypeid";
+		$th = $dbh->query($tselect) || die $dbh->errmsg();
+		%entry=$th->fetchhash;
+		$nameonly=1;
+		displaytype(\%entry);
+		#print $tmentry{'TMname'};
+		if( $tmentry{'TMarray'} ) {
+			$retval .= "[".$tmentry{'TMarray'}."]";
+			}
+		if( $_ != $tmh->numrows ) {
+			$retval .= ",";
+			}
+		$nameonly=0;
+		}
+
+	$retval .= ")\n";
+	return $retval;
+	}
+
+$retval .= $$param{'Ttype'};
+return $retval;
+}
+
+sub trim($)
+{
+	my ($str) = @_;
+
+	$str =~ s/^ *(.*)$/\1/s;
+	$str =~ s/[ \n]+$//s;
+	return $str;
+}
