@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.50 2003/02/12 05:24:36 gk4 Exp 0 -->
-<!--    at Tue Apr 22 11:03:29 2003 -->
+<!--    at Thu Apr 24 21:19:29 2003 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1685,6 +1685,22 @@ ISO C serves as the LSB reference programming language, and data definitions are
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>inttypes.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef long intmax_t;
+typedef unsigned long uintptr_t;
+typedef unsigned long uintmax_t;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>limits.h</TITLE>
 <PARA>
 </PARA>
@@ -1703,6 +1719,144 @@ ISO C serves as the LSB reference programming language, and data definitions are
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>setjmp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef long __jmp_buf[8];
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>signal.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct sigaction
+{
+  union
+  {
+    __sighandler_t _sa_handler;
+    void (*_sa_sigaction) (int, siginfo_t *, void *);
+  }
+  __sigaction_handler;
+  sigset_t sa_mask;
+  int sa_flags;
+  void (*sa_restorer) (void);
+}
+ ;
+
+
+
+
+
+struct _fpxreg
+{
+  unsigned short significand[4];
+  unsigned short exponent;
+  unsigned short padding[3];
+}
+ ;
+struct _xmmreg
+{
+  uint32_t element[4];
+}
+ ;
+
+
+struct _fpstate
+{
+  uint16_t cwd;
+  uint16_t swd;
+  uint16_t ftw;
+  uint16_t fop;
+  uint64_t rip;
+  uint64_t rdp;
+  uint32_t mxcsr;
+  uint32_t mxcr_mask;
+  struct _fpxreg _st[8];
+  struct _xmmreg _xmm[16];
+  uint32_t padding;
+}
+ ;
+
+
+struct sigcontext
+{
+  unsigned long r8;
+  unsigned long r9;
+  unsigned long r10;
+  unsigned long r11;
+  unsigned long r12;
+  unsigned long r13;
+  unsigned long r14;
+  unsigned long r15;
+  unsigned long rdi;
+  unsigned long rsi;
+  unsigned long rbp;
+  unsigned long rbx;
+  unsigned long rdx;
+  unsigned long rax;
+  unsigned long rcx;
+  unsigned long rsp;
+  unsigned long rip;
+  unsigned long eflags;
+  unsigned short cs;
+  unsigned short gs;
+  unsigned short fs;
+  unsigned short __pad0;
+  unsigned long err;
+  unsigned long trapno;
+  unsigned long oldmask;
+  unsigned long cr2;
+  struct _fpstate *fpstate;
+  unsigned long __reserved1[8];
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>stddef.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef long ptrdiff_t;
+typedef unsigned long size_t;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/ioctl.h</TITLE>
 <PARA>
 </PARA>
@@ -1710,6 +1864,31 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 #define FIONREAD	0x541B
 #define TIOCNOTTY	21538
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/ipc.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct ipc_perm
+{
+  key_t __key;
+  uid_t uid;
+  gid_t gid;
+  uid_t cuid;
+  uid_t cgid;
+  unsigned short mode;
+  unsigned short __pad1;
+  unsigned short __seq;
+  unsigned short __pad2;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1723,12 +1902,88 @@ ISO C serves as the LSB reference programming language, and data definitions are
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>sys/msg.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef unsigned long msgqnum_t;
+typedef unsigned long msglen_t;
+
+
+struct msqid_ds
+{
+  struct ipc_perm msg_perm;
+  time_t msg_stime;
+  time_t msg_rtime;
+  time_t msg_ctime;
+  unsigned long __msg_cbytes;
+  msglen_t msg_qnum;
+  msgqnum_t msg_qbytes;
+  pid_t msg_lspid;
+  pid_t msg_lrpid;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/sem.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct semid_ds
+{
+  struct ipc_perm sem_perm;
+  time_t sem_otime;
+  unsigned long __unused1;
+  time_t sem_ctime;
+  unsigned long __unused2;
+  unsigned long sem_nsems;
+  unsigned long __unused3;
+  unsigned long __unused4;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/shm.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
 #define SHMLBA	(__getpagesize())
+
+
+
+
+
+typedef unsigned long shmatt_t;
+
+
+struct shmid_ds
+{
+  struct ipc_perm shm_perm;
+  size_t shm_segsz;
+  time_t shm_atime;
+  time_t shm_dtime;
+  time_t shm_ctime;
+  pid_t shm_cpid;
+  pid_t shm_lpid;
+  shmatt_t shm_nattch;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1738,6 +1993,17 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <SCREEN>
 
 #define _STAT_VER	1
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/types.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef int64_t ssize_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1832,11 +2098,100 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 
 
+struct _libc_fpxreg
+{
+  unsigned short significand[4];
+  unsigned short exponent;
+  unsigned short padding[3];
+}
+ ;
+
+
+typedef int greg_t;
+#define NGREG	23
 
 
 
 
-#define NGREG	21
+
+typedef greg_t gregset_t[23];
+
+
+
+
+
+
+
+
+
+
+
+struct _libc_fpstate
+{
+  uint16_t cwd;
+  uint16_t swd;
+  uint16_t ftw;
+  uint16_t fop;
+  uint64_t rip;
+  uint64_t rdp;
+  uint32_t mxcsr;
+  uint32_t mxcr_mask;
+  struct _libc_fpxreg _st;
+  struct _libc_xmmreg _xmm;
+  uint32_t padding;
+}
+ ;
+typedef struct _libc_fpstate *fpregset_t;
+
+
+
+
+
+typedef struct
+{
+  gregset_t gregs;
+  fpregset_t fpregs;
+  unsigned long __reserved1;
+}
+mcontext_t;
+
+
+struct _libc_xmmreg
+{
+  uint32_t element[4];
+}
+ ;
+struct ucontext
+{
+  unsigned long uc_flags;
+  struct ucontext *uc_link;
+  stack_t uc_stack;
+  mcontext_t uc_mcontext;
+  sigset_t uc_sigmask;
+  struct _libc_fpstate __fpregs_mem;
+}
+ ;
+typedef struct ucontext
+{
+  unsigned long uc_flags;
+  struct ucontext *uc_link;
+  stack_t uc_stack;
+  mcontext_t uc_mcontext;
+  sigset_t uc_sigmask;
+  struct _libc_fpstate __fpregs_mem;
+}
+ucontext_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>unistd.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef long intptr_t;
 </SCREEN>
 </SECT2>
 </SECT1>
