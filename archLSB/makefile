@@ -1,5 +1,5 @@
 
-SUBDIRS= IA32 #IA64 MIPS PPC SPARC alpha
+SUBDIRS= IA32 IA64 #MIPS PPC SPARC alpha
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
