@@ -35,7 +35,7 @@ installing the LSB-conformant packages.
 <TITLE>Package File Format</TITLE>
 <PARA>
 An RPM format file consists of 4 sections, the Lead, Signature, Header, and
-the Archive. All values are stored in network byte order.
+the Payload. All values are stored in network byte order.
 </PARA>
 <TABLE>
 <TITLE>RPM File Format</TITLE>
@@ -51,7 +51,7 @@ the Archive. All values are stored in network byte order.
 <ENTRY>Header</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>Archive</ENTRY>
+<ENTRY>Payload</ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -71,7 +71,7 @@ The header section contains all available information about the package. Entries
 such as the package's name, version, and file list, are contained in the header.
 </PARA>
 <PARA>
-The archive section holds the actual files that comprise the package.
+The payload section holds the actual files that comprise the package.
 </PARA>
 <SECT2>
 <TITLE>Lead Section</TITLE>
@@ -205,9 +205,7 @@ records. A Header structure must be aligned to an 8 byte boundary.
 </PARA>
 <SCREEN>
 struct rpmheader {
-    unsigned char magic[3];
-    unsigned char version;
-    char reserved[4];
+    unsigned char magic[8];
     int nindex;
     int hsize;
     } ;
@@ -219,23 +217,7 @@ struct rpmheader {
 <LISTITEM>
 <PARA>
 Value identifying this record as an RPM header record. This value must be
-"\216\255\350".
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM><STRUCTFIELD>version</STRUCTFIELD></TERM>
-<LISTITEM>
-<PARA>
-Value identifying the version of this RPM header record. This value must be 1.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM><STRUCTFIELD>reserved</STRUCTFIELD></TERM>
-<LISTITEM>
-<PARA>
-Reserved space. 
+"\216\255\350\001\000\000\000\000".
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -243,7 +225,7 @@ Reserved space.
 <TERM><STRUCTFIELD>nindex</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-The number of Index Records that follow this Heaer Record. There must be at
+The number of Index Records that follow this Header Record. There must be at
 least 1 Index Record.
 </PARA>
 </LISTITEM>
@@ -297,7 +279,7 @@ An index whose status is Obsolete may not be present.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Thu Oct 10 13:17:56 2002 -->
+<!--    at Thu Oct 10 17:24:15 2002 -->
 <TABLE>
 <TITLE>Header Private Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -306,20 +288,16 @@ An index whose status is Obsolete may not be present.
 <ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Tag Value</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Count</ENTRY><ENTRY ALIGN=center>Status</ENTRY></ROW>
 </THEAD>
 <TBODY>
-<ROW><ENTRY>HDRTAG_HDRIMAGE</ENTRY><ENTRY>61</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>HDRTAG_HDRSIGNATURES</ENTRY><ENTRY>62</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>HDRTAG_HDRIMMUTABLE</ENTRY><ENTRY>63</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>HDRTAG_HDRREGIONS</ENTRY><ENTRY>64</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>HDRTAG_HDRI18NTABLE</ENTRY><ENTRY>100</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_HEADERSIGNATURES</ENTRY><ENTRY>62</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_HEADERIMMUTABLE</ENTRY><ENTRY>63</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_HEADERI18NTABLE</ENTRY><ENTRY>100</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
 <VARIABLELIST>
-<VARLISTENTRY><TERM>HDRTAG_HDRIMAGE</TERM><LISTITEM><PARA></PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>HDRTAG_HDRSIGNATURES</TERM><LISTITEM><PARA>Contains an index record that specifies the location of the Signature data, reletive to the start of index record.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>HDRTAG_HDRIMMUTABLE</TERM><LISTITEM><PARA></PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>HDRTAG_HDRREGIONS</TERM><LISTITEM><PARA></PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>HDRTAG_HDRI18NTABLE</TERM><LISTITEM><PARA>Contains a list of locales for which strings are provided in other parts of the package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_HEADERSIGNATURES</TERM><LISTITEM><PARA>Contains an index record that specifies the location of the Signature data, reletive to the start of index record.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_HEADERIMMUTABLE</TERM><LISTITEM><PARA></PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_HEADERI18NTABLE</TERM><LISTITEM><PARA>Contains a list of locales for which strings are provided in other parts of the package.</PARA></LISTITEM></VARLISTENTRY>
 </VARIABLELIST>
 <!-- End of text generated from database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
@@ -448,8 +426,8 @@ correspond to the locale names contained in the
 <TITLE>Header Store</TITLE>
 <PARA>
 The header store contains the values specified by the Index structures. These
-values are aligned according to their type. The store is located immediately
-following the Index structures.
+values are aligned according to their type and padding is used if needed. The
+store is located immediately following the Index structures.
 </PARA>
 </SECT3>
 
@@ -466,7 +444,7 @@ structures.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Thu Oct 10 13:17:57 2002 -->
+<!--    at Thu Oct 10 17:24:15 2002 -->
 <TABLE>
 <TITLE>Signature Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -502,7 +480,7 @@ the Index structures.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Thu Oct 10 13:17:57 2002 -->
+<!--    at Thu Oct 10 17:24:16 2002 -->
 <TABLE>
 <TITLE>Header Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -555,10 +533,10 @@ the Index structures.
 <VARLISTENTRY><TERM>RPMTAG_FILEMODES</TERM><LISTITEM><PARA>This tag specifies the mode of each file in the archive.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_FILERDEVS</TERM><LISTITEM><PARA>This tag specifies the device number from which the file was copied.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_FILEMTIMES</TERM><LISTITEM><PARA>This tag specifies the modification time of each file in the archive.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_FILEMD5S</TERM><LISTITEM><PARA>This tag specifies the MD5 sum of the corresponding file contents.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_FILELINKTOS</TERM><LISTITEM><PARA></PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILEMD5S</TERM><LISTITEM><PARA>This tag specifies the ASCII representation of the MD5 sum of the corresponding file contents.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_FILELINKTOS</TERM><LISTITEM><PARA>The target for a symlink, otherwise NULL.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_PROVIDENAME</TERM><LISTITEM><PARA>This tag indicates the name of the feature provded by this package.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_REQUIREFLAGS</TERM><LISTITEM><PARA></PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_REQUIREFLAGS</TERM><LISTITEM><PARA>Bits(s) to specify the dependency range and context.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_REQUIRENAME</TERM><LISTITEM><PARA>This tag indicates the dependencies for this package.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_REQUIREVERSION</TERM><LISTITEM><PARA>This tag indicates the versions associated with the values found in the RPMTAG_REQUIRENAME Index.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_PAYLOADFORMAT</TERM><LISTITEM><PARA>This tag specifies the format of the Archive section. The format value pointed to by this index record must be </PARA></LISTITEM></VARLISTENTRY>
@@ -611,17 +589,57 @@ been compressed.</ENTRY>
 </TABLE>
 
 </SECT3>
+<SECT3>
+<TITLE>Package Dependencies Attributes</TITLE>
+<PARA>
+The package dependency attributes are stored in the
+<VARNAME>RPMTAG_REQUIREFLAGS</VARNAME>,
+<VARNAME>RPMTAG_PROVIDEFLAGS</VARNAME> and
+<VARNAME>RPMTAG_OBSOLETEFLAGS</VARNAME>
+index records. The following values may be used.
+</PARA>
+<TABLE>
+<TITLE>Package Dependency Attributes</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY>
+<ENTRY>Value</ENTRY>
+<ENTRY>Meaning</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>RPMSENSE_LESS</ENTRY>
+<ENTRY>0x02</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_GREATER</ENTRY>
+<ENTRY>0x04</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>RPMSENSE_EQUAL</ENTRY>
+<ENTRY>0x08</ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+</SECT3>
 </SECT2>
 
 
 <SECT2>
-<TITLE>Archive Section</TITLE>
+<TITLE>Payload Section</TITLE>
 <PARA>
-The Archive section contains a compressed cpio archive. The format of this
+The Payload section contains a compressed cpio archive. The format of this
 section is defined by <XREF LINKEND="std.RFC1952">.
 </PARA>
 <PARA>
-When uncompressed, the cpio format contains a sequence of records for each
+When uncompressed, the cpio archive contains a sequence of records for each
 file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 <TABLE>
 <TITLE>CPIO File Format</TITLE>

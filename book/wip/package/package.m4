@@ -35,7 +35,7 @@ installing the LSB-conformant packages.
 <TITLE>Package File Format</TITLE>
 <PARA>
 An RPM format file consists of 4 sections, the Lead, Signature, Header, and
-the Archive. All values are stored in network byte order.
+the Payload. All values are stored in network byte order.
 </PARA>
 <TABLE>
 <TITLE>RPM File Format</TITLE>
@@ -51,7 +51,7 @@ the Archive. All values are stored in network byte order.
 <ENTRY>Header</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>Archive</ENTRY>
+<ENTRY>Payload</ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -71,7 +71,7 @@ The header section contains all available information about the package. Entries
 such as the package's name, version, and file list, are contained in the header.
 </PARA>
 <PARA>
-The archive section holds the actual files that comprise the package.
+The payload section holds the actual files that comprise the package.
 </PARA>
 <SECT2>
 <TITLE>Lead Section</TITLE>
@@ -205,9 +205,7 @@ records. A Header structure must be aligned to an 8 byte boundary.
 </PARA>
 <SCREEN>
 struct rpmheader {
-    unsigned char magic[3];
-    unsigned char version;
-    char reserved[4];
+    unsigned char magic[8];
     int nindex;
     int hsize;
     } ;
@@ -219,23 +217,7 @@ struct rpmheader {
 <LISTITEM>
 <PARA>
 Value identifying this record as an RPM header record. This value must be
-"\216\255\350".
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM><STRUCTFIELD>version</STRUCTFIELD></TERM>
-<LISTITEM>
-<PARA>
-Value identifying the version of this RPM header record. This value must be 1.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM><STRUCTFIELD>reserved</STRUCTFIELD></TERM>
-<LISTITEM>
-<PARA>
-Reserved space. 
+"\216\255\350\001\000\000\000\000".
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -243,7 +225,7 @@ Reserved space.
 <TERM><STRUCTFIELD>nindex</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-The number of Index Records that follow this Heaer Record. There must be at
+The number of Index Records that follow this Header Record. There must be at
 least 1 Index Record.
 </PARA>
 </LISTITEM>
@@ -419,8 +401,8 @@ correspond to the locale names contained in the
 <TITLE>Header Store</TITLE>
 <PARA>
 The header store contains the values specified by the Index structures. These
-values are aligned according to their type. The store is located immediately
-following the Index structures.
+values are aligned according to their type and padding is used if needed. The
+store is located immediately following the Index structures.
 </PARA>
 </SECT3>
 
@@ -456,17 +438,28 @@ index records. The following values may be used.
 </PARA>
 include(rpmdeps.sgml)
 </SECT3>
+<SECT3>
+<TITLE>Package Dependencies Attributes</TITLE>
+<PARA>
+The package dependency attributes are stored in the
+<VARNAME>RPMTAG_REQUIREFLAGS</VARNAME>,
+<VARNAME>RPMTAG_PROVIDEFLAGS</VARNAME> and
+<VARNAME>RPMTAG_OBSOLETEFLAGS</VARNAME>
+index records. The following values may be used.
+</PARA>
+include(rpmdepsattr.sgml)
+</SECT3>
 </SECT2>
 
 
 <SECT2>
-<TITLE>Archive Section</TITLE>
+<TITLE>Payload Section</TITLE>
 <PARA>
-The Archive section contains a compressed cpio archive. The format of this
+The Payload section contains a compressed cpio archive. The format of this
 section is defined by <XREF LINKEND="std.RFC1952">.
 </PARA>
 <PARA>
-When uncompressed, the cpio format contains a sequence of records for each
+When uncompressed, the cpio archive contains a sequence of records for each
 file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 <TABLE>
 <TITLE>CPIO File Format</TITLE>
