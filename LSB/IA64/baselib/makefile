@@ -25,5 +25,5 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-baselib.sgml: libc.sgml libcman.sgml libm.sgml
+baselib.sgml: libc.sgml libm.sgml
 baselib.sgml: $(MANPAGES)
