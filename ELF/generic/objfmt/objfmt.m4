@@ -81,7 +81,8 @@ include(elfsect.sgml)
 <SECT2>
 <TITLE>Additional Special Sections</TITLE>
 <PARA>
-The following additional sections are defined here.
+Object files in an LSB conforming application may also contain one or more of 
+the additional special sections described below.
 include(linuxsect.sgml)
 </PARA>
 </SECT2>
