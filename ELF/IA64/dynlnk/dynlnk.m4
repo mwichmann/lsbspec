@@ -71,7 +71,7 @@ See
 <PARA>
 The LSB specifies the Program Interpreter to be
 <FILENAME>/lib/lsb/ld-lsb.so.1</FILENAME>.
-<NOTE>Editor's note ... check this is correct!</NOTE>
+<NOTE><PARA>Editor's note ... check this is correct!</PARA></NOTE>
 </PARA>
 </SECT1>
 
