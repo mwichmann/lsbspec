@@ -4790,9 +4790,6 @@ correct the time to allow synchronization of the system clock
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>23 April  2001</DATE>
-</REFSYNOPSISDIVINFO>
 <SYNOPSIS>
 #include &lt;time.h>
 
@@ -4801,14 +4798,23 @@ int adjtime(const struct timeval *delta, struct timeval *olddelta);
 </REFSYNOPSISDIV>
 
 <REFSECT1>
-<REFSECT1INFO>
-<DATE>23 April 2001</DATE>
-</REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
-Adjtime() makes small adjustments to the system time, as returned by gettimeofday(2), advancing or retarding it by the time specified by the timeval delta. If delta is negative, the clock is slowed down by incrementing it more slowly than normal until the correction is complete. If delta is positive, a larger increment than normal is used. The skew used to perform the correction is generally a fraction of one percent. Thus, the time is always a monotonically increasing function. A time correction from an earlier call to adjtime() may not be finished when adjtime() is called again. If olddelta is non-nil, the structure pointed to will contain, upon return, the number of microseconds still to be corrected from the earlier call.
-</PARA><PARA>
+The adjtime function makes small adjustments to the system time, as
+returned by gettimeofday(2), advancing or retarding it by the time
+specified by the timeval delta. If delta is negative, the clock is
+slowed down by incrementing it more slowly than normal until the
+correction is complete. If delta is positive, a larger increment than
+normal is used. The skew used to perform the correction is generally a
+fraction of one percent. Thus, the time is always a monotonically
+increasing function. A time correction from an earlier call to
+adjtime() may not be finished when adjtime() is called again. If
+olddelta is non-nil, the structure pointed to will contain, upon
+return, the number of microseconds still to be corrected from the
+earlier call.
+</PARA>
+<PARA>
 This call may be used by time servers that synchronize the clocks of computers in a local area network.  Such time servers would slow down the clocks of some machines and speed up the clocks of others to bring them to the average network time.
 </PARA><PARA>
 The call adjtime() is restricted to the super-user.
@@ -7789,72 +7795,18 @@ is set to indicate the error).
 <REFNAME>setegid
 </REFNAME>
 <REFPURPOSE>
-set real and / or effective group ID
+set effective group ID
 </REFPURPOSE>
 </REFNAMEDIV>
 
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>13 April 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;sys/types.h>
-#include &lt;unistd.h>
-
-int setegid(gid_t egid);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-
 <REFSECT1>
-<REFSECT1INFO>
-<DATE>13 April 2001</DATE>
-</REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
-setegid sets real and effective group ID's of the current
-process.  Unprivileged users may change the real group ID
-to the effective group ID and vice-versa.
-
-</PARA><PARA>
-Prior to Linux 1.1.38, the saved ID paradigm, when used with setegid was broken. Starting at 1.1.38, it is also possible to set the effective group ID from the saved group ID.
-</PARA><PARA>
-Only the super-user may make other changes.
-</PARA><PARA>
-Supplying a value of -1 for either the real or effective group ID forces the system to leave that ID unchanged.
-</PARA><PARA>
-Currently (libc-4.x.x), setegid(egid) is functionally equivalent to setregid(-1, egid).
-</PARA><PARA>
-If the real group ID is changed or the effective group ID is set to a value not equal to the previous real group ID, the saved group ID will be set to the new effective group ID.
+The setegid() function is as specified in the SUSv3.
 </PARA>
 </REFSECT1>
 
-<REFSECT1>
-<TITLE>Return Value
-</TITLE>
-<PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Errors
-</TITLE>
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-EPERM
-</TERM>
-<LISTITEM>
-<PARA>
-The current process is not the super-user and changes other than (i) swapping the effective group ID with the real group ID or (ii) setting one to the value of the other or (iii) setting the effective group ID to the value of the saved group ID was specified.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
-</REFSECT1>
-<!--	  LDP GENERAL PUBLIC LICENSE  -->
-<!--        Version 1a, November 1998   -->
 </REFENTRY>
 
 <REFENTRY ID="baselib-setenv-3"> <REFMETA>
@@ -7895,67 +7847,18 @@ The setenv() function is as specified in the SUSv3.
 <REFNAME>seteuid
 </REFNAME>
 <REFPURPOSE>
-set real and/or effective user ID
+set effective user ID
 </REFPURPOSE>
 </REFNAMEDIV>
 
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>13 April 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;sys/types.h>
-#include &lt;unistd.h>
-
-int seteuid(uid_t euid);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-
 <REFSECT1>
-<REFSECT1INFO>
-<DATE>13 April 2001</DATE>
-</REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
-seteuid sets real and effective user ID's of the current process. Un-privileged users may change the real user ID to the effective user ID and vice-versa.
-</PARA><PARA>
-Prior to Linux 1.1.37, the saved ID paradigm, when used with seteuid was broken.
-</PARA><PARA>
-Starting at 1.1.37, it is also possible to set the effective user ID from the saved user ID.
-</PARA><PARA>
-Only the super-user may make other changes.
-</PARA><PARA>
-Supplying a value of -1 for either the real or effective user ID forces the system to leave that ID unchanged.
-</PARA><PARA>
-Currently seteuid(euid) is functionally equivalent to setreuid(-1, euid).
-</PARA><PARA>
-If the real user ID is changed or the effective user ID is set to a value not equal to the previous real user ID, the saved user ID will be set to the new effective user ID.
+The seteuid() function is as specified in the SUSv3.
 </PARA>
 </REFSECT1>
 
-<REFSECT1>
-<TITLE>Return Value
-</TITLE>
-<PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Errors
-</TITLE>
-<PARA>
-EPERM  
-</PARA>
-<BLOCKQUOTE>
-<PARA>
-The current process is not the super-user and changes other than (i) swapping the effective user ID with the real user ID or (ii) setting one to the value of the other or (iii) setting the effective user ID to the value of the saved user ID was specified.
-</PARA>
-</BLOCKQUOTE>
-</REFSECT1>
-<!--	  LDP GENERAL PUBLIC LICENSE  -->
-<!--        Version 1a, November 1998   -->
 </REFENTRY>
 
 <REFENTRY ID="baselib-setgroups-2"> <REFMETA>
