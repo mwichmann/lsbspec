@@ -5,9 +5,11 @@ SUBDIRS=intro objfmt baselib utillib graphlib execenv \
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
-DB2HTML=sgmltools -b html
+#DB2HTML=sgmltools -b html
+DB2HTML=docbook2html -o gLSB -p '/usr/bin/jade -V %use-id-as-filename%'
 
-DB2RTF=sgmltools -b rtf
+#DB2RTF=sgmltools -b rtf
+DB2RTF=docbook2rtf
 
 DB2PS=sgmltools -b ps
 
@@ -48,8 +50,8 @@ psspec: source
 
 index: source
 	collateindex.pl -N -o index.sgml
-	jade -t sgml -V html-index -d /usr/share/sgml/docbook/dsssl-stylesheets-1.76/html/docbook.dsl gLSB.sgml
-	collateindex.pl -o index.sgml HTML.index
+	docbook2html -o gLSB -p '/usr/bin/jade -V %use-id-as-filename% -V html-index' gLSB.sgml
+	collateindex.pl -o index.sgml gLSB/HTML.index
 
 source:
 	sed -e "s#LSBVERSION#`cat ../lsbversion`#" <gLSB.sgml.sed >gLSB.sgml
