@@ -1,0 +1,79 @@
+<REFENTRY ID="baselib-strtouq-3"> <REFMETA>
+<REFENTRYTITLE>strtouq</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>strtouq
+</REFNAME>
+<REFPURPOSE>
+  convert a string to an uquad_t
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>24 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+     #include &lt;sys/types.h>
+     #include &lt;stdlib.h>
+     #include &lt;limits.h>
+
+     uquadt  strtouq(const char *nptr, char **endptr, int base);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>24 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+     The strtouq() function converts the string in nptr to a uquadt
+     value.  The conversion is done according to the given base, which must be
+     between 2 and 36 inclusive, or be the special value 0.
+
+</PARA><PARA>
+     The string may begin with an arbitrary amount of white space (as determined 
+     by isspace(3))  followed by a single optional `+' or `-' sign.  If
+     base is zero or 16, the string may then include a `0x' prefix, and the
+     number will be read in base 16; otherwise, a zero base is taken as 10
+     (decimal) unless the next character is `0', in which case it is taken as
+     8 (octal).
+
+</PARA><PARA>
+     The remainder of the string is converted to an unsigned long value in the
+     obvious manner, stopping at the end of the string or at the first character 
+     that does not produce a valid digit in the given base.  (In bases
+     above 10, the letter `A' in either upper or lower case represents 10, `B'
+     represents 11, and so forth, with `Z' representing 35.)
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUES
+</TITLE>
+<PARA>
+     Upon success the strtouq() function returns either the result 
+     of the conversion or, if there was a leading minus sign, the negation of 
+     the result of the conversion, unless the original (non-negated)
+     value would overflow.  In the case of an overflow the function returns
+     UQUAD_MAX and the global variable errno is set to ERANGE.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<PARA>
+     [ERANGE]  The given string was out of range; the value converted has been
+               clamped.
+</PARA>
+</REFSECT1>
+<!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
+<!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
+<!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
+</REFENTRY>

@@ -1,29 +1,24 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES=__assert_fail.sgml __errno_location.sgml __strtod_internal.sgml \
-	 __strtol_internal.sgml  _IO_2_1_stderr_.sgml _IO_2_1_stdin_.sgml \
-	_IO_2_1_stdout_.sgml _IO_feof.sgml _IO_getc.sgml _IO_putc.sgml \
-	_IO_puts.sgml  __getpgid.sgml \
-	 __xmknod.sgml acct.sgml adjtimex.sgml\
-	alphasort.sgml cfmakeraw.sgml daemon.sgml endutent.sgml\
-	flock.sgml fstatfs.sgml\
-	fwprintf.sgml \
-	gethostbyname.sgml getopt_long.sgml\
-	getopt_long_only.sgml getprotobyname.sgml getprotoent.sgml\
-	getservbyname.sgml getservent.sgml getutent.sgml htons.sgml\
-	inet_aton.sgml inet_ntoa.sgml  initgroups.sgml ioperm.sgml iopl.sgml\
-	isblank.sgml isinf.sgml iswblank.sgml iswctype.sgml llabs.sgml logwtmp.sgml\
-	mbsnrtowcs.sgml memmem.sgml ntohs.sgml psignal.sgml putwchar.sgml\
-	setbuffer.sgml setegid.sgml seteuid.sgml sethostid.sgml sethostname.sgml \
-	setmntent.sgml setutent.sgml sigreturn.sgml\
-	sigblock.sgml siggetmask.sgml \
-	sigsetmask.sgml sigvec.sgml statfs.sgml stime.sgml\
-	stpcpy.sgml stpncpy.sgml strfry.sgml strnlen.sgml strsep.sgml\
-	strsignal.sgml strtok_r.sgml system.sgml \
-	wcsnlen.sgml wcsnrtombs.sgml \
-	fwprintf.sgml psignal.sgml \
-	wait4.sgml wcpcpy.sgml wcpncpy.sgml wcscasecmp.sgml wcsdup.sgml \
+MANPAGES=__assert_fail.sgml __errno_location.sgml __getpgid.sgml \
+	_IO_2_1_stderr_.sgml _IO_2_1_stdin_.sgml _IO_2_1_stdout_.sgml _IO_feof.sgml \
+	_IO_getc.sgml _IO_putc.sgml _IO_puts.sgml __strtod_internal.sgml \
+	__strtol_internal.sgml __xmknod.sgml acct.sgml adjtime.sgml adjtimex.sgml \
+	alphasort.sgml cfmakeraw.sgml cfsetspeed.sgml daemon.sgml dladdr.sgml \
+	endutent.sgml error.sgml flock.sgml fstatfs.sgml fwprintf.sgml \
+	gethostbyname.sgml getloadavg.sgml getopt_long.sgml getopt_long_only.sgml \
+	getprotobyname.sgml getprotoent.sgml getservbyname.sgml getservent.sgml \
+	gettext.sgml getutent.sgml  htons.sgml inet_aton.sgml inet_ntoa.sgml \
+	initgroups.sgml ioperm.sgml iopl.sgml isblank.sgml isinf.sgml \
+	iswblank.sgml iswctype.sgml llabs.sgml logwtmp.sgml mbsnrtowcs.sgml \
+	memmem.sgml ntohs.sgml psignal.sgml putwchar.sgml setbuffer.sgml \
+	setegid.sgml seteuid.sgml sethostid.sgml sethostname.sgml  setmntent.sgml \
+	setutent.sgml sigblock.sgml siggetmask.sgml sigreturn.sgml sigsetmask.sgml \
+	sigvec.sgml statfs.sgml stime.sgml stpcpy.sgml stpncpy.sgml strfry.sgml \
+	strnlen.sgml strsep.sgml strsignal.sgml strtok_r.sgml strtoq.sgml \
+	strtouq.sgml system.sgml wait4.sgml warn.sgml warnx.sgml wcpcpy.sgml \
+	wcpncpy.sgml wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml \
 	wcsnrtombs.sgml
 
 FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
