@@ -9,7 +9,7 @@
 This is version &specversion of the Linux Standard Base Specification.
 An implementation of this version of the specification may not claim
 to be an implementation of the Linux Standard Base unless it has successfully
-completed the compliance proces as defined by the Free Standards Group.
+completed the compliance process as defined by the Free Standards Group.
 </PARA>
 </SECT1>
 
@@ -101,8 +101,8 @@ include(refimpls.sgml)
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The Libraries listed here are available on a Linux Standard Base conforming
-system. This list may be supplemented or amended by the architecture specific 
+The libraries listed here are available on a Linux Standard Base conforming
+system. This list may be supplemented or amended by the architecture-specific 
 specifications.
 </PARA>
 <TABLE>
@@ -119,7 +119,7 @@ include(libraries.sgml)
 </TABLE>
 <PARA>
 These libraries will be in an implementation-dependent directory which
-the dynamic linker will search by default".
+the dynamic linker will search by default.
 </PARA>
 </SECT1>
 
@@ -233,7 +233,8 @@ The compilation system shall compile source code into executable files having th
 </LISTITEM>
 <LISTITEM>
 <PARA>
-The implementation shall provide all of the mandatory interfaces, in their entirety. 
+The implementation shall provide all of the mandatory interfaces
+in their entirety. 
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -248,7 +249,13 @@ The implementation shall provide all files and utilities specified as part of th
 </LISTITEM>
 <LISTITEM>
 <PARA>
-The implementation, when provided with standard data formats and values at a named interface, shall provide the behavior defined for those values and data formats at that interface. However, a conforming implementation may consist of separately-packaged and/or sold components. For example, a vendor of a conforming implementation might sell the hardware, operating system, and windowing system as separately packaged items.
+The implementation, when provided with standard data formats and
+values at a named interface, shall provide the behavior defined for
+those values and data formats at that interface. However, a conforming
+implementation may consist of components which are separately packaged
+and/or sold. For example, a vendor of a conforming implementation
+might sell the hardware, operating system, and windowing system as
+separately packaged items.
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -387,7 +394,7 @@ implementation-defined
 </TERM>
 <LISTITEM>
 <PARA>
-(Same meaning as implementation-dependent.) Describes a value or
+Describes a value or
 behavior that is not defined by this document but is selected by an
 implementor. The value or behavior may vary among implementations
 that conform to this document. An application should not rely on the
@@ -395,6 +402,9 @@ existence of the value or behavior. An application that relies on such
 a value or behavior cannot be assured to be portable across conforming
 implementations.  The implementor shall document such a value or behavior
 so that it can be used correctly by an application.
+</PARA>
+<PARA>
+Same as implementation-dependent.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -408,7 +418,10 @@ Describes a feature or behavior that is optional for an implementation
 that conforms to this document. An application should not rely on the
 existence of the feature or behavior. An application that relies on such
 a feature or behavior cannot be assured to be portable across conforming
-implementations.  To avoid ambiguity, the opposite of may is expressed
+implementations.
+</PARA>
+<PARA>
+To avoid ambiguity, the opposite of may is expressed
 as need not, instead of may not.
 </PARA>
 </LISTITEM>
