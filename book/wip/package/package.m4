@@ -178,9 +178,9 @@ Reserved space. The value is undefined.
 <TITLE>Header Structure</TITLE>
 <PARA>
 The Header structure is used for both the Signature and Header Sections. A
-Header Structure consista of 3 parts, a Header record, followed by 1 or more
+Header Structure consista of 3 parts, a Header record, followed by 0 or more
 Index records, followed by 0 or more bytes of data associated with the Index
-records.
+records. A Header structure must be aligned to an 8 byte boundary.
 </PARA>
 <TABLE>
 <TITLE>Signature Format</TITLE>
@@ -281,11 +281,18 @@ struct rpmhdrindex {
 <PARA>
 Value identifying the purpose of the data associated with this Index Record.
 This value of this field is dependent on the context in which the Index Record
-is used, and is defined in later sections.
+is used, and is defined in this and later sections.
 </PARA>
 <PARA>
 Some values are designated as header private, and may appear in any header
 structure.
+</PARA>
+<PARA>
+An index whose status is Required must be present.
+An index whose status is Optional may be present.
+An index whose status is Deprecated may be present, but it's use should
+be discontinued.
+An index whose status is Obsolete may not be present.
 </PARA>
 include(privtags.sgml)
 </LISTITEM>
@@ -294,26 +301,29 @@ include(privtags.sgml)
 <TERM><STRUCTFIELD>type</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value identifying the type of the data associated with this Index Record.
+Value identifying the type of the data associated with this Index Record. This value must be one of the following:
 </PARA>
 <TABLE>
 <TITLE>Index Type values</TITLE>
-<TGROUP COLS=2>
+<TGROUP COLS=4>
 <THEAD>
 <ROW>
 <ENTRY>Type</ENTRY>
 <ENTRY>Value</ENTRY>
-<ENTRY>Size (in Octets)</ENTRY>
+<ENTRY>Size (in bytes)</ENTRY>
+<ENTRY>Alignment</ENTRY>
 </ROW>
 </THEAD>
 <TBODY>
 <ROW>
 <ENTRY>RPM_NULL_TYPE</ENTRY>
 <ENTRY>0</ENTRY>
-<ENTRY>0</ENTRY>
+<ENTRY>Not Implemented.</ENTRY>
+<ENTRY></ENTRY>
 </ROW>
 <ROW>
 <ENTRY>RPM_CHAR_TYPE</ENTRY>
+<ENTRY>1</ENTRY>
 <ENTRY>1</ENTRY>
 <ENTRY>1</ENTRY>
 </ROW>
@@ -321,41 +331,49 @@ Value identifying the type of the data associated with this Index Record.
 <ENTRY>RPM_INT8_TYPE</ENTRY>
 <ENTRY>2</ENTRY>
 <ENTRY>1</ENTRY>
+<ENTRY>1</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>RPM_INT16_TYPE</ENTRY>
 <ENTRY>3</ENTRY>
+<ENTRY>2</ENTRY>
 <ENTRY>2</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>RPM_INT32_TYPE</ENTRY>
 <ENTRY>4</ENTRY>
 <ENTRY>4</ENTRY>
+<ENTRY>4</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>RPM_INT64_TYPE</ENTRY>
 <ENTRY>5</ENTRY>
-<ENTRY>Not used.</ENTRY>
+<ENTRY>Reserved.</ENTRY>
+<ENTRY></ENTRY>
 </ROW>
 <ROW>
 <ENTRY>RPM_STRING_TYPE</ENTRY>
 <ENTRY>6</ENTRY>
 <ENTRY>variable, NULL terminated</ENTRY>
+<ENTRY>1</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>RPM_BIN_TYPE</ENTRY>
 <ENTRY>7</ENTRY>
 <ENTRY>1</ENTRY>
+<ENTRY>1</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>RPM_STRING_ARRAY_TYPE</ENTRY>
 <ENTRY>8</ENTRY>
-<ENTRY>?</ENTRY>
+<ENTRY>Variable, sequence of NULL terminated strings</ENTRY>
+<ENTRY>1</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>RPM_I18NSTRING_TYPE</ENTRY>
 <ENTRY>9</ENTRY>
-<ENTRY>variable, NULL terminated</ENTRY>
+<ENTRY>variable, sequence of NULL terminated strings</ENTRY>
+<ENTRY>1</ENTRY>
 </ROW>
 </TBODY>
 </TABLE>
@@ -365,7 +383,9 @@ Value identifying the type of the data associated with this Index Record.
 <TERM><STRUCTFIELD>offset</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Location in the Store of the data associated with this Index Record.
+Location in the Store of the data associated with this Index Record. This value
+should between 0 and the value contained in the <STRUCTFIELD>hsize</STRUCTFIELD>
+of the Header Structure.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -373,20 +393,34 @@ Location in the Store of the data associated with this Index Record.
 <TERM><STRUCTFIELD>count</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Size of the data associated with this Index Record. The Count is the number of
-elements whose size is defined by the type of this Record.
+Size of the data associated with this Index Record. The
+<STRUCTFIELD>count</STRUCTFIELD> is the number of elements whose size is
+defined by the type of this Record.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
+<PARA>
+The string arrays specified for enties of type
+<CONSTANT>RPM_STRING_ARRAY_TYPE</CONSTANT> and
+<CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT>
+are vectors of strings in a contiguous block of memory, each element separated
+from its neighbors by a NULL character.
+</PARA>
+<PARA>
+The array entries in an index of type <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT>
+correspond to the locale names contained in the
+<CONSTANT>HDRTAG_HDRI18NTABLE</CONSTANT> index.
+
+</PARA>
 </SECT3>
 
 <SECT3>
 <TITLE>Header Store</TITLE>
 <PARA>
-The header store contains the values specified by the Index structures. The
-store is located immediately following the Index structures. The store may be
-padded with zeros to ensure it ends on an 8 byte boundary.
+The header store contains the values specified by the Index structures. These
+values are aligned according to their type. The store is located immediately
+following the Index structures.
 </PARA>
 </SECT3>
 
@@ -448,7 +482,7 @@ file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 </ROW>
 <ROW>
 <ENTRY>Padding</ENTRY>
-<ENTRY>1-3 bytes as needed to align the file stream to a 4 byte boundary.</ENTRY>
+<ENTRY>0-3 bytes as needed to align the file stream to a 4 byte boundary.</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>File data</ENTRY>
@@ -456,7 +490,7 @@ file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 </ROW>
 <ROW>
 <ENTRY>Padding</ENTRY>
-<ENTRY>1-3 bytes as needed to align the file stream to a 4 byte boundary.</ENTRY>
+<ENTRY>0-3 bytes as needed to align the file stream to a 4 byte boundary.</ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -464,7 +498,10 @@ file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 <PARA>
 The CPIO Header uses the following header structure (sometimes referred to
 as "new ASCII" or "SVR4 cpio"). All numbers are stored as ASCII
-representations of their octal value.
+representations of their octal value. Only the
+<STRUCTFIELD>c_namesize</STRUCTFIELD> and the corresponding name string are
+used from the CPIO Header. All other fields are superceeded by the information
+contained in the Header Section.
 </PARA>
 <SCREEN>
 struct {
@@ -499,7 +536,8 @@ Value identifying this cpio format. This value must be "070701".
 <LISTITEM>
 <PARA>
 This field contains the inode number from the filesystem from which the
-file was read.  This field is ignored when installing a package.
+file was read.
+This field is ignored when installing a package.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -511,6 +549,8 @@ Permission bits of the file. This is an ascii representation of the octal
 number representing the bit as defined for the
 <STRUCTFIELD>st_mode</STRUCTFIELD> field of the <STRUCTNAME>stat</STRUCTNAME>
 structure defined for the <VARNAME>stat</VARNAME> function.
+This field is superceeded by the <CONSTANT>RPMTAG_FILEMODES</CONSTANT> index
+in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -519,6 +559,8 @@ structure defined for the <VARNAME>stat</VARNAME> function.
 <LISTITEM>
 <PARA>
 Value identifying this owner of this file.
+This field is superceeded by the <CONSTANT>RPMTAG_FILEUIDS</CONSTANT> index
+in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -527,6 +569,8 @@ Value identifying this owner of this file.
 <LISTITEM>
 <PARA>
 Value identifying this group of this file.
+This field is superceeded by the <CONSTANT>RPMTAG_FILEGIDS</CONSTANT> index
+in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -538,6 +582,8 @@ Value identifying the number of links associated with this file. If the value
 is greater than 1, then this filename will be linked to 1 or more files in this
 archive that has a matching value for the c_ino, c_devmajor and c_devminor
 fields.
+This field is superceeded by the <CONSTANT>RPMTAG_FILELINKTOS</CONSTANT> index
+in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -546,6 +592,8 @@ fields.
 <LISTITEM>
 <PARA>
 Value identifying the modification time of the file when it was read.
+This field is superceeded by the <CONSTANT>RPMTAG_FILEMTIMES</CONSTANT> index
+in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -554,6 +602,8 @@ Value identifying the modification time of the file when it was read.
 <LISTITEM>
 <PARA>
 Value identifying the size of the file.
+This field is superceeded by the <CONSTANT>RPMTAG_FILESIZES</CONSTANT> index
+in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -565,6 +615,7 @@ The major number of the device containing the file system from which the
 file was read.
 With the exception of processing files with c_nlink >1, this field is ignored
 when installing a package.
+This field is ignored when installing a package.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -576,6 +627,7 @@ The minor number of the device containing the file system from which the
 file was read.
 With the exception of processing files with c_nlink >1, this field is ignored
 when installing a package.
+This field is ignored when installing a package.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -585,7 +637,8 @@ when installing a package.
 <PARA>
 The major number of the raw device containing the file system from which the
 file was read.
-This field is ignored when installing a package.
+This field is superceeded by the <CONSTANT>RPMTAG_RDEVS</CONSTANT> index
+in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -595,7 +648,8 @@ This field is ignored when installing a package.
 <PARA>
 The minor number of the raw device containing the file system from which the
 file was read.
-This field is ignored when installing a package.
+This field is superceeded by the <CONSTANT>RPMTAG_RDEVS</CONSTANT> index
+in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -611,6 +665,7 @@ following the CPIO Header structure.
 <LISTITEM>
 <PARA>
 Value containing the CRC checksum of the file data.
+This field is ignored when installing a package.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
