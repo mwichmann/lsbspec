@@ -195,4 +195,33 @@ include(../../../matters/definitions.sgml)
 
 include(../../generic/intro/terms.sgml)
 
+ifdef(`CORE',`
+<CHAPTER ID="POSIXConflicts">
+<TITLE>Relationship To ISO/IEC 9945 POSIX</TITLE>
+<PARA>
+This specification includes many interfaces described in <XREF LINKEND="STD.SUSv3">.
+Unless otherwise specified, such interfaces should behave exactly as described
+in that specification.
+Any conflict between the requirements described here and the <XREF
+LINKEND="STD.SUSv3">
+standard is unintentional, except as explicitly noted otherwise.
+This specification defers to <XREF LINKEND="STD.SUSv3">; any interpretation
+request or defect noted on an interface shared between this specification
+and <XREF LINKEND="STD.SUSv3"> shall be addressed initially by the
+working group responsible for <XREF LINKEND="STD.SUSv3"> maintenance.
+Where an interface has incompatible differences with <XREF LINKEND="STD.SUSv3">
+such differences
+are explicitly noted.
+</PARA>
+<NOTE>
+<PARA>
+In addition to the differences noted inline in this specification,
+PDTR 24715 has extracted the differences between this specification and <XREF
+LINKEND="STD.SUSv3">
+into a single place.
+It is the long term plan of the LSB to converge with ISO/IEC 9945 POSIX.
+</PARA>
+</NOTE>
+</CHAPTER>
+')
 </PART>
