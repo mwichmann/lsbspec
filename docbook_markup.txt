@@ -1,0 +1,174 @@
+This document contains:
++ Synopsis markup in SGML
+  - examples for command markup
+  - examples for function markup
++ Common LSB usages
+  - notes on man page text development
+  - tags to be phased into general use prior to LSB v2.0
+  - corrections to tags now in general use
+  - often-used spec phrases
+
+This document:
++ is based on DocBook 4.2 markup principles and examples as illustrated in
+  official DocBook documentation:
+  - "DocBook - The Definitive Guide" by N.Walsh & L.Muellner (O'Reilly)
+  - http://docbook.org/tdg/en/html/docbook.html
++ is the start of a formal style guide for LSB content contributors
++ will be used for updates to existing specification texts
++ may be used for development of new content
++ is a work-in-progress and will be updated as needed to reflect current
+  text development goals
+
+
+
+SYNOPSIS MARKUP IN SGML
+=======================
+
+SYNOPSIS EXAMPLE - fictional command as appears below with:
++ standard argument
++ argument with input (file ital.)
++ nested arguments
++ mutually exclusive arguments
++ required bracketed argument (ital.)
++ required unbracketed argument (ital.)
++ required unbracketed repeating argument (ital.)
+------------------------------
+abc [-d] [-e file] [month [year]] [-f | -g] {directory} group file...
+------------------------------
+<cmdsynopsis>
+  <command>abc</command>
+  <arg>-d</arg>
+  <arg>-e <replaceable>file</replaceable></arg>
+  <arg>month <arg>year</arg></arg>
+  <group>
+    <arg>-f</arg>
+    <arg>-g</arg>
+  </group>
+  <arg choice=req><replaceable>directory</replaceable></arg>
+  <arg choice=plain><replaceable>group</replaceable></arg>
+  <arg rep=repeat choice=plain><replaceable>file</replaceable></arg>
+</cmdsynopsis>
+
+
+SYNOPSIS EXAMPLE - function requiring:
++ preamble header
++ absolute number of arguments
+------------------------------
+#include <varargs.h>
+
+int abc(int def, int ghi);
+------------------------------
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;varargs.h&gt;
+</funcsynopsisinfo>
+<funcprototype>
+  <funcdef>int <function>abc</function></funcdef>
+  <paramdef>int <parameter>def</parameter></paramdef>
+  <paramdef>int <parameter>ghi</parameter></paramdef>
+</funcprototype>
+</funcsynopsis>
+
+
+SYNOPSIS EXAMPLE - function requiring:
++ variable number of arguments
+------------------------------
+int abc(...);
+------------------------------
+<funcsynopsis>
+<funcprototype>
+  <funcdef>int <function>abc</function></funcdef>
+  <varargs>
+</funcprototype>
+</funcsynopsis>
+
+
+SYNOPSIS EXAMPLE - function requiring:
++ absolute number of arguments, followed by
++ variable number of arguments
+------------------------------
+int abc(char *abc, ...);
+------------------------------
+<funcsynopsis>
+<funcprototype>
+  <funcdef>int <function>abc</function></funcdef>
+  <paramdef>
+    <parameter>char *def</parameter>
+    <parameter>...</parameter>
+  </paramdef>
+</funcprototype>
+</funcsynopsis>
+
+
+SYNOPSIS EXAMPLE - function requiring:
++ zero arguments
+------------------------------
+int abc(void);
+------------------------------
+<funcsynopsis>
+<funcprototype>
+  <funcdef>int <function>abc</function></funcdef>
+  <void>
+</funcprototype>
+</funcsynopsis>
+
+
+
+COMMON LSB USAGES
+=================
+
+NOTES ON MAN PAGE TEXT DEVELOPMENT:
++ External to the Synopsis, references to function names will appear sans 
+  "()".
++ Command or function elements identified in the synopsis (name, parameter) 
+  will not be type-labeled in subsequent text. Example: the phrase "the 
+  getopt function" will appear simply as "getopt".
++ On exception, type-labels will be used in these cases:
+  - to avoid misidentification of similarly-named command or function
+  elements.
+  - to qualify names of functions/elements that are not specified in the
+  Synopsis.
++ Where possible, Description text will begin with the name of the entity 
+  (command, function) described, followed by an action. Examples: "memmem 
+  finds the start ...", "newgrp changes the current group .."
++ The use of pronouns ("It", "This") to begin the first sentences of 
+  Description paragraphs will be avoided.
+
+
+TAGS TO BE PHASED INTO GENERAL USE PRIOR TO LSB V2.0:
+  <acronym>
+  <action>
+  <application>
+  <errorcode>, <errorname> and <errortype>
+  <example>
+  <filename>
+  <important>
+  <interfacename>
+  <option>
+  <quote> and <blockquote>
+  <returnvalue>
+  <structname> and <structfield>
+  <symbol>
+  <varname>
+
+
+CORRECTIONS TO TAGS NOW IN GENERAL USE:
+  <emphasis>     will be replaced whenever a more appropriate tag is required.
+  <replaceable>  will be replaced whenever a more appropriate tag is required;
+                 used only to indicate user-specified text.
+  <literal>      used only to indicate a literal data value, a generic bit
+                 of data (the same data would be represented in volume text
+                 by <computeroutput> or <userinput>).
+
+
+OFTEN-USED SPEC PHRASES:
+
+<para>On success, the global variable <varname>errno</varname> is set to 
+<returnvalue>0</returnvalue>. On error, <returnvalue>-1</returnvalue> is 
+returned.
+</para>
+
+<para><command>split</command> is as specified in the 
+<acronym>SUS</acronym>, but with differences as listed below.
+</para>
+
