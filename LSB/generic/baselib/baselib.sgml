@@ -22,7 +22,7 @@ architecture-specific LSB specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Wed Sep 15 20:17:22 2004 -->
+<!--    at Mon Sep 20 08:09:50 2004 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -5241,7 +5241,7 @@ it is only in the binary standard.
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>
+<REFNAME>__daylight
 </REFNAME>
 <REFPURPOSE>
 Daylight savings time flag
@@ -8192,7 +8192,12 @@ If <PARAMETER>dirname</PARAMETER> is not
 <CONSTANT>NULL</CONSTANT>, the base directory for message catalogs 
 belonging  to  domain 
 <PARAMETER>domainname</PARAMETER> shall be set to 
-<PARAMETER>dirname</PARAMETER>. The function shall make
+<PARAMETER>dirname</PARAMETER>. 
+If <PARAMETER>dirname</PARAMETER> is <CONSTANT>NULL</CONSTANT>,
+the base directory for message catalogs shall not be altered.
+</PARA>
+<PARA>
+The function shall make
 copies of the argument strings as needed.
 </PARA>
 <PARA>
@@ -8219,7 +8224,7 @@ internally in the function and shall not be changed or freed by the user.
 <TITLE>Return Value</TITLE>
 <PARA>
 On success, <FUNCTION>bindtextdomain</FUNCTION> shall return a
-pointer to the 
+pointer to a string containing the 
 directory pathname currently bound to the domain. On failure, a 
 <LITERAL>NULL</LITERAL> pointer is returned, and the global variable
 <VarName>errno</VarName> may be set to indicate the error.
@@ -9557,6 +9562,14 @@ The buffer identified by <PARAMETER>name</PARAMETER> and
 </VARLISTENTRY>
 </VARIABLELIST>
 </REFSECT1>
+<REFSECT1>
+<TITLE>Future Directions</TITLE>
+<PARA>
+The LSB does not include other NIS interfaces, and a future version
+of this specification may deprecate this interface.
+Application developers should avoid using this interface where possible.
+</PARA>
+</REFSECT1>
 
 </REFENTRY>
 
@@ -9776,13 +9789,13 @@ option name is a single alphanumeric character from the portable character set
 </LISTITEM>
 <LISTITEM>
 <PARA>
-option is preceded by the "<TOKEN>-</TOKEN>" delimiter character
+option is preceded by the '<TOKEN>-</TOKEN>' delimiter character
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
 options without option-arguments should be accepted when grouped behind 
-one "<TOKEN>-</TOKEN>" delimiter
+one '<TOKEN>-</TOKEN>' delimiter
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -9826,7 +9839,7 @@ characters can be represented as type <LITERAL>int</LITERAL>.
 <LISTITEM>
 <PARA>
 applications that call any utility with a first operand starting with 
-"<TOKEN>-</TOKEN>" should usually specify "<TOKEN>--</TOKEN>" 
+'<TOKEN>-</TOKEN>' should usually specify "<TOKEN>--</TOKEN>" 
 to mark the end of the options. Standard utilities that do not support 
 this guideline indicate that fact in the OPTIONS section of the utility 
 description.
@@ -9858,6 +9871,35 @@ long option <LITERAL>--foo</LITERAL>.
 of long options.</PARA></NOTE>
 </PARA>
 </LISTITEM>
+<LISTITEM>
+<PARA>
+The first character of <PARAMETER>optstring</PARAMETER> shall modify 
+the behavior of <FUNCTION>getopt</FUNCTION> as follows:
+<ITEMIZEDLIST MARK=BULLET>
+<LISTITEM>
+<PARA>
+if the first character is '+', then 
+<CONSTANT>REQUIRE_ORDER</CONSTANT> processing shall be in
+effect (see above)
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+if the first character is '-', then 
+<CONSTANT>RETURN_IN_ORDER</CONSTANT> processing shall be in
+effect (see above)
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+if the first character is ':', then 
+<FUNCTION>getopt</FUNCTION> shall return ':' instead of '?'
+to indicate a missing option argument. 
+</PARA>
+</LISTITEM>
+</ITEMIZEDLIST>
+</PARA>
+</LISTITEM>
 </ITEMIZEDLIST>
 </PARA>
 <PARA>
@@ -9874,40 +9916,20 @@ the <OPTION>-W</OPTION> option is reserved for implementation extensions.
 <REFSECT2>
 <TITLE>Return Values</TITLE>
 <PARA>
-<EMPHASIS>LSB</EMPHASIS> specifies the following 
+<EMPHASIS>LSB</EMPHASIS> specifies the following additional
 <FUNCTION>getopt</FUNCTION> return values:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-the next option character is returned, if found successfully.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-"<RETURNVALUE>:</RETURNVALUE>" is returned if a parameter is 
-missing for one of the options.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-"<RETURNVALUE>?</RETURNVALUE>" is returned if an unknown option 
-character is encountered.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-<RETURNVALUE>1</RETURNVALUE> is returned
+<RETURNVALUE>'\001'</RETURNVALUE> is returned
 if <CONSTANT>RETURN_IN_ORDER</CONSTANT> argument ordering is in effect,
 and the next argument is an operand, not an option. The argument is
 available in <varname>optarg</varname>.
 </PARA>
 </LISTITEM>
-<LISTITEM>
-<PARA>
-<RETURNVALUE>-1</RETURNVALUE> is returned for the end of the option list.
-</PARA>
-</LISTITEM>
 </ITEMIZEDLIST>
+Any other return value has the same meaning as for
+<EMPHASIS>POSIX</EMPHASIS>.
 </PARA>
 <PARA>
 <EMPHASIS>POSIX</EMPHASIS> specifies the following 
@@ -9920,17 +9942,17 @@ the next option character is returned, if found successfully.
 </LISTITEM>
 <LISTITEM>
 <PARA>
-"<RETURNVALUE>:</RETURNVALUE>" is returned if a parameter is missing for 
+'<RETURNVALUE>:</RETURNVALUE>' is returned if a parameter is missing for 
 one of the options and the first character of <VARNAME>optstring</VARNAME> is 
-"<TOKEN>:</TOKEN>".
+'<TOKEN>:</TOKEN>'.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-"<RETURNVALUE>?</RETURNVALUE>" is returned if an unknown option 
+'<RETURNVALUE>?</RETURNVALUE>' is returned if an unknown option 
 character not in <VARNAME>optstring</VARNAME> is encountered, or if 
 <FUNCTION>getopt</FUNCTION> detects a missing argument and the first 
-character of <VARNAME>optstring</VARNAME> is not "<TOKEN>:</TOKEN>".
+character of <VARNAME>optstring</VARNAME> is not '<TOKEN>:</TOKEN>'.
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -9972,6 +9994,8 @@ arguments resulted from wildcard expansion and so should not be
 considered as options. This behavior was removed in bash version 
 2.01, but the support remains in <EMPHASIS>GNU</EMPHASIS> libc.
 </PARA></NOTE>
+This behavior is DEPRECATED in this version of the LSB; future revisions
+of this specification may not include this requirement.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -10186,16 +10210,6 @@ same as for <FUNCTION>getopt</FUNCTION>, plus
 "<RETURNVALUE>?</RETURNVALUE>" for an ambiguous match or an 
 extraneous parameter.
 </PARA>
-
-<REFSECT2>
-<TITLE>Application Usage</TITLE>
-<PARA>
-Applications that use <function>getopt_long_only</function>
-may not conform to the Utility Syntax Guidelines of 
-<XREF LINKEND=STD.SUSv3>. As such, their portability is limited
-and application developers should consider using <function>getopt</function>
-or <function>getopt_long</function> instead.
-</PARA>
 </REFSECT2>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
 <!--        Version 1a, November 1998   -->
@@ -10237,7 +10251,7 @@ Search message catalogs for a string
 <TITLE>Description</TITLE>
 <PARA>
 The <FUNCTION>gettext</FUNCTION> function shall search the currently 
-selected message catalogs for a string matching the string
+selected message catalogs for a string identified by the string
 <PARAMETER>msgid</PARAMETER>. If a string is located, 
 that string shall be returned.
 </PARA>
@@ -10368,10 +10382,10 @@ access user accounting database entries
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>getutent_r</FUNCTION></FUNCDEF>
- <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>utmp</STRUCTNAME> 
-  <PARAMETER>*buffer</PARAMETER></FUNCPARAMS></PARAMDEF>
- <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>utmp</STRUCTNAME> 
-  <PARAMETER>**result</PARAMETER></FUNCPARAMS></PARAMDEF>
+ <PARAMDEF>struct utmp *
+  <PARAMETER>buffer</PARAMETER></PARAMDEF>
+ <PARAMDEF>struct utmp **
+  <PARAMETER>result</PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -10763,9 +10777,8 @@ the type and value of the third parameter
 is dependent on the device and <PARAMETER>request</PARAMETER>.
 </PARA>
 <PARA>
-Conforming LSB applications should not call <FUNCTION>ioctl</FUNCTION> 
-except for situations explicitly stated in this specification or in 
-<XREF LINKEND=STD.SUSv3>.
+Conforming LSB applications shall not call <FUNCTION>ioctl</FUNCTION> 
+except in situations explicitly stated in this specification.
 </PARA>
 
 </REFSECT1>
@@ -10921,10 +10934,11 @@ or the <FUNCTION>getifaddrs</FUNCTION>
 family found in <ACRONYM>BSD</ACRONYM> derived systems.
 </PARA>
 </NOTE>
-<PARAMETER>argp</PARAMETER> is a pointer to a
+<PARAMETER>argp</PARAMETER> shall point to a
 <STRUCTNAME>ifconf</STRUCTNAME> structure, as described in
 <filename>&lt;net/if.h&gt;</filename>. Before calling, the caller 
-shall allocate the <STRUCTFIELD>ifc_ifcu.ifcu_req</STRUCTFIELD> field 
+shall set the
+<STRUCTFIELD>ifc_ifcu.ifcu_req</STRUCTFIELD> field 
 to point to an array of <STRUCTNAME>ifreq</STRUCTNAME> structures, and 
 set <STRUCTFIELD>ifc_len</STRUCTFIELD> to the size in bytes of this allocated 
 array. Upon return, <STRUCTFIELD>ifc_len</STRUCTFIELD> 
@@ -10951,7 +10965,7 @@ SIOCGIFFLAGS
 <LISTITEM>
 <PARA>
 Gets the interface flags for the indicated interface.
-<PARAMETER>argp</PARAMETER> is a pointer to a 
+<PARAMETER>argp</PARAMETER> shall point to a 
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
 field with the interface name, and upon return, the 
@@ -10968,7 +10982,7 @@ SIOCGIFADDR
 <LISTITEM>
 <PARA>
 Gets the interface address for the given interface.
-<PARAMETER>argp</PARAMETER> is a pointer to a
+<PARAMETER>argp</PARAMETER> shall point to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
 field with the interface name, and upon return, the 
@@ -10985,7 +10999,7 @@ SIOCGIFNETMASK
 <LISTITEM>
 <PARA>
 Gets the network mask for the given interface. 
-<PARAMETER>argp</PARAMETER> is a pointer to a
+<PARAMETER>argp</PARAMETER> shall point to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
 field with the interface name, and upon return, the 
@@ -11002,7 +11016,7 @@ FIONREAD
 <LISTITEM>
 <PARA>
 Returns the amount of queued unread data in the receive buffer.
-Argument is a pointer to an integer where the result is to be placed.
+<PARAMETER>argp</PARAMETER> shall point to an integer where the result is to be placed.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -11869,7 +11883,6 @@ portmapper.
 <TITLE>Description
 </TITLE>
 <PARA>
-<XREF LINKEND="STD.RFC1833">.
 The <FUNCTION>pmap_getport</FUNCTION> function shall
 return the port number assigned to a service registered with a
 RPC Binding service running on a given target system,
@@ -12916,7 +12929,8 @@ None.
 </TITLE>
 <PARA>
 <FUNCTION>sigblock</FUNCTION> is made obsolete by 
-<FUNCTION>sigprocmask</FUNCTION>(2).
+<FUNCTION>sigprocmask</FUNCTION>(2). A future version of this specification
+may deprecate this function.
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
@@ -13887,7 +13901,7 @@ beginning of the token.
 The <FUNCTION>strsep</FUNCTION> function was introduced as a replacement for 
 <FUNCTION>strtok</FUNCTION>, since the latter cannot handle empty 
 fields. However, <FUNCTION>strtok</FUNCTION> conforms to 
-<EMPHASIS>ANSI-C</EMPHASIS> and hence is more portable.
+<XREF LINKEND=STD.ISOC99> and to <XREF LINKEND=STD.SUSv3> and hence is more portable.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -14316,11 +14330,73 @@ compare strings holding name and indices/version numbers
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>strverscmp</FUNCTION> compares <PARAMETER>s1</PARAMETER> and 
-<PARAMETER>s2</PARAMETER> as strings holding name and indices/version 
-numbers.
+The <function>strversmp</function> shall compare two strings
+in a similar manner to <function>strcmp</function>.
+If <parameter>s1</parameter> and <parameter>s2</parameter>
+contain no digits, <function>strversmp</function> shall
+behave as <function>strcmp</function>.
+</para>
+<para>
+The strings are compared by scanning from left to right.
+If a digit or sequence of digits
+is encountered in both strings at the same position,
+the digit sequence is specially compared, as described
+below. If the digit sequences compared equal, the string comparison
+resumes in both <parameter>s1</parameter> and 
+<parameter>s2</parameter> after the digit sequence.
+</para>
+<para>
+Digit sequences are classified as either "integral" or
+"fractional". A fractional digit sequence begins with
+a <literal>'0'</literal>; otherwise the digit sequence
+shall be treated as an intergral digit sequence.
+</para>
+<para>
+If two integral digit sequences are encountered, they shall be
+compared as integers for equality. A fractional digit sequence
+shall always compare less than an integral digit sequence.
+If two fractional digit sequences are being compared,
+then if the common prefix contains only leading zeroes, the longer
+part shall compare less than the shorter; otherwise the comparison
+shall be strictly numeric.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Examples</TITLE>
+<para>
+<TABLE>
+<TITLE>Examples</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW><ENTRY>Call</ENTRY><ENTRY>Return Value</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"no digit", "nodigit"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>0</RETURNVALUE>
+<LITERAL>/* same behavior as strcmp */</LITERAL></ENTRY></ROW>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"item#99", "item#100"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>&lt; 0</RETURNVALUE>
+<LITERAL>/* same prefix, but 99 &lt; 100 */</LITERAL></ENTRY></ROW>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"alpha1", "alpha001"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>&gt; 0</RETURNVALUE>
+<LITERAL>/* fractional part inferior to integral */</LITERAL></ENTRY></ROW>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"part1_f012", "part1_f01"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>&gt; 0</RETURNVALUE>
+<LITERAL>/* two fractional parts */</LITERAL></ENTRY></ROW>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"foo.009", "foo.0"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>&lt; 0</RETURNVALUE>
+<LITERAL>/* two fractional parts but with leading zeroes only */</LITERAL></ENTRY></ROW>
+
+</TBODY>
+</TGROUP>
+</TABLE>
+</para>
 </REFSECT1>
 </REFENTRY>
 
@@ -14427,9 +14503,9 @@ Waits for RPC requests to arrive and calls service procedure.
 #include &lt;rpc/svc.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>
+ <FUNCDEF>void
   <FUNCTION>svc_run</FUNCTION></FUNCDEF>
-  <PARAMDEF></PARAMDEF>
+  <VOID>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -14440,10 +14516,12 @@ Waits for RPC requests to arrive and calls service procedure.
 <TITLE>Description
 </TITLE>
 <PARA>
-The <FUNCTION>svc_run</FUNCTION> routine never returns. It waits for RPC 
-requests to arrive, and calls the appropriate service procedure using
-<FUNCTION>svc_getreq</FUNCTION> when one arrives. This procedure is 
-usually waiting for a <FUNCTION>select</FUNCTION> system call to return.
+The <FUNCTION>svc_run</FUNCTION> function shall wait for RPC
+requests to arrive, read and unpack each request, and dispatch
+it to the appropriate registered handler.
+Under normal conditions, <FUNCTION>svc_run</FUNCTION> shall not return;
+it shall only return if serious errors occur that prevent further
+processing.
 </PARA>
 </REFSECT1>
 
@@ -14880,7 +14958,7 @@ write formatted output to a dynamically allocated string
 The <FUNCTION>vasprintf</FUNCTION> function shall write
 formatted output to a 
 dynamically allocated string, and store
-the address of taht string in the location
+the address of that string in the location
 referenced by <PARAMETER>ptr</PARAMETER>.
 It shall behave as <FUNCTION>asprintf</FUNCTION>,
 except that instead of being called with a variable number
@@ -14988,7 +15066,7 @@ Refer to <FUNCTION>fprintf</FUNCTION>.
   <PARAMETER><REPLACEABLE>eval</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*fmt</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>valist 
+ <PARAMDEF>va_list 
   <PARAMETER><REPLACEABLE>args</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
@@ -16278,7 +16356,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Wed Sep 15 20:17:27 2004 -->
+<!--    at Mon Sep 20 08:10:02 2004 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -16837,7 +16915,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Wed Sep 15 20:17:28 2004 -->
+<!--    at Mon Sep 20 08:10:03 2004 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -17299,7 +17377,7 @@ source standard; it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Wed Sep 15 20:17:31 2004 -->
+<!--    at Mon Sep 20 08:10:04 2004 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -17397,7 +17475,7 @@ struct _Unwind_Exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Wed Sep 15 20:17:29 2004 -->
+<!--    at Mon Sep 20 08:10:03 2004 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -17759,7 +17837,7 @@ with the behavior as described in <XREF LINKEND="std.SUSv3">.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Wed Sep 15 20:17:29 2004 -->
+<!--    at Mon Sep 20 08:10:03 2004 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -17830,7 +17908,7 @@ underlying specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Wed Sep 15 20:17:30 2004 -->
+<!--    at Mon Sep 20 08:10:03 2004 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
