@@ -3,10 +3,12 @@
 
 <CHAPTER id=Introduction>
 <TITLE>Introduction</TITLE>
+<SECT1 ID="overview">
+<TITLE>Introduction</TITLE>
 <PARA>
-This is version &specversion of the Linux Standard Base Specification. This version
-is a mostly complete framework of the specification, but many details are
-still not filled in. 
+This is version &specversion of the Linux Standard Base Specification. This 
+version is a mostly complete framework of the specification, but many details 
+are still not filled in. 
 </PARA>
 <PARA>
 Those wishing to implement this standard should treat this version as more of
@@ -17,6 +19,26 @@ specification of the Linux Standard Base.
 An implementation of this version of the specification may not claim
 to be an implementation of the Linux Standard Base.
 </PARA>
+</SECT1>
+
+<SECT1 ID="overpurp">
+<TITLE>Purpose</TITLE>
+<PARA>
+The Linux Standard Base (LSB) defines a system interface for compiled applications and a minimal environment for support of installation scripts. Its purpose is to enable a uniform industry standard environment for high-volume applications conforming to the LSB.
+</PARA>
+<PARA>
+The LSB defines a binary interface for application programs that are compiled and packaged for LSB-conforming implementations on many different hardware architectures. Since a binary specification must include information specific to the computer processor architecture for which it is intended, it is not possible for a single document to specify the interface for all possible LSB-conforming implementations. Therefore, the LSB is a family of specifications, rather than a single one.
+</PARA>
+<PARA>
+The LSB is composed of two basic parts: A generic part of the specification describes those parts of the interface that remain constant across all hardware implementations of the LSB, and a processor-specific part of the specification describes the parts of the specification that are specific to a particular processor architecture. Together, the generic LSB and the processor-specific supplement for a single hardware architecture provide a complete interface specification for compiled application programs on systems that share a common hardware architecture.
+</PARA>
+<PARA>
+This document is the generic LSB. It must be used in conjunction with a processor-specific supplement. Whenever a section of this specification must be supplemented by processor-specific information, this document includes a reference to the processor supplement. Processor supplements may also contain additional information that is not referenced here.
+</PARA>
+<PARA>
+This document should be used in conjunction with the documents it references. This document enumerates the system components it includes, but descriptions of those components may be included entirely or partly in this document, partly in other documents, or entirely in other reference documents. For example, the section that describes system service routines includes a list of the system routines supported in this interface, formal declarations of the data structures they use that are visible to applications, and a pointer to the underlying referenced specification for information about the syntax and semantics of each call. Only those routines not described in standards referenced by this document, or extensions to those standards, are described in the detail. Information referenced in this way is as much a part of this document as is the information explicitly included here.
+</PARA>
+</SECT1>
 
 <SECT1 ID="structure">
 <TITLE>Structure of the Linux Standard Base</TITLE>
@@ -92,7 +114,20 @@ These libraries will be in a default location found by the dynamic linker.
 
 <SECT1 ID="howto">
 <TITLE>How to Use this Standard</TITLE>
-<PARA></PARA>
+<PARA>
+The complete LSB specification is composed of this generic LSB specification and the supplemental processor-specific specification for a particular processor architecture. These two documents constitute a specification that should be used in conjunction with the publicly-available standards documents it references. The LSB enumerates the system components it includes, but descriptions of those components may be included entirely in the LSB, partly in the LSB and partly in other documents, or entirely in other reference documents.
+</PARA>
+<PARA>
+Application programmers who wish to produce binary packages that will install and run on any LSB-conforming implementation should follow this procedure:
+</PARA>
+<PARA>
+1. Write programs using the referenced programming interfaces defined in Reference Standards, or as modified by the LSB specification. Routines guaranteed to be present on all LSB-conforming implementations as dynamically-linkable resources are listed below. 
+</PARA>
+<NOTE>
+<PARA>
+Need to enumerate the rest of the procedure.
+</PARA>
+</NOTE>
 </SECT1>
 
 <SECT1 ID="defns">
