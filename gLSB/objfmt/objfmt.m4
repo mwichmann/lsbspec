@@ -5,10 +5,31 @@
 <TITLE>Object Files</TITLE>
 <PARA>
 LSB-conforming implementations shall support an object file format, called
-Executable and Linking Format (ELF) as defined by the Toolkit Interface
-Standard (TIS) Executable and Linking Format (ELF) and as supplemented by
-this document. Conforming implementations may also support other unspecified
-object file formats.
+Executable and Linking Format (ELF) as defined by the System V Application
+Binary Interface, Edition 4.1 and the System V Application Binary Interface -
+DRAFT - April 29, 1998 and as supplemented by this document and an architecture
+specific LSB specification. Conforming implementations may also support other
+unspecified object file formats.
+</PARA>
+<PARA>
+Does the Update have precedence?
+</PARA>
+<PARA>
+Do we need to call out the reference section by sectiob below?
+</PARA>
+<SECT1 ID=datarepres>
+<TITLE>Data Representation</TITLE>
+<PARA>
+Do we need to add Elf64 stuff here, or is it included by reference?
+</PARA>
+</SECT1>
+</CHAPTER>
+
+<CHAPTER ID=elfheader>
+<TITLE>ELF Header</TITLE>
+<PARA>
+Do we need to define additional values for e_machine, or does the Sys V Update
+include them?
 </PARA>
 </CHAPTER>
 
@@ -19,7 +40,8 @@ object file formats.
 <SECT1 ID="elftypes">
 <TITLE>ELF Section Types</TITLE>
 <PARA>
-The following sections types are defined in the ELF reference Specification.
+The following sections types are defined in the System V Application Binary
+Interface, Edition 4.1.
 <TABLE>
 <TITLE>ELF Section Types</TITLE>
 <TGROUP COLS=4>
@@ -45,6 +67,7 @@ include(linuxsecttypes.sgml)
 <CHAPTER ID=SpecialSections>
 <TITLE>Special Sections</TITLE>
 <PARA>
+Do we need to define Elf64_shdr, or is it in the Update?
 </PARA>
 <SECT1 ID="elfspecial">
 <TITLE>ELF Special Sections</TITLE>
@@ -70,6 +93,20 @@ include(linuxsect.sgml)
 </TABLE>
 </PARA>
 </SECT1>
+</CHAPTER>
+
+<CHAPTER ID=Symboltab>
+<TITLE>Symbol Table</TITLE>
+<PARA>
+Do we need to define Elf64_sym, or is it in the Update?
+</PARA>
+</CHAPTER>
+
+<CHAPTER ID=relocation>
+<TITLE>Relocation</TITLE>
+<PARA>
+Do we need to define Elf64_Rel and Elf64_Rela, or is it in the Update?
+</PARA>
 </CHAPTER>
 
 <CHAPTER ID=Symmap>

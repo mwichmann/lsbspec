@@ -5,6 +5,11 @@
 <TITLE>Program Loading and Dynamic Linking</TITLE>
 
 <PARA>
+LSB-conforming implementations shall support the object file information and
+system actions that create running programs as specified in the System V
+Application Binary Interface, Edition 4.1 and the System V Application Binary
+Interface - DRAFT - April 29, 1998 and as supplemented by this document and
+an architecture specific LSB specification.
 </PARA>
 
 <PARA>
@@ -13,6 +18,19 @@ satisfy the symbols on the shared library.
 </PARA>
 </CHAPTER>
 
+<CHAPTER ID=progheader>
+<TITLE>Program Header</TITLE>
+<PARA>
+Do we need to specify Elf64_Phdr or is that picked up in the update?
+</PARA>
+</CHAPTER>
+
+<CHAPTER ID=dynlinking>
+<TITLE>Dynamic Linking</TITLE>
+<PARA>
+Do we need to specify Elf64_Dyn or is that picked up in the update?
+</PARA>
+</CHAPTER>
 
 <CHAPTER ID=DynamicSection>
 <TITLE>Dynamic Entries</TITLE>
@@ -21,7 +39,8 @@ satisfy the symbols on the shared library.
 <SECT1 ID=dynsectent>
 <TITLE>ELF Dynamic Entries</TITLE>
 <PARA>
-The following dynamic entries are defined in the ELF reference Specification.
+The following dynamic entries are defined in the System V 
+Application Binary Interface, Edition 4.1.
 <TABLE>
 <TITLE>ELF Dynamic Entries</TITLE>
 <TGROUP COLS=4>
