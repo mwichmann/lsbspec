@@ -416,6 +416,16 @@ section defines the following additional tag values which may be used in
 the Index structures.
 </PARA>
 include(hdrtags.sgml)
+<SECT3>
+<TITLE>Package Dependencies</TITLE>
+<PARA>
+The package dependencies are stored in the
+<VARNAME>RPMTAG_REQUIRENAME</VARNAME> and
+<VARNAME>RPMTAG_REQUIREVERSION</VARNAME>
+index records. The following values may be used.
+</PARA>
+include(rpmdeps.sgml)
+</SECT3>
 </SECT2>
 
 
