@@ -1,0 +1,224 @@
+<PART ID="lowlevel">
+<TITLE>Low Level System Information</TITLE>
+
+<CHAPTER id=cxxclasses>
+<TITLE>C++ Class Represetnations</TITLE>
+
+<SECT1 ID="datarepresentation">
+<TITLE>C++ Data Representation</TITLE>
+<PARA>
+C++ Clases shall be represented as defined in <XREF LINKEND="std.CXXABI">.
+</PARA>
+<PARA>
+</PARA>
+
+<SECT2 ID="classes">
+<TITLE>Class Representation</TITLE>
+<PARA>
+A C++ Class is represented by several closely related data objects. 
+<TABLE>
+<TITLE>Class Components</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+  <ROW>
+    <ENTRY>Object</ENTRY>
+    <ENTRY>Contains</ENTRY>
+  </ROW>
+</THEAD>
+<TBODY>
+  <ROW>
+    <ENTRY>Class Data</ENTRY>
+    <ENTRY>All non-static Class members</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>Virtual Table</ENTRY>
+    <ENTRY>Information needed to dispatch virtual functions, access virtual base class subobjects and to access the RTTI information</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>RTTI</ENTRY>
+    <ENTRY>Run-Time Type Information used by the typeid and dynamic_cast operators, and exception handlers</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>Typeinfo Name</ENTRY>
+    <ENTRY>String representaion of Class name</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>Construction Virtual Table</ENTRY>
+    <ENTRY>Information needed during construction and destruction of Classes with non-trivial inheritance relationships.</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>VTT</ENTRY>
+    <ENTRY>A table of virtual table pointers which holds the addresses of construction and non-contruction virtual tables.</ENTRY>
+  </ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</PARA>
+
+<SECT3 ID="classordering">
+<TITLE>Class Ordering</TITLE>
+<PARA>
+Derived classes have a unique linear ordering of all base classes, referered to
+as the Inhereitance Graph Order. The ordering on a class object and all its
+subobjects obtained by a depth-first traversal of its inheritance graph, from
+the most-derived class object to base objects, where: 
+</PARA>
+<NOTE>
+<PARA>
+We need some good examples here.
+</PARA>
+</NOTE>
+</SECT3>
+
+<SECT3 ID="classdata">
+<TITLE>Class Data</TITLE>
+<PARA>
+Non-static class members are arranged as if in a C structure according to
+the following rules.
+</PARA>
+<NOTE>
+<PARA>
+Fill in algorithm from Itanium C++ ABI document
+</PARA>
+</NOTE>
+</SECT3>
+
+<SECT3 ID="virtualtable">
+<TITLE>Virtual Table</TITLE>
+<PARA>
+There are two types of Virtual tables which can be create. These types
+are specified in section 2.5.3 of <XREF LINKEND="std.CXXABI">.
+</PARA>
+<FIGURE ID="CXX-virtualtable-cat1">
+<TITLE>
+Category 1 Vitual Table
+</TITLE>
+<SCREEN>
+struct {
+        ptrdiff_t       baseobject;
+        const char      *typeinfo;
+        fptr            virtfuncs[0];
+        };
+</SCREEN>
+</FIGURE>
+<FIGURE ID="CXX-virtualtable-cat2">
+<TITLE>
+Category 2 Vitual Table
+</TITLE>
+<SCREEN>
+struct {
+        unsigned long   vcalloffset;
+        ptrdiff_t       baseobject;
+        const char      *typeinfo;
+        fptr            virtfuncs[0];
+        };
+</SCREEN>
+</FIGURE>
+</SECT3>
+<SECT3 ID="RTTI">
+<TITLE>Run-Time Type Information</TITLE>
+<PARA>
+Each type used in a C++ program has a data structure associated with it that
+provide information about the type which is used at runtime. This Rune-Time
+Type  Information (RTTI) is defined in section 2.9.5 in
+<XREF LINKEND="std.CXXABI">.
+</PARA>
+<FIGURE ID="CXX-RTTI">
+<TITLE>
+Run-Time Type Information Prefix
+</TITLE>
+<SCREEN>
+struct {
+       void      *basevtable;
+       char      *__name;
+       };
+</SCREEN>
+</FIGURE>
+<FIGURE ID="CXX-RTTI-class">
+<TITLE>
+Run-Time Type Information For Classes
+</TITLE>
+<SCREEN>
+struct {
+       void      *basevtable;
+       char      *__name;
+       void      *basetypeinfo[0];
+       };
+</SCREEN>
+</FIGURE>
+<FIGURE ID="CXX-RTTI-siclass">
+<TITLE>
+Run-Time Type Information for Classes with a single base class
+</TITLE>
+<SCREEN>
+struct {
+       void      *basevtable;
+       char      *__name;
+       void      *basetype;
+       void      *basetypeinfo[0];
+       };
+</SCREEN>
+</FIGURE>
+<FIGURE ID="CXX-RTTI-vmiclass">
+<TITLE>
+Run-Time Type Information Prefix
+</TITLE>
+<SCREEN>
+struct base_type_info {
+       char    *base_type;
+       unsigned long   offset_flags;
+       };
+
+struct {
+       void    *basevtable;
+       char    *name;
+       unsigned int    flags;
+       unsigned int    base_count;
+       struct base_type_info_mem base_info[0];
+       };
+</SCREEN>
+</FIGURE>
+</SECT3>
+<SECT3 ID="typeinfoname">
+<TITLE>Typeinfo Name</TITLE>
+<PARA>
+</PARA>
+</SECT3>
+<!--
+<SECT3 ID="constructionvirtualtable">
+<TITLE>Construction Virtual Table</TITLE>
+<PARA>
+</PARA>
+<FIGURE ID="CXX-CVT">
+<TITLE>
+Construction Virtual Table Prefix
+</TITLE>
+<SCREEN>
+struct {
+       ????
+       };
+</SCREEN>
+</FIGURE>
+</SECT3>
+<SECT3 ID="virtualtypetable">
+<TITLE>Virtual Type Tables </TITLE>
+<PARA>
+</PARA>
+<FIGURE ID="CXX-VTT">
+<TITLE>
+Virtual Type Table Prefix
+</TITLE>
+<SCREEN>
+struct {
+       ???
+       };
+</SCREEN>
+</FIGURE>
+</SECT3>
+-->
+</SECT2>
+</SECT1>
+
+</CHAPTER>
+
+</PART>
