@@ -25,7 +25,9 @@ htmlspec: source
 	-mv spec spec.junk
 	$(DB2HTML) spec.sgml
 	if [ -d spec.junk/CVS -a ! -d spec/CVS ];then mv spec.junk/CVS spec; fi
-	cp images/*.gif spec
+# I don't see an images directory in CVS, nor do the files in spec/*.html
+# seem to be looking for any images.
+#	cp images/*.gif spec
 
 rtfspec: source
 	sgmltools -b rtf spec.sgml
