@@ -26,26 +26,26 @@
 </SETINFO>
 
 
-<BOOK>
+<BOOK ID="s390-intro">
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
 &lsb-s390-intro;
 </BOOK>
-<BOOK>
+<BOOK ID="s390-elf">
 <BOOKINFO>
 <TITLE>ELF Specification</TITLE>
 </BOOKINFO>
 &elf-contents;
 </BOOK>
-<BOOK>
+<BOOK ID="s390-lsb">
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification</TITLE>
 </BOOKINFO>
 &lsb-contents;
 &lsb-s390-appA;
 </BOOK>
-<BOOK>
+<BOOK ID="s390-packaging">
 <BOOKINFO>
 <TITLE>Linux Packaging Specification</TITLE>
 </BOOKINFO>
