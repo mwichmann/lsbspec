@@ -44,7 +44,7 @@ function addProject($project) {
        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
  <head>
-  <title>LSB Project Downloads</title>
+  <title>LSB Specifications</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <style type="text/css">
 table  { border-collapse: collapse; margin-top: 12px; border-spacing: 0px; border: thin solid black; }
@@ -137,7 +137,7 @@ function formatProject($project, $level = 0)
 	$haspackages = 0;
 		
 	$packagesstr .= "<table>\n";
-	$packagesstr .= " <tr><th>Document</th><th>Version</th><th>RTF</th><th>Text</th><th>Test w/ lines</th></tr>\n";
+	$packagesstr .= " <tr><th>Document</th><th>Version</th><th>RTF</th><th>Text</th><th>Text w/ line #s</th></tr>\n";
 	$prevspecversion = "";
 	$prevname = "";
 	$prevversion = "";
