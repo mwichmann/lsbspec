@@ -53,6 +53,15 @@ for(1..$lth->numrows) {
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
 
+$select = "SELECT Iname,Istandard,Vname ";
+$select.= "FROM Interface,LGInt,LibGroup ";
+$select.= "LEFT JOIN Version ON Vid=Iversion ";
+$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
+$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
+$select.= "ORDER BY Iname";
+$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+if( $inh->numrows == 0) { next; }
+
 print "<SECT1 ID=app-", $Lname, ">\n";
 print "<TITLE>", $Lname, "</TITLE>\n";
 print "<PARA>\n";
@@ -96,27 +105,19 @@ print "<TGROUP COLS=5>\n";
 print "<TBODY>\n";
 
 #
-# 7) Get a list of the libgroups in the library
+# 7) Get a list of the interfaces in the library
 #
-$select = "SELECT * FROM LibGroup WHERE LGlib=$Lid ORDER BY LGorder";
-print STDERR $select,"\n" if $trace;
-#$lgh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-#for(1..$lgh->numrows) {
-	local(*entry);
+{
 	local(*std);
-#	local(*mangle);
-#	%entry=$lgh->fetchhash;
-#	$LGid=$entry{'LGid'};
-#
-# 8) Foreach group, make a table of the interfaces
-#
-	$select = "SELECT Iname,Istandard,Vname ";
-	$select.= "FROM Interface,LGInt,LibGroup ";
-	$select.= "LEFT JOIN Version ON Vid=Iversion ";
-	$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
-	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
-	$select.= "ORDER BY Iname";
-	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	local(*symver);
+	local(*entry);
+	#$select = "SELECT Iname,Istandard,Vname ";
+	#$select.= "FROM Interface,LGInt,LibGroup ";
+	#$select.= "LEFT JOIN Version ON Vid=Iversion ";
+	#$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
+	#$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
+	#$select.= "ORDER BY Iname";
+	#$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	print STDERR $select,"\n" if $trace;
 	for(1..$inh->numrows) {
 		%entry=$inh->fetchhash;
@@ -176,13 +177,13 @@ print STDERR $select,"\n" if $trace;
 		print "</ROW>\n";
 	}
 	}
+}
 
-#}
 print "</TBODY>\n";
 print "</TGROUP>\n";
 print "</TABLE>\n";
 #
-# 10) Make a table of data interfaces
+# 8) Make a table of data interfaces
 #
 {
 	local(*datasym);
