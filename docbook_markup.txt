@@ -26,6 +26,8 @@ we decide to do this more consistently, the following are all issues:
 * Trailing slashes for empty elements, for example <xref /> not <xref>
 (See Chapter 2 of the DocBook book; Appendix B also might help but isn't
 as clear on the case sensitivity point).
+NOTE --- the current docbook utils do not correctly handle <xref />, so 
+don't use it!
 
 Question: what does the <DATE> tag mean (in <REFSYNOPSISDIVINFO>,
 <REFSECT1INFO>, and so on)?  Is it the date that particular page was
@@ -205,23 +207,23 @@ struct hostent *abc(const char arg1);
 
 SYNOPSIS EXAMPLE - Function that uses a structure as a parameter
 ======= Desired effect =======
-extern int abc(__const char *__restrict __arg1, struct hostent *__restrict 
-__arg2); 
---[where __arg1 & __arg2 are italicized]
+int abc(const char * restrict arg1, struct hostent * restrict 
+arg2); 
+--[where arg1 & arg2 are italicized]
 =========== Syntax ===========
 <FUNCSYNOPSIS> 
  <FUNCPROTOTYPE> 
-  <FUNCDEF>extern int 
+  <FUNCDEF>int 
    <FUNCTION>abc</FUNCTION></FUNCDEF> 
-  <PARAMDEF>__const char *__restrict 
-   <PARAMETER><REPLACEABLE>__arg1</REPLACEABLE></PARAMETER></PARAMDEF> 
-  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>hostent</STRUCTNAME> *__restrict 
-   <PARAMETER>__arg2</PARAMETER></FUNCPARAMS></PARAMDEF> 
+  <PARAMDEF>const char * restrict 
+   <PARAMETER><REPLACEABLE>arg1</REPLACEABLE></PARAMETER></PARAMDEF> 
+  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>hostent</STRUCTNAME> * restrict 
+   <PARAMETER>arg2</PARAMETER></FUNCPARAMS></PARAMDEF> 
  </FUNCPROTOTYPE> 
 </FUNCSYNOPSIS> 
 =========== Notes ============
 - The target of this illustration is in the text:
-  struct hostent *__restrict __arg2 
+  struct hostent * restrict arg2 
 ==============================
 
 SYNOPSIS EXAMPLE - Function that uses a function as a parameter
@@ -317,6 +319,15 @@ NOTES ON MAN PAGE TEXT DEVELOPMENT
 
 + External to the Synopsis, references to function names will appear
   sans "()".
++ Function prototypes should not include any "extern" storage qualifier
++ __const and __restrict should be written as const and restrict; the
+  underbar versions of these names are transitional while some versions
+  of some compilers might not understand these ISO C 99 qualifiers.
+  However, since we depend on SUSv3, which in turn depends on ISO C99,
+  it is reasonable to ue the full C99 terms everywhere.
++ Leading underbars in names should be restricted to where they are required 
+  in the binary file only; for example in the name of a function. 
+  Arguments need never use leading underbars.
 + Command or function elements identified in the synopsis (name,
   parameter) will not be type-labeled in subsequent text. Example: the
   phrase "the getopt function" will appear simply as "getopt".
