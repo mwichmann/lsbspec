@@ -302,7 +302,7 @@ The value of this tag is 61.
 <LISTITEM>
 <PARA>
 This tag specifies ....
-The type of this tag is <VARNAME>????</VARNAME>.
+The type of this tag is <VARNAME>BIN</VARNAME>.
 The value of this tag is 62.
 </PARA>
 </LISTITEM>
@@ -311,8 +311,8 @@ The value of this tag is 62.
 <TERM><VARNAME>HDRTAG_IMMUTABLE</VARNAME></TERM>
 <LISTITEM>
 <PARA>
-This tag specifies ....
-The type of this tag is <VARNAME>????</VARNAME>.
+This tag specifies the location of a copy of the header structure.
+The type of this tag is <VARNAME>BIN</VARNAME>.
 The value of this tag is 63.
 </PARA>
 </LISTITEM>
@@ -383,23 +383,28 @@ Value identifying the type of the data associated with this Index Record.
 <ENTRY>0</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>INT8</ENTRY>
+<ENTRY>CHAR</ENTRY>
 <ENTRY>1</ENTRY>
+<ENTRY>1</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>INT8</ENTRY>
+<ENTRY>2</ENTRY>
 <ENTRY>1</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>INT16</ENTRY>
-<ENTRY>2</ENTRY>
+<ENTRY>3</ENTRY>
 <ENTRY>2</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>INT32</ENTRY>
-<ENTRY>3</ENTRY>
+<ENTRY>4</ENTRY>
 <ENTRY>4</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>INT64</ENTRY>
-<ENTRY>4</ENTRY>
+<ENTRY>5</ENTRY>
 <ENTRY>8</ENTRY>
 </ROW>
 <ROW>
@@ -510,7 +515,200 @@ The value of this tag is 1002.
 <SECT2>
 <TITLE>Header Section</TITLE>
 <PARA>
+The Header section is implemented using the Header structure. The Header
+section defines the following additional tag values which may be used in
+the Index structures.
 </PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_NAME</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the name of the package. The name value
+pointed to by this index record must match the name contained in the Lead
+section.
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1000.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_VERSION</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the version of the package. 
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1001.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_RELEASE</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the name of the package.
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1002.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_SUMMARY</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the name of the package. The summary value
+pointed to by this index record contains a one line desription of the package.
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1004.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_DESCRIPTION</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the name of the package. The summary value
+pointed to by this index record contains a full desription of the package.
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1005.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_OS</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the name of the package. The OS value
+pointed to by this index record must be "linux".
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1021.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_ARCH</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the name of the package. The architecture value
+pointed to by this index record is defined in architecture specific LSB
+specification.
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1022.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_PROVIDENAME</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag indicates the name of the feature provded by this package.
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1047.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_REQUIREFLAGS</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag indicates ???????
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1048.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_REQUIRENAME</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag indicates the dependencies for this package. The following table
+define the legal strings which may be used and the corresponding version
+which are found in the RPMTAG_REQUIREVERSION Index. No other values may
+be used.
+<TABLE>
+<TITLE>Index Type values</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY>
+<ENTRY>Version</ENTRY>
+<ENTRY>Meaning</ENTRY>
+<ENTRY>Status</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>lsb</ENTRY>
+<ENTRY>1.2</ENTRY>
+<ENTRY>Indicates this is an LSB conforming package.</ENTRY>
+<ENTRY>required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>rpmlib(PayloadFilesHavePrefix)</ENTRY>
+<ENTRY>4.0-1</ENTRY>
+<ENTRY>Indicates the filenames in the Archive have had "./" prepended to them.</ENTRY>
+<ENTRY>optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>rpmlib(CompressedFileNames)</ENTRY>
+<ENTRY>3.0.4-1</ENTRY>
+<ENTRY>Indicates the filenames contained in the RPMTAG_???? Index have
+been compressed.</ENTRY>
+<ENTRY>optional</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1049.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_REQUIREVERSION</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag indicates the versions associated with the values found in the
+RPMTAG_REQUIRENAME Index. The values are defined above.
+This tag must be present.
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1050.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_PAYLOADFORMAT</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the format of the Archive section. The format value
+pointed to by this index record must be "cpio".
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1124.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><VARNAME>RPMTAG_PAYLOADCOMPRESSOR</VARNAME></TERM>
+<LISTITEM>
+<PARA>
+This tag specifies the compression used on the Archive section. The compression
+value pointed to by this index record must be "gzip".
+The type of this tag is <VARNAME>STRING</VARNAME>.
+The value of this tag is 1125.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </SECT2>
 
 
