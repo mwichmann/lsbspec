@@ -1,0 +1,384 @@
+HOW A BOOKS AND SETS ARE BUILT
+------------------------------
+A Tutorial Style explanation of how the LSB gets built.
+
+The term "LSB" is overloaded ... and can mean any of the following:
++ The workgroup responsible for all this mess
++ The entire collection of work in defining a Standard Base, including
+  the written specification, the sample implementation, the certification
+  program, the test suites, etc etc etc.
++ The set of ABI specifications that make up the written spec, including 
+  ELF, the LSB (there's that term again!), the packaging spec, etc.
+  We'll call this the LSB Set.
++ the part of the ABI specification that describes libraries and APIs
+  We'll call this the LSB book.
+
+Here, we are only concerned with these last two definitions.
+
+Here's the specification document directory hierarchy:
+
+lsbspec
+	book
+		LSB-generic
+		LSB-IA32
+		LSB-IA64
+		...
+        booksets    
+		LSB-Core-generic
+		LSB-Core-IA32
+		LSB-Core-IA64
+		...
+	ELF
+		generic
+			intro
+			lowlevel
+			objfmt
+			dynlnk
+		IA32
+			intro
+			lowlevel
+			objfmt
+			dynlnk
+		IA64
+			intro
+			lowlevel
+			objfmt
+			dynlnk
+		...
+	LSB
+		generic
+			intro
+			utillib
+			baselib
+			command
+			execenv
+			stdshell
+			usersgroups
+		IA32
+			intro
+			utillib
+			baselib
+			command
+			execenv
+			stdshell
+			usersgroups
+		IA64
+			intro
+			utillib
+			baselib
+			command
+			execenv
+			stdshell
+			usersgroups
+		...
+	Packaging
+		generic
+		IA32
+		IA64
+		...
+	Graphics
+		generic
+		...
+
+This hierarchy can be divided into two major parts ... the books (and
+booksets) that contain the final wrappers and information required to produce
+the finished products (together with that output), and the document source
+hierarchies, ELF/LSB Packaging, etc.
+
+Lets view this in a top down fashion ... starting with the end product, the
+book or bookset.
+
+In docbook, a book is defined like this:
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
+<!ENTITY nwalsh "Norman Walsh">
+<!ENTITY chap1 SYSTEM "chap1.sgm">
+<!ENTITY chap2 SYSTEM "chap2.sgm">
+]>
+<book>
+&chap1;
+&chap2;
+</book>
+
+(from Docbook: the definitive guide by Norman Walsh).
+
+That is, there are two parts to the file that defines the book ... 
+an SGML delclaration, and the book contents. For the LSB, this basic
+structure still holds, although we have modified things slightly
+from the above example. Here's the SGML declaration part for the 
+LSB-generic book:
+
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!ENTITY % funcprototype.element "IGNORE">
+<!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
+<!entity % entities SYSTEM "../../entities">
+<!entity contents SYSTEM "contents">
+<!entity specversion "2.1">
+<!entity spectitle "Linux Standard Base Specification">
+%entities;
+]>
+
+Going through this line by line:
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+introduces the declaration. It says that the root element
+of the document is a BOOK, described by the DTD for 
+DocBook 4.1, in English.
+
+The next two lines go together:
+<!ENTITY % funcprototype.element "IGNORE">
+<!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
+These override the definitions in the DTD for the 
+<funcprototype> tag, extending it to allow VarArgs tags. In pure
+DocBook 4.1, the DTD describes a <FuncPrototype> as
+<!ELEMENT FuncPrototype - O (FuncDef, (Void | VarArgs | ParamDef+))>
+which says that a function prototype consists of a 
+<FuncDef> tag, followed by either exactly one <Void> tag, exactly
+one <VarArgs> tag, or one or more <ParamDef> tags. The extension in
+the LSB book says that instead, a <FuncProtoType> can
+contain a <FuncDef>, followed by either exactly one
+<Void> tag, or zero or more <ParamDef> tags, optionally
+followed by a single <VarArgs> tag.
+
+This extension permits us to write prototypes
+for functions such as warn, which has a prototype of
+warn(const char *fmt, ...):
+   <FUNCPROTOTYPE>
+    <FUNCDEF>void
+     <FUNCTION>warn</FUNCTION>
+    </FUNCDEF>
+    <PARAMDEF>const char *
+     <PARAMETER><REPLACEABLE>fmt</REPLACEABLE></PARAMETER>
+    </PARAMDEF>
+    <VARARGS>
+   </FUNCPROTOTYPE>
+
+This is illegal in standard Docbook 4.1 (though more recent
+versions of the Docbook DTD have this change in them).
+
+OK, moving on, we next have
+<!entity % entities SYSTEM "../../entities">
+<!entity contents SYSTEM "contents">
+<!entity specversion "2.1">
+<!entity spectitle "Linux Standard Base Specification">
+
+These lines declare some SGML entities. An SGML entity can be thought
+of as a shorthand notation. The first two entities here are a sort of
+"include" mechanism ... the first picking up a series of other
+global entities (we'll look at these shortly), the second picks up
+a local file in this directory that uses the global definitions to 
+make a single entity called "contents" that will contain the entire
+text of the book! We'll use that shortly.
+The third & fourth entities are much simpler ... these just
+define shorthand terms for the specification version (this file
+is actually generated by sed, and the correct version string 
+is inserted here), and the title.
+
+Then we instantiate the gloabl entities we picked up earlier:
+%entities;
+
+
+So much for the SGML declaration. Then there's the DocBook part:
+<BOOK>
+<BOOKINFO>
+<TITLE>&spectitle &specversion</TITLE>
+<COPYRIGHT>
+<YEAR>2000</YEAR>
+<YEAR>2001</YEAR>
+<YEAR>2002</YEAR>
+<YEAR>2003</YEAR>
+<YEAR>2004</YEAR>
+<HOLDER>Free Standards Group</HOLDER>
+</COPYRIGHT>
+&legal;
+</BOOKINFO>
+ 
+&lsb-generic-intro;
+&contents;
+&fdl;
+</BOOK>
+
+
+This is very straightforward. It consists of the root element
+(remember back at line one, we said that the root element was a BOOK?
+Well, here it is ...)
+And the book consists of some information, wrapped in 
+<BOOKINFO>...</BOOKINFO>
+
+and the book itself, which is just three entities needing to get
+expanded:
+&lsb-generic-intro;
+&contents;
+&fdl;
+
+The first calls on the global entity "&lsb-generic-intro;", which causes
+an introduction section to be produced. Then we have the book itself,
+which is the contents entity we created above.  Finally, we wrap up with
+the GFDL description, which is another global entity.
+
+That's it for a book ... all we have to do now is to turn this small
+file into the hundreds of output pages by running it through the
+relevant tools.
+
+The tools have two parts: the main engine, which is implemented by
+OpenJade, and the Stylesheets, which come with DocBook, and are extended
+for the LSB. The stylesheets form a program that translates SGML into
+either HTML or RTF (there are other backednds too, but we only care
+about these two). The OpenJade engine implements an interpreter for that
+language. This is somewhat akin to Perl ... there's a big difference between
+/usr/bin/perl, the interpreter, and the perl program that actually
+does some task, such as the mklibspec tool used to generate many
+of the LSB library specification pages from the database.
+
+The Docbook stylesheets are modular ... they are intended to be extensible
+and extended. What comes "out of the box" is a base set of programs
+that use some simple defaults. The LSB has extended those defaults
+in several places. Look at lsbspec/docbook-utils.dsl to see how this
+is done (WARNING ... the stylesheets are written in a language
+called DSSSL, or "dizzle", which is based on the Scheme programming language
+which in turn is a variant of LISP. If you like LISP, you'll do OK ...
+otherwise, you'll quickly get blinded by the parentheses here!)
+
+When you read the Docbook book, you'll find lots of places
+where the "Processing Expectations" are a little vague ... 
+e.g. "Often outputs ...", or "Sometimes outputs a graphical 
+icon or another symbol as well." This is an indication that 
+the stylesheets are frequently changed in this area.
+
+A SET is basically the same as a book, except that the root element
+is now a <SET>, which contains a number of <BOOK>s. It has exactly the
+same SGML declarations at the beginning, except for the subsitiution
+of the BOOK at line one with the word SET.
+
+As we described above, all of the books and booksets start off
+by including some global entities.
+
+These are almost all entities that include other files, e.g.
+<!ENTITY lsb-generic-baselib  SYSTEM "LSB/generic/baselib/baselib.sgml">
+
+NOTE also that some versions of the tools may use slightly different
+paths, that include a leading "../../". The SGML standard actually says that
+SYSTEM entities like these are relative to the place that they are included
+from (i.e. the entities file itself), but earlier versions of OpenJade used
+the current working directory, which was down in the book or booksets
+directories. If you start to build documents and it immediately throughs
+hundreds of errors about being unable to find the files listed here, you'll
+need to add (or remove) the "../../" on every line.
+
+There are two standard packages available that implement OpenJade and the
+docbook tools in a single package:
+sgmltools (the "old" system)
+docbook-utils (the "new" system).
+
+Look in the lsbspec/book/Makefile.common file for examples of how to use
+these.
+
+==============================
+
+WORKING ON THE SGML ITSELF
+--------------------------
+
+That covers the high level view of what is a book or bookset, how it gets
+put together, etc.
+
+The individual chapters are where most people end up working. Above, we talked
+about the entity 
+<!ENTITY lsb-generic-baselib  SYSTEM "LSB/generic/baselib/baselib.sgml">
+
+In the book, this means we can simple use "&lsb-generic-baselib;" and the
+whole of the baselib chapter gets inserted at that point. But how do we
+develop text to go into the chapter?
+
+Well, one might assume that simply editing the file
+"LSB/generic/baselib/baselib.sgml" would be sufficient. The problem is that
+that file is generated. The real source of the baselib.sgml file is
+baselib.m4. That file contains the SGML text for the introduction to the
+chapter, followed by a number of included files:
+include(libc.sgml)
+                                                                                
+include(libm.sgml)
+                                                                                
+include(libpthread.sgml)
+                                                                                
+include(libgcc_s.sgml)
+                                                                                
+include(libdl.sgml)
+                                                                                
+include(libcrypt.sgml)
+                                                                                
+include(libpam.sgml)
+
+This baselib.m4 file is pre-processed by the m4 processor (now there's a
+surprise!) which sucks in the named files and produces the baselib.sgml file
+as the output. While m4 is including files, like the C-preprocessor, it still
+processes them. So libc.sgml is not just a pure sgml file ... it is
+preprocessed by m4. And, libc.sgml (and all the other files included in
+baselib.m4) is automatically generated by tools ... a perl script called 
+mklibspec that examines the LSB database to find interfaces defined by a given
+library (in this case, libc).
+
+The mklibspec program does several things. It generates tables of interfaces
+grouped by function (using the LibGroup and Interface tables in the MySQL
+database), and finds which underlying specification these interfaces are
+described in. If the underlying specification is "this specification" (i.e.
+the LSB itself), then mklibspec also generates a "include(foo.sgml)" line for
+every interface that is supposed to be described by the LSB itself.
+
+This is finally where you get to come in. Up till this point, the mklibspec
+tool has generated all of the SGML required (apart from the few lines of
+introduyction in baselib.m4 itself). You get to write the "foo.sgml" file to
+describe the interface "foo".
+
+For a library API page, or for a command description man page, the SGML page
+you write is a <REFENTRY>...</REFENTRY> section. It sould have the usual
+sections (see docbook_markup.txt for a style guide here). The SYNOPSIS section
+for a library API can be generated if you want using the tool "mksynop". This
+tool will spit out SGML (on the standard output) for the synopsis of a given
+interface. The next few lines came from typing ":r !mksynop printf" to vi:
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;stdio.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>printf</function>
+</funcdef>
+<paramdef>const char *
+<parameter>arg0</parameter>
+</paramdef>
+<varargs>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+
+The database does not hold the names for arguments, so mksynop invents names
+for you ... arg0, arg1 etc. You will likely want to change these names!
+
+========================
+
+Generic v Arch Specific parts
+-----------------------------
+
+The set of specifications that make up the LSB-Core set have another level of
+separation: that between the generic specificication and the architectuure
+specific one.
+
+Each of these sets has an identical structure. For every section in the
+generic bookset, there should be an equivalent architecture specific section.
+Hence, if you examine the directory hierarchies for the SGML source, you will
+find the structures are replicated for each.
+
+That is to say, not only is there a file LSB/generic/baselib/baselib.sgml,
+there is a file LSB/IA32/baselib/baselib.sgml (and one for each and every
+architecture specific supplement that exists). Furthermore, that SGML file is
+created in a versy similar fashion for each of the architectures, including
+the "generic" architecture. We described above how the generic one was made
+... using m4 and mklibspec.
+
+Only when it gets down to the level of individual man page does it differ
+between architectures. An API that is generic does not appear in the arch
+specific supplements, and an arch specific API does not appear in the generic
+document (an arch specific API may appear in several architectures; you should
+copy the file from one to another or symlink it in these cases).
+
+
