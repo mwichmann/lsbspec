@@ -15,7 +15,7 @@ all: $(FILES) $(TABLES)
 gensrc:
 
 clean:
-	rm -f $(FILES)
+	#rm -f $(FILES)
 
 spotless: clean
 	rm -f $(TABLES)
