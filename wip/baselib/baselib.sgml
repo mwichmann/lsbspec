@@ -13,7 +13,7 @@ hardware in the system.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Wed Oct 16 23:28:05 2002 -->
+<!--    at Thu Oct 17 17:35:07 2002 -->
 <SECT1 ID=libstdcxx>
 <TITLE>Interfaces for libstdcxx</TITLE>
 <PARA>
@@ -904,7 +904,7 @@ ISO/IEC 14882: 1998(E) Programming languages --C++</PARA>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Wed Oct 16 23:28:45 2002 -->
+<!--    at Thu Oct 17 17:35:48 2002 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -1030,7 +1030,7 @@ struct _Unwind_Exception
 <TITLE>Interfaces Definitions for libgcc_s</TITLE>
 <PARA>
 </PARA>
-<REFENTRY ID="baselib--Unwind-DeleteException-3"> <REFMETA>
+<REFENTRY ID="baselib--Unwind-DeleteException"> <REFMETA>
 <REFENTRYTITLE>_Unwind_DeleteException</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
@@ -1051,7 +1051,7 @@ private C++ error handling method
  <FUNCDEF>void 
   <FUNCTION>_Unwind_DeleteException</FUNCTION></FUNCDEF>
  <PARAMDEF>struct _Unwind_Exception 
-  <PARAMETER><REPLACEABLE>*exception_object</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*object</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -1063,12 +1063,132 @@ private C++ error handling method
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>_Unwind_DeleteException</FUNCTION> deletes the given exception object
-<PARAMETER>exception_object</PARAMETER>.
+<FUNCTION>_Unwind_DeleteException</FUNCTION> deletes the given exception
+<PARAMETER>object</PARAMETER>.  If a given runtime resumes normal
+execution after catching a foreign exception, it will not know how to
+delete that exception.  Such an exception will be deleted by calling
+<emphasis>_Unwind_DeleteException</emphasis>.  This is a convenience
+function that calls the funtion pointed to by the 
+<emphasis>exception_cleanup</emphasis> field of the exception header.
 </PARA>
 </REFSECT1>
 </REFENTRY>
 
+<REFENTRY ID="baselib--Unwind-ForcedUnwind"> <REFMETA>
+<REFENTRYTITLE>_Unwind_ForcedUnwind</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>_Unwind_ForcedUnwind
+</REFNAME>
+<REFPURPOSE>
+private C++ error handling method
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>8 October 2002</DATE>
+</REFSYNOPSISDIVINFO>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>_Unwind_Reason_Code
+  <FUNCTION>_Unwind_ForcedUnwind</FUNCTION></FUNCDEF>
+ <PARAMDEF>struct _Unwind_Exception
+  <PARAMETER><REPLACEABLE>*object</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>_Unwind_Stop_Fn
+  <PARAMETER><REPLACEABLE>stop</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>void
+  <PARAMETER><REPLACEABLE>*stop_parameter</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>8 October 2002</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+<FUNCTION>_Unwind_ForcedUnwind</FUNCTION> 
+raise and exception for forced unwinding, passing along the given exception
+<emphasis>object</emphasis>, which should have its
+<emphasis>exception_class</emphasis> and <emphasis>exceptoin_cleanup</emphasis>
+fields set.  The exception object has been allocated by the language-specific
+runtime, and has a language-specific format, except that it must contain an
+<emphasis>_Unwind_Exceptoin struct</emphasis>.
+</PARA>
+<PARA>
+Forced unwinding is a single-phase process.  The <emphasis>stop</emphasis>
+and <emphasis>stop_parameter</emphasis> parameters control the termination
+of the unwind process, instead of the usual personality routine query.
+The <emphasis>stop</emphasis> function parameter is called for each unwind
+frame, with the parameteres described for the usual personality routine below,
+plus an additional <emphasis>stop_parameter</emphasis>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return</TITLE>
+<PARA>
+When the <emphasis>stop</emphasis> function identifies the destination frame,
+it transfers control to the user code as appropriate without returning, 
+normally after calling <emphasis>_Unwind_DeleteException</emphasis>.  If not,
+then it should return an <emphasis>_Unwind_Reason_Code</emphasis> value.
+</PARA>
+<PARA>
+If the <emphasis>stop</emphasis> function returns any reason code other than
+<emphasis>_URC_NO_REASON</emphasis>, then the stack state is indeterminate
+from the point of view of the caller of 
+<emphasis>_Unwind_ForcedUnwind</emphasis>.  Rather than attempt to return,
+therefore, the unwind library should use the 
+<emphasis>exception_cleanup</emphasis> entry in the exception, and then 
+call <emphasis>abort</emphasis>.
+</PARA>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>_URC_NO_REASON</TERM>
+<LISTITEM>
+<PARA>
+This is not the destination from.  The unwind runtime will call frame's
+personality routine with the <emphasis>_UA_FORCE_UNWIND</emphasis>
+and <emphasis>_UA_CLEANUP_PHASE</emphasis> flag set in 
+<emphasis>actions<emphasis>, and then unwind to the next frame
+and callthe <emphasis>stop</emphasis> function again.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>_URC_END_OF_STACK</TERM>
+<LISTITEM>
+<PARA>
+In order to allow <emphasis>_Unwind_ForcedUnwind</emphasis> to perform
+special processing when it reaches the end of the stack, the unwind runtime
+will call it after the last frame is rejected, with a NULL stack pointer
+in the context, and the <emphasis>stop</emphasis> function must catch
+this condition.  It may return this code if it cannot handle end-of-stack.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>_URC_FATAL_PHASE2_ERROR</TERM>
+<LISTITEM>
+<PARA>
+The <emphasis>stop</emphasis> function may return this code for other fatal 
+conditions like stack corruption.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+</REFSECT1>
+
+</REFENTRY>
 
 <REFENTRY ID="baselib--Unwind-GetDataRelBase"> <REFMETA>
 <REFENTRYTITLE>_Unwind_GetDataRelBase</REFENTRYTITLE>
@@ -1146,6 +1266,13 @@ private C++ error handling method
 <PARA>
 <FUNCTION>_Unwind_GetGR</FUNCTION> return data at
 <PARAMETER>index</PARAMETER> found in <PARAMETER>context</PARAMETER>.
+The register is identified by its index: 0 to 31 are for the fixed
+registers, and 32 to 127 are for the stacked registers.
+</PARA>
+<PARA>
+During the two phases of unwinding, only GR1 has a guaranteed value, which
+is the global pointer of the frame referenced by the unwind context.
+If the register has its NAT bit set, the behavior is unspecified.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -1184,7 +1311,8 @@ private C++ error handling method
 </TITLE>
 <PARA>
 <FUNCTION>_Unwind_GetIP</FUNCTION> 
-returns the call-site index as saved in the <PARAMETER>context</PARAMETER>.
+returns the instruction pointer value for the routine identified by the 
+unwind <PARAMETER>context</PARAMETER>.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -1265,7 +1393,8 @@ private C++ error handling method
 </TITLE>
 <PARA>
 <FUNCTION>_Unwind_GetRegionStart</FUNCTION> 
-returns 0.
+routine returns the address (i.e., 0) of the beginning of the procedure or code
+fragment described by the current unwind descriptor block.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -1343,10 +1472,63 @@ private C++ error handling method
 </TITLE>
 <PARA>
 <FUNCTION>_Unwind_RaiseException</FUNCTION> 
-raise an exception for
-<PARAMETER>object</PARAMETER>.
+raise an exception, passing along the given exception 
+<PARAMETER>object</PARAMETER>, which should have its 
+<emphasis>exception_class</emphasis> and <emphasis>exception_cleanup</emphasis>
+fields set.  The exception object has been allocated by the language-specific
+runtime, and has a language-specific format, exception that it must
+contain an <emphasis>_Unwind_Exception</emphasis>.
 </PARA>
 </REFSECT1>
+
+<REFSECT1>
+<TITLE>Return</TITLE>
+<PARA>
+<FUNCTION>_Unwind_RaiseException</FUNCTION> does not return, unless an
+error condition is found.  If an error condition occurs, an 
+<emphasis>_Unwind_Reason_Code</emphasis> is returnd:
+</PARA>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>_URC_END_OF_STACK</TERM>
+<LISTITEM>
+<PARA>
+The unwinder encountered the end of the stack during phase one, without finding
+a handler.  The unwind runtime will not have modified the stack.  The C++
+runtime will normally call <emphasis>uncaught_exception()</emphasis> in this
+case.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>_URC_FATAL_PHASE1_ERROR</TERM>
+<LISTITEM>
+<PARA>
+The unwinder encountered an unexpected error during phase one, because
+of something like stack corruption. The unwind runtime will not have modified
+the stack.  The C++ runtime will normally call <emphasis>terminate()</emphasis>
+in this case.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>_URC_FATAL_PHASE2_ERROR</TERM>
+<LISTITEM>
+<PARA>
+The unwinder encountered an unexpected error during phase two.
+This is usually be a throw, which will call <emphasis>terminate</emphasis>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+</REFSECT1>
+
 </REFENTRY>
 
 <REFENTRY ID="baselib--Unwind-Resume"> <REFMETA>
@@ -1383,7 +1565,10 @@ private C++ error handling method
 </TITLE>
 <PARA>
 <FUNCTION>_Unwind_Resume</FUNCTION> 
-resumes from the exception of <PARAMETER>object</PARAMETER>.
+resumes propagation of an existing exception <PARAMETER>object</PARAMETER>.
+A call to this routine is inserted as the end of a landing pad that
+performed cleanup, but did not resume normal execution.  It causes
+unwinding to proceed further.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -1469,8 +1654,8 @@ private C++ error handling method
 </TITLE>
 <PARA>
 <FUNCTION>_Unwind_SetIP</FUNCTION> 
-overwrite the return address for <PARAMETER>context</PARAMETER>
-with <PARAMETER>value</PARAMETER>.
+sets the <PARAMETER>value</PARAMETER> of the instruction pointer for the 
+routine identified by the unwind <PARAMETER>context</PARAMETER>
 </PARA>
 </REFSECT1>
 </REFENTRY>
