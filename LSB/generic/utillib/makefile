@@ -14,7 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mklibspec -a All -l libz >libz.sgml
-	../../mklibspec -a All -l libcurses >libcurses.sgml
+	../../mklibspec -a All -l libncurses >libcurses.sgml
 	../../mklibspec -a All -l libutil >libutil.sgml
 
 clean:
