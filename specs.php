@@ -4,11 +4,9 @@ include("objects.php");
 
 $ftproot = "/var/www/lsbnuke/spec/";
 $baseroot = "/var/www/lsbnuke/spec";
-$baseroot = "/home/anderson/LSB";
 $removeroot = "/var/www/lsbnuke/spec";
-$removeroot = "/home/anderson/LSB/lsbspec";
 $addroot = "ftp://ftp.freestandards.org";
-$addroot = "http://www.netsweng.com/~anderson/LSB";
+$addroot = "http://www.linuxbase.org/spec";
 
 /* a root project. all projects belong to this. */
 $r = new Project("lsb");
@@ -17,20 +15,19 @@ $r->name = "Linux Standard Base Specifications";
 $p = new Project("oldbooks");
 $p->name = "Old Format Specification - This list goes away soon";
 $p->url = "http://www.linuxbase.org/spec/";
-#$p->indexDir($baseroot.'/lsbspec/archLSB');
-$p->indexDir($baseroot.'/lsbspec');
+$p->indexDir($baseroot.'/');
 addProject($p);
 
 $p = new Project("book");
 $p->name = "Individual Specification";
 $p->url = "http://www.linuxbase.org/spec/";
-$p->indexDir($baseroot.'/lsbspec/book');
+$p->indexDir($baseroot.'/book');
 addProject($p);
 
 $p = new Project("booksets");
 $p->name = "LSB Specification Profiles";
 $p->url = "http://www.linuxbase.org/spec/";
-$p->indexDir($baseroot.'/lsbspec/booksets');
+$p->indexDir($baseroot.'/booksets');
 addProject($p);
 
 $colours = array("beta" => "#ccccff",
