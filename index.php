@@ -154,13 +154,13 @@ We welcome and appreciate comments and bug reports at any time (see
 <TD>LSB Common</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion")
+include("gLSB/buildversion")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbreview.html">Review it!</A></TD>
 <TD ALIGN=center><a href="gLSB/gLSB/book1.html">HTML</a></TD>
 <TD ALIGN=center><a href="gLSB/gLSB.rtf">RTF</a></TD>
-<TD ALIGN=center><!--a href="gLSB/gLSB.pdf">PDF</a></TD>
+<TD ALIGN=center><!--a href="gLSB/gLSB.pdf">PDF</a--></TD>
 <TD ALIGN=center><a href="gLSB/gLSB.html">HTML</a></TD>
 <TD ALIGN=center><a href="gLSB/gLSB.txt">TXT</a></TD>
 <TD ALIGN=center><a href="gLSB/gLSB_lines.txt">TXT</a></TD>
@@ -174,7 +174,7 @@ echo(date("r", filemtime("gLSB/gLSB/book1.html")))
 <TD>LSB IA32</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion.IA32")
+include("archLSB/IA32/buildversion")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbia32review.html">Review it!</A></TD>
@@ -194,7 +194,7 @@ echo(date("r", filemtime("archLSB/IA32/spec/book1.html")))
 <TD>LSB IA64</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion.IA64")
+include("archLSB/IA64/buildversion")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbia64review.html">Review it!</A></TD>
@@ -214,7 +214,7 @@ echo(date("r", filemtime("archLSB/IA64/spec/book1.html")))
 <TD>LSB PPC32</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion.PPC32")
+include("archLSB/PPC32/buildversion")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbppc32review.html">Review it!</A></TD>
@@ -234,7 +234,7 @@ echo(date("r", filemtime("archLSB/PPC32/spec/book1.html")))
 <TD>LSB PPC64</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion.PPC64")
+include("archLSB/PPC64/buildversion")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbppc64review.html">Review it!</A></TD>
@@ -254,7 +254,7 @@ echo(date("r", filemtime("archLSB/PPC64/spec/book1.html")))
 <TD>LSB S390</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion.S390")
+include("archLSB/S390/buildversion")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbs390review.html">Review it!</A></TD>
@@ -274,7 +274,7 @@ echo(date("r", filemtime("archLSB/S390/spec/book1.html")))
 <TD>LSB S390X</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion.S390X")
+include("archLSB/S390X/buildversion")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbs390xreview.html">Review it!</A></TD>
@@ -294,7 +294,7 @@ echo(date("r", filemtime("archLSB/S390X/spec/book1.html")))
 <TD>LSB AMD64</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion.AMD64")
+include("archLSB/AMD64/buildversion")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbx86-64review.html">Review it!</A></TD>
@@ -371,7 +371,8 @@ developer to make CVS changes directly to the tree with your and other's
 submitted changes. Here is a list of <a href="http://sourceforge.net/pm/task.php?group_id=1107&set=custom&group_project_id=3049&_assigned_to=100&_status=1&SUBMIT=Browse">things
 to do</a> for the LSB Specification.
 <H2><a NAME="faq"></a>Frequently Asked Questions</H2>
-An FAQ associated with the written specification is available <a href="faq.html">here</a>.
+An FAQ associated with the written specification is available
+<a href="http://www.linuxbase.org/modules.php?name=FAQ&myfaq=yes&id_cat=3&categories=LSB+Written+Specification">here</a>.
 <hr WIDTH="100%">
 </body>
 </html>
