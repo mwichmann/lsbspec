@@ -54,10 +54,10 @@ LSB-conforming applications shall use the Machine Information as defined in
 <SECT1 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
-The following sections are defined in the <XREF LINKEND="std.PPC32.ABI>.
+The following sections are defined in the <XREF LINKEND="std.PPC32.ABI">.
 include(elfsect.sgml)
 Note that the .tags, .taglist and .tagsym sections described in 
-<XREF LINKEND="std.PPC32.ABI> are not supported.
+<XREF LINKEND="std.PPC32.ABI"> are not supported.
 </PARA>
 </SECT1>
 <SECT1 ID="linuxspecial">
