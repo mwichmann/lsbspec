@@ -14,6 +14,7 @@ all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mkstandardsgmltable -a All >standards.sgml
+	../../../mkstandardsgmltable -m CXX >cxxstandards.sgml
 	../../../mklibsgmltable -a All >glibraries.sgml
 	../../../mklibsgmltable -a None >pslibs.sgml
 
@@ -24,5 +25,7 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-intro.sgml: standards.sgml libraries.sgml
+intro.sgml: preface.sgml genscope.sgml modscope.sgml standards.sgml libraries.sgml terms.sgml
+cxxintro.sgml: preface.sgml genscope.sgml cxxscope.sgml cxxstandards.sgml libraries.sgml terms.sgml
+
 libraries.sgml: glibraries.sgml pslibs.sgml
