@@ -2,7 +2,8 @@ HTML=
 
 TABLES = baselib/libsysansi.sgml baselib/libsyspsoxi.sgml
 
-SUBDIRS=intro objfmt baselib utillib graphlib sysinit usersgroups command
+SUBDIRS=intro objfmt baselib utillib graphlib sysinit usersgroups command \
+	dynlnk sgmlspec
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
