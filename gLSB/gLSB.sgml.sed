@@ -21,6 +21,22 @@
 <BOOK>
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification &specversion</TITLE>
+<COPYRIGHT>
+<YEAR>2000</YEAR>
+<YEAR>2001</YEAR>
+<HOLDER>Free Standards Group</HOLDER>
+</COPYRIGHT>
+<LEGALNOTICE>
+<PARA>
+Insert copy of FSG license here.
+</PARA>
+</LEGALNOTICE>
+<LEGALNOTICE>
+<PARA>
+Portions of the text were taken from other copyrighted documents in accordance
+with the respective license of those documents.
+</PARA>
+</LEGALNOTICE>
 </BOOKINFO>
 
 &intro.sgm;
