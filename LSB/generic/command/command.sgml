@@ -473,7 +473,7 @@ section is specified by the following standards.</PARA>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Thu Sep 23 03:42:17 2004 -->
+<!--    at Sun Sep 26 09:49:12 2004 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -934,7 +934,7 @@ change login shell
 the name of the
 user's initial login command.  An unprivileged user may only change the login
 shell for their own account, a user with appropriate privilege may change the login shell
-for any account.
+for any account specified by <PARAMETER class=option>user</PARAMETER>.
 </PARA>
 
 <PARA>
@@ -942,7 +942,7 @@ Unless the user has appropriate privilege, the initial login command name
 shall be one of those listed in 
 <filename>/etc/shells</filename>.
 The <PARAMETER CLASS=Option>login_shell</PARAMETER> shall be the absolute path
-(i.e. it must start with '/') to an executable file.
+(i.e. it must start with '<filename>/</filename>') to an executable file.
 Accounts which are restricted (in an implementation-defined manner)
 may not change their login shell.
 </PARA>
@@ -951,7 +951,7 @@ may not change their login shell.
 If the <PARAMETER CLASS=Option>-s</PARAMETER>
 option is not selected, <COMMAND>chsh</COMMAND> operates in 
 an interactive mode. The prompts and expected input in this mode are
-implementation-defined.
+unspecified.
 </PARA>
 
 </REFSECT1>
@@ -2201,43 +2201,59 @@ displays the version number and compilation options, then quits.
 <REFNAME>hostname</REFNAME>
 
 <REFPURPOSE>
-show the system's host name
+show or set the system's host name
 </REFPURPOSE>
 
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-hostname [-v] [-a] [--alias] [-d] [--domain] [-f] [--fqdn]
-[-i] [--ip-address] [--long] [-s]  [--short]  [-y]  [--yp]
-[--nis]
-
-hostname [-v] [-F filename] [--file filename] [hostname]
-
-hostname [-v] [-h] [--help] [-V] [--version]
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>hostname</COMMAND>
+<ARG>-v</ARG>
+<GROUP><ARG>-a</ARG><ARG>--alias</ARG></GROUP>
+<GROUP><ARG>-d</ARG><ARG>--domain</ARG></GROUP>
+<GROUP><ARG>-f</ARG><ARG>--fqdn</ARG><ARG>--long</ARG></GROUP>
+<GROUP><ARG>-i</ARG><ARG>--ip-address</ARG></GROUP>
+<GROUP><ARG>-s</ARG><ARG>--short</ARG></GROUP>
+<GROUP><ARG>-y</ARG><ARG>--yp</ARG><ARG>--nis</ARG></GROUP>
+<SBR>
+<COMMAND>hostname</COMMAND>
+<ARG>-v</ARG>
+<GROUP><ARG>-F <replaceable>file</replaceable></ARG><ARG>--file <replaceable>file</replaceable></ARG></GROUP>
+<GROUP><ARG>-y</ARG><ARG>--yp</ARG><ARG>--nis</ARG></GROUP>
+<ARG>name</ARG>
+<SBR>
+<COMMAND>hostname</COMMAND>
+<ARG>-v</ARG>
+<GROUP><ARG>-h</ARG><ARG>--help</ARG></GROUP>
+<GROUP><ARG>-V</ARG><ARG>--version</ARG></GROUP>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>hostname</COMMAND> is used to either set or display the 
+<COMMAND>hostname</COMMAND> is used to either display or, with appropriate
+privileges, set the 
 current host or domain
-name of the system.  This name is used by many of the networking
-programs to identify the machine. The domain name is also used by
-NIS/YP.
+names of the system.  The host name is used by many applications
+to identify the machine. The NIS domain name is also used by
+NIS.
 </PARA>
 
 <PARA>
 When called without any arguments, the program displays the name of
-the system as returned by the gethostname(2) function.
+the system as returned by the <FUNCTION>gethostname</FUNCTION> function.
 </PARA>
 
 <PARA>
-When called with one argument or with the --file option, the commands
-set the host name or the NIS/YP domain name. Note, that only the
-super-user can change the names.
+When called with a <PARAMETER>name</PARAMETER> argument or with the 
+<PARAMETER>--file</PARAMETER> option, and the user has appropriate
+privilege, the command
+sets the host name or, if any of the <PARAMETER>-y</PARAMETER>,
+<PARAMETER>--yp</PARAMETER>, or <PARAMETER>--nis</PARAMETER> options are specified,
+the NIS domain name. 
 </PARA>
 
 </REFSECT1>
@@ -2306,7 +2322,7 @@ dot.
 <term>-v, --verbose</term>
 <listitem>
 <para>
-tells what's going on.
+provide diagnostic information.
 </para>
 </listitem>
 </varlistentry>
@@ -2315,8 +2331,7 @@ tells what's going on.
 <term>-y, --yp, --nis</term>
 <listitem>
 <para>
-displays the NIS domain name.  If a parameter is given (or --file name)
-then root can also set a new NIS domain.
+displays, or, with appropriate privilege, sets the NIS domain name.
 </para>
 </listitem>
 </varlistentry>
@@ -3039,18 +3054,18 @@ print distribution specific information
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-lsb_release [OPTION]...
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>lsb_release</COMMAND> <ARG rep=repeat>OPTION</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-The lsb_release command prints certain LSB (Linux Standard
+The <COMMAND>lsb_release</COMMAND> command prints certain LSB (Linux Standard
 Base) and Distribution information.
 </PARA>
 <PARA>
-With no option, same as -v.
+If no options are given, the <parameter>-v</parameter> option is assumed.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -3154,9 +3169,9 @@ on this platform.
 </PARA>
 <PROGRAMLISTING>
 example% lsb_release -v
-LSB Version: core-2.0-ia32:graphics-2.0-ia32
+LSB Version: core-2.0-ia32:core-2.0-noarch:graphics-2.0-ia32:graphics-2.0-noarch
 </PROGRAMLISTING>
-
+</REFSECT1>
 </REFENTRY>
 
 <REFENTRY id="m4">
@@ -3186,7 +3201,8 @@ extensions as listed below.
 <term>-P</term>
 <listitem>
 <para>
-forces a m4_ prefix to all builtins.
+forces all builtins to be prefixed with <literal>m4_</literal>. For example,
+<literal>define</literal> becomes <literal>m4_define</literal>.
 </para>
 </listitem>
 </varlistentry>
@@ -3212,30 +3228,30 @@ for includes.
 <REFNAME>md5sum</REFNAME>
 
 <REFPURPOSE>
-generates or checks MD5 message digests
+generate or check MD5 message digests
 </REFPURPOSE>
 
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-md5sum [-b] [-c [file]] | [file...]
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>md5sum</COMMAND>
+<GROUP><ARG>-c <ARG>file</ARG></ARG><ARG rep=repeat>file</ARG></GROUP>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <refsect1>
 <title>Description</title>
 <para>
 For each file, write to standard output a line containing the MD5
-checksum of that file, followed by one or more blank characters,
-followed by the name of the file.  The MD5 checksum shall be
-calculated according to RFC1321 and output as 32 hexadecimal digits
-(as RFC1321 does).
+message digest of that file, followed by one or more blank characters,
+followed by the name of the file.  The MD5 message digest shall be
+calculated according to <XREF LINKEND=STD.RFC1321> and output as 32 hexadecimal digits.
 </para>
 
 <para>
 If no file names are specified as operands, read from standard input
-and use "-" as the file name in the output.
+and use <literal>"-"</literal> as the file name in the output.
 </para>
 </refsect1>
 
@@ -3243,6 +3259,7 @@ and use "-" as the file name in the output.
 <title>Options</title>
 <variablelist>
 
+<!--
 <varlistentry>
 <term>-b</term>
 <listitem>
@@ -3251,19 +3268,35 @@ uses binary mode.
 </para>
 </listitem>
 </varlistentry>
+-->
 
 <varlistentry>
 <term>-c [file]</term>
 <listitem>
 <para>
-checks md5sum of all files listed in file against the checksum listed
-in the same file. The actual format of that file is the same as output
-of md5sum.  That is, each line in the file describes a file.
+checks the MD5 message digest of all files named in <PARAMETER>file</PARAMETER>
+against the message digest listed
+in the same file. The actual format of <PARAMETER>file</PARAMETER>
+is the same as the output
+of <COMMAND>md5sum</COMMAND>.  That is, each line in the file describes a file. 
+If <PARAMETER>file</PARAMETER>
+is not specified, read 
+message digests from <VARNAME>stdin</VARNAME>.
 </para>
 </listitem>
 </varlistentry>
 
 </variablelist>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Exit Status</TITLE>
+<PARA>
+<COMMAND>md5sum</COMMAND> shall exit with status <RETURNVALUE>0</RETURNVALUE>
+if the sum was generated successfully, or, in check mode, if the check
+matched. Otherwise, <COMMAND>md5sum</COMMAND> shall exit with a non-zero
+status.
+</PARA>
 </REFSECT1>
 
 </REFENTRY>
@@ -3371,21 +3404,29 @@ make temporary file name (unique)
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-mktemp [-q] [-u] template
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>mktemp</COMMAND>
+<ARG>-q</ARG><ARG>-u</ARG><ARG choice=plain>template</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>mktemp</COMMAND> takes the given file name template and 
+The <COMMAND>mktemp</COMMAND> command takes the given file name 
+<PARAMETER>template</PARAMETER> and 
 overwrites a
-portion of it to create a file name.  This file name is unique and
+portion of it to create a file name.  This file name shall be unique and
 suitable for use by the application.
 </PARA>
+<PARA>
+The <PARAMETER>template</PARAMETER> should have at least six trailing
+<literal>'X'</literal>
+characters. These characters are replaced with characters from the portable
+filename character set in order to
+generate a unique name.
+</PARA>
 </REFSECT1>
-
 
 <REFSECT1>
 <title>Options</title>
@@ -3395,8 +3436,9 @@ suitable for use by the application.
 <term>-q</term>
 <listitem>
 <para>
-fails silently if an error occurs.  This is useful if a script does not
-want error output to go to standard error.
+fail silently if an error occurs.  Diagnostic messages to <varname>stderr</>
+are suppressed, but the command shall still exit with a non-zero exit status
+if an error occurs.
 </para>
 </listitem>
 </varlistentry>
@@ -3405,10 +3447,10 @@ want error output to go to standard error.
 <term>-u</term>
 <listitem>
 <para>
-operates in `unsafe' mode.  The temp file will be unlinked before
-<COMMAND>mktemp</COMMAND> exits.  This is slightly better than 
-mktemp(3) but still
-introduces a race condition.  Use of this option is not encouraged.
+operates in `unsafe' mode.  A unique name is generated,
+but the temporary file shall be unlinked before
+<COMMAND>mktemp</COMMAND> exits.  
+Use of this option is not encouraged.
 </para>
 </listitem>
 </varlistentry>
@@ -3599,36 +3641,49 @@ mount a file system
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-mount [-hV]
-mount -a [-fFnrsvw] [-t vfstype]
-mount [-fnrsvw] [-o options [,...]] device | dir
-mount [-fnrsvw] [-t vfstype] [-o options] device dir
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>mount</COMMAND>
+<ARG>-hV</ARG>
+<SBR>
+<COMMAND>mount</COMMAND> 
+<ARG>-a</ARG><ARG>-fFnrsvw</ARG><ARG>-t <replaceable>vfstype</replaceable></ARG>
+<SBR>
+<COMMAND>mount</COMMAND> 
+<ARG>-fnrsvw</ARG> <ARG>-o <replaceable>options</replaceable><ARG rep=repeat>,</ARG></ARG>
+<GROUP><ARG choice=plain>device</ARG<ARG choice=plain>dir</ARG></GROUP>
+<SBR>
+<COMMAND>mount</COMMAND>
+<ARG>-fnrsvw</ARG> <ARG>-t <replaceable>vfstype</replaceable></ARG> <ARG>-o options</ARG> 
+<ARG choice=plain>device</ARG>
+<ARG choice=plain>dir</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-Files are named in a big tree, the file hierarchy, rooted at /.
+As described in <XREF LINKEND=STD.SUSv3>, all files in the system
+are organized in a directed graph, known as the file hierarchy,
+rooted at <filename>/</>.
 These files can be spread out over
-several devices. <COMMAND>mount</COMMAND> serves to attach the file system
-found on some device to the big file tree. Conversely, umount(8)
-will detach it again.
+several underlying devices.
+The <COMMAND>mount</COMMAND> command shall attach the file system
+found on some underlying device to the file hierarchy. 
 </PARA>
 
 </REFSECT1>
 
 <REFSECT1>
-<title>Standard Options</title>
+<title>Options</title>
 <variablelist>
 
 <varlistentry>
 <term>-v</term>
 <listitem>
 <para>
-invokes verbose mode.
+invoke verbose mode. The <command>mount</command> command shall provide diagnostic
+messages on <varname>stdout</varname>.
 </para>
 </listitem>
 </varlistentry>
@@ -3637,7 +3692,7 @@ invokes verbose mode.
 <term>-a</term>
 <listitem>
 <para>
-mounts all filesystems (of the given types) mentioned in fstab.
+mount all filesystems (of the given types) mentioned in <filename>/etc/fstab</filename>.
 </para>
 </listitem>
 </varlistentry>
@@ -3646,8 +3701,9 @@ mounts all filesystems (of the given types) mentioned in fstab.
 <term>-F</term>
 <listitem>
 <para>
-combines with -a. to fork off a new incarnation of <COMMAND>mount</COMMAND>
-for each device.  This will do the mounts on different devices or
+If the <parameter>-a</parameter> option is also present,
+fork a new incarnation of <COMMAND>mount</COMMAND>
+for each device to be mounted.  This will do the mounts on different devices or
 different NFS servers in parallel.  
 </para>
 </listitem>
@@ -3657,7 +3713,7 @@ different NFS servers in parallel.
 <term>-f</term>
 <listitem>
 <para>
-causes everything to be done except for the actual system call; if
+cause everything to be done except for the actual system call; if
 it's not obvious, this `fakes' mounting the file system.  
 </para>
 </listitem>
@@ -3667,8 +3723,8 @@ it's not obvious, this `fakes' mounting the file system.
 <term>-n</term>
 <listitem>
 <para>
-mounts without writing in /etc/mtab.  This is necessary for example
-when /etc is on a read-only file system.
+mount without writing in <filename>/etc/mtab</filename>.  This is necessary for example
+when <filename>/etc</filename> is on a read-only file system.
 </para>
 </listitem>
 </varlistentry>
@@ -3677,8 +3733,7 @@ when /etc is on a read-only file system.
 <term>-s</term>
 <listitem>
 <para>
-tolerates sloppy <COMMAND>mount</COMMAND> options rather than failing. 
-This will ignore <COMMAND>mount</COMMAND> options not supported by a 
+ignore <COMMAND>mount</COMMAND> options not supported by a 
 filesystem type.  Not all filesystems support this option. 
 </para>
 </listitem>
@@ -3688,7 +3743,7 @@ filesystem type.  Not all filesystems support this option.
 <term>-r</term>
 <listitem>
 <para>
-mounts the file system read-only. A synonym is -o ro.
+mount the file system read-only. A synonym is <parameter>-o ro</parameter>.
 </para>
 </listitem>
 </varlistentry>
@@ -3697,8 +3752,8 @@ mounts the file system read-only. A synonym is -o ro.
 <term>-w</term>
 <listitem>
 <para>
-mounts the file system read/write. (default) A synonym is
--o rw.
+mount the file system read/write. (default) A synonym is
+<parameter>-o rw</parameter>.
 </para>
 </listitem>
 </varlistentry>
@@ -3707,7 +3762,8 @@ mounts the file system read/write. (default) A synonym is
 <term>-L label</term>
 <listitem>
 <para>
-mounts the partition that has the specified label.
+If the file <filename>/proc/partitions</filename> is supported,
+mount the partition that has the specified label.
 </para>
 </listitem>
 </varlistentry>
@@ -3716,8 +3772,8 @@ mounts the partition that has the specified label.
 <term>-U uuid</term>
 <listitem>
 <para>
-mounts the partition that has the specified uuid.  These two options
-require the file /proc/partitions to exist.
+If the file <filename>/proc/partitions</filename> is supported,
+mount the partition that has the specified uuid.  
 </para>
 </listitem>
 </varlistentry>
@@ -3726,12 +3782,12 @@ require the file /proc/partitions to exist.
 <term>-t vfstype</term>
 <listitem>
 <para>
-indicates a file system type of vfstype. 
+indicate a file system type of <parameter>vfstype</parameter>. 
 </para>
 
 <para>
 More than one type may be specified in a comma separated list.  The
-list of file system types can be prefixed with no to specify the file
+list of file system types can be prefixed with <literal>no</> to specify the file
 system types on which no action should be taken.
 </para>
 
@@ -3742,9 +3798,9 @@ system types on which no action should be taken.
 <term>-o</term>
 <listitem>
 <para>
-options are specified with a -o flag followed by a comma-separated
+options are specified with a <parameter>-o</parameter> flag followed by a comma-separated
 string of options.  Some of these options are only useful when they
-appear in the /etc/fstab file.  The following options apply to any
+appear in the <filename>/etc/fstab</filename> file.  The following options apply to any
 file system that is being mounted:
 </para>
 
@@ -3754,7 +3810,7 @@ file system that is being mounted:
 <term>async</term>
 <listitem>
 <para>
-does all I/O to the file system asynchronously.
+perform all I/O to the file system asynchronously.
 </para>
 </listitem>
 </varlistentry>
@@ -3763,7 +3819,7 @@ does all I/O to the file system asynchronously.
 <term>atime</term>
 <listitem>
 <para>
-updates inode access time for each access. (default)
+update inode access time for each access. (default)
 </para>
 </listitem>
 </varlistentry>
@@ -3772,7 +3828,8 @@ updates inode access time for each access. (default)
 <term>auto</term>
 <listitem>
 <para>
-is mountable with -a.
+in <filename>/etc/fstab</filename>,
+indicate the device is mountable with <parameter>-a</parameter>.
 </para>
 </listitem>
 </varlistentry>
@@ -3781,7 +3838,16 @@ is mountable with -a.
 <term>defaults</term>
 <listitem>
 <para>
-uses default options: rw, suid, dev, exec, auto, nouser, and async.
+use default options:
+<simplelist type=inline>
+<member><literal>rw</literal></member>
+<member><literal>suid</literal></member>
+<member><literal>dev</literal></member>
+<member><literal>exec</literal></member>
+<member><literal>auto</literal></member>
+<member><literal>nouser</literal></member>
+<member><literal>async</literal></member>
+</simplelist>.
 </para>
 </listitem>
 </varlistentry>
@@ -3790,7 +3856,7 @@ uses default options: rw, suid, dev, exec, auto, nouser, and async.
 <term>dev</term>
 <listitem>
 <para>
-interprets character or block special devices on the file system.
+interpret character or block special devices on the file system.
 </para>
 </listitem>
 </varlistentry>
@@ -3799,7 +3865,7 @@ interprets character or block special devices on the file system.
 <term>exec</term>
 <listitem>
 <para>
-permits execution of binaries.
+permit execution of binaries.
 </para>
 </listitem>
 </varlistentry>
@@ -3808,7 +3874,7 @@ permits execution of binaries.
 <term>noatime</term>
 <listitem>
 <para>
-does not update inode access times on this file system.
+do not update file access times on this file system.
 </para>
 </listitem>
 </varlistentry>
@@ -3817,7 +3883,8 @@ does not update inode access times on this file system.
 <term>noauto</term>
 <listitem>
 <para>
-is only explicitly mountable.
+in <filename>/etc/fstab</filename>,
+indicates the device is only explicitly mountable.
 </para>
 </listitem>
 </varlistentry>
@@ -3826,7 +3893,7 @@ is only explicitly mountable.
 <term>nodev</term>
 <listitem>
 <para>
-does not interpret character or block special devices on the file
+do not interpret character or block special devices on the file
 system.
 </para>
 </listitem>
@@ -3836,7 +3903,7 @@ system.
 <term>noexec</term>
 <listitem>
 <para>
-does not allow execution of any binaries on the mounted file system.
+do not allow execution of any binaries on the mounted file system.
 </para>
 </listitem>
 </varlistentry>
@@ -3845,7 +3912,7 @@ does not allow execution of any binaries on the mounted file system.
 <term>nosuid</term>
 <listitem>
 <para>
-does not allow set-user-identifier or set-group-identifier bits to take
+do not allow set-user-identifier or set-group-identifier bits to take
 effect.
 </para>
 </listitem>
@@ -3855,7 +3922,7 @@ effect.
 <term>nouser</term>
 <listitem>
 <para>
-forbids an ordinary (i.e., non-root) user to mount the file system.
+forbid an unprivileged user to mount the file system.
 (default)
 </para>
 </listitem>
@@ -3865,8 +3932,8 @@ forbids an ordinary (i.e., non-root) user to mount the file system.
 <term>remount</term>
 <listitem>
 <para>
-attempts to remount an already-mounted file system.  This is commonly
-used to change the mount flags for a file system, especially to make a
+remount an already-mounted file system.  This is commonly
+used to change the mount options for a file system, especially to make a
 read-only file system writable.
 </para>
 </listitem>
@@ -3876,7 +3943,7 @@ read-only file system writable.
 <term>ro</term>
 <listitem>
 <para>
-mounts the file system read-only.
+mount the file system read-only.
 </para>
 </listitem>
 </varlistentry>
@@ -3885,7 +3952,7 @@ mounts the file system read-only.
 <term>rw</term>
 <listitem>
 <para>
-mounts the file system read-write.
+mount the file system read-write.
 </para>
 </listitem>
 </varlistentry>
@@ -3894,7 +3961,7 @@ mounts the file system read-write.
 <term>suid</term>
 <listitem>
 <para>
-allows set-user-identifier or set-group-identifier bits to take effect.
+allow set-user-identifier or set-group-identifier bits to take effect.
 </para>
 </listitem>
 </varlistentry>
@@ -3903,7 +3970,7 @@ allows set-user-identifier or set-group-identifier bits to take effect.
 <term>sync</term>
 <listitem>
 <para>
-does all I/O to the file system synchronously.
+do all I/O to the file system synchronously.
 </para>
 </listitem>
 </varlistentry>
@@ -3912,9 +3979,14 @@ does all I/O to the file system synchronously.
 <term>user</term>
 <listitem>
 <para>
-allows an ordinary user to mount the file system.  This option implies
-the options noexec, nosuid, and nodev (unless overridden by subsequent
-options, as in the option line user,exec,dev,suid).
+allow an unprivilieged user to mount the file system.  This option implies
+the options 
+<SIMPLELIST type=inline>
+<member><literal>noexec</literal></member>
+<member><literal>nosuid</literal></member>
+<member><literal>nodev</literal></member>
+</simplelist>
+unless overridden by subsequent options.
 </para>
 </listitem>
 </varlistentry>
@@ -3940,7 +4012,7 @@ use the non-LSB-deprecated behaviors.</para>
 <term>-V</term>
 <listitem>
 <para>
-outputs version.
+output version and exit.
 </para>
 </listitem>
 </varlistentry>
