@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Sun Dec  1 10:28:01 2002 -->
+<!--    at Mon Dec 16 10:54:28 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1697,6 +1697,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 typedef unsigned long long uintmax_t;
 typedef long long intmax_t;
+typedef unsigned int uintptr_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1768,9 +1769,9 @@ struct sigaction
     void (*_sa_sigaction) (int, siginfo_t *, void *);
   }
   __sigaction_handler;
+  sigset_t sa_mask;
   unsigned long sa_flags;
   void (*sa_restorer) (void);
-  sigset_t sa_mask;
 }
  ;
 
@@ -1784,7 +1785,15 @@ struct sigaction
 
 
 
-struct sigcontext;
+struct sigcontext
+{
+  long _unused[4];
+  int signal;
+  unsigned long handler;
+  unsigned long oldmask;
+  struct pt_regs *regs;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1824,11 +1833,11 @@ struct ipc_perm
   gid_t gid;
   uid_t cuid;
   uid_t cgid;
-  unsigned short mode;
-  unsigned short __pad1;
-  unsigned short __seq;
-  unsigned long __unused1;
-  unsigned long __unused2;
+  mode_t mode;
+  long __seq;
+  int __pad1;
+  unsigned long long __unused1;
+  unsigned long long __unused2;
 }
  ;
 </SCREEN>
@@ -1861,17 +1870,19 @@ typedef unsigned long msgqnum_t;
 struct msqid_ds
 {
   struct ipc_perm msg_perm;
+  unsigned int __unused1;
   time_t msg_stime;
-  unsigned long __unused1;
+  unsigned int __unused2;
   time_t msg_rtime;
-  unsigned long __unused2;
+  unsigned int __unused3;
   time_t msg_ctime;
-  unsigned long __unused3;
   unsigned long __msg_cbytes;
   msgqnum_t msg_qnum;
   msglen_t msg_qbytes;
   pid_t msg_lspid;
   pid_t msg_lrpid;
+  unsigned long __unused4;
+  unsigned long __unused5;
 }
  ;
 </SCREEN>
@@ -1887,10 +1898,10 @@ struct msqid_ds
 struct semid_ds
 {
   struct ipc_perm sem_perm;
+  unsigned int __unused1;
   time_t sem_otime;
-  unsigned long __unused1;
+  unsigned int __unused2;
   time_t sem_ctime;
-  unsigned long __unused2;
   unsigned long sem_nsems;
   unsigned long __unused3;
   unsigned long __unused4;
@@ -2138,7 +2149,23 @@ typedef int ssize_t;
 
 
 
-
+struct pt_regs
+{
+  unsigned long gpr[32];
+  unsigned long nip;
+  unsigned long msr;
+  unsigned long orig_gpr3;
+  unsigned long ctr;
+  unsigned long link;
+  unsigned long xer;
+  unsigned long ccr;
+  unsigned long mq;
+  unsigned long trap;
+  unsigned long dar;
+  unsigned long dsisr;
+  unsigned long result;
+}
+ ;
 
 
 
@@ -2163,14 +2190,7 @@ typedef int ssize_t;
 
 
 
-typedef struct
-{
-  gregset_t gregs;
-  fpregset_t fpregs;
-  unsigned long oldmask;
-  unsigned long cr2;
-}
-mcontext_t;
+typedef struct sigcontext mcontext_t;
 
 
 typedef struct ucontext
@@ -2180,9 +2200,19 @@ typedef struct ucontext
   stack_t uc_stack;
   mcontext_t uc_mcontext;
   sigset_t uc_sigmask;
-  struct _libc_fpstate __fpregs_mem;
 }
 ucontext_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>unistd.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+typedef int intptr_t;
 </SCREEN>
 </SECT2>
 </SECT1>

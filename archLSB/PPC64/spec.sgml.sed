@@ -7,6 +7,7 @@
 <!entity objfmt.sgm system "objfmt/objfmt.sgml">
 <!entity dynlnk.sgm system "dynlnk/dynlnk.sgml">
 <!entity baselib.sgm system "baselib/baselib.sgml">
+<!entity package.sgm system "package/package.sgml">
 <!entity legal.sgm system "../../gLSB/legal.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
 <!entity appB.sgm system "../../gLSB/appendix/fdl.sgml">
@@ -28,6 +29,7 @@
 &objfmt.sgm;
 &dynlnk.sgm;
 &baselib.sgm;
+&package.sgm;
 &appA.sgm;
 &appB.sgm;
 </BOOK>
