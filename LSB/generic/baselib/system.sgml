@@ -12,12 +12,12 @@ execute a shell command
 
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>13 April  2001</DATE>
+<DATE>13 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-       #include &lt;stdlib.h>
+#include &lt;stdlib.h>
 
-       int system (const char * string);
+int system (const char * string);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 
@@ -28,64 +28,33 @@ execute a shell command
 <TITLE>Description
 </TITLE>
 <PARA>
-       system() executes a command specified in string by calling
-       /bin/sh -c string, and returns after the command has  been
-       completed.   During execution of the command, SIGCHLD will
-       be blocked, and SIGINT and SIGQUIT will be ignored.
+system() executes a command specified in string by calling /bin/sh -c string, and returns after the command has been completed. During execution of the command, SIGCHLD will be blocked, and SIGINT and SIGQUIT will be ignored.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>
-RETURN VALUE
+<TITLE>Return Value
 </TITLE>
 <PARA>
-       The value returned is 127 if the execve() call for /bin/sh
-       fails,  -1  if there was another error and the return code
-       of the command otherwise.
-
+The value returned is 127 if the execve() call for /bin/sh fails, -1 if there was another error and the return code of the command otherwise.
 </PARA><PARA>
-       If the value of string is NULL, system()  returns  nonzero
-       if the shell is available, and zero if not.
-
+If the value of string is NULL, system() returns nonzero if the shell is available, and zero if not.
 </PARA><PARA>
-       system()  does  not  affect  the  wait status of any other
-       children.
+system() does not affect the wait status of any other children.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>
-BUGS
+<TITLE>Bugs
 </TITLE>
 <PARA>
-       It is extremely unfortunate that the libc version of  sys-
-       tem()  ignores  interrupts.  This makes programs that call
-       it from a loop uninterruptable.  This means that for  such
-       purposes one should not use system() but a private version
-       like (warning: untested code!)
+It is extremely unfortunate that the libc version of system() ignores interrupts. This makes programs that call it from a loop uninterruptable. This means that for such purposes one should not use system() but a private version like (warning: untested code!)
 </PARA><PARA>
-       Do not use system() from a program with suid or sgid priv-
-       ileges,  because strange values for some environment vari-
-       ables might be used to subvert system integrity.  Use  the
-       exec(3)  family of functions instead, but not execlp(3) or
-       execvp(3).  system() will not, in fact, work properly from
-       programs  with suid or sgid privileges on systems on which
-       /bin/sh is bash version 2, since bash 2  drops  privileges
-       on  startup.   (Debian uses a modified bash which does not
-       do this when invoked as sh.)
-
+Do not use system() from a program with suid or sgid privileges, because strange values for some environment variables might be used to subvert system integrity. Use the exec(3) family of functions instead, but not execlp(3) or execvp(3). system() will not, in fact, work properly from programs with suid or sgid privileges on systems on which /bin/sh is bash version 2, since bash 2 drops privileges on startup. (Debian uses a modified bash which does not do this when invoked as sh.)
 </PARA><PARA>
-       The check for the availability of /bin/sh is not  actually
-       performed;  it  is  always assumed to be available.  ISO C
-       specifies the check, but POSIX.2 specifies that the return
-       shall always be non-zero, since a system without the shell
-       is not conforming, and it is this that is implemented.
-
+The check for the availability of /bin/sh is not actually performed; it is always assumed to be available. ISO C specifies the check, but POSIX.2 specifies that the return shall always be non-zero, since a system without the shell is not conforming, and it is this that is implemented.
 </PARA><PARA>
-       It is possible for the shell command  to  return  127,  so
-       that  code is not a sure indication that the execve() call
-       failed; check errno to make sure.
+It is possible for the shell command to return 127, so that code is not a sure indication that the execve() call failed; check errno to make sure.
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->

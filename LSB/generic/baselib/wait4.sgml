@@ -12,16 +12,16 @@ wait for process termination, BSD style
 
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>13 April  2001</DATE>
+<DATE>13 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-       #define _USE_BSD
-       #include &lt;sys/types.h>
-       #include &lt;sys/resource.h>
-       #include &lt;sys/wait.h>
+#define _USE_BSD
+#include &lt;sys/types.h>
+#include &lt;sys/resource.h>
+#include &lt;sys/wait.h>
 
-       pid_t wait4(pid_t pid, int *status, int options,
-             struct rusage *rusage)
+pid_t wait4(pid_t pid, int *status, int options,
+            struct rusage *rusage);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 
@@ -32,15 +32,7 @@ wait for process termination, BSD style
 <TITLE>Description
 </TITLE>
 <PARA>
-The  wait4 function suspends execution of the current process 
-until a child as specified by the  pid  argument  has
-exited,  or until a signal is delivered whose action is to
-terminate the current process or to call a signal handling
-function.   If  a  child  as  requested by pid has already
-exited by the time of the call (a so-called "zombie"  process),  
-the  function  returns  immediately.   Any  system
-resources used by the child are freed.
-
+The wait4 function suspends execution of the current process until a child as specified by the pid argument has exited, or until a signal is delivered whose action is to terminate the current process or to call a signal handling function. If a child as requested by pid has already exited by the time of the call (a so-called "zombie" process), the function returns immediately. Any system resources used by the child are freed.
 </PARA><PARA>
 The value of pid can be one of:
 </PARA>
@@ -48,98 +40,85 @@ The value of pid can be one of:
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
- &lt; -1   
+&lt; -1   
 </TERM>
 <LISTITEM>
 <PARA>
-which means to wait for  any  child  process  whose
-process  group ID is equal to the absolute value of
-pid.
+wait for any child process whose process group ID is equal to the absolute value of pid.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-       -1     
+-1     
 </TERM>
 <LISTITEM>
 <PARA>
-which means to wait for any child process; this  is
-              equivalent to calling wait3.
+wait for any child process; this is equivalent to calling wait3.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-       0      
+0      
 </TERM>
 <LISTITEM>
 <PARA>
-which  means  to  wait  for any child process whose
-              process group ID is equal to that  of  the  calling
-              process.
+wait for any child process whose process group ID is equal to that of the calling process.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
-
 <VARLISTENTRY>
 <TERM>
-       &gt; 0    
+&gt; 0    
 </TERM>
 <LISTITEM>
 <PARA>
-which  means to wait for the child whose process ID
-              is equal to the value of pid.
+wait for the child whose process ID is equal to the value of pid.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 
 <PARA>
-       The value of options is a bitwise OR of zero  or  more  of
-       the following constants:
+The value of options is a bitwise OR of zero or more of the following constants:
 </PARA>
 
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
- WNOHANG
+WNOHANG
 </TERM>
 <LISTITEM>
 <PARA>
-              which  means  to  return immediately if no child is
-              there to be waited for.
+return immediately if no child is there to be waited for.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-       WUNTRACED
+WUNTRACED
 </TERM>
 <LISTITEM>
 <PARA>
-which means to also return for children  which  are
-stopped, and whose status has not been reported.
+return for children which are stopped, and whose status has not been reported.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 <PARA>
-If  status is not NULL, wait4 stores status infor mation in the location 
-pointed to by status.
+If status is not NULL, wait4 stores status information in the location pointed to by status.
 </PARA><PARA>
-This status can be evaluated  with  the  following  macros
-(these macros take the stat buffer (an int) as an argument
--- not a pointer to the buffer!):
+This status can be evaluated with the following macros (these macros take the stat buffer (an int) as an argument -- not a pointer to the buffer!):
 </PARA>
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-       WIFEXITED(status)
+WIFEXITED(status)
 </TERM>
 <LISTITEM>
 <PARA>
@@ -150,120 +129,96 @@ is non-zero if the child exited normally.
 
 <VARLISTENTRY>
 <TERM>
-       WEXITSTATUS(status)
+WEXITSTATUS(status)
 </TERM>
 <LISTITEM>
 <PARA>
-evaluates to the least significant  eight  bits  of
-the  return  code  of  the  child which terminated,
-which may have been set as the argument to  a  call
-to exit() or as the argument for a return statement
-in the main program.  This macro can only be evaluated if WIFEXITED 
-returned non-zero.
+evaluates to the least significant eight bits of the return code of the child which terminated, which may have been set as the argument to a call to exit() or as the argument for a return statement in the main program. This macro can only be evaluated if WIFEXITED returned non-zero.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-       WIFSIGNALED(status)
+WIFSIGNALED(status)
 </TERM>
 <LISTITEM>
 <PARA>
-returns true if the child process exited because of
-a signal which was not caught.
+returns true if the child process exited because of a signal which was not caught.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-       WTERMSIG(status)
+WTERMSIG(status)
 </TERM>
 <LISTITEM>
 <PARA>
-returns the number of the signal  that  caused  the
-child  process to terminate. This macro can only be
-evaluated if WIFSIGNALED returned non-zero.
+returns the number of the signal that caused the child process to terminate. This macro can only be evaluated if WIFSIGNALED returned non-zero.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
- WIFSTOPPED(status)
+WIFSTOPPED(status)
 </TERM>
 <LISTITEM>
 <PARA>
-returns true if the child process which caused  the
-return  is currently stopped; this is only possible
-if the call was done using WUNTRACED.
+returns true if the child process which caused the return is currently stopped; this is only possible if the call was done using WUNTRACED.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-       WSTOPSIG(status)
+WSTOPSIG(status)
 </TERM>
 
 <LISTITEM>
 <PARA>
-returns the number of the signal which  caused  the
-child to stop.  This macro can only be evaluated if
-WIFSTOPPED returned non-zero.
+returns the number of the signal which caused the child to stop. This macro can only be evaluated if WIFSTOPPED returned non-zero.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 <PARA>
-If rusage is not NULL, the struct  rusage  as  defined  in
-&lt;sys/resource.h> it points to will be filled with accounting information.  
-See getrusage(2) for details.
+If rusage is not NULL, the struct rusage as defined in &lt;sys/resource.h> it points to will be filled with accounting information. See getrusage(2) for details.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>
-RETURN VALUE
+<TITLE>Return Value
 </TITLE>
 <PARA>
-The process ID of the child which exited, -1 on error  (in
-particular,  when  no  unwaited-for child processes of the
-specified kind exist) or zero if WNOHANG was used  and  no
-child  was  available  yet.  In the latter two cases errno
-will be set appropriately.
+The process ID of the child which exited, -1 on error (in particular, when no unwaited-for child processes of the specified kind exist) or zero if WNOHANG was used and no child was available  yet. In the latter two cases errno will be set appropriately.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>
-ERRORS
+<TITLE>Errors
 </TITLE>
 
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-      ECHILD 
+ECHILD 
 </TERM>
 <LISTITEM>
 <PARA>
-No unwaited-for child  process  as  specified  does
-              exist.
+No unwaited-for child process as specified does exist.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>
-       ERESTARTSYS
+ERESTARTSYS
 </TERM>
 <LISTITEM>
 <PARA>
-if WNOHANG was not set and an unblocked signal or a
-SIGCHLD was caught. This error is returned  by  the
-system  call.  The library interface is not allowed
-to return ERESTARTSYS, but will return EINTR.
+If WNOHANG was not set and an unblocked signal or a SIGCHLD was caught. This error is returned by the system call. The library interface is not allowed to return ERESTARTSYS, but will return EINTR.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
