@@ -155,7 +155,9 @@ Version name hash value (ELF hash function).
 <TERM><STRUCTFIELD>vd_aux</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Offset to a corresponding entry in the verdaux array, in bytes.
+Offset in bytes to a corresponding entry in an array
+of <SYMBOL>Elfxx_Verdaux</SYMBOL> structures as defined in
+<XREF LINKEND="VerDefExts">
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -199,14 +201,21 @@ Offset to the next verdaux entry, in bytes.
 <SECT1 ID="symverrqmts">
 <TITLE>Version Requirements</TITLE>
 <PARA>
-Symbol definitions are contained in the special section <STRUCTFIELD>
-.gnu.version_r</STRUCTFIELD> which has a section type of <STRUCTFIELD>
-SHT_GNU_verneed</STRUCTFIELD>. The number of entries in this section
-is contained in the <STRUCTFIELD>DT_VERNEEDNUM</STRUCTFIELD> entry
-of the Dynamic Section.  The <STRUCTFIELD>sh_link</STRUCTFIELD>
-member of the section header points to the section that contains the strings
-referenced by this section.
-</PARA><FIGURE>
+The special section <SYMBOL>.gnu.version_r</SYMBOL> which has a section type of 
+<SYMBOL>SHT_GNU_verneed</SYMBOL>
+shall contain required symbol version definitions. The number of entries in 
+this section shall be contained in the <SYMBOL>DT_VERNEEDNUM</SYMBOL> entry of the Dynamic 
+Section <SYMBOL>.dynamic</SYMBOL>. 
+The <STRUCTFIELD>sh_link</STRUCTFIELD> member of the section header (see figure 4-8 in 
+<XREF LINKEND="STD.gABI41">)
+shall point to the section that contains the strings referenced by this section.
+</PARA>
+<PARA>
+The section shall contain an array of <SYMBOL>Elfxx_Verneed</SYMBOL> structures, as described in 
+<XREF LINKEND="VerNeedFig">, optionally followed by an array of 
+<SYMBOL>Elfxx_Vernaux</SYMBOL> structures, as 
+defined in <XREF LINKEND="VerNeedExtFig">.
+</PARA><FIGURE ID="VerNeedFig">
 <TITLE>Version Needed Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
@@ -260,7 +269,7 @@ Offset to the next verneed entry, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
-<FIGURE>
+<FIGURE ID="VerNeedExtFig">
 <TITLE>Version Needed Auxiliary Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
