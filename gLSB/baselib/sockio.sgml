@@ -44,14 +44,31 @@ The following ioctls are provided:
 
 <VARLISTENTRY>
 <TERM>
-SIOCGIFCONF  
+SIOCGIFCONF
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface configuration list for the system. The parameter
+Gets the interface configuration list for the
+system.<footnote><para>Similar to the if_nameindex family found in the
+Single UNIX specification version 3 or the getifaddrs family found in
+BSD.</para></footnote>
+The parameter
 <replaceable>argp</replaceable> is a pointer to a
 <literal>struct ifconf</literal>.
+Before calling, the caller must allocate the
+<literal>ifc_ifcu.ifcu_req</literal> field to point to an array of
+<literal>struct ifreq</literal> structures, and set
+<literal>if_len</literal> to the size of this allocated array (in
+bytes).  Upon return, <literal>if_len</literal> will contain the amount of
+the array which was actually used (again in bytes).  If it is the same
+as the length upon calling, the caller should assume that the array
+was too small and try again with a larger array.
 </PARA>
+<para>
+On success, this function can return any nonnegative
+value.<footnote><para>Historical UNIX systems disagree on the meaning
+of the return value.</para></footnote>
+</para>
 </LISTITEM>
 </VARLISTENTRY>
 
@@ -108,18 +125,14 @@ the ifr_ifru.ifru_netmask field is set with the network mask.
 <!--
 <para>
 
-The <literal>struct ifconf</literal> structure contains at least the
-following members:
-
-</para>
-
-<para>
-
 The <literal>struct sock</literal> structure contains at least the
 following members:
 
 </para>
 -->
+
+<para>The <literal>struct sockaddr</literal> structure is as specified
+in the Single UNIX Specification.</para>
 
 </REFSECT1>
 
