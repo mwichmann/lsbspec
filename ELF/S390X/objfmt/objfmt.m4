@@ -6,7 +6,7 @@ LSB-conforming implementations shall support an object file format, called
 Executable and Linking Format (ELF) as defined by the
 <XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
 <XREF LINKEND="std.S390X.ABI"> and as supplemented by the
-<XREF LINKEND="std.LSB"> and this document.
+generic LSB and this document.
 </PARA>
 </PARTINTRO>
 
