@@ -863,30 +863,11 @@ on features contained in the LSB-Core specification.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>lsb-graphics-<replaceable>arch</replaceable></TERM>
-<LISTITEM>
-<PARA>
-This dependency is used to indicate that the application is dependent
-on features contained in the LSB-Graphics module.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
 <TERM>lsb-core-noarch</TERM>
 <LISTITEM>
 <PARA>
 This dependency is used to indicate that the application is dependent
 on features contained in the LSB-Core specification and that the package 
-does not contain any architecture specific files.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>lsb-graphics-noarch</TERM>
-<LISTITEM>
-<PARA>
-This dependency is used to indicate that the application is dependent
-on features contained in the LSB-Graphics module and that the package
 does not contain any architecture specific files.
 </PARA>
 </LISTITEM>
@@ -900,7 +881,11 @@ are fulfilled by packages which are part of the same application.
 A package may only provide a virtual package name
 which is registered to that application.
 </PARA>
-
+<PARA>
+Other modules in the LSB may supplement this list. The architecture
+specific dependencies are described in the relevant architecture
+specific LSB.
+</PARA>
 </SECT1>
 
 <SECT1 ID=pkgarchcon>
