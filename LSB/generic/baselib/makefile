@@ -40,7 +40,10 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	dcgettext.sgml dcngettext.sgml bind_textdomain_codeset.sgml \
 	pmap_getport.sgml pmap_set.sgml svc_run.sgml __register_atfork.sgml \
 	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml dladdr.sgml \
-	dlopen.sgml dlsym.sgml wait3.sgml utmpname.sgml
+	dlopen.sgml dlsym.sgml wait3.sgml utmpname.sgml \
+	pam_acct_mgmt.sgml pam_authenticate.sgml pam_chauthtok.sgml pam_close_session.sgml \
+	pam_end.sgml pam_fail_delay.sgml pam_getenvlist.sgml pam_get_item.sgml \
+	pam_open_session.sgml pam_setcred.sgml pam_set_item.sgml pam_start.sgml pam_strerror.sgml
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
