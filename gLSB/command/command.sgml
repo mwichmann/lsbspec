@@ -1531,6 +1531,27 @@ output version information and exit
 
 </REFENTRY>
 
+<REFENTRY id="cpio">
+<REFMETA><REFENTRYTITLE>
+cpio
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>cpio</REFNAME>
+<REFPURPOSE>
+copy file archives in and out
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "cpio" is as specified in the SUS. While additional
+features my be found in Linux versions of this command, the SUS specified
+interface is correctly and completely implemented.
+</PARA>
+</REFSECT1>
+
+</REFENTRY>
+
 <REFENTRY id="csplit">
 <REFMETA><REFENTRYTITLE>
 csplit
@@ -1789,6 +1810,44 @@ output version information and exit
 </VARIABLELIST>
 </REFSECT1>
 
+
+</REFENTRY>
+
+<REFENTRY id="dd">
+<REFMETA><REFENTRYTITLE>
+dd
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>dd</REFNAME>
+<REFPURPOSE>
+convert and copy a file
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "dd" is as specified in the SUS but with the
+following differences as listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>SWAB</TERM>
+<LISTITEM>
+<PARA>
+this keyword to the CONV= option causes alternate bytes to be swapped, just
+as the SUS declares. Unlike the SUS declaration, the odd character is not
+ignored, but is appended to the output instead.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
 
 </REFENTRY>
 
@@ -5949,6 +6008,120 @@ title is the title used for "pr"
 
 </REFENTRY>
 
+<REFENTRY id="ls">
+<REFMETA><REFENTRYTITLE>
+ls
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>ls</REFNAME>
+<REFPURPOSE>
+list directory contents
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "ls" is as declared by the SUS, but with the
+following differences listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-c</TERM>
+<LISTITEM>
+<PARA>
+when -l is used with this option the sort order is
+by name, rather than by ctime as the SUS requires.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-d</TERM>
+<LISTITEM>
+<PARA>
+this option applies to entries in the file system specified on
+the command line. Normally when such options are directories, the
+contents of the directory are listed along with the directory. When
+this option is present these command line entries will be treated as
+though they were normal files, and their contents will not be listed.
+</PARA>
+<PARA>
+The SUS makes no mention that this behavior pertains to command line entries,
+and only specifies behavior already otherwise present without the option.
+The SUS makes no implication of any additional behavior aside from that
+already specified.
+</PARA>
+<PARA>
+The behavior of the Linux version of ls is entirely unexpected, given
+either SUS or the completely specified behavior presented above. Aside
+from the parent directory, the -d option for ls lists only those
+items specified on the command line, listing only the names of directories,
+and not their contents, but listing nothing else in this file system path
+that is not specified by the command line file list.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-f</TERM>
+<LISTITEM>
+<PARA>
+works according to SUS, except that the -r option is not
+disabled.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-g</TERM>
+<LISTITEM>
+<PARA>
+this option is ignored, while SUS declares that it should behave as
+the -l option.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-n</TERM>
+<LISTITEM>
+<PARA>
+this parameter alone does nothing. Only when used with -l does it exhibit
+the SUS declared behavior of displaying uid/gid instead of uname and gname.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-p</TERM>
+<LISTITEM>
+<PARA>
+as well as the slash declared by SUS, this option will also display
+the *, @, and | characters for executables, links, and FIFOs, respectively.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-u</TERM>
+<LISTITEM>
+<PARA>
+when used with the -l option, the sort order is by name, rather than
+the SUS declared behavior of sorting by last modified date.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+
 <REFENTRY id="lsbrelease">
 <REFMETA>
 <REFENTRYTITLE>
@@ -6588,6 +6761,27 @@ modification time is changed only in the imagination of make.
 </VARLISTENTRY>
 
 </VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="man">
+<REFMETA><REFENTRYTITLE>
+man
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>man</REFNAME>
+<REFPURPOSE>
+display system documentation
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "man" is as specified in the SUS. While additional
+features my be found in Linux versions of this command, the SUS specified
+interface is correctly and completely implemented.
+</PARA>
 </REFSECT1>
 
 </REFENTRY>
@@ -7751,14 +7945,20 @@ change user password
 
 <REFSYNOPSISDIV>
 <SYNOPSIS>
-passwd [-l] [user] 
+passwd [-g] [-r|R] group
+passwd [-x max] [-n min] [-w warn] [-i inact] name
+passwd {-l|-u} name
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-The specification for "passwd" is as specified in the BSD.
+passwd changes passwords for user and group accounts.  A normal user
+may only change the password for their own account, the super user may
+change the password for any account.  The administrator of a group may
+change the password for the group. passwd also changes password expiry
+dates and intervals.
 </PARA>
 </REFSECT1>
 
@@ -7767,10 +7967,88 @@ The specification for "passwd" is as specified in the BSD.
 <variablelist>
 
 <varlistentry>
+<term>-g</term>
+<listitem>
+<para>
+Change the password for the named group.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-r</term>
+<listitem>
+<para>
+Used in conjunction with the -g option to remove
+the current password from the named group.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-R</term>
+<listitem>
+<para>
+Used in conjunction with the -g option to restrict the named group for
+all users.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-x max</term>
+<listitem>
+<para>
+Set the maximum number of days a password remains valid.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-n min</term>
+<listitem>
+<para>
+Set the minimum number of days before a password may be changed.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-w warn</term>
+<listitem>
+<para>
+Set the number of days warning the user will receive before
+their password will expire.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-i inactive</term>
+<listitem>
+<para>
+Disable an account after the password has been expired for the given
+number of days.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
 <term>-l</term>
 <listitem>
 <para>
-update password only in local password file, and not in Kerberos database.
+Disable an account by changing the password to a value which
+matches no possible encrypted value.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-u</term>
+<listitem>
+<para>
+Re-enables an account by changing the password back
+to its previous value.
 </para>
 </listitem>
 </varlistentry>
@@ -8716,7 +8994,7 @@ incremental backups.
 </varlistentry>
 
 <varlistentry>
-<term>--sufix=SUFFIX</term>
+<term>--suffix=SUFFIX</term>
 <listitem>
 <para>
 This option allows you to override the default backup suffix used with
@@ -8750,7 +9028,8 @@ are skipped.
 <term>-L, --copy-links</term>
 <listitem>
 <para>
-This tells rsync to treat symbolic links just like ordinary files.
+This tells rsync to transfer the file referenced by a symbolic link,
+rather than recreating the link.
 </para>
 </listitem>
 </varlistentry>
@@ -8856,7 +9135,7 @@ and update them on the remote system.
 </varlistentry>
 
 <varlistentry>
-<term>-m, --dry-run</term>
+<term>-n, --dry-run</term>
 <listitem>
 <para>
 This tells rsync to not do any file transfers, instead it will just
@@ -9069,7 +9348,8 @@ default is 0, which means no timeout.
 <listitem>
 <para>
 This specifies an alternate TCP port number to use rather than the
-default port 873.
+default port 873. This only has effect when using rsync to connect
+to a remote rsync daemon.
 </para>
 </listitem>
 </varlistentry>
@@ -9145,7 +9425,6 @@ per second. A value of zero specifies no limit.
 
 
 </REFENTRY>
-
 
 <REFENTRY ID="baselib-sendmail-1"> <REFMETA>
 <REFENTRYTITLE>sendmail</REFENTRYTITLE>
