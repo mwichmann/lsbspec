@@ -34,11 +34,22 @@ Conforming implementations may also support other unspecified object file format
 <CHAPTER ID=Sections>
 <TITLE>Sections</TITLE>
 <PARA>
+As described in <XREF LINKEND="std.gABI41">,
+an ELF object file contains a number of <emphasis>sections</emphasis>.
 </PARA>
 <SECT1 ID="elftypes">
 <TITLE>Sections Types</TITLE>
 <PARA>
-A section header's <COMPUTEROUTPUT>sh_type</COMPUTEROUTPUT> member specifies the sections's semantics.
+The section header table is an array of 
+<STRUCTNAME>Elf32_Shdr</STRUCTNAME> or 
+<STRUCTNAME>Elf64_Shdr</STRUCTNAME> structures as 
+described in <XREF LINKEND=STD.gABI41>. The 
+<STRUCTFIELD>sh_type</STRUCTFIELD> member shall be either a value from
+<XREF LINKEND=tbl.ABIUpdate>, drawn from the System V 
+ABI, or one of the additional values specified in <XREF LINKEND=tbl.LSB>.
+</PARA>
+<PARA>
+A section header's <STRUCTFIELD>sh_type</STRUCTFIELD> member specifies the sections's semantics.
 </PARA>
 <SECT2>
 <TITLE>ELF Section Types</TITLE>
