@@ -50,7 +50,7 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.15 2004-07-15 14:27:37 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.16 2004-07-16 12:24:17 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -202,8 +202,14 @@ print "</TABLE>\n";
 #
 {
 	local(*datasym);
+	local(*symver);
 	local(*std);
-	$select = "SELECT * FROM Interface,LGInt,LibGroup ";
+	local(*xrefs);
+	local(*refs);
+	$select = "SELECT Iname,Istandard,Vname,Sname ";
+	$select.= "FROM Interface,LGInt,LibGroup ";
+	$select.= "LEFT JOIN Version ON Vid=Iversion ";
+	$select.= "LEFT JOIN Standard ON Sid=Istandard ";
 	$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Data' ";
 	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
 	$select.= "ORDER BY Iname";
@@ -214,6 +220,8 @@ print "</TABLE>\n";
 			%datasym=$sth->fetchhash;
 			$datasym[$_]=$datasym{'Iname'};
 			$std[$_]=$datasym{'Istandard'};
+			$xrefs[$_]=sprintf ("std.%s", makeid($datasym{'Sname'}));
+			$symver[$_]=$datasym{'Vname'};
 		}
 		print "<TABLE>\n";
 		print "<TITLE>$Lname Data Interfaces</TITLE>\n";
@@ -248,4 +256,4 @@ print "</SECT1>\n";
 }
 print "</APPENDIX>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.15 2004-07-15 14:27:37 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.16 2004-07-16 12:24:17 anderson Exp $- -->\n");
