@@ -1597,7 +1597,7 @@ ssize_t pwrite(int fildes, const void *buf, size_t nbyte, off_t offset);
 </SECT1>
 
 <SECT1>
-<TITLE>Interface Definitions for libsys</TITLE>
+<TITLE>Interface Definitions for libc</TITLE>
 <PARA>
 </PARA>
 <REFENTRY ID="baselib-assert-fail-1"> <REFMETA>
@@ -1612,12 +1612,14 @@ ssize_t pwrite(int fildes, const void *buf, size_t nbyte, off_t offset);
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>30 January 1999</DATE>
+<DATE>30 January 2000</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
 void
-__assert_fail (const char *assertion, const char *file, unsigned int line,
-               const char *function)
+__assert_fail (const char *<REPLACEABLE CLASS="PARAMETER">assertion</REPLACEABLE>,
+               const char *<REPLACEABLE CLASS="PARAMETER">file</REPLACEABLE>,
+               unsigned int <REPLACEABLE CLASS="PARAMETER">line</REPLACEABLE>,
+               const char *<REPLACEABLE CLASS="PARAMETER">function</REPLACEABLE>)
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -1635,7 +1637,7 @@ on the standard error stream such as:
 a.c:10: foobar: Assertion a == b failed.
 </PARA>
 </BLOCKQUOTE>
-It then aborts program execution via a call to abort.  The
+It then aborts program execution via a call to <FUNCTION>abort</FUNCTION>.  The
 exact form of the message is up to the implementation.
 </PARA>
 
@@ -1650,6 +1652,212 @@ This function is part of the ABI, and not the API.
 </REFSECT1>
 </REFENTRY>
 
+<REFENTRY ID="baselib-errno-location-1"> <REFMETA>
+<REFENTRYTITLE>__errno_location</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__errno_location
+</REFNAME>
+<REFPURPOSE>address of errno variable
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>15 February 2000</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int *__errno_location (void);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>15 February 2000</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Return the address of the errno variable.  Only in the binary
+standard, not the source standard.  Note that errno itself is only in
+the source standard, not the binary standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-h-errno-location-1"> <REFMETA>
+<REFENTRYTITLE>__h_errno_location</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__h_errno_location
+</REFNAME>
+<REFPURPOSE>address of h_errno variable
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>15 February 2000</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int *__h_errno_location (void);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>15 February 2000</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Return the address of the h_errno variable, where h_errno is as
+specified in the Single Unix Specification.  Only in the binary
+standard, not the source standard.  Note that h_errno itself
+is only in the source standard, not the binary standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-strtod-internal-1"> <REFMETA>
+<REFENTRYTITLE>__strtod_internal</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__strtod_internal
+</REFNAME>
+<REFPURPOSE>mangle of strtod
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>15 February 2000</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+double __strtod_internal (const char *<REPLACEABLE CLASS="PARAMETER">__nptr</REPLACEABLE>,
+                          char **<REPLACEABLE CLASS="PARAMETER">__endptr</REPLACEABLE>,
+                          int <REPLACEABLE CLASS="PARAMETER">__group</REPLACEABLE>);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>15 February 2000</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The __GROUP argument must be 0 or the behavior is undefined.
+Otherwise the same as
+
+<BLOCKQUOTE>
+<PARA>
+strtod (__nptr, __endptr).
+</PARA>
+</BLOCKQUOTE>
+
+Only in the binary standard, not the source standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-strtof-internal-1"> <REFMETA>
+<REFENTRYTITLE>__strtof_internal</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__strtof_internal
+</REFNAME>
+<REFPURPOSE>mangle of strtof
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>15 February 2000</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+float __strtof_internal (const char *__nptr,
+                         char **__endptr, int __group);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>15 February 2000</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+__GROUP must be 0 or the behavior is undefined.  Otherwise the same as
+strtof (__nptr, __endptr).  Only in the binary standard, not the
+source standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-strtol-internal-1"> <REFMETA>
+<REFENTRYTITLE>__strtol_internal</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__strtol_internal
+</REFNAME>
+<REFPURPOSE>mangle of strtol
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>15 February 2000</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+long int __strtol_internal (const char *__nptr, char **__endptr,
+                            int __base, int __group);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>15 February 2000</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+__GROUP must be 0 or the behavior is undefined.  Otherwise the same as
+strtol (__nptr, __endptr, __base).  Only in the binary standard, not the
+source standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-strtoul-internal-1"> <REFMETA>
+<REFENTRYTITLE>__strtoul_internal</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__strtoul_internal
+</REFNAME>
+<REFPURPOSE>mangle of strtoul
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>15 February 2000</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+unsigned long int __strtoul_internal (const char *__nptr,
+                                      char **__endptr, int __base,
+                                      int __group));
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>15 February 2000</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+__GROUP must be 0 or the behavior is undefined.  Otherwise the same as
+strtoul (__nptr, __endptr, __base).  Only in the binary standard, not the
+source standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
 <REFENTRY ID="baselib-xstat-1"> <REFMETA>
 <REFENTRYTITLE>__xstat</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -1657,7 +1865,7 @@ This function is part of the ABI, and not the API.
 <REFNAMEDIV>
 <REFNAME>__xstat
 </REFNAME>
-<REFPURPOSE>What does this function do??
+<REFPURPOSE>provide inode information
 </REFPURPOSE>
 <INDEXTERM ID="ix-baselib-xstat-1"><PRIMARY>stat</PRIMARY></INDEXTERM>
 <INDEXTERM ID="ix-baselib-xstat-2"><PRIMARY>xstat</PRIMARY></INDEXTERM>
@@ -1670,10 +1878,9 @@ This function is part of the ABI, and not the API.
 #include &lt;sys/stat.h>
 #include &lt;unistd.h>
 
-int __xstat( <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>, <REPLACEABLE CLASS="PARAMETER">__filename</REPLACEABLE>, <REPLACEABLE CLASS="PARAMETER">__stat_buf</REPLACEABLE>)
-	int <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>;
-	const char *<REPLACEABLE CLASS="PARAMETER">__filename</REPLACEABLE>;
-	struct stat *<REPLACEABLE CLASS="PARAMETER">__stat_buf</REPLACEABLE>;
+int __xstat (int <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>,
+             const char *<REPLACEABLE CLASS="PARAMETER">__filename</REPLACEABLE>,
+             struct stat *<REPLACEABLE CLASS="PARAMETER">__stat_buf</REPLACEABLE>)
 </SYNOPSIS>
 <REFSECT2>
 <TITLE>Inputs
@@ -1683,7 +1890,7 @@ int __xstat( <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>, <REPLACEABLE CL
 <TERM><REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>
 </TERM>
 <LISTITEM>
-<PARA>What is this param?
+<PARA>Must be 3 or the behavior is undefined.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -1691,7 +1898,7 @@ int __xstat( <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>, <REPLACEABLE CL
 <TERM><REPLACEABLE CLASS="PARAMETER">__filename</REPLACEABLE>
 </TERM>
 <LISTITEM>
-<PARA>What is this param?
+<PARA>As in POSIX.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -1699,7 +1906,7 @@ int __xstat( <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>, <REPLACEABLE CL
 <TERM><REPLACEABLE CLASS="PARAMETER">__stat_buf</REPLACEABLE>
 </TERM>
 <LISTITEM>
-<PARA>What is this param?
+<PARA>As in POSIX.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -1711,7 +1918,11 @@ int __xstat( <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>, <REPLACEABLE CL
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
-<PARA><FUNCTION>__xstat()</FUNCTION> does what?
+<PARA><FUNCTION>__xstat()</FUNCTION> has the same behavior as stat
+(__filename, __stat_buf) as specified by POSIX.
+</PARA>
+<PARA>FIXME: are we clear on specifying the correct struct stat,
+rather than the kernel one?
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -1720,6 +1931,8 @@ int __xstat( <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>, <REPLACEABLE CL
 <PARA>
 This function is not called directly, but rather <FUNCTION>stat()</FUNCTION>
 is called instead and the header mangles things.
+<FUNCTION>__xstat</FUNCTION> is not in the source standard;
+<FUNCTION>stat</FUNCTION> is not in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
