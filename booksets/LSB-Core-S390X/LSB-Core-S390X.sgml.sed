@@ -9,7 +9,7 @@
 <!entity archspec "S390X">
 <!entity canonicalarch "S390X">
 <!entity specarchitecture "S390X">
-<!entity spectitle "Linux Standard Base Core Module Specification for S390X">
+<!entity spectitle "Linux Standard Base Core Specification for S390X">
 
 %entities;
 

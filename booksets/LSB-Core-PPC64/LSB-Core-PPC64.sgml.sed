@@ -9,7 +9,7 @@
 <!entity archspec "PPC64">
 <!entity canonicalarch "PPC64">
 <!entity specarchitecture "PPC64">
-<!entity spectitle "Linux Standard Base Core Module Specification for PPC64">
+<!entity spectitle "Linux Standard Base Core Specification for PPC64">
 
 %entities;
 

@@ -9,7 +9,7 @@
 <!entity archspec "PPC32">
 <!entity canonicalarch "PPC32">
 <!entity specarchitecture "PPC32">
-<!entity spectitle "Linux Standard Base Core Module Specification for PPC32">
+<!entity spectitle "Linux Standard Base Core Specification for PPC32">
 
 %entities;
 

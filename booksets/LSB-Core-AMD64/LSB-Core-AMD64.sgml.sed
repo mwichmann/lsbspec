@@ -9,7 +9,7 @@
 <!entity archspec "AMD64">
 <!entity canonicalarch "AMD64">
 <!entity specarchitecture "AMD64">
-<!entity spectitle "Linux Standard Base Core Module Specification for AMD64">
+<!entity spectitle "Linux Standard Base Core Specification for AMD64">
 
 %entities;
 
