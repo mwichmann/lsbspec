@@ -11,21 +11,29 @@ make temporary file name (unique)
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-mktemp [-q] [-u] template
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>mktemp</COMMAND>
+<ARG>-q</ARG><ARG>-u</ARG><ARG choice=plain>template</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>mktemp</COMMAND> takes the given file name template and 
+The <COMMAND>mktemp</COMMAND> takes the given file name 
+<PARAMETER>template</PARAMETER> and 
 overwrites a
-portion of it to create a file name.  This file name is unique and
+portion of it to create a file name.  This file name shall be unique and
 suitable for use by the application.
 </PARA>
+<PARA>
+The <PARAMETER>template</PARAMETER> should have at least six trailing
+<literal>'X'</literal>
+characters. These characters are replaced with characters from the portable
+filename character set in order to
+generate a unique name.
+</PARA>
 </REFSECT1>
-
 
 <REFSECT1>
 <title>Options</title>
@@ -35,8 +43,9 @@ suitable for use by the application.
 <term>-q</term>
 <listitem>
 <para>
-fails silently if an error occurs.  This is useful if a script does not
-want error output to go to standard error.
+fail silently if an error occurs.  Diagnostic messages to <varname>stderr</>
+are suppressed, but the command shall still exit with a non-zero exit status
+if an error occurs.
 </para>
 </listitem>
 </varlistentry>
@@ -45,10 +54,10 @@ want error output to go to standard error.
 <term>-u</term>
 <listitem>
 <para>
-operates in ``unsafe'' mode.  The temp file will be unlinked before
-<COMMAND>mktemp</COMMAND> exits.  This is slightly better than 
-mktemp(3) but still
-introduces a race condition.  Use of this option is not encouraged.
+operates in ``unsafe'' mode.  A unique name is generated,
+but the temporary file shall be unlinked before
+<COMMAND>mktemp</COMMAND> exits.  
+Use of this option is not encouraged.
 </para>
 </listitem>
 </varlistentry>
