@@ -10,7 +10,6 @@ CREATE TABLE Interface (
   Istandard int(10) DEFAULT '0' NOT NULL,
   Iarch int(10) DEFAULT '0' NOT NULL,
   Iheader int(10) DEFAULT '0' NOT NULL,
-  Ilibgroup int(10) DEFAULT '0' NOT NULL,
   Ireturn int(11) DEFAULT '0' NOT NULL,
   Iversion int(11) DEFAULT '0' NOT NULL,
   Idocumented enum('Yes','No','Unknown') DEFAULT 'Unknown' NOT NULL,
