@@ -47,6 +47,7 @@ include(elfsecttypes.sgml)
 <TITLE>Linux Section Types</TITLE>
 <PARA>
 The following Linux section types are defined here.
+
 include(linuxsecttypes.sgml)
 </PARA>
 </SECT1>
@@ -58,6 +59,7 @@ include(linuxsecttypes.sgml)
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in the ELF reference specification.
+
 include(elfsect.sgml)
 </PARA>
 </SECT1>
