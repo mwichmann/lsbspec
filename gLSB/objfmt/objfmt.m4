@@ -5,7 +5,7 @@
 <TITLE>Object Files</TITLE>
 <PARA>
 LSB-conforming implementations shall support an object file format, called
-Executable and Linking Format (ELF) as defined by the System V Application
+Executable and Linking Format (ELF), as defined by the System V Application
 Binary Interface, Edition 4.1 and the System V Application Binary Interface -
 DRAFT - April 29, 1998 and as supplemented by this document and an architecture
 specific LSB specification. Conforming implementations may also support other
