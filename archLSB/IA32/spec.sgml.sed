@@ -17,6 +17,11 @@
 <BOOK>
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification for the IA32 Architecture &specversion</TITLE>
+<COPYRIGHT>
+<YEAR>2001</YEAR>
+<YEAR>2002</YEAR>
+<HOLDER>Free Standards Group</HOLDER>
+</COPYRIGHT>
 &legal.sgm;
 </BOOKINFO>
 
