@@ -56,7 +56,7 @@ See
 <TITLE>Program Interpreter/Dynamic Linker</TITLE>
 <PARA>
 The LSB specifies the Program Interpreter to be
-<application><XREF LINKEND="lib.proginterp.ia64"></application>.
+<application><XREF LINKEND="lib.proginterp"></application>.
 </PARA>
 </SECT1>
 
