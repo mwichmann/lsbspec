@@ -26,27 +26,27 @@ all:: buildspecs
 
 buildspecs: htmlspec onehtmlspec txtspec rtfspec
 
-htmlspec: source
+htmlspec: errata.sgml source
 	rm -rf errata.junk
 	-mv errata errata.junk
 	$(DB2HTML) errata.sgml
 	if [ -d errata.junk/CVS -a ! -d errata/CVS ];then mv errata.junk/CVS errata; fi
 	rm -rf errata.junk
 
-onehtmlspec: source
+onehtmlspec: errata.sgml source
 	$(DB2ONEHTML) errata.sgml
 
-txtspec: source
+txtspec: errata.sgml source
 	$(DB2TXT) errata.sgml
 	nl -ba errata.txt > errata_lines.txt
 
-rtfspec: source
+rtfspec: errata.sgml source
 	$(DB2RTF) errata.sgml
 
-pdfspec: source
+pdfspec: errata.sgml source
 	$(DB2PDF) errata.sgml
 
-psspec: source
+psspec: errata.sgml source
 	$(DB2PS) errata.sgml
 
 source:

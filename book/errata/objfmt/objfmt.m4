@@ -38,6 +38,6 @@ include(ppc32sect.sgml)
 </SECT1>
 </CHAPTER>
 
-include(../../gLSB/objfmt/dwarfext.sgml)
+include(../../../ELF/generic/objfmt/dwarfext.sgml)
 
 </PART>

@@ -10,8 +10,8 @@ TABLES = ia64sect.sgml ppc32sect.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mksectiontable -a IA64 -s 'LSB' -t 'IA64 Additional Special Sections' >ia64sect.sgml
-	../../mksectiontable -a PPC32 -s 'LSB' -t 'PPC32 Additional Special Sections' >ppc32sect.sgml
+	../../../mksectiontable -a IA64 -s 'LSB' -t 'IA64 Additional Special Sections' >ia64sect.sgml
+	../../../mksectiontable -a PPC32 -s 'LSB' -t 'PPC32 Additional Special Sections' >ppc32sect.sgml
 
 clean:
 	rm -f $(FILES)
