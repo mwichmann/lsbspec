@@ -4,8 +4,10 @@ booksets into the PDF that is submitted to ISO.
 The output of the docbook build process includes the rtfspec (make rtfspec)
 in Rich Text format. Unfortunately, OpenOffice does not handle this
 very well (though it makes a reasonable go at it!). Therefore, the current
-procedure is:
+procedure is as described below:
 
+TO MAKE A SINGLE DOCUMENT
+=========================
 1	make rtfspec	(in each of the lsbspec/booksets/LSB-Core-xxx
 			 directories)
 2	copy the rtf file to a Windows system
@@ -18,3 +20,50 @@ procedure is:
 8	cvs add -kb LSB_Core_xxx.pdf; cvs commit
 
 Easy!
+
+TO MAKE ALL THE DOCUMENTS
+=========================
+
+This version of the process uses an additional script "getdocs" to control the
+process. Three systems are assumed:
+	A. The primary build server --- typically Stuart's machine
+	B. A Linux server with GhostScript (your machine)
+	C. A Windows machine with SFU 3.5 and OpenSSH, as well as MSWord
+
+1. Stuart builds the rtfs.
+2. Edit the getdocs script to reflect Stuart's machine and the Windows machine
+3. cd refspec/LSB_X.Y.Z/ISO
+4. run the getdocs script ... it will pause half way through waiting for the windows steps
+5. When the docs are on the windows server (they are placed in the SFU /tmp dir),
+   switch to that system.
+6. Open a shell window and
+      -- cd /tmp
+      -- tar zxvf LSBrts.tgz
+      (or if you don't have GNU Tar installed, zcat LSBrtfs.tgz | tar xvf -)
+      -- Launch Word from the start menu. *****DO NOT OPEN ANY FILE*******
+7. If this is the very first time you have ever done this, make sure you have a copy
+   of ISO_LSB.bas on the windows server.
+      -- open the VBA editor (ALT+F11)
+      -- in the project explorer, find "Modules" under "Normal" (** adding these
+      macros to "normal.dot" makes them available to any and every document you ever
+      work on ... you might want to create a new template "LSB" or similar and add these
+      macros there).
+      -- right click on "Modules" and "Import" and import the ISO_LSB.bas file
+      -- save normal.dot
+8. go back to Word and find Tools->Macros and run "convert_all"
+9. This macro opens each of the files in turn, does its stuff, and then prints to file
+      -- the resulting postcript is in C:\name.ps
+      -- the file is saved as a word doc just in case in C:\name.doc
+10.In the shell window:
+      -- cd /
+      -- tar zcvf ps.tgz LSB*.ps (or, if you don't have a good tar, 
+          tar cvf ps.tar LSB*.ps && gzip ps.tar && mv ps.tar.gz ps.tgz
+	  )
+11.Back to your linux box, where getdocs is waiting patiently ...
+12.Hit return
+13.The ps files are copied back, and converted to pdf in the current directory
+14.The getdocs cleans up its temp files on exit.
+15.cvs add -kb LSB*.pdf; cvs commit
+
+phew!
+

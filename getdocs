@@ -1,0 +1,58 @@
+#! /bin/sh
+#
+# getdocs --
+#  fetch the documents needed
+#
+# CONFIG: change these ...
+URLBASE="http://www.netsweng.com/~anderson/lsb/booksets"
+winhost=thames
+#
+# assumptions: $winhost is a Windows server running Interix 3.5 (SFU)
+# with OpenSSH installed, and a symlink /C that points to C:\
+# (/dev/fs/C)
+#
+
+TMPD=$(mktemp -d /tmp/LSB_XXXXXX)
+cleanup () {
+	rm -rf $TMPD
+}
+trap cleanup 0 1 2 
+# run in a subshell
+(
+cd $TMPD
+while read book
+do
+	URL=$URLBASE/$book/$book.rtf
+	curl -o $book.rtf $URL
+done << E_O_BOOKS
+LSB-Core
+LSB-Core-IA32
+LSB-Core-IA64
+LSB-Core-AMD64
+LSB-Core-PPC32
+LSB-Core-PPC64
+LSB-Core-S390
+LSB-Core-S390X
+E_O_BOOKS
+#
+# and the dang picture ... which we could just use our local copy for
+# however, for completeness, lets get it here
+#
+curl -o initial_process_stack.eps $URLBASE/LSB-Core-PPC32/initial_process_stack.eps
+tar zcvf LSBrtfs.tgz *.rtf *.eps
+scp LSBrtfs.tgz administrator@$winhost:/tmp
+
+#
+# now bring back the converted docs and pdf them
+#
+printf "Now convert the documents on $winhost and create a file C:\\ps.tgz\n"
+printf "Press return when ready: "
+read yorn
+scp administrator@$winhost:/C/ps.tgz .
+tar zxvf ps.tgz
+)
+# back to the initial directory ... 
+for psfile in $TMPD/LSB*.ps
+do
+	ps2pdf $psfile
+done

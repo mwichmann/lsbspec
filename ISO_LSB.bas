@@ -1,5 +1,8 @@
 Attribute VB_Name = "ISO_LSB"
 Private Sub update_fields()
+Attribute update_fields.VB_Description = "Macro recorded 10/7/2004 by MSB"
+Attribute update_fields.VB_ProcData.VB_Invoke_Func = "Normal.NewMacros.find_toc"
+
     Selection.HomeKey unit:=wdStory
     Dim allDoc As Range
     
@@ -9,9 +12,12 @@ Private Sub update_fields()
     
 End Sub
 Private Sub update_styles()
+Attribute update_styles.VB_Description = "Macro recorded 10/8/2004 by MSB"
+Attribute update_styles.VB_ProcData.VB_Invoke_Func = "Normal.NewMacros.Macro1"
     ActiveDocument.Styles("Heading 1").ParagraphFormat.NoLineNumber = True
     ActiveDocument.Styles("Heading 2").ParagraphFormat.NoLineNumber = True
     ActiveDocument.Styles("Heading 3").ParagraphFormat.NoLineNumber = True
+    ' ActiveDocument.Styles("Line Number").Font.Size = 8
 End Sub
 
 Private Sub add_linenos()
@@ -75,6 +81,30 @@ Private Sub unnumber_toc(title As String)
 out:
 End Sub
 
+Sub convert_all()
+    ChangeFileOpenDirectory "C:\SFU\tmp\"
+    Dim lsb_docs(7) As String
+    Dim file As Variant
+    
+    lsb_docs(0) = "LSB-Core.rtf"
+    lsb_docs(1) = "LSB-Core-IA32.rtf"
+    lsb_docs(2) = "LSB-Core-IA64.rtf"
+    lsb_docs(3) = "LSB-Core-AMD64.rtf"
+    lsb_docs(4) = "LSB-Core-PPC32.rtf"
+    lsb_docs(5) = "LSB-Core-PPC64.rtf"
+    lsb_docs(6) = "LSB-Core-S390.rtf"
+    lsb_docs(7) = "LSB-Core-S390X.rtf"
+    
+    For Each file In lsb_docs
+        Documents.Open FileName:=file, ConfirmConversions:=False, _
+            ReadOnly:=False, AddToRecentFiles:=False, PasswordDocument:="", _
+            PasswordTemplate:="", Revert:=False, WritePasswordDocument:="", _
+            WritePasswordTemplate:="", Format:=wdOpenFormatAuto
+        Call convert_doc
+        ActiveWindow.Close
+    Next
+End Sub
+
 Sub convert_doc()
     Dim psFile As String
     Dim base As String
@@ -92,11 +122,14 @@ Sub convert_doc()
     
     Call add_linenos
     Call update_fields
-    Call ActiveDocument.PrintOut(printtofile:=True, outputfilename:=psFile)
+    Call ActiveDocument.PrintOut(printtofile:=True, outputfilename:=psFile, Background:=False)
     Call ActiveDocument.SaveAs(FileName:=doc, fileformat:=wdFormatDocument)
     
 End Sub
+
 Private Sub update_title()
+Attribute update_title.VB_Description = "update the title page"
+Attribute update_title.VB_ProcData.VB_Invoke_Func = "Normal.NewMacros.update_title"
 '
 ' update_title Macro
 ' update the title page
