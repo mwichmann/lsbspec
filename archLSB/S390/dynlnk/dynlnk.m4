@@ -42,6 +42,12 @@ The following dynamic entries are defined in the
 <XREF LINKEND="std.S390.ABI">, Chapter 3.
 include(dyntag.sgml)
 </PARA>
+
+<PARA>
+In addtion the following dynamic entries are also supported:
+include(linuxtag.sgml)
+</PARA>
+
 </SECT1>
 
 <SECT1 ID=globaloffsettable>
