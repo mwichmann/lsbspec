@@ -115,8 +115,9 @@ In the scope of this document, we will use the following terms:
   <glossentry><glossterm>Open Catalog</glossterm>
   <glossdef>
   <para>
-       A set of directives defined by OASIS, mostly used for defining
-       equivalences between <acronym>FPI</acronym>s (Formal Public Identifiers) and real
+       A set of directives defined by the OASIS TR9401 Catalog, mostly used 
+       for defining equivalences between <acronym>FPI</acronym>s 
+       (Formal Public Identifiers) and real
        file names (see TR9401:1997 on <ulink url="http://www.oasis-open.org">http://www.oasis-open.org</ulink>).
   </para>
   </glossdef>
