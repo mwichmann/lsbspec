@@ -89,24 +89,31 @@ names in C and object files' symbol tables.
 <TITLE>C++ Language</TITLE>
 <PARA>
 Because of the immaturity of C++ ABI's (for name mangling, exception
-handling, and other such issues), we do not standardize any C++
-libraries.  It seems to be possible, using existing Linux development
+handling, and other such issues), we do not standardize any libraries
+for C++ v3.0.
+It seems to be possible, using existing Linux development
 tools, to write an application in C++ which complies with this rule by
 linking statically (or shipping a .so with the application) libstdc++
 and libgcc.
+</PARA>
 <NOTE>
 <PARA>
-We do need to specify some mechanisms, such as global constructors and
-destructors.  But that is much easier than a
-full C++ ABI.
-</PARA>
-<PARA>
-Constructors and destructors are .ctor and .dtor, FIXME how do these
-differ from .init and .fini and who is going to write the spec for
-them?).  FIXME: what about .eh_frame?  Do we need to specify them and
-if so, likewise.
+g++ example.cc -Wl,-Bdynamic,-lc,-Bstatic 
 </PARA>
 </NOTE>
+<PARA>
+Constructors: .ctors - this section contains a list of global constructor 
+function pointers.  The __CTOR_LIST__ symbol points to the head of the array
+</PARA>
+<PARA>
+Destructors: .dtors - this section contains a list of global destructor 
+function pointers.  The __DTOR_LIST__ symbol points to the head of the array 
+</PARA>
+<PARA>
+Error Handler: .eh_frame - this section contains information necessary for 
+frame unwinding during exception handling and debugging.  The format is the
+same as .debug_frame as described in DWARF2.
+</PARA>
 <NOTE>
 <PARA>
 In a future version of this specification, name mangling rules will be
@@ -114,7 +121,6 @@ specified so that C++ symbols can be mapped into symbol names in the object
 file.
 </PARA>
 </NOTE>
-</PARA>
 </SECT1>
 </CHAPTER>
 
