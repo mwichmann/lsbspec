@@ -11,6 +11,16 @@ print STDERR "mklibapdn -a <archname>\n";
 die;
 }
 
+sub makeid($)
+{
+	my ($name) = @_;
+	$name =~ s/\s+/./g;
+	$name =~ s/[^A-Za-z0-9.]+/./g;
+	# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
+	$name =~ s/\.\.+/./g;
+	return $name;
+}
+
 # Uncomment to trace SQL statments
 #$trace=1;
 
@@ -40,7 +50,7 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.13 2003-07-03 18:19:51 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.14 2004-07-14 01:23:58 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -62,9 +72,10 @@ for(1..$lth->numrows) {
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
 
-$select = "SELECT Iname,Istandard,Vname ";
+$select = "SELECT Iname,Istandard,Vname,Sname ";
 $select.= "FROM Interface,LGInt,LibGroup ";
 $select.= "LEFT JOIN Version ON Vid=Iversion ";
+$select.= "LEFT JOIN Standard ON Sid=Istandard ";
 $select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
 $select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
 $select.= "ORDER BY Iname";
@@ -80,7 +91,7 @@ print "</PARA>\n";
 # 6) Get a list of the Standards that are used by this library
 #
 print "<PARA>\n";
-$select = "SELECT DISTINCT Sfull,Sid FROM Standard,LibGroup,LGInt,Interface ";
+$select = "SELECT DISTINCT Sname,Sid FROM Standard,LibGroup,LGInt,Interface ";
 $select.= "WHERE Sid=Istandard AND Iid=LGIint AND LGIlibg=LGid ";
 $select.= "AND LGlib=$Lid AND Iarch=$Aid ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
@@ -92,17 +103,8 @@ if( $lsh->numrows) {
 	for(1..$lsh->numrows) {
 		local(*entry);
 		%entry=$lsh->fetchhash;
-		# NB: Footnotes must be unique across the entire document
 		print "<MEMBER>\n";
-		print $entry{'Sfull'};
-#		if( $entry{'Sid'} != 0 ) {
-#			printf "<FOOTNOTE ID=\"std-%d-%d\">\n",
-#					$Lid, $entry{'Sid'};
-#			print "<PARA>\n";
-#			print $entry{'Sfull'};
-#			print "</PARA>\n";
-#			print "</FOOTNOTE>\n";
-#		}
+		printf "<XREF LINKEND=\"STD.%s\">\n", makeid($entry{'Sname'});
 		print "</MEMBER>\n";
 		}
 	print "</SIMPLELIST>\n";
@@ -120,9 +122,14 @@ print "<TBODY>\n";
 	local(*std);
 	local(*symver);
 	local(*entry);
-	#$select = "SELECT Iname,Istandard,Vname ";
+	local(*xrefs);
+	local(*refs);
+	# we did the following query back at step 4, 
+	# and the results are still there waiting to be fetched ...
+	#$select = "SELECT Iname,Istandard,Vname,Sname ";
 	#$select.= "FROM Interface,LGInt,LibGroup ";
 	#$select.= "LEFT JOIN Version ON Vid=Iversion ";
+	#$select.= "LEFT JOIN Standard ON Sid=Istandard ";
 	#$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
 	#$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
 	#$select.= "ORDER BY Iname";
@@ -132,9 +139,29 @@ print "<TBODY>\n";
 		%entry=$inh->fetchhash;
 		$entry[$_]=$entry{'Iname'};
 		$std[$_]=$entry{'Istandard'};
+		$xrefs[$_]=sprintf ("std.%s", makeid($entry{'Sname'}));
 		$symver[$_]=$entry{'Vname'};
 	}
+	# we now have @entry, an array of interface names
+	# @std, an array of Standards (by Sid),
+	# @refs, an array of xref labels to the standards in the normative refs,
+	# and @symver, an array of symbol versions
+	#
+	# loop through @xrefs and build a hash , %refs, which
+	# such that $refs{'std.SUSv3'} = "[1]" etc;
+	local ($refno);
+	$refno = 0;
+	for(1..$inh->numrows) {
+		if (!defined($refs{$xref[$_]})) {
+			$refs{$xref[$_]} = sprintf "[%d]", ++$refno;
+		}
+	}
+
 	if( $inh->numrows > 0 ) {
+	#
+	# this is a three column table
+	#
+	# inc is the last row number ...
 	$inc=int(($inh->numrows+2)/3);
 	for(1..$inc) {
 		print "<ROW>";
@@ -143,8 +170,7 @@ print "<TBODY>\n";
 			printf "(%s)", $symver[$_];
 		}
 		if( $std[$_] ) {
-			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_];
+			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_], $refs{$xref[$_]};
 		}
 		printf "</ENTRY>";
 		printf "<ENTRY>%s", $entry[$_+$inc];
@@ -152,8 +178,7 @@ print "<TBODY>\n";
 			printf "(%s)", $symver[$_];
 		}
 		if( $std[$_+$inc] ) {
-			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+$inc];
+			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+$inc], $refs{$xref[$_+$inc]};
 		}
 		printf "</ENTRY>";
 		printf "<ENTRY>%s", $entry[$_+(2*$inc)];
@@ -161,28 +186,9 @@ print "<TBODY>\n";
 			printf "(%s)", $symver[$_];
 		}
 		if( $std[$_+(2*$inc)] ) {
-			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-							$Lid, $std[$_+(2*$inc)];
+			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+(2*$inc)], $refs{$xref[$_+(2*$inc)]};
 		}
 		printf "</ENTRY>";
-		#printf "<ENTRY>%s", $entry[$_+(3*$inc)];
-		#if( $symver[$_+(3*$inc)] ) {
-		#	printf "(%s)", $symver[$_];
-		#}
-		#if( $std[$_+(3*$inc)] ) {
-		#	printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-		#					$Lid, $std[$_+(3*$inc)];
-		#}
-		#printf "</ENTRY>";
-		#printf "<ENTRY>%s", $entry[$_+(4*$inc)];
-		#if( $symver[$_+(4*$inc)] ) {
-		#	printf "(%s)", $symver[$_];
-		#}
-		#if( $std[$_+(4*$inc)] ) {
-		#	printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
-		#					$Lid, $std[$_+(4*$inc)];
-		#}
-		#printf "</ENTRY>";
 		print "</ROW>\n";
 	}
 	}
@@ -245,4 +251,4 @@ print "</SECT1>\n";
 }
 print "</APPENDIX>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.13 2003-07-03 18:19:51 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.14 2004-07-14 01:23:58 nick Exp $- -->\n");
