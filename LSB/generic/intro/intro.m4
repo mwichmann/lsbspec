@@ -143,34 +143,11 @@ descriptions of those components may be included entirely in the LSB, partly
 in the LSB and partly in other documents, or entirely in other reference 
 documents.
 </PARA>
-<PARA>
+<PARA> 
 Programmers who wish to produce binary applications that will
-run on any LSB-conforming implementation should follow this procedure:
+run on any LSB-conforming implementation should refer to the appendix
+(How To Create An LSB Compliant Application).
 </PARA>
-<ORDEREDLIST NUMERATION="arabic">
-<LISTITEM>
-<PARA>
-Link your binary application with the LSB's filter libraries found in
-<FILENAME class=directory>/usr/lsb/lib</FILENAME>
-to determine at compile time if your application is using
-only LSB defined APIs.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-Link your binary application with the LSB 
-<FILENAME>/lib/ld-lsb.so.1</FILENAME>
-dynamic linker/loader. 
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-Verify your binary application with the LSB's 
-<FILENAME>/usr/bin/lsbappchk</FILENAME>
-tool to determine at runtime if your application is using only LSB defined APIs.
-</PARA>
-</LISTITEM>
-</orderedlist>
 </SECT1>
 
 <SECT1 ID="defns">
