@@ -13,7 +13,7 @@ hardware in the system.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 10 15:58:36 2002 -->
+<!--    at Sat Oct 12 18:16:00 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2422,7 +2422,18 @@ struct protoent
 #define AI_NUMERICHOST	0x0004
 
 
-
+struct addrinfo
+{
+  int ai_flags;
+  int ai_family;
+  int ai_socktype;
+  int ai_protocol;
+  size_t ai_addrlen;
+  struct sockaddr *ai_addr;
+  char *ai_canonname;
+  struct addrinfo *ai_next;
+}
+ ;
 #define NI_NUMERICHOST	1
 #define NI_DGRAM	16
 #define NI_NUMERICSERV	2
@@ -3290,22 +3301,9 @@ struct iovec
   size_t iov_len;
 }
  ;
-struct addrinfo
-{
-  int ai_flags;
-  int ai_family;
-  int ai_socktype;
-  int ai_protocol;
-  size_t ai_addrlen;
-  struct sockaddr *ai_addr;
-  char *ai_canonname;
-  struct addrinfo *ai_next;
-}
- ;
 
 
 typedef unsigned short sa_family_t;
-typedef unsigned int socklen_t;
 
 
 struct sockaddr
@@ -3628,6 +3626,7 @@ typedef unsigned int uid_t;
 typedef int pid_t;
 typedef unsigned long off_t;
 typedef int key_t;
+typedef unsigned int socklen_t;
 typedef unsigned int id_t;
 typedef long suseconds_t;
 typedef struct
@@ -5324,9 +5323,13 @@ it is only in the binary standard.
 <REFSYNOPSISDIVINFO>
 <DATE>16 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int __libc_current_sigrtmax(void);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>__libc_current_sigrtmax</FUNCTION></FUNCDEF>
+  <VOID>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -5335,10 +5338,12 @@ int __libc_current_sigrtmax(void);
 <TITLE>Description
 </TITLE>
 <PARA>
-__libc_current_sigrtmax() returns the number of an available real-time signal with the lowest priority.
+<FUNCTION>__libc_current_sigrtmax</FUNCTION> returns the number of 
+an available real-time signal with the lowest priority.
 </PARA>
 <PARA>
-__libc_current_sigrtmax is not in the source standard; it is only in the binary standard.
+<FUNCTION>__libc_current_sigrtmax</FUNCTION> is not in the source standard; 
+it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5357,9 +5362,13 @@ return number of available real-time signal with highest priority
 <REFSYNOPSISDIVINFO>
 <DATE>16 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int __libc_current_sigrtmin(void);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>__libc_current_sigrtmin</FUNCTION></FUNCDEF>
+  <VOID>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -5368,10 +5377,12 @@ int __libc_current_sigrtmin(void);
 <TITLE>Description
 </TITLE>
 <PARA>
-__libc_current_sigrtmin() returns the number of an available real-time signal with the highest priority
+<FUNCTION>__libc_current_sigrtmin</FUNCTION> returns the number of 
+an available real-time signal with the highest priority.
 </PARA>
 <PARA>
-__libc_current_sigrtmin is not in the source standard; it is only in the binary standard
+<FUNCTION>__libc_current_sigrtmin</FUNCTION> is not in the source standard; 
+it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5392,12 +5403,22 @@ initialization routine
 <REFSYNOPSISDIVINFO>
 <DATE>24 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-BP_SYM __libc_start_main (int (*main) (int, char**, char**),
-    int argc, char *__unbounded *__unbounded ubp_av,
-    void (*init) (void), void (*fini) (void),
-    void (*rtld_fini) (void), void (*__unbounded stack_end);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>BP_SYM 
+  <FUNCTION>__libc_start_main</FUNCTION></FUNCDEF>
+ <PARAMDEF>int (*main) (int, char**, char**)</PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>argc</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char *__unbounded *__unbounded 
+  <PARAMETER><REPLACEABLE>ubp_av</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>void (*init) (void)</PARAMDEF>
+ <PARAMDEF>void (*fini) (void)</PARAMDEF>
+ <PARAMDEF>void (*rtld_fini) (void)</PARAMDEF>
+ <PARAMDEF>void (*__unbounded
+  <REPLACEABLE>stack_end</REPLACEABLE>)</PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -5407,10 +5428,11 @@ BP_SYM __libc_start_main (int (*main) (int, char**, char**),
 <TITLE>Description
 </TITLE>
 <PARA>
-Initialize glibc.
+<FUNCTION>__libc_start_main</FUNCTION> initializes glibc.
 </PARA>
 <PARA>
-__libc_start_main is not in the source standard; it is only in the binary standard.
+<FUNCTION>__libc_start_main</FUNCTION> is not in the source standard; 
+it is only in the binary standard.
 </PARA>
 </REFSECT1>
 
@@ -5430,11 +5452,20 @@ __libc_start_main is not in the source standard; it is only in the binary standa
 <REFSYNOPSISDIVINFO>
 <DATE>24 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;ctype.h>
-
-int __lxstat(int version, char *__path, struct stat *__statbuf);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;ctype.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>__lxstat</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>version</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char 
+  <PARAMETER><REPLACEABLE>*__path</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>struct stat *__statbuf</PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -5443,10 +5474,12 @@ int __lxstat(int version, char *__path, struct stat *__statbuf);
 <TITLE>Description
 </TITLE>
 <PARA>
-Inline wrapper around call to lxstat.
+<FUNCTION>__lxstat</FUNCTION> is an inline wrapper around call to 
+<FUNCTION>lxstat</FUNCTION>.
 </PARA>
 <PARA>
-__lxstat is not in the source standard; it is only in the binary standard.
+<FUNCTION>__lxstat</FUNCTION> is not in the source standard; 
+it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5467,12 +5500,21 @@ copy given number of bytes of source to destination
 <REFSYNOPSISDIVINFO>
 <DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;string.h>
-
-extern ptr_t __mempcpy(ptr_t restrict dest,
-                       const ptr_t restrict src, size_t n));
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;string.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern ptr_t 
+  <FUNCTION>__mempcpy</FUNCTION></FUNCDEF>
+ <PARAMDEF>ptr_t restrict 
+  <PARAMETER><REPLACEABLE>dest</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const ptr_t restrict 
+  <PARAMETER><REPLACEABLE>src</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>size_t 
+  <PARAMETER><REPLACEABLE>n</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -5481,11 +5523,13 @@ extern ptr_t __mempcpy(ptr_t restrict dest,
 <TITLE>Description
 </TITLE>
 <PARA>
-Copy n bytes of source to destination, returning pointer to bytes after the last written byte.
+<FUNCTION>__mempcpy</FUNCTION> copies <PARAMETER>n</PARAMETER> 
+bytes of source to destination, returning pointer to bytes after 
+the last written byte.
 </PARA>
-
 <PARA>
-__mempcpy is not in the source standard; it is only in the binary standard.
+<FUNCTION>__mempcpy</FUNCTION> is not in the source standard; 
+it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5505,11 +5549,19 @@ scan memory
 <REFSYNOPSISDIVINFO>
 <DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;string.h>
-
-extern ptr_t __rawmemchr(const ptr_t s, int c);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;string.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>extern ptr_t 
+  <FUNCTION>__rawmemchr</FUNCTION></FUNCDEF>
+ <PARAMDEF>const ptr_t 
+  <PARAMETER><REPLACEABLE>s</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>c</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
@@ -5518,13 +5570,17 @@ extern ptr_t __rawmemchr(const ptr_t s, int c);
 <TITLE>Description
 </TITLE>
 <PARA>
-__rawmemchr searches in s for c.
-</PARA><PARA>
-This is a weak alias to rawmemchr. It is similar to memchr, but there is no length limit. 
+<FUNCTION>__rawmemchr</FUNCTION> searches in <PARAMETER>s</PARAMETER> 
+for <PARAMETER>c</PARAMETER>.
 </PARA>
-
 <PARA>
-__rawmemchr is not in the source standard; it is only in the binary standard.
+<FUNCTION>__rawmemchr</FUNCTION> is a weak alias to 
+<FUNCTION>rawmemchr</FUNCTION>. It is similar to 
+<FUNCTION>memchr</FUNCTION>, but it has no length limit. 
+</PARA>
+<PARA>
+<FUNCTION>__rawmemchr</FUNCTION> is not in the source standard; 
+it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -8441,42 +8497,49 @@ The filesystem fd is open on does not support statfs.
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-#include &lt;errno.h>
-#include &lt;sys/statfs.h>
-
-int fstatfs64(int fd, struct statfs64 *buf);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;errno.h&gt;
+#include &lt;sys/statfs.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>fstatfs64</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>fd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>struct statfs64 
+  <PARAMETER><REPLACEABLE>*buf</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <TITLE>Description
 </TITLE>
-<para>
-The <function>fstatfs64</function> interface is expected to disappear
-from a future version of the LSB; applications should call the
-<function>fstatvfs64</function> interface.
-</para>
 <PARA>
-fstatfs64 returns information about a mounted file system. fd is the open file descriptor of any file within the mounted filesystem.
-</PARA><PARA>
-The fstatfs64() function is the 64-bit version of fstatfs().
+<FUNCTION>fstatfs64</FUNCTION> is expected to disappear from a 
+future version of the <ACRONYM>LSB</ACRONYM>; applications should 
+call the <FUNCTION>fstatvfs64</FUNCTION> interface.
+</PARA>
+<PARA>
+<FUNCTION>fstatfs64</FUNCTION> returns information about a mounted 
+file system. <PARAMETER>fd</PARAMETER> is the open file descriptor 
+of any file within the mounted filesystem.
+</PARA>
+<PARA>
+<FUNCTION>fstatfs64</FUNCTION> is the 64-bit version of 
+<FUNCTION>fstatfs</FUNCTION>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, the global variable <VARNAME>errno</VARNAME> is set to 
+<RETURNVALUE>0</RETURNVALUE>. On error, <RETURNVALUE>-1</RETURNVALUE>
+is returned.
 </PARA>
 </REFSECT1>
 </REFENTRY>
-
-
-
-
-
-
-
 
 
 <REFENTRY ID="baselib-getdomainname"> <REFMETA>
@@ -9801,12 +9864,20 @@ initialize the supplementary group access list
 <REFSYNOPSISDIVINFO>
 <DATE>13 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;grp.h>
-#include &lt;sys/types.h>
-
-int initgroups(const char *user, gid_t group);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;grp.h&gt;
+#include &lt;sys/types.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>initgroups</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*user</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>gid_t 
+  <PARAMETER><REPLACEABLE>group</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -9816,9 +9887,10 @@ int initgroups(const char *user, gid_t group);
 <TITLE>Description
 </TITLE>
 <PARA>
-The initgroups() function initializes the group access list by reading
-the group database and using all groups of which user is a member. The
-additional group group is also added to the list.
+<FUNCTION>initgroups</FUNCTION> initializes the group access 
+list by reading the group database and using all groups of which 
+<PARAMETER>user</PARAMETER> is a member. The additional group 
+<PARAMETER>group</PARAMETER> is also added to the list.
 </PARA>
 </REFSECT1>
 
@@ -9826,7 +9898,9 @@ additional group group is also added to the list.
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, the global variable <VARNAME>errno</VARNAME> is set to 
+<RETURNVALUE>0</RETURNVALUE>. On error, <RETURNVALUE>-1</RETURNVALUE>
+is returned.
 </PARA>
 </REFSECT1>
 
@@ -9993,12 +10067,22 @@ socket ioctl commands
 <REFSYNOPSISDIVINFO>
 <DATE>29 August 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;sys/socket.h>
-#include &lt;net/if.h>
-
-int ioctl(int sockfd, int request, char *argp);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/socket.h&gt;
+#include &lt;net/if.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>ioctl</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>sockfd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>request</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char 
+  <PARAMETER><REPLACEABLE>*argp</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -10008,19 +10092,19 @@ int ioctl(int sockfd, int request, char *argp);
 <TITLE>Description
 </TITLE>
 <PARA>
-Socket ioctl commands are a subset of the <function>ioctl</function> calls
-which can
-perform a variety of functions on sockets. The file descriptor
-<replaceable>sockfd</replaceable> must contain the value of a file descriptor
-which was created with the <function>socket</function>
-or <function>accept</function> calls.
+Socket <EMPHASIS>ioctl</EMPHASIS> commands are a subset of the 
+<FUNCTION>ioctl</FUNCTION> calls, which can perform a variety of 
+functions on sockets. <PARAMETER>sockfd</PARAMETER> must contain 
+the value of a file descriptor that was created with the 
+<FUNCTION>socket</FUNCTION> or <FUNCTION>accept</FUNCTION> calls.
 </PARA>
 <PARA>
-These commands apply to the underlying network interfaces, and affect the
-entire system, not just the file descriptor used to issue the ioctl.
+Socket <EMPHASIS>ioctl</EMPHASIS> commands apply to the underlying 
+network interfaces, and affect the entire system, not just the file 
+descriptor used to issue the <FUNCTION>ioctl</FUNCTION>.
 </PARA>
 <PARA>
-The following ioctls are provided:
+The following <FUNCTION>ioctl</FUNCTION>s are provided:
 </PARA>
 <VARIABLELIST>
 
@@ -10030,27 +10114,35 @@ SIOCGIFCONF
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface configuration list for the
-system.<footnote><para>Similar to the if_nameindex family found in the
-Single UNIX specification version 3 or the getifaddrs family found in
-BSD.</para></footnote>
-The parameter
-<replaceable>argp</replaceable> is a pointer to a
-<literal>struct ifconf</literal>.
-Before calling, the caller must allocate the
-<literal>ifc_ifcu.ifcu_req</literal> field to point to an array of
-<literal>struct ifreq</literal> structures, and set
-<literal>if_len</literal> to the size of this allocated array (in
-bytes).  Upon return, <literal>if_len</literal> will contain the amount of
-the array which was actually used (again in bytes).  If it is the same
-as the length upon calling, the caller should assume that the array
-was too small and try again with a larger array.
+Gets the interface configuration list for the system.
+<FOOTNOTE>
+<PARA>
+<SYMBOL>SIOCGIFCONF</SYMBOL> is similar to the 
+<FUNCTION>if_nameindex</FUNCTION> family found in the
+<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
+Version 3</CITETITLE> or the <FUNCTION>getifaddrs</FUNCTION> 
+family found in <ACRONYM>BSD</ACRONYM>.
 </PARA>
-<para>
-On success, this function can return any nonnegative
-value.<footnote><para>Historical UNIX systems disagree on the meaning
-of the return value.</para></footnote>
-</para>
+</FOOTNOTE>
+<PARAMETER>argp</PARAMETER> is a pointer to a
+<STRUCTNAME>ifconf</STRUCTNAME> structure. Before calling, the caller 
+must allocate the <STRUCTFIELD>ifc_ifcu.ifcu_req</STRUCTFIELD> field 
+to point to an array of <STRUCTNAME>ifreq</STRUCTNAME> structures, and 
+set <STRUCTFIELD>if_len</STRUCTFIELD> to the size of this allocated 
+array (in bytes). Upon return, <STRUCTFIELD>if_len</STRUCTFIELD> 
+will contain the amount of the array which was actually used (again, 
+in bytes).  If it is the same as the length upon calling, the caller 
+should assume that the array was too small and try again with a 
+larger array.
+</PARA>
+<PARA>
+On success, <SYMBOL>SIOCGIFCONF</SYMBOL> can return any nonnegative value.
+<FOOTNOTE>
+<PARA>
+Historical UNIX systems disagree on the meaning of the return value.
+</PARA>
+</FOOTNOTE>
+</PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
@@ -10061,11 +10153,12 @@ SIOCGIFFLAGS
 <LISTITEM>
 <PARA>
 Gets the interface flags for the indicated interface.
-The parameter <replaceable>argp</replaceable> is a pointer to a
-<literal>struct ifreq</literal>.
-Before calling, the caller should
-fill in the ifr_name field with the interface name, and upon return
-the ifr_ifru.ifru_flags field is set with the interface flags.
+<PARAMETER>argp</PARAMETER> is a pointer to a 
+<STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
+caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
+field with the interface name, and upon return, the 
+<STRUCTFIELD>ifr_ifru.ifru_flags</STRUCTFIELD> field is set 
+with the interface flags.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10076,12 +10169,13 @@ SIOCGIFADDR
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface address list for the system. The parameter
-<replaceable>argp</replaceable> is a pointer to a
-<literal>struct ifreq</literal>.
-Before calling, the caller should
-fill in the ifr_name field with the interface name, and upon return
-the ifr_ifru.ifru_addr field is set with the interface address.
+Gets the interface address list for the system. 
+<PARAMETER>argp</PARAMETER> is a pointer to a
+<STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
+caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
+field with the interface name, and upon return, the 
+<STRUCTFIELD>ifr_ifru.ifru_addr</STRUCTFIELD> field is set 
+with the interface address.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10092,20 +10186,23 @@ SIOCGIFNETMASK
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the network mask for the indicated interface. The parameter
-<replaceable>argp</replaceable> is a pointer to a
-<literal>struct ifreq</literal>.
-Before calling, the caller should
-fill in the ifr_name field with the interface name, and upon return
-the ifr_ifru.ifru_netmask field is set with the network mask.
+Gets the network mask for the indicated interface. 
+<PARAMETER>argp</PARAMETER> is a pointer to a
+<STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
+caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
+field with the interface name, and upon return, the 
+<STRUCTFIELD>ifr_ifru.ifru_netmask</STRUCTFIELD> field is set 
+with the network mask.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 </VARIABLELIST>
 
-<para>The <literal>struct sockaddr</literal> structure is as specified
-in the Single UNIX Specification.</para>
+<PARA>
+The <STRUCTNAME>sockaddr</STRUCTNAME> structure is as specified in 
+the <CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>.
+</PARA>
 
 </REFSECT1>
 
@@ -10113,7 +10210,9 @@ in the Single UNIX Specification.</para>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, the global variable <VARNAME>errno</VARNAME> is set to 
+<RETURNVALUE>0</RETURNVALUE>. On error, <RETURNVALUE>-1</RETURNVALUE>
+is returned.
 </PARA>
 </REFSECT1>
 
@@ -10127,7 +10226,7 @@ EBADF
 </TERM>
 <LISTITEM>
 <PARA>
-<replaceable>sockfd</replaceable> is not a valid descriptor.
+<PARAMETER>sockfd</PARAMETER> is not a valid descriptor.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10138,7 +10237,7 @@ EFAULT
 </TERM>
 <LISTITEM>
 <PARA>
-<replaceable>argp</replaceable> references an inaccessible memory area.
+<PARAMETER>argp</PARAMETER> references an inaccessible memory area.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10149,7 +10248,8 @@ ENOTTY
 </TERM>
 <LISTITEM>
 <PARA>
-<replaceable>sockfd</replaceable> is not associated with a character special device.
+<PARAMETER>sockfd</PARAMETER> is not associated with a character 
+special device.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10160,8 +10260,8 @@ ENOTTY
 </TERM>
 <LISTITEM>
 <PARA>
-The specified request does not apply to the kind of object that the descriptor
-<replaceable>sockfd</replaceable> references.
+The specified <PARAMETER>request</PARAMETER> does not apply to the kind of 
+object that the descriptor <PARAMETER>sockfd</PARAMETER> references.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -10172,7 +10272,7 @@ EINVAL
 </TERM>
 <LISTITEM>
 <PARA>
-<replaceable>request</replaceable> or <replaceable>argp</replaceable> is not valid.
+<PARAMETER>request</PARAMETER> and <PARAMETER>argp</PARAMETER> are not valid.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -11886,31 +11986,42 @@ The filesystem path is on does not support statfs.
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-#include &lt;sys/statfs.h>
-
-int statfs64(__const char *__file, struct statfs64 *__buf);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/statfs.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>statfs64</FUNCTION></FUNCDEF>
+ <PARAMDEF>__const char 
+  <PARAMETER><REPLACEABLE>*__file</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>struct statfs64 *__buf</PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <TITLE>Description
 </TITLE>
-<para>
-The <function>statfs64</function> interface is expected to disappear
-from a future version of the LSB; applications should call the
-<function>statvfs64</function> interface.
-</para>
 <PARA>
-statfs64 returns information about a mounted file system.
-</PARA><PARA>
-The statfs64() function is the 64-bit version of statfs().
+<FUNCTION>statfs64</FUNCTION> is expected to disappear from a future 
+version of the <ACRONYM>LSB</ACRONYM>; applications should call the
+<FUNCTION>statvfs64</FUNCTION> interface.
+</PARA>
+<PARA>
+<FUNCTION>statfs64</FUNCTION> returns information about a mounted file system.
+</PARA>
+<PARA>
+<FUNCTION>statfs64</FUNCTION> is the 64-bit version of 
+<FUNCTION>statfs</FUNCTION>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, the global variable <VARNAME>errno</VARNAME> is set to 
+<RETURNVALUE>0</RETURNVALUE>. On error, <RETURNVALUE>-1</RETURNVALUE>
+is returned.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -13104,19 +13215,17 @@ wait for child process
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-The specification for <function>wait3</function> is as specified in
-the Single UNIX Specification, Version 2, but with the following differences as
-listed below.
+<FUNCTION>wait3</FUNCTION> is as specified in the 
+<CITETITLE PUBWORK="BOOK">Single UNIX Specification, Version 2</CITETITLE>, 
+but with differences as listed below.
 </PARA>
-
-<REFSECT2>
-<TITLE>Need not support WCONTINUED</TITLE>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Notes</TITLE>
 <PARA>
-Implementations need not support the functionality of WCONTINUED or
-WIFCONTINUED.
+Implementations need not support the functionality of 
+<SYMBOL>WCONTINUED</SYMBOL> or <SYMBOL>WIFCONTINUED</SYMBOL>.
 </PARA>
-</REFSECT2>
-
 </REFSECT1>
 </REFENTRY>
 
@@ -13363,15 +13472,15 @@ If WNOHANG was not set and an unblocked signal or a SIGCHLD was caught. This err
 <REFSECT1>
 <TITLE>Description
 </TITLE>
-<para>
-The <function>waitid</function> interface is expected to disappear
-from a future version of the LSB; applications should call the
-<function>waitpid</function> interface.
+<PARA>
+<FUNCTION>waitid</FUNCTION> is expected to disappear from a future 
+version of the <ACRONYM>LSB</ACRONYM>; applications should call the
+<FUNCTION>waitpid</FUNCTION> interface.
 </para>
 <para>
-The <function>waitid</function> function is as in the Single UNIX
-Specification, Version 2.
-</para>
+<FUNCTION>waitid</FUNCTION> is as specified in the 
+<CITETITLE PUBWORK="BOOK">Single UNIX Specification, Version 2</CITETITLE>.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -13932,7 +14041,7 @@ Convert initial portion of wide string NPTR to unsigned long long int representa
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 10 15:59:46 2002 -->
+<!--    at Sat Oct 12 18:17:07 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -14440,7 +14549,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 10 16:00:16 2002 -->
+<!--    at Sat Oct 12 18:17:35 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -14868,11 +14977,18 @@ operation on semaphore
 <REFSYNOPSISDIVINFO>
 <DATE>24 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;semaphore.h>
-int sem_timedwait(sem_t *__restrict __sem, 
-		  __const struct timespec *__restrict __abstime);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;semaphore.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>sem_timedwait</FUNCTION></FUNCDEF>
+ <PARAMDEF>sem_t *__restrict 
+  <PARAMETER><REPLACEABLE>__sem</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>__const struct timespec *__restrict __abstime</PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -14882,7 +14998,11 @@ int sem_timedwait(sem_t *__restrict __sem,
 <TITLE>Description
 </TITLE>
 <PARA>
-sem_timedwait() waits for semaphore object SEM being posted. It is a new function from IEEE Std. 1003.1-200x that is similar to sem_wait but waits only until ABSTIME.
+<FUNCTION>sem_timedwait</FUNCTION> waits for semaphore object 
+<SYMBOL>SEM</SYMBOL> being posted. It is a new function from 
+<CITETITLE PUBWORK="BOOK">IEEE Std. 1003.1-200x</CITETITLE> that 
+is similar to <FUNCTION>sem_wait</FUNCTION> but waits only until 
+<SYMBOL>ABSTIME</SYMBOL>.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -14895,7 +15015,7 @@ sem_timedwait() waits for semaphore object SEM being posted. It is a new functio
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 10 16:00:33 2002 -->
+<!--    at Sat Oct 12 18:17:51 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -15004,17 +15124,24 @@ library routine for dynamic linking of object files
 <SYNOPSIS>
 cc ... -ldl ...
 
-#include &lt;dlfcn.h>
+#include &lt;dlfcn.h&gt;
 
 typedef struct {
-             const char      *dli_fname;
-             void            *dli_fbase;
-             const char      *dli_sname;
-             void            *dli_saddr;
-} Dl_info;
-
-int dladdr(void *address, Dlinfo *dlip);
+             const char  <STRUCTFIELD>*dli_fname</STRUCTFIELD>;
+             void        <STRUCTFIELD>*dli_fbase</STRUCTFIELD>;
+             const char  <STRUCTFIELD>*dli_sname</STRUCTFIELD>;
+             void        <STRUCTFIELD>*dli_saddr</STRUCTFIELD>;
+} <STRUCTNAME>Dl_info</STRUCTNAME>;
 </SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>dladdr</FUNCTION></FUNCDEF>
+ <PARAMDEF>void 
+  <PARAMETER><REPLACEABLE>*address</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>Dlinfo *dlip</PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -15024,9 +15151,16 @@ int dladdr(void *address, Dlinfo *dlip);
 <TITLE>Description
 </TITLE>
 <PARA>
-This function implements the System V dynamic linking routines.
-</PARA><PARA>
-The dladdr() function is the inverse of the dlsym() function. If the given address is successfully located inside a module, dladdr() returns nonzero, otherwise 0. On a successful return, the fields of dlip are filled in as follows:
+<FUNCTION>dladdr</FUNCTION> implements the System V dynamic linking 
+routines.
+</PARA>
+<PARA>
+<FUNCTION>dladdr</FUNCTION> is the inverse of <FUNCTION>dlsym</FUNCTION>. 
+If <PARAMETER>address</PARAMETER> is successfully located inside a 
+module, <FUNCTION>dladdr</FUNCTION> returns a non-<LITERAL>ZERO</LITERAL> 
+value, otherwise, it returns a <RETURNVALUE>0</RETURNVALUE>. 
+On success, <FUNCTION>dladdr</FUNCTION> fills in the fields of 
+<PARAMETER>dlip</PARAMETER> as follows:
 </PARA>
 
 <VARIABLELIST>
@@ -15076,7 +15210,13 @@ the address of that symbol
 </VARIABLELIST>
 
 <PARA>
-Shared objects must be linked using the -shared option to the linker ld(1). The linker flag -rpath may be used to add a directory to the default search path for shared objects and shared libraries. The linker flag -E or the C compiler flag -rdynamic should be used to cause the application to export its symbols to the shared objects.
+Shared objects must be linked using the <OPTION>-shared</OPTION> 
+option to the linker <COMMAND>ld(1)</COMMAND>. The linker flag 
+<OPTION>-rpath</OPTION> may be used to add a directory to the 
+default search path for shared objects and shared libraries. 
+The linker flag <OPTION>-E</OPTION> or the C compiler flag 
+<OPTION>-rdynamic</OPTION> should be used to cause the 
+application to export its symbols to the shared objects.
 </PARA>
 </REFSECT1>
 
@@ -15111,7 +15251,7 @@ directory search-path for object files
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 10 16:00:45 2002 -->
+<!--    at Sat Oct 12 18:18:04 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
