@@ -1,0 +1,289 @@
+<APPENDIX ID=app-B>
+<TITLE>How To Create An LSB Compliant Application</TITLE>
+<SECT1 ID=app-B-ABI>
+<TITLE>Application Binary Interface</TITLE>
+<PARA>
+The Linux Standard Base (LSB) defines and tests a Binary Application Interface 
+(ABI) for the GNU/Linux operating system.  This ABI protects an application 
+from the intricacies of the operating system by providing a consistent layer 
+of APIs & libraries for an application to interface instead of the system 
+primatives. 
+</PARA>
+<PARA>
+This ABI definition, testing, and certification is what comprises the 
+LSB standard. 
+</PARA>
+<PARA>
+<TABLE>
+<TITLE>ABI: High Level View</TITLE>
+<TGROUP COLS=1>
+<TBODY>
+<ROW>
+<ENTRYTBL COLS=4>
+<TBODY>
+<ROW>
+<ENTRY>Application[1]</ENTRY>
+<ENTRY>Application[2]</ENTRY>
+<ENTRY>...</ENTRY>
+<ENTRY>Application[N]</ENTRY>
+</ROW>
+</TBODY>
+</ENTRYTBL>
+</ROW>
+<ROW><ENTRY ALIGN=center>Application Binary Interface</ENTRY></ROW>
+<ROW><ENTRY ALIGN=center>Linux Kernel</ENTRY></ROW>
+<ROW><ENTRY ALIGN=center>Hardware Platform</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<TABLE>
+<TITLE>ABI: Component View</TITLE>
+<TGROUP COLS=1>
+<TBODY>
+<ROW>
+<ENTRYTBL COLS=4>
+<TBODY>
+<ROW>
+<ENTRY>Application[1]</ENTRY>
+<ENTRY>Application[2]</ENTRY>
+<ENTRY>...</ENTRY>
+<ENTRY>Application[N]</ENTRY>
+</ROW>
+</TBODY>
+</ENTRYTBL>
+</ROW>
+<ROW>
+<ENTRYTBL COLS=3>
+<TBODY>
+<ROW>
+<ENTRY ALIGN=center>System Interfaces</ENTRY>
+<ENTRY ALIGN=center>Auxilary Interfaces</ENTRY>
+<ENTRY ALIGN=center>Graphics Interfaces</ENTRY>
+</ROW>
+</TBODY>
+</ENTRYTBL>
+</ROW>
+<ROW><ENTRY ALIGN=center>Linux Kernel</ENTRY></ROW>
+<ROW><ENTRY ALIGN=center>Hardware Platform</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</PARA>
+</SECT1>
+<SECT1 ID=app-B-API>
+<TITLE>Application Programming Interface</TITLE>
+<PARA>
+The LSB's ABI defines a set of Application Programming Intefaces (APIs) 
+that are grouped into reusable modular libraries.   This  set of LSB 
+defined libraries provide the working set of APIs for applications to 
+use to access the operating system. 
+</PARA>
+<PARA>
+<EMPHASIS>System Interfaces</EMPHASIS>
+<ITEMIZEDLIST MARK=bullet>
+<LISTITEM><PARA>System Interfaces (libc)</PARA></LISTITEM>
+<LISTITEM><PARA>Math (libm)</PARA></LISTITEM>
+<LISTITEM><PARA>Dynamic Loader (libdl)</PARA></LISTITEM>
+<LISTITEM><PARA>Encryption (libcrypt)</PARA></LISTITEM>
+<LISTITEM><PARA>pThreads (libpthreads)</PARA></LISTITEM>
+<LISTITEM><PARA>Asynchronous I/O (librt)</PARA></LISTITEM>
+</ITEMIZEDLIST>
+</PARA>
+<PARA>
+<EMPHASIS>Auxilary Interfaces</EMPHASIS>
+<ITEMIZEDLIST MARK=bullet>
+<LISTITEM><PARA>Compression (libz)</PARA></LISTITEM>
+<LISTITEM><PARA>Utility Functions (libutil)</PARA></LISTITEM>
+<LISTITEM><PARA>Curses (libcurses)</PARA></LISTITEM>
+</ITEMIZEDLIST>
+</PARA>
+<PARA>
+<EMPHASIS>Graphics Interfaces</EMPHASIS>
+<ITEMIZEDLIST MARK=bullet>
+<LISTITEM><PARA>X Window System (libX11)</PARA></LISTITEM>
+<LISTITEM><PARA>X11 Extension (libXext)</PARA></LISTITEM>
+<LISTITEM><PARA>X11 Intrinsics (libXt)</PARA></LISTITEM>
+<LISTITEM><PARA>X11 Session Mgnt. (libSM)</PARA></LISTITEM>
+<LISTITEM><PARA>X11 Inter-Client Exchange (libICE)</PARA></LISTITEM>
+<LISTITEM><PARA>GL 3D Graphics (libGL)</PARA></LISTITEM>
+</ITEMIZEDLIST>
+</PARA>
+</SECT1>
+<SECT1 ID=app-B-LSB-Compliance>
+<TITLE>LSB Compliance</TITLE>
+<PARA>
+Programmers who wish to produce binary applications that will run on any 
+LSB-conforming implementation should follow this procedure:
+</PARA>
+<ORDEREDLIST NUMERATION="arabic">
+<LISTITEM>
+<PARA>
+Link your binary application with the LSB's filter libraries found in
+<FILENAME class=directory>/usr/lsb/lib</FILENAME>
+to determine at compile time if your application is using
+only LSB defined APIs.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+Link your binary application with the LSB 
+<FILENAME>/lib/ld-lsb.so.1</FILENAME>
+dynamic linker/loader. 
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+Verify your binary application with the LSB's 
+<FILENAME>/usr/bin/lsbappchk</FILENAME>
+tool to determine at runtime if your application is using only LSB defined APIs.
+</PARA>
+</LISTITEM>
+</ORDEREDLIST>
+</SECT1>
+<SECT1 ID=app-B-LSB-Enviornment>
+<TITLE>LSB Setup and Environment</TITLE>
+<PARA>
+There is an LSB development environment, <FILENAME>lsbdev</FILENAME>,
+with compile time filter libraries, and there is an LSB loader,
+<FILENAME>ld-lsb.so.1</FILENAME>, that needs to be installed.  Follow
+the example below to install these LSB tools.
+</PARA>
+<PROGRAMLISTING>
+$ rpm -i ftp://lsb.sourceforge.net/pub/lsb/lsbdev/lsbdev-1.0.i386.rpm
+$ cd  /tmp
+$ wget -m -L ftp://lsb.sourceforge.net/pub/lsb/impl/xdevel-20010319/LSB-addon-COL-3.1-20010319.tgz
+$ cd  /
+$ tar xzvf /tmp/xdevel-20010319/LSB-addon-COL-3.1-20010319.tgz
+</PROGRAMLISTING>
+</SECT1>
+<SECT1 ID=app-B-LSB-Compliance-Example>
+<TITLE>LSB Compliance Example</TITLE>
+<PARA>
+Create a simple "hello world" program. 
+</PARA>
+
+<PROGRAMLISTING>
+cat > hw.c << FILE
+
+&amp;include &lt;stdio.h>
+
+int
+main(int argc, char *argv[]) {
+	printf("Hello World\n");
+}
+
+FILE
+</PROGRAMLISTING>
+
+<PARA>
+Compile the "hello world" program and link it with the LSB loader and libraries.
+</PARA>
+
+<PROGRAMLISTING>
+$ gcc -o hw -Wall hw.c -L/usr/lib/lsb -Wl,--dynamic-linker=/lib/ld-lsb.so.1
+</PROGRAMLISTING>
+
+<PARA>
+Test to see if the "hello world" program works. 
+</PARA>
+
+<PROGRAMLISTING>
+$ ./hw
+
+  Hello World
+</PROGRAMLISTING>
+
+<PARA>
+Test to see if the "hello world" program is using the LSB loader and libraries. 
+</PARA>
+
+<PROGRAMLISTING>
+$ ldd hw
+
+  libc.so.6 => /lib/lsb/libc.so.6
+  /lib/ld-lsb.so.1 => /lib/ld-lsb.so.1
+</PROGRAMLISTING>
+
+<PARA>
+Test of see if the "hello world" program is LSB compliant. 
+</PARA>
+
+<PROGRAMLISTING>
+$ lsbappchk hw
+</PROGRAMLISTING>
+
+<PARA>
+If there is any output from <FILENAME>lsbappchk</FILENAME>, 
+then it detected API calls that are not specified by the LSB.  
+To correct this, the application should disconitnue the use of 
+those APIs, or a trouble report should be sent to the LSB. 
+</PARA>
+</SECT1>
+<SECT1 ID=app-B-LSB-Non-Compliance-Example>
+<TITLE>LSB Non-Compliance Example</TITLE>
+<PARA>
+Create a simple "domain name" program. 
+</PARA>
+
+<PROGRAMLISTING>
+cat > dn.c << FILE
+
+&amp;include &lt;stdio.h>
+&amp;include &lt;unistd.h>
+
+int
+main(int argc, char *argv[]) {
+	char domain[BUFSIZ];
+	int rc;
+
+	rc = getdomainname((char *)&amp;domain, BUFSIZ);
+
+	if (0 == rc) {
+		printf("domainname is: %s\n", domain);
+	}
+
+}
+
+FILE
+</PROGRAMLISTING>
+
+<PARA>
+Compile the "domain name" program and link it with the LSB loader and libraries.
+</PARA>
+
+<PROGRAMLISTING>
+$ gcc -o dn -Wall dn.c -L/usr/lib/lsb -Wl,--dynamic-linker=/lib/ld-lsb.so.1
+
+  domain.c: In function `main':
+  domain.c:14: warning: control reaches end of non-void function
+  /tmp/ccHpOeFD.o: In function `main':
+  /tmp/ccHpOeFD.o(.text+0x16): undefined reference to `getdomainname'
+  collect2: ld returned 1 exit status
+</PROGRAMLISTING>
+
+<PARA>
+The <FILENAME>dn.c</FILENAME> failed to link with the LSB filters libraries,
+because the API <EMPHASIS>getdomainname</EMPHASIS> is not defined.
+</PARA>
+<PARA>
+Let's assume that we were able to compile & link some libraries, and
+be using the correct LSB loader.
+Test to verify with <FILENAME>lsbappchk</FILENAME> if the domain name
+application is using only LSB specified APIs.
+</PARA>
+
+<PROGRAMLISTING>
+$ lsbappchk hw
+
+  getdomainname
+</PROGRAMLISTING>
+
+<PARA>
+The LSB's <FILENAME>lsbappchk</FILENAME> outputed 
+<EMPHASIS>getdomainname</EMPHASIS>, so it detected an API call that 
+is not specified by the LSB.  
+To correct this, the application should disconitnue the use of 
+those APIs, or a trouble report should be sent to the LSB. 
+</PARA>
+</SECT1>
+</APPENDIX>
