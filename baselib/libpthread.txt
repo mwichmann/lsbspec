@@ -8,7 +8,9 @@ using pthreads.
 <PARA>
 POSIX specifies a concept of per-process rather than per-thread
 signals.  The LSB does not require this behavior; traditional Linux
-implementations have had per-thread signals only.
+implementations have had per-thread signals only.  A related issue is
+that applications cannot (using legacy Linux implementations, at
+least) rely on getpid() returning the same value in different threads.
 </PARA>
 
 <PARA>
@@ -34,4 +36,31 @@ Although this standard doesn't have a way to list processes (/proc or
 "ps" command line isn't in, right?), it is our intention to not
 specify one way or the other whether multiple threads appear as
 separate processes or as a single process.
+</PARA>
+
+<PARA>
+Applications cannot rely on resource limits (getrusage and setrusage)
+being maintained per-process rather than per-thread.
+</PARA>
+
+<PARA>
+Applications must disconnect from the controlling tty before
+pthread_create (FIXME: have I summarized this correctly?).
+</PARA>
+
+<PARA>
+times() doesn't account for all threads, just the caller.
+</PARA>
+
+<PARA>
+Applications must not call pthread_cancel if they call any system
+libraries (most notably X windows), as system libraries are not
+guaranteed to be thread safe.  Likewise, for such libraries, only one
+thread per process may call them.
+</PARA>
+
+<PARA>
+Applications cannot rely on fcntl/lockf locks being visible
+per-process rather than per-thread.  Likewise for mandatory file
+locks.
 </PARA>
