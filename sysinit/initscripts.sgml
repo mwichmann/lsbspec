@@ -1,0 +1,67 @@
+<SECT1>
+<TITLE>Comment conventions for init scripts</TITLE>
+
+<PARA>
+Packages that need to execute a script at bootup and/or shutdown will
+provide an init.d file.  This file is installed by the install_initd
+program described below, which copies it into a standard directory and
+makes whatever other adjustments (creation of symlinks, creation of
+entries in a database, etc.) are necessary so that the script can be run
+at boot-time.
+<FOOTNOTE><PARA>
+This specification does not require, but is designed to allow, the
+development of a system which runs boot scripts in parallel.  Hence,
+enforced serialization of scripts are avoided unless they are explicitly
+necessary. 
+</PARA></FOOTNOTE>
+</PARA>
+
+<PARA>
+In the init.d file, information about the shell script is delimited by
+the strings "### BEGIN INIT INFO" and "### END INIT INFO".  Inside
+this block declarations shall take the form of "# {keyword}: [arg1]
+[arg2] ..."  The following keywords, with their arguments are defined
+in this specification:
+</PARA>
+
+<SCREEN>
+	# Provides: boot_facility_1 [ boot_facility_2 ...]
+	# Required-Start: boot_facility_1 [ boot_facility_2 ...]
+	# Required-Stop: boot_facility_1 [ boot_facility_2 ...]
+	# Default-Start: run_level_1 [ run_level_2 ...]
+	# Default-Stop: run_level_1 [ run_level_2 ...]
+	# Description: multiline_description
+</SCREEN>
+
+<PARA>
+Additional keywords may be defined in future LSB specifications.
+Distributions may define local extensions by using the prefix
+"X-[distribution name]" --- for example, "X-RedHat-foobardecl", or
+"X-Debian-xyzzydecl".  
+</PARA>
+
+<PARA>
+An init.d shell script may declare using the "Required-Start: " header
+that it must not be run until certain boot facilities are provided.
+This information is used by the installation tool or the boot-time
+boot-script execution facility to assure that init scripts are run in
+the correct order.
+</PARA>
+
+<PARA>
+Similarly, the "Required-Stop:" header defines which facilities must
+still be available during the shutdown of that service.  Hence, the
+initscript system should avoid stopping shell scripts which provide
+those facilities until this shell script is stopped.
+</PARA>
+
+<PARA>
+In a multiline description, each continuation line must begin with a
+'#' followed by a tab character.  The multiline description is
+terminated by the first line that does not match the '#','Tab'
+continuation specification.
+</PARA>
+
+</SECT1>
+
+
