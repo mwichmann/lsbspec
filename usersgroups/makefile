@@ -1,7 +1,8 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-FILES=usersgroups.sgml
+FILES = usersgroups.sgml
+TABLES = usersgroupscmds.sgml usersgroupsints.sgml
 
 .cpp.sgml:
 	cpp -I../../code/headers $*.cpp | grep -v '^# ' >$@
@@ -9,9 +10,16 @@ FILES=usersgroups.sgml
 .m4.sgml:
 	m4 $*.m4 >$@
 
-all: $(FILES) 
+all: $(FILES) $(TABLES)
+
+usersgroupscmds.sgml:
+	./mkusergrpcmds > usersgroupscmds.sgml
+
+usersgroupsints.sgml:
+	./mkusergrpint > usersgroupsints.sgml
 
 clean:
-	rm -f $(FILES)
+	rm -f $(FILES) $(TABLES)
 
-usersgroups.sgml:  usersgroups.m4
+usersgroups.sgml:  $(TABLES)
+

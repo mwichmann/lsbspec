@@ -82,7 +82,7 @@ According to JFH, author of shadow-utils, there are no group write APIs.
 
 <SECT1>
 <TITLE>Commands</TITLE>
-<PARA></PARA>
+include(usersgroupscmds.sgml)
 </SECT1>
 
 <SECT1>
@@ -93,6 +93,7 @@ According to JFH, author of shadow-utils, there are no group write APIs.
 
 <SECT1>
 <TITLE>Library Functions</TITLE>
+include(usersgroupsints.sgml)
 <PARA>
 There are many APIs in this specification that read, write, and/or create 
 password and group entries; however, below are those APIs not included
