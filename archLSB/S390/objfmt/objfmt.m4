@@ -63,7 +63,8 @@ include(elfsect.sgml)
 <SECT1 ID="linuxspecial">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
-There are no Linux S/390 specific sections
+The following Linux S/390 specific sections are defined here.
+include(linuxsect.sgml)
 </PARA>
 </SECT1>
 

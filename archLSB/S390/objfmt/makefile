@@ -14,6 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mksectiontable -a S390 -s 'S390 ABI' -t 'ELF Special Sections' >elfsect.sgml
+	../../../mksectiontable -a S390 -s 'LSB' -t 'Additional Special Sections'  >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)
