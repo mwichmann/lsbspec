@@ -3,6 +3,7 @@
 
 MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_toupper_loc.sgml \
 	__cxa_atexit.sgml __environ.sgml \
+	__fpclassify.sgml __fpclassifyf.sgml __h_errno_location.sgml \
 	__errno_location.sgml __fpending.sgml __getpgid.sgml __mempcpy.sgml \
 	__rawmemchr.sgml __sysconf.sgml _environ.sgml _IO_feof.sgml \
 	_IO_getc.sgml _IO_putc.sgml _IO_puts.sgml __libc_start_main.sgml \
