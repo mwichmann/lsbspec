@@ -128,6 +128,8 @@ External C symbols have the same names in C and object files' symbol tables.
 
 include(dwarfext.sgml)
 
+include(ehframe.sgml)
+
 include(ehframehdr.sgml)
 
 include(symversion.sgml)
