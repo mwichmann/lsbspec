@@ -9,34 +9,64 @@ print error message
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-void error (int exitstatus, int errnum, const char *format, ...)
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>void 
+  <FUNCTION>error</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>exitstatus</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>errnum</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*format</REPLACEABLE></PARAMETER>
+  <PARAMETER>...</PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <TITLE>Description
 </TITLE>
 <PARA>
-Print a message to standard error.  First print the name of the
-program.  If there is a function called error_print_progname (which
-would be provided by the application), call it to print the program
-name.  If not, print the contents of the global variable program_name
-as the program name.
+<FUNCTION>error</FUNCTION> prints a message to standard error.
 </PARA>
 <PARA>
-Then print a colon, a space, and the result of using the printf-style
-<replaceable>format</replaceable> and the optional arguments.
+<FUNCTION>error</FUNCTION> builds the message from the following 
+elements in their specified order:
+<ORDEREDLIST NUMERATION="ARABIC">
+<LISTITEM>
+<PARA>
+the program name. If the application has provided a function named 
+<FUNCTION>error_print_progname</FUNCTION>, <FUNCTION>error</FUNCTION> 
+calls this to supply the program name; otherwise, <FUNCTION>error</FUNCTION> 
+uses the content of the global variable <VARNAME>program_name</VARNAME>.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+the <TOKEN>COLON</TOKEN> and <TOKEN>SPACE</TOKEN> characters, then 
+the result of using the printf-style <PARAMETER>format</PARAMETER> 
+and the optional arguments.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+if <PARAMETER>errnum</PARAMETER> is non-<LITERAL>ZERO</LITERAL>, 
+<FUNCTION>error</FUNCTION> adds the <TOKEN>COLON</TOKEN> and 
+<TOKEN>SPACE</TOKEN> characters, then the result of 
+<FUNCTION>strerror(<VARNAME>errnum</VARNAME>)</FUNCTION>.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+a newline.
+</PARA>
+</LISTITEM>
+</ORDEREDLIST>
 </PARA>
 <PARA>
-Then, if errnum is nonzero, print a colon, a space, and the result of
-<computeroutput>strerror(errnum)</computeroutput>.
-</PARA>
-<PARA>
-Then print a newline.
-</PARA>
-<PARA>
-Then, if exitstatus is nonzero, call
-<computeroutput>exit(exitstatus)</computeroutput>.
+If <PARAMETER>exitstatus</PARAMETER> is non-<LITERAL>ZERO</LITERAL>, 
+<FUNCTION>error</FUNCTION> calls
+<FUNCTION>exit(<VARNAME>exitstatus</VARNAME>)</FUNCTION>.
 </PARA>
 <!-- There's an interaction with wide characters(?): this call makes
 stderr narrow-oriented. Should put that in once we figure out what it
