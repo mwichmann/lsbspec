@@ -54,7 +54,7 @@ $Lname=$entry{'Lname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.21 2001-04-25 23:58:49 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.22 2001-05-04 18:17:07 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -331,22 +331,26 @@ if( $hdh->numrows ) {
 		local(*entry);
 		%entry=$hdh->fetchhash;
 		$Hname=$entry{'Hname'};
-		$headname="../../../src/include/".$Hname;
-		print "<SECT2>\n";
-		print "<TITLE>";
-		print $entry{'Hname'};
-		print "</TITLE>\n";
-		print "<PARA>\n";
-		print "</PARA>\n";
-		print "<SCREEN>\n";
-		open(HEADER,"<".$headname) || open(HEADER,"<../".$headname) || die "Can't open $headname";
-		while(<HEADER>) {
-			print $_;
-			}
-		print "</SCREEN>\n";
-		print "</SECT2>\n";
+		$headname="../../../src/include/".$Hname.".defs";
+		open(HEADER,"<".$headname) ||
+			open(HEADER,"<../".$headname) ||
+			die "Can't open $headname";
+		if( -s HEADER ) { # Make sure it's not empty
+			print "<SECT2>\n";
+			print "<TITLE>";
+			print $entry{'Hname'};
+			print "</TITLE>\n";
+			print "<PARA>\n";
+			print "</PARA>\n";
+			print "<SCREEN>\n";
+			while(<HEADER>) {
+				print $_;
+				}
+			print "</SCREEN>\n";
+			print "</SECT2>\n";
+		}
 	}
 	print "</SECT1>\n";
 }
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.21 2001-04-25 23:58:49 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.22 2001-05-04 18:17:07 anderson Exp $- -->\n");
