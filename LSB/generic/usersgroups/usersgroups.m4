@@ -20,56 +20,12 @@ group is associated with a process, agroup ID value is referred to as a real
 group ID, or an effective group ID.  [POSIX 1003.1-1996]
 </PARA>
 
-<SECT1 ID="password">
-<TITLE>User Database</TITLE>
+<SECT1 ID="usergrpdatabase">
+<TITLE>User and Group Database</TITLE>
 <PARA>
-The passwd(5) user database should only be read and updated from the 
-following APIs: getpwent(3), setpwent(3), endpwent(3), getpwnam(3),
-getpwuid(3), putpwent(3), and passwd(1).  
-The layout of the passwd(5) file is not specified by this standard,
-because it is access via an API.
-</PARA>
-<PARA>
-If the initial user program field is null, the system default is used.  
-If the initial working directory field is null, the interpretation of 
-that field is implementation defined.
-</PARA>
-</SECT1>
-
-<SECT1 ID="group">
-<TITLE>Group Database</TITLE>
-<PARA>
-The group(5) user database should only be read from the following APIs:
-getgrent(3), setgrent(3), sendgrent(3), and groups(1).
-The layout of the group(5) file is not specified by this standard, because
-it is access via an API.
-</PARA>
-<PARA>
-There are no group write APIs. To change
-the group database, use the system adminstration commands
-groupadd(1), groupdel(1), groupmod(1) instead of API calls.
-Use the usermod(1) command to add or remove a user to/from
-supplementary groups.
-Do not change a present group database file directly.
-</PARA>
-</SECT1>
-
-<SECT1 ID="userlibs">
-<TITLE>Library Functions</TITLE>
-<PARA>
-There are many APIs in this specification that read, write, and/or create 
-password and group entries; however, below are those APIs not included
-in the specification.
-</PARA>
-<PARA>
-SVID APIs fgetgrent(2) and fgetpwent(2) are superceeded by 
-getgrent(2) and getpwent(2).
-</PARA>
-<PARA>
-The APIs getresuid(2), getpwuid(2), setfsuid(2), setfsgid(2), setresuid(2), 
-setresgid(2) are GNU/Linux specific.  These are included in the LSB 
-specification; however, these may be a portability issue for other UNIX and 
-UNIX-like systems.
+The format of the User and Group databases is not specified. Programs may only
+read these databases using the provided API. Changes to these databases should
+be made using the provided commands.
 </PARA>
 </SECT1>
 
