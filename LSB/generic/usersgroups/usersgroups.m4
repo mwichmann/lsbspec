@@ -23,7 +23,7 @@ group ID, or an effective group ID.  [POSIX 1003.1-1996]
 <SECT1 ID="password">
 <TITLE>User Database</TITLE>
 <PARA>
-The passwd(5) user database should only be read and updated form the 
+The passwd(5) user database should only be read and updated from the 
 following APIs: getpwent(3), setpwent(3), endpwent(3), getpwnam(3),
 getpwuid(3), putpwent(3), and passwd(1).  
 The layout of the passwd(5) file is not specified by this standard,
@@ -146,7 +146,7 @@ The system UIDs from 0 to 99 should be statically allocated by the system.
 These static assignments should be defined by a common registry.
 </PARA>
 <PARA>
-The system UIDs form 100 to 499 should be reserved for dynamically
+The system UIDs from 100 to 499 should be reserved for dynamically
 allocation by system administrators and post install scripts using useradd(1).
 </PARA>
 </SECT1>
