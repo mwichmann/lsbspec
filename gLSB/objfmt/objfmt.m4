@@ -40,24 +40,14 @@ Conforming implementations may also support other unspecified object file format
 <PARA>
 The following sections types are defined in the System V Application Binary
 Interface, Edition 4.1.
-<TABLE>
-<TITLE>ELF Section Types</TITLE>
-<TGROUP COLS=4>
 include(elfsecttypes.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 <SECT1 ID="linuxtypes">
 <TITLE>Linux Section Types</TITLE>
 <PARA>
 The following Linux section types are defined here.
-<TABLE>
-<TITLE>Linux Section Types</TITLE>
-<TGROUP COLS=2>
 include(linuxsecttypes.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 </CHAPTER>
@@ -68,24 +58,14 @@ include(linuxsecttypes.sgml)
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in the ELF reference specification.
-<TABLE>
-<TITLE>ELF Special Sections</TITLE>
-<TGROUP COLS=4>
 include(elfsect.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 <SECT1 ID="linuxspecial">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
 The following Linux-specific sections are defined here.
-<TABLE>
-<TITLE>Linux Special Sections</TITLE>
-<TGROUP COLS=2>
 include(linuxsect.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 </CHAPTER>

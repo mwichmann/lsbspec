@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
-<!--    at Tue Oct 23 10:00:24 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
+<!--    at Fri Oct 26 15:51:46 2001 -->
 <SECT1 ID=libX11>
 <TITLE>Interfaces for libX11</TITLE>
 <PARA>
@@ -217,6 +217,14 @@ Xauth;
 <PARA>
 </PARA>
 <SCREEN>
+typedef struct _XcmsFunctionSet
+{
+  XcmsColorSpace **DDColorSpaces;
+  XcmsScreenInitProc screenInitProc;
+  XcmsScreenFreeProc screenFreeProc;
+}
+XcmsFunctionSet;
+
 typedef unsigned long XcmsColorFormat;
 
 typedef double XcmsFloat;
@@ -296,11 +304,8 @@ XcmsPad;
 
 typedef union
 {
-  union spec;
   XcmsRGB RGB;
-  unsigned long pixel;
   XcmsRGBi RGBi;
-  XcmsColorFormat format;
   XcmsCIEXYZ CIEXYZ;
   XcmsCIEuvY CIEuvY;
   XcmsCIExyY CIExyY;
@@ -359,14 +364,6 @@ typedef struct _XcmsColorSpace
   int inverse_flag;
 }
 XcmsColorSpace;
-
-typedef struct _XcmsFunctionSet
-{
-  XcmsColorSpace **DDColorSpaces;
-  XcmsScreenInitProc screenInitProc;
-  XcmsScreenFreeProc screenFreeProc;
-}
-XcmsFunctionSet;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -374,6 +371,29 @@ XcmsFunctionSet;
 <PARA>
 </PARA>
 <SCREEN>
+struct _XDisplay;
+
+struct _XrmHashBucketRec;
+
+typedef struct
+{
+  unsigned long pixel;
+  unsigned short red;
+  unsigned short green;
+  unsigned short blue;
+  char flags;
+  char pad;
+}
+XColor;
+
+typedef void *XVaNestedList;
+
+typedef int (*XErrorHandler) ();
+
+typedef int (*XIOErrorHandler) ();
+
+typedef void (*XConnectionWatchProc) ();
+
 typedef char *XPointer;
 
 typedef struct _XExtData
@@ -563,6 +583,7 @@ typedef struct _XImage
   unsigned long green_mask;
   unsigned long blue_mask;
   XPointer obdata;
+  struct funcs f;
 }
 XImage;
 
@@ -1070,7 +1091,6 @@ typedef union
   char b[1];
   short s[1];
   long l[1];
-  union data;
 }
 XClientMessageEvent;
 
@@ -1258,29 +1278,6 @@ typedef struct _XIM *XIM;
 typedef struct _XIC *XIC;
 
 typedef void (*XIDProc) ();
-
-struct _XDisplay;
-
-struct _XrmHashBucketRec;
-
-typedef struct
-{
-  unsigned long pixel;
-  unsigned short red;
-  unsigned short green;
-  unsigned short blue;
-  char flags;
-  char pad;
-}
-XColor;
-
-typedef void *XVaNestedList;
-
-typedef int (*XErrorHandler) ();
-
-typedef int (*XIOErrorHandler) ();
-
-typedef void (*XConnectionWatchProc) ();
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1292,10 +1289,6 @@ typedef struct
 {
   int x;
   int y;
-  struct max_aspect;
-  int base_width;
-  int base_height;
-  int win_gravity;
 }
 XSizeHints;
 
@@ -1394,4 +1387,4 @@ XICCEncodingStyle;
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->

@@ -27,24 +27,14 @@ satisfy the symbols on the shared library.
 <PARA>
 The following dynamic entries are defined in the System V 
 Application Binary Interface, Edition 4.1.
-<TABLE>
-<TITLE>ELF Dynamic Entries</TITLE>
-<TGROUP COLS=4>
 include(dyntag.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 <SECT1 ID=lindynsectent>
 <TITLE>Linux Dynamic Entries</TITLE>
 <PARA>
 The following dynamic entries are defined here.
-<TABLE>
-<TITLE>Linux Dynamic Entries</TITLE>
-<TGROUP COLS=2>
 include(linuxtag.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 </CHAPTER>

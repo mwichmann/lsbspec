@@ -10,8 +10,8 @@ The X Libraries should be built thread-safe.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
-<!--    at Tue Oct 23 10:00:24 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
+<!--    at Fri Oct 26 15:51:46 2001 -->
 <SECT1 ID=libX11>
 <TITLE>Interfaces for libX11</TITLE>
 <PARA>
@@ -227,6 +227,14 @@ Xauth;
 <PARA>
 </PARA>
 <SCREEN>
+typedef struct _XcmsFunctionSet
+{
+  XcmsColorSpace **DDColorSpaces;
+  XcmsScreenInitProc screenInitProc;
+  XcmsScreenFreeProc screenFreeProc;
+}
+XcmsFunctionSet;
+
 typedef unsigned long XcmsColorFormat;
 
 typedef double XcmsFloat;
@@ -306,11 +314,8 @@ XcmsPad;
 
 typedef union
 {
-  union spec;
   XcmsRGB RGB;
-  unsigned long pixel;
   XcmsRGBi RGBi;
-  XcmsColorFormat format;
   XcmsCIEXYZ CIEXYZ;
   XcmsCIEuvY CIEuvY;
   XcmsCIExyY CIExyY;
@@ -369,14 +374,6 @@ typedef struct _XcmsColorSpace
   int inverse_flag;
 }
 XcmsColorSpace;
-
-typedef struct _XcmsFunctionSet
-{
-  XcmsColorSpace **DDColorSpaces;
-  XcmsScreenInitProc screenInitProc;
-  XcmsScreenFreeProc screenFreeProc;
-}
-XcmsFunctionSet;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -384,6 +381,29 @@ XcmsFunctionSet;
 <PARA>
 </PARA>
 <SCREEN>
+struct _XDisplay;
+
+struct _XrmHashBucketRec;
+
+typedef struct
+{
+  unsigned long pixel;
+  unsigned short red;
+  unsigned short green;
+  unsigned short blue;
+  char flags;
+  char pad;
+}
+XColor;
+
+typedef void *XVaNestedList;
+
+typedef int (*XErrorHandler) ();
+
+typedef int (*XIOErrorHandler) ();
+
+typedef void (*XConnectionWatchProc) ();
+
 typedef char *XPointer;
 
 typedef struct _XExtData
@@ -573,6 +593,7 @@ typedef struct _XImage
   unsigned long green_mask;
   unsigned long blue_mask;
   XPointer obdata;
+  struct funcs f;
 }
 XImage;
 
@@ -1080,7 +1101,6 @@ typedef union
   char b[1];
   short s[1];
   long l[1];
-  union data;
 }
 XClientMessageEvent;
 
@@ -1268,29 +1288,6 @@ typedef struct _XIM *XIM;
 typedef struct _XIC *XIC;
 
 typedef void (*XIDProc) ();
-
-struct _XDisplay;
-
-struct _XrmHashBucketRec;
-
-typedef struct
-{
-  unsigned long pixel;
-  unsigned short red;
-  unsigned short green;
-  unsigned short blue;
-  char flags;
-  char pad;
-}
-XColor;
-
-typedef void *XVaNestedList;
-
-typedef int (*XErrorHandler) ();
-
-typedef int (*XIOErrorHandler) ();
-
-typedef void (*XConnectionWatchProc) ();
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1302,10 +1299,6 @@ typedef struct
 {
   int x;
   int y;
-  struct max_aspect;
-  int base_width;
-  int base_height;
-  int win_gravity;
 }
 XSizeHints;
 
@@ -1404,13 +1397,13 @@ XICCEncodingStyle;
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
-<!--    at Tue Oct 23 10:00:25 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
+<!--    at Fri Oct 26 15:51:48 2001 -->
 <SECT1 ID=libXext>
 <TITLE>Interfaces for libXext</TITLE>
 <PARA>
@@ -1586,6 +1579,39 @@ XSecurityAuthorizationAttributes;
 <PARA>
 </PARA>
 <SCREEN>
+typedef struct _XSyncSystemCounter
+{
+  char *name;
+  XSyncCounter counter;
+  XSyncValue resolution;
+}
+XSyncSystemCounter;
+
+typedef struct
+{
+  XSyncCounter counter;
+  XSyncValueType value_type;
+  XSyncValue wait_value;
+  XSyncTestType test_type;
+}
+XSyncTrigger;
+
+typedef struct
+{
+  XSyncTrigger trigger;
+  XSyncValue event_threshold;
+}
+XSyncWaitCondition;
+
+typedef struct
+{
+  XSyncTrigger trigger;
+  XSyncValue delta;
+  int events;
+  XSyncAlarmState state;
+}
+XSyncAlarmAttributes;
+
 typedef XID XSyncCounter;
 
 typedef XID XSyncAlarm;
@@ -1620,50 +1646,17 @@ typedef enum
   XSyncAlarmDestroyed
 }
 XSyncAlarmState;
-
-typedef struct _XSyncSystemCounter
-{
-  char *name;
-  XSyncCounter counter;
-  XSyncValue resolution;
-}
-XSyncSystemCounter;
-
-typedef struct
-{
-  XSyncCounter counter;
-  XSyncValueType value_type;
-  XSyncValue wait_value;
-  XSyncTestType test_type;
-}
-XSyncTrigger;
-
-typedef struct
-{
-  XSyncTrigger trigger;
-  XSyncValue event_threshold;
-}
-XSyncWaitCondition;
-
-typedef struct
-{
-  XSyncTrigger trigger;
-  XSyncValue delta;
-  int events;
-  XSyncAlarmState state;
-}
-XSyncAlarmAttributes;
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
-<!--    at Tue Oct 23 10:00:29 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
+<!--    at Fri Oct 26 15:51:51 2001 -->
 <SECT1 ID=libSM>
 <TITLE>Interfaces for libSM</TITLE>
 <PARA>
@@ -1769,7 +1762,6 @@ typedef struct
 {
   SmcShutdownCancelledProc callback;
   SmPointer client_data;
-  struct shutdown_cancelled;
 }
 SmcCallbacks;
 
@@ -1783,7 +1775,6 @@ typedef struct
 {
   SmsGetPropertiesProc callback;
   SmPointer manager_data;
-  struct get_properties;
 }
 SmsCallbacks;
 
@@ -1796,13 +1787,13 @@ typedef void (*SmsErrorHandler) ();
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
-<!--    at Tue Oct 23 10:00:27 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
+<!--    at Fri Oct 26 15:51:50 2001 -->
 <SECT1 ID=libICE>
 <TITLE>Interfaces for libICE</TITLE>
 <PARA>
@@ -2011,13 +2002,13 @@ IceAuthDataEntry;
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
-<!--    at Tue Oct 23 10:00:30 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
+<!--    at Fri Oct 26 15:51:53 2001 -->
 <SECT1 ID=libXt>
 <TITLE>Interfaces for libXt</TITLE>
 <PARA>
@@ -2080,47 +2071,47 @@ X11R.4 X Toolkit Intrinsics</PARA>
 <ROW><ENTRY>XtAppAddConverter<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToBool<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetMultiClickTime<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtOpenDisplay<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtSetWMColormapWindows<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
 <ROW><ENTRY>XtAppAddInput<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToBoolean<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetResourceList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtOverrideTranslations<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtSetWarningHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
 <ROW><ENTRY>XtAppAddSignal<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToColor<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionParameters<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtOwnSelection<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtSetWarningMsgHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppAddTimeOut<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToFloat<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionRequest<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtOwnSelectionIncremental<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtShellStrings<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppAddWorkProc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToFont<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionTimeout<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtParent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtStringConversionWarning<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppCreateShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToPixel<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionValue<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtParseAcceleratorTable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtStrings<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppError<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToPixmap<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionValueIncremental<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtParseTranslationTable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtSuperclass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppErrorMsg<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToShort<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionValues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPeekEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtToolkitInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppGetErrorDatabase<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToUnsignedChar<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionValuesIncremental<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPending<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtToolkitThreadInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppGetErrorDatabaseText<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToAcceleratorTable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSubresources<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPopdown<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtTranslateCoords<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppGetExitFlag<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToAtom<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSubvalues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPopup<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtTranslateKey<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppGetSelectionTimeout<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToBool<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetValues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPopupSpringLoaded<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtTranslateKeycode<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToBoolean<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGrabButton<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtProcessEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUngrabButton<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppLock<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToCommandArgArray<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGrabKey<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtProcessLock<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUngrabKey<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppMainLoop<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToCursor<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGrabKeyboard<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtProcessUnlock<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUngrabKeyboard<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppNextEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToDimension<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGrabPointer<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtQueryGeometry<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUngrabPointer<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppPeekEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToDirectoryString<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtHasCallbacks<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRealizeWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUninstallTranslations<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppPending<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToDisplay<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtHooksOfDisplay<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRealloc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnmanageChild<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppProcessEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFile<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRegisterCaseConverter<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnmanageChildren<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppReleaseCacheRefs<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFloat<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInitializeWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRegisterDrawable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnmapWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppSetErrorHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFont<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInsertEventHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRegisterExtensionSelector<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnrealizeWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppSetErrorMsgHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFontSet<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInsertEventTypeHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRegisterGrabAction<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnregisterDrawable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppSetExitFlag<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFontStruct<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInsertRawEventHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtReleaseGC<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaAppCreateShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppSetFallbackResources<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToGravity<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInstallAccelerators<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtReleasePropertyAtom<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaAppInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppSetSelectionTimeout<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToInitialState<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInstallAllAccelerators<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveActionHook<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaCreateArgsList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppSetTypeConverter<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToInt<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsApplicationShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveAllCallbacks<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaCreateManagedWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppSetWarningHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToPixel<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsComposite<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveBlockHook<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaCreatePopupShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppSetWarningMsgHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToRestartStyle<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsConstraint<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveCallback<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaCreateWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppUnlock<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToShort<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsManaged<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveCallbacks<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaGetApplicationResources<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppWarning<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToTranslationTable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsObject<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveEventHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaGetSubresources<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAppWarningMsg<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToUnsignedChar<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsOverrideShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveEventTypeHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaGetSubvalues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtAugmentTranslations<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToVisual<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsRealized<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveGrab<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaGetValues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtBuildEventMask<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDatabase<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsRectObj<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveInput<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaOpenApplication<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallAcceptFocus<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDestroyApplicationContext<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsSensitive<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveRawEventHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaSetSubvalues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallActionProc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDestroyGC<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsSessionShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveSignal<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaSetValues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallCallbackList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDestroyWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveTimeOut<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWarning<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallCallbacks<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDirectConvert<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsSubclass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveWorkProc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWarningMsg<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallConverter<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisownSelection<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsTopLevelShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtReservePropertyAtom<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWidgetToApplicationContext<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallbackExclusive<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDispatchEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsTransientShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtResizeWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWindow<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallbackNone<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDispatchEventToWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsVendorShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtResizeWindow<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWindowOfObject<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallbackNonexclusive<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplay<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsWMShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtResolvePathname<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWindowToWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
-<ROW><ENTRY>XtCallbackPopdown<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplayInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtScreen<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>_XtCopyFromArg<FOOTNOTEREF LINKEND="std-11-10"></ENTRY></ROW>
-<ROW><ENTRY>XtCallbackReleaseCacheRef<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplayOfObject<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtKeysymToKeycodeList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtScreenDatabase<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>_XtInherit<FOOTNOTEREF LINKEND="std-11-10"></ENTRY></ROW>
-<ROW><ENTRY>XtCallbackReleaseCacheRefList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplayStringConversionWarning<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtLastEventProcessed<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtScreenOfObject<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>_XtIsSubclassOf<FOOTNOTEREF LINKEND="std-11-10"></ENTRY></ROW>
+<ROW><ENTRY>XtAppAddTimeOut<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToFloat<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionRequest<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtOwnSelectionIncremental<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtStringConversionWarning<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppAddWorkProc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToFont<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionTimeout<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtParent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtSuperclass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppCreateShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToPixel<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionValue<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtParseAcceleratorTable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtToolkitInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppError<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToPixmap<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionValueIncremental<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtParseTranslationTable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtToolkitThreadInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppErrorMsg<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToShort<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionValues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPeekEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtTranslateCoords<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppGetErrorDatabase<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtIntToUnsignedChar<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSelectionValuesIncremental<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPending<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtTranslateKey<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppGetErrorDatabaseText<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToAcceleratorTable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSubresources<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPopdown<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtTranslateKeycode<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppGetExitFlag<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToAtom<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetSubvalues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPopup<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUngrabButton<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppGetSelectionTimeout<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToBool<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGetValues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtPopupSpringLoaded<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUngrabKey<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToBoolean<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGrabButton<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtProcessEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUngrabKeyboard<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppLock<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToCommandArgArray<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGrabKey<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtProcessLock<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUngrabPointer<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppMainLoop<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToCursor<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGrabKeyboard<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtProcessUnlock<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUninstallTranslations<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppNextEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToDimension<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtGrabPointer<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtQueryGeometry<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnmanageChild<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppPeekEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToDirectoryString<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtHasCallbacks<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRealizeWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnmanageChildren<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppPending<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToDisplay<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtHooksOfDisplay<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRealloc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnmapWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppProcessEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFile<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRegisterCaseConverter<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnrealizeWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppReleaseCacheRefs<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFloat<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInitializeWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRegisterDrawable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtUnregisterDrawable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppSetErrorHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFont<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInsertEventHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRegisterExtensionSelector<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaAppCreateShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppSetErrorMsgHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFontSet<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInsertEventTypeHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRegisterGrabAction<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaAppInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppSetExitFlag<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToFontStruct<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInsertRawEventHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtReleaseGC<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaCreateArgsList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppSetFallbackResources<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToGravity<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInstallAccelerators<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtReleasePropertyAtom<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaCreateManagedWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppSetSelectionTimeout<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToInitialState<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtInstallAllAccelerators<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveActionHook<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaCreatePopupShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppSetTypeConverter<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToInt<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsApplicationShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveAllCallbacks<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaCreateWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppSetWarningHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToPixel<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsComposite<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveBlockHook<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaGetApplicationResources<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppSetWarningMsgHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToRestartStyle<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsConstraint<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveCallback<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaGetSubresources<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppUnlock<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToShort<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsManaged<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveCallbacks<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaGetSubvalues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppWarning<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToTranslationTable<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsObject<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveEventHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaGetValues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAppWarningMsg<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToUnsignedChar<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsOverrideShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveEventTypeHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaOpenApplication<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtAugmentTranslations<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtCvtStringToVisual<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsRealized<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveGrab<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaSetSubvalues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtBuildEventMask<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDatabase<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsRectObj<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveInput<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtVaSetValues<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtCallAcceptFocus<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDestroyApplicationContext<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsSensitive<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveRawEventHandler<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWarning<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtCallActionProc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDestroyGC<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsSessionShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveSignal<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWarningMsg<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtCallCallbackList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDestroyWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveTimeOut<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWidgetToApplicationContext<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtCallCallbacks<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDirectConvert<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsSubclass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtRemoveWorkProc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWindow<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtCallConverter<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisownSelection<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsTopLevelShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtReservePropertyAtom<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWindowOfObject<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtCallbackExclusive<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDispatchEvent<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsTransientShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtResizeWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtWindowToWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtCallbackNone<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDispatchEventToWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsVendorShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtResizeWindow<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>_XtCopyFromArg<FOOTNOTEREF LINKEND="std-11-10"></ENTRY></ROW>
+<ROW><ENTRY>XtCallbackNonexclusive<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplay<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsWMShell<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtResolvePathname<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>_XtInherit<FOOTNOTEREF LINKEND="std-11-10"></ENTRY></ROW>
+<ROW><ENTRY>XtCallbackPopdown<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplayInitialize<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtIsWidget<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtScreen<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>_XtIsSubclassOf<FOOTNOTEREF LINKEND="std-11-10"></ENTRY></ROW>
+<ROW><ENTRY>XtCallbackReleaseCacheRef<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplayOfObject<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtKeysymToKeycodeList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtScreenDatabase<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>XtCallbackReleaseCacheRefList<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplayStringConversionWarning<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtLastEventProcessed<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtScreenOfObject<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY></ENTRY></ROW>
 <ROW><ENTRY>XtCalloc<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtDisplayToApplicationContext<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtLastTimestampProcessed<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>XtSendSelectionRequest<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY></ENTRY></ROW>
 </TBODY>
 </TGROUP>
@@ -2134,19 +2125,19 @@ X11R.4 X Toolkit Intrinsics</PARA>
 <TITLE>libXt - X Toolkit Data Interfaces</TITLE>
 <TGROUP COLS=5>
 <TBODY>
-<ROW><ENTRY>XtCXtToolkitError<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>constraintWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>rectObjClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>topLevelShellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>wmShellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtCXtToolkitError<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>compositeWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>overrideShellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>shellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>widgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtShellStrings<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>constraintClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>overrideShellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>shellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>widgetClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
+<ROW><ENTRY>XtStrings<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>constraintWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>rectObjClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>topLevelShellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>wmShellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
 <ROW><ENTRY>_XtInheritTranslations<FOOTNOTEREF LINKEND="std-11-10"></ENTRY><ENTRY>coreWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>rectObjClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>topLevelShellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>wmShellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY></ROW>
 <ROW><ENTRY>applicationShellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>objectClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>sessionShellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>transientShellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY></ENTRY></ROW>
 <ROW><ENTRY>compositeClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>objectClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>sessionShellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>transientShellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY></ENTRY></ROW>
-<ROW><ENTRY>compositeWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>overrideShellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>shellClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>widgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY></ENTRY></ROW>
-<ROW><ENTRY>constraintClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>overrideShellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>shellWidgetClass<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY>widgetClassRec<FOOTNOTEREF LINKEND="std-11-12"></ENTRY><ENTRY></ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
 
 <SECT1 ID=libXtman>
 <TITLE>Interface Definitions for libXt</TITLE>
@@ -2318,8 +2309,8 @@ Is Widget(object)  a Subclass of WidgetClass(widget_class).
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
-<!--    at Tue Oct 23 10:00:31 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
+<!--    at Fri Oct 26 15:51:54 2001 -->
 <SECT1 ID=libGL>
 <TITLE>Interfaces for libGL</TITLE>
 <PARA>
@@ -2503,6 +2494,70 @@ typedef float GLclampf;
 typedef double GLdouble;
 
 typedef double GLclampd;
+
+#define GL_UNSIGNED_BYTE	0x1401
+#define GL_SHORT	0x1402
+#define GL_UNSIGNED_SHORT	0x1403
+#define GL_INT	0x1404
+#define GL_UNSIGNED_INT	0x1405
+#define GL_FLOAT	0x1406
+#define GL_2_BYTES	0x1407
+#define GL_3_BYTES	0x1408
+#define GL_4_BYTES	0x1409
+#define GL_DOUBLE	0x140A
+#define GL_POINTS	0x0000
+#define GL_LINES	0x0001
+#define GL_LINE_LOOP	0x0002
+#define GL_LINE_STRIP	0x0003
+#define GL_TRIANGLES	0x0004
+#define GL_TRIANGLE_STRIP	0x0005
+#define GL_TRIANGLE_FAN	0x0006
+#define GL_QUADS	0x0007
+#define GL_QUAD_STRIP	0x0008
+#define GL_POLYGON	0x0009
+#define GL_V2F	0x2A20
+#define GL_V3F	0x2A21
+#define GL_C4UB_V2F	0x2A22
+#define GL_C4UB_V3F	0x2A23
+#define GL_C3F_V3F	0x2A24
+#define GL_N3F_V3F	0x2A25
+#define GL_C4F_N3F_V3F	0x2A26
+#define GL_T2F_V3F	0x2A27
+#define GL_T4F_V4F	0x2A28
+#define GL_T2F_C4UB_V3F	0x2A29
+#define GL_T2F_C3F_V3F	0x2A2A
+#define GL_T2F_N3F_V3F	0x2A2B
+#define GL_T2F_C4F_N3F_V3F	0x2A2C
+#define GL_T4F_C4F_N3F_V4F	0x2A2D
+#define GL_VERTEX_ARRAY	0x8074
+#define GL_NORMAL_ARRAY	0x8075
+#define GL_COLOR_ARRAY	0x8076
+#define GL_INDEX_ARRAY	0x8077
+#define GL_TEXTURE_COORD_ARRAY	0x8078
+#define GL_EDGE_FLAG_ARRAY	0x8079
+#define GL_VERTEX_ARRAY_SIZE	0x807A
+#define GL_VERTEX_ARRAY_TYPE	0x807B
+#define GL_VERTEX_ARRAY_STRIDE	0x807C
+#define GL_NORMAL_ARRAY_TYPE	0x807E
+#define GL_NORMAL_ARRAY_STRIDE	0x807F
+#define GL_COLOR_ARRAY_SIZE	0x8081
+#define GL_COLOR_ARRAY_TYPE	0x8082
+#define GL_COLOR_ARRAY_STRIDE	0x8083
+#define GL_INDEX_ARRAY_TYPE	0x8085
+#define GL_INDEX_ARRAY_STRIDE	0x8086
+#define GL_TEXTURE_COORD_ARRAY_SIZE	0x8088
+#define GL_TEXTURE_COORD_ARRAY_TYPE	0x8089
+#define GL_TEXTURE_COORD_ARRAY_STRIDE	0x808A
+#define GL_EDGE_FLAG_ARRAY_STRIDE	0x808C
+#define GL_VERTEX_ARRAY_POINTER	0x808E
+#define GL_NORMAL_ARRAY_POINTER	0x808F
+#define GL_COLOR_ARRAY_POINTER	0x8090
+#define GL_INDEX_ARRAY_POINTER	0x8091
+#define GL_TEXTURE_COORD_ARRAY_POINTER	0x8092
+#define GL_MATRIX_MODE	0x0BA0
+#define GL_MODELVIEW	0x1700
+#define GL_PROJECTION	0x1701
+#define GL_TEXTURE	0x1702
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2527,7 +2582,7 @@ typedef XID GLXWindow;
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.27 2001/06/25 03:27:58 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.28 2001/10/25 02:28:00 anderson Exp 0 -->
 
 
 </CHAPTER>
