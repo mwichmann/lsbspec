@@ -1,4 +1,4 @@
-<SECT1>
+<SECT1 ID="libX11">
 <TITLE>X Window System Library Functions</TITLE>
 <PARA></PARA>
 <TABLE>
@@ -9,7 +9,7 @@ include(libX11.sgml)
 </TABLE>
 </SECT1>
 
-<SECT1>
+<SECT1 ID="libXext">
 <TITLE>X Window Extension Library Functions</TITLE>
 <PARA></PARA>
 <TABLE>
@@ -20,7 +20,7 @@ include(libXext.sgml)
 </TABLE>
 </SECT1>
 
-<SECT1>
+<SECT1 ID="icccm">
 <TITLE>X Window System Inter-Client Exchange Library Functions</TITLE>
 <PARA></PARA>
 <TABLE>
@@ -31,7 +31,7 @@ include(libICE.sgml)
 </TABLE>
 </SECT1>
 
-<SECT1>
+<SECT1 ID="libSM">
 <TITLE>X Window System Session Management Library Functions</TITLE>
 <PARA></PARA>
 <TABLE>
@@ -42,7 +42,7 @@ include(libSM.sgml)
 </TABLE>
 </SECT1>
 
-<SECT1>
+<SECT1 ID="libXt">
 <TITLE>X Window System Toolkit Intrinsic Library Functions</TITLE>
 <PARA></PARA>
 <TABLE>
@@ -53,7 +53,7 @@ include(libXt.sgml)
 </TABLE>
 </SECT1>
 
-<SECT1>
+<SECT1 ID="libGL">
 <TITLE>OpenGL Library Functions</TITLE>
 <PARA></PARA>
 <TABLE>

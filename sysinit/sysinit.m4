@@ -1,4 +1,4 @@
-<PART>
+<PART ID="tocsysinit">
 <TITLE>System Initialization</TITLE>
 
 <CHAPTER id=sysinit>

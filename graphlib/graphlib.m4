@@ -1,4 +1,4 @@
-<PART>
+<PART ID="tocgraphlib">
 <TITLE>Graphic Libraries</TITLE>
 
 <CHAPTER id=graphlib>

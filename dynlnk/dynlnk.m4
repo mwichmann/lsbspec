@@ -1,4 +1,4 @@
-<PART>
+<PART ID="tocdynlnk">
 <TITLE>Dynamic Linking</TITLE>
 
 <CHAPTER id=dynlnk>

@@ -1,3 +1,5 @@
+<part id="toclsbsgml">
+<title>LSB Addendum: SGML & XML</title>
 <chapter id="lsbsgml">
 <title>LSB Addendum: SGML & XML</title>
 
@@ -185,7 +187,7 @@ In the scope of this document, we will use the following terms:
 </glossary>
 </sect1>
 
-<sect1 id="R001">
+<sect1 id="sgmlR001">
 <title>R001--SGML Directory layout</title>
 
 <variablelist>
@@ -237,7 +239,7 @@ documents, so it seems unnecessary to create
 </sect1>
 
 
-<sect1 id="R002">
+<sect1 id="sgmlR002">
 <title>R002--DocBook Directory layout</title>
 <para>
 This is the layout for a Jade-based or an Openjade-based system. DocBook
@@ -297,7 +299,7 @@ also version-numbered.
 </para>
 </sect1>
 
-<sect1 id="R003">
+<sect1 id="sgmlR003">
 <title>R003--Open Catalog usage for SGML</title>
 <para>
 Open Catalog files include:
@@ -426,7 +428,7 @@ work of mapping the <acronym>FPI</acronym>s to file names (among other tasks).
 </para>
 </sect1>
 
-<sect1 id="R004">
+<sect1 id="sgmlR004">
 <title>R004--Open Catalog usage for DocBook</title>
 <para>
 This recomendation is merely a consequence of the preceeding
@@ -476,7 +478,7 @@ structure.
 </para>
 </sect1>
 
-<sect1 id="R005">
+<sect1 id="sgmlR005">
 <title>R005--Configuration files</title>
 <para>
 
@@ -491,7 +493,7 @@ Their syntax and purpose is not defined in this document.
 </para>
 </sect1>
 
-<sect1 id="R006">
+<sect1 id="sgmlR006">
 <title>R006--Iso-entities</title>
 <para>
 
@@ -517,7 +519,7 @@ schemes.
 </para>
 </sect1>
 
-<sect1 id="R007">
+<sect1 id="sgmlR007">
 <title>R007--Packages</title>
 <para>
 
@@ -549,3 +551,4 @@ They may choose to:
 </para>
 </sect1>
 </chapter>
+</part>

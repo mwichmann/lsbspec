@@ -1,4 +1,4 @@
-<PART>
+<PART ID="toccommand">
 <TITLE>Commands and Utilities</TITLE>
 
 <CHAPTER id=command>

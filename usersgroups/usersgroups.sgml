@@ -1,7 +1,7 @@
-<PART>
+<PART ID="tocusersgroups">
 <TITLE>Users & Groups</TITLE>
 
-<CHAPTER id=UsersGroups>
+<CHAPTER ID="usersgroups">
 <TITLE>Users & Groups</TITLE>
 <PARA>
 A "user name" is a string that is used to identify a user.  A "login name" is
@@ -17,7 +17,7 @@ Each system user is a member of at least one group.   When the identity of a
 group is associated with a process, agroup ID value is referred to as a real group ID, or an effective group ID.  [POSIX 1003.1-1996]
 </PARA>
 
-<SECT1>
+<SECT1 ID="passwd">
 <TITLE>User Database</TITLE>
 <PARA>
 The user database, "/etc/passwd", consists of newline separated records, one
@@ -53,7 +53,7 @@ that field is implementation defined.
 </PARA>
 </SECT1>
 
-<SECT1>
+<SECT1 ID="group">
 <TITLE>Group Database</TITLE>
 <PARA>
 The group database, "/etc/group", consists of newline separated records, 
@@ -85,7 +85,7 @@ there are no group write APIs.
 </NOTE>
 </SECT1>
 
-<SECT1>
+<SECT1 ID="userlibs">
 <TITLE>Library Functions</TITLE>
 <PARA>
 There are many APIs in this specification that read, write, and/or create 
@@ -104,7 +104,7 @@ UNIX-like systems.
 </PARA>
 </SECT1>
 
-<SECT1>
+<SECT1 ID="usernames">
 <TITLE>User & Group Names</TITLE>
 <PARA>
 Below is a table of default mnemonic user and group names.   This 

@@ -1,4 +1,4 @@
-<PART>
+<PART ID="tocobjformat">
 <TITLE>Object Format</TITLE>
 
 <CHAPTER id=objfmt>
@@ -14,7 +14,7 @@ this document.
 <TITLE>Sections</TITLE>
 <PARA>
 </PARA>
-<SECT1>
+<SECT1 ID="elf_types">
 <TITLE>ELF Section Types</TITLE>
 <PARA>
 The following sections types are defined in the ELF reference Specification.
@@ -26,7 +26,7 @@ include(elfsecttypes.sgml)
 </TABLE>
 </PARA>
 </SECT1>
-<SECT1>
+<SECT1 ID="linux_types">
 <TITLE>Linux Section Types</TITLE>
 <PARA>
 The following Linux section types are defined here.
@@ -44,7 +44,7 @@ include(linuxsecttypes.sgml)
 <TITLE>Special Sections</TITLE>
 <PARA>
 </PARA>
-<SECT1>
+<SECT1 ID="elf_special">
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in the ELF reference Specification.
@@ -56,7 +56,7 @@ include(elfsect.sgml)
 </TABLE>
 </PARA>
 </SECT1>
-<SECT1>
+<SECT1 ID="linux_special">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
 The following Linux specific sections are defined here.
@@ -76,14 +76,14 @@ include(linuxsect.sgml)
 This chapter defines how names are mapped from the source symbol to
 the object symbol.
 </PARA>
-<SECT1>
+<SECT1 ID="cmapping>
 <TITLE>C Language</TITLE>
 <PARA>
 Unless otherwise specificed as a Mangle, external C symbols have the same
 names in C and object files' symbol tables.
 </PARA>
 </SECT1>
-<SECT1>
+<SECT1 ID="cppmapping">
 <TITLE>C++ Language</TITLE>
 <PARA>
 Because of the immaturity of C++ ABI's (for name mangling, exception
@@ -132,7 +132,7 @@ Versions are described by strings. The structures that are used for symbol
 versions also contain a member that holds the ELF hashing values of the
 strings. This allows for more efficient processing.
 </PARA>
-<SECT1>
+<SECT1 ID="symvertbl">
 <TITLE>Symbol Version Table</TITLE>
 <PARA>
 The Symbol Version Table is contained in the special section <COMPUTEROUTPUT>
@@ -181,7 +181,7 @@ with the symbol. The string identified by the value defines the version of
 the symbol.
 </PARA>
 </SECT1>
-<SECT1>
+<SECT1 ID="symverdefs">
 <TITLE>Version Definitions</TITLE>
 <PARA>
 Symbol definitions are contained in the special section <COMPUTEROUTPUT>
@@ -298,7 +298,7 @@ and all later entries name predecessor versions.
 </VARLISTENTRY>
 </VARIABLELIST>
 </SECT1>
-<SECT1>
+<SECT1 ID="symverrqmts">
 <TITLE>Version Requirments</TITLE>
 <PARA>
 Symbol definitions are contained in the special section <COMPUTEROUTPUT>
@@ -428,7 +428,7 @@ and all later entries name predecessor versions.
 </VARLISTENTRY>
 </VARIABLELIST>
 </SECT1>
-<SECT1>
+<SECT1 ID="symstartseq">
 <TITLE>Startup Sequence</TITLE>
 <PARA>
 After loading a shared object (but before making it generally
@@ -461,7 +461,7 @@ loaded objects contains no invalidly formed data this means that all
 versions referenced by undefined symbols are available.
 </PARA>
 </SECT1>
-<SECT1>
+<SECT1 ID="symresolution">
 <TITLE>Symbol Resolution</TITLE>
 <PARA>
 During the relocations in an object using symbol versioning we have to

@@ -1,4 +1,4 @@
-<PART>
+<PART ID=tocbaselib>
 <TITLE>Base Libraries</TITLE>
 
 <CHAPTER id=baselib>
