@@ -14,14 +14,25 @@ wait for process termination, BSD style
 <REFSYNOPSISDIVINFO>
 <DATE>13 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;sys/types.h>
-#include &lt;sys/resource.h>
-#include &lt;sys/wait.h>
-
-pid_t wait4(pid_t pid, int *status, int options,
-            struct rusage *rusage);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/types.h&gt;
+#include &lt;sys/resource.h&gt;
+#include &lt;sys/wait.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>pid_t 
+  <FUNCTION>wait4</FUNCTION></FUNCDEF>
+ <PARAMDEF>pid_t 
+  <PARAMETER><REPLACEABLE>pid</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>*status</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>options</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>rusage</STRUCTNAME> 
+  <PARAMETER>*rusage</PARAMETER></FUNCPARAMS></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -31,9 +42,15 @@ pid_t wait4(pid_t pid, int *status, int options,
 <TITLE>Description
 </TITLE>
 <PARA>
-The wait4 function suspends execution of the current process until a child as specified by the pid argument has exited, or until a signal is delivered whose action is to terminate the current process or to call a signal handling function. If a child as requested by pid has already exited by the time of the call (a so-called "zombie" process), the function returns immediately. Any system resources used by the child are freed.
+<FUNCTION>wait4</FUNCTION> suspends execution of the current process 
+until a child (as specified by <PARAMETER>pid</PARAMETER>) has exited, 
+or until a signal is delivered whose action is to terminate the 
+current process or to call a signal handling function. If a child (as 
+requested by <PARAMETER>pid</PARAMETER>) has already exited by the 
+time of the call (a so-called "zombie" process), the function returns 
+immediately. Any system resources used by the child are freed.
 </PARA><PARA>
-The value of pid can be one of:
+The value of <PARAMETER>pid</PARAMETER> can be one of:
 </PARA>
 
 <VARIABLELIST>
@@ -43,7 +60,8 @@ The value of pid can be one of:
 </TERM>
 <LISTITEM>
 <PARA>
-wait for any child process whose process group ID is equal to the absolute value of pid.
+wait for any child process whose process group ID is equal to the 
+absolute value of <PARAMETER>pid</PARAMETER>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -54,7 +72,8 @@ wait for any child process whose process group ID is equal to the absolute value
 </TERM>
 <LISTITEM>
 <PARA>
-wait for any child process; this is equivalent to calling wait3.
+wait for any child process; this is equivalent to calling 
+<FUNCTION>wait3</FUNCTION>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -65,7 +84,8 @@ wait for any child process; this is equivalent to calling wait3.
 </TERM>
 <LISTITEM>
 <PARA>
-wait for any child process whose process group ID is equal to that of the calling process.
+wait for any child process whose process group ID is equal to that of 
+the calling process.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -76,14 +96,16 @@ wait for any child process whose process group ID is equal to that of the callin
 </TERM>
 <LISTITEM>
 <PARA>
-wait for the child whose process ID is equal to the value of pid.
+wait for the child whose process ID is equal to the value of 
+<PARAMETER>pid</PARAMETER>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 
 <PARA>
-The value of options is a bitwise OR of zero or more of the following constants:
+The value of options is a bitwise OR of zero or more of the following 
+constants:
 </PARA>
 
 <VARIABLELIST>
@@ -104,15 +126,24 @@ WUNTRACED
 </TERM>
 <LISTITEM>
 <PARA>
-return for children which are stopped, and whose status has not been reported.
+return for children that are stopped, and whose status has not been 
+reported.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 <PARA>
-If status is not NULL, wait4 stores status information in the location pointed to by status.
-</PARA><PARA>
-This status can be evaluated with the following macros (these macros take the stat buffer (an int) as an argument -- not a pointer to the buffer!):
+If status is not <TOKEN>NULL</TOKEN>, <FUNCTION>wait4</FUNCTION> 
+stores status information in the location 
+<PARAMETER>status</PARAMETER>. This status can be evaluated with the 
+following macros:
+<FOOTNOTE>
+<PARA>
+These macros take the <VARNAME>stat</VARNAME> buffer (an 
+<LITERAL>int</LITERAL>) as an argument -- not a pointer to the 
+buffer!
+</PARA>
+</FOOTNOTE>
 </PARA>
 <VARIABLELIST>
 <VARLISTENTRY>
@@ -121,7 +152,7 @@ WIFEXITED(status)
 </TERM>
 <LISTITEM>
 <PARA>
-is non-zero if the child exited normally.
+is non-<TOKEN>ZERO</TOKEN> if the child exited normally.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -132,7 +163,11 @@ WEXITSTATUS(status)
 </TERM>
 <LISTITEM>
 <PARA>
-evaluates to the least significant eight bits of the return code of the child which terminated, which may have been set as the argument to a call to exit() or as the argument for a return statement in the main program. This macro can only be evaluated if WIFEXITED returned non-zero.
+evaluates to the least significant eight bits of the return code of 
+the child that terminated, which may have been set as the argument to 
+a call to <FUNCTION>exit</FUNCTION> or as the argument for a return 
+statement in the main program. This macro can only be evaluated if 
+<FUNCTION>WIFEXITED</FUNCTION> returned non-<TOKEN>ZERO</TOKEN>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -143,7 +178,8 @@ WIFSIGNALED(status)
 </TERM>
 <LISTITEM>
 <PARA>
-returns true if the child process exited because of a signal which was not caught.
+returns true if the child process exited because of a signal that was 
+not caught.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -154,7 +190,9 @@ WTERMSIG(status)
 </TERM>
 <LISTITEM>
 <PARA>
-returns the number of the signal that caused the child process to terminate. This macro can only be evaluated if WIFSIGNALED returned non-zero.
+returns the number of the signal that caused the child process to 
+terminate. This macro can only be evaluated if 
+<FUNCTION>WIFSIGNALED</FUNCTION> returned non-<TOKEN>ZERO</TOKEN>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -165,7 +203,9 @@ WIFSTOPPED(status)
 </TERM>
 <LISTITEM>
 <PARA>
-returns true if the child process which caused the return is currently stopped; this is only possible if the call was done using WUNTRACED.
+returns true if the child process that caused the return is currently 
+stopped; this is only possible if the call was done using 
+<FUNCTION>WUNTRACED</FUNCTION>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -177,13 +217,19 @@ WSTOPSIG(status)
 
 <LISTITEM>
 <PARA>
-returns the number of the signal which caused the child to stop. This macro can only be evaluated if WIFSTOPPED returned non-zero.
+returns the number of the signal that caused the child to stop. This 
+macro can only be evaluated if <FUNCTION>WIFSTOPPED</FUNCTION> 
+returned non-<TOKEN>ZERO</TOKEN>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 <PARA>
-If rusage is not NULL, the struct rusage as defined in &lt;sys/resource.h> it points to will be filled with accounting information. See getrusage(2) for details.
+If <PARAMETER>rusage</PARAMETER> is not <TOKEN>NULL</TOKEN>, the 
+struct <STRUCTNAME>rusage</STRUCTNAME> (as defined in 
+<FILENAME>sys/resource.h</FILENAME>) that it points to will be filled 
+with accounting information. (See <FUNCTION>getrusage</FUNCTION>(2) 
+for details.
 </PARA>
 </REFSECT1>
 
@@ -191,7 +237,12 @@ If rusage is not NULL, the struct rusage as defined in &lt;sys/resource.h> it po
 <TITLE>Return Value
 </TITLE>
 <PARA>
-The process ID of the child which exited, -1 on error (in particular, when no unwaited-for child processes of the specified kind exist) or zero if WNOHANG was used and no child was available  yet. In the latter two cases errno will be set appropriately.
+On success, the process ID of the child that exited is returned. On 
+error, <RETURNVALUE>-1</RETURNVALUE> is returned (in particular, when 
+no unwaited-for child processes of the specified kind exist), or 
+<RETURNVALUE>0</RETURNVALUE> if <FUNCTION>WNOHANG</FUNCTION> was used 
+and no child was available yet. In the latter two cases, the global 
+variable <VARNAME>errno</VARNAME> is set appropriately.
 </PARA>
 </REFSECT1>
 
@@ -217,7 +268,11 @@ ERESTARTSYS
 </TERM>
 <LISTITEM>
 <PARA>
-If WNOHANG was not set and an unblocked signal or a SIGCHLD was caught. This error is returned by the system call. The library interface is not allowed to return ERESTARTSYS, but will return EINTR.
+A <FUNCTION>WNOHANG</FUNCTION> was not set and an unblocked signal or
+a <VARNAME>SIGCHILD</VARNAME> was caught. This error is returned by 
+the system call. The library interface is not allowed to return 
+<ERRORNAME>ERESTARTSYS</ERRORNAME>, but will return
+<ERRORNAME>EINTR</ERRORNAME>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>

@@ -14,11 +14,17 @@ execute a shell command
 <REFSYNOPSISDIVINFO>
 <DATE>13 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;stdlib.h>
-
-int system (const char * string);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;stdlib.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>system</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char 
+  <PARAMETER><REPLACEABLE>*string</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -28,7 +34,12 @@ int system (const char * string);
 <TITLE>Description
 </TITLE>
 <PARA>
-system() executes a command specified in string by calling /bin/sh -c string, and returns after the command has been completed. During execution of the command, SIGCHLD will be blocked, and SIGINT and SIGQUIT will be ignored.
+<FUNCTION>system</FUNCTION> executes a command specified in 
+<PARAMETER>string</PARAMETER> by calling <LITERAL>/bin/sh -c 
+string</LITERAL>, and returns after the command has been completed. 
+During execution of the command, <VARNAME>SIGCHLD</VARNAME> will be 
+blocked, and <VARNAME>SIGINT</VARNAME> and <VARNAME>SIGQUIT</VARNAME> 
+will be ignored.
 </PARA>
 </REFSECT1>
 
@@ -36,11 +47,19 @@ system() executes a command specified in string by calling /bin/sh -c string, an
 <TITLE>Return Value
 </TITLE>
 <PARA>
-The value returned is 127 if the execve() call for /bin/sh fails, -1 if there was another error and the return code of the command otherwise.
-</PARA><PARA>
-If the value of string is NULL, system() returns nonzero if the shell is available, and zero if not.
-</PARA><PARA>
-system() does not affect the wait status of any other children.
+The value <RETURNVALUE>127</RETURNVALUE> returned if the 
+<FUNCTION>execve</FUNCTION> call for <LITERAL>/bin/sh</LITERAL> 
+fails, <RETURNVALUE>-1</RETURNVALUE> if there was another error 
+and the return code of the command otherwise.
+</PARA>
+<PARA>
+If the value of string is <TOKEN>NULL</TOKEN>, <FUNCTION>system</FUNCTION> 
+returns a non-<LITERAL>ZERO</LITERAL> value if the shell is available, 
+and <LITERAL>ZERO</LITERAL> if not.
+</PARA>
+<PARA>
+<FUNCTION>system</FUNCTION> does not affect the wait status of any 
+other children.
 </PARA>
 </REFSECT1>
 
@@ -48,17 +67,40 @@ system() does not affect the wait status of any other children.
 <TITLE>Notes
 </TITLE>
 <PARA>
-The fact that system() ignores interrupts is often not what a program
-wants. The Single UNIX Specification describes some of the consequences
-- one additional one is that a program which calls system() from a loop
-cannot reliably be interrupted.  Many programs will want to use the
-exec(3) family of functions instead.
-</PARA><PARA>
-Do not use system() from a program with suid or sgid privileges, because strange values for some environment variables might be used to subvert system integrity. Use the exec(3) family of functions instead, but not execlp(3) or execvp(3). system() will not, in fact, work properly from programs with suid or sgid privileges on systems on which /bin/sh is bash version 2, since bash 2 drops privileges on startup. (Debian uses a modified bash which does not do this when invoked as sh.)
-</PARA><PARA>
-The check for the availability of /bin/sh is not actually performed; it is always assumed to be available. ISO C specifies the check, but POSIX.2 specifies that the return shall always be non-zero, since a system without the shell is not conforming, and it is this that is implemented.
-</PARA><PARA>
-It is possible for the shell command to return 127, so that code is not a sure indication that the execve() call failed; check errno to make sure.
+The fact that <FUNCTION>system</FUNCTION> ignores interrupts is often 
+not what a program wants. The <CITETITLE PUBWORK="BOOK">Single UNIX 
+Specification</CITETITLE> describes some of the consequences; an 
+additional consequence is that a program calling <FUNCTION>system</FUNCTION> 
+from a loop cannot be reliably interrupted. Many programs will want to use 
+the <FUNCTION>exec</FUNCTION>(3) family of functions instead.
+</PARA>
+<PARA>
+Do not use <FUNCTION>system</FUNCTION> from a program with 
+<VARNAME>suid</VARNAME> or <VARNAME>sgid</VARNAME> privileges, 
+because strange values for some environment variables might be used 
+to subvert system integrity. Use the <FUNCTION>exec</FUNCTION>(3) 
+family of functions instead, but not <FUNCTION>execlp</FUNCTION>(3) 
+or <FUNCTION>execvp</FUNCTION>(3). <FUNCTION>system</FUNCTION> will 
+not, in fact, work properly from programs with <VARNAME>suid</VARNAME> 
+or <VARNAME>sgid</VARNAME> privileges on systems on which 
+<LITERAL>/bin/sh</LITERAL> is <EMPHASIS>bash</EMPHASIS> version 2, 
+since <EMPHASIS>bash</EMPHASIS> 2 drops privileges on startup. 
+(Debian uses a modified <EMPHASIS>bash</EMPHASIS> which does not do 
+this when invoked as <LITERAL>sh</LITERAL>.)
+</PARA>
+<PARA>
+The check for the availability of <LITERAL>/bin/sh</LITERAL> 
+is not actually performed; it is always assumed to be available. 
+<EMPHASIS>ISO C</EMPHASIS> specifies the check, but 
+<EMPHASIS>POSIX.2</EMPHASIS> specifies that the return shall 
+always be non-<TOKEN>ZERO</TOKEN>, since a system without the 
+shell is not conforming, and it is this that is implemented.
+</PARA>
+<PARA>
+It is possible for the shell command to return 
+<RETURNVALUE>127</RETURNVALUE>, so that code is not a sure 
+indication that the <FUNCTION>execve</FUNCTION> call failed; check 
+the global variable <VARNAME>errno</VARNAME> to make sure.
 </PARA>
 </REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
