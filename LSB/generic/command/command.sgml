@@ -473,7 +473,7 @@ section is specified by the following standards.</PARA>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Sun Oct  3 20:37:11 2004 -->
+<!--    at Wed Oct  6 12:14:35 2004 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -658,6 +658,7 @@ The specification for <COMMAND>batch</COMMAND> is as specified in
 <XREF LINKEND=STD.SUSv3>, but with the following differences as listed below.
 </PARA>
 
+<!--
 <REFSECT2>
 <TITLE>Scheduling Algorithm</TITLE>
 <PARA>
@@ -665,6 +666,7 @@ Commands in the batch queue shall be started when the system load level
 is below an implementation-defined limit.
 </PARA>
 </REFSECT2>
+-->
 <REFSECT2>
 <TITLE>Files</TITLE>
 <PARA>
@@ -1207,8 +1209,8 @@ sets the level at which logging of messages is done to the console.
 <listitem>
 <para>
 uses a buffer of <parameter>bufsize</parameter> to query the system message buffer.  This is 16392
-by default (this matches the default kernel syslog buffer size in
-2.0.33 and 2.1.103).  If you have set the kernel buffer to larger than
+by default (this matches the default kernel syslog buffer size since 2.1.113).
+If you have set the kernel buffer to larger than
 the default then this option can be used to view the entire buffer.
 </para>
 </listitem>
@@ -1605,12 +1607,12 @@ A key to retrieve the localized message.
 
 <VARLISTENTRY>
 <TERM>
-<CONSTANT>LANGUAGE</CONSTANT>
+<ENVAR>LANGUAGE</ENVAR>
 </TERM>
 <LISTITEM>
 <PARA>
-Specifies one or more locale names. See <function>gettext()</function> message 
-handling functions for more information.
+Specifies one or more locale names. <!--See <function>gettext</function> message 
+handling functions for more information.-->
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4045,14 +4047,14 @@ create a message object from a message file
 The <command>msgfmt</command> command
 generates a binary message catalog from a textual translation description.
 Message catalogs, or 
-message object files, are stored in files with a <filename>.mo</filename>" extension.
+message object files, are stored in files with a <filename>.mo</filename> extension.
 <NOTE><PARA>The format of message object files is not guaranteed to be portable.
 Message catalogs should always be generated on the target architecture using the
 <command>msgfmt</command> command.
 </PARA></NOTE>
 </PARA>
 <PARA>
-The source files, otherwise known as portable object files, have a
+The source message files, otherwise known as portable object files, have a
 <filename>.po</filename> extension.
 <!-- The the portable object files are not changed by this process.-->
 </PARA>
@@ -4090,6 +4092,27 @@ according to the current setting of the
 
 <VARLISTENTRY>
 <TERM>
+-c
+</TERM>
+<TERM>
+--check
+</TERM>
+<LISTITEM>
+<PARA>
+Detect and diagnose input file anomalies which might represent translation
+errors. The <literal>msgid</> and <literal>msgstr</> strings are studied and compared. It is
+considered abnormal that one string starts or ends with a newline while the
+other does not.
+</PARA>
+<PARA>
+If the message is flagged as <literal>c-format</> (see <XREF LINKEND=msgfmt-comments>),
+check that the <literal>msgid</> string and the <literal>msgstr</> translation
+have the same number of <literal>%</> format specifiers, with matching types.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
 -D <PARAMETER>directory</PARAMETER>
 </TERM>
 <TERM>
@@ -4118,7 +4141,7 @@ repeated. Directories shall be searched in order, with the leftmost
 <PARA>
 Use entries marked as <literal>fuzzy</literal>
 in output. If this option is not specified, such entries
-are not included into the output. See special comments below.
+are not included into the output. See <XREF LINKEND=msgfmt-comments> below.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4143,17 +4166,16 @@ to standard output.
 </VARLISTENTRY>
 
 <VARLISTENTRY>
+<TERM>-S</TERM>
 <TERM>
 --strict
 </TERM>
 <LISTITEM>
 <PARA>
-Direct the utility to work strictly following the UniForum/Sun
-implementation. Currently this only affects the naming of the output file.
-If this option is not given the name of the output file is the same as the
-domain name. If the strict UniForum mode is enabled the suffix 
-<filename>.mo</filename> is added
-to the file name if it is not already present.
+Ensure that all output files have a <filename>.mo</filename> extension.
+Output files are named either by the <PARAMETER>-o</PARAMETER> (or
+<PARAMETER>--output-file</PARAMETER>) option, or by domains found in the input
+files.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4168,18 +4190,8 @@ to the file name if it is not already present.
 </TERM>
 <LISTITEM>
 <PARA>
-Detect and diagnose input file anomalies which might represent translation
-errors. The msgid and msgstr strings are studied and compared. It is
-considered abnormal that one string starts or ends with a newline while the
-other does not.
-</PARA>
-<PARA>
-Also, if the string represents a format string used in a printf-like
-function both strings should have the same number of % format specifiers,
-with matching types. If the flag c-format or possible-c-format appears in
-the special comment #, for this entry a check is performed. For example, the
-check will diagnose using %.*s against %s, or %d against %s, or %d against
-%x. It can even handle positional parameters.
+Print additional information to the standard error, including the number
+of translated strings processed.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4218,8 +4230,8 @@ operand is specified as
 </TERM>
 <LISTITEM>
 <PARA>
-Specifies one or more locale names. See <function>gettext</function> message
-handling functions for more information.
+Specifies one or more locale names. <!--See <function>gettext</function> message
+handling functions for more information.-->
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4253,7 +4265,9 @@ Specifies locale name for all categories. If defined, overrides <ENVAR>LANG</ENV
 </TERM>
 <LISTITEM>
 <PARA>
-Specifies locale name for character handling.
+Determine the locale for the interpretation of sequences of bytes
+of text data as characters (for example, single-byte as opposed to multi-byte
+characters in arguments and input files).
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4295,27 +4309,27 @@ Comments can in certain circumstances alter the behavior of
 The format of a statement is:
 </PARA>
 <PARA>
-<emphasis>directive value</emphasis>
+<literal>directive value</literal>
 </PARA>
 <PARA>
-Each directive starts at the beginning of the line and is separated from
-value by white space (such as one or more space or tab characters). value
+Each <literal>directive</> starts at the beginning of the line and is separated from
+<literal>value</> by white space (such as one or more space or tab characters). The
+<literal>value</>
 consists of one or more quoted strings separated by white space. If two or
-more strings are specified as value, they are normalized into single string
-using the string normalization syntax the same as the <XREF LINKEND=STD.ISOC99>
-language. Use
-any of the following types of directives:
+more strings are specified as <literal>value</>, they are normalized into single string
+using the string normalization syntax specified in <XREF LINKEND=STD.ISOC99>.
+The following directives are supported:
 </PARA>
 
-<PARA><emphasis>domain domainname</emphasis></PARA>
+<PARA><literal>domain domainname</literal></PARA>
 
-<PARA><emphasis>msgid message_identifier</emphasis></PARA>
+<PARA><literal>msgid message_identifier</literal></PARA>
 
-<PARA><emphasis>msgid_plural untranslated_string_plural</emphasis></PARA>
+<PARA><literal>msgid_plural untranslated_string_plural</literal></PARA>
 
-<PARA><emphasis>msgstr message_string</emphasis></PARA>
+<PARA><literal>msgstr message_string</literal></PARA>
 
-<PARA><emphasis>msgstr[n] message_string</emphasis></PARA>
+<PARA><literal>msgstr[<replaceable>n</replaceable>] message_string</literal></PARA>
 
 <PARA>
 The behavior of the domain directive is affected by the options used. See
@@ -4327,7 +4341,7 @@ is not specified, the behavior of the <literal>domain</> directive is as follows
 All msgids from the beginning of each <filename>.po</> file to the first 
 <literal>domain</>
 directive are put into a default message object file, messages (or
-<filename>messages.mo</filename> if <parameter>--strict</parameter> option is specified).
+<filename>messages.mo</filename> if the <parameter>--strict</parameter> option is specified).
 </PARA></LISTITEM>
 <LISTITEM><PARA>
 When <command>msgfmt</command> encounters a 
@@ -4423,18 +4437,23 @@ end of the line. The second character (i.e. the character following the
 follow a space character. Other comment types include:
 </PARA>
 
-<PARA><emphasis># normal-comments</emphasis></PARA>
+<PARA><literal># normal-comments</literal></PARA>
 
-<PARA><emphasis>#. automatic-comments</emphasis></PARA>
+<PARA><literal>#. automatic-comments</literal></PARA>
 
-<PARA><emphasis>#: reference...</emphasis></PARA>
+<PARA><literal>#: reference...</literal></PARA>
 
-<PARA><emphasis>#, flag</emphasis></PARA>
+<PARA><literal>#, flag</literal></PARA>
 
 <PARA>
 Automatic and reference comments are typically generated by external utilities,
 and are not specified by the LSB. The <command>msgfmt</command> command
 shall ignore such comments.
+<NOTE><PARA>
+Portable object files may be produced by unspecified tools. Some of the comment
+types described here may arise from the use of such tools. It is beyond the
+scope of this specification to describe these tools.
+</PARA></NOTE>
 </PARA>
 
 <PARA>
@@ -4452,7 +4471,8 @@ fuzzy
 <LISTITEM>
 <PARA>
 This flag shows that the following <literal>msgstr</> string might not be a correct
-translation. Only the translator can judge if the translation
+translation. Only the translator (i.e. the individual undertaking
+the translation) can judge if the translation
 requires further modification, or is acceptable as is. Once satisfied with
 the translation, the translator then removes this fuzzy flag. 
 </PARA>
@@ -4585,8 +4605,8 @@ since they are ignored for the sake of efficiency.
 Example 1: Examples of creating message objects from message files.
 </PARA>
 <PARA>
-In this example <filename>module1.po</> and 
-<filename>module2.po</> are portable message object
+In this example <filename>module1.po</>, <filename>module2.po</> and 
+<filename>module3.po</> are portable message object
 files.
 </PARA>
 
@@ -4595,51 +4615,64 @@ example% cat module1.po
 
 # default domain "messages"
 
-msgid "msg 1"
+msgid "message one"
 
-msgstr "msg 1 translation"
+msgstr "mensaje n&uacute;mero uno"
 
 #
 
 domain "help_domain"
 
-msgid "help 2"
+msgid "help two"
 
-msgstr "help 2 translation"
+msgstr "ayuda n&uacute;mero dos"
 
 #
 
 domain "error_domain"
 
-msgid "error 3"
+msgid "error three"
 
-msgstr "error 3 translation"
+msgstr "error n&uacute;mero tres"
 
+</PROGRAMLISTING>
+<PARA><!--try and force a visible break between the blocks--> </PARA>
+<PROGRAMLISTING>
 example% cat module2.po
 
 # default domain "messages"
 
-msgid "mesg 4"
+msgid "message four"
 
-msgstr "mesg 4 translation"
+msgstr "mensaje n&uacute;mero cuatro"
 
 #
 
 domain "error_domain"
 
-msgid "error 5"
+msgid "error five"
 
-msgstr "error 5 translation"
+msgstr "error n&uacute;mero cinco"
 
 #
 
 domain "window_domain"
 
-msgid "window 6"
+msgid "window six"
 
-msgstr "window 6 translation"
+msgstr "ventana n&uacute;mero seises"
 </PROGRAMLISTING>
+<PARA> </PARA>
+<PROGRAMLISTING>
+example% cat module3.po
 
+# default domain "messages"
+
+msgid "message seven"
+
+msgstr "mensaje n&uacute;mero siete"
+
+</PROGRAMLISTING>
 <PARA>
 The following command will produce the output files <filename>messages</>, 
 <filename>help_domain</>, and <filename>error_domain</>.
@@ -4663,7 +4696,7 @@ The following example will produce the output file <filename>hello.mo</>.
 </PARA>
 
 <PROGRAMLISTING>
-example% msgfmt -o hello.mo module1.po module2.po
+example% msgfmt -o hello.mo module3.po
 </PROGRAMLISTING>
 
 </REFSECT1>
@@ -4717,23 +4750,47 @@ dump files in octal and other formats
 </REFPURPOSE>
 </REFNAMEDIV>
 
+<REFSYNOPSISDIV>
+<CMDSYNOPSIS>
+<COMMAND>od</COMMAND>
+<ARG>-abcdfilox</ARG>
+<GROUP>
+  <ARG>-w <replaceable>width</replaceable></ARG>
+  <ARG>--width-<replaceable>width</replaceable></ARG>
+</GROUP>
+<ARG>-v</ARG>
+<ARG>-A <replaceable>address_base</replaceable></ARG>
+<ARG>-j <replaceable>skip</replaceable></ARG>
+<ARG>-n <replaceable>count</replaceable></ARG>
+<ARG>-t <replaceable>type_string</replaceable></ARG>
+<ARG rep=repeat>file</ARG>
+<SBR>
+<COMMAND>od</COMMAND>
+<ARG choice=plain>--traditional</ARG>
+<ARG>options</ARG>
+<ARG>file</ARG>
+<ARG><ARG>+</ARG>offset<ARG>.</ARG><ARG>b</ARG></ARG>
+<ARG><ARG>+</ARG>label<ARG>.</ARG><ARG>b</ARG></ARG>
+</CMDSYNOPSIS>
+</REFSYNOPSISDIV>
+
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
 <COMMAND>od</COMMAND> is as specified in <XREF LINKEND=STD.SUSv3>, but with
-extensions as listed below.
+differences as listed below.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Extensions</TITLE>
+<TITLE>Differences</TITLE>
 <VARIABLELIST>
 
 <VARLISTENTRY>
-<TERM>-w, --width[=BYTES]</TERM>
+<TERM>-w<parameter>width</parameter>, --width[=<parameter>width</parameter>]</TERM>
 <LISTITEM>
 <PARA>
-outputs BYTES bytes per output line.
+each output line is limited to <parameter>width</parameter> bytes from the input.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4742,7 +4799,11 @@ outputs BYTES bytes per output line.
 <TERM>--traditional</TERM>
 <LISTITEM>
 <PARA>
-accepts arguments in pre-POSIX form.
+accepts arguments in traditional form.
+<NOTE><PARA>
+The XSI optional behavior described in <XREF LINKEND=STD.SUSv3> is not supported
+unless the <parameter>--traditional</parameter> option is also specified.
+</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4751,10 +4812,10 @@ accepts arguments in pre-POSIX form.
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Pre-POSIX Specifications</TITLE>
+<TITLE>Pre-POSIX and XSI Specifications</TITLE>
 <PARA>
-The LSB supports option intermixtures with the following pre-POSIX
-specifications:
+The LSB supports option intermixtures with the following pre-POSIX and XSI
+options:
 </PARA>
 <VARIABLELIST>
 
@@ -4762,7 +4823,34 @@ specifications:
 <TERM>-a</TERM>
 <LISTITEM>
 <PARA>
-is equivalent to -t a, selects named characters.
+is equivalent to <parameter>-t a</parameter>, selects named characters.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-b</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t o1</parameter>, selects octal bytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-c</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t c</parameter>, selects characters.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-d</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t u2</parameter>, selects unsigned decimal two byte units.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4771,25 +4859,20 @@ is equivalent to -t a, selects named characters.
 <TERM>-f</TERM>
 <LISTITEM>
 <PARA>
-is equivalent to -t fF, selects floats.
+is equivalent to <parameter>-t fF</parameter>, selects floats.
 </PARA>
 </LISTITEM>
 
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>-h</TERM>
-<LISTITEM>
-<PARA>
-is equivalent to -t x2, selects hexadecimal shorts.
-</PARA>
-</LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>-i</TERM>
 <LISTITEM>
 <PARA>
-is equivalent to -t d2, selects decimal shorts.
+is equivalent to <parameter>-t d2</parameter>, selects decimal two byte units.
+<NOTE><PARA>This usage may change in future releases; portable applications should use
+<parameter>-t d2</parameter>.
+</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -4798,14 +4881,65 @@ is equivalent to -t d2, selects decimal shorts.
 <TERM>-l</TERM>
 <LISTITEM>
 <PARA>
-is equivalent to -t d4, selects decimal longs.
+is equivalent to <parameter>-t d4</parameter>, selects decimal longs.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-o</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t o2</parameter>, selects octal two byte units.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-x</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t x2</parameter>, selects hexadecimal two byte units.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 </VARIABLELIST>
+<PARA>
+Note that the XSI option <parameter>-s</parameter> need not be supported.
+</PARA>
 </REFSECT1>
 
+<REFSECT1>
+<TITLE>Traditional Usage</TITLE>
+<PARA>
+If the <parameter>--traditional</parameter> is specified,
+there may be between zero and three operands specified.
+</PARA>
+<PARA>
+If no operands are specified, then od shall read the standard input.
+</PARA>
+<PARA>
+If there is exactly one operand, and it is an offset of the form 
+<literal>[+]offset[.][b]</literal>,
+then it shall be interpreted as specified in <XREF LINKEND=STD.SUSv3>. The file to
+be dumped shall be the standard input.
+</PARA>
+<PARA>
+If there are exactly two operands, and they are both of the form
+<literal>[+]offset[.][b]</literal>, then the first shall be an treated
+as an offset (as above), and
+the second shall be a label, in the same format as the offset. If a label is
+specified, then the first output line produced for each input block shall be
+preceded by the input offset, cumulative across input files, of the next byte to
+be written, followed by the label, in parentheses. The label shall increment in
+the same manner as the offset.
+</PARA>
+<PARA>
+If there are three operands, then the first shall be the file to dump, the
+second the offset, and the third the label.
+</PARA>
+</REFSECT1>
 </REFENTRY>
 
 
