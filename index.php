@@ -25,9 +25,9 @@ one of the architecture specifications.</p>
 Current drafts can be found <A HREF="specs.php">HERE</A>.
 </p>
 
-<H1>LSB 2.0 and earlier Specification</H1>
+<H1>LSB 2.0.1 and earlier Specification</H1>
 <p>
-The 2.0 (And earlier) version of the LSB can be found
+The 2.0.1 (And earlier) version of the LSB can be found
 <A HREF=http://refspecs.freestandards.org/lsb.shtml>Here</A>.</p>
 
 <H3>About the Specification</H3>
@@ -36,10 +36,12 @@ The LSB Specification is written in OASIS V4.1 Docbook SGML.&nbsp; You
 can&nbsp; <a href="http://gforge.freestandards.org/scm/?group_id=5">checkout
 a copy</a> of the Docbook source from the LSB project on
 gforge.freestandards.org.
+<!--
 Portions of the document are produced from a <a href="db.shtml">database</a>
 that was designed and is maintained by the LSB. In the spec tree there
 is a <i>build.html </i>file which describes <a href="build.html">how to
 build the specification</a> from the CVS Docbook source.</p>
+-->
 
 <?
 virtual("/themes/FreeStandards2/contentfooter.html");
