@@ -4,9 +4,9 @@
 <CHAPTER id=Introduction>
 <TITLE>Introduction</TITLE>
 <PARA>
-This is version &specversion of the Linux Standard Base Specification. This version
-is a mostly complete framework of the specification, but many details are
-still not filled in. 
+This is version &specversion of the Linux Standard Base Specification for
+the IA32 Architecture. This version is very preliminary since this document
+has only recently been seperated out from the common specification. 
 </PARA>
 <PARA>
 Those wishing to implement this standard should treat this version as more of
