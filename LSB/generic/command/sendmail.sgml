@@ -10,7 +10,7 @@
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <CMDSYNOPSIS>
-<command>sendmail</COMMAND> 
+<command>/usr/sbin/sendmail</COMMAND> 
 <ARG>options</ARG> <ARG rep=repeat>address</ARG>
 </CMDSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -22,7 +22,7 @@
 </TITLE>
 <PARA>
 To deliver electronic mail (email), applications shall support
-the interface provided by /usr/sbin/sendmail (described here).
+the interface provided by <command>sendmail</command> (described here).
 This interface shall be the default delivery method for applications.
 </PARA>
 <PARA>
@@ -38,15 +38,13 @@ It determines the network(s) to use based on the syntax and
 contents of the addresses.
 </PARA>
 <PARA>
-It is recommended that applications use as few options as
-necessary, none if possible.
+If an address is preceded by a backslash, <literal>'\'</literal>,
+it is unspecified if the
+address is subject to local alias expansion.
 </PARA>
 <PARA>
-Some agents allow aliasing on the local system to be prevented
-by preceding the address with a backslash.
-</PARA>
-<PARA>
-The format of messages shall be as defined in RFC 2822.
+The format of messages shall be as defined in 
+<XREF LINKEND="STD.RFC2822">.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -56,7 +54,7 @@ The format of messages shall be as defined in RFC 2822.
 <term>-bm</term>
 <listitem>
 <para>
-reads mail from standard input and delivers to the recipient addresses.
+read mail from standard input and deliver it to the recipient addresses.
 This is the default mode of operation.
 </para>
 </listitem>
@@ -65,7 +63,8 @@ This is the default mode of operation.
 <term>-bp</term>
 <listitem>
 <para>
-lists information about messages currently in the input mail queue.
+If the user has sufficient privilege,
+list information about messages currently in the input mail queue.
 </para>
 </listitem>
 </varlistentry>
@@ -73,14 +72,15 @@ lists information about messages currently in the input mail queue.
 <term>-bs</term>
 <listitem>
 <para>
-uses the SMTP protocol as described in RFC 2821; reads SMTP commands on
-standard input and writes SMTP responses on standard output.
+use the SMTP protocol as described in 
+<xref linkend="std.rfc2821">; read SMTP commands on
+standard input and write SMTP responses on standard output.
 </para>
 <para>
-Note that RFC 2821 specifies \r\n (CR-LF) be used at the end of each
-line, but pipes almost always use \n (LF) instead.  To deal with
-this, agents will accept both \r\n and \n at the end of each line.
-When accepting \r\n, the \r before the \n is silently discarded.
+In this mode, <command>sendmail</command> shall accept
+<literal>\r\n</literal> (CR-LF), as required by
+<xref linkend="std.rfc2821">, and <literal>\n</literal>
+(LF) line terminators.
 </para>
 </listitem>
 </varlistentry>
@@ -88,14 +88,15 @@ When accepting \r\n, the \r before the \n is silently discarded.
 <term>-F fullname</term>
 <listitem>
 <para>
-explicitly sets the full name of the sender for incoming
-mail unless the message already contains a From: message
+explicitly set the full name of the sender for incoming
+mail unless the message already contains a 
+<literal>From:</literal> message
 header.
 </para>
 <para>
 If the user running <COMMAND>sendmail</COMMAND> is not sufficiently trusted,
 then the actual sender may be indicated in the message,
-depending on the behavior of the agent.
+depending on the configuration of the agent.
 </para>
 </listitem>
 </varlistentry>
@@ -103,13 +104,15 @@ depending on the behavior of the agent.
 <term>-f name</term>
 <listitem>
 <para>
-explicitly sets the envelope sender address for incoming
-mail.   If there is no From: header, the address specified
-in the From: header will also be set.
+explicitly set the envelope sender address for incoming
+mail.   If there is no 
+<literal>From:</literal> header, the address specified
+in the 
+<literal>From:</literal> header will also be set.
 </para>
 <para>
 If the user running <COMMAND>sendmail</COMMAND> is not sufficiently trusted,
-then the actual sender will be indicated in the message.
+then the actual sender shall be indicated in the message.
 </para>
 </listitem>
 </varlistentry>
@@ -117,8 +120,10 @@ then the actual sender will be indicated in the message.
 <term>-i</term>
 <listitem>
 <para>
-ignores dots alone on lines by themselves in incoming
-messages.  If -bs is also used, the behavior is unspecified.
+ignore dots alone on lines by themselves in incoming
+messages.  If this options is not specified,
+a line consisting of a single dot shall terminate the input.
+If -bs is also used, the behavior is unspecified.
 </para>
 </listitem>
 </varlistentry>
@@ -126,7 +131,7 @@ messages.  If -bs is also used, the behavior is unspecified.
 <term>-odb</term>
 <listitem>
 <para>
-delivers any mail in background, if supported; otherwise ignored.
+deliver any mail in background, if supported; otherwise ignored.
 </para>
 </listitem>
 </varlistentry>
@@ -134,7 +139,7 @@ delivers any mail in background, if supported; otherwise ignored.
 <term>-odf</term>
 <listitem>
 <para>
-delivers any mail in foreground, if supported; otherwise ignored.
+deliver any mail in foreground, if supported; otherwise ignored.
 </para>
 </listitem>
 </varlistentry>
@@ -142,7 +147,7 @@ delivers any mail in foreground, if supported; otherwise ignored.
 <term>-oem or -em</term>
 <listitem>
 <para>
-mails errors back to the sender. (default)
+mail errors back to the sender. (default)
 </para>
 </listitem>
 </varlistentry>
@@ -150,7 +155,7 @@ mails errors back to the sender. (default)
 <term>-oep or -ep</term>
 <listitem>
 <para>
-writes errors to the standard error output.
+write errors to the standard error output.
 </para>
 </listitem>
 </varlistentry>
@@ -158,7 +163,7 @@ writes errors to the standard error output.
 <term>-oeq or -eq</term>
 <listitem>
 <para>
-does not send notification of errors to the sender.  This
+do not send notification of errors to the sender.  This
 only works for mail delivered locally.
 </para>
 </listitem>
@@ -176,7 +181,7 @@ is equivalent to -i.
 <term>-om</term>
 <listitem>
 <para>
-indicates that the sender of
+indicate that the sender of
 a message should receive a copy of the message if the
 sender appears in an alias expansion.  Ignored if aliases
 are not supported.
@@ -187,30 +192,32 @@ are not supported.
 <term>-t</term>
 <listitem>
 <para>
-reads the message to obtain recipients from the To:, Cc:,
-and Bcc: headers in the message instead of from the
-command arguments.  If a Bcc: header is present, it is
-removed from the message unless there is no To: or Cc:
-header, in which case a Bcc: header with no data is
-created, in accordance with RFC 2822.
+read the message to obtain recipients from the <literal>To:</literal>, 
+<literal>Cc:</literal>,
+and <literal>Bcc:</literal> headers in the message instead of from the
+command arguments.  If a 
+<literal>Bcc:</literal> header is present, it is
+removed from the message unless there is no <literal>To:</literal>
+or <literal>Cc:</literal>
+header, in which case a <literal>Bcc:</literal> header with no data is
+created, in accordance with <xref linkend="std.rfc2822">.
 </para>
 <para>
-If there are any arguments, they specify addresses to
-which the message is not to be delivered.  That is, the
-argument addresses are removed from the recipients list
-obtained from the headers.  Note: some agents implement
-this behavior in reverse, adding addresses instead of
-removing them.  Others may disallow addresses in
-argument list.  Therefore, applications should not put
-addresses in the argument list if -t is used.
+If there are any operands, the recipients list is unspecified.
 </para>
 <para>
-This option is sometimes ignored when not in -bm mode
+This option may be ignored when not in <parameter>-bm</parameter> mode
 (the default).
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
+<NOTE>
+<PARA>
+It is recommended that applications use as few options as
+necessary, none if possible.
+</PARA>
+</NOTE>
 </REFSECT1>
 
 <REFSECT1>
@@ -240,7 +247,9 @@ there was an error.
 <TITLE>Notes/Rationale
 </TITLE>
 <para>
-This page is believed to reflect functionality provided by smail, exim
+This page is intended to reflect functionality provided by 
+<command>smail</command>, 
+<command>exim</command>
 and other implementations, not just the <COMMAND>sendmail</COMMAND> 
 implementation.
 </para>
