@@ -13,10 +13,10 @@ TABLES=standards.sgml libraries.sgml
 all: $(FILES) $(TABLES)
 
 standards.sgml:
-	mkstandardsgmltable >standards.sgml
+	./mkstandardsgmltable >standards.sgml
 
 libraries.sgml:
-	mklibsgmltable >libraries.sgml
+	./mklibsgmltable >libraries.sgml
 
 clean:
 	rm -f $(TABLES) $(FILES)
