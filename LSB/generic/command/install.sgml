@@ -11,20 +11,33 @@ copy files and set attributes
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-install [OPTION]... SOURCE DEST           (1st format)
-install [OPTION]... SOURCE... DIRECTORY   (2nd format)
-install -d [OPTION]... DIRECTORY...       (3rd format)
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>install</COMMAND>
+<ARG rep=repeat>option</ARG>
+<ARG choice=plain>SOURCE</ARG>
+<ARG choice=plain>DEST</ARG>
+<SBR>
+<COMMAND>install</COMMAND>
+<ARG rep=repeat>option</ARG>
+<ARG rep=repeat choice=plain>SOURCE</ARG>
+<ARG choice=plain>DEST</ARG>
+<SBR>
+<COMMAND>install</COMMAND>
+<GROUP><ARG choice=plain>-d</ARG><ARG choice=plain>--directory</ARG></GROUP>
+<ARG rep=repeat>option</ARG>
+<ARG rep=repeat choice=plain>DIRECTORY</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-In the first two formats, copy SOURCE to DEST or multiple SOURCE(s) to
-the existing DIRECTORY, while setting permission modes and
-owner/group.  In the third format, create all components of the given
-DIRECTORY(ies).
+In the first two formats, copy <PARAMETER>SOURCE</PARAMETER>
+to <PARAMETER>DEST</PARAMETER> or multiple <PARAMETER>SOURCE(s)</PARAMETER> to
+the existing <PARAMETER>DIRECTORY</PARAMETER>, optionally setting permission modes and
+file ownership.  In the third format, each
+<PARAMETER>DIRECTORY</PARAMETER> and any missing parent
+directories shall be created.
 </PARA>
 </REFSECT1>
 
@@ -33,10 +46,45 @@ DIRECTORY(ies).
 <variablelist>
 
 <varlistentry>
-<term>--backup[=CONTROL]</term>
+<term>--backup[=METHOD]</term>
 <listitem>
 <para>
 makes a backup of each existing destination file.
+<PARAMETER>METHOD</PARAMETER> may be one of the following:
+<ITEMIZEDLIST>
+<LISTITEM><PARA>
+<PARAMETER>none</PARAMETER> or <PARAMETER>off</PARAMETER>
+never make backups.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+<PARAMETER>numbered</PARAMETER> or <PARAMETER>t</PARAMETER>
+make numbered backups. A numbered backup has the form
+<LITERAL>"%s.~%d~", target_name, version_number</LITERAL>. Each backup
+shall increment the version number by 1.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+<PARAMETER>existing</PARAMETER> or <PARAMETER>nil</PARAMETER>
+numbered if numbered backups exist, or simple otherwise.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+<PARAMETER>simple</PARAMETER> or <PARAMETER>never</PARAMETER>
+append a suffix to the name. The default suffix is '<LITERAL>~</LITERAL>',
+but can be overriden by setting <ENVAR>SIMPLE_BACKUP_SUFFIX</ENVAR> in
+the environment, or via the <PARAMETER>-S</PARAMETER> or <PARAMETER>--suffix</PARAMETER>
+option.
+</PARA></LISTITEM>
+</ITEMIZEDLIST>
+</para>
+<para>
+If no <PARAMETER>METHOD</PARAMETER> is specified, the environment variable
+<ENVAR>VERSION_CONTROL</ENVAR> shall be examined for one of the above.
+Unambiguous abbreviations of <PARAMETER>METHOD</PARAMETER> shall be accepted.
+If no <PARAMETER>METHOD</PARAMETER> is specified, or if <PARAMETER>METHOD</PARAMETER>
+is empty, the backup method shall default to <CONSTANT>existing</CONSTANT>.
+</para>
+<para>
+If <PARAMETER>METHOD</PARAMETER> is invalid or ambiguous, <COMMAND>install</COMMAND>
+shall fail and issue a diagnostic message.
 </para>
 </listitem>
 </varlistentry>
@@ -45,7 +93,7 @@ makes a backup of each existing destination file.
 <term>-b</term>
 <listitem>
 <para>
-is like --backup, but does not accept an argument.
+is equivalent to <PARAMETER>--backup=existing</PARAMETER>.
 </para>
 </listitem>
 </varlistentry>
@@ -71,28 +119,33 @@ SOURCE to DEST; useful in the 1st format.
 </varlistentry>
 
 <varlistentry>
-<term>-g, --group=GROUP</term>
+<term>-g GROUP, --group=GROUP</term>
 <listitem>
 <para>
-sets group ownership, instead of process' current group.
+if the user has appropriate privilege, sets group ownership, instead of process' current group.
+<PARAMETER>GROUP</PARAMETER> is either a name in the
+user group database, or a positive integer, which shall be used as a group-id.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>-m, --mode=MODE</term>
+<term>-m MODE, --mode=MODE</term>
 <listitem>
 <para>
-sets permission mode (as in chmod), instead of rwxr-xr-x.
+sets permission mode (specified as in <COMMAND>chmod</COMMAND>), instead of the default 
+<LITERAL>rwxr-xr-x</LITERAL>.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>-o, --owner=OWNER</term>
+<term>-o OWNER, --owner=OWNER</term>
 <listitem>
 <para>
-sets ownership (super-user only).
+if the user has appropriate privilege, sets ownership.
+<PARAMETER>OWNER</PARAMETER> is either a name in the
+user login database, or a positive integer, which shall be used as a user-id.
 </para>
 </listitem>
 </varlistentry>
@@ -101,7 +154,8 @@ sets ownership (super-user only).
 <term>-p, --preserve-timestamps</term>
 <listitem>
 <para>
-applies access/modification times of SOURCE files to corresponding
+copies the access and modification times of 
+<PARAMETER>SOURCE</PARAMETER> files to corresponding
 destination files.
 </para>
 </listitem>
@@ -117,10 +171,11 @@ strips symbol tables, only for 1st and 2nd formats.
 </varlistentry>
 
 <varlistentry>
-<term>-S, --suffix=SUFFIX</term>
+<term>-S SUFFIX, --suffix=SUFFIX</term>
 <listitem>
 <para>
-overrides the usual backup suffix.
+equivalent to <PARAMETER>--backup=existing</PARAMETER>, except if
+a simple suffix is required, use <PARAMETER>SUFFIX</PARAMETER>.
 </para>
 </listitem>
 </varlistentry>
@@ -130,6 +185,15 @@ overrides the usual backup suffix.
 <listitem>
 <para>
 prints the name of each directory as it is created.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-v, --verbose</term>
+<listitem>
+<para>
+print the name of each file before copying it to <varname>stdout</varname>.
 </para>
 </listitem>
 </varlistentry>
