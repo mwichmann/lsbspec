@@ -1,6 +1,6 @@
 
 DB2HTML=sgmltools -b html
-#DB2HTML=docbook2html -d ../docbook-utils.dsl\#html -o gLSB -p '/usr/bin/jade -V %use-id-as-filename%'
+#DB2HTML=docbook2html -d ../docbook-utils.dsl\#html -o LSB-generic -p '/usr/bin/jade -V %use-id-as-filename%'
 
 DB2RTF=sgmltools -b rtf
 #DB2RTF=docbook2rtf -d ../docbook-utils.dsl\#print
@@ -21,36 +21,36 @@ all:: buildspecs
 
 buildspecs: htmlspec rtfspec txtspec onehtmlspec linespec
 
-htmlspec: gLSB.sgml source
-	rm -rf gLSB.junk
-	-mv gLSB gLSB.junk
-	$(DB2HTML) gLSB.sgml
-	if [ -d gLSB.junk/CVS -a ! -d gLSB/CVS ];then mv gLSB.junk/CVS gLSB; fi
-	rm -rf gLSB.junk
+htmlspec: LSB-generic.sgml source
+	rm -rf LSB-generic.junk
+	-mv LSB-generic LSB-generic.junk
+	$(DB2HTML) LSB-generic.sgml
+	if [ -d LSB-generic.junk/CVS -a ! -d LSB-generic/CVS ];then mv LSB-generic.junk/CVS LSB-generic; fi
+	rm -rf LSB-generic.junk
 
-onehtmlspec: gLSB.sgml source
-	$(DB2ONEHTML) gLSB.sgml
+onehtmlspec: LSB-generic.sgml source
+	$(DB2ONEHTML) LSB-generic.sgml
 
-txtspec: gLSB.sgml source
-	$(DB2TXT) gLSB.sgml
+txtspec: LSB-generic.sgml source
+	$(DB2TXT) LSB-generic.sgml
 
-linespec: gLSB_lines.txt
+linespec: LSB-generic_lines.txt
 
-gLSB_lines.txt: gLSB.txt
-	nl -ba gLSB.txt > gLSB_lines.txt
+LSB-generic_lines.txt: LSB-generic.txt
+	nl -ba LSB-generic.txt > LSB-generic_lines.txt
 
-rtfspec: gLSB.sgml source
-	$(DB2RTF) gLSB.sgml
+rtfspec: LSB-generic.sgml source
+	$(DB2RTF) LSB-generic.sgml
 
-pdfspec: gLSB.sgml source
-	$(DB2PDF) gLSB.sgml
+pdfspec: LSB-generic.sgml source
+	$(DB2PDF) LSB-generic.sgml
 
-psspec: gLSB.sgml source
-	$(DB2PS) gLSB.sgml
+psspec: LSB-generic.sgml source
+	$(DB2PS) LSB-generic.sgml
 
-index: gLSB.sgml source
+index: LSB-generic.sgml source
 	collateindex.pl -N -o index.sgml
-	$(DB2HTML) -j '-V %use-id-as-filename% -V html-index' gLSB.sgml
+	$(DB2HTML) -j '-V %use-id-as-filename% -V html-index' LSB-generic.sgml
 	collateindex.pl -o index.sgml HTML.index
 
 source:
@@ -59,13 +59,13 @@ source:
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
-gLSB.sgml: gLSB.sgml.sed ../../LSB/version
+LSB-generic.sgml: LSB-generic.sgml.sed ../../LSB/version
 	echo `cat ../../LSB/version` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../LSB/version`#" <gLSB.sgml.sed >gLSB.sgml
+	sed -e "s#LSBVERSION#`cat ../../LSB/version`#" <LSB-generic.sgml.sed >LSB-generic.sgml
 
 autobuild: gensrc source
 	echo `cat ../../LSB/version`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../LSB/version`-`date +"%Y%m%d"`#" <gLSB.sgml.sed >gLSB.sgml
+	sed -e "s#LSBVERSION#`cat ../../LSB/version`-`date +"%Y%m%d"`#" <LSB-generic.sgml.sed >LSB-generic.sgml
 	make buildspecs
 	
 clean::
