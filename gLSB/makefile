@@ -31,6 +31,7 @@ psspec: source
 	$(DB2PS) gLSB.sgml
 
 source:
+	sed -e "s#LSBVERSION#`cat ../lsbversion`#" <gLSB.sgml.sed >gLSB.sgml
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 gensrc:
