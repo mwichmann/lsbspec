@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.54 2004/06/21 21:28:18 nick Exp 0 -->
-<!--    at Wed Jun 30 05:24:49 2004 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.58 2004/07/08 13:53:11 anderson Exp 0 -->
+<!--    at Thu Jul  8 10:34:42 2004 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -237,7 +237,6 @@ ISO/IEC 9899 C Language serves as the LSB reference programming language, and da
 #define pthread_cleanup_push(routine,arg)	{struct _pthread_cleanup_buffer _buffer;_pthread_cleanup_push(&amp _buffer,(routine),(arg));
 #define PTHREAD_COND_INITIALIZER	{__LOCK_INITIALIZER,0}
 
-
 struct _pthread_cleanup_buffer
 {
   void (*__routine) (void *);
@@ -248,7 +247,7 @@ struct _pthread_cleanup_buffer
  ;
 typedef unsigned int pthread_key_t;
 typedef int pthread_once_t;
-
+typedef long long __pthread_cond_align_t;
 
 typedef unsigned long pthread_t;
 struct _pthread_fastlock
@@ -258,9 +257,7 @@ struct _pthread_fastlock
 }
  ;
 
-
 typedef struct _pthread_descr_struct *_pthread_descr;
-
 
 typedef struct
 {
@@ -277,7 +274,6 @@ typedef struct
 }
 pthread_mutexattr_t;
 
-
 typedef struct
 {
   int __detachstate;
@@ -292,11 +288,13 @@ typedef struct
 }
 pthread_attr_t;
 
-
 typedef struct
 {
-  struct _pthread_fastlock lock;
-  _pthread_descr wait_chain;
+  struct _pthread_fastlock __c_lock;
+  _pthread_descr __c_waiting;
+  char __padding[48 - sizeof (struct _pthread_fastlock) -
+		 sizeof (_pthread_descr) - sizeof (__pthread_cond_align_t)];
+  __pthread_cond_align_t __align;
 }
 pthread_cond_t;
 typedef struct
@@ -304,7 +302,6 @@ typedef struct
   int __dummy;
 }
 pthread_condattr_t;
-
 
 typedef struct _pthread_rwlock_t
 {
@@ -324,8 +321,6 @@ typedef struct
 }
 pthread_rwlockattr_t;
 
-
-
 #define PTHREAD_CREATE_JOINABLE	0
 #define PTHREAD_INHERIT_SCHED	0
 #define PTHREAD_ONCE_INIT	0
@@ -335,8 +330,6 @@ pthread_rwlockattr_t;
 #define PTHREAD_EXPLICIT_SCHED	1
 #define PTHREAD_PROCESS_SHARED	1
 #define PTHREAD_SCOPE_PROCESS	1
-
-
 
 #define PTHREAD_CANCELED	((void*)-1)
 #define PTHREAD_CANCEL_DEFERRED	0
@@ -351,11 +344,6 @@ pthread_rwlockattr_t;
 </PARA>
 <SCREEN>
 
-
-
-
-
-
 typedef struct
 {
   struct _pthread_fastlock __sem_lock;
@@ -364,8 +352,6 @@ typedef struct
 }
 sem_t;
 #define SEM_FAILED	((sem_t*)0)
-
-
 
 #define SEM_VALUE_MAX	((int)((~0u)>>1))
 </SCREEN>
@@ -379,4 +365,4 @@ include(_pthread_cleanup_pop.sgml)
 include(_pthread_cleanup_push.sgml)
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.54 2004/06/21 21:28:18 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.58 2004/07/08 13:53:11 anderson Exp 0 -->

@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.54 2004/06/21 21:28:18 nick Exp 0 -->
-<!--    at Wed Jun 30 05:28:31 2004 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.58 2004/07/08 13:53:11 anderson Exp 0 -->
+<!--    at Thu Jul  8 10:38:24 2004 -->
 <SECT1 ID=libncurses>
 <TITLE>Interfaces for libncurses</TITLE>
 <PARA>
@@ -487,7 +487,6 @@ ISO/IEC 9899 C Language serves as the LSB reference programming language, and da
 </PARA>
 <SCREEN>
 
-#define NCURSES_BITS(mask,shift)	((mask)&lt;&lt;((shift)+8))
 #define ERR	(-1)
 #define OK	(0)
 #define ACS_RARROW	(acs_map['+'])
@@ -515,31 +514,10 @@ ISO/IEC 9899 C Language serves as the LSB reference programming language, and da
 #define ACS_VLINE	(acs_map['x'])
 #define ACS_DIAMOND	(acs_map['`'])
 #define ACS_BULLET	(acs_map['~'])
-#define A_CHARTEXT	(NCURSES_BITS(1UL,0)-1UL)
 #define getmaxyx(win,y,x)	(y=(win)?((win)->_maxy+1):ERR,x=(win)?((win)->_maxx+1):ERR)
 #define getbegyx(win,y,x)	(y=(win)?(win)->_begy:ERR,x=(win)?(win)->_begx:ERR)
 #define getyx(win,y,x)	(y=(win)?(win)->_cury:ERR,x=(win)?(win)->_curx:ERR)
 #define getparyx(win,y,x)	(y=(win)?(win)->_pary:ERR,x=(win)?(win)->_parx:ERR)
-#define A_NORMAL	0L
-#define A_COLOR	NCURSES_BITS(((1UL)&lt;&lt;8)-1UL,0)
-#define A_REVERSE	NCURSES_BITS(1UL,10)
-#define A_BLINK	NCURSES_BITS(1UL,11)
-#define A_DIM	NCURSES_BITS(1UL,12)
-#define A_BOLD	NCURSES_BITS(1UL,13)
-#define A_ALTCHARSET	NCURSES_BITS(1UL,14)
-#define A_INVIS	NCURSES_BITS(1UL,15)
-#define A_PROTECT	NCURSES_BITS(1UL,16)
-#define A_HORIZONTAL	NCURSES_BITS(1UL,17)
-#define A_LEFT	NCURSES_BITS(1UL,18)
-#define A_LOW	NCURSES_BITS(1UL,19)
-#define A_RIGHT	NCURSES_BITS(1UL,20)
-#define A_TOP	NCURSES_BITS(1UL,21)
-#define A_VERTICAL	NCURSES_BITS(1UL,22)
-#define A_STANDOUT	NCURSES_BITS(1UL,8)
-#define A_UNDERLINE	NCURSES_BITS(1UL,9)
-#define A_ATTRIBUTES	NCURSES_BITS(~(1UL-1UL),0)
-
-
 
 #define WA_ALTCHARSET	A_ALTCHARSET
 #define WA_ATTRIBUTES	A_ATTRIBUTES
@@ -558,8 +536,7 @@ ISO/IEC 9899 C Language serves as the LSB reference programming language, and da
 #define WA_TOP	A_TOP
 #define WA_UNDERLINE	A_UNDERLINE
 #define WA_VERTICAL	A_VERTICAL
-
-
+#define A_REVERSE	NCURSES_BITS(1UL,10)
 
 #define COLOR_BLACK	0
 #define COLOR_RED	1
@@ -570,20 +547,13 @@ ISO/IEC 9899 C Language serves as the LSB reference programming language, and da
 #define COLOR_CYAN	6
 #define COLOR_WHITE	7
 
-
-
 #define _SUBWIN	0x01
 #define _ENDLINE	0x02
 #define _FULLWIN	0x04
 #define _ISPAD	0x10
 #define _HASMOVED	0x20
 
-
-
-
-
-
-
+typedef unsigned char bool;
 
 typedef unsigned long chtype;
 typedef struct screen SCREEN;
@@ -605,7 +575,6 @@ struct pdat
   short _pad_right;
 }
  ;
-
 
 struct _win_st
 {
@@ -733,22 +702,31 @@ struct _win_st
 #define KEY_MOUSE	0631
 #define KEY_RESIZE	0632
 #define KEY_MAX	0777
-</SCREEN>
-</SECT2>
-<SECT2>
-<TITLE>term.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
 
-
-
-struct term;
-
-
-typedef struct term TERMINAL;
+#define PAIR_NUMBER(a)	(((a)&amp A_COLOR)>>8)
+#define NCURSES_BITS(mask,shift)	((mask)&lt;&lt;((shift)+8))
+#define A_CHARTEXT	(NCURSES_BITS(1UL,0)-1UL)
+#define A_NORMAL	0L
+#define NCURSES_ATTR_SHIFT	8
+#define A_COLOR	NCURSES_BITS(((1UL)&lt;&lt;8)-1UL,0)
+#define A_BLINK	NCURSES_BITS(1UL,11)
+#define A_DIM	NCURSES_BITS(1UL,12)
+#define A_BOLD	NCURSES_BITS(1UL,13)
+#define A_ALTCHARSET	NCURSES_BITS(1UL,14)
+#define A_INVIS	NCURSES_BITS(1UL,15)
+#define A_PROTECT	NCURSES_BITS(1UL,16)
+#define A_HORIZONTAL	NCURSES_BITS(1UL,17)
+#define A_LEFT	NCURSES_BITS(1UL,18)
+#define A_LOW	NCURSES_BITS(1UL,19)
+#define A_RIGHT	NCURSES_BITS(1UL,20)
+#define A_TOP	NCURSES_BITS(1UL,21)
+#define A_VERTICAL	NCURSES_BITS(1UL,22)
+#define A_STANDOUT	NCURSES_BITS(1UL,8)
+#define A_UNDERLINE	NCURSES_BITS(1UL,9)
+#define COLOR_PAIR(n)	NCURSES_BITS(n,0)
+#define A_ATTRIBUTES	NCURSES_BITS(~(1UL-1UL),0)
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.54 2004/06/21 21:28:18 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.58 2004/07/08 13:53:11 anderson Exp 0 -->
