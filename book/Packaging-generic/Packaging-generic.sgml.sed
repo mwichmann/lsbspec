@@ -3,7 +3,7 @@
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "contents">
 
-<!entity specversion "VERSION">
+<!entity specversion "LSBVERSION">
 
 %entities;
 

@@ -3,7 +3,7 @@
 <PARA>
 This is version &specversion; of the Linux Package Specification (LPS).
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 1.0 of the Linx Packaging Specification.
+this version will result in version 1.0 of the Linux Packaging Specification.
 </PARA>
 <PARA>
 Implmentations may not claim conformance to this version.
@@ -23,7 +23,7 @@ The LPS defines package syntax and semantics neccessary to provide correct
 interoperation between packages produced by different entities. This
 specification defines the file formats which may be used for packages,
 the semantics of the package meta-data, and the protocols and semantics used
-to access package repositories. Tools which manage package show conform to
+to access package repositories. Tools which manage packages shall conform to
 this specification.
 </PARA>
 

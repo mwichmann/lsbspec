@@ -482,6 +482,10 @@ The package dependencies are stored in the
 index records. The following values may be used.
 </PARA>
 include(rpmdeps.sgml)
+<PARA>
+Additional dependencies are specified in the Package Dependencies section of
+this document, and the architecture specific documents.
+</PARA>
 </SECT4>
 <SECT4>
 <TITLE>Package Dependencies Attributes</TITLE>
