@@ -802,7 +802,7 @@ contains more than one hyphen (for example
 "lsb-distro.example.com-database" or "lsb-gnome-gnumeric"), then 
 the portion of the package name between first and second hyphens shall 
 either be an LSB provider name assigned by the LANANA, or it may be 
-one of the owners' fully-qualified domain name in lower case (e.g., 
+one of the owners' fully-qualified domain names in lower case (e.g., 
 "debian.org", "staroffice.sun.com"). The LSB provider name assigned 
 by LANANA shall only consist of the ASCII characters [a-z0-9].
 The provider name or domain name may be either that of a distribution
