@@ -1,6 +1,6 @@
 
 DB2HTML=sgmltools -b html
-#DB2HTML=docbook2html -d ../docbook-utils.dsl\#html -o gELF -p '/usr/bin/jade -V %use-id-as-filename%'
+#DB2HTML=docbook2html -d ../docbook-utils.dsl\#html -o ELF-generic -p '/usr/bin/jade -V %use-id-as-filename%'
 
 DB2RTF=sgmltools -b rtf
 #DB2RTF=docbook2rtf -d ../docbook-utils.dsl\#print
@@ -21,36 +21,36 @@ all:: buildspecs
 
 buildspecs: htmlspec rtfspec txtspec onehtmlspec linespec
 
-htmlspec: gELF.sgml source
-	rm -rf gELF.junk
-	-mv gELF gELF.junk
-	$(DB2HTML) gELF.sgml
-	if [ -d gELF.junk/CVS -a ! -d gELF/CVS ];then mv gELF.junk/CVS gELF; fi
-	rm -rf gELF.junk
+htmlspec: ELF-generic.sgml source
+	rm -rf ELF-generic.junk
+	-mv ELF-generic ELF-generic.junk
+	$(DB2HTML) ELF-generic.sgml
+	if [ -d ELF-generic.junk/CVS -a ! -d ELF-generic/CVS ];then mv ELF-generic.junk/CVS ELF-generic; fi
+	rm -rf ELF-generic.junk
 
-onehtmlspec: gELF.sgml source
-	$(DB2ONEHTML) gELF.sgml
+onehtmlspec: ELF-generic.sgml source
+	$(DB2ONEHTML) ELF-generic.sgml
 
-txtspec: gELF.sgml source
-	$(DB2TXT) gELF.sgml
+txtspec: ELF-generic.sgml source
+	$(DB2TXT) ELF-generic.sgml
 
-linespec: gELF_lines.txt
+linespec: ELF-generic_lines.txt
 
-gELF_lines.txt: gELF.txt
-	nl -ba gELF.txt > gELF_lines.txt
+ELF-generic_lines.txt: ELF-generic.txt
+	nl -ba ELF-generic.txt > ELF-generic_lines.txt
 
-rtfspec: gELF.sgml source
-	$(DB2RTF) gELF.sgml
+rtfspec: ELF-generic.sgml source
+	$(DB2RTF) ELF-generic.sgml
 
-pdfspec: gELF.sgml source
-	$(DB2PDF) gELF.sgml
+pdfspec: ELF-generic.sgml source
+	$(DB2PDF) ELF-generic.sgml
 
-psspec: gELF.sgml source
-	$(DB2PS) gELF.sgml
+psspec: ELF-generic.sgml source
+	$(DB2PS) ELF-generic.sgml
 
-index: gELF.sgml source
+index: ELF-generic.sgml source
 	collateindex.pl -N -o index.sgml
-	$(DB2HTML) -j '-V %use-id-as-filename% -V html-index' gELF.sgml
+	$(DB2HTML) -j '-V %use-id-as-filename% -V html-index' ELF-generic.sgml
 	collateindex.pl -o index.sgml HTML.index
 
 source:
@@ -59,13 +59,13 @@ source:
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
-gELF.sgml: gELF.sgml.sed ../../ELF/version
+ELF-generic.sgml: ELF-generic.sgml.sed ../../ELF/version
 	echo `cat ../../ELF/version` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../ELF/version`#" <gELF.sgml.sed >gELF.sgml
+	sed -e "s#LSBVERSION#`cat ../../ELF/version`#" <ELF-generic.sgml.sed >ELF-generic.sgml
 
 autobuild: gensrc source
 	echo `cat ../../ELF/version`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <gELF.sgml.sed >gELF.sgml
+	sed -e "s#LSBVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <ELF-generic.sgml.sed >ELF-generic.sgml
 	make buildspecs
 	
 clean::
