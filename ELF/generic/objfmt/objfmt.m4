@@ -11,12 +11,6 @@ DRAFT - April 29, 1998 and as supplemented by this document and an architecture
 specific LSB specification. Conforming implementations may also support other
 unspecified object file formats.
 </PARA>
-<PARA>
-Does the Update have precedence?
-</PARA>
-<PARA>
-Do we need to call out the reference section by section below?
-</PARA>
 </CHAPTER>
 
 <CHAPTER ID=Sections>
