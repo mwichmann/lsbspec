@@ -1,7 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES=__xstat.sgml
+MANPAGES=__xstat.sgml select.sgml
 FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
 	libdb.sgml libdl.sgml libcrypt.sgml
 TABLES=
