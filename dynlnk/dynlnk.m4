@@ -56,7 +56,7 @@ Program Interpreter
 <PARA>
 The LSB specifies the Program Interpreter to be
 <ITEMIZEDLIST>
-<LISTITEM><SCREEN>/lib/ld-linux.so.2</SCREEN></LISTITEM>
+<LISTITEM><SCREEN>/lib/ld-lsb.so.1</SCREEN></LISTITEM>
 </ITEMIZEDLIST>
 </PARA>
 </SECT1>
