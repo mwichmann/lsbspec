@@ -33,7 +33,7 @@
 </BOOKINFO>
 
 &intro.sgm;
-&dynlnk.sgm;
+&objfmt.sgm;
 &baselib.sgm;
 &execenv.sgm;
 </BOOK>
