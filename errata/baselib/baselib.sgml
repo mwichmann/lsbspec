@@ -32,8 +32,6 @@ On the IA32 platform, the functions <FUNCTION>__divdi3</FUNCTION>,
 The following curses interfaces were omitted and should be included:
 <FUNCTION>COLOR_PAIR</FUNCTION>,
 <FUNCTION>PAIR_NUMBER</FUNCTION>,
-<FUNCTION>slk_attr_off</FUNCTION>,
-<FUNCTION>slk_attr_on</FUNCTION>,
 <FUNCTION>COLORS</FUNCTION>,
 <FUNCTION>COLOR_PAIRS</FUNCTION>,
 <FUNCTION>acs_map</FUNCTION>,
@@ -89,8 +87,6 @@ The following RPC functions were omitted and should be included:
 <PARA>
 The following pthread functions were omitted and should be included:
 <FUNCTION>pthread_atfork</FUNCTION>,
-<FUNCTION>pthread_cleanup_pop</FUNCTION>,
-<FUNCTION>pthread_cleanup_push</FUNCTION>,
 </PARA>
 
 </CHAPTER>
