@@ -121,13 +121,13 @@ allocation by system administrators and post install scripts using useradd(1).
 </PARA>
 </SECT1>
 
-<sect1>
-<title>Rationale</title>
-<para>
+<SECT1 ID="usergrprat">
+<TITLE>Rationale</TITLE>
+<PARA>
 The purpose of specifying optional users and groups is to reduce the
 potential for name conflicts between applications and distributions.
-</para>
-</sect1>
+</PARA>
+</SECT1>
 
 </CHAPTER>
 </PART>
