@@ -42,12 +42,14 @@ include(dyntag.sgml)
 <SECT1 ID=functionaddresses>
 <TITLE>Function Addresses</TITLE>
 <PARA>
+See chapter 3 of the <XREF LINKEND="std.S390X.ABI">.
 </PARA>
 </SECT1>
 
 <SECT1 ID=proceedurelinkagetable>
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
+See chapter 3 of the <XREF LINKEND="std.S390X.ABI">.
 </PARA>
 </SECT1>
 
