@@ -14,12 +14,22 @@ socket ioctl commands
 <REFSYNOPSISDIVINFO>
 <DATE>29 August 2002</DATE>
 </REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;sys/socket.h>
-#include &lt;net/if.h>
-
-int ioctl(int sockfd, int request, char *argp);
-</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/socket.h&gt;
+#include &lt;net/if.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>ioctl</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>sockfd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>request</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char 
+  <PARAMETER><REPLACEABLE>*argp</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
@@ -29,19 +39,19 @@ int ioctl(int sockfd, int request, char *argp);
 <TITLE>Description
 </TITLE>
 <PARA>
-Socket ioctl commands are a subset of the <function>ioctl</function> calls
-which can
-perform a variety of functions on sockets. The file descriptor
-<replaceable>sockfd</replaceable> must contain the value of a file descriptor
-which was created with the <function>socket</function>
-or <function>accept</function> calls.
+Socket <EMPHASIS>ioctl</EMPHASIS> commands are a subset of the 
+<FUNCTION>ioctl</FUNCTION> calls, which can perform a variety of 
+functions on sockets. <PARAMETER>sockfd</PARAMETER> must contain 
+the value of a file descriptor that was created with the 
+<FUNCTION>socket</FUNCTION> or <FUNCTION>accept</FUNCTION> calls.
 </PARA>
 <PARA>
-These commands apply to the underlying network interfaces, and affect the
-entire system, not just the file descriptor used to issue the ioctl.
+Socket <EMPHASIS>ioctl</EMPHASIS> commands apply to the underlying 
+network interfaces, and affect the entire system, not just the file 
+descriptor used to issue the <FUNCTION>ioctl</FUNCTION>.
 </PARA>
 <PARA>
-The following ioctls are provided:
+The following <FUNCTION>ioctl</FUNCTION>s are provided:
 </PARA>
 <VARIABLELIST>
 
@@ -51,27 +61,35 @@ SIOCGIFCONF
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface configuration list for the
-system.<footnote><para>Similar to the if_nameindex family found in the
-Single UNIX specification version 3 or the getifaddrs family found in
-BSD.</para></footnote>
-The parameter
-<replaceable>argp</replaceable> is a pointer to a
-<literal>struct ifconf</literal>.
-Before calling, the caller must allocate the
-<literal>ifc_ifcu.ifcu_req</literal> field to point to an array of
-<literal>struct ifreq</literal> structures, and set
-<literal>if_len</literal> to the size of this allocated array (in
-bytes).  Upon return, <literal>if_len</literal> will contain the amount of
-the array which was actually used (again in bytes).  If it is the same
-as the length upon calling, the caller should assume that the array
-was too small and try again with a larger array.
+Gets the interface configuration list for the system.
+<FOOTNOTE>
+<PARA>
+<SYMBOL>SIOCGIFCONF</SYMBOL> is similar to the 
+<FUNCTION>if_nameindex</FUNCTION> family found in the
+<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
+Version 3</CITETITLE> or the <FUNCTION>getifaddrs</FUNCTION> 
+family found in <ACRONYM>BSD</ACRONYM>.
 </PARA>
-<para>
-On success, this function can return any nonnegative
-value.<footnote><para>Historical UNIX systems disagree on the meaning
-of the return value.</para></footnote>
-</para>
+</FOOTNOTE>
+<PARAMETER>argp</PARAMETER> is a pointer to a
+<STRUCTNAME>ifconf</STRUCTNAME> structure. Before calling, the caller 
+must allocate the <STRUCTFIELD>ifc_ifcu.ifcu_req</STRUCTFIELD> field 
+to point to an array of <STRUCTNAME>ifreq</STRUCTNAME> structures, and 
+set <STRUCTFIELD>if_len</STRUCTFIELD> to the size of this allocated 
+array (in bytes). Upon return, <STRUCTFIELD>if_len</STRUCTFIELD> 
+will contain the amount of the array which was actually used (again, 
+in bytes).  If it is the same as the length upon calling, the caller 
+should assume that the array was too small and try again with a 
+larger array.
+</PARA>
+<PARA>
+On success, <SYMBOL>SIOCGIFCONF</SYMBOL> can return any nonnegative value.
+<FOOTNOTE>
+<PARA>
+Historical UNIX systems disagree on the meaning of the return value.
+</PARA>
+</FOOTNOTE>
+</PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
@@ -82,11 +100,12 @@ SIOCGIFFLAGS
 <LISTITEM>
 <PARA>
 Gets the interface flags for the indicated interface.
-The parameter <replaceable>argp</replaceable> is a pointer to a
-<literal>struct ifreq</literal>.
-Before calling, the caller should
-fill in the ifr_name field with the interface name, and upon return
-the ifr_ifru.ifru_flags field is set with the interface flags.
+<PARAMETER>argp</PARAMETER> is a pointer to a 
+<STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
+caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
+field with the interface name, and upon return, the 
+<STRUCTFIELD>ifr_ifru.ifru_flags</STRUCTFIELD> field is set 
+with the interface flags.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -97,12 +116,13 @@ SIOCGIFADDR
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface address list for the system. The parameter
-<replaceable>argp</replaceable> is a pointer to a
-<literal>struct ifreq</literal>.
-Before calling, the caller should
-fill in the ifr_name field with the interface name, and upon return
-the ifr_ifru.ifru_addr field is set with the interface address.
+Gets the interface address list for the system. 
+<PARAMETER>argp</PARAMETER> is a pointer to a
+<STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
+caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
+field with the interface name, and upon return, the 
+<STRUCTFIELD>ifr_ifru.ifru_addr</STRUCTFIELD> field is set 
+with the interface address.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -113,20 +133,23 @@ SIOCGIFNETMASK
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the network mask for the indicated interface. The parameter
-<replaceable>argp</replaceable> is a pointer to a
-<literal>struct ifreq</literal>.
-Before calling, the caller should
-fill in the ifr_name field with the interface name, and upon return
-the ifr_ifru.ifru_netmask field is set with the network mask.
+Gets the network mask for the indicated interface. 
+<PARAMETER>argp</PARAMETER> is a pointer to a
+<STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
+caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
+field with the interface name, and upon return, the 
+<STRUCTFIELD>ifr_ifru.ifru_netmask</STRUCTFIELD> field is set 
+with the network mask.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 </VARIABLELIST>
 
-<para>The <literal>struct sockaddr</literal> structure is as specified
-in the Single UNIX Specification.</para>
+<PARA>
+The <STRUCTNAME>sockaddr</STRUCTNAME> structure is as specified in 
+the <CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>.
+</PARA>
 
 </REFSECT1>
 
@@ -134,7 +157,9 @@ in the Single UNIX Specification.</para>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, zero is returned. On error, -1 is returned, and errno is set appropriately.
+On success, the global variable <VARNAME>errno</VARNAME> is set to 
+<RETURNVALUE>0</RETURNVALUE>. On error, <RETURNVALUE>-1</RETURNVALUE>
+is returned.
 </PARA>
 </REFSECT1>
 
@@ -148,7 +173,7 @@ EBADF
 </TERM>
 <LISTITEM>
 <PARA>
-<replaceable>sockfd</replaceable> is not a valid descriptor.
+<PARAMETER>sockfd</PARAMETER> is not a valid descriptor.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -159,7 +184,7 @@ EFAULT
 </TERM>
 <LISTITEM>
 <PARA>
-<replaceable>argp</replaceable> references an inaccessible memory area.
+<PARAMETER>argp</PARAMETER> references an inaccessible memory area.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -170,7 +195,8 @@ ENOTTY
 </TERM>
 <LISTITEM>
 <PARA>
-<replaceable>sockfd</replaceable> is not associated with a character special device.
+<PARAMETER>sockfd</PARAMETER> is not associated with a character 
+special device.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -181,8 +207,8 @@ ENOTTY
 </TERM>
 <LISTITEM>
 <PARA>
-The specified request does not apply to the kind of object that the descriptor
-<replaceable>sockfd</replaceable> references.
+The specified <PARAMETER>request</PARAMETER> does not apply to the kind of 
+object that the descriptor <PARAMETER>sockfd</PARAMETER> references.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -193,7 +219,7 @@ EINVAL
 </TERM>
 <LISTITEM>
 <PARA>
-<replaceable>request</replaceable> or <replaceable>argp</replaceable> is not valid.
+<PARAMETER>request</PARAMETER> and <PARAMETER>argp</PARAMETER> are not valid.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
