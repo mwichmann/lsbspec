@@ -6,10 +6,10 @@ Revised by Swox AB (version 1.2) [dS relocation]
 Revised by David Edelsohn and Mark Mendell, IBM (version 1.3) [long double]
 Revised by Alan Modra, IBM (version 1.4) [PLT, quad]
 
-Version 1.4
-2002-11-05
+Version 1.4.1
+2003-01-06
 
-(C) Copyright IBM Corporation 1999,2002.  All rights reserved.
+(C) Copyright IBM Corporation 1999,2003.  All rights reserved.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1;
@@ -781,30 +781,30 @@ purpose registers.  All of the integer, special purpose, and
 floating-point registers are global to all functions in a running
 program.  The following table shows how the registers are used.
 
-r0       Volatile register used in function prologs
-r1       Stack frame pointer
-r2       TOC pointer
-r3       Volatile parameter and return value register
-r4-r10   Volatile registers used for function parameters
-r11      Volatile register used in calls by pointer and as an
-         environment pointer for languages which require one
-r12      Volatile register used for exception handling and glink code
-r13      Reserved for use as system thread ID
-r14-r31  Nonvolatile registers used for local variables
+r0        Volatile register used in function prologs
+r1        Stack frame pointer
+r2        TOC pointer
+r3        Volatile parameter and return value register
+r4-r10    Volatile registers used for function parameters
+r11       Volatile register used in calls by pointer and as an
+          environment pointer for languages which require one
+r12       Volatile register used for exception handling and glink code
+r13       Reserved for use as system thread ID
+r14-r31   Nonvolatile registers used for local variables
 
-f0       Volatile scratch register
-f1-f4    Volatile floating point parameter and return value registers
-f5-f13   Volatile floating point parameter registers
-f14-f31  Nonvolatile registers
+f0        Volatile scratch register
+f1-f4     Volatile floating point parameter and return value registers
+f5-f13    Volatile floating point parameter registers
+f14-f31   Nonvolatile registers
 
-LR       Link register (volatile)
-CTR      Loop counter register (volatile)
-XER      Fixed point exception register (volatile)
-FPSCR    Floating point status and control register (volatile)
+LR        Link register (volatile)
+CTR       Loop counter register (volatile)
+XER       Fixed point exception register (volatile)
+FPSCR     Floating point status and control register (volatile)
 
-CR0-CR1  Volatile condition code register fields
-CR2-CR4  Nonvolatile condition code register fields
-CR5-CR7  Volatile condition code register fields
+CR0-CR1   Volatile condition code register fields
+CR2-CR4   Nonvolatile condition code register fields
+CR5-CR7   Volatile condition code register fields
 
 Registers r1, r14 through r31, and f14 through f31 are nonvolatile,
 which means that they preserve their values across function calls.
@@ -1234,115 +1234,113 @@ Mandatory Fields
 
 The following are the mandatory fields of a traceback table:
 
-version       Eight-bit field.  This defines the type code for the
-              table.  The only currently defined value is zero.
+version        Eight-bit field.  This defines the type code for the
+               table.  The only currently defined value is zero.
 
-lang          Eight-bit field.  This defines the source language for
-              the compiler that generated the code for which this
-              traceback table applies.  The default values are as
-              follows:
+lang           Eight-bit field.  This defines the source language for
+               the compiler that generated the code for which this
+               traceback table applies.  The default values are as
+               follows:
+                  C             0
+                  FORTRAN       1
+                  Pascal        2
+                  Ada           3
+                  PL/1          4
+                  Basic         5
+                  LISP          6
+                  COBOL         7
+                  Modula2       8
+                  C++           9
+                  RPG           10
+                  PL.8,PLIX     11
+                  Assembly      12
+               The codes 0xd to 0xfa are reserved.  The codes 0xfb to
+               0xff are reserved for IBM.
 
-              C            0
-              FORTRAN      1
-              Pascal       2
-              Ada          3
-              PL/1         4
-              Basic        5
-              LISP         6
-              COBOL        7
-              Modula2      8
-              C++          9
-              RPG          10
-              PL.8,PLIX    11
-              Assembly     12
+globalink      One-bit field.  This field is set to 1 if this routine
+               is a special routine used to support the linkage
+               convention: a linkage function or a ._ptrgl function.
+               See the section Function Calls for more information.
+               These routines have unusual register usage and stack
+               format.
 
-              The codes 0xd to 0xfa are reserved.  The codes 0xfb to
-              0xff are reserved for IBM.
+is_eprol       One-bit field.  This field is set to 1 if this routine
+               is an out-of-line prologue or epilogue function.  See
+               the section Function Prologue and Epilogue for more
+               information.  These routines have unusual register
+               usage and stack format.
 
-globalink     One-bit field.  This field is set to 1 if this routine
-              is a special routine used to support the linkage
-              convention: a linkage function or a ._ptrgl function.
-              See the section Function Calls for more information.
-              These routines have unusual register usage and stack
-              format.
+has_tboff      One-bit field.  This field is set to 1 if the offset of
+               the traceback table from the start of the function is
+               stored in the tb_offset field.
 
-is_eprol      One-bit field.  This field is set to 1 if this routine
-              is an out-of-line prologue or epilogue function.  See
-              the section Function Prologue and Epilogue for more
-              information.  These routines have unusual register
-              usage and stack format.
+int_proc       One-bit field.  This field is set to 1 if this function
+               is a stackless leaf function that does not have a
+               separate stack frame.
 
-has_tboff     One-bit field.  This field is set to 1 if the offset of
-              the traceback table from the start of the function is
-              stored in the tb_offset field.
+has_ctl        One-bit field.  This field is set to 1 if ctl_info is
+               provided.
 
-int_proc      One-bit field.  This field is set to 1 if this function
-              is a stackless leaf function that does not have a
-              separate stack frame.
+tocless        One-bit field.  This field is set to 1 if this function
+               does not have a TOC.  For example, a stackless leaf
+               assembly language routine with no references to
+               external objects.
 
-has_ctl       One-bit field.  This field is set to 1 if ctl_info is
-              provided.
+fp_present     One-bit field.  This field is set to 1 if  the function
+               uses floating-point processor instructions.
 
-tocless       One-bit field.  This field is set to 1 if this function
-              does not have a TOC.  For example, a stackless leaf
-              assembly language routine with no references to
-              external objects.
+log_abort      One-bit field.  Reserved.
 
-fp_present    One-bit field.  This field is set to 1 if  the function
-              uses floating-point processor instructions.
+int_handl      One-bit field.  Reserved.
 
-log_abort     One-bit field.  Reserved.
+name_present   One-bit field.  This field is set to 1 if the name for
+               the procedure is present following the traceback field,
+               as determined by the name_len and name fields.
 
-int_handl     One-bit field.  Reserved.
+uses_alloca    One-bit field.  This field is set to 1 if the procedure
+               performs dynamic stack allocation.  To address their
+               local variables, these procedures require a different
+               register to hold the stack pointer value.  This
+               register may be chosen by the compiler, and must be
+               indicated by setting the value of the alloc_reg field.
 
-name_present  One-bit field.  This field is set to 1 if the name for
-              the procedure is present following the traceback field,
-              as determined by the name_len and name fields.
+cl_dis_inv     Three-bit field.  Reserved.
 
-uses_alloca   One-bit field.  This field is set to 1 if the procedure
-              performs dynamic stack allocation.  To address their
-              local variables, these procedures require a different
-              register to hold the stack pointer value.  This
-              register may be chosen by the compiler, and must be
-              indicated by setting the value of the alloc_reg field.
+saves_cr       One-bit field.  This field is set to 1 if the function
+               saves the CR in the CR save area.
 
-cl_dis_inv    Three-bit field.  Reserved.
+saves_lr       One-bit field.  This field is set to 1 if the function
+               saves the LR in the LR save area.
 
-saves_cr      One-bit field.  This field is set to 1 if the function
-              saves the CR in the CR save area.
+stores_bc      One-bit field.  This field is set to 1 if the function
+               saves the back chain (the SP of its caller) in the
+               stack frame header.
 
-saves_lr      One-bit field.  This field is set to 1 if the function
-              saves the LR in the LR save area.
+fixup          One-bit field.  This field is set to 1 if the link
+               editor replaced the original instruction by a branch
+               instruction to a special fixup instruction sequence.
 
-stores_bc     One-bit field.  This field is set to 1 if the function
-              saves the back chain (the SP of its caller) in the
-              stack frame header.
+fp_saved       Six-bit field.  This field is set to the number of
+               non-volatile floating point registers that the function
+               saves.  The last register saved is always f31, so, for
+               example, a value of 2 in this field indicates that f30
+               and f31 are saved.
 
-fixup         One-bit field.  This field is set to 1 if the link
-              editor replaced the original instruction by a branch
-              instruction to a special fixup instruction sequence.
+spare3         Two-bit field.  Reserved.
 
-fp_saved      Six-bit field.  This field is set to the number of
-              non-volatile floating point registers that the function
-              saves.  The last register saved is always f31, so, for
-              example, a value of 2 in this field indicates that f30
-              and f31 are saved.
+gpr_saved      Six-bit field.  This field is set to the number of
+               non-volatile general registers that the function
+               saves.  As with fp_saved, the last register saved is
+               always r31.
 
-spare3        Two-bit field.  Reserved.
+fixedparms     Eight-bit field.  This field is set to the number of
+               fixed point parameters.
 
-gpr_saved     Six-bit field.  This field is set to the number of
-              non-volatile general registers that the function
-              saves.  As with fp_saved, the last register saved is
-              always r31.
+floatparms     Seven-bit field.  This field is set to the number of
+               floating point parameters.
 
-fixedparms    Eight-bit field.  This field is set to the number of
-              fixed point parameters.
-
-floatparms    Seven-bit field.  This field is set to the number of
-              floating point parameters.
-
-parmsonstk    One-bit field.  This field is set to 1 if all of the
-              parameters are placed in the parameter save area.
+parmsonstk     One-bit field.  This field is set to 1 if all of the
+               parameters are placed in the parameter save area.
 
 Note: If either fixedparms or floatparms is set to a non-zero value,
 the parminfo field exists.
@@ -1372,16 +1370,14 @@ parminfo       Unsigned int.  This field is only present if either
                and to determine the layout of the parameter save
                area.  This word is interpreted from left to right, as
                follows:
-
-               bit is 0: the corresponding parameter is a fixed
-               point parameter passed in a general register or a
-               single doubleword in the parameter save area.
-
-               bit is 1: the corresponding parameter is a floating
-               point parameter, and the following bit determines
-               whether the parameter is single precision (the
-               following bit is 0) or double precision  (the
-               following bit is 1).
+                  bit is 0: the corresponding parameter is a fixed
+                     point parameter passed in a general register or a
+                     single doubleword in the parameter save area.
+                  bit is 1: the corresponding parameter is a floating
+                     point parameter, and the following bit determines
+                     whether the parameter is single precision (the
+                     following bit is 0) or double precision  (the
+                     following bit is 1).
 
                Note: Since this field is only 32 bits long, there is a
                limit to how many parameters can be described.  This
@@ -1510,21 +1506,21 @@ typedef struct
     } a_un;
 } auxv_t;
 
-Name            Value      a_un field
+Name                Value       a_un field
 
-AT_NULL         0          ignored
-AT_IGNORE       1          ignored
-AT_EXECFD       2          a_val
-AT_PHDR         3          a_ptr
-AT_PHENT        4          a_val
-AT_PHNUM        5          a_val
-AT_PAGESZ       6          a_val
-AT_BASE         7          a_ptr
-AT_FLAGS        8          a_val
-AT_ENTRY        9          a_ptr
-AT_DCACHEBSIZE  10         a_val
-AT_ICACHEBSIZE  11         a_val
-AT_UCACHEBSIZE  12         a_val
+AT_NULL             0           ignored
+AT_IGNORE           1           ignored
+AT_EXECFD           2           a_val
+AT_PHDR             3           a_ptr
+AT_PHENT            4           a_val
+AT_PHNUM            5           a_val
+AT_PAGESZ           6           a_val
+AT_BASE             7           a_ptr
+AT_FLAGS            8           a_val
+AT_ENTRY            9           a_ptr
+AT_DCACHEBSIZE      10          a_val
+AT_ICACHEBSIZE      11          a_val
+AT_UCACHEBSIZE      12          a_val
 
 AT_NULL: The auxiliary vector has no fixed length; instead an entry of
 this type denotes the end of the vector.  The corresponding value of
@@ -2158,29 +2154,29 @@ Assembly Language Syntax.
 
 Load and Store; variables are not in TOC:
 
-C                    Assembly
+C                             Assembly
 
 extern int src;
 extern int dst;
 extern int *ptr;
 
 dst = src;
-                     ld  r6,src@got(r2)
-                     ld  r7,dst@got(r2)
-                     lwz r0,0(r6)
-                     stw r0,0(r7)
+                              ld  r6,src@got(r2)
+                              ld  r7,dst@got(r2)
+                              lwz r0,0(r6)
+                              stw r0,0(r7)
 
 ptr = &dst;
-                     ld  r0,dst@got(r2)
-                     ld  r7,ptr@got(r2)
-                     std r0,0(r7)
+                              ld  r0,dst@got(r2)
+                              ld  r7,ptr@got(r2)
+                              std r0,0(r7)
 
 *ptr = src;
-                     ld  r6,src@got(r2)
-                     ld  r7,ptr@got(r2)
-                     lwz r0,0(r6)
-                     ld  r7,0(r7)
-                     stw r0,0(r7)
+                              ld  r6,src@got(r2)
+                              ld  r7,ptr@got(r2)
+                              lwz r0,0(r6)
+                              ld  r7,0(r7)
+                              stw r0,0(r7)
 
 The next example shows the same code assuming that the variables are
 all stored in the TOC.  Shared objects normally can not assume that
@@ -2191,24 +2187,24 @@ should normally always use the type of code shown above.
 
 Load and Store; variables in TOC:
 
-C                    Assembly
+C                             Assembly
 
 extern int src;
 extern int dst;
 extern int *ptr;
 
 dst = src;
-                     lwz r0,src@toc(r2)
-                     stw r0,dst@toc(r2)
+                              lwz r0,src@toc(r2)
+                              stw r0,dst@toc(r2)
 
 ptr = &dst;
-                     la  r0,dst@toc(r2)
-                     std r0,ptr@toc(r2)
+                              la  r0,dst@toc(r2)
+                              std r0,ptr@toc(r2)
 
 *ptr = src;
-                     lwz r0,src@toc(r2)
-                     ld  r7,ptr@toc(r2)
-                     stw r0,0(r7)
+                              lwz r0,src@toc(r2)
+                              ld  r7,ptr@toc(r2)
+                              stw r0,0(r7)
 
 
 
@@ -2291,7 +2287,6 @@ descriptor, not the address of the function entry point itself.
 C                             Assembly
 extern void func (void);
 extern void (*ptr) (void);
-
 ptr = func;
                               ld    r6,func@got(r2)
                               ld    r7,ptr@got(r2)
@@ -2327,10 +2322,10 @@ Mbytes away in either direction.
 
 C                             Assembly
 label:
-                         .L01:
+                              .L01:
     ...
     goto label
-                              b .L01
+                                  b .L01
 
 
 C switch statements provide multiway selection.  When the case labels
@@ -2357,21 +2352,21 @@ switch (j)
   default:
     ...
   }
-                              cmplwi  r12,4
-                              bge     .Ldef
-                              bl      .L1
-                         .L1:
-                              slwi    r12,2
-                              mflr    r11
-                              addi    r12,r12,.Ltab-.L1
-                              add     r0,r12,r11
-                              mtctr   r0
-                              bctr
-                         .Ltab:
-                              b       .Lcase0
-                              b       .Lcase1
-                              b       .Ldef
-                              b       .Lcase3
+                                  cmplwi  r12,4
+                                  bge     .Ldef
+                                  bl      .L1
+                              .L1:
+                                  slwi    r12,2
+                                  mflr    r11
+                                  addi    r12,r12,.Ltab-.L1
+                                  add     r0,r12,r11
+                                  mtctr   r0
+                                  bctr
+                              .Ltab:
+                                  b       .Lcase0
+                                  b       .Lcase1
+                                  b       .Ldef
+                                  b       .Lcase3
 
 
 
@@ -2412,9 +2407,9 @@ High address
           |   Floating point register save area
           |   General register save area
           |   Local variable space
-       |   -- Old parameter save area, now allocated space
-       |   -- Old stack frame header, now allocated space
-       |   -- More newly allocated space
+          |   -- Old parameter save area, now allocated space
+          |   -- Old stack frame header, now allocated space
+          |   -- More newly allocated space
           |   New parameter save area    (SP + 48)
           |   New TOC save area          (SP + 40)
           |   New link editor doubleword (SP + 32)
@@ -2678,9 +2673,9 @@ ELF Header
 For file identification in e_ident, the 64-bit PowerPC processor
 family requires the values shown below:
 
-e_ident[EI_CLASS]   ELFCLASS64      For all 64-bit implementations.
-e_ident[EI_DATA]    ELFDATA2MSB     For all big-endian implementations.
-e_ident[EI_DATA]    ELFDATA2LSB     For all little-endian implementations.
+e_ident[EI_CLASS]   ELFCLASS64   For all 64-bit implementations.
+e_ident[EI_DATA]    ELFDATA2MSB  For all big-endian implementations.
+e_ident[EI_DATA]    ELFDATA2LSB  For all little-endian implementations.
 
 The ELF header's e_flags member holds bit flags associated with the
 file.  Since the 64-bit PowerPC processor family defines no flags,
@@ -2722,20 +2717,20 @@ Name     Description
          in Chapter 5 for more information.
 
 .got     This section may be used to hold the Global Offset Table, or
-      GOT.  See The Toc Section and Coding Examples in Chapter 3
-      and Global Offset Table in Chapter 5 for more information.
+         GOT.  See The Toc Section and Coding Examples in Chapter 3
+         and Global Offset Table in Chapter 5 for more information.
 
 .toc     This section may be used to hold the initialized Table of
-      Contents, or TOC.  See TOC, below, The Toc Section and Coding
-      examples in Chapter 3 and Global Offset Table in Chapter 5
-      for more information.
+         Contents, or TOC.  See TOC, below, The Toc Section and Coding
+         examples in Chapter 3 and Global Offset Table in Chapter 5
+         for more information.
 
 .tocbss  This section may be used to hold the uninitialized portions
-      of the TOC.  This data may also be stored as zero-initialized
-      data in a .toc section.
+         of the TOC.  This data may also be stored as zero-initialized
+         data in a .toc section.
 
 .plt     This section holds the procedure linkage table. See Procedure
-      Linkage Table in Chapter 5 for more information.
+         Linkage Table in Chapter 5 for more information.
 
 Note: tools which support this ABI are not required to use these
 sections precisely as defined here, and indeed are not required to use
@@ -2872,31 +2867,31 @@ doubleword64   This specifies a 64-bit field occupying 8 bytes, the
                specified.
 
 word32         This specifies a 32-bit field occupying 4 bytes, the
-            alignment of which is 4 bytes unless otherwise
-            specified.
+               alignment of which is 4 bytes unless otherwise
+               specified.
 
 word30         This specifies a 30-bit field contained within bits
-            0-29 of a word with 4-byte alignment. The two least
-            significant bits of the word are unchanged.
+               0-29 of a word with 4-byte alignment. The two least
+               significant bits of the word are unchanged.
 
-low24            This specifies a 24-bit field contained within a word
-            with 4-byte alignment.  The six most significant and
-            the two least significant bits of the word are ignored
-            and unchanged (for example, "Branch" instruction).
+low24          This specifies a 24-bit field contained within a word
+               with 4-byte alignment.  The six most significant and
+               the two least significant bits of the word are ignored
+               and unchanged (for example, "Branch" instruction).
 
-low14            This specifies a 14-bit field contained within a word
-            with 4-byte alignment, comprising a conditional branch
-            instruction.  The 14-bit relative displacement in bits
-            16-29, and possibly the "branch prediction bit" (bit
-            10), are altered; all other bits remain unchanged.
+low14          This specifies a 14-bit field contained within a word
+               with 4-byte alignment, comprising a conditional branch
+               instruction.  The 14-bit relative displacement in bits
+               16-29, and possibly the "branch prediction bit" (bit
+               10), are altered; all other bits remain unchanged.
 
-half16           This specifies a 16-bit field occupying 2 bytes with
-            2-byte alignment (for example, the immediate field of
-            an "Add Immediate" instruction).
+half16         This specifies a 16-bit field occupying 2 bytes with
+               2-byte alignment (for example, the immediate field of
+               an "Add Immediate" instruction).
 
-half16ds         Similar to half16, but really just 14 bits since the
-            two least significant bits must be zero, and are not really
-            part of the field.  (Used by for example the ldu instruction.)
+half16ds       Similar to half16, but really just 14 bits since the
+               two least significant bits must be zero, and are not really
+               part of the field.  (Used by for example the ldu instruction.)
 
 Calculations in the relocation table assume the actions are
 transforming a relocatable file into either an executable or a shared
@@ -3034,72 +3029,73 @@ relocation types in the relocation table:
 
 Relocation Table:
 
-Name                     Value  Field         Calculation
+Name                      Value    Field         Calculation
 
-R_PPC64_NONE             0      none          none
-R_PPC64_ADDR32           1      word32*       S + A
-R_PPC64_ADDR24           2      low24*        (S + A) >> 2
-R_PPC64_ADDR16           3      half16*       S + A
-R_PPC64_ADDR16_LO        4      half16        #lo(S + A)
-R_PPC64_ADDR16_HI        5      half16        #hi(S + A)
-R_PPC64_ADDR16_HA        6      half16        #ha(S + A)
-R_PPC64_ADDR14           7      low14*        (S + A) >> 2
-R_PPC64_ADDR14_BRTAKEN   8      low14*        (S + A) >> 2
-R_PPC64_ADDR14_BRNTAKEN  9      low14*        (S + A) >> 2
-R_PPC64_REL24            10     low24*        (S + A - P) >> 2
-R_PPC64_REL14            11     low14*        (S + A - P) >> 2
-R_PPC64_REL14_BRTAKEN    12     low14*        (S + A - P) >> 2
-R_PPC64_REL14_BRNTAKEN   13     low14*        (S + A - P) >> 2
-R_PPC64_GOT16            14     half16*       G + A
-R_PPC64_GOT16_LO         15     half16        #lo(G + A)
-R_PPC64_GOT16_HI         16     half16        #hi(G + A)
-R_PPC64_GOT16_HA         17     half16        #ha(G + A)
-R_PPC64_COPY             19     none          none
-R_PPC64_GLOB_DAT         20     doubleword64  S + A
-R_PPC64_JMP_SLOT         21     none          see below
-R_PPC64_RELATIVE         22     doubleword64  B + A
-R_PPC64_UADDR32          24     word32*       S + A
-R_PPC64_UADDR16          25     half16*       S + A
-R_PPC64_REL32            26     word32*       S + A - P
-R_PPC64_PLT32            27     word32*       L + A
-R_PPC64_PLTREL32         28     word32*       L + A - P
-R_PPC64_PLT16_LO         29     half16        #lo(L + A)
-R_PPC64_PLT16_HI         30     half16        #hi(L + A)
-R_PPC64_PLT16_HA         31     half16        #ha(L + A)
-R_PPC64_SECTOFF          33     half16*       R + A
-R_PPC64_SECTOFF_LO       34     half16        #lo(R + A)
-R_PPC64_SECTOFF_HI       35     half16        #hi(R + A)
-R_PPC64_SECTOFF_HA       36     half16        #ha(R + A)
-R_PPC64_ADDR30           37     word30        (S + A - P) >> 2
-R_PPC64_ADDR64           38     doubleword64  S + A
-R_PPC64_ADDR16_HIGHER    39     half16        #higher(S + A)
-R_PPC64_ADDR16_HIGHERA   40     half16        #highera(S + A)
-R_PPC64_ADDR16_HIGHEST   41     half16        #highest(S + A)
-R_PPC64_ADDR16_HIGHESTA  42     half16        #highesta(S + A)
-R_PPC64_UADDR64          43     doubleword64  S + A
-R_PPC64_REL64            44     doubleword64  S + A - P
-R_PPC64_PLT64            45     doubleword64  L + A
-R_PPC64_PLTREL64         46     doubleword64  L + A - P
-R_PPC64_TOC16            47     half16*       S + A - .TOC.
-R_PPC64_TOC16_LO         48     half16        #lo(S + A - .TOC.)
-R_PPC64_TOC16_HI         49     half16        #hi(S + A - .TOC.)
-R_PPC64_TOC16_HA         50     half16        #ha(S + A - .TOC.)
-R_PPC64_TOC              51     doubleword64  .TOC.
-R_PPC64_PLTGOT16         52     half16*       M + A
-R_PPC64_PLTGOT16_LO      53     half16        #lo(M + A)
-R_PPC64_PLTGOT16_HI      54     half16        #hi(M + A)
-R_PPC64_PLTGOT16_HA      55     half16        #ha(M + A)
-R_PPC64_ADDR16_DS        56     half16ds*     (S + A) >> 2
-R_PPC64_ADDR16_LO_DS     57     half16ds      #lo(S + A) >> 2
-R_PPC64_GOT16_DS         58     half16ds*     (G + A) >> 2
-R_PPC64_GOT16_LO_DS      59     half16ds      #lo(G + A) >> 2
-R_PPC64_PLT16_LO_DS      60     half16ds      #lo(L + A) >> 2
-R_PPC64_SECTOFF_DS       61     half16ds*     (R + A) >> 2
-R_PPC64_SECTOFF_LO_DS    62     half16ds      #lo(R + A) >> 2
-R_PPC64_TOC16_DS         63     half16ds*     (S + A - .TOC.) >> 2
-R_PPC64_TOC16_LO_DS      64     half16ds      #lo(S + A - .TOC.) >> 2
-R_PPC64_PLTGOT16_DS      65     half16ds*     (M + A) >> 2
-R_PPC64_PLTGOT16_LO_DS   66     half16ds      #lo(M + A) >> 2
+R_PPC64_NONE              0        none          none
+R_PPC64_ADDR32            1        word32*       S + A
+R_PPC64_ADDR24            2        low24*        (S + A) >> 2
+R_PPC64_ADDR16            3        half16*       S + A
+R_PPC64_ADDR16_LO         4        half16        #lo(S + A)
+R_PPC64_ADDR16_HI         5        half16        #hi(S + A)
+R_PPC64_ADDR16_HA         6        half16        #ha(S + A)
+R_PPC64_ADDR14            7        low14*        (S + A) >> 2
+R_PPC64_ADDR14_BRTAKEN    8        low14*        (S + A) >> 2
+R_PPC64_ADDR14_BRNTAKEN   9        low14*        (S + A) >> 2
+R_PPC64_REL24             10       low24*        (S + A - P) >> 2
+R_PPC64_REL14             11       low14*        (S + A - P) >> 2
+R_PPC64_REL14_BRTAKEN     12       low14*        (S + A - P) >> 2
+R_PPC64_REL14_BRNTAKEN    13       low14*        (S + A - P) >> 2
+R_PPC64_GOT16             14       half16*       G + A
+R_PPC64_GOT16_LO          15       half16        #lo(G + A)
+R_PPC64_GOT16_HI          16       half16        #hi(G + A)
+R_PPC64_GOT16_HA          17       half16        #ha(G + A)
+R_PPC64_COPY              19       none          none
+R_PPC64_GLOB_DAT          20       doubleword64  S + A
+R_PPC64_JMP_SLOT          21       none          see below
+R_PPC64_RELATIVE          22       doubleword64  B + A
+R_PPC64_UADDR32           24       word32*       S + A
+R_PPC64_UADDR16           25       half16*       S + A
+R_PPC64_REL32             26       word32*       S + A - P
+R_PPC64_PLT32             27       word32*       L + A
+R_PPC64_PLTREL32          28       word32*       L + A - P
+R_PPC64_PLT16_LO          29       half16        #lo(L + A)
+R_PPC64_PLT16_HI          30       half16        #hi(L + A)
+R_PPC64_PLT16_HA          31       half16        #ha(L + A)
+R_PPC64_SECTOFF           33       half16*       R + A
+R_PPC64_SECTOFF_LO        34       half16        #lo(R + A)
+R_PPC64_SECTOFF_HI        35       half16        #hi(R + A)
+R_PPC64_SECTOFF_HA        36       half16        #ha(R + A)
+R_PPC64_ADDR30            37       word30        (S + A - P) >> 2
+R_PPC64_ADDR64            38       doubleword64  S + A
+R_PPC64_ADDR16_HIGHER     39       half16        #higher(S + A)
+R_PPC64_ADDR16_HIGHERA    40       half16        #highera(S + A)
+R_PPC64_ADDR16_HIGHEST    41       half16        #highest(S + A)
+R_PPC64_ADDR16_HIGHESTA   42       half16        #highesta(S + A)
+R_PPC64_UADDR64           43       doubleword64  S + A
+R_PPC64_REL64             44       doubleword64  S + A - P
+R_PPC64_PLT64             45       doubleword64  L + A
+R_PPC64_PLTREL64          46       doubleword64  L + A - P
+R_PPC64_TOC16             47       half16*       S + A - .TOC.
+R_PPC64_TOC16_LO          48       half16        #lo(S + A - .TOC.)
+R_PPC64_TOC16_HI          49       half16        #hi(S + A - .TOC.)
+R_PPC64_TOC16_HA          50       half16        #ha(S + A - .TOC.)
+R_PPC64_TOC               51       doubleword64  .TOC.
+R_PPC64_PLTGOT16          52       half16*       M + A
+R_PPC64_PLTGOT16_LO       53       half16        #lo(M + A)
+R_PPC64_PLTGOT16_HI       54       half16        #hi(M + A)
+R_PPC64_PLTGOT16_HA       55       half16        #ha(M + A)
+
+R_PPC64_ADDR16_DS         56       half16ds*     (S + A) >> 2
+R_PPC64_ADDR16_LO_DS      57       half16ds      #lo(S + A) >> 2
+R_PPC64_GOT16_DS          58       half16ds*     (G + A) >> 2
+R_PPC64_GOT16_LO_DS       59       half16ds      #lo(G + A) >> 2
+R_PPC64_PLT16_LO_DS       60       half16ds      #lo(L + A) >> 2
+R_PPC64_SECTOFF_DS        61       half16ds*     (R + A) >> 2
+R_PPC64_SECTOFF_LO_DS     62       half16ds      #lo(R + A) >> 2
+R_PPC64_TOC16_DS          63       half16ds*     (S + A - .TOC.) >> 2
+R_PPC64_TOC16_LO_DS       64       half16ds      #lo(S + A - .TOC.) >> 2
+R_PPC64_PLTGOT16_DS       65       half16ds*     (M + A) >> 2
+R_PPC64_PLTGOT16_LO_DS    66       half16ds      #lo(M + A) >> 2
 
 
 Note: relocation values 18, 23 and 32 are not used.  This is to
@@ -3123,66 +3119,66 @@ divisible by 4.
 Relocation types with special semantics are described below.
 
 R_PPC64_GOT16*
-          These relocation types resemble the corresponding
-          R_PPC64_ADDR16* types, except that they refer to the
-          address of the symbol's global offset table entry and
-          additionally instruct the link editor to build a
-          global offset table.
+                These relocation types resemble the corresponding
+                R_PPC64_ADDR16* types, except that they refer to the
+                address of the symbol's global offset table entry and
+                additionally instruct the link editor to build a
+                global offset table.
 
 R_PPC64_PLTGOT16*
-          These relocation types resemble the corresponding
-          R_PPC64_GOT16* types, except that the address stored
-          in the global offset table entry may be the address of
-          an entry in the procedure linkage table.  If the link
-          editor can determine the actual value of the symbol,
-          it may store that in the corresponding GOT entry.
-          Otherwise, it may create an entry in the procedure
-          linkage table, and store that address in the GOT
-          entry; this permits lazy resolution of function
-          symbols at run time.  Otherwise, the link editor may
-          generate a R_PPC64_GLOB_DAT relocation as usual.
+                These relocation types resemble the corresponding
+                R_PPC64_GOT16* types, except that the address stored
+                in the global offset table entry may be the address of
+                an entry in the procedure linkage table.  If the link
+                editor can determine the actual value of the symbol,
+                it may store that in the corresponding GOT entry.
+                Otherwise, it may create an entry in the procedure
+                linkage table, and store that address in the GOT
+                entry; this permits lazy resolution of function
+                symbols at run time.  Otherwise, the link editor may
+                generate a R_PPC64_GLOB_DAT relocation as usual.
 
 R_PPC64_COPY
-          The link editor creates this relocation type for
-          dynamic linking.  Its offset member refers to a
-          location in a writable segment.  The symbol table
-          index specifies a symbol that should exist both in the
-          current object file and in a shared object.  During
-          execution, the dynamic linker copies data associated
-          with the shared object's symbol to the location
-          specified by the offset.
+                The link editor creates this relocation type for
+                dynamic linking.  Its offset member refers to a
+                location in a writable segment.  The symbol table
+                index specifies a symbol that should exist both in the
+                current object file and in a shared object.  During
+                execution, the dynamic linker copies data associated
+                with the shared object's symbol to the location
+                specified by the offset.
 
 R_PPC64_GLOB_DAT
-          This relocation type resembles R_PPC64_ADDR64, except
-          that it sets a global offset table entry to the
-          address of the specified symbol.  This special
-          relocation type allows one to determine the
-          correspondence between symbols and global offset table
-          entries.
+                This relocation type resembles R_PPC64_ADDR64, except
+                that it sets a global offset table entry to the
+                address of the specified symbol.  This special
+                relocation type allows one to determine the
+                correspondence between symbols and global offset table
+                entries.
 
 R_PPC64_JMP_SLOT
-          The link editor creates this relocation type for
-          dynamic linking.  Its offset member gives the location
-          of a procedure linkage table entry.  The dynamic
-          linker modifies the procedure linkage table entry to
-          transfer control to the designated symbol's address
-          (see Procedure Linkage Table in Chapter 5).
+                The link editor creates this relocation type for
+                dynamic linking.  Its offset member gives the location
+                of a procedure linkage table entry.  The dynamic
+                linker modifies the procedure linkage table entry to
+                transfer control to the designated symbol's address
+                (see Procedure Linkage Table in Chapter 5).
 
 R_PPC64_RELATIVE
-          The link editor creates this relocation type for
-          dynamic linking.  Its offset member gives a location
-          within a shared object that contains a value
-          representing a relative address.  The dynamic linker
-          computes the corresponding virtual address by adding
-          the virtual address at which the shared object was
-          loaded to the relative address.  Relocation entries
-          for this type must specify 0 for the symbol table
-          index.
+                The link editor creates this relocation type for
+                dynamic linking.  Its offset member gives a location
+                within a shared object that contains a value
+                representing a relative address.  The dynamic linker
+                computes the corresponding virtual address by adding
+                the virtual address at which the shared object was
+                loaded to the relative address.  Relocation entries
+                for this type must specify 0 for the symbol table
+                index.
 
 R_PPC64_UADDR*
-          These relocation types are the same as the
-          corresponding R_PPC64_ADDR* types, except that the
-          datum to be relocated is allowed to be unaligned.
+                These relocation types are the same as the
+                corresponding R_PPC64_ADDR* types, except that the
+                datum to be relocated is allowed to be unaligned.
 
 
 
@@ -3217,37 +3213,37 @@ address space.
 Here is an example of an executable file assuming an executable
 program linked with a base address of 0x10000000.
 
-File Offset                   Virtual Address
+File Offset                             Virtual Address
 
 0
-         ELF header
-         Program header table
-         Other information
-0x100                         0x10000100
-         Text segment
-         . . .
-         0x2be00 bytes
-                              0x1002beff
-0x2bf00                       0x2003bf00
-         Data segment
-         . . .
-         0x4e00 bytes
-                              0x20040cff
+            ELF header
+            Program header table
+            Other information
+0x100                                   0x10000100
+            Text segment
+            . . .
+            0x2be00 bytes
+                                        0x1002beff
+0x2bf00                                 0x2003bf00
+            Data segment
+            . . .
+            0x4e00 bytes
+                                        0x20040cff
 0x30d00
-         Other information
+            Other information
 
 Here are possible corresponding program header segments:
 
-Member        Text      Data
+Member      Text            Data
 
-p_type        PT_LOAD        PT_LOAD
-p_offset    0x100            0x2bf00
-p_vaddr     0x10000100       0x2003bf00
-p_paddr     unspecified      unspecified
-p_filesz    0x2be00          0x4e00
-p_memsz     0x2be00          0x5e24
-p_flags     PF_R+PF_X        PF_R+PF_W
-p_align     0x10000          0x10000
+p_type      PT_LOAD         PT_LOAD
+p_offset    0x100           0x2bf00
+p_vaddr     0x10000100      0x2003bf00
+p_paddr     unspecified     unspecified
+p_filesz    0x2be00         0x4e00
+p_memsz     0x2be00         0x5e24
+p_flags     PF_R+PF_X       PF_R+PF_W
+p_align     0x10000         0x10000
 
 Note: the example addresses for the text and data segments are chosen
 for compatibility with AIX, and it is suggested, though not required,
@@ -3289,30 +3285,30 @@ Virtual Address
 
 Text segment:
 0x02000000
-         Header padding
-         0x100 bytes
+            Header padding
+            0x100 bytes
 0x02000100
-         Text segment
-         ...
-         0x2be00 bytes
+            Text segment
+            ...
+            0x2be00 bytes
 0x0202bf00
-         Data padding
-         0x100 bytes
+            Data padding
+            0x100 bytes
 
 Data segment:
 0x0203b000
-         Text padding
-         0xf00 bytes
+            Text padding
+            0xf00 bytes
 0x0203bf00
-         Data segment
-         ...
-         0x4e00 bytes
+            Data segment
+            ...
+            0x4e00 bytes
 0x02040d00
-         Uninitialized data
-         0x1024 bytes
+            Uninitialized data
+            0x1024 bytes
 0x02041d24
-         Page padding
-         0x2dc zero bytes
+            Page padding
+            0x2dc zero bytes
 
 One aspect of segment loading differs between executable files and
 shared objects.  Executable file segments may contain absolute code.
@@ -3340,7 +3336,7 @@ positioning.  The table also illustrates the base address
 computations.
 
 
-Source       Text        Data        Base Address
+Source       Text        Data       Base Address
 File         0x000200    0x02a400
 Process 1    0x100200    0x12a400    0x100000
 Process 2    0x200200    0x22a400    0x200000
@@ -3362,20 +3358,20 @@ of this information is processor-specific, including the
 interpretation of some entries in the dynamic structure.
 
 DT_PLTGOT
-           This entry's d_ptr member gives the address of the first
-           byte in the procedure linkage table.
+              This entry's d_ptr member gives the address of the first
+              byte in the procedure linkage table.
 
 DT_JMPREL
-           As explained in the System V ABI, this entry is
-           associated with a table of relocation entries for the
-           procedure linkage table.  For the 64-bit PowerPC, this
-           entry is mandatory both for executable and shared object
-           files.  Moreover, the relocation table's entries must
-           have a one-to-one correspondence with the procedure
-           linkage table.  The table of DT_JMPREL relocation
-           entries is wholly contained within the DT_RELA
-           referenced table.  See Procedure Linkage Table later in
-           this chapter for more information.
+              As explained in the System V ABI, this entry is
+              associated with a table of relocation entries for the
+              procedure linkage table.  For the 64-bit PowerPC, this
+              entry is mandatory both for executable and shared object
+              files.  Moreover, the relocation table's entries must
+              have a one-to-one correspondence with the procedure
+              linkage table.  The table of DT_JMPREL relocation
+              entries is wholly contained within the DT_RELA
+              referenced table.  See Procedure Linkage Table later in
+              this chapter for more information.
 
 
 Global Offset Table
@@ -3516,10 +3512,10 @@ procedure linkage table in order to provide lazy resolution:
 .GLINK1:
     li      r0,0
     b       .GLINK0
-.GLINKi:		# i <= 32768
+.GLINKi:			# i <= 32768
     li      r0,i - 1
     b       .GLINK0
-.GLINKN:		# N > 32768
+.GLINKN:			# N > 32768
     lis     r0,(N - 1) >> 16
     ori     r0,r0,(N - 1) & 0xffff
     b       .GLINK0
@@ -3528,23 +3524,23 @@ procedure linkage table in order to provide lazy resolution:
 
 .PLT:
 .PLT0:
-    .quad  ld_so_fixup_func
-    .quad  ld_so_toc
-    .quad  ld_so_ident
+    .quad   ld_so_fixup_func
+    .quad   ld_so_toc
+    .quad   ld_so_ident
 .PLT1:
-    .quad  .GLINK1
-    .quad  0
-    .quad  0
+    .quad   .GLINK1
+    .quad   0
+    .quad   0
     ...
 .PLTi:
-    .quad  .GLINKi
-    .quad  0
-    .quad  0
+    .quad   .GLINKi
+    .quad   0
+    .quad   0
     ...
 .PLTN:
-    .quad  .GLINKN
-    .quad  0
-    .quad  0
+    .quad   .GLINKN
+    .quad   0
+    .quad   0
 
 
 Following the steps below, the dynamic linker and the program
