@@ -92,7 +92,7 @@ handling, and other such issues), we do not standardize any libraries
 for C++ in this version of the Linux Standard Base.
 <FOOTNOTE ID="static-cplusplus">
 <PARA>
-It seems to be possible, using existing Linux development tools, to write an
+It is possible, using existing Linux development tools, to write an
 application in C++ which complies with this rule by linking statically 
 with libstdc++ and all other libraries containing C++. The following command
 illustrated how this may be accomplished
