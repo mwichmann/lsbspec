@@ -14,7 +14,7 @@ information such as file formats and device names.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Mon Nov 22 18:58:56 2004 -->
+<!--    at Mon Nov 29 14:41:52 2004 -->
 <SECT1 ID=libz>
 <TITLE>Interfaces for libz</TITLE>
 <PARA>
@@ -238,10 +238,233 @@ in the referenced base document.
 </PARA>
 <!-- MISSING DEFINITION FOR adler32 -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR compress -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR compress2 -->
-<!-- Lets just hope nobody notices -->
+<refentry id="zlib-compress-1">
+
+<refmeta>
+<refentrytitle>compress</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>compress</refname>
+<refpurpose>compress data</refpurpose>
+<indexterm id="ix-utillib-compress-1">
+  <primary>compress</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>compress</function>
+</funcdef>
+<paramdef>Bytef *
+<parameter>dest</parameter>
+</paramdef>
+<paramdef>uLongf *
+<parameter>destLen</parameter>
+</paramdef>
+<paramdef>const Bytef *
+<parameter>source</parameter>
+</paramdef>
+<paramdef>uLong
+<parameter>sourceLen</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>compress</function> function shall attempt to compress
+<parameter>sourceLen</parameter> bytes of data in the buffer 
+<parameter>source</parameter>, placing the result in the buffer
+<parameter>dest</parameter>. 
+</para>
+<para>
+On entry, <parameter>destLen</parameter> should point to a value describing
+the size of the <parameter>dest</parameter> buffer. 
+The application should ensure that this value
+be at least 
+<inlineequation>
+  <alt>(sourceLen &times; 1.001) &plus; 12</alt>
+  <graphic>
+</inlineequation>.
+<!-- NB, above equation needs special stylesheet considerations ...
+     it does not actually contain a graphic (well, the graphic element
+     does not contain a fileref), and only the ALT element has anything
+     of interest-->
+On successful exit, the variable referenced by <parameter>destLen</parameter>
+shall be updated to hold the length of compressed data in
+<parameter>dest</parameter>.
+</para>
+<para>
+The <function>compress</function> function is equivalent to 
+<function>compress2</function> with a <parameter>level</parameter> of
+<constant>Z_DEFAULT_LEVEL</constant>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>compress</function> shall return  
+<returnvalue>Z_OK</returnvalue>.
+Otherwise, <function>compress</function> shall return a value to indicate
+the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>compress</function> shall return a value as described 
+below:
+<variablelist>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+The buffer <parameter>dest</parameter> was not large enough to hold the
+compressed data.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory.
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="zlib-compress2-1">
+
+<refmeta>
+<refentrytitle>compress2</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>compress2</refname>
+<refpurpose>compress data at a specified level</refpurpose>
+<indexterm id="ix-utillib-compress2-1">
+  <primary>compress2</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>compress2</function>
+</funcdef>
+<paramdef>Bytef *
+<parameter>dest</parameter>
+</paramdef>
+<paramdef>uLongf *
+<parameter>destLen</parameter>
+</paramdef>
+<paramdef>const Bytef *
+<parameter>source</parameter>
+</paramdef>
+<paramdef>uLong
+<parameter>sourceLen</parameter>
+</paramdef>
+<paramdef>int
+<parameter>level</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>compress2</function> function shall attempt to compress
+<parameter>sourceLen</parameter> bytes of data in the buffer 
+<parameter>source</parameter>, placing the result in the buffer
+<parameter>dest</parameter>, at the level described by 
+<parameter>level</parameter>. 
+The <parameter>level</parameter> supplied shall be a value between
+<constant>0</constant> and <constant>9</constant>, or the value
+<constant>Z_DEFAULT_COMPRESSION</constant>. A <parameter>level</parameter>
+of <constant>1</constant> requests the highest speed, while a <parameter>level</parameter>
+of <constant>9</constant> requests the highest compression.
+A <parameter>level</parameter> of <constant>0</constant> indicates that no
+compression should be used, and the output shall be the same as the input.
+</para>
+<para>
+On entry, <parameter>destLen</parameter> should point to a value describing
+the size of the <parameter>dest</parameter> buffer. 
+The application should ensure that this value
+be at least 
+<inlineequation>
+  <alt>(sourceLen &times; 1.001) &plus; 12</alt>
+  <graphic>
+</inlineequation>.
+<!-- NB, above equation needs special stylesheet considerations ...
+     it does not actually contain a graphic (well, the graphic element
+     does not contain a fileref), and only the ALT element has anything
+     of interest-->
+On successful exit, the variable referenced by <parameter>destLen</parameter>
+shall be updated to hold the length of compressed data in
+<parameter>dest</parameter>.
+</para>
+<para>
+The <function>compress</function> function is equivalent to 
+<function>compress2</function> with a <parameter>level</parameter> of
+<constant>Z_DEFAULT_LEVEL</constant>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>compress2</function> shall return  
+<returnvalue>Z_OK</returnvalue>.
+Otherwise, <function>compress2</function> shall return a value to indicate
+the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>compress2</function> shall return a value as described 
+below:
+<variablelist>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+The buffer <parameter>dest</parameter> was not large enough to hold the
+compressed data.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The <parameter>level</parameter> was not <constant>Z_DEFAULT_LEVEL</constant>,
+or was not between 0 and 9.
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+
 <!-- MISSING DEFINITION FOR crc32 -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR deflate -->
@@ -250,8 +473,185 @@ in the referenced base document.
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR deflateEnd -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR deflateInit2_ -->
-<!-- Lets just hope nobody notices -->
+<refentry id="zlib-deflateInit2" xreflabel="deflateInit2_">
+
+<refmeta>
+<refentrytitle>deflateInit2_</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>deflateInit2_</refname>
+<refpurpose>initialize compression system</refpurpose>
+<indexterm id="ix-utillib-deflateInit2-1">
+  <primary>deflateInit2_</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>deflateInit2_</function>
+  </funcdef>
+  <paramdef>z_streamp <parameter>strm</parameter></paramdef>
+  <paramdef>int <parameter>level</parameter></paramdef>
+  <paramdef>int <parameter>method</parameter></paramdef>
+  <paramdef>int <parameter>windowBits</parameter></paramdef>
+  <paramdef>int <parameter>memLevel</parameter></paramdef>
+  <paramdef>int <parameter>strategy</parameter></paramdef>
+  <paramdef>char * <parameter>version</parameter></paramdef>
+  <paramdef>int <parameter>stream_size</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>deflateInit2_</function> function shall initialize the compression
+system.
+On entry, <parameter>strm</parameter> shall refer to a user supplied <type>z_stream</type>
+object (a <structname>z_stream_s</structname> structure). The following fields shall be
+set on entry:
+<variablelist>
+<varlistentry>
+<term><structfield>zalloc</structfield></term>
+<listitem><para>
+a pointer to an <type>alloc_func</type> function, used to allocate state information.
+If this is <constant>NULL</constant>, a default allocation function will be used.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>zfree</structfield></term>
+<listitem><para>
+a pointer to a <type>free_func</type> function, used to free memory allocated by the
+<structfield>zalloc</structfield> function. If this is <constant>NULL</constant>
+a default free function will be used.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>opaque</structfield></term>
+<listitem><para>
+If <structfield>alloc_func</structfield> is not <constant>NULL</constant>,
+<structfield>opaque</structfield> is a user supplied pointer to data that will be passed to the
+<structfield>alloc_func</structfield> and <structfield>free_func</structfield> functions.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+If the <parameter>version</parameter> requested is not compatible with the version
+implemented, or if the size of the <structname>z_stream_s</structname> structure
+provided in <parameter>stream_size</parameter> does not match the size in the library 
+implementation, <function>deflateInit2_</function> shall fail, and return
+<constant>Z_VERSION_ERROR</constant>.
+</para>
+<para>
+The <parameter>level</parameter> supplied shall be a value between
+<constant>0</constant> and <constant>9</constant>, or the value
+<constant>Z_DEFAULT_COMPRESSION</constant>. A <parameter>level</parameter>
+of <constant>1</constant> requests the highest speed, while a <parameter>level</parameter>
+of <constant>9</constant> requests the highest compression.
+A <parameter>level</parameter> of <constant>0</constant> indicates that no
+compression should be used, and the output shall be the same as the input.
+</para>
+<para>
+The <parameter>method</parameter> selects the compression algorithm to use. LSB
+conforming implementation shall support the <constant>Z_DEFLATED</constant> method,
+and may support other implementation defined methods.
+</para>
+<para>
+The <parameter>windowBits</parameter> parameter shall be a base 2 logarithm of the window 
+size to use, and shall be a value between <constant>8</constant> and <constant>15</constant>.
+A smaller value will use less memory, but will result in a poorer compression ratio, 
+while a higher value will
+give better compression but utilize more memory.
+</para>
+<para>
+The <parameter>memLevel</parameter> parameter specifies how much memory to use for the 
+internal state. The value of <parameter>memLevel</parameter> shall be between
+<constant>1</constant> and <constant>MAX_MEM_LEVEL</constant>. Smaller values
+use less memory but are slower, while higher values use more memory to gain compression speed.
+</para>
+<para>
+The <parameter>strategy</parameter> parameter selects the compression strategy to use:
+<variablelist>
+<varlistentry>
+<term><constant>Z_DEFAULT_STRATEGY</constant></term>
+<listitem><para>
+use the sytem default compression strategy. <constant>Z_DEFAULT_STRATEGY</constant>
+is particularly appropriate for text data.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_FILTERED</constant></term>
+<listitem><para>
+use a compression strategy tuned for data consisting largely of small values with a
+fairly random distribution. <constant>Z_FILTERED</constant> uses more Huffman encoding
+and less string matching than <constant>Z_DEFAULT_STRATEGY</constant>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_HUFFMAN_ONLY</constant></term>
+<listitem><para>
+force Huffman encoding only, with no string match.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+The <function>deflateInit2_</function> function is not in the source standard;
+it is only in the binary standard. Source applications should use the
+<function>deflateInit2</function> macro.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, the <function>deflateInit2_</function> function shall return 
+<constant>Z_OK</constant>. 
+Otherwise, <function>deflateInit2_</function> shall return
+a value as described below to indicate the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>deflateInit2_</function> shall return one
+of the following error indicators:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+Invalid parameter.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficent memory available.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_VERSION_ERROR</constant></term>
+<listitem><para>
+The version requested is not compatible with the library version,
+or the <type>z_stream</type> size differs from that used by the library.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+In addition, the <structfield>msg</structfield> field of the <parameter>strm</parameter>
+may be set to an error message.
+</para>
+</refsect1>
+</refentry>
+
 <!-- MISSING DEFINITION FOR deflateInit_ -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR deflateParams -->
@@ -262,46 +662,1310 @@ in the referenced base document.
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR get_crc_table -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzclose -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzdopen -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzeof -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzerror -->
-<!-- Lets just hope nobody notices -->
+<refentry id="zlib-gzclose-1">
+
+<refmeta>
+<refentrytitle>gzclose</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzclose</refname>
+<refpurpose>close a compressed file stream</refpurpose>
+<indexterm id="ix-utillib-gzclose-1">
+  <primary>gzclose</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzclose</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter> </paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzclose</function> function shall close the compressed file stream
+<parameter>file</parameter>.
+If <parameter>file</parameter> was open for writing, <function>gzclose</function>
+shall first flush any pending output. Any state information allocated shall
+be freed.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzclose</function> shall return 
+<returnvalue>Z_OK</returnvalue>.
+Otherwise, <function>gzclose</function> shall return an error value as described below.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzclose</function> may set
+the global variable <varname>errno</varname>
+to indicate the error.
+The <function>gzclose</function> shall return a value other than <constant>Z_OK</constant>
+on error.
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem>
+<para>
+<parameter>file</parameter> was <constant>NULL</constant> (or <constant>Z_NULL</constant>),
+or did not refer to an open compressed file stream.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An error occurred in the underlying base libraries, and the application should check
+<varname>errno</varname> for further information.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+no compression progress is possible during buffer flush (see <function>deflate</function>).
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="zlib-gzdopen-1">
+
+<refmeta>
+<refentrytitle>gzdopen</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzdopen</refname>
+<refpurpose>open a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzdopen-1">
+  <primary>gzdopen</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   gzFile <function>gzdopen</function>
+  </funcdef>
+  <paramdef> int <parameter>fd</parameter></paramdef>
+  <paramdef> const char *<parameter>mode</parameter> </paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzdopen</function> function shall attempt to associate
+the open file
+referenced by <parameter>fd</parameter> with a <type>gzFile</type>
+object.
+The <parameter>mode</parameter> argument is based on that of 
+<function>fopen</function>, but the 
+<parameter>mode</parameter> parameter may also contain the following characters:
+<variablelist>
+<varlistentry>
+<term><replaceable>digit</replaceable></term>
+<listitem>
+<para>
+set the compression level to <replaceable>digit</replaceable>.
+A low value (e.g. 1) means high speed, while a high value (e.g. 9) means 
+high compression. A compression level of 0 (zero) means no compression.
+See <function>defaultInit2_</function> for further details.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><replaceable>[fhR]</replaceable></term>
+<listitem>
+<para>
+set the compression strategy to <replaceable>[fhR]</replaceable>.
+The letter <literal>f</literal> corresponds to filtered data, 
+the letter <literal>h</literal>
+corresponds to Huffman only compression, and 
+the letter <literal>R</literal>
+corresponds to Run Length Encoding.
+See <function>defaultInit2_</function> for further details.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+</para>
+
+<para>
+If <parameter>fd</parameter> refers to an uncompressed file, and 
+<parameter>mode</parameter> refers to a read mode, 
+<function>gzdopen</function> shall attempt to open the file and return
+a <type>gzFile</type> object suitable for reading directly from the file
+without any decompression.
+</para>
+<para>
+If <parameter>mode</parameter>
+is <literal>NULL</literal>, or if <parameter>mode</parameter> does not contain
+one of <simplelist type=inline>
+<member><literal>r</literal></member>
+<member><literal>w</literal></member>
+<member>or <literal>a</literal></member>
+</simplelist>,
+<function>gzdopen</function> shall return <constant>Z_NULL</constant>,
+and need not set any other error condition.
+</para>
+</refsect1>
+<refsect1>
+<title>Example</title>
+<para>
+<synopsis>
+gzdopen(fileno(stdin), "r");
+</synopsis>
+Attempt to associate the standard input with a <type>gzFile</type> object.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzdopen</function> shall return a 
+<type>gzFile</type> object. On failure, 
+<function>gzdopen</function> shall return <constant>Z_NULL</constant> and
+may set <varname>errno</varname> accordingly.
+<NOTE><para>
+At version 1.2.2, <varname>zlib</varname>
+does not set <varname>errno</varname> for several
+error conditions. Applications may not be able to
+determine the cause of an error.
+</para></NOTE>
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzdopen</function> may set
+the global variable <varname>errno</varname>
+to indicate the error.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="zlib-gzeof-1">
+
+<refmeta>
+<refentrytitle>gzeof</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzeof</refname>
+<refpurpose>check for end-of-file on a compressed file stream</refpurpose>
+<indexterm id="ix-utillib-gzeof-1">
+  <primary>gzeof</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzeof</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter> </paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzeof</function> function shall test the compressed file stream
+<parameter>file</parameter> for end of file.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+If <parameter>file</parameter> was open for reading
+and end of file has been reached, <function>gzeof</function> shall return 
+<returnvalue>1</returnvalue>.
+Otherwise, <function>gzeof</function> shall return <returnvalue>0</returnvalue>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+None defined.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="zlib-gzerror-1">
+
+<refmeta>
+<refentrytitle>gzerror</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzerror</refname>
+<refpurpose>decode an error on a compressed file stream</refpurpose>
+<indexterm id="ix-utillib-gzerror-1">
+  <primary>gzerror</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   const char * <function>gzerror</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>int * <parameter>errnum</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzerror</function> function shall return a string describing
+the last error to have occurred associated with the open compressed file stream
+referred to by <parameter>file</parameter>.
+It shall also set the location referenced by
+<parameter>errnum</parameter> to an integer value that further identifies the
+error.
+
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+The <function>gzerror</function> function shall return a string that
+describes the last error associated with the given
+<parameter>file</parameter> compressed file stream.
+This string shall have the format
+<literal>"%s: %s"</literal>, with the name of the file, followed by a colon,
+a space, and the description of the error. If the compressed file stream
+was opened by a call to <function>gzdopen</function>, the format of the
+filename is unspecified.
+<NOTE><TITLE>Rationale</TITLE>
+<para>Although in all current implementations of libz file descriptors
+are named <literal>"&lt;fd:%d&gt;"</literal>, the code suggests that this
+is for debugging purposes only, and may change in a future release.
+</para>
+</NOTE>
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+None defined.
+</para>
+</refsect1>
+</refentry>
+
 <!-- MISSING DEFINITION FOR gzflush -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzgetc -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzgets -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzopen -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzprintf -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzputc -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzputs -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzread -->
-<!-- Lets just hope nobody notices -->
+<refentry id="zlib-gzgetc-1">
+
+<refmeta>
+<refentrytitle>gzgetc</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzgetc</refname>
+<refpurpose>read a character from a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzgetc-1">
+  <primary>gzgetc</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzgetc</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzgetc</function> function shall read the next single
+character from the compressed file stream
+referenced by <parameter>file</parameter>, which shall have been opened
+in a read mode (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzgetc</function> shall return the uncompressed
+character read,
+otherwise, on end of file or error, <function>gzgetc</function> shall return
+<returnvalue>-1</returnvalue>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On end of file or error, <function>gzgetc</function> shall return
+<returnvalue>-1</returnvalue>. Further information can be found
+by calling <function>gzerror</function> with a pointer to the 
+compressed file stream.
+</para>
+</refsect1>
+</refentry>
+
+
+<refentry id="zlib-gzgets-1">
+
+<refmeta>
+<refentrytitle>gzgets</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzgets</refname>
+<refpurpose>read a string from a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzgets-1">
+  <primary>gzgets</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   char * <function>gzgets</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>char * <parameter>buf</parameter></paramdef>
+  <paramdef>int <parameter>len</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzgets</function> function shall attempt to read
+data from the compressed file stream <parameter>file</parameter>,
+uncompressing it into <parameter>buf</parameter> until
+either <parameter>len</parameter><literal>-1</literal> bytes
+have been inserted into <parameter>buf</parameter>, or until
+a newline character has been uncompressed into <parameter>buf</parameter>.
+A null byte shall be appended to the uncompressed data. The
+<parameter>file</parameter> shall have been opened
+in for reading (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzgets</function> shall return a pointer to 
+<parameter>buf</parameter>. Otherwise, <function>gzgets</function>
+shall return <returnvalue>Z_NULL</returnvalue>.
+Applications may examine the cause using <function>gzerror</function>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzgets</function> shall 
+return <returnvalue>Z_NULL</returnvalue>. The following conditions shall
+always be treated as an error:
+<simplelist>
+<member><parameter>file</parameter> is <constant>NULL</constant>,
+or does not refer to a file open for reading;</member>
+<member><parameter>buf</parameter> is <constant>NULL</constant>;</member>
+<member><parameter>len</parameter> is less than or equal to zero.</member>
+</simplelist>
+</para>
+</refsect1>
+</refentry>
+
+
+<refentry id="zlib-gzopen-1">
+
+<refmeta>
+<refentrytitle>gzopen</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzopen</refname>
+<refpurpose>open a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzopen-1">
+  <primary>gzopen</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   gzFile <function>gzopen</function>
+  </funcdef>
+  <paramdef>const char *<parameter>path</parameter> </paramdef>
+  <paramdef>const char *<parameter>mode</parameter> </paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzopen</function> function shall open the compressed file
+named by <parameter>path</parameter>.
+The <parameter>mode</parameter> argument is based on that of 
+<function>fopen</function>, but the 
+<parameter>mode</parameter> parameter may also contain the following characters:
+<variablelist>
+<varlistentry>
+<term><replaceable>digit</replaceable></term>
+<listitem>
+<para>
+set the compression level to <replaceable>digit</replaceable>.
+A low value (e.g. 1) means high speed, while a high value (e.g. 9) means 
+high compression. A compression level of 0 (zero) means no compression.
+See <function>defaultInit2_</function> for further details.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><replaceable>[fhR]</replaceable></term>
+<listitem>
+<para>
+set the compression strategy to <replaceable>[fhR]</replaceable>.
+The letter <literal>f</literal> corresponds to filtered data, 
+the letter <literal>h</literal>
+corresponds to Huffman only compression, and 
+the letter <literal>R</literal>
+corresponds to Run Length Encoding.
+See <function>defaultInit2_</function> for further details.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+</para>
+
+<para>
+If <parameter>path</parameter> refers to an uncompressed file, and 
+<parameter>mode</parameter> refers to a read mode, 
+<function>gzopen</function> shall attempt to open the file and return
+a <type>gzFile</type> object suitable for reading directly from the file
+without any decompression.
+</para>
+<para>
+If <parameter>path</parameter> or <parameter>mode</parameter>
+is <literal>NULL</literal>, or if <parameter>mode</parameter> does not contain
+one of <simplelist type=inline>
+<member><literal>r</literal></member>
+<member><literal>w</literal></member>
+<member>or <literal>a</literal></member>
+</simplelist>,
+<function>gzopen</function> shall return <constant>Z_NULL</constant>,
+and need not set any other error condition.
+</para>
+<para>
+The <type>gzFile</type> object is also referred to as a compressed file stream.
+</para>
+</refsect1>
+<refsect1>
+<title>Example</title>
+<para>
+<programlisting>
+gzopen("file.gz", "w6h");
+</programlisting>
+Attempt to create a new compressed file, <filename>file.gz</filename>,
+at compression level 6 using Huffman only compression.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzopen</function> shall return a 
+<type>gzFile</type> object (also known as a <emphasis>compressed
+file stream</emphasis>). On failure, 
+<function>gzopen</function> shall return <constant>Z_NULL</constant> and
+may set <varname>errno</varname> accordingly.
+<NOTE><para>
+At version 1.2.2, <varname>zlib</varname>
+does not set <varname>errno</varname> for several
+error conditions. Applications may not be able to
+determine the cause of an error.
+</para></NOTE>
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzopen</function> may set
+the global variable <varname>errno</varname>
+to indicate the error.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="zlib-gzprintf-1">
+
+<refmeta>
+<refentrytitle>gzprintf</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzprintf</refname>
+<refpurpose>format data and compress</refpurpose>
+<indexterm id="ix-utillib-gzprintf-1">
+  <primary>gzprintf</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzprintf</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>const char * <parameter>fmt</parameter></paramdef>
+  <varargs>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzprintf</function> function shall format data as for
+<function>fprintf</function>, and write the resulting string to the compressed
+file stream <parameter>file</parameter>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+The <function>gzprintf</function> function
+shall return the number of uncompressed bytes
+actually written, or a value less than or equal to 
+<constant>0</constant> in the event of an error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+If <parameter>file</parameter> is <constant>NULL</constant>, or refers to a 
+compressed file stream that has not been opened for writing,
+<function>gzprintf</function> shall return <literal>Z_STREAM_ERROR</literal>.
+Otherwise, errors are as for <function>gzwrite</function>.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="zlib-gzputc-1">
+
+<refmeta>
+<refentrytitle>gzputc</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzputc</refname>
+<refpurpose>write character to a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzputc-1">
+  <primary>gzputc</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzputc</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>int <parameter>c</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzputc</function> function shall write the single
+character <parameter>c</parameter>, converted from integer to unsigned
+character, to the compressed file
+referenced by <parameter>file</parameter>, which shall have been opened
+in a write mode (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzputc</function> shall return the value
+written, otherwise <function>gzputc</function> shall return
+<returnvalue>-1</returnvalue>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzputc</function> shall return
+<returnvalue>-1</returnvalue>.
+</para>
+</refsect1>
+</refentry>
+
+
+<refentry id="zlib-gzputs-1">
+
+<refmeta>
+<refentrytitle>gzputs</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzputs</refname>
+<refpurpose>string write to a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzputs-1">
+  <primary>gzputs</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzputs</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>const char * <parameter>s</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzputs</function> function shall write the null terminated
+string <parameter>s</parameter> to
+the compressed file
+referenced by <parameter>file</parameter>, which shall have been opened
+in a write mode (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+The terminating null character shall not be written.
+The <function>gzputs</function> function shall return the number of 
+uncompressed bytes actually written.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzputs</function> shall return the number of uncompressed
+bytes actually written to <parameter>file</parameter>.
+On error <function>gzputs</function> shall return a value
+less than or equal to <constant>0</constant>.
+Applications may examine the cause using <function>gzerror</function>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzputs</function> shall set
+the error number associated with the stream identified by 
+<parameter>file</parameter>
+to indicate the error. Applications should use <function>gzerror</function>
+to access this error value.
+If <parameter>file</parameter> is <constant>NULL</constant>, 
+<function>gzputs</function> shall return <constant>Z_STREAM_ERR</constant>.
+</para>
+<para>
+<variablelist>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An underlying base library function has indicated an error.
+The global variable <varname>errno</varname> may be examined 
+for further information.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The stream is invalid, is not open for writing, or is in an invalid state.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+no compression progress is possible (see <function>deflate</function>).
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available to compress.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+
+
+<refentry id="zlib-gzread-1">
+
+<refmeta>
+<refentrytitle>gzread</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzread</refname>
+<refpurpose>read from a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzread-1">
+  <primary>gzread</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzread</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>voidp <parameter>buf</parameter></paramdef>
+  <paramdef>unsigned int <parameter>len</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzread</function> function shall read data from
+the compressed file
+referenced by <parameter>file</parameter>, which shall have been opened
+in a read mode (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+The <function>gzread</function> function shall read data from
+<parameter>file</parameter>, and uncompress it into 
+<parameter>buf</parameter>. At most, <parameter>len</parameter>
+bytes of uncompressed data shall be copied to <parameter>buf</parameter>.
+If the file is not compressed, <function>gzread</function> shall simply
+copy data from <parameter>file</parameter> to <parameter>buf</parameter>
+without alteration.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzread</function> shall return the number of bytes
+decompressed into <parameter>buf</parameter>.
+If <function>gzread</function> returns <constant>0</constant>,
+either the end-of-file has been reached
+or an underlying read error has occurred. Applications
+should use <function>gzerror</function> or <function>gzeof</function>
+to determine which occurred.
+On other errors, 
+<function>gzread</function> shall return a value less than 
+<constant>0</constant> and
+and applications may examine the cause using <function>gzerror</function>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzread</function> shall set
+the error number associated with the stream identified by 
+<parameter>file</parameter>
+to indicate the error. Applications should use <function>gzerror</function>
+to access this error value.
+</para>
+<para>
+<variablelist>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An underlying base library function has indicated an error.
+The global variable <varname>errno</varname> may be examined 
+for further information.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_END</constant></term>
+<listitem><para>
+End of file has been reached on input.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_DATA_ERROR</constant></term>
+<listitem><para>
+A CRC error occurred when reading data; the file is corrupt.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The stream is invalid, or is in an invalid state.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_NEED_DICT</constant></term>
+<listitem><para>
+A dictionary is needed (see <function>inflateSetDictionary</function>).
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available to decompress.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+
+
 <!-- MISSING DEFINITION FOR gzrewind -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR gzseek -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzsetparams -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gztell -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR gzwrite -->
-<!-- Lets just hope nobody notices -->
+<refentry id="zlib-gzsetparams-1">
+
+<refmeta>
+<refentrytitle>gzsetparams</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzsetparams</refname>
+<refpurpose>dynamically set compression parameters</refpurpose>
+<indexterm id="ix-utillib-gzsetparams-1">
+  <primary>gzsetparams</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzsetparams</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>int <parameter>level</parameter></paramdef>
+  <paramdef>int <parameter>strategy</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzsetparams</function> function shall set the compression level and
+compression strategy on the compressed file stream referenced by
+<parameter>file</parameter>. The compressed file stream shall have been opened
+in a write mode.
+The <parameter>level</parameter> and <parameter>strategy</parameter> are as defined
+in <XREF Linkend=zlib-deflateinit2>.
+If there is any data pending writing, it shall be flushed before the parameters are
+updated.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, the <function>gzsetparams</function> function shall return 
+<constant>Z_OK</constant>. 
+<!--
+Otherwise, <function>gzsetparams</function> shall return
+<constant>Z_STREAM_ERROR</constant>.
+-->
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzsetparams</function> shall return one of the
+following error indications:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+Invalid parameter, or <parameter>file</parameter> not open for writing.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+An internal inconsistency was detected while flushing the previous buffer.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="zlib-gztell-1">
+
+<refmeta>
+<refentrytitle>gztell</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gztell</refname>
+<refpurpose>find position on a compressed file stream</refpurpose>
+<indexterm id="ix-utillib-gztell-1">
+  <primary>gztell</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gztell</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter> </paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gztell</function> function shall return the starting position
+for the next <function>gzread</function> or <function>gzwrite</function>
+on compressed file stream <parameter>file</parameter>. This position represents
+the number of bytes from the beginning of file in the uncompressed data.
+</para>
+<para>
+<function>gztell</function> is equivalent to 
+<function>gzseek</function><literal>(<parameter>file</parameter>, 0L, SEEK_SET)</literal>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+<function>gztell</function> shall return the current offset in the file expressed
+as a byte position in the <emphasis>uncompressed</emphasis> data stream.
+On error, <function>gztell</function> shall return a value less than zero, and
+may set the error value for <parameter>file</parameter> accordingly.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gztell</function> shall return <constant>Z_STREAM_ERROR</constant>,
+indicating that <parameter>file</parameter> is <constant>NULL</constant>, or does not represent
+an open compressed file stream.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="zlib-gzwrite-1">
+
+<refmeta>
+<refentrytitle>gzwrite</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzwrite</refname>
+<refpurpose>write to a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzwrite-1">
+  <primary>gzwrite</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzwrite</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>voidpc <parameter>buf</parameter></paramdef>
+  <paramdef>unsigned int <parameter>len</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzwrite</function> function shall write data to
+the compressed file
+referenced by <parameter>file</parameter>, which shall have been opened
+in a write mode (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+On entry, <parameter>buf</parameter> shall point to a buffer containing
+<parameter>len</parameter>bytes of uncompressed data.
+The <function>gzwrite</function> function shall compress this data and
+write it to
+<parameter>file</parameter>.
+The <function>gzwrite</function> function shall return the number of 
+uncompressed bytes actually written.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzwrite</function> shall return the number of 
+uncompressed bytes actually written to <parameter>file</parameter>.
+On error <function>gzwrite</function> shall return a value
+less than or equal to <constant>0</constant>.
+Applications may examine the cause using <function>gzerror</function>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzwrite</function> shall set
+the error number associated with the stream identified by 
+<parameter>file</parameter>
+to indicate the error. Applications should use <function>gzerror</function>
+to access this error value.
+</para>
+<para>
+<variablelist>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An underlying base library function has indicated an error.
+The global variable <varname>errno</varname> may be examined 
+for further information.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The stream is invalid, is not open for writing, or is in an invalid state.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+no compression progress is possible (see <function>deflate</function>).
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available to compress.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+
+
 <!-- MISSING DEFINITION FOR inflate -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR inflateEnd -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR inflateInit2_ -->
-<!-- Lets just hope nobody notices -->
+<refentry id="zlib-inflateInit2" xreflabel="inflateInit2_">
+
+<refmeta>
+<refentrytitle>inflateInit2_</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>inflateInit2_</refname>
+<refpurpose>initialize decompression system</refpurpose>
+<indexterm id="ix-utillib-inflateInit2-1">
+  <primary>inflateInit2_</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>inflateInit2_</function>
+  </funcdef>
+  <paramdef>z_streamp <parameter>strm</parameter></paramdef>
+  <paramdef>int <parameter>windowBits</parameter></paramdef>
+  <paramdef>char * <parameter>version</parameter></paramdef>
+  <paramdef>int <parameter>stream_size</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>inflateInit2_</function> function shall initialize the decompression
+system.
+On entry, <parameter>strm</parameter> shall refer to a user supplied <type>z_stream</type>
+object (a <structname>z_stream_s</structname> structure). The following fields shall be
+set on entry:
+<variablelist>
+<varlistentry>
+<term><structfield>zalloc</structfield></term>
+<listitem><para>
+a pointer to an <type>alloc_func</type> function, used to allocate state information.
+If this is <constant>NULL</constant>, a default allocation function will be used.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>zfree</structfield></term>
+<listitem><para>
+a pointer to a <type>free_func</type> function, used to free memory allocated by the
+<structfield>zalloc</structfield> function. If this is <constant>NULL</constant>
+a default free function will be used.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>opaque</structfield></term>
+<listitem><para>
+If <structfield>alloc_func</structfield> is not <constant>NULL</constant>,
+<structfield>opaque</structfield> is a user supplied pointer to data that will be passed to the
+<structfield>alloc_func</structfield> and <structfield>free_func</structfield> functions.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+If the <parameter>version</parameter> requested is not compatible with the version
+implemented, or if the size of the <structname>z_stream_s</structname> structure
+provided in <parameter>stream_size</parameter> does not match the size in the library 
+implementation, <function>inflateInit2_</function> shall fail, and return
+<constant>Z_VERSION_ERROR</constant>.
+</para>
+<para>
+The <parameter>windowBits</parameter> parameter shall be a base 2 logarithm of the maximum
+window 
+size to use, and shall be a value between <constant>8</constant> and <constant>15</constant>.
+If the input data was compressed with a larger window size, subsequent attempts to
+decompress this data will fail with <constant>Z_DATA_ERROR</constant>, rather than try to
+allocate a larger window.
+</para>
+<para>
+The <function>inflateInit2_</function> function is not in the source standard;
+it is only in the binary standard. Source applications should use the
+<function>inflateInit2</function> macro.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, the <function>inflateInit2_</function> function shall return 
+<constant>Z_OK</constant>. 
+Otherwise, <function>inflateInit2_</function> shall return
+a value as described below to indicate the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>inflateInit2_</function> shall return one
+of the following error indicators:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+Invalid parameter.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficent memory available.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_VERSION_ERROR</constant></term>
+<listitem><para>
+The version requested is not compatible with the library version,
+or the <type>z_stream</type> size differs from that used by the library.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+In addition, the <structfield>msg</structfield> field of the <parameter>strm</parameter>
+may be set to an error message.
+</para>
+</refsect1>
+</refentry>
+
 <!-- MISSING DEFINITION FOR inflateInit_ -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR inflateReset -->
@@ -324,7 +1988,7 @@ in the referenced base document.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Mon Nov 22 18:58:57 2004 -->
+<!--    at Mon Nov 29 14:41:52 2004 -->
 <SECT1 ID=libncurses>
 <TITLE>Interfaces for libncurses</TITLE>
 <PARA>
@@ -1061,7 +2725,7 @@ struct _win_st
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Mon Nov 22 18:58:58 2004 -->
+<!--    at Mon Nov 29 14:41:53 2004 -->
 <SECT1 ID=libutil>
 <TITLE>Interfaces for libutil</TITLE>
 <PARA>
@@ -1186,14 +2850,14 @@ forkpty
 <TITLE>Description
 </TITLE>
 <PARA>
-The <FUNCTION>forkpty()</FUNCTION>
+The <FUNCTION>forkpty</FUNCTION>
 function shall find and open a pseudo-terminal device pair in the
-same manner as the <FUNCTION>openpty()</FUNCTION> function. 
+same manner as the <FUNCTION>openpty</FUNCTION> function. 
 If a pseudo-terminal is available,
 <FUNCTION>forkpty</FUNCTION>
-shall create a new process in the same manner as the <FUNCTION>fork()</FUNCTION>
+shall create a new process in the same manner as the <FUNCTION>fork</FUNCTION>
 function, and prepares the new process for login in the same manner as 
-<FUNCTION>login_tty()</FUNCTION>.
+<FUNCTION>login_tty</FUNCTION>.
 </PARA>
 <PARA>
 If <PARAMETER>termp</PARAMETER> is not null, 
@@ -1374,21 +3038,21 @@ truncate the name, but any such limit shall not be smaller than
 <TITLE>Description
 </TITLE>
 <PARA>
-The <function>login_tty()</function> function
+The <function>login_tty</function> function
 shall prepare the terminal device referenced by the file
 descriptor <parameter>fdr</parameter>. 
 This function shall create a new session, make the terminal 
 the controlling terminal for the current process, and set the standard 
 input, output, and error streams of the current process to the terminal.
 If <parameter>fdr</parameter> is not the standard input, output or error stream,
-then <function>login_tty()</function> shall close <parameter>fdr</parameter>.
+then <function>login_tty</function> shall close <parameter>fdr</parameter>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, <function>login_tty()</function> shall return zero;
+On success, <function>login_tty</function> shall return zero;
 otherwise -1 is returned, and errno shall be set appropriately.
 </PARA>
 </REFSECT1>
@@ -1468,7 +3132,7 @@ time of day.</PARA></LISTITEM>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, the <function>logout()</function> function shall return non-zero.
+On success, the <function>logout</function> function shall return non-zero.
 Zero is returned if there was no entry to remove, or if the utmp file
 could not be opened or updated.
 </PARA>
@@ -1622,7 +3286,7 @@ None.
 <TITLE>Description
 </TITLE>
 <PARA>
-The <function>openpty()</function>
+The <function>openpty</function>
 function shall find an available pseudo-terminal
 and return file descriptors for the master and slave devices in
 the locations referenced by 
