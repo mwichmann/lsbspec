@@ -15,12 +15,15 @@ TABLES = baselib/libsysansi.sgml baselib/libsyspsoxi.sgml
 
 SUBDIRS=intro objfmt baselib utillib graphlib sysinit
 
+DB2HTML=db2html
+#DB2HTML=sgmltools -b html
+
 all:: htmlspec rtfspec
 
 htmlspec: source
 	rm -rf spec.junk
 	-mv spec spec.junk
-	sgmltools -b html spec.sgml
+	$(DB2HTML) spec.sgml
 	if [ -d spec.junk/CVS -a ! -d spec/CVS ];then mv spec.junk/CVS spec; fi
 	cp images/*.gif spec
 

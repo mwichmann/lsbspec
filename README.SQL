@@ -45,7 +45,13 @@ you are editing Linux.sql as the master data source and using mysql as
 a slave to that.  So if you are making modifications in the database
 you don't want those rules.
 
-6.  Need sgmltools.
+6.  Get a copy of the DocBook tools from
+http://sourceware.cygnus.com/docbook-tools/
+I installed all of their packages: docbook, psgml, jade, sgml-common,
+jadetex, and stylesheets (of course check the documentation at the web
+site for up to date details).
 
-7.  Next step: figure out all the sgml generating scripts
-(e.g. makefile in this directory) and such.
+7.  To produce postscript, type "make spec.sgml" followed by "db2ps
+spec.sgml" which will put the output in spec.ps.  To produce HTML,
+"make htmlspec" which will put the output in spec/book1.html (relative
+to this directory, so spec/spec/book1.html relative to the top level).
