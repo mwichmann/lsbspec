@@ -92,6 +92,48 @@ include("refspecs/LSB_1.3.0/PPC32/lsbversion.PPC32")
 <TD ALIGN=center><a href="refspecs/LSB_1.3.0/PPC32/spec_lines.txt">TXT</a></TD>
 </TR>
 <TR>
+<TD>LSB PPC64</TD>
+<TD ALIGN=center><B>
+<?
+include("refspecs/LSB_1.3.0/PPC64/lsbversion.PPC64")
+?>
+</B></TD>
+<TD><a href="refspecs/LSB_1.3.0/PPC64/spec/book1.html">HTML</a></TD>
+<TD><a href="refspecs/LSB_1.3.0/PPC64/spec.rtf">RTF</a></TD>
+<TD><a href="refspecs/LSB_1.3.0/PPC64/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/PPC64/spec.html">HTML</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/PPC64/spec.txt">TXT</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/PPC64/spec_lines.txt">TXT</a></TD>
+</TR>
+<TR>
+<TD>LSB S390</TD>
+<TD ALIGN=center><B>
+<?
+include("refspecs/LSB_1.3.0/S390/lsbversion.S390")
+?>
+</B></TD>
+<TD><a href="refspecs/LSB_1.3.0/S390/spec/book1.html">HTML</a></TD>
+<TD><a href="refspecs/LSB_1.3.0/S390/spec.rtf">RTF</a></TD>
+<TD><a href="refspecs/LSB_1.3.0/S390/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/S390/spec.html">HTML</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/S390/spec.txt">TXT</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/S390/spec_lines.txt">TXT</a></TD>
+</TR>
+<TR>
+<TD>LSB S390X</TD>
+<TD ALIGN=center><B>
+<?
+include("refspecs/LSB_1.3.0/S390X/lsbversion.S390X")
+?>
+</B></TD>
+<TD><a href="refspecs/LSB_1.3.0/S390X/spec/book1.html">HTML</a></TD>
+<TD><a href="refspecs/LSB_1.3.0/S390X/spec.rtf">RTF</a></TD>
+<TD><a href="refspecs/LSB_1.3.0/S390X/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/S390X/spec.html">HTML</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/S390X/spec.txt">TXT</a></TD>
+<TD ALIGN=center><a href="refspecs/LSB_1.3.0/S390X/spec_lines.txt">TXT</a></TD>
+</TR>
+<TR>
 <TD>LSB Errata</TD>
 <TD ALIGN=center><B></B></TD>
 <TD><a href="errata/errata/book1.html">HTML</a></TD>
@@ -266,7 +308,7 @@ echo(date("r", filemtime("archLSB/S390X/spec/book1.html")))
 <TD>LSB AMD64</TD>
 <TD ALIGN=center><B>
 <?
-include("lsbversion.X86-64")
+include("lsbversion.AMD64")
 ?>
 </B></TD>
 <TD ALIGN=center><A HREF="lsbx86-64review.html">Review it!</A></TD>
