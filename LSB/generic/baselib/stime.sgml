@@ -16,7 +16,7 @@ set time
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
-#define _SVID_SOURCE  /* glibc needs this */
+#define _SVID_SOURCE
 #include &lt;time.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
@@ -35,10 +35,11 @@ set time
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>stime</FUNCTION> sets the system's idea of the time and date. 
-Time, pointed to by <PARAMETER>t</PARAMETER>, is measured in seconds 
-from 00:00:00 GMT January 1, 1970. <FUNCTION>stime</FUNCTION> may only 
-be executed by the super user.
+If the process has appropriate privilege, the <FUNCTION>stime()</FUNCTION>
+function shall set the system's idea of the time and date. 
+Time, referenced by <PARAMETER>t</PARAMETER>, is measured in seconds 
+from the epoch (defined in
+<XREF LINKEND=STD.SUSv3> as 00:00:00 UTC January 1, 1970).
 </PARA>
 </REFSECT1>
 
@@ -46,9 +47,11 @@ be executed by the super user.
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
-On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
-the global variable <VARNAME>errno</VARNAME> is set appropriately.
+On success, <function>stime()</function> shall return 
+<RETURNVALUE>0</RETURNVALUE>.
+Otherwise, <function>stime()</function> shall return 
+<RETURNVALUE>-1</RETURNVALUE> and
+<VARNAME>errno</VARNAME> shall be set to indicate the error.
 </PARA>
 </REFSECT1>
 
@@ -58,25 +61,31 @@ the global variable <VARNAME>errno</VARNAME> is set appropriately.
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
+<CONSTANT>
 EPERM
+</CONSTANT>
 </TERM>
 <LISTITEM>
 <PARA>
-The caller is not the super-user.
+The process does not have appropriate privilege.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>
+EINVAL
+</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>t</PARAMETER> is a null pointer.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
 </REFSECT1>
 
-<REFSECT1>
-<TITLE>Notes
-</TITLE>
-<PARA>
-Under <EMPHASIS>glibc2</EMPHASIS>, <FILENAME>time.h</FILENAME> only 
-provides a prototype when <VARNAME>_SVID_SOURCE</VARNAME> is defined.
-</PARA>
-</REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
 <!--      Version 1a, November 1998   -->
 </REFENTRY>

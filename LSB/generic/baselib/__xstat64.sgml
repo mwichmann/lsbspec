@@ -5,7 +5,7 @@
 <REFNAMEDIV>
 <REFNAME>__xstat64
 </REFNAME>
-<REFPURPOSE>provide inode information
+<REFPURPOSE>Get File Status
 </REFPURPOSE>
 <INDEXTERM ID="ix-baselib-xstat64-1"><PRIMARY>stat64</PRIMARY></INDEXTERM>
 <INDEXTERM ID="ix-baselib-xstat64-2"><PRIMARY>lstat64</PRIMARY></INDEXTERM>
@@ -28,31 +28,31 @@
  <FUNCDEF>int 
   <FUNCTION>__xstat64</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*path</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>__lxstat64</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*__filename</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*path</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>__fxstat64</FUNCTION></FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__ver</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>ver</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>__filedesc</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>fildes</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF><FUNCPARAMS>struct <STRUCTNAME>stat64</STRUCTNAME> 
-  <PARAMETER>*__stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
+  <PARAMETER>*stat_buf</PARAMETER></FUNCPARAMS></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -63,41 +63,39 @@
 <TITLE>Description
 </TITLE>
 <PARA>
-<PARAMETER>__ver</PARAMETER> shall be <LITERAL>3</LITERAL> or the 
+The functions 
+<function>__xstat64()</function>,
+<function>__lxstat64()</function>, and
+<function>__fxstat64()</function> shall implement
+the <XREF LINKEND=STD.LFS> functions
+<function>stat64()</function>,
+<function>lstat64()</function>, and
+<function>fstat64()</function> respectively.
+</PARA>
+<PARA>
+<PARAMETER>ver</PARAMETER> shall be <LITERAL>3</LITERAL> or the 
 behavior of these functions is undefined. 
 </PARA>
 <PARA>
-<PARAMETER>__filename</PARAMETER> is as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
+<FUNCTION>__xstat64(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>stat(<PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.LFS>.
 </PARA>
 <PARA>
-<PARAMETER>__filedesc</PARAMETER> is as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
+<FUNCTION>__lxstat64(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>lstat(<PARAMETER>path</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.LFS>.
 </PARA>
 <PARA>
-<PARAMETER>__stat_buf</PARAMETER> is as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__xstat64(<LITERAL>3</LITERAL>, <PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>stat64(<PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__lxstat64(<LITERAL>3</LITERAL>, <PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>lstat64(<PARAMETER>__filename</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
-</PARA>
-<PARA>
-<FUNCTION>__fxstat64(<LITERAL>3</LITERAL>, <PARAMETER>__filedesc</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> has the same specification as 
-<FUNCTION>fstat64(<PARAMETER>__filedesc</PARAMETER>, 
-<PARAMETER>__stat_buf</PARAMETER>)</FUNCTION> as specified by the 
-<EMPHASIS>Large File Summit</EMPHASIS>.
+<FUNCTION>__fxstat64(<LITERAL>3</LITERAL>, <PARAMETER>fildes</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> shall behave as
+<FUNCTION>fstat(<PARAMETER>fildes</PARAMETER>, 
+<PARAMETER>stat_buf</PARAMETER>)</FUNCTION> as specified by 
+<XREF LINKEND=STD.LFS>.
 </PARA>
 <PARA>
 <FUNCTION>__xstat64</FUNCTION>, <FUNCTION>__lxstat64</FUNCTION>, and 
@@ -109,9 +107,5 @@ they are only in the binary standard.
 <FUNCTION>fstat64</FUNCTION> are not in the binary standard; 
 they are only in the source standard.
 </PARA>
-<!--
-FIXME: are we clear on specifying the correct struct stat64,
-rather than the kernel one?
--->
 </REFSECT1>
 </REFENTRY>

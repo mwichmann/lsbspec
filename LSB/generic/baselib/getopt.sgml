@@ -22,7 +22,7 @@ parse command line options
  <PARAMDEF>char * const 
   <PARAMETER><REPLACEABLE>argv</REPLACEABLE>[]</PARAMETER></PARAMDEF>
  <PARAMDEF>const char 
-  <PARAMETER><REPLACEABLE>*opstring</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>*optstring</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 <SYNOPSIS>
@@ -37,15 +37,49 @@ extern int <VARNAME>optind</VARNAME>, <VARNAME>opterr</VARNAME>, <VARNAME>optopt
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>getopt</FUNCTION> parses command line arguments. 
-<EMPHASIS>GNU</EMPHASIS> and <EMPHASIS>POSIX</EMPHASIS> specifications 
-for this function vary in the following areas.  LSB systems shall
-implement the GNU behaviors described below.
+The <FUNCTION>getopt</FUNCTION> function shall parse command line arguments.
+as described in <XREF LINKEND=STD.SUSv3>, with the following exceptions,
+where LSB and POSIX specifications vary.
+LSB systems shall
+implement the modified behaviors described below.
 </PARA>
+<REFSECT2>
+<TITLE>Argument Ordering</TITLE>
+<PARA>
+The <function>getopt()</function> function can process command line arguments
+referenced by <parameter>argv</parameter> in one of three ways:
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>PERMUTE</TERM><LISTITEM><PARA>the order of arguments in
+<parameter>argv</parameter> is altered so that all options (and
+their arguments) are moved in front of all of the operands.
+This is the default behavior.</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>REQUIRE_ORDER</TERM><LISTITEM><PARA>The arguments in
+<parameter>argv</parameter> are processed in exactly the order
+given, and option processing stops when the first non-option argument
+is reached, or when the element of argv is "--". This ordering
+can be enforced either by setting the environment variable
+<VARNAME>POSIXLY_CORRECT</VARNAME>, or by setting the first character
+of <parameter>optstring</parameter> to '+'.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>RETURN_IN_ORDER</TERM><LISTITEM><PARA>The order of arguments
+is not altered, and all arguments are processed. Non-option arguments
+(operands) are handled as if they were the argument to an option with
+the value 1 ('\001'). This ordering is selected by setting the first
+character of <parameter>optstring</parameter> to '-';
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+</REFSECT2>
 <REFSECT2>
 <TITLE>Option Characteristics</TITLE>
 <PARA>
-<EMPHASIS>GNU</EMPHASIS> specifies that:
+<EMPHASIS>LSB</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -139,7 +173,7 @@ description.
 <REFSECT2>
 <TITLE>Extensions</TITLE>
 <PARA>
-<EMPHASIS>GNU</EMPHASIS> specifies that:
+<EMPHASIS>LSB</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -153,8 +187,9 @@ it is returned in <PARAMETER>optarg</PARAMETER>, otherwise
 <PARA>
 if <PARAMETER>optstring</PARAMETER> contains <LITERAL>W</LITERAL> followed 
 by a <TOKEN>;</TOKEN>, then <LITERAL>-W foo</LITERAL> is treated as the 
-long option <LITERAL>--foo</LITERAL>. (Not available with libraries before 
-<EMPHASIS>GNU libc 2</EMPHASIS>.)
+long option <LITERAL>--foo</LITERAL>. 
+<NOTE><PARA>See <function>getopt_long()</function> for a description
+of long options.</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -173,7 +208,7 @@ the <OPTION>-W</OPTION> option is reserved for implementation extensions.
 <REFSECT2>
 <TITLE>Return Values</TITLE>
 <PARA>
-<EMPHASIS>GNU</EMPHASIS> specifies the following 
+<EMPHASIS>LSB</EMPHASIS> specifies the following 
 <FUNCTION>getopt</FUNCTION> return values:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
@@ -195,6 +230,14 @@ character is encountered.
 </LISTITEM>
 <LISTITEM>
 <PARA>
+<RETURNVALUE>1</RETURNVALUE> is returned
+if <CONSTANT>RETURN_IN_ORDER</CONSTANT> argument ordering is in effect,
+and the next argument is an operand, not an option. The argument is
+available in <varname>optarg</varname>.
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
 <RETURNVALUE>-1</RETURNVALUE> is returned for the end of the option list.
 </PARA>
 </LISTITEM>
@@ -212,7 +255,7 @@ the next option character is returned, if found successfully.
 <LISTITEM>
 <PARA>
 "<RETURNVALUE>:</RETURNVALUE>" is returned if a parameter is missing for 
-one of the options and the first character of <VARNAME>opstring</VARNAME> is 
+one of the options and the first character of <VARNAME>optstring</VARNAME> is 
 "<TOKEN>:</TOKEN>".
 </PARA>
 </LISTITEM>
@@ -235,7 +278,7 @@ character of <VARNAME>optstring</VARNAME> is not "<TOKEN>:</TOKEN>".
 <REFSECT2>
 <TITLE>Environment Variables</TITLE>
 <PARA>
-<EMPHASIS>GNU</EMPHASIS> specifies that:
+<EMPHASIS>LSB</EMPHASIS> specifies that:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
@@ -245,18 +288,24 @@ processing stops as soon as a non-option argument is encountered.
 </LISTITEM>
 <LISTITEM>
 <PARA>
-if <VARNAME>POSIXLY_CORRECT</VARNAME> is set, <EMPHASIS>GNU</EMPHASIS> 
+if <VARNAME>POSIXLY_CORRECT</VARNAME> is set, <EMPHASIS>LSB</EMPHASIS> 
 <FUNCTION>getopt</FUNCTION> conforms to <EMPHASIS>
 <XREF LINKEND="STD.SUSv3"></EMPHASIS>.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-the variable <VARNAME>_[PID]_GNU_nonoption_argv_flags_</VARNAME> was 
+the variable <VARNAME>_<replaceable>[PID]</replaceable>GNU_nonoption_argv_flags_</VARNAME>
+(where <replaceable>[PID]</replaceable> is the process ID for the 
+current process), contains a space separated list of arguments that should
+not be treated as arguments even though they appear to be so.
+<NOTE><TITLE>Rationale</TITLE><PARA>
+This was 
 used by bash 2.0 to communicate to <EMPHASIS>GNU</EMPHASIS> libc which 
 arguments resulted from wildcard expansion and so should not be 
 considered as options. This behavior was removed in bash version 
 2.01, but the support remains in <EMPHASIS>GNU</EMPHASIS> libc.
+</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>

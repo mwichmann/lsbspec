@@ -5,7 +5,7 @@
 <REFNAMEDIV>
 <REFNAME>ngettext</REFNAME>
 <REFPURPOSE>
-perform lookup in message catalog for the current LC_MESSAGES locale
+Search message catalogs for plural string
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -17,7 +17,7 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*ngettext</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*msgid1</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -35,83 +35,44 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>ngettext</FUNCTION> is the plural version of 
-<FUNCTION>gettext</FUNCTION>, which searches for the message 
-string using the <PARAMETER>msgid1</PARAMETER> arguments 
-as the key, using the argument <PARAMETER>n</PARAMETER> 
-to determine the plural form. If no message catalogs 
-containing a translation for <PARAMETER>msgid1</PARAMETER> 
-are found, <PARAMETER>msgid1</PARAMETER> is returned if 
-<PARAMETER>n</PARAMETER> == <LITERAL>1</LITERAL>, otherwise, 
-<PARAMETER>msgid2</PARAMETER> is returned. (See 
-<FUNCTION>gettext</FUNCTION> for more details.)
+The <FUNCTION>ngettext()</FUNCTION> function shall search the currently 
+selected message catalogs for a string matching the singular string
+<PARAMETER>msgid1</PARAMETER>. If a string is located, and if
+<PARAMETER>n</PARAMETER> is 1, that string shall be returned.
+If <PARAMETER>n</PARAMETER> is not 1, a pluralized version
+(dependant on <PARAMETER>n</PARAMETER>) of the string shall be returned.
 </PARA>
+<PARA>
+The <FUNCTION>ngettext()</FUNCTION> function is equivalent to
+<FUNCTION>dcngettext(NULL, msgid1, msgid2, n, LC_MESSAGES)</FUNCTION>.
+</PARA>
+
 </REFSECT1>
 <REFSECT1>
+<TITLE>Return Value</TITLE>
 
-<TITLE>Parameters</TITLE>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-msgid1
-</TERM>
-<LISTITEM>
 <PARA>
-A <LITERAL>NULL</LITERAL>-terminated string to be matched 
-in the catalogue with respect to a specific domain and the 
-current locale.  If no message catalogs are found, 
-<PARAMETER>msgid1</PARAMETER> is returned if 
-<PARAMETER>n</PARAMETER> == <LITERAL>1</LITERAL>.
+If a string is found in the currently selected message catalogs for
+<PARAMETER>msgid1</PARAMETER>, then if <PARAMETER>n</PARAMETER> is
+<CONSTANT>1</CONSTANT> a pointer to the located string shall be returned.
+If <PARAMETER>n</PARAMETER> is not <CONSTANT>1</CONSTANT>, a pointer to an
+appropriately pluralized version of the string shall be returned.
+If no message could be found in the currently selected mesage catalogs,
+then if <PARAMETER>n</PARAMETER> is <CONSTANT>1</CONSTANT>,
+a pointer to <PARAMETER>msgid1</PARAMETER> shall be returned, otherwise
+a pointer to <PARAMETER>msgid2</PARAMETER> shall be returned.
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-msgid2
-</TERM>
-<LISTITEM>
 <PARA>
-A <LITERAL>NULL</LITERAL>-terminated string to be returned 
-if no message catalogs are found and 
-<PARAMETER>n</PARAMETER> != <LITERAL>1</LITERAL>.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-n
-</TERM>
-<LISTITEM>
-<PARA>
-Determines in which plural form a message string is returned, 
-in a language and message catalog dependent way.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return</TITLE>
-<PARA>
-If the function query above succeeds with 
-<PARAMETER>msgid1</PARAMETER>, then a translated 
-<LITERAL>NULL</LITERAL>-terminated string is returned. If the 
-search fails, then the original <PARAMETER>msgid1</PARAMETER> 
-or <PARAMETER>msgid2</PARAMETER> is returned, according to 
-<PARAMETER>n</PARAMETER>.
+Applications shall not modify the string returned by <FUNCTION>
+ngettext()</FUNCTION>.
 </PARA>
 </REFSECT1>
-
 <REFSECT1>
 <TITLE>Errors</TITLE>
+<PARA>None.</PARA>
 <PARA>
-<FUNCTION>ngettext</FUNCTION> will not modify the 
-<VARNAME>errno</VARNAME> global variable.
+The <FUNCTION>ngettext()</FUNCTION> function shall not modify 
+<VARNAME>errno</VARNAME>.
 </PARA>
 </REFSECT1>
 

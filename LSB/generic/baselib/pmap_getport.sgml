@@ -5,7 +5,8 @@
 <REFNAMEDIV>
 <REFNAME>pmap_getport</REFNAME>
 <REFPURPOSE>
-Returns the port number on which a service is waiting for.
+Find the port number assigned to a service registered with a
+portmapper.
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -37,23 +38,39 @@ Returns the port number on which a service is waiting for.
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>pmap_getport</FUNCTION> returns the port number on which a service 
-is waiting for.
-<FUNCTION>pmap_getport</FUNCTION> is called given the RPC program
-number <PARAMETER>program</PARAMETER>, <PARAMETER>version</PARAMETER>,
-and the transport <PARAMETER>protocol</PARAMETER> set to either
-<VARNAME>IPPROTO_UDP</VARNAME> or <VARNAME>IPPROTO_TCP</VARNAME>.  
-The pre-allocated socket <PARAMETER>address</PARAMETER> is a returned parameter.
+Conforming implementations shall support an RPC Binding (also known as
+a Portmapper) service as described in
+<XREF LINKEND="STD.RFC1833">.
+The <FUNCTION>pmap_getport()</FUNCTION> function shall
+find the port number assigned to a service registered with a
+portmapper running on a given target system. 
+The <function>pmap_getport()</function> function shall be called given the
+RPC program number <parameter>program</parameter>,
+the program version <parameter>version</parameter>, and transport
+protocol <parameter>protocol</parameter>. Conforming implementations shall
+support both <constant>IPPROTO_UDP</constant> and 
+<constant>IPPROTO_TCP</constant> protocols. On entry,
+<parameter>address</parameter> shall specify the address of the 
+system on which the portmapper to be
+contacted resides. The value of <varname>address->sin_port</varname>
+shall be ignored, and the standard
+value for the portmapper port shall always be used.
 </PARA>
+<NOTE><PARA>Security and network restrictions may prevent a
+conforming application from contacting a remote RPC Binding
+Service.</PARA></NOTE>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>pmap_getport</FUNCTION> returns 0 if the mapping does not exist
-or if contact to the remote portmap service failed.  If the remote portmap
-service could not be reached, the status is left in the global variable
-<VARNAME>rpc_createerr</VARNAME>.
+On success, the <FUNCTION>pmap_getport()</FUNCTION> function shall return the port number in network byte order of the RPC application
+registered with the remote portmapper. On failure, 
+if either the program was not
+registered or the remote portmapper service could not be reached, 
+the <function>pmap_getport()</function> function
+shall return 0. If the remote portmap service could not be reached, the status
+is left in the global variable <varname>rpc_createerr</varname>.
 </PARA>
 </REFSECT1>
 

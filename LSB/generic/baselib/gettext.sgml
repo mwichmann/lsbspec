@@ -5,7 +5,7 @@
 <REFNAMEDIV>
 <REFNAME>gettext</REFNAME>
 <REFPURPOSE>
-perform lookup in message catalog for the current LC_MESSAGES locale
+Search message catalogs for a string
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -17,7 +17,7 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*gettext</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*msgid</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -28,80 +28,37 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 <REFSECT1INFO>
 <DATE>16 September 2002</DATE>
 </REFSECT1INFO>
-<TITLE>Description
-</TITLE>
+<TITLE>Description</TITLE>
 <PARA>
-<FUNCTION>gettext</FUNCTION> attempts to retrieve a target 
-string based on the specified key from <PARAMETER>msgid</PARAMETER> 
-within the context of a specific domain and the current locale.  
+The <FUNCTION>gettext()</FUNCTION> function shall search the currently 
+selected message catalogs for a string matching the string
+<PARAMETER>msgid</PARAMETER>. If a string is located, 
+that string shall be returned.
 </PARA>
 <PARA>
-The <VARNAME>LANGUAGE</VARNAME> environment variable is examined 
-first to determine the message catalogs to be used. 
-<VARNAME>LANGUAGE</VARNAME> is a list of locale names separated 
-by "<TOKEN>:</TOKEN>" character. If <VARNAME>LANGUAGE</VARNAME> 
-is defined, each locale name is tried in the specified order and 
-if a message catalog containing the requested message is found, 
-the message is returned. If <VARNAME>LANGUAGE</VARNAME> is defined 
-but failed to locate a message catalog, the <PARAMETER>msgid</PARAMETER> 
-string is returned. If <VARNAME>LANGUAGE</VARNAME> is not defined, 
-the <VARNAME>LC_ALL</VARNAME>, <VARNAME>LC_xxx</VARNAME>, and
-<VARNAME>LANG</VARNAME> environment variables are examined to 
-locate the message catalog, following the convention used by the 
-<FUNCTION>setlocale</FUNCTION> function.
+The <FUNCTION>gettext()</FUNCTION> function is equivalent to
+<FUNCTION>dcgettext(NULL, msgid, LC_MESSAGES)</FUNCTION>.
 </PARA>
-<PARA>
-The pathname used to locate the message catalog is 
-<EMPHASIS><LITERAL>dirname</LITERAL></EMPHASIS>/<EMPHASIS><LITERAL>locale</LITERAL></EMPHASIS>/<EMPHASIS><LITERAL>category</LITERAL></EMPHASIS><LITERAL>/domainname.mo</LITERAL>, 
-where <EMPHASIS><LITERAL>dirname</LITERAL></EMPHASIS> is the directory 
-specified by the <FUNCTION>bindtextdomain</FUNCTION> function, 
-<EMPHASIS><LITERAL>locale</LITERAL></EMPHASIS> is a locale name 
-determined by the definition of environment variables, and 
-<EMPHASIS><LITERAL>category</LITERAL></EMPHASIS> is 
-<VARNAME>LC_MESSAGES</VARNAME>.
-</PARA>
-<PARA>
-If the <VARNAME>LC_MESSAGES</VARNAME> locale category of the current 
-locale is the standard C locale or the standard POSIX locale, 
-<FUNCTION>gettext</FUNCTION> returns <PARAMETER>msgid</PARAMETER>
-without looking in any message catalog.
-</PARA>
+
 </REFSECT1>
-<REFSECT1>
-<TITLE>Parameters</TITLE>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-msgid
-</TERM>
-<LISTITEM>
-<PARA>
-A <LITERAL>NULL</LITERAL>-terminated string to be 
-matched in the catalogue with respect to a specific domain and the 
-current locale.  
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
-</REFSECT1>
-
 <REFSECT1>
 <TITLE>Return Value</TITLE>
+
 <PARA>
-If the function query above succeeds with <PARAMETER>msgid</PARAMETER>, 
-then a translated <LITERAL>NULL</LITERAL>-terminated string is returned. 
-If the search fails, then the original <PARAMETER>msgid</PARAMETER> is 
-returned. The length of the string returned is undetermined until the 
-function is called. 
+If a string is found in the currently selected message catalogs for
+<PARAMETER>msgid</PARAMETER>, then a pointer to that string shall be returned.
+Otherwise, a pointer to <PARAMETER>msgid</PARAMETER> shall be returned.
+</PARA>
+<PARA>
+Applications shall not modify the string returned by <FUNCTION>
+gettext()</FUNCTION>.
 </PARA>
 </REFSECT1>
-
 <REFSECT1>
 <TITLE>Errors</TITLE>
+<PARA>None.</PARA>
 <PARA>
-<FUNCTION>gettext</FUNCTION> does not modify the global variable 
+The <FUNCTION>gettext()</FUNCTION> function shall not modify 
 <VARNAME>errno</VARNAME>.
 </PARA>
 </REFSECT1>
@@ -109,7 +66,7 @@ function is called.
 <REFSECT1>
 <TITLE>See Also</TITLE>
 <PARA>
-<ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
+dgettext, ngettext, 
 dngettext, dcgettext, dcngettext, textdomain,
 bindtextdomain, bind_textdomain_codeset
 </PARA>

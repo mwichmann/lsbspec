@@ -54,27 +54,73 @@ array of struct <STRUCTNAME>option</STRUCTNAME> declared in
 <SYNOPSIS>
   struct option {
              const char *name;
-             int *flag;
              int has_arg;
+             int *flag;
              int val;
   };
 </SYNOPSIS>
+</PARA>
+<PARA>
+The fields in this structure have the following meaning:
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>name</STRUCTFIELD></TERM>
+<LISTITEM><PARA>The name of the long option.</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>has_arg</STRUCTFIELD></TERM>
+<LISTITEM><PARA>
+One of: 
+<SIMPLELIST>
+<MEMBER>
+<constant>no_argument</constant> (or 0) if the option does not take an argument,
+</MEMBER>
+<MEMBER>
+<constant>required_argument</constant> (or 1) if the option requires an argument,  or
+</MEMBER>
+<MEMBER>
+<constant>optional_argument</constant>  (or  2) if the option takes an optional argument.
+</MEMBER>
+</SIMPLELIST>
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>flag</STRUCTFIELD></TERM>
+<LISTITEM><PARA>
+specifies how results are returned for a long option.   
+If  flag
+is  <constant>NULL</constant>,  then  
+<function>getopt_long()</function> shall return <structfield>val</structfield>.
+(For example, the
+calling program may set val to the equivalent short option character.)
+Otherwise, <function>getopt_long()</function> returns 0, and flag shall point to
+a variable which shall be set to <structfield>val</structfield>
+if the option is found, but left unchanged if the option is not found.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>val</STRUCTFIELD></TERM>
+<LISTITEM><PARA>The value to return, or to load into the variable pointed to
+by flag.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-<FUNCTION>getopt_long</FUNCTION> returns the option character if the 
+<FUNCTION>getopt_long</FUNCTION> returns the option character if a short 
 option was found successfully, or "<RETURNVALUE>:</RETURNVALUE>" if 
 there was a missing parameter for one of the options, or 
 "<RETURNVALUE>?</RETURNVALUE>" for an unknown option character, or 
 <RETURNVALUE>-1</RETURNVALUE> for the end of the option list.
 </PARA>
 <PARA>
-<FUNCTION>getopt_long</FUNCTION> also returns the option character 
-when a short option is recognized. For a long option, they return val 
-if flag is <LITERAL>NULL</LITERAL>, and <RETURNVALUE>0</RETURNVALUE> 
+For a long option, 
+<function>getopt_long()</function> returns <structfield>val</structfield> 
+if <structfield>flag</structfield> is <LITERAL>NULL</LITERAL>, and <RETURNVALUE>0</RETURNVALUE> 
 otherwise. Error and <RETURNVALUE>-1</RETURNVALUE> returns are the 
 same as for <FUNCTION>getopt</FUNCTION>, plus 
 "<RETURNVALUE>?</RETURNVALUE>" for an ambiguous match or an 

@@ -42,79 +42,70 @@ typedef struct {
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>dladdr</FUNCTION> implements the System V dynamic linking 
-routines.
+The <FUNCTION>dladdr()</FUNCTION> function shall query the dynamic
+linker for information about the shared object containing the 
+address <PARAMETER>address</PARAMETER>. The information is returned
+in the structure referenced by <PARAMETER>dlip</PARAMETER>.
+</PARA>
+<PARA>
+The structure contains at least the following members:
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><structfield>dli_fname</structfield></TERM>
+<LISTITEM><PARA>
+The pathname of the shared object containing the address
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><structfield>dli_fbase</structfield></TERM>
+<LISTITEM><PARA>
+The base address at which the shared object is
+mapped into the address space of the calling process.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><structfield>dli_sname</structfield></TERM>
+<LISTITEM><PARA>
+The name of the nearest runtime symbol with  value
+less than or equal to <PARAMETER>address</PARAMETER>.
+Where possible, the symbol name shall be returned as it
+would appear in C source code.
+</PARA><PARA>
+If no symbol with a suitable value is found,
+both this field and <structfield>dli_saddr</structfield>
+shall be set to <LITERAL>NULL</LITERAL>.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><structfield>dli_saddr</structfield></TERM>
+<LISTITEM><PARA>
+The value of the symbol returned in
+<structfield>dli_sname</structfield>.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+<PARA>
+The behavior of <function>dladdr()</function> is only
+specified in dynamically linked programs.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <function>dladdr()</function> shall return non-zero, and
+the structure referenced by <parameter>dlip</parameter> shall be filled in
+as described. Otherwise, <function>dladdr</function> shall return zero,
+and the cause of the error can be fetched with <function>dlerr()</function>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
-<TITLE>Return Value
-</TITLE>
+<TITLE>Errors</TITLE>
 <PARA>
-<FUNCTION>dladdr</FUNCTION> is the inverse of <FUNCTION>dlsym</FUNCTION>. 
-If <PARAMETER>address</PARAMETER> is successfully located inside a 
-module, <FUNCTION>dladdr</FUNCTION> returns a nonzero
-value, otherwise, it returns a <RETURNVALUE>0</RETURNVALUE>. 
-On success, <FUNCTION>dladdr</FUNCTION> fills in the fields of 
-<PARAMETER>dlip</PARAMETER> as follows:
-</PARA>
-
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-dli_fname
-</TERM>
-<LISTITEM>
-<PARA>
-the pathname of the module
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-dli_fbase   
-</TERM>
-<LISTITEM>
-<PARA>
-the base address of the module
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-dli_sname   
-</TERM>
-<LISTITEM>
-<PARA>
-the name of the highest addressed symbol whose address precedes the given address 
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-dli_saddr   
-</TERM>
-<LISTITEM>
-<PARA>
-the address of that symbol
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
-
-<PARA>
-Shared objects shall be linked using the <OPTION>-shared</OPTION> 
-option to the linker <COMMAND>ld(1)</COMMAND>. The linker flag 
-<OPTION>-rpath</OPTION> may be used to add a directory to the 
-default search path for shared objects and shared libraries. 
-The linker flag <OPTION>-E</OPTION> or the C compiler flag 
-<OPTION>-rdynamic</OPTION> should be used to cause the 
-application to export its symbols to the shared objects.
+See <function>dlerr()</function>.
 </PARA>
 </REFSECT1>
-
 <REFSECT1>
 <TITLE>
 Environment
@@ -122,7 +113,7 @@ Environment
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-LD_LIBRARY_PATH
+<LITERAL>LD_LIBRARY_PATH</LITERAL>
 </TERM>
 <LISTITEM>
 <PARA>

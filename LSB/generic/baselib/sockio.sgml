@@ -40,19 +40,20 @@ socket ioctl commands
 <TITLE>Description
 </TITLE>
 <PARA>
-Socket <EMPHASIS>ioctl</EMPHASIS> commands are a subset of the 
+Socket <function>ioctl</function> commands are a subset of the 
 <FUNCTION>ioctl</FUNCTION> calls, which can perform a variety of 
 functions on sockets. <PARAMETER>sockfd</PARAMETER> shall contain 
 the value of a file descriptor that was created with the 
 <FUNCTION>socket</FUNCTION> or <FUNCTION>accept</FUNCTION> calls.
 </PARA>
 <PARA>
-Socket <EMPHASIS>ioctl</EMPHASIS> commands apply to the underlying 
+Socket <function>ioctl</function> commands apply to the underlying 
 network interfaces, and affect the entire system, not just the file 
 descriptor used to issue the <FUNCTION>ioctl</FUNCTION>.
 </PARA>
 <PARA>
-The following <FUNCTION>ioctl</FUNCTION>s are provided:
+The following values for <parameter>request</parameter>
+are accepted:
 </PARA>
 <VARIABLELIST>
 
@@ -63,33 +64,34 @@ SIOCGIFCONF
 <LISTITEM>
 <PARA>
 Gets the interface configuration list for the system.
-<FOOTNOTE>
+<NOTE>
 <PARA>
 <SYMBOL>SIOCGIFCONF</SYMBOL> is similar to the 
 <FUNCTION>if_nameindex</FUNCTION> family found in the
-<CITETITLE PUBWORK="BOOK">Single UNIX Specification, 
-Version 3</CITETITLE> or the <FUNCTION>getifaddrs</FUNCTION> 
-family found in <ACRONYM>BSD</ACRONYM>.
+<XREF LINKEND=STD.SUSv3>
+or the <FUNCTION>getifaddrs</FUNCTION> 
+family found in <ACRONYM>BSD</ACRONYM> derived systems.
 </PARA>
-</FOOTNOTE>
+</NOTE>
 <PARAMETER>argp</PARAMETER> is a pointer to a
-<STRUCTNAME>ifconf</STRUCTNAME> structure. Before calling, the caller 
+<STRUCTNAME>ifconf</STRUCTNAME> structure, as described in
+<filename>&lt;net/if.h&gt;</filename>. Before calling, the caller 
 shall allocate the <STRUCTFIELD>ifc_ifcu.ifcu_req</STRUCTFIELD> field 
 to point to an array of <STRUCTNAME>ifreq</STRUCTNAME> structures, and 
-set <STRUCTFIELD>if_len</STRUCTFIELD> to the size of this allocated 
-array (in bytes). Upon return, <STRUCTFIELD>if_len</STRUCTFIELD> 
-will contain the amount of the array which was actually used (again, 
-in bytes).  If it is the same as the length upon calling, the caller 
+set <STRUCTFIELD>ifc_len</STRUCTFIELD> to the size in bytes of this allocated 
+array. Upon return, <STRUCTFIELD>ifc_len</STRUCTFIELD> 
+will contain the size in bytes of the array which was actually used.
+If it is the same as the length upon calling, the caller 
 should assume that the array was too small and try again with a 
 larger array.
 </PARA>
 <PARA>
 On success, <SYMBOL>SIOCGIFCONF</SYMBOL> can return any nonnegative value.
-<FOOTNOTE>
+<NOTE><TITLE>Rationale</TITLE>
 <PARA>
 Historical UNIX systems disagree on the meaning of the return value.
 </PARA>
-</FOOTNOTE>
+</NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -117,7 +119,7 @@ SIOCGIFADDR
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the interface address list for the system. 
+Gets the interface address for the given interface.
 <PARAMETER>argp</PARAMETER> is a pointer to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -134,7 +136,7 @@ SIOCGIFNETMASK
 </TERM>
 <LISTITEM>
 <PARA>
-Gets the network mask for the indicated interface. 
+Gets the network mask for the given interface. 
 <PARAMETER>argp</PARAMETER> is a pointer to a
 <STRUCTNAME>ifreq</STRUCTNAME> structure. Before calling, the 
 caller should fill in the <STRUCTFIELD>ifr_name</STRUCTFIELD> 
@@ -152,25 +154,29 @@ FIONREAD
 <LISTITEM>
 <PARA>
 Returns the amount of queued unread data in the receive buffer.
-Argument is a pointer to  an  integer where the result is to be placed.
+Argument is a pointer to an integer where the result is to be placed.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 </VARIABLELIST>
 
+<!--
 <PARA>
 The <STRUCTNAME>sockaddr</STRUCTNAME> structure is as specified in 
-the <CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>.
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
-
+-->
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
+On success, if <parameter>request</parameter> is
+<TOKEN>SIOCGIFCONF</TOKEN>, a non-negative integer shall be returned.
+If request is not <TOKEN>SIOCGIFCONF</TOKEN>, on success 
+<RETURNVALUE>0</RETURNVALUE> is returned. 
 On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
 the global variable <VARNAME>errno</VARNAME> is set appropriately.
 </PARA>
@@ -208,18 +214,6 @@ ENOTTY
 </TERM>
 <LISTITEM>
 <PARA>
-<PARAMETER>sockfd</PARAMETER> is not associated with a character 
-special device.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-ENOTTY 
-</TERM>
-<LISTITEM>
-<PARA>
 The specified <PARAMETER>request</PARAMETER> does not apply to the kind of 
 object that the descriptor <PARAMETER>sockfd</PARAMETER> references.
 </PARA>
@@ -232,7 +226,8 @@ EINVAL
 </TERM>
 <LISTITEM>
 <PARA>
-<PARAMETER>request</PARAMETER> and <PARAMETER>argp</PARAMETER> are not valid.
+Either <PARAMETER>request</PARAMETER> or <PARAMETER>argp</PARAMETER>
+is invalid.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>

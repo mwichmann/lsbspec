@@ -5,7 +5,7 @@
 <REFNAMEDIV>
 <REFNAME>textdomain</REFNAME>
 <REFPURPOSE>
-set the current default message catalog
+set the current default message domain
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -17,7 +17,7 @@ set the current default message catalog
 #include &lt;libintl.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
- <FUNCDEF>extern char 
+ <FUNCDEF>char 
   <FUNCTION>*textdomain</FUNCTION></FUNCDEF>
  <PARAMDEF>const char 
   <PARAMETER><REPLACEABLE>*domainname</REPLACEABLE></PARAMETER></PARAMDEF>
@@ -31,10 +31,20 @@ set the current default message catalog
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>textdomain</FUNCTION> sets the current default message 
-catalog to <PARAMETER>domainname</PARAMETER>, which remains valid 
-across subsequent calls to <FUNCTION>setlocale</FUNCTION>, and 
-<FUNCTION>gettext</FUNCTION>.
+The <FUNCTION>textdomain()</FUNCTION> function shall set
+the current default message 
+domain to <PARAMETER>domainname</PARAMETER>. 
+Subsequent calls to <FUNCTION>gettext()</FUNCTION> and 
+<FUNCTION>ngettext()</FUNCTION> use the default message domain.
+</PARA>
+
+<PARA>
+If <PARAMETER>domainname</PARAMETER> is <TOKEN>NULL</TOKEN>, 
+the default message domain shall not be altered.
+</PARA>
+<PARA>
+If <PARAMETER>domainname</PARAMETER> is "", <FUNCTION>textdomain()</FUNCTION>
+shall reset the default domain to the system default of "messages". 
 </PARA>
 
 </REFSECT1>
@@ -42,16 +52,9 @@ across subsequent calls to <FUNCTION>setlocale</FUNCTION>, and
 <REFSECT1>
 <TITLE>Return</TITLE>
 <PARA>
-On success, <FUNCTION>textdomain</FUNCTION> returns the currently 
-selected domain. On error, a <TOKEN>NULL</TOKEN> pointer is returned.
-</PARA>
-<PARA>
-If <PARAMETER>domainname</PARAMETER> is <TOKEN>NULL</TOKEN>, 
-<FUNCTION>textdomain</FUNCTION> returns the current default.
-</PARA>
-<PARA>
-If <PARAMETER>domainname</PARAMETER> is "", reset to the default of 
-"messages". 
+On success, <FUNCTION>textdomain()</FUNCTION> shall return the currently 
+selected domain. Otherwise, a null pointer shall be returned, and
+<VARNAME>errno</VARNAME> set to indicate the error.
 </PARA>
 </REFSECT1>
 
@@ -60,11 +63,11 @@ If <PARAMETER>domainname</PARAMETER> is "", reset to the default of
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-ENOMEM
+<CONSTANT>ENOMEM</CONSTANT>
 </TERM>
 <LISTITEM>
 <PARA>
-The function may have failed if there was "insufficent memory available."
+Insufficent memory available.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>

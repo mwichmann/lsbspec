@@ -5,7 +5,7 @@
 <REFNAMEDIV>
 <REFNAME>dcgettext</REFNAME>
 <REFPURPOSE>
-perform lookup in message catalog for the current LC_MESSAGES locale
+perform domain and category specific lookup in message catalog
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -36,84 +36,49 @@ perform lookup in message catalog for the current LC_MESSAGES locale
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>dcgettext</FUNCTION> is a domain specified version 
+The <FUNCTION>dcgettext</FUNCTION> function
+is a domain specified version 
 of <FUNCTION>gettext</FUNCTION>.
 </PARA>
-</REFSECT1>
-<REFSECT1>
-
-<TITLE>Parameters</TITLE>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-domainname
-</TERM>
-<LISTITEM>
 <PARA>
-<FUNCTION>dcgettext</FUNCTION> applies 
-<PARAMETER>domainname</PARAMETER> to the currently active 
-<SYMBOL>LC_MESSAGE</SYMBOL> locale. This usage is equivalent in 
-syntax and meaning to the <FUNCTION>textdomain</FUNCTION> function's
-application of <PARAMETER>domainname</PARAMETER>, except that the 
-selection of the domain in <FUNCTION>dcgettext</FUNCTION> 
-is valid only for the duration of the call.
+The <function>dcgettext</function>
+function shall lookup the translation in the current locale of the message
+identified by <parameter>msgid</parameter> in the domain specified by 
+<parameter>domainname</parameter> and in the locale
+category specified by <parameter>category</parameter>. 
+If <parameter>domainname</parameter> is NULL, the current default
+domain shall be used. 
+The <parameter>msgid</parameter> argument shall be a NULL-terminated 
+string to be
+matched in the catalogue. 
+<parameter>category</parameter> shall specify the locale category to be used
+for retrieving message strings. 
+The category parameter shall be one of <parameter>LC_CTYPE</parameter>,
+<parameter>LC_COLLATE</parameter>, 
+<parameter>LC_MESSAGES</parameter>, 
+<parameter>LC_MONETARY</parameter>,
+<parameter>LC_NUMERIC</parameter>, 
+or <parameter>LC_TIME</parameter>. 
+The default domain
+shall not be changed by a call to dcgettext.
 </PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-msgid
-</TERM>
-<LISTITEM>
-<PARA>
-a <LITERAL>NULL</LITERAL>-terminated string to be matched in the 
-catalogue with respect to a specific domain and the current locale.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-category
-</TERM>
-<LISTITEM>
-<PARA>
-<PARAMETER>category</PARAMETER> is used for retrieving messages 
-string for other than <VARNAME>LC_MESSAGES</VARNAME> category. Available 
-value for <PARAMETER>category</PARAMETER> are <VARNAME>LC_CTYPE</VARNAME>, 
-<VARNAME>LC_COLLATE</VARNAME>, <VARNAME>LC_MESSAGES</VARNAME>, 
-<VARNAME>LC_MONETARY</VARNAME>,<VARNAME>LC_NUMERIC</VARNAME>, and 
-<VARNAME>LC_TIME</VARNAME>.
-</PARA>
-<PARA>
-<FUNCTION>dcgettext(<PARAMETER>domainname</PARAMETER>, 
-<PARAMETER>msgid</PARAMETER>, 
-<VARNAME>LC_MESSAGES</VARNAME>)</FUNCTION> 
-has the same specification as 
-<FUNCTION>dgettext(<PARAMETER>domainname</PARAMETER>, 
-<PARAMETER>msgid</PARAMETER>)</FUNCTION>. 
-Note that <VARNAME>LC_ALL</VARNAME> shall not be used.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return Value</TITLE>
 <PARA>
-On success, the translated <LITERAL>NULL</LITERAL>-terminated 
-string is returned. On error, <PARAMETER>msgid</PARAMETER> is returned.
+If a translation was found in one of the specified catalogs, it shall be
+converted to the current locale's codeset and returned. The resulting
+NULL-terminated string shall be allocated by the dcgettext function, and must
+not be modified or freed. If no translation was found, or category was invalid,
+<parameter>msgid</parameter> shall be returned.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Errors</TITLE>
 <PARA>
-<FUNCTION>dcgettext</FUNCTION> will not modify the 
+<FUNCTION>dcgettext</FUNCTION> shall not modify the 
 <VARNAME>errno</VARNAME> global variable.
 </PARA>
 </REFSECT1>
@@ -122,7 +87,7 @@ string is returned. On error, <PARAMETER>msgid</PARAMETER> is returned.
 <TITLE>See Also</TITLE>
 <PARA>
 <ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
-dngettext, dcgettext, dcngettext, textdomain,
+dngettext, dcngettext, textdomain,
 bindtextdomain, bind_textdomain_codeset
 </PARA>
 </REFSECT1>

@@ -18,28 +18,49 @@ extern int getdomainname(char *name, size_t namelen);
 <refsect1>
 <title>Description</title>
 <para>
-If NIS is in use, provide the NIS domain name.  Note that this is not
-the same as the domain name which provides the domain portion of a
-fully qualified domain name (for example, in DNS).  If NIS is not in
-use, provide the string "(none)".
-</para>
-<para>
-If the string which is provided is strictly less than namelen
-characters in length, getdomainname places it in the array pointed to
-by name followed by a terminating null character.  If not,
-getdomainname may either truncate it to namelen characters and place
-it in name (without a terminating null character), or may fail with
-EINVAL.
+If the Network Information System (NIS) is in use, 
+<FUNCTION>getdomainname</FUNCTION> shall
+copy the NIS domain name to the supplied buffer identified by 
+<PARAMETER>name</PARAMETER>,
+with maximum length <PARAMETER>namelen</PARAMETER>. 
+If NIS is not in use, <FUNCTION>getdomainname</FUNCTION> shall
+provide the string "(none)". If <PARAMETER>namelen</PARAMETER> is less 
+the length of the string
+to be copied, <FUNCTION>getdomainname</FUNCTION>
+may either truncate the string to <PARAMETER>namelen</PARAMETER>
+characters and place it in <PARAMETER>name</PARAMETER>
+(without a terminating null character),
+or may fail with EINVAL.
+</PARA>
+<PARA>
+Note that the NIS domain name is not the same as the domain portion of
+a fully qualified domain name (for example, in DNS).
 </para>
 </refsect1>
 
 <refsect1>
 <title>Return Value</title>
 <para>
-getdomainname returns 0 if successful; -1 if not (in which case errno
+<FUNCTION>getdomainname</FUNCTION> returns 0 if successful; -1 if not (in which case <VARNAME>errno</VARNAME>
 is set to indicate the error).
 </para>
 </refsect1>
 
-</REFENTRY>
+<refsect1>
+<title>Errors</title>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+The buffer identified by <PARAMETER>name</PARAMETER> and 
+<PARAMETER>namelen</PARAMETER> is of insufficient size to store the NIS domain name string, and the implementation considers this an error.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
 
+</REFENTRY>

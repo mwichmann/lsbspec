@@ -14,9 +14,10 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	bindtextdomain.sgml cfmakeraw.sgml \
 	cfsetspeed.sgml daemon.sgml dcgettext.sgml dladdr.sgml endutent.sgml \
 	err.sgml error.sgml errx.sgml flock.sgml \
-	gethostbyname_r.sgml getloadavg.sgml getopt_long.sgml \
+	gethostbyname_r.sgml getloadavg.sgml getopt.sgml getopt_long.sgml \
 	getopt_long_only.sgml getservbyname.sgml getservent.sgml \
-	gettext.sgml getutent.sgml htons.sgml inet_aton.sgml inet_ntoa.sgml \
+	gettext.sgml getutent.sgml getutent_r.sgml \
+	htons.sgml inet_aton.sgml inet_ntoa.sgml \
 	initgroups.sgml ioctl.sgml iswctype.sgml kill.sgml llabs.sgml \
 	mbsnrtowcs.sgml memmem.sgml memrchr.sgml \
 	mkstemp64.sgml ntohs.sgml obstack_free.sgml opterr.sgml \
@@ -30,6 +31,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	stpncpy.sgml strcasestr.sgml strerror_r.sgml strfry.sgml strndup.sgml \
 	strnlen.sgml strsep.sgml strsignal.sgml strtok_r.sgml strtoq.sgml strtouq.sgml \
 	strverscmp.sgml system.sgml textdomain.sgml unlink.sgml \
+	svc_register.sgml svc_run.sgml \
 	vasprintf.sgml vdprintf.sgml \
 	verrx.sgml wait4.sgml warn.sgml warnx.sgml wcpcpy.sgml wcpncpy.sgml \
 	wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
@@ -37,7 +39,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	dcgettext.sgml dcngettext.sgml bind_textdomain_codeset.sgml \
 	pmap_getport.sgml pmap_set.sgml svc_run.sgml __register_atfork.sgml \
 	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml dladdr.sgml \
-	dlopen.sgml dlsym.sgml
+	dlopen.sgml dlsym.sgml wait3.sgml 
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
