@@ -29,8 +29,8 @@ On the IA32 platform, the functions <FUNCTION>__divdi3</FUNCTION>,
 </PARA>
 
 <PARA>
-The following RPC functions were ommitted and should be included:
-<FUNCTION>svc_sendreplay</FUNCTION>,
+The following RPC functions were omitted and should be included:
+<FUNCTION>svc_sendreply</FUNCTION>,
 <FUNCTION>svc_getargs</FUNCTION>,
 <FUNCTION>svc_freeargs</FUNCTION>,
 <FUNCTION>svc_register</FUNCTION>,
