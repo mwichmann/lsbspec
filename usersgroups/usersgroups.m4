@@ -21,7 +21,7 @@ group is associated with a process, agroup ID value is referred to as a real gro
 <TITLE>User Database</TITLE>
 <PARA>
 The user database, "/etc/passwd", consists of newline separated records, one
-per user, conaining six colon (":") separated fields.  each field is described 
+per user, conaining six colon (":") separated fields.  Each field is described 
 in the POSIX.1 header file "pwd.h".
 </PARA>
 <TABLE>
@@ -40,9 +40,11 @@ in the POSIX.1 header file "pwd.h".
 </TGROUP>
 </TABLE>
 <PARA>
-The "passwd" user database should only be read and updated form the 
+The passwd(5) user database should only be read and updated form the 
 following APIs: getpwent(3), setpwent(3), endpwent(3), getpwnam(3),
-getpwuid(3), putpwent(3), and passwd(5).
+getpwuid(3), putpwent(3), and passwd(1).  
+The layout of the passwd(5) file is not specified by this standard; 
+however, it is shown to illustrate what is retrievable from APIs.
 </PARA>
 <PARA>
 If the initial user program field is null, the system default is used.  
@@ -70,29 +72,17 @@ described in the POSIX.1 header file "grp.h".
 </TGROUP>
 </TABLE>
 <PARA>
-The "group" user database should only be red from the following APIs:
-getgrent(3), setgrent(3), sendgrent(3).  
+The group(5) user database should only be red from the following APIs:
+getgrent(3), setgrent(3), sendgrent(3), and groups(1).
+The layout of the group(5) file is not specified by this standard; 
+however, it is shown to illustrate what is retrievable from APIs.
 </PARA>
 <NOTE>
 <PARA>
-According to JFH, author of shadow-utils, there are no group write APIs.
+According to JFH, the original author of shadow-utils, 
+there are no group write APIs.
 </PARA>
 </NOTE>
-</SECT1>
-
-<SECT1>
-<TITLE>Commands</TITLE>
-<NOTE>
-<PARA>
-Commands adduser(8), groups(1), passmass(1), and rpc.rusersd(8) are also part of this specification; however, they are not currently propery catalogued in the database yet.
-</PARA>
-</NOTE>
-</SECT1>
-
-<SECT1>
-<TITLE>System Files</TITLE>
-<PARA>
-</PARA>
 </SECT1>
 
 <SECT1>
@@ -120,7 +110,8 @@ UNIX-like systems.
 Below is a table of default mnemonic user and group names.   This 
 specification makes no attempt to numerically assign uid or gid numbers,
 nor try to numericially group them.  The exception is the uid and gid for 
-"root" which are equal to 0, and the uid and gid for "bin" which are equal to 1.
+"root" which are equal to 0, and the uid and gid for "bin" which are equal 
+to 1.
 </PARA>
 <TABLE>
 <TITLE>User & Group Names</TITLE>
@@ -153,25 +144,10 @@ nor try to numericially group them.  The exception is the uid and gid for
 </TABLE>
 <PARA>
 The differences in numeric values of the uids and gids between systems on a 
-network should be reconciled via NIS, rdist(1), rsync, or ugidd(8).  
+network can be reconciled via NIS, rdist(1), rsync(1), or ugidd(8).  
 Only a minimum working set of "user names" and their corresponding 
-"user groups" should be defined.
-</PARA>
-<PARA>
-Systems will put all normal users in the group 'users'. 
-(FIXME: why standardize this?  Red Hat 6.0 or so doesn't seem to do it;
-haven't checked others).
-All normal users and
-normal user groups will be above the uid/gid of 100. No system required uid
-or gid is to be placed above uid/gid 99 as this may clash with real users
-imported via NIS or LDAP from other Unix systems.
-(FIXME: What about Red Hat's use of 500 for this?  Do other Linux
-distributions all use 100?  Is there another standard we can reference
-which contains the 100 rule?)
-Applications cannot
-assume non system uids will be provided from the password file. The password
-file format is undocumented by this standard. The *pwnam(3) calls must
-be used to access it. 
+"user groups" are required.
+Applications cannot assume non system user or group names will be defined.
 </PARA>
 <PARA>
 Applications cannot assume any policy for the default umask or the default
@@ -179,10 +155,6 @@ directory permissions a user may have. Applications should enforce user
 only file permissions on private files such as mailboxes.  The location of
 the users home directory is also not defined by policy other than the
 recommendations of the FHS and must be obtained by the *pwnam(3) calls.
-</PARA>
-<PARA>
-When an application needs to add a user or a group to the system it must
-invoke the useradd or groupadd applications. 
 </PARA>
 </SECT1>
 
