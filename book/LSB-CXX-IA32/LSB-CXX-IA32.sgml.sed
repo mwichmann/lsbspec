@@ -23,7 +23,7 @@
 &legal;
 </BOOKINFO>
 
-&lsb-ia32-intro;
+&lsb-ia32-cxxintro;
 &contents;
 &fdl;
 

@@ -23,7 +23,7 @@
 &legal;
 </BOOKINFO>
 
-&lsb-amd64-intro;
+&lsb-amd64-cxxintro;
 &contents;
 &fdl;
 

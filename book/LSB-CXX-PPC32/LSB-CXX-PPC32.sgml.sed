@@ -23,7 +23,7 @@
 &legal;
 </BOOKINFO>
 
-&lsb-ppc32-intro;
+&lsb-ppc32-cxxintro;
 &contents;
 &fdl;
 

@@ -14,6 +14,8 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkstandardsgmltable -a All -s "'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','XICE','OGL','LSB'" >standards.sgml
+	../../mklibsgmltable -a All -m LSB-Graphics >glibraries.sgml
+
 
 clean:
 	rm -f $(FILES)
@@ -22,4 +24,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-intro.sgml: standards.sgml
+intro.sgml: standards.sgml glibraries.sgml

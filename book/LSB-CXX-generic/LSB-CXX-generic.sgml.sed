@@ -20,7 +20,7 @@
 &legal;
 </BOOKINFO>
 
-&lsb-cxx-intro;
+&lsb-generic-cxxintro;
 &contents;
 &fdl;
 

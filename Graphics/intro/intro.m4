@@ -62,6 +62,32 @@ include(standards.sgml)
 
 <CHAPTER ID="REQUIREMENTS">
 <TITLE>Requirements</TITLE>
+<SECT1 ID="rlibraries">
+<TITLE>Relevant Libraries</TITLE>
+<PARA>
+The libraries listed in <XREF LINKEND='tbl-graphics-stdlib'> shall
+be available on a Linux Standard Base system, with the specified
+runtime names.  This list may be supplemented or amended by the
+architecture-specific specification.
+</PARA>
+<TABLE ID=tbl-graphics-stdlib>
+<TITLE>Standard Library Names</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Library</ENTRY>
+<ENTRY>Runtime Name</ENTRY>
+</ROW>
+</THEAD>
+include(glibraries.sgml)
+</TGROUP>
+</TABLE>
+<PARA>
+These libraries will be in an implementation-defined directory which
+the dynamic linker shall search by default.
+</PARA>
+</SECT1>
+
 <SECT1 ID="Implementation"><TITLE>Linux Implementation Conformance </TITLE>
 <PARA>
 An implementation shall satisfy the following requirements:

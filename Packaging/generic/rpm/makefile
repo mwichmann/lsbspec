@@ -31,5 +31,5 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-package.sgml: package.m4 privtags.sgml sigtags.sgml hdrtags.sgml rpmdeps.sgml
+package.sgml: package.m4 privtags.sgml sigtags.sgml hdrtags.sgml rpmdeps.sgml coredep.sgml
 package.sgml: rpmdepsattr.sgml

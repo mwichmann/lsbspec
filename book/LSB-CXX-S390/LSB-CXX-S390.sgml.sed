@@ -23,7 +23,7 @@
 &legal;
 </BOOKINFO>
 
-&lsb-s390-intro;
+&lsb-s390-cxxintro;
 &contents;
 &fdl;
 
