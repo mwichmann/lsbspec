@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Oct 25 05:43:58 2002 -->
+<!--    at Sun Oct 27 16:17:25 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1232,7 +1232,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>endgrent<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getgrgid<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>getprotoent<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>getprotoent<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getutent<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY>setmntent<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 </ROW>
@@ -1280,7 +1280,7 @@ System V Interface Definition,Fourth Edition</PARA>
 </ROW>
 <ROW>
 <ENTRY>endutxent<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>getprotobyname<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>getprotobyname<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getservbyport<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY>setgroups<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY></ENTRY>
@@ -1302,7 +1302,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>endhostent<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY>sethostent<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY>setmntent<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -2317,8 +2317,8 @@ struct ifaddr
     struct sockaddr ifu_dstaddr;
   }
   ifa_ifu;
-  void *__pad1;
-  void *__pad2;
+  void *ifa_ifp;
+  void *ifa_next;
 }
  ;
 #define IFNAMSIZ	IF_NAMESIZE
@@ -2486,7 +2486,7 @@ struct sockaddr_in
   sa_family_t sin_family;
   unsigned short sin_port;
   struct in_addr sin_addr;
-  unsigned char __pad[8];
+  unsigned char sin_zero[8];
 }
  ;
 </SCREEN>
@@ -2560,7 +2560,7 @@ struct passwd
 #define RE_SYNTAX_GREP	(RE_BK_PLUS_QM|RE_CHAR_CLASSES|RE_HAT_LISTS_NOT_NEWLINE|RE_INTERVALS|RE_NEWLINE_ALT)
 #define RE_CONTEXT_INDEP_ANCHORS	(RE_CHAR_CLASSES&lt;&lt;1)
 #define RE_SYNTAX_EGREP	(RE_CHAR_CLASSES|RE_CONTEXT_INDEP_ANCHORS| RE_CONTEXT_INDEP_OPS|RE_HAT_LISTS_NOT_NEWLINE|RE_NEWLINE_ALT|RE_NO_BK_PARENS|RE_NO_BK_VBAR)
-#define _RE_SYNTAX_POSIX_COMMON	(RE_CHAR_CLASSES|RE_DOT_NEWLINE|RE_DOT_NOT_NULL|RE_INTERVALS)
+#define _RE_SYNTAX_POSIX_COMMON	(RE_CHAR_CLASSES|RE_DOT_NEWLINE|RE_DOT_NOT_NULL|RE_INTERVALS|RE_NO_EMPTY_RANGES)
 #define RE_CONTEXT_INDEP_OPS	(RE_CONTEXT_INDEP_ANCHORS&lt;&lt;1)
 #define RE_CONTEXT_INVALID_OPS	(RE_CONTEXT_INDEP_OPS&lt;&lt;1)
 #define RE_DOT_NEWLINE	(RE_CONTEXT_INVALID_OPS&lt;&lt;1)
@@ -2671,26 +2671,26 @@ struct opaque_auth
  ;
 
 
-struct auth_ops
-{
-  void (*ah_nextverf) (AUTH *);
-  int (*ah_marshal) (AUTH *, struct XDR *);
-  int (*ah_validate) (AUTH *, struct opaque_auth *);
-  int (*ah_refresh) (AUTH *);
-  void (*ah_destroy) (AUTH *);
-}
- ;
-
-
 typedef struct AUTH
 {
   struct opaque_auth ah_cred;
   struct opaque_auth ah_verf;
   union des_block ah_key;
-  struct auth_ops ah_ops;
+  struct auth_ops *ah_ops;
   caddr_t ah_private;
 }
 AUTH;
+
+
+struct auth_ops
+{
+  void (*ah_nextverf) (struct AUTH *);
+  int (*ah_marshal) (struct AUTH *, struct XDR *);
+  int (*ah_validate) (struct AUTH *, struct opaque_auth *);
+  int (*ah_refresh) (struct AUTH *);
+  void (*ah_destroy) (struct AUTH *);
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2730,20 +2730,167 @@ enum clnt_stat
     24, RPC_STALERACHANDLE = 25
 }
  ;
+struct rpc_err
+{
+  enum clnt_stat re_status;
+  union
+  {
+    int RE_errno;
+    enum auth_stat RE_why;
+    struct
+    {
+      u_long low;
+      u_long high;
+    }
+    RE_vers;
+    struct
+    {
+      long s1;
+      long s2;
+    }
+    RE_lb;
+  }
+  ru;
+}
+ ;
 
 
 
+
+
+typedef struct CLIENT
+{
+  struct AUTH *cl_auth;
+  struct clnt_ops *cl_ops;
+  caddr_t cl_private;
+}
+CLIENT;
 
 
 struct clnt_ops
 {
-  enum clnt_stat (*cl_call) (CLIENT *, u_long, xdrproc_t, caddr_t, xdrproc_t,
-			     caddr_t, struct timeval);
+  enum clnt_stat (*cl_call) (struct CLIENT *, u_long, xdrproc_t, caddr_t,
+			     xdrproc_t, caddr_t, struct timeval);
   void (*cl_abort) (void);
-  void (*cl_geterr) (CLIENT *, struct rpc_err *);
-    bool_t (*cl_freeres) (CLIENT *, xdrproc_t, caddr_t);
-  void (*cl_destroy) (CLIENT *);
-    bool_t (*cl_control) (CLIENT *, int, char *);
+  void (*cl_geterr) (struct CLIENT *, struct rpc_err *);
+    bool_t (*cl_freeres) (struct CLIENT *, xdrproc_t, caddr_t);
+  void (*cl_destroy) (struct CLIENT *);
+    bool_t (*cl_control) (struct CLIENT *, int, char *);
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>rpc/rpc_msg.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+enum msg_type
+{
+  CALL, REPLY = 1
+}
+ ;
+enum reply_stat
+{
+  MSG_ACCEPTED, MSG_DENIED = 1
+}
+ ;
+enum accept_stat
+{
+  SUCCESS, PROG_UNAVAIL = 1, PROG_MISMATCH = 2, PROC_UNAVAIL =
+    3, GARBAGE_ARGS = 4, SYSTEM_ERR = 5
+}
+ ;
+enum reject_stat
+{
+  RPC_MISMATCH, AUTH_ERROR = 1
+}
+ ;
+
+
+struct accepted_reply
+{
+  struct opaque_auth ar_verf;
+  enum accept_stat ar_stat;
+  union
+  {
+    struct
+    {
+      unsigned long low;
+      unsigned long high;
+    }
+    AR_versions;
+    struct
+    {
+      caddr_t where;
+      xdrproc_t proc;
+    }
+    AR_results;
+  }
+  ru;
+}
+ ;
+
+
+struct rejected_reply
+{
+  enum reject_stat rj_stat;
+  union
+  {
+    struct
+    {
+      unsigned long low;
+      unsigned long high;
+    }
+    RJ_versions;
+    enum auth_stat RJ_why;
+  }
+  ru;
+}
+ ;
+
+
+struct reply_body
+{
+  enum reply_stat rp_stat;
+  union
+  {
+    struct accepted_reply RP_ar;
+    struct rejected_reply RP_dr;
+  }
+  ru;
+}
+ ;
+
+
+struct call_body
+{
+  unsigned long cb_rpcvers;
+  unsigned long cb_prog;
+  unsigned long cb_vers;
+  unsigned long cb_proc;
+  struct opaque_auth cb_cred;
+  struct opaque_auth cb_verf;
+}
+ ;
+
+
+struct rpc_msg
+{
+  unsigned long rm_xid;
+  enum msg_type rm_direction;
+  union
+  {
+    struct call_body RM_cmb;
+    struct reply_body RM_rmb;
+  }
+  ru;
 }
  ;
 </SCREEN>
@@ -2757,6 +2904,21 @@ struct clnt_ops
 
 
 
+
+
+typedef struct SVCXPRT
+{
+  int xp_sock;
+  u_short xp_port;
+  struct xp_ops *xp_ops;
+  int xp_addrlen;
+  struct sockaddr_in xp_raddr;
+  struct opaque_auth xp_verf;
+  caddr_t xp_p1;
+  caddr_t xp_p2;
+  char xp_pad[256];
+}
+SVCXPRT;
 
 
 struct xp_ops
@@ -2783,6 +2945,7 @@ struct xp_ops
 
 typedef int bool_t;
 typedef int enum_t;
+typedef unsigned long rpcvers_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2798,16 +2961,21 @@ enum xdr_op
   XDR_ENCODE, XDR_DECODE, XDR_FREE
 }
  ;
-struct XDR
+typedef struct XDR
 {
   enum xdr_op x_op;
-  struct xdr_ops x_ops;
+  struct xdr_ops *x_ops;
   caddr_t x_public;
   caddr_t x_private;
   caddr_t x_base;
   int x_handy;
 }
- ;
+XDR;
+
+
+
+
+
 struct xdr_ops
 {
   bool_t (*x_getlong) (struct XDR * __xdrs, long *__lp);
@@ -2820,6 +2988,17 @@ struct xdr_ops
   void (*x_destroy) (struct XDR * __xdrs);
     bool_t (*x_getint32) (struct XDR * __xdrs, int32_t * __ip);
     bool_t (*x_putint32) (struct XDR * __xdrs, int32_t * __ip);
+}
+ ;
+
+
+typedef bool_t (*xdrproc_t) (struct XDR *, void *, ...);
+
+
+struct xdr_discrim
+{
+  int value;
+  xdrproc_t proc;
 }
  ;
 </SCREEN>
@@ -2887,7 +3066,7 @@ typedef void (*__action_fn_t) (void *__nodep, VISIT __value, int __level);
 
 
 
-typedef int __jmp_buf[6];
+
 
 
 struct __jmp_buf_tag
@@ -3062,7 +3241,6 @@ typedef struct
 }
 sigset_t;
 #define SA_NOCLDSTOP	0x00000001
-#define SA_NOCLDWAIT	0x00000002
 #define SA_SIGINFO	0x00000004
 #define SA_ONSTACK	0x08000000
 #define SA_RESTART	0x10000000
@@ -3073,19 +3251,7 @@ sigset_t;
 #define SA_ONESHOT	SA_RESETHAND
 
 
-struct sigaction
-{
-  union
-  {
-    __sighandler_t _sa_handler;
-    void (*_sa_sigaction) (int, siginfo_t *, void *);
-  }
-  __sigaction_handler;
-  unsigned long sa_flags;
-  void (*sa_restorer) (void);
-  sigset_t sa_mask;
-}
- ;
+
 
 
 typedef struct sigaltstack
@@ -3128,7 +3294,6 @@ typedef long ptrdiff_t;
 #define L_cuserid	9
 
 
-typedef struct _IO_FILE FILE;
 typedef struct
 {
   off_t __pos;
@@ -3143,7 +3308,7 @@ typedef struct
 fpos64_t;
 
 
-
+typedef struct _IO_FILE FILE;
 #define _IOFBF	0
 #define _IOLBF	1
 #define _IONBF	2
@@ -3222,23 +3387,6 @@ lldiv_t;
 #define IPC_NOWAIT	00004000
 #define IPC_SET	1
 #define IPC_STAT	2
-
-
-struct ipc_perm
-{
-  key_t __key;
-  uid_t uid;
-  gid_t gid;
-  uid_t cuid;
-  gid_t cgid;
-  unsigned short mode;
-  unsigned short __pad1;
-  unsigned short __seq;
-  unsigned short __pad2;
-  unsigned long __unused1;
-  unsigned long __unused2;
-}
- ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3276,27 +3424,8 @@ struct ipc_perm
 
 
 
-
-
-
-struct msqid_ds
-{
-  struct ipc_perm msg_perm;
-  time_t msg_stime;
-  unsigned long __unused1;
-  time_t msg_rtime;
-  unsigned long __unused2;
-  time_t msg_ctime;
-  unsigned long __unused3;
-  unsigned long __msg_cbytes;
-  msgqnum_t msg_qnum;
-  msglen_t msg_qbytes;
-  pid_t msg_lspid;
-  pid_t msg_lrpid;
-  unsigned long __unused4;
-  unsigned long __unused5;
-}
- ;
+typedef unsigned long msgqnum_t;
+typedef unsigned long msglen_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3418,18 +3547,6 @@ struct sembuf
   short sem_num;
   short sem_op;
   short sem_flg;
-}
- ;
-struct semid_ds
-{
-  struct ipc_perm sem_perm;
-  time_t sem_otime;
-  unsigned long __unused1;
-  time_t sem_ctime;
-  unsigned long __unused2;
-  unsigned long sem_nsems;
-  unsigned long __unused3;
-  unsigned long __unused4;
 }
  ;
 </SCREEN>
@@ -3611,99 +3728,6 @@ struct msghdr
 #define S_IREAD	S_IRUSR
 #define S_IWRITE	S_IWUSR
 #define S_IEXEC	S_IXUSR
-
-
-struct stat
-{
-  dev_t st_dev;
-  unsigned short __pad1;
-  unsigned long st_ino;
-  mode_t st_mode;
-  nlink_t st_nlink;
-  pid_t st_uid;
-  gid_t st_gid;
-  dev_t st_rdev;
-  unsigned short __pad2;
-  off_t st_size;
-  blksize_t st_blksize;
-  blkcnt_t st_blocks;
-  time_t st_atime;
-  unsigned long __unused1;
-  time_t st_mtime;
-  unsigned long __unused2;
-  time_t st_ctime;
-  unsigned long __unused3;
-  unsigned long __unused4;
-  unsigned long __unused5;
-}
- ;
-struct stat64
-{
-  dev_t st_dev;
-  unsigned int __pad0;
-  ino_t __st_ino;
-  mode_t st_mode;
-  nlink_t st_nlink;
-  uid_t st_uid;
-  gid_t st_gid;
-  dev_t st_rdev;
-  unsigned int __pad2;
-  off64_t st_size;
-  blksize_t st_blksize;
-  blkcnt64_t st_blocks;
-  time_t st_atime;
-  unsigned long __unused1;
-  time_t st_mtime;
-  unsigned long __unused2;
-  time_t st_ctime;
-  unsigned long __unused3;
-  ino64_t st_ino;
-}
- ;
-</SCREEN>
-</SECT2>
-<SECT2>
-<TITLE>sys/statvfs.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-
-
-struct statvfs
-{
-  unsigned long f_bsize;
-  unsigned long f_frsize;
-  fsblkcnt_t f_blocks;
-  fsblkcnt_t f_bfree;
-  fsblkcnt_t f_bavail;
-  fsfilcnt_t f_files;
-  fsfilcnt_t f_ffree;
-  fsfilcnt_t f_favail;
-  unsigned long f_fsid;
-  int __f_unused;
-  unsigned long f_flag;
-  unsigned long f_namemax;
-  int __f_spare[6];
-}
- ;
-struct statvfs64
-{
-  unsigned long f_bsize;
-  unsigned long f_frsize;
-  fsblkcnt64_t f_blocks;
-  fsblkcnt64_t f_bfree;
-  fsblkcnt64_t f_bavail;
-  fsfilcnt64_t f_files;
-  fsfilcnt64_t f_ffree;
-  fsfilcnt64_t f_favail;
-  unsigned long f_fsid;
-  int __f_unused;
-  unsigned long f_flag;
-  unsigned long f_namemax;
-  int __f_spare[6];
-}
- ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4230,7 +4254,6 @@ typedef int *intptr_t;
 #define _POSIX_MEMLOCK	1
 #define _POSIX_MEMLOCK_RANGE	1
 #define _POSIX_MEMORY_PROTECTION	1
-#define _POSIX_MESSAGE_PASSING	1
 #define _POSIX_NO_TRUNC	1
 #define _POSIX_PRIORITY_SCHEDULING	1
 #define _POSIX_REALTIME_SIGNALS	1
@@ -4596,8 +4619,6 @@ include(getloadavg.sgml)
 include(getopt.sgml)
 include(getopt_long.sgml)
 include(getopt_long_only.sgml)
-include(getprotobyname.sgml)
-include(getprotoent.sgml)
 include(getpwnam_r.sgml)
 include(gets.sgml)
 include(getservbyname.sgml)

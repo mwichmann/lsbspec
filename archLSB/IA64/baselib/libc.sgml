@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Oct 25 05:53:27 2002 -->
+<!--    at Sun Oct 27 16:23:53 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1273,7 +1273,7 @@ System V Interface Definition,Fourth Edition</PARA>
 </ROW>
 <ROW>
 <ENTRY>endutent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>getprotobyname(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>getprotobyname(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getservent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY>sethostent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY></ENTRY>
@@ -1287,7 +1287,7 @@ System V Interface Definition,Fourth Edition</PARA>
 </ROW>
 <ROW>
 <ENTRY>getgrent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>getprotoent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>getprotoent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getutent_r(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY>setnetent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY></ENTRY>
@@ -1302,7 +1302,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>endhostent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY>sethostent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY>setmntent(GLIBC_2.2)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -1735,10 +1735,23 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 #define LONG_MAX	0x7FFFFFFFFFFFFFFFL
 #define ULONG_MAX	0xFFFFFFFFFFFFFFFFUL
+
+
+
+
+
+
+
+
+
+
+
+
+#define __INT_MAX__	2147483647
 </SCREEN>
 </SECT2>
 <SECT2>
-<TITLE>regex.h</TITLE>
+<TITLE>setjmp.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
@@ -1746,7 +1759,9 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 
 
-#define _RE_SYNTAX_POSIX_COMMON	66244
+
+
+typedef long __jmp_buf[70];
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1798,7 +1813,18 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 
 
-
+struct sigaction
+{
+  union
+  {
+    __sighandler_t _sa_handler;
+    void (*_sa_sigaction) (int, siginfo_t *, void *);
+  }
+  __sigaction_handler;
+  unsigned long sa_flags;
+  sigset_t sa_mask;
+}
+ ;
 
 
 
@@ -1845,6 +1871,89 @@ struct sigcontext
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>sys/ioctl.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define TIOCNOTTY	0x5422
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/ipc.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct ipc_perm
+{
+  key_t __key;
+  uid_t uid;
+  gid_t gid;
+  uid_t cuid;
+  uid_t cgid;
+  mode_t mode;
+  unsigned short __seq;
+  unsigned short __pad1;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/msg.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+
+
+
+struct msqid_ds
+{
+  struct ipc_perm msg_perm;
+  time_t msg_stime;
+  time_t msg_rtime;
+  time_t msg_ctime;
+  unsigned long __msg_cbytes;
+  unsigned long msg_qnum;
+  unsigned long msg_qbytes;
+  pid_t msg_lspid;
+  pid_t msg_lrpid;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/sem.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct semid_ds
+{
+  struct ipc_perm sem_perm;
+  time_t sem_otime;
+  time_t sem_ctime;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/shm.h</TITLE>
 <PARA>
 </PARA>
@@ -1882,6 +1991,72 @@ struct shmid_ds
 <SCREEN>
 
 #define _STAT_VER	1
+
+
+struct stat
+{
+  unsigned long st_dev;
+  unsigned long st_ino;
+  unsigned long st_nlink;
+  unsigned int st_mode;
+  unsigned int st_uid;
+  unsigned int st_gid;
+  unsigned int pad0;
+  unsigned long st_rdev;
+  unsigned long st_size;
+  unsigned long st_atime;
+  unsigned long __reserved0;
+  unsigned long st_mtime;
+  unsigned long __reserved1;
+  unsigned long st_ctime;
+  unsigned long __reserved2;
+  unsigned long st_blksize;
+  long st_blocks;
+  unsigned long __unused[3];
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/statvfs.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct statvfs
+{
+  unsigned long f_bsize;
+  unsigned long f_frsize;
+  fsblkcnt64_t f_blocks;
+  fsblkcnt64_t f_bfree;
+  fsblkcnt64_t f_bavail;
+  fsfilcnt64_t f_files;
+  fsfilcnt64_t f_ffree;
+  fsfilcnt64_t f_favail;
+  unsigned long f_fsid;
+  unsigned long f_flag;
+  unsigned long f_namemax;
+  unsigned long __f_spare[6];
+}
+ ;
+struct statvfs64
+{
+  unsigned long f_bsize;
+  unsigned long f_frsize;
+  fsblkcnt64_t f_blocks;
+  fsblkcnt64_t f_bfree;
+  fsblkcnt64_t f_bavail;
+  fsfilcnt64_t f_files;
+  fsfilcnt64_t f_ffree;
+  fsfilcnt64_t f_favail;
+  unsigned long f_fsid;
+  unsigned long f_flag;
+  unsigned long f_namemax;
+  unsigned long __f_spare[6];
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1890,6 +2065,7 @@ struct shmid_ds
 </PARA>
 <SCREEN>
 
+#define _SC_GR0_OFFSET	(((char *) &amp ((struct sigcontext *) 0)->sc_gr[0]) - (char *) 0)
 
 
 
@@ -1917,7 +2093,6 @@ struct shmid_ds
 
 
 typedef struct sigcontext mcontext_t;
-#define _SC_GR0_OFFSET	(((char *) &amp ((struct sigcontext *) 0)->sc_gr[0]) - (char *) 0)
 
 
 typedef struct ia64ucontext

@@ -20,7 +20,7 @@ corresponding section in the Linux Standard Base Specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Oct 25 05:55:56 2002 -->
+<!--    at Sun Oct 27 16:25:29 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1251,7 +1251,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>endgrent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getgrgid(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>getprotoent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>getprotoent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getutent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY>setmntent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 </ROW>
@@ -1299,7 +1299,7 @@ System V Interface Definition,Fourth Edition</PARA>
 </ROW>
 <ROW>
 <ENTRY>endutxent(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>getprotobyname(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>getprotobyname(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getservbyport(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY>setgroups(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY></ENTRY>
@@ -1321,7 +1321,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>endhostent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY>sethostent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY>setmntent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -1766,7 +1766,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 </SCREEN>
 </SECT2>
 <SECT2>
-<TITLE>regex.h</TITLE>
+<TITLE>setjmp.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
@@ -1774,7 +1774,9 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 
 
-#define _RE_SYNTAX_POSIX_COMMON	66244
+
+
+typedef int __jmp_buf[1];
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1826,7 +1828,19 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 
 
-
+struct sigaction
+{
+  union
+  {
+    __sighandler_t _sa_handler;
+    void (*_sa_sigaction) (int, siginfo_t *, void *);
+  }
+  __sigaction_handler;
+  unsigned long sa_flags;
+  void (*sa_restorer) (void);
+  sigset_t sa_mask;
+}
+ ;
 
 
 
@@ -1852,6 +1866,31 @@ struct sigcontext;
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>sys/ipc.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct ipc_perm
+{
+  key_t __key;
+  uid_t uid;
+  gid_t gid;
+  uid_t cuid;
+  uid_t cgid;
+  unsigned short mode;
+  unsigned short __pad1;
+  unsigned short __seq;
+  unsigned short __pad2;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/mman.h</TITLE>
 <PARA>
 </PARA>
@@ -1859,6 +1898,60 @@ struct sigcontext;
 
 #define MCL_FUTURE	16384
 #define MCL_CURRENT	8192
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/msg.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+
+
+
+struct msqid_ds
+{
+  struct ipc_perm msg_perm;
+  time_t msg_stime;
+  unsigned long __unsued1;
+  time_t msg_rtime;
+  unsigned long __unused2;
+  time_t msg_ctime;
+  unsigned long __unused3;
+  unsigned long __msg_cbytes;
+  msgqnum_t msg_qnum;
+  msglen_t msg_qbytes;
+  pid_t msg_lspid;
+  pid_t msg_lrpid;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/sem.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct semid_ds
+{
+  struct ipc_perm sem_perm;
+  time_t sem_otime;
+  unsigned long __unused1;
+  time_t sem_ctime;
+  unsigned long __unused2;
+  unsigned long sem_nsems;
+  unsigned long __unused3;
+  unsigned long __unused4;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1876,6 +1969,17 @@ struct sigcontext;
 
 
 struct shmid_ds;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/stat.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct stat64;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2025,7 +2129,7 @@ ucontext_t;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Oct 25 05:57:02 2002 -->
+<!--    at Sun Oct 27 16:25:59 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -2489,7 +2593,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Oct 25 05:57:30 2002 -->
+<!--    at Sun Oct 27 16:26:14 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -2665,7 +2769,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Oct 25 05:57:46 2002 -->
+<!--    at Sun Oct 27 16:26:27 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -2708,7 +2812,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Oct 25 05:57:59 2002 -->
+<!--    at Sun Oct 27 16:26:39 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>

@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Oct 25 05:50:57 2002 -->
+<!--    at Sun Oct 27 16:22:16 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1232,7 +1232,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>endgrent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getgrgid(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>getprotoent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>getprotoent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getutent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY>setmntent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 </ROW>
@@ -1280,7 +1280,7 @@ System V Interface Definition,Fourth Edition</PARA>
 </ROW>
 <ROW>
 <ENTRY>endutxent(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
-<ENTRY>getprotobyname(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>getprotobyname(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>getservbyport(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY>setgroups(GLIBC_2.1)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY></ENTRY>
@@ -1302,7 +1302,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ROW>
 <ENTRY>endhostent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
 <ENTRY>sethostent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-15"></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY>setmntent(GLIBC_2.0)<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -1758,6 +1758,20 @@ ISO C serves as the LSB reference programming language, and data definitions are
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>setjmp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef int __jmp_buf[6];
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>signal.h</TITLE>
 <PARA>
 </PARA>
@@ -1806,7 +1820,19 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 
 
-
+struct sigaction
+{
+  union
+  {
+    __sighandler_t _sa_handler;
+    void (*_sa_sigaction) (int, siginfo_t *, void *);
+  }
+  __sigaction_handler;
+  unsigned long sa_flags;
+  void (*sa_restorer) (void);
+  sigset_t sa_mask;
+}
+ ;
 
 
 
@@ -1898,6 +1924,31 @@ struct sigcontext
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>sys/ipc.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct ipc_perm
+{
+  key_t __key;
+  uid_t uid;
+  gid_t gid;
+  uid_t cuid;
+  gid_t cgid;
+  unsigned short mode;
+  unsigned short __pad1;
+  unsigned short __seq;
+  unsigned short __pad2;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/msg.h</TITLE>
 <PARA>
 </PARA>
@@ -1908,8 +1959,49 @@ struct sigcontext
 
 
 
-typedef unsigned long msgqnum_t;
-typedef unsigned long msglen_t;
+
+
+
+struct msqid_ds
+{
+  struct ipc_perm msg_perm;
+  time_t msg_stime;
+  unsigned long __unused1;
+  time_t msg_rtime;
+  unsigned long __unused2;
+  time_t msg_ctime;
+  unsigned long __unused3;
+  unsigned long __msg_cbytes;
+  msgqnum_t msg_qnum;
+  msglen_t msg_qbytes;
+  pid_t msg_lspid;
+  pid_t msg_lrpid;
+  unsigned long __unused4;
+  unsigned long __unused5;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/sem.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct semid_ds
+{
+  struct ipc_perm sem_perm;
+  time_t sem_otime;
+  unsigned long __unused1;
+  time_t sem_ctime;
+  unsigned long __unused2;
+  unsigned long sem_nsems;
+  unsigned long __unused3;
+  unsigned long __unused4;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1941,6 +2033,107 @@ struct shmid_ds
   shmatt_t shm_nattch;
   unsigned long __unused4;
   unsigned long __unused5;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/stat.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct stat
+{
+  dev_t st_dev;
+  unsigned short __pad1;
+  unsigned long st_ino;
+  mode_t st_mode;
+  nlink_t st_nlink;
+  pid_t st_uid;
+  gid_t st_gid;
+  dev_t st_rdev;
+  unsigned short __pad2;
+  off_t st_size;
+  blksize_t st_blksize;
+  blkcnt_t st_blocks;
+  time_t st_atime;
+  unsigned long __unused1;
+  time_t st_mtime;
+  unsigned long __unused2;
+  time_t st_ctime;
+  unsigned long __unused3;
+  unsigned long __unused4;
+  unsigned long __unused5;
+}
+ ;
+struct stat64
+{
+  dev_t st_dev;
+  unsigned int __pad1;
+  ino_t __st_ino;
+  mode_t st_mode;
+  nlink_t st_nlink;
+  uid_t st_uid;
+  gid_t st_gid;
+  dev_t st_rdev;
+  unsigned int __pad2;
+  off64_t st_size;
+  blksize_t st_blksize;
+  blkcnt64_t st_blocks;
+  time_t st_atime;
+  unsigned long __unused1;
+  time_t st_mtime;
+  unsigned long __unused2;
+  time_t st_ctime;
+  unsigned long __unused3;
+  ino64_t st_ino;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/statvfs.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct statvfs
+{
+  unsigned long f_bsize;
+  unsigned long f_frsize;
+  fsblkcnt_t f_blocks;
+  fsblkcnt_t f_bfree;
+  fsblkcnt_t f_bavail;
+  fsfilcnt_t f_files;
+  fsfilcnt_t f_ffree;
+  fsfilcnt_t f_favail;
+  unsigned long f_fsid;
+  int __f_unused;
+  unsigned long f_flag;
+  unsigned long f_namemax;
+  int __f_spare[6];
+}
+ ;
+struct statvfs64
+{
+  unsigned long f_bsize;
+  unsigned long f_frsize;
+  fsblkcnt64_t f_blocks;
+  fsblkcnt64_t f_bfree;
+  fsblkcnt64_t f_bavail;
+  fsfilcnt64_t f_files;
+  fsfilcnt64_t f_ffree;
+  fsfilcnt64_t f_favail;
+  unsigned long f_fsid;
+  int __f_unused;
+  unsigned long f_flag;
+  unsigned long f_namemax;
+  int __f_spare[6];
 }
  ;
 </SCREEN>
