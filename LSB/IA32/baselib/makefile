@@ -8,7 +8,7 @@ UNWINDPAGES= _Unwind_DeleteException.sgml _Unwind_Find_FDE.sgml \
 	     _Unwind_GetTextRelBase.sgml _Unwind_RaiseException.sgml \
 	     _Unwind_Resume.sgml _Unwind_SetGR.sgml _Unwind_SetIP.sgml
 
-MANPAGES= __divdi3.sgml ioperm.sgml iopl.sgml $(UNWINDPAGES)
+MANPAGES= __divdi3.sgml $(UNWINDPAGES)
 
 LIBS=libc.sgml libm.sgml libgcc_s.sgml libpthread.sgml libdl.sgml \
 	libcrypt.sgml libstdcxx.sgml
