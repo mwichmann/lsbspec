@@ -12,8 +12,8 @@ hardware in the system.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
-<!--    at Wed Sep 25 08:41:17 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
+<!--    at Wed Oct  2 08:50:47 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -378,6 +378,20 @@ System V Interface Definition,Fourth Edition</PARA>
 <ENTRY>read<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
 <ENTRY>setrlimit64<FOOTNOTEREF LINKEND="std-131-35"></ENTRY>
 <ENTRY>writev<FOOTNOTEREF LINKEND="std-131-5"></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<TABLE>
+<TITLE>libc - System Calls Deprecated Function Interfaces</TITLE>
+<TGROUP COLS=5>
+<TBODY>
+<ROW>
+<ENTRY>fstatfs<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>statfs<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
+<ENTRY>statfs64<FOOTNOTEREF LINKEND="std-131-35"></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -1374,7 +1388,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <TBODY>
 <ROW>
 <ENTRY>alphasort64<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY>fstatfs64<FOOTNOTEREF LINKEND="std-131-35"></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
@@ -2356,8 +2370,10 @@ struct ifconf
 #define NETDB_INTERNAL	-1
 #define NETDB_SUCCESS	0
 #define HOST_NOT_FOUND	1
+#define NI_MAXHOST	1025
 #define TRY_AGAIN	2
 #define NO_RECOVERY	3
+#define NI_MAXSERV	32
 #define NO_DATA	4
 #define h_addr	h_addr_list[0]
 #define NO_ADDRESS	NO_DATA
@@ -2387,6 +2403,31 @@ struct protoent
   int p_proto;
 }
  ;
+#define AI_PASSIVE	0x0001
+#define AI_CANONNAME	0x0002
+#define AI_NUMERICHOST	0x0004
+
+
+
+#define NI_NUMERICHOST	1
+#define NI_DGRAM	16
+#define NI_NUMERICSERV	2
+#define NI_NOFQDN	4
+#define NI_NAMEREQD	8
+
+
+
+#define EAI_BADFLAGS	-1
+#define EAI_MEMORY	-10
+#define EAI_SYSTEM	-11
+#define EAI_NONAME	-2
+#define EAI_AGAIN	-3
+#define EAI_FAIL	-4
+#define EAI_NODATA	-5
+#define EAI_FAMILY	-6
+#define EAI_SOCKTYPE	-7
+#define EAI_SERVICE	-8
+#define EAI_ADDRFAMILY	-9
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2820,7 +2861,7 @@ struct sigaction
   union
   {
     __sighandler_t _sa_handler;
-    void (*_sa_sigaction) (void);
+    void (*_sa_sigaction) (int, siginfo_t *, void *);
   }
   __sigaction_handler;
   unsigned long sa_flags;
@@ -3233,6 +3274,18 @@ struct iovec
 {
   void *iov_base;
   size_t iov_len;
+}
+ ;
+struct addrinfo
+{
+  int ai_flags;
+  int ai_family;
+  int ai_socktype;
+  int ai_protocol;
+  size_t ai_addrlen;
+  struct sockaddr *ai_addr;
+  char *ai_canonname;
+  struct addrinfo *ai_next;
 }
  ;
 
@@ -13582,13 +13635,13 @@ Convert initial portion of wide string NPTR to unsigned long long int representa
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
-<!--    at Wed Sep 25 08:42:28 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
+<!--    at Wed Oct  2 08:52:09 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -14090,13 +14143,13 @@ struct exception
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
-<!--    at Wed Sep 25 08:42:57 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
+<!--    at Wed Oct  2 08:52:42 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -14545,13 +14598,13 @@ sem_timedwait() waits for semaphore object SEM being posted. It is a new functio
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
-<!--    at Wed Sep 25 08:43:14 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
+<!--    at Wed Oct  2 08:53:03 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -14761,13 +14814,13 @@ directory search-path for object files
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
-<!--    at Wed Sep 25 08:43:26 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
+<!--    at Wed Oct  2 08:53:15 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -14826,7 +14879,7 @@ This section contains standard data definitions that describe system data. These
 ISO C serves as the LSB reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.47 2002/09/24 16:34:18 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
 
 
 </CHAPTER>
