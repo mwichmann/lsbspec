@@ -4,6 +4,63 @@ LSB Packaging Dependencies
 
 GOAL / ABSTRACT
 
+Rationale(s):
+
+- Packaged software in vendor distributions uses dependency chains in order
+  to insure that packages are installed correctly. Increasingly, however,
+  differences between vendor dependencies are causing installation failures
+  for users who "expect" to be able mix `n match packages from different
+  vendors without trouble.
+
+- Packagers of software need predictable environments in order to package
+  software reliably. Packagers "expect" to be able to create a single package
+  that can be installed on "standard" systems flawlessly. At the moment, since
+  every distro has slightly different dependencies that are changing with
+  every release, packagers often have to prepare and test packages for
+  each vendor release.
+
+- Discovery of other packages that are necessary to satisfy dependencies from
+  a given package can lead to problems. At least part of the problem is that
+  there is no common format for supplying information about the dependencies
+  provided by a given distribution.
+
+Proposed deliverables:
+
+1) Choose a "standard" common format for vendors to supply dependencies provided
+   by each distribution release. Please note that multiple "standard" formats
+   will almost certainly be needed at the moment. I also suggest that CD`s are
+   not an adequate "standard" common format, I`m looking for an explicit
+   encapsulation of package metadata separate from the distribution itself.
+
+2) Collect current and historical information from existing Linux distro`s.
+   I suggest collecting metadata from each distro in a "standard" form for
+   use by tools here, nothing more.
+              
+3) Publishing (or otherwise making available) in "standard" common format
+   dependency data so that tools like apt and rpmfind can begin work on
+   more efficient package discovery mechanisms.
+
+4) Develop tools/techniques that vendors can use to generate the "standard"
+   common format for new releases. For example, the following two rpm commands
+   can be use to capture all metadata from the set of packages that compose a
+   vendor release:
+            
+   rpm --dbpath <path_to_temporary_database> --initdb
+   rpm --dbpath <path_to_temporary_database> -U 
+       --nodeps --noscripts --notriggers --justdb <packages>+
+
+   with output in <path_to_temporary_database>. (Note: Only the Packages file
+   is essential, the inverted lists can be regenerated with a --rebuilddb.)
+
+   Note: I`m confident that equally efficient "standard" common formats exist,
+   and will be proposed, for apt, rpmfind, whatever.
+
+5) Assist with documentation about "standard" common format(s) suffciently
+   to encourage vendors to provide this information as part of their
+   distribution(s) in the future.
+
+http://www.geocrawler.com/lists/3/SourceForge/7460/0/4673336/
+
 WORKGROUP
 
 Electronic mail lsb-taskforce3@lists.sourceforge.net
@@ -11,6 +68,8 @@ Electronic mail lsb-taskforce3@lists.sourceforge.net
 Archives https://sourceforge.net/mail/?group_id=1107
 
 MODERATOR
+
+Jeff Johnson,  at redhat.com
 
 MILESTONES
 
