@@ -1,0 +1,25 @@
+
+.SUFFIXES: .sgml .cpp .m4
+
+MANPAGES=
+
+FILES=package.sgml
+TABLES=privtags.sgml sigtags.sgml hdrtags.sgml
+
+.m4.sgml:
+	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
+
+all: $(FILES) $(TABLES)
+
+gensrc:
+	../../mkrpmtagtable -g Private -t "Header Private Tag Values" >privtags.sgml
+	../../mkrpmtagtable -g Signature -t "Signature Tag Values" >sigtags.sgml
+	../../mkrpmtagtable -g Header -t "Header Tag Values" >hdrtags.sgml
+
+clean:
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
+baselib.sgml: baselib.m4 libstdcxx.sgml
