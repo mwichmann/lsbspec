@@ -4,30 +4,13 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
-<XREF LINKEND="std.gABI41">,
-<XREF LINKEND="std.M32R.ABI">
-and as supplemented by the Linux
-Standard Base Specification and this document.
+<XREF LINKEND="std.gABI41">, <XREF LINKEND="std.ABIUpdate">,
+<XREF LINKEND="std.M32R.ABI"> and as supplemented by the
+<XREF LINKEND="std.LSB">
+and this document.
 </PARA>
 </PARTINTRO>
 
-
-<CHAPTER ID=programloading>
-<TITLE>Program Loading</TITLE>
-<PARA>
-See
-<XREF LINKEND="std.M32R.ABI">, Chapter 5.1.
-</PARA>
-
-<SECT1 ID=programinterpreter>
-<TITLE>Program Interpreter</TITLE>
-<PARA>
-The LSB specifies the Program Interpreter to be
-<application><XREF LINKEND="proginterp"></application>.
-</PARA>
-</SECT1>
-
-</CHAPTER>
 
 <CHAPTER ID=dynamiclinking>
 <TITLE>Dynamic Linking</TITLE>
