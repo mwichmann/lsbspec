@@ -4,10 +4,10 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the
-<XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
-<XREF LINKEND="std.IA32.ABI.4"> and as supplemented by the
-<XREF LINKEND="std.LSB">
-and this document.
+<XREF LINKEND="std.S390.ABI"> and as supplemented by the
+<XREF LINKEND="std.LSB"> and this document. LSB-conforming implementations
+need not support tags related functionality. LSB-conforming applications must
+not rely on tags related funtionatliy.
 </PARA>
 </PARTINTRO>
 
@@ -54,7 +54,7 @@ The LSB specifies the Program Interpreter to be
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the
-<XREF LINKEND="std.IA32.ABI.4">.
+<XREF LINKEND="std.S390.ABI">.
 include(dyntag.sgml)
 </PARA>
 </SECT1>
