@@ -8,7 +8,7 @@ TABLES=standards.sgml libraries.sgml
 	cpp -I../../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 -Uformat $*.m4 >$@
+	m4 -Uformat -DARCH=PPC32 $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 

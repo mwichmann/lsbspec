@@ -118,14 +118,31 @@ include(standards.sgml)
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed in <XREF LINKEND='tbl-lsbgeneric-stdlib'> shall
-be available on a Linux Standard Base system, with the secified
-runtime names. The libraries listed in <XREF LINKEND='tbl-lsbgeneric-archlib'>
+dnl 
+dnl the following para is architecture specific. The makefile
+dnl now contains -DARCH=foobar to ensure that this para comes out
+dnl the way it is supposed to for the different architectures
+dnl since this file is copied from generic to each archLSB
+dnl
+ifelse(ARCH,`All', 
+	`define(`TBLTARGET',`"tbl-glsb-stdlib"')', 
+	`define(`TBLTARGET',`"tbl-archlsb-stdlib"')')
+ifelse(ARCH,`All',
+`
+The libraries listed in <XREF LINKEND='TBLTARGET`> shall
+be available on a Linux Standard Base system, with the specified
+runtime names. The libraries listed in <XREF LINKEND="tbl-lsbgeneric-archlib">
 are architecture specific, but shall be available on all LSB
 conforming systems. This list may be supplemented or amended by the
 architecture-specific specification.
+',`
+The libraries listed in <XREF LINKEND='TBLTARGET`> shall
+be available on 'ARCH` Linux Standard Base systems, with the specified
+runtime names. These names override or supplement the names specified
+in the generic LSB specification.
+')
 </PARA>
-<TABLE ID='tbl-lsbgeneric-stdlib'>
+<TABLE ID=TBLTARGET>
 <TITLE>Standard Library Names</TITLE>
 <TGROUP COLS=2>
 <THEAD>
