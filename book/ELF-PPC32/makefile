@@ -25,6 +25,7 @@ htmlspec: ELF-PPC32.sgml source
 	rm -rf ELF-PPC32.junk
 	-mv ELF-PPC32 ELF-PPC32.junk
 	$(DB2HTML) ELF-PPC32.sgml
+	cp ../../ELF/PPC32/lowlevel/initial_process_stack.jpg ELF-PPC32
 	if [ -d ELF-PPC32.junk/CVS -a ! -d ELF-PPC32/CVS ];then mv ELF-PPC32.junk/CVS ELF-PPC32; fi
 	rm -rf ELF-PPC32.junk
 
@@ -40,6 +41,7 @@ ELF-PPC32_lines.txt: ELF-PPC32.txt
 	nl -ba ELF-PPC32.txt > ELF-PPC32_lines.txt
 
 rtfspec: ELF-PPC32.sgml source
+	cp ../../ELF/PPC32/lowlevel/initial_process_stack.eps .
 	$(DB2RTF) ELF-PPC32.sgml
 
 pdfspec: ELF-PPC32.sgml source
