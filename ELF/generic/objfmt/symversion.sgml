@@ -40,7 +40,7 @@ are located. These values are identifiers that are provided by the the
 <STRUCTFIELD>vna_other</STRUCTFIELD> member of the 
 <STRUCTNAME>Elfxx_Vernaux</STRUCTNAME> structure or the 
 <STRUCTFIELD>vd_ndx</STRUCTFIELD> member of the 
-<STRUCTNAME>Elfxx_Verdef<STRUCTNAME> structure.
+<STRUCTNAME>Elfxx_Verdef</STRUCTNAME> structure.
 </PARA>
 <PARA>
 The values 0 and 1 are reserved.
@@ -73,15 +73,30 @@ the symbol.
 <SECT1 ID="symverdefs">
 <TITLE>Version Definitions</TITLE>
 <PARA>
-Symbol definitions are contained in the special section <COMPUTEROUTPUT>
-.gnu.version_d</COMPUTEROUTPUT> which has a section type of <COMPUTEROUTPUT>
-SHT_GNU_verdef</COMPUTEROUTPUT>. The number of entries in this section
-is contained in the <COMPUTEROUTPUT>DT_VERDEFNUM</COMPUTEROUTPUT> entry
-of the Dynamic Section.  The <COMPUTEROUTPUT>sh_link</COMPUTEROUTPUT>
+Symbol definitions are contained in the special section <SYMBOL>
+.gnu.version_d</SYMBOL> which has a section type of <SYMBOL>
+SHT_GNU_verdef</SYMBOL>. The number of entries in this section
+is contained in the <SYMBOL>DT_VERDEFNUM</SYMBOL> entry
+of the Dynamic Section.  The <SYMBOL>sh_link</SYMBOL>
 member of the section header points to the section that contains the strings
 referenced by this section.
 </PARA>
-<FIGURE>
+<PARA>
+The special section <SYMBOL>.gnu.version_d</SYMBOL> which has a section type of 
+<SYMBOL>SHT_GNU_verdef </SYMBOL>
+shall contain symbol version definitions. The number of entries in this section 
+shall be contained in the <SYMBOL>DT_VERDEFNUM</SYMBOL> entry of the Dynamic Section 
+<SYMBOL>.dynamic</SYMBOL>. 
+The <SYMBOL>sh_link</SYMBOL> member of the section header (see figure 4-8 in the 
+<XREF LINKEND="STD.gABI41">) 
+shall point to the section that contains the strings referenced by this section.
+</PARA>
+<PARA>
+The section shall contain an array of <SYMBOL>Elfxx_Verdef</SYMBOL> structures, as described in 
+<XREF LINKEND="VerDefEntries">, optionally followed by an array of <SYMBOL>Elfxx_Verdaux</SYMBOL> structures, as 
+defined in <XREF LINKEND="VerDefExts">.
+</PARA>
+<FIGURE ID="VerDefEntries">
 <TITLE>Version Definition Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
@@ -97,7 +112,7 @@ typedef struct {
 </FIGURE>
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_version</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_version</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version revision. This value is currently set to 1, and will be reset if the versioning implementation is incompatibly altered.
@@ -105,7 +120,7 @@ Version revision. This value is currently set to 1, and will be reset if the ver
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_flags</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_flags</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version information flag bitmask.
@@ -113,7 +128,7 @@ Version information flag bitmask.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_ndx</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_ndx</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version index numeric value referencing the SHT_GNU_versym section.
@@ -121,7 +136,7 @@ Version index numeric value referencing the SHT_GNU_versym section.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_cnt</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_cnt</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Number of associated verdaux array entries.
@@ -129,7 +144,7 @@ Number of associated verdaux array entries.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_hash</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_hash</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version name hash value (ELF hash function).
@@ -137,7 +152,7 @@ Version name hash value (ELF hash function).
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_aux</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_aux</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to a corresponding entry in the verdaux array, in bytes.
@@ -145,7 +160,7 @@ Offset to a corresponding entry in the verdaux array, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_next</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_next</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the next verdef entry, in bytes.
@@ -153,7 +168,7 @@ Offset to the next verdef entry, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
-<FIGURE>
+<FIGURE ID="VerDefExts">
 <TITLE>Version Definition Auxiliary Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
@@ -164,7 +179,7 @@ typedef struct {
 </FIGURE>
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vda_name</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vda_name</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the version or dependency name string in the section header, in bytes.
@@ -172,7 +187,7 @@ Offset to the version or dependency name string in the section header, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vda_next</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vda_next</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the next verdaux entry, in bytes.
@@ -184,11 +199,11 @@ Offset to the next verdaux entry, in bytes.
 <SECT1 ID="symverrqmts">
 <TITLE>Version Requirements</TITLE>
 <PARA>
-Symbol definitions are contained in the special section <COMPUTEROUTPUT>
-.gnu.version_r</COMPUTEROUTPUT> which has a section type of <COMPUTEROUTPUT>
-SHT_GNU_verneed</COMPUTEROUTPUT>. The number of entries in this section
-is contained in the <COMPUTEROUTPUT>DT_VERNEEDNUM</COMPUTEROUTPUT> entry
-of the Dynamic Section.  The <COMPUTEROUTPUT>sh_link</COMPUTEROUTPUT>
+Symbol definitions are contained in the special section <STRUCTFIELD>
+.gnu.version_r</STRUCTFIELD> which has a section type of <STRUCTFIELD>
+SHT_GNU_verneed</STRUCTFIELD>. The number of entries in this section
+is contained in the <STRUCTFIELD>DT_VERNEEDNUM</STRUCTFIELD> entry
+of the Dynamic Section.  The <STRUCTFIELD>sh_link</STRUCTFIELD>
 member of the section header points to the section that contains the strings
 referenced by this section.
 </PARA><FIGURE>
@@ -205,7 +220,7 @@ typedef struct {
 </FIGURE>
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_version</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_version</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version of structure. This value is currently set to 1, and will be reset if the versioning implementation is incompatibly altered.
@@ -213,7 +228,7 @@ Version of structure. This value is currently set to 1, and will be reset if the
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_cnt</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_cnt</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Number of associated verneed array entries.
@@ -221,7 +236,7 @@ Number of associated verneed array entries.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_file</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_file</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the file name string in the section header, in bytes.
@@ -229,7 +244,7 @@ Offset to the file name string in the section header, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_aux</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_aux</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to a corresponding entry in the vernaux array, in bytes.
@@ -237,7 +252,7 @@ Offset to a corresponding entry in the vernaux array, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_next</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_next</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the next verneed entry, in bytes.
@@ -259,7 +274,7 @@ typedef struct {
 </FIGURE>
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_hash</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_hash</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Dependency name hash value (ELF hash function).
@@ -267,7 +282,7 @@ Dependency name hash value (ELF hash function).
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_flags</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_flags</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Dependency information flag bitmask.
@@ -275,7 +290,7 @@ Dependency information flag bitmask.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_other</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_other</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Object file version identifier used in the .gnu.version symbol version array. Bit number 15 controls whether or not the object is hidden; if this bit is set, the object cannot be used and the static linker will ignore the symbol's presence in the object.
@@ -283,7 +298,7 @@ Object file version identifier used in the .gnu.version symbol version array. Bi
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_name</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_name</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the dependency name string in the section header, in bytes.
@@ -291,7 +306,7 @@ Offset to the dependency name string in the section header, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_next</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_next</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the next vernaux entry, in bytes.
