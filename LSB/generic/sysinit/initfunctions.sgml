@@ -1,16 +1,40 @@
 <SECT1 ID=iniscrptfunc>
 
-<TITLE>Init script Functions</TITLE>
+<TITLE>Init Script Functions</TITLE>
 
 <PARA>
 Each LSB-compliant init.d script shall source the file
-/lib/lsb/init-functions.  This file shall cause the following shell
-script commands to be defined.  This can be done either by adding a
-directory to the PATH variable which defines these commands, or by
+<filename>/lib/lsb/init-functions</filename>. This file shall cause the
+following shell script commands to be defined.  This can be done either by
+adding a directory to the PATH variable which defines these commands, or by
 defining sh aliases.  While the distribution-provided aliases may
 choose to use bash extensions (at the distribution's option), the LSB
 init.d files themselves should only depend in /bin/sh features as
 defined by POSIX.2.
+</PARA>
+
+<PARA>
+The <command>start_daemon</command>, <command>killproc</command> and
+<command>pidofproc</command> functions shall use this algorithm for determining
+the status and the pid(s) of the specified program. They shall read the pidfile
+specified or otherwise
+<filename>/var/run/<replaceable>basename</replaceable>.pid</filename> and use
+the pid(s) herein when determining whether a program is running. The method used
+to determine the status is implementation defined, but should allow for
+non-binary programs.
+<footnote>
+This note is only informative. Commonly used methods check either for the
+existence of the <filename>/proc/pid</filename> directory or use
+<filename>/proc/pid/exe</filename> and <filename>/proc/pid/cmdline</filename>.
+Relying only on <filename>/proc/pid/exe</filename> is discouraged since this
+results in a not-running status for daemons that are written in a script
+language.
+</footnote>
+Compliant implementations may use other mechanisms besides using those based on
+pidfiles. Compliant applications should not rely on such mechanisms and should
+always use a pidfile. When a program is stopped, it should delete its
+pidfile. Multiple pid(s) shall be separated by a single space in the pidfile
+and in the output of <command>pidofproc</command>.
 </PARA>
 
 <SIMPLELIST type=horiz columns=2>
@@ -18,10 +42,10 @@ defined by POSIX.2.
 
 <MEMBER>
 This runs the specified program as a daemon.
-start_daemon will check to see if the program is already running
-using the algorithm given by pidofproc. If so, it will not
-start another copy of the daemon unless the -f
-option is given. The -n option specifies a nice
+start_daemon shall check if the program is already running
+using the algorithm given above. If so, it shall not
+start another copy of the daemon unless the <parameter>-f</parameter>
+option is given. The <parameter>-n</parameter> option specifies a nice
 level. See nice(1).
 start_daemon should return the LSB defined exit status codes. It
 shall return 0 if the program has been successfully started or
@@ -32,14 +56,16 @@ is running and not 0 otherwise.
 
 <MEMBER>
 This stops the specified program. The program is 
-found using the algorithm given by pidofproc. If a
+found using the algorithm given above. If a
 signal is specified, using the
--<replaceable>signal_name</replaceable> or
--<replaceable>signal_number</replaceable> syntaxes
-specified by the <command>kill</command> command,
+<parameter>-<replaceable>signal_name</replaceable></parameter> or
+<parameter>-<replaceable>signal_number</replaceable></parameter> syntaxes
+as specified by the <command>kill</command> command,
 the program is sent that signal.
 Otherwise, a SIGTERM followed by a SIGKILL
-after some number of seconds is sent.
+after some number of seconds shall be sent.
+If a program has been terminated, the pidfile should be removed if the
+terminated process has not already done so.
 Compliant applications may use the basename instead of the 
 pathname.
 killproc should return the LSB defined exit status codes. If called
@@ -52,22 +78,10 @@ only if the program is running.
 
 <MEMBER>
 This function returns one or more pid(s) for a particular
-daemon. If an entry is found in
-/var/run/basename.pid, then that value is returned.
-If the -p option is used, the given pidfile is used instead.
-Compliant applications may use the basename instead of the
-pathname.
-Compliant implementations of the LSB may attempt
-other mechanisms for determining the pid(s),
-although this is not required (and not
-recommended, since a user can trick startup scripts
-by creating processes that appear to be system
-programs in the process list thus creating a
-potential security exposure).  Hence, LSB-complaint
-applications who wish to use the pidofproc function
-in their init scripts shall store the pid in
-/var/run/basename.pid. multiple pids should be separated by a single space.
-pidofproc should return the LSB defined exist status
+daemon using the algorithm given above. Only pids of running processes
+should be returned.
+Compliant applications may use the basename instead of the pathname.
+pidofproc should return the LSB defined exit status
 codes for "status". It shall return 0 if the program is
 running and not 0 otherwise.
 </MEMBER>
