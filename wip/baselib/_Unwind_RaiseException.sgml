@@ -32,8 +32,61 @@ private C++ error handling method
 </TITLE>
 <PARA>
 <FUNCTION>_Unwind_RaiseException</FUNCTION> 
-raise an exception for
-<PARAMETER>object</PARAMETER>.
-</PARA>
+raise an exception, passing along the given exception 
+<PARAMETER>object</PARAMETER>, which should have its 
+<emphasis>exception_class</emphasis> and <emphasis>exception_cleanup</emphasis>
+fields set.  The exception object has been allocated by the language-specific
+runtime, and has a language-specific format, exception that it must
+contain an <emphasis>_Unwind_Exception</emphasis>.
+<PARA>
 </REFSECT1>
+
+<REFSECT1>
+<TITLE>Return</TITLE>
+<PARA>
+<FUNCTION>_Unwind_RaiseException</FUNCTION> does not return, unless an
+error condition is found.  If an error condition occurs, an 
+<emphasis>_Unwind_Reason_Code</emphasis> is returnd:
+</PARA>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>_URC_END_OF_STACK</TERM>
+<LISTITEM>
+<PARA>
+The unwinder encountered the end of the stack during phase one, without finding
+a handler.  The unwind runtime will not have modified the stack.  The C++
+runtime will normally call <emphasis>uncaught_exception()</emphasis> in this
+case.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>_URC_FATAL_PHASE1_ERROR</TERM>
+<LISTITEM>
+<PARA>
+The unwinder encountered an unexpected error during phase one, because
+of something like stack corruption. The unwind runtime will not have modified
+the stack.  The C++ runtime will normally call <emphasis>terminate()</emphasis>
+in this case.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>_URC_FATAL_PHASE2_ERROR</TERM>
+<LISTITEM>
+<PARA>
+The unwinder encountered an unexpected error during phase two.
+This is usually be a throw, which will call <emphasis>terminate</emphasis>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+</REFSECT1>
+
 </REFENTRY>
