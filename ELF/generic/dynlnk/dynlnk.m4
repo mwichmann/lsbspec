@@ -59,7 +59,7 @@ information as defined by the .eh_frame_hdr section.
 <TERM>PT_GNU_STACK</TERM>
 <LISTITEM>
 <PARA>
-The p_flags member specifies the permissions on the segment containing the stack
+The <STRUCTFIELD>p_flags</STRUCTFIELD> member specifies the permissions on the segment containing the stack
 and is used to indicate wether the stack should be executable. The absense of
 this header indicates that the stack will be executable.
 </PARA>
@@ -73,8 +73,39 @@ this header indicates that the stack will be executable.
 <TITLE>Dynamic Entries</TITLE>
 <SECT1><TITLE>Introduction</TITLE>
 <PARA>
-A dynamic entry's <STRUCTFIELD>d_tag</STRUCTFIELD> member controls
-the interpretation of <STRUCTFIELD>d_un</STRUCTFIELD>.
+As described in <XREF LINKEND="STD.gABI41">, if an object file participates in dynamic 
+linking, its program header table shall have an element of type <SYMBOL>PT_DYNAMIC</SYMBOL>. 
+This ``segment'' contains the <SYMBOL>.dynamic</SYMBOL> section. A special symbol, 
+<SYMBOL>_DYNAMIC</SYMBOL>, 
+labels the section, which contains an array of the following structures. 
+<FIGURE>
+<TITLE>Dynamic Structure</TITLE>
+<PROGRAMLISTING>
+typedef struct {
+	Elf32_Sword	d_tag;
+   	union {
+   		Elf32_Word	d_val;
+   		Elf32_Addr	d_ptr;
+	} d_un;
+} Elf32_Dyn;
+
+extern Elf32_Dyn	_DYNAMIC[];
+
+typedef struct {
+	Elf64_Sxword	d_tag;
+   	union {
+   		Elf64_Xword	d_val;
+   		Elf64_Addr	d_ptr;
+	} d_un;
+} Elf64_Dyn;
+
+extern Elf64_Dyn	_DYNAMIC[];
+</PROGRAMLISTING>
+</FIGURE>
+</PARA>
+<PARA>
+For each object with this type, <STRUCTFIELD>d_tag</STRUCTFIELD>
+controls the interpretation of <STRUCTFIELD>d_un</STRUCTFIELD>.
 </PARA>
 </SECT1>
 <SECT1 ID=dynsectent>
