@@ -1,0 +1,183 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; Linux 2.2.14-5.0 i686) [Netscape]">
+   <meta name="Author" content="George Kraft IV">
+   <title>LSB SPEC HOW-TO</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+
+<h1>
+LSB HOW-TO</h1>
+
+<blockquote>
+<h2>
+LSB Database</h2>
+
+<blockquote>
+<ul>
+<li>
+Checkout the LSB database &amp; admin source code</li>
+
+<li>
+Setup the LSB database users</li>
+
+<li>
+Setup the LSB database</li>
+
+<li>
+View the entire LSB database</li>
+
+<li>
+The LSB view of GNU/Linux</li>
+
+<li>
+Guts of the LSB database</li>
+</ul>
+</blockquote>
+
+<h2>
+LSB Written Specification</h2>
+
+<blockquote>
+<ul>
+<li>
+Checkout the LSB Written Spefication source code</li>
+
+<li>
+Build the LSB Written Specification</li>
+
+<li>
+View the LSB Written Specification</li>
+
+<li>
+Contribute changes to the LSB Written Specification</li>
+</ul>
+</blockquote>
+</blockquote>
+
+<h2>
+
+<hr WIDTH="100%"></h2>
+
+<h2>
+Checkout the LSB database &amp; admin source code</h2>
+
+<blockquote>cd /home/lsb/public_html
+<br>cvs -d:pserver:anonymous@cvs.lsb.sourceforge.net:/cvsroot/lsb login
+<br>cvs -z3 -d:pserver:anonymous@cvs.lsb.sourceforge.net:/cvsroot/lsb co
+data admin</blockquote>
+
+<hr WIDTH="100%">
+<h2>
+Setup the LSB database users</h2>
+As the "root" super user for your system, create the MySQL users "lsbuser"
+and "lsbadmin".&nbsp;&nbsp; The "lsbadmin" user has the default password
+of "lf0d" [live free 0r die]
+<blockquote>mysql mysql &lt;&lt; MYSQL
+<br>DELETE FROM user WHERE User='lsbuser';
+<br>DELETE FROM user WHERE User='lsbadmin';
+<br>DELETE FROM db WHERE User='lsbuser';
+<br>DELETE FROM db WHERE User='lsbadmin';
+<br>INSERT INTO user (Host,User,Select_priv) VALUES ('%','lsbuser','Y');
+<br>INSERT INTO user (Host,User,Select_priv) VALUES ('localhost','lsbuser','Y');
+<br>INSERT INTO user (Host,User,Password,Select_priv,Insert_priv,Update_priv,Delete_priv)
+<br>VALUES ('%','lsbadmin',password('lf0d'),'Y','Y','Y','Y');
+<br>INSERT INTO user (Host,User,Password,Select_priv,Insert_priv,Update_priv,Delete_priv)
+<br>VALUES ('localhost','lsbadmin',password('lf0d'),'Y','Y','Y','Y');
+<br>INSERT INTO db (Host,Db,User) VALUES ('%','lsb','lsbuser');
+<br>INSERT INTO db (Host,Db,User) VALUES ('localhost','lsb','lsbuser');
+<br>INSERT INTO db (Host,Db,User,Select_priv,Insert_priv,Update_priv,Delete_priv)
+<br>VALUES ('%','lsb','lsbadmin','Y','Y','Y','Y');
+<br>INSERT INTO db (Host,Db,User,Select_priv,Insert_priv,Update_priv,Delete_priv)
+<br>VALUES ('localhost','lsb','lsbadmin','Y','Y','Y','Y');
+<br>MYSQL
+<p>mysqladmin reload</blockquote>
+
+<p><br>
+<hr WIDTH="100%">
+<h2>
+Setup&nbsp; the LSB database</h2>
+
+<blockquote>cd data/dbdump
+<br>make restore
+<br>cp ../admin/db.php3.sample ../admin/db.php3</blockquote>
+
+<hr WIDTH="100%">
+<h2>
+View the entire LSB database</h2>
+
+<ul>
+<li>
+Install <a href="http://www.phpwizard.net/projects/phpMyAdmin/">phpMyAdmin</a>
+on your system.</li>
+
+<li>
+View the "lsb" database with <a href="../phpMyAdmin/">http://localhost/~lsb/phpMyAdmin</a>.</li>
+</ul>
+
+<hr WIDTH="100%">
+<h2>
+The LSB view of GNU/Linux</h2>
+
+<ul>
+<li>
+View <a href="../admin/">http://localhost/~lsb/admin/</a> on your system.</li>
+</ul>
+
+<hr WIDTH="100%">
+<h2>
+Guts of the LSB database</h2>
+The schema for the LSB database architecture is described in <a href="db.shtml">db.shtml</a>.
+<h2>
+
+<hr WIDTH="100%"></h2>
+
+<h2>
+Checkout the LSB Written Specification source code</h2>
+
+<blockquote>cd /home/lsb/public_html
+<br>cvs -d:pserver:anonymous@cvs.lsb.sourceforge.net:/cvsroot/lsb login
+<br>cvs -z3 -d:pserver:anonymous@cvs.lsb.sourceforge.net:/cvsroot/lsb co
+spec</blockquote>
+
+<hr WIDTH="100%">
+<h2>
+Build the LSB Written Specification</h2>
+First, you will need to install the Docbook SGML tools for Red Hat 6.2
+by running the provided <a href="installsgml.sh">installsgml.sh</a> script.
+Otherwise, get a copy of the DocBook tools from <a href="http://sourceware.cygnus.com/docbook-tools/">http://sourceware.cygnus.com/docbook-tools/</a>
+.&nbsp; Install the following packages: docbook, psgml, jade, sgml-common,
+jadetex, and stylesheets (of course check the documentation at the web
+site for up to date details).&nbsp; Also install the sgmltools-lite from
+Sourceforge.Net located at <a href="http://download.sourceforge.net/sgmltools-lite/">http://download.sourceforge.net/sgmltools-lite/</a>
+<p>Let's build just the SGML portion of the written specification from
+the data tables that were extracted from CVS.&nbsp;&nbsp; You will <font color="#33CC00">not
+need</font> MySQL database or the DBI module for Perl to do this
+<blockquote>cd spec
+<br>make clean
+<br>make</blockquote>
+Let's build the written specification from the "lsb" database running on
+your system.&nbsp; You <font color="#993399">will need</font> to have the
+"lsb" database available, plus the DBI module for Perl to do this.
+<blockquote>make spotless
+<br>make</blockquote>
+
+<hr WIDTH="100%">
+<h2>
+View the LSB Written Specification</h2>
+
+<blockquote>netscape <a href="spec/book1.html">spec/book1.html </a>&amp;</blockquote>
+
+<hr WIDTH="100%">
+<h2>
+Contribute changes to the LSB Written Specification</h2>
+See the LSB FAQ on <a href="faq.html#cntrb">how to contribute</a>.
+<p>
+<hr WIDTH="100%">
+<br>George (gk4)
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
