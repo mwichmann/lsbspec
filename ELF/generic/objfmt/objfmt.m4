@@ -4,12 +4,30 @@
 <CHAPTER ID=objfmt>
 <TITLE>Object Files</TITLE>
 <PARA>
-LSB-conforming implementations shall support an object file format, called
-Executable and Linking Format (ELF) as defined by the System V Application
-Binary Interface, Edition 4.1 and the System V Application Binary Interface -
-DRAFT - April 29, 1998 and as supplemented by this document and an architecture
-specific LSB specification. Conforming implementations may also support other
-unspecified object file formats.
+LSB-conforming implementations shall support the object file Executable and Linking Format (ELF), which is defined by the following documents:
+<ITEMIZEDLIST MARK=BULLET>
+<LISTITEM>
+<PARA>
+System V Application Binary Interface, Edition 4.1
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+System V Application Binary Interface - DRAFT - April 29, 1998
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+this document
+</PARA>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+an architecture-specific LSB specification
+</PARA>
+</LISTITEM>
+</ITEMIZEDLIST>
+Conforming implementations may also support other unspecified object file formats.
 </PARA>
 </CHAPTER>
 
@@ -95,7 +113,7 @@ for C++ in this version of the Linux Standard Base.
 It seems to be possible, using existing Linux development tools, to write an
 application in C++ which complies with this rule by linking statically 
 with libstdc++ and all other libraries containing C++. The following command
-illustrated how this may be accomplished
+illustrates how this may be accomplished:
 </PARA>
 <PARA>
 <COMMAND>
