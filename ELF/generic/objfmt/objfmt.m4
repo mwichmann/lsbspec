@@ -33,10 +33,12 @@ Conforming implementations may also support other unspecified object file format
 
 <CHAPTER ID=Sections>
 <TITLE>Sections</TITLE>
+<SECT1><TITLE>Introduction</TITLE>
 <PARA>
 As described in <XREF LINKEND="std.gABI41">,
 an ELF object file contains a number of <emphasis>sections</emphasis>.
 </PARA>
+</SECT1>
 <SECT1 ID="elftypes">
 <TITLE>Sections Types</TITLE>
 <PARA>
@@ -102,10 +104,12 @@ include(linuxsect.sgml)
 
 <CHAPTER ID=Symmap>
 <TITLE>Symbol Mapping</TITLE>
+<SECT1><TITLE>Introduction</TITLE>
 <PARA>
 This chapter defines how names are mapped from the source symbol to
 the object symbol.
 </PARA>
+</SECT1>
 <SECT1 ID="symmapping">
 <TITLE>Symbol Mapping</TITLE>
 <PARA>

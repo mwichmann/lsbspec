@@ -71,10 +71,12 @@ this header indicates indicates that the stack will be executable.
 
 <CHAPTER ID=DynamicSection>
 <TITLE>Dynamic Entries</TITLE>
+<SECT1><TTILE>Introduction</TITLE>
 <PARA>
 A dynamic entry's <STRUCTFIELD>d_tag</STRUCTFIELD> member controls
 the interpretation of <STRUCTFIELD>d_un</STRUCTFIELD>.
 </PARA>
+</SECT1>
 <SECT1 ID=dynsectent>
 <TITLE>Dynamic Entries</TITLE>
 <PARA>
