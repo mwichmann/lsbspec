@@ -12,12 +12,6 @@ $addroot = "http://www.linuxbase.org/spec";
 $r = new Project("lsb");
 $r->name = "Linux Standard Base Specifications";
 
-$p = new Project("oldbooks");
-$p->name = "Old Format Specification - This list goes away soon";
-$p->url = "http://www.linuxbase.org/spec/";
-$p->indexDir($baseroot.'/');
-addProject($p);
-
 $p = new Project("book");
 $p->name = "Individual Specification";
 $p->url = "http://www.linuxbase.org/spec/";
