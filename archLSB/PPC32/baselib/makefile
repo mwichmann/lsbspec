@@ -3,7 +3,7 @@
 
 MANPAGES=
 
-FILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml
+FILES=baselib.sgml datadefs.sgml libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml
 
 TABLES=
 
