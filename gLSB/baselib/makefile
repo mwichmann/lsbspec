@@ -38,7 +38,7 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 
 FILES=baselib.sgml 
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
-	libpam.sgml
+	libpam.sgml libstdcxx.sgml
 
 .m4.sgml:
 	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
@@ -53,6 +53,7 @@ gensrc:
 	../../mklibspec -a All -l libcrypt >libcrypt.sgml
 	../../mklibspec -a All -l libpam >libpam.sgml
 	../../mklibspec -a All -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	../../mklibspec -a IA32 -c 2 -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
 
 clean:
 	rm -f $(FILES)
@@ -60,6 +61,4 @@ clean:
 spotless: clean
 	rm -f $(GENFILES) $(FILES)
 
-baselib.sgml: baselib.m4 libc.sgml datadefs.sgml libm.sgml libpthread.sgml
-baselib.sgml: libdb.sgml libdl.sgml libcrypt.sgml $(MANPAGES)
-baselib.sgml: libpam.sgml
+baselib.sgml: baselib.m4 $(GENFILES) datadefs.sgml $(MANPAGES)
