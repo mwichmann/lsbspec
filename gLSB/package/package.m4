@@ -506,7 +506,7 @@ file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 </ROW>
 <ROW>
 <ENTRY>Filename</ENTRY>
-<ENTRY>ASCII string containing the name of the file.</ENTRY>
+<ENTRY>NUL terminated ASCII string containing the name of the file.</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>Padding</ENTRY>
@@ -526,8 +526,8 @@ file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 <PARA>
 The CPIO Header uses the following header structure (sometimes referred to
 as "new ASCII" or "SVR4 cpio"). All numbers are stored as ASCII
-representations of their hexadecimal value.
-With the exception of <STRUCTFIELD>c_namesize</STRUCTFIELD>
+representations of their hexadecimal value with leading zeros as needed to fill
+the field.  With the exception of <STRUCTFIELD>c_namesize</STRUCTFIELD>
 and the corresponding name string, and <STRUCTFIELD>c_checksum</STRUCTFIELD>,
 all information contained in the CPIO Header is also represented in the
 Header Section.
