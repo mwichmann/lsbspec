@@ -12,6 +12,10 @@ DB2PS=sgmltools -b ps
 
 DB2PDF=sgmltools -b pdf
 
+DB2ONEHTML=sgmltools -b onehtml
+
+DB2TXT=sgmltools -b txt
+
 all:: htmlspec rtfspec 
 
 htmlspec: source
@@ -20,6 +24,13 @@ htmlspec: source
 	$(DB2HTML) gLSB.sgml
 	if [ -d gLSB.junk/CVS -a ! -d gLSB/CVS ];then mv gLSB.junk/CVS gLSB; fi
 	rm -rf gLSB.junk
+
+onehtmlspec: source
+	$(DB2ONEHTML) gLSB.sgml
+
+txtspec: source
+	$(DB2TXT) gLSB.sgml
+	nl -ba gLSB.txt > gLSB_lines.txt
 
 rtfspec: source
 	$(DB2RTF) gLSB.sgml
