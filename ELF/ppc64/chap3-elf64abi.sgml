@@ -154,7 +154,7 @@ Floating     float           4         word         single precision
 				options will not conform to the 64-bit PowerPC Processor Supplement.</para>
 			</note>
 			</sect2>
-			<sect2 id="AGG-UNION"><title>Aggregates and Union</title>
+			<sect2 id="AGG-UNION"><title>Aggregates and Unions</title>
 			<para>Aggregates (structures and arrays) and unions assume the alignment of their most strictly aligned 
 			component, that is, the component with the largest alignment.  The size of any object, including aggregates 
 			and unions, is always a multiple of the alignment of the object.  An array uses the same alignment as its 
@@ -865,13 +865,19 @@ Low Address</screen>
 						consecutive doublewords.</para>
 						</listitem>
 						<listitem><para>Simple integer types (char, short, int, long, enum) are 
-						mapped to a single doubleword.  Value shorter than a doubleword are sign 
+						mapped to a single doubleword.  Values shorter than a doubleword are sign 
 						or zero extended as necessary.</para>
 						</listitem>
 						<listitem><para>Pointers are mapped to a single doubleword.</para>
 						</listitem>
-						<listitem><para>Aggregates and unions passed by value are mapped to as 
-						many words of the parameter save area as the value uses in memory.</para>
+						<listitem><para>
+						Fixed size aggregates and unions passed by value are mapped to as
+						many doublewords of the parameter save area as the value uses in
+						memory.  An aggregate or union smaller than one doubleword in size
+						is padded so that it appears in the least significant bits of the
+						doubleword.  All others are padded, if necessary, at their tail.
+						Variable size aggregates or unions are passed by reference.
+						</para>
 						</listitem>
 						<listitem><para>Other scalar values, such as FORTRAN complex numbers, 
 						are mapped to the number of doublewords required by their size.</para>						</listitem>
