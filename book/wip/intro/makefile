@@ -14,7 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkstandardsgmltable -a All >standards.sgml
-	../../mklibsgmltable -a All >libraries.sgml
+	../../mklibsgmltable -a All -f >libraries.sgml
 	../../mklibsgmltable -a None >pslibs.sgml
 
 clean:
