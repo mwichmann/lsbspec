@@ -39,8 +39,6 @@
 <SECT1 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
-The following dynamic entries are also defined for the IA64 Architecture.
-include(dyntag_IA64.sgml)
 </PARA>
 </SECT1>
 
