@@ -1,0 +1,700 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML
+><HEAD
+><TITLE
+>Dynamic Linking</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="zSeries ELF Application Binary Interface Supplement"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Program loading and dynamic linking"
+HREF="c2062.html"><LINK
+REL="PREVIOUS"
+TITLE="Program loading and dynamic linking"
+HREF="c2062.html"><LINK
+REL="NEXT"
+HREF="a2309.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>zSeries ELF Application Binary Interface Supplement</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c2062.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Program loading and dynamic linking</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="a2309.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DYNAMICLINKING"
+></A
+>Dynamic Linking</H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN2232"
+></A
+>Dynamic Section</H2
+><P
+>Dynamic section entries give information to the dynamic linker.  Some
+
+of this information is processor-specific, including the interpretation of
+
+some entries in the dynamic structure.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>DT_PLTGOT</DT
+><DD
+><P
+>The d_ptr field of this entry gives the address of the first byte in
+
+the Procedure Linkage Table (.PLT in <A
+HREF="x2230.html#PROCEDURELINKAGETABLE"
+>the Section called <I
+>Procedure Linkage Table</I
+></A
+>).&#13;</P
+></DD
+><DT
+>DT_JMPREL</DT
+><DD
+><P
+>This entry is associated with a table of relocation entries for the
+
+PLT.  For zSeries this entry is mandatory both for executable and shared object
+
+files. Moreover, the relocation table's entries must have a one-to-one correspondence
+
+with the PLT. The table of DT_JMPREL relocation entries is wholly contained
+
+within the DT_RELA referenced table. See <A
+HREF="x2230.html#PROCEDURELINKAGETABLE"
+>the Section called <I
+>Procedure Linkage Table</I
+></A
+> for
+
+more information.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="GLOBALOFFSETTABLE"
+></A
+>Global Offset Table</H2
+><P
+>Position-independent code cannot, in general, contain absolute virtual
+
+addresses.  Global Offset Tables hold absolute addresses in private data,
+
+thus making the addresses available without compromising the position-independence
+
+and sharability of a program's text.  A program references its GOT using position-independent
+
+addressing and extracts absolute values, thus redirecting position-independent
+
+references to absolute locations.</P
+><P
+>When the dynamic linker creates memory segments for a loadable object
+
+file, it processes the relocation entries, some of which will be of type R_390_GLOB_DAT,
+
+referring to the GOT.  The dynamic linker determines the associated symbol
+
+values, calculates their absolute addresses, and sets the GOT entries to the
+
+proper values. Although the absolute addresses are unknown when the linkage
+
+editor builds an object file, the dynamic linker knows the addresses of all
+
+memory segments and can thus calculate the absolute addresses of the symbols
+
+contained therein.</P
+><P
+>A GOT entry provides direct access to the absolute address of a symbol
+
+without compromising position-independence and sharability. Because the executable
+
+file and shared objects have separate GOTs, a symbol may appear in several
+
+tables.  The dynamic linker processes all the GOT relocations before giving
+
+control to any code in the process image, thus ensuring the absolute addresses
+
+are available during execution.</P
+><P
+>The dynamic linker may choose different memory segment addresses for
+
+the same shared object in different programs; it may even choose different
+
+library addresses for different executions of the same program.  Nevertheless,
+
+memory segments do not change addresses once the process image is established.
+
+As long as a process exists, its memory segments reside at fixed virtual addresses.&#13;</P
+><P
+>The format and interpretation of the Global Offset Table is processor
+
+specific. For zSeries the symbol _GLOBAL_OFFSET_TABLE_ may be used to access
+
+the table.  The symbol refers to the start of the .got section. Two words
+
+in the GOT are reserved:</P
+><P
+></P
+><UL
+><LI
+><P
+>The word at _GLOBAL_OFFSET_TABLE_[0] is set by the linkage
+
+editor to hold the address of the dynamic structure, referenced with the symbol
+
+_DYNAMIC. This allows a program, such as the dynamic linker, to find its own
+
+dynamic structure without having yet processed its relocation entries.  This
+
+is especially important for the dynamic linker, because it must initialize
+
+itself without relying on other programs to relocate its memory image.</P
+></LI
+><LI
+><P
+>The word at _GLOBAL_OFFSET_TABLE_[1] is reserved for future
+
+use.</P
+></LI
+></UL
+><P
+>The Global Offset Table resides in the ELF .got section.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="FUNCTIONADDRESSES"
+></A
+>Function Addresses</H2
+><P
+>References to a function address from an executable file and from the
+
+shared objects associated with the file must resolve to the same value. References
+
+from within shared objects will normally be resolved (by the dynamic linker)
+
+to the virtual address of the function itself.  References from within the
+
+executable file to a function defined in a shared object will normally be
+
+resolved (by the linkage editor) to the address of the Procedure Linkage Table
+
+entry for that function within the executable file.</P
+><P
+>To allow comparisons of function addresses to work as expected, if an
+
+executable file references a function defined in a shared object, the linkage
+
+editor will place the address of the PLT entry for that function in its associated
+
+symbol table entry.  See <A
+HREF="x1612.html#SYMBOLVALUES"
+>the Section called <I
+>Symbol Values</I
+> in the chapter called <I
+>Object files</I
+></A
+> for details. The dynamic
+
+linker treats such symbol table entries specially.  If the dynamic linker
+
+is searching for a symbol and encounters a symbol table entry for that symbol
+
+in the executable file, it normally follows these rules:</P
+><P
+></P
+><UL
+><LI
+><P
+>If the st_shndx field of the symbol table entry is not SHN_UNDEF,
+
+the dynamic linker has found a definition for the symbol and uses its st_value
+
+field as the symbol's address.</P
+></LI
+><LI
+><P
+>If the st_shndx field is SHN_UNDEF and the symbol is of type
+
+STT_FUNC and the st_value field is not zero, the dynamic linker recognizes
+
+this entry as special and uses the st_value field as the symbol's address.&#13;</P
+></LI
+><LI
+><P
+>Otherwise, the dynamic linker considers the symbol to be undefined
+
+within the executable file and continues processing.</P
+></LI
+></UL
+><P
+>Some relocations are associated with PLT entries. These entries are
+
+used for direct function calls rather than for references to function addresses.
+
+These relocations are not treated specially as described above because the
+
+dynamic linker must not redirect PLT entries to point to themselves.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PROCEDURELINKAGETABLE"
+></A
+>Procedure Linkage Table</H2
+><P
+>Much as the Global Offset Table redirects position-independent address
+
+calculations to absolute locations, the Procedure Linkage Table redirects
+
+position-independent function calls to absolute locations. The linkage editor
+
+cannot resolve execution transfers (such as function calls) from one executable
+
+or shared object to another, so instead it arranges for the program to transfer
+
+control to entries in the PLT. The dynamic linker determines the absolute
+
+addresses of the destinations and stores them in the GOT, from which they
+
+are loaded by the PLT entry. The dynamic linker can thus redirect the entries
+
+without compromising the position-independence and sharability of the program
+
+text.  Executable files and shared object files have separate PLTs.</P
+><P
+>As mentioned above, a relocation table is associated with the PLT. The
+
+DT_JMPREL entry in the _DYNAMIC array gives the location of the first relocation
+
+entry.  The relocation table entries match the PLT entries in a one-to-one
+
+correspondence (relocation table entry 1 applies to PLT entry 1 and so on).
+
+ The relocation type for each entry shall be R_390_JMP_SLOT. The relocation
+
+offset shall specify the address of the GOT entry containing the address of
+
+the function and the symbol table index shall reference the appropriate symbol.&#13;</P
+><P
+>To illustrate Procedure Linkage Tables, <A
+HREF="x2230.html#PLTEX"
+>Figure 3</A
+> shows
+
+how the linkage editor might initialize the PLT when linking a shared executable
+
+or shared object.</P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="PLTEX"
+></A
+><DIV
+CLASS="INFORMALEXAMPLE"
+><A
+NAME="AEN2280"
+></A
+><P
+></P
+><P
+CLASS="LITERALLAYOUT"
+>*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;PLT<br>
+<br>
+for&nbsp;executables&nbsp;(not&nbsp;position&nbsp;independent)<br>
+<br>
+PLT1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BASR&nbsp;&nbsp;1,0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Establish&nbsp;base<br>
+<br>
+BASE1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,AGOTENT-BASE1(1)&nbsp;#&nbsp;Load&nbsp;address&nbsp;of&nbsp;the&nbsp;GOT&nbsp;entry<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,0(0,1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Load&nbsp;function&nbsp;address&nbsp;from&nbsp;the&nbsp;GOT<br>
+<br>
+to&nbsp;r1<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BCR&nbsp;&nbsp;&nbsp;15,1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Jump&nbsp;to&nbsp;address<br>
+<br>
+RET1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BASR&nbsp;&nbsp;1,0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Return&nbsp;from&nbsp;GOT&nbsp;first&nbsp;time&nbsp;(lazy<br>
+<br>
+binding)<br>
+<br>
+BASE2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,ASYMOFF-BASE2(1)&nbsp;#&nbsp;Load&nbsp;offset&nbsp;in&nbsp;symbol&nbsp;table&nbsp;to&nbsp;r1<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BRC&nbsp;&nbsp;&nbsp;15,-x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Jump&nbsp;to&nbsp;start&nbsp;of&nbsp;PLT<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.word&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Filler<br>
+<br>
+AGOTENT&nbsp;&nbsp;&nbsp;.long&nbsp;?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Address&nbsp;of&nbsp;the&nbsp;GOT&nbsp;entry<br>
+<br>
+ASYMOFF&nbsp;&nbsp;&nbsp;.long&nbsp;?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Offset&nbsp;into&nbsp;the&nbsp;symbol&nbsp;table<br>
+<br>
+<br>
+<br>
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;PLT&nbsp;for&nbsp;shared&nbsp;objects&nbsp;(position<br>
+<br>
+independent)<br>
+<br>
+PLT1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LARL&nbsp;&nbsp;1,&#60;fn&#62;@GOTENT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Load&nbsp;address&nbsp;of&nbsp;GOT&nbsp;entry&nbsp;in<br>
+<br>
+r1<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LG&nbsp;&nbsp;&nbsp;&nbsp;1,0(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Load&nbsp;function&nbsp;address&nbsp;from&nbsp;the&nbsp;GOT<br>
+<br>
+to&nbsp;r1<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BCR&nbsp;&nbsp;&nbsp;15,1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Jump&nbsp;to&nbsp;address<br>
+<br>
+RET1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BASR&nbsp;&nbsp;1,0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Return&nbsp;from&nbsp;GOT&nbsp;first&nbsp;time&nbsp;(lazy<br>
+<br>
+binding)<br>
+<br>
+BASE2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LGF&nbsp;&nbsp;&nbsp;1,ASYMOFF-BASE2(1)&nbsp;#&nbsp;Load&nbsp;offset&nbsp;in&nbsp;symbol&nbsp;table&nbsp;to&nbsp;r1<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BRCL&nbsp;&nbsp;15,-x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Jump&nbsp;to&nbsp;start&nbsp;of&nbsp;PLT<br>
+<br>
+ASYMOFF&nbsp;&nbsp;&nbsp;.long&nbsp;?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Offset&nbsp;into&nbsp;symbol<br>
+<br>
+table</P
+><P
+></P
+></DIV
+><P
+><B
+>Figure 3. Procedure Linkage Table Example</B
+></P
+></DIV
+><P
+>As described below the dynamic linker and the program cooperate to resolve
+
+symbolic references through the PLT. Again, the details described below are
+
+for explanation only. The precise execution-time behavior of the dynamic linker
+
+is not specified.</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The caller of a function in a different shared object transfers
+
+control to the start of the PLT entry associated with the function.</P
+></LI
+><LI
+><P
+>The first part of the PLT entry loads the address from the
+
+GOT entry associated with the function to be called. The control is transferred
+
+to the code referenced by the address. If the function has already been called
+
+at least once, or lazy binding is not used, then the address found in the
+
+GOT is the address of the function.</P
+></LI
+><LI
+><P
+>If a function has never been called and lazy binding is used
+
+then the address in the GOT points to the second half of the PLT. The second
+
+half loads the offset in the symbol table associated with the called function.
+
+Control is then transferred to the special first entry of the PLT.</P
+></LI
+><LI
+><P
+>This first entry of the PLT entry (<A
+HREF="x2230.html#PLT0EX"
+>Figure 4</A
+>)
+
+calls the dynamic linker giving it the offset into the symbol table and the
+
+address of a structure that identifies the location of the caller.</P
+></LI
+><LI
+><P
+>The dynamic linker finds the real address of the symbol. It
+
+will store this address in the GOT entry of the function in the object code
+
+of the caller and it will then transfer control to the function.</P
+></LI
+><LI
+><P
+>Subsequent calls to the function from this object will find
+
+the resolved address in the first half of the PLT entry and will transfer
+
+control directly without invoking the dynamic linker.</P
+></LI
+></OL
+><DIV
+CLASS="FIGURE"
+><A
+NAME="PLT0EX"
+></A
+><DIV
+CLASS="INFORMALEXAMPLE"
+><A
+NAME="AEN2299"
+></A
+><P
+></P
+><P
+CLASS="LITERALLAYOUT"
+>*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;PLT0<br>
+<br>
+for&nbsp;static&nbsp;object&nbsp;(not&nbsp;position-independent)<br>
+<br>
+PLT0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ST&nbsp;&nbsp;&nbsp;&nbsp;1,28(15)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;R1&nbsp;has&nbsp;offset&nbsp;into&nbsp;symbol&nbsp;table<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BASR&nbsp;&nbsp;1,0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Establish&nbsp;base<br>
+<br>
+BASE1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,AGOT-BASE1(1)&nbsp;#&nbsp;Get&nbsp;address&nbsp;of&nbsp;GOT<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MVC&nbsp;&nbsp;&nbsp;24(4,15),4(1)&nbsp;&nbsp;&nbsp;#&nbsp;Move&nbsp;loader&nbsp;info&nbsp;to&nbsp;stack<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,8(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Get&nbsp;address&nbsp;of&nbsp;loader<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BR&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Jump&nbsp;to&nbsp;loader<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.word&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Filler<br>
+<br>
+AGOT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.long&nbsp;got&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Address&nbsp;of&nbsp;GOT<br>
+<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;PLT0&nbsp;for&nbsp;shared&nbsp;object<br>
+<br>
+(position-independent)<br>
+<br>
+PLT0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STG&nbsp;&nbsp;&nbsp;1,56(15)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;R1&nbsp;has&nbsp;offset&nbsp;into&nbsp;symbol&nbsp;table<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LARL&nbsp;&nbsp;1,_GLOBAL_OFFSET_TABLE_<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MVC&nbsp;&nbsp;&nbsp;48(8,15),8(1)&nbsp;&nbsp;&nbsp;#&nbsp;move&nbsp;loader&nbsp;info&nbsp;(object&nbsp;struct<br>
+<br>
+address)&nbsp;to&nbsp;stack<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LG&nbsp;&nbsp;&nbsp;&nbsp;1,16(12)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Entry&nbsp;address&nbsp;of&nbsp;loader&nbsp;in&nbsp;R1<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BCR&nbsp;&nbsp;&nbsp;15,1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Jump&nbsp;to<br>
+<br>
+loader</P
+><P
+></P
+></DIV
+><P
+><B
+>Figure 4. Special first entry in Procedure Linkage Table</B
+></P
+></DIV
+><P
+>The LD_BIND_NOW environment variable can change dynamic linking behavior.
+
+If its value is not null the dynamic linker resolves the function call binding
+
+at load time, before transferring control to the program. In other words the
+
+dynamic linker processes relocation entries of type R_390_JMP_SLOT during
+
+process initialization.  If LD_BIND_NOW is null the dynamic linker evaluates
+
+PLT entries lazily, delaying symbol resolution and relocation until the first
+
+execution of a table entry.</P
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Lazy binding generally improves overall application performance because
+
+unused symbols do not incur the overhead of dynamic linking. Nevertheless,
+
+two situations make lazy binding undesirable for some applications: <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>The initial reference to a shared object function takes longer
+
+than subsequent calls because the dynamic linker intercepts the call to resolve
+
+the symbol, and some applications cannot tolerate this unpredictability.</P
+></LI
+><LI
+><P
+>If an error occurs and the dynamic linker cannot resolve the
+
+symbol, the dynamic linker will terminate the program. Under lazy binding,
+
+this might occur at arbitrary times. Once again, some applications cannot
+
+tolerate this unpredictability. By turning off lazy binding, the dynamic linker
+
+forces the failure to occur during process initialization, before the application
+
+receives control.</P
+></LI
+></OL
+></P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c2062.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="a2309.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Program loading and dynamic linking</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2062.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
