@@ -42,7 +42,7 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.34 2002-04-12 20:12:28 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.35 2002-04-23 02:23:16 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -102,9 +102,12 @@ if(open(DESC,"<$Lname.txt" )) {
 # 6) Get a list of the Standards that are used by this library
 #
 print "<PARA>\n";
-$select = "SELECT DISTINCT Sfull,Sid FROM Standard,LibGroup,LGInt,Interface ";
-$select.= "WHERE Sid=Istandard AND Iid=LGIint AND LGIlibg=LGid ";
-$select.= "AND LGlib=$Lid AND Iarch=$Aid ORDER BY Sname";
+$select = "SELECT DISTINCT Sfull,Sid FROM Standard ";
+$select.= "LEFT JOIN Interface ON Sid=Istandard ";
+$select.= "LEFT JOIN LGInt ON LGIint=Iid ";
+$select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
+$select.= "LEFT JOIN ArchInt ON AIint=Iid ";
+$select.= "WHERE LGlib=$Lid AND Iarch=$Aid ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
 $lsh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $lsh->numrows) {
@@ -147,20 +150,29 @@ for(1..$lgh->numrows) {
 #
 # 8) Foreach group, make a table of the interfaces
 #
-	$select = "SELECT Version.Vname,Interface.* FROM Interface,LGInt ";
-	$select.= "LEFT JOIN Version ON Vid=Iversion ";
-	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype='Function' ";
-	$select.= "AND Iarch=$Aid AND Istatus='Included' ";
+	$select = "SELECT * FROM Interface ";
+	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
+	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+	$select.= "LEFT JOIN Version ON Vid=AIversion ";
+	$select.= "WHERE LGIlibg=$LGid AND Itype='Function' ";
+	$select.= "AND Istatus='Included' ";
+	$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 	$select.= "ORDER BY Iname";
 	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	print STDERR $select,"\n" if $trace;
+	$i=0;
 	for(1..$inh->numrows) {
 		%entry=$inh->fetchhash;
-		$entry[$_]=$entry{'Iname'};
-		$std[$_]=$entry{'Istandard'};
-		$symver[$_]=$entry{'Vname'};
+		if( $entry[$i] ne $entry{'Iname'} ) {
+			$i++;
+		}
+		$entry[$i]=$entry{'Iname'};
+		if( $entry{'AIarch'} == $Aid ) { 
+			$symver[$i]=$entry{'Vname'};
+		}
+		$std[$i]=$entry{'Istandard'};
 	}
-	if( $inh->numrows > 0 ) {
+	if( $i > 0 ) {
 	print "<SECT2>\n";
 	print "<TITLE>";
 	print $LGname;
@@ -171,7 +183,7 @@ for(1..$lgh->numrows) {
 	print "<TITLE>$Lname - $LGname Function Interfaces</TITLE>\n";
 	print "<TGROUP COLS=5>\n";
 	print "<TBODY>\n";
-	$inc=int(($inh->numrows+4)/5);
+	$inc=int(($i+4)/5);
 	for(1..$inc) {
 		print "<ROW>";
 		printf "<ENTRY>";
@@ -248,9 +260,13 @@ for(1..$lgh->numrows) {
 {
 	local(*datasym);
 	local(*std);
-	$select = "SELECT Iname,Istandard FROM Interface,LGInt ";
-	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype!='Function' ";
-	$select.= "AND Iarch=$Aid AND Istatus='Included' ";
+	$select = "SELECT * FROM Interface ";
+	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
+	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+	$select.= "LEFT JOIN Version ON Vid=AIversion ";
+	$select.= "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
+	$select.= "AND Istatus='Included' ";
+	$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 	$select.= "ORDER BY Iname";
 	print STDERR $select,"\n" if $trace;
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -259,16 +275,17 @@ for(1..$lgh->numrows) {
 		print "<TITLE>Data Symbols</TITLE>\n";
 		print "<PARA>\n";
 		print "</PARA>\n";
+		$i=1;
 		for(1..$sth->numrows) {
 			%datasym=$sth->fetchhash;
-			$datasym[$_]=$datasym{'Iname'};
-			$std[$_]=$datasym{'Istandard'};
+			$datasym[$i]=$datasym{'Iname'};
+			$std[$i++]=$datasym{'Istandard'};
 		}
 		print "<TABLE>\n";
 		print "<TITLE>$Lname - $LGname Data Interfaces</TITLE>\n";
 		print "<TGROUP COLS=5>\n";
 		print "<TBODY>\n";
-		$inc=int(($sth->numrows+4)/5);
+		$inc=int(($i+4)/5);
 		for(1..$inc) {
 			print "<ROW>";
 			printf "<ENTRY>%s",$datasym[$_];
@@ -383,4 +400,4 @@ if($sth->numrows) {
 
 
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.34 2002-04-12 20:12:28 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.35 2002-04-23 02:23:16 anderson Exp $- -->\n");
