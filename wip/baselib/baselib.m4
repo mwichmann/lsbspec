@@ -11,7 +11,6 @@ hardware in the system.
 </PARA>
 
 include(libstdcxx.sgml)
-include(libgcc_s.sgml)
 
 </CHAPTER>
 
