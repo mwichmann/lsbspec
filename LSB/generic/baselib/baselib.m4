@@ -33,8 +33,6 @@ include(libcrypt.sgml)
 
 include(libpam.sgml)
 
-include(libstdcxx.sgml)
-
 </CHAPTER>
 
 </PART>

@@ -28,7 +28,6 @@
 
 &lsb-ppc32-intro;
 &contents;
-&lsb-ppc32-appA;
 &fdl;
 
 </BOOK>

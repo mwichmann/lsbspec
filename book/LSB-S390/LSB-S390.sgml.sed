@@ -28,7 +28,6 @@
 
 &lsb-s390-intro;
 &contents;
-&lsb-s390-appA;
 &fdl;
 
 </BOOK>

@@ -17,8 +17,6 @@
 <BOOKINFO>
 <TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
-<YEAR>2000</YEAR>
-<YEAR>2001</YEAR>
 <YEAR>2002</YEAR>
 <YEAR>2003</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
@@ -28,7 +26,6 @@
 
 &lsb-amd64-intro;
 &contents;
-&lsb-amd64-appA;
 &fdl;
 
 </BOOK>

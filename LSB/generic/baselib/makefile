@@ -38,7 +38,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml dladdr.sgml \
 	dlopen.sgml dlsym.sgml
 
-FILES=baselib.sgml 
+FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
 	libpam.sgml libstdcxx.sgml
 
@@ -64,3 +64,4 @@ spotless: clean
 	rm -f $(GENFILES) $(FILES)
 
 baselib.sgml: baselib.m4 $(GENFILES) datadefs.sgml $(MANPAGES)
+cxxlib.sgml: cxxlib.m4 libstdcxx.sgml

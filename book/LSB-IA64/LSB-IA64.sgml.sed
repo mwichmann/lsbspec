@@ -28,7 +28,6 @@
 
 &lsb-ia64-intro;
 &contents;
-&lsb-ia64-appA;
 &fdl;
 
 </BOOK>

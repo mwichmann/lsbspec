@@ -13,7 +13,7 @@ MANPAGES= __divdi3.sgml $(UNWINDPAGES)
 LIBS=libc.sgml libm.sgml libgcc_s.sgml libpthread.sgml libdl.sgml \
 	libcrypt.sgml libstdcxx.sgml
 
-FILES=baselib.sgml
+FILES=baselib.sgml cxxlib.sgml
 
 TABLES=
 
@@ -45,3 +45,4 @@ spotless: clean
 
 baselib.sgml: libc.sgml libm.sgml libgcc_s.sgml
 baselib.sgml: $(MANPAGES) $(LIBS)
+cxxlib.sgml: libstdcxx.sgml

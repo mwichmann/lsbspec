@@ -28,7 +28,6 @@
 
 &lsb-ppc64-intro;
 &contents;
-&lsb-ppc64-appA;
 &fdl;
 
 </BOOK>

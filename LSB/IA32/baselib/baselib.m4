@@ -36,8 +36,6 @@ include(libdl.sgml)
 
 include(libcrypt.sgml)
 
-include(libstdcxx.sgml)
-
 </CHAPTER>
 
 </PART>
