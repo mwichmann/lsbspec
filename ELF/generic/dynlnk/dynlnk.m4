@@ -59,10 +59,8 @@ Program Interpreter
 <TITLE>
 </TITLE>
 <PARA>
-The LSB specifies the Program Interpreter to be
-<ITEMIZEDLIST>
-<LISTITEM><SCREEN>/lib/lsb/ld-lsb.so.1</SCREEN></LISTITEM>
-</ITEMIZEDLIST>
+The Program Interpreter is specified in the appropriate architecture
+specific LSB specification.
 </PARA>
 </SECT1>
 </CHAPTER>
