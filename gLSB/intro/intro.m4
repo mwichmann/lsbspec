@@ -7,13 +7,14 @@
 <TITLE>Introduction</TITLE>
 <PARA>
 This is version &specversion of the Linux Standard Base Specification. This 
-version is a mostly complete framework of the specification, but many details 
-are still not filled in. 
+version contained all of the sections that will apear in the final 1.0
+Specfication. Behavioral specifications for some interfaces have not yet
+been incorporated, but will be present in the 1.0 Specification.
 </PARA>
 <PARA>
-Those wishing to implement this standard should treat this version as more of
-a roadmap of where the standard will be going rather than a complete
-specification of the Linux Standard Base.
+Those wishing to implement this standard should use this specification with
+the understanding that further testing and public review will occur, and that
+changes as a result of these activities may occur.
 </PARA>
 <PARA>
 An implementation of this version of the specification may not claim
