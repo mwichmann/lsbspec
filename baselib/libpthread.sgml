@@ -12,15 +12,7 @@
 </ROW>
 <ROW>
 <ENTRY>Runtime Path:</ENTRY>
-<ENTRY>libpthread.lsb.1</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>Development Name:</ENTRY>
-<ENTRY></ENTRY>
-</ROW>
-<ROW>
-<ENTRY>Header Location:</ENTRY>
-<ENTRY></ENTRY>
+<ENTRY>libpthread.so.lsb.1</ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -35,7 +27,17 @@ using pthreads.
 <PARA>
 POSIX specifies a concept of per-process rather than per-thread
 signals.  The LSB does not require this behavior; traditional Linux
-implementations have had per-thread signals only.
+implementations have had per-thread signals only.  A related issue is
+that applications cannot (using legacy Linux implementations, at
+least) rely on getpid() returning the same value in different threads.
+</PARA>
+
+<PARA>
+Applications which create child processes (using fork() and the like)
+must then wait for them (using waitpid() family of functions) in the
+same thread as they created them.  Note that coding applications this
+way will work both with full POSIX threads and legacy Linux thread
+implementations.
 </PARA>
 
 <PARA>
@@ -47,10 +49,44 @@ kernel must lock the user id).  (FIXME: is this our current
 understanding?  It was discussed on lsb-spec on January 2000 but I'm
 not sure we reached a consensus).
 </PARA>
+
+<PARA>
+Although this standard doesn't have a way to list processes (/proc or
+"ps" command line isn't in, right?), it is our intention to not
+specify one way or the other whether multiple threads appear as
+separate processes or as a single process.
+</PARA>
+
+<PARA>
+Applications cannot rely on resource limits (getrusage and setrusage)
+being maintained per-process rather than per-thread.
+</PARA>
+
+<PARA>
+Applications must disconnect from the controlling tty before
+pthread_create (FIXME: have I summarized this correctly?).
+</PARA>
+
+<PARA>
+times() doesn't account for all threads, just the caller.
+</PARA>
+
+<PARA>
+Applications must not call pthread_cancel if they call any system
+libraries (most notably X windows), as system libraries are not
+guaranteed to be thread safe.  Likewise, for such libraries, only one
+thread per process may call them.
+</PARA>
+
+<PARA>
+Applications cannot rely on fcntl/lockf locks being visible
+per-process rather than per-thread.  Likewise for mandatory file
+locks.
+</PARA>
 <PARA>
 The behaviour of the interfaces in this library is specified by the following Standards.<SIMPLELIST COLUMNS=1>
 <MEMBER>
-The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers<FOOTNOTE ID="std-5-5">
+The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers<FOOTNOTE ID="std-132-5">
 <PARA>
 The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</PARA>
 </FOOTNOTE>
@@ -65,135 +101,23 @@ The Single UNIX Specification Version 2 (UNIX 98) System Interfaces & Headers</P
 <TITLE></TITLE>
 <TGROUP COLS=5>
 <TBODY>
-<ROW><ENTRY>pthread_attr_destroy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_attr_setscope<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_exit<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_once<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_setschedparam<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getdetachstate<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_attr_setstackaddr<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_getschedparam<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlockattr_destroy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_setspecific<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getguardsize<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_attr_setstacksize<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_getspecific<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlockattr_getpshared<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_sigmask<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getinheritsched<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_cancel<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_join<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlockattr_init<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_testcancel<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getschedparam<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_condattr_destroy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_key_create<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlockattr_setpshared<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>sem_destroy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getschedpolicy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_condattr_init<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_key_delete<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlock_destroy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>sem_getvalue<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getscope<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_cond_broadcast<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_kill<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlock_init<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>sem_init<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getstackaddr<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_cond_destroy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_mutexattr_destroy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlock_rdlock<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>sem_post<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_getstacksize<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_cond_init<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_mutexattr_gettype<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlock_tryrdlock<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>sem_trywait<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_init<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_cond_signal<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_mutexattr_settype<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlock_trywrlock<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>sem_unlink<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setdetachstate<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_cond_timedwait<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_mutex_destroy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlock_unlock<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>sem_wait<FOOTNOTEREF LINKEND="std-5-5"></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setguardsize<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_cond_wait<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_mutex_init<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_rwlock_wrlock<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setinheritsched<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_create<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_mutex_lock<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_self<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setschedparam<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_detach<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_mutex_trylock<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_setcancelstate<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY></ENTRY></ROW>
-<ROW><ENTRY>pthread_attr_setschedpolicy<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_equal<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_mutex_unlock<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY>pthread_setcanceltype<FOOTNOTEREF LINKEND="std-5-5"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_attr_setscope<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_exit<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_once<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setschedparam<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getdetachstate<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_attr_setstackaddr</ENTRY><ENTRY>pthread_getschedparam<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setspecific<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getguardsize</ENTRY><ENTRY>pthread_attr_setstacksize</ENTRY><ENTRY>pthread_getspecific<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_sigmask<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getinheritsched<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cancel<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_join<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_rdlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_testcancel<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getschedparam<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_broadcast<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_key_create<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_tryrdlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getschedpolicy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_key_delete<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_trywrlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_getvalue<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getscope<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_kill<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_unlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getstackaddr</ENTRY><ENTRY>pthread_cond_signal<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_wrlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_post<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getstacksize</ENTRY><ENTRY>pthread_cond_timedwait<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_trywait<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_wait<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_lock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_getpshared<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_unlink<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setdetachstate<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_condattr_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_trylock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_wait<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setguardsize</ENTRY><ENTRY>pthread_condattr_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_unlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_setpshared<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setinheritsched<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_create<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_self<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setschedparam<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_detach<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_gettype</ENTRY><ENTRY>pthread_setcancelstate<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setschedpolicy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_equal<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_settype</ENTRY><ENTRY>pthread_setcanceltype<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY></ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
-<TABLE>
-<TITLE>Mangled Symbol Mappings</TITLE>
-<TGROUP COLS=2>
-<THEAD><ROW><ENTRY>Symbol</ENTRY><ENTRY>Implements</ENTRY></ROW></THEAD>
-<TBODY>
-<ROW><ENTRY>_pthread_cleanup_pop</ENTRY><ENTRY>pthread_cleanup_pop</ENTRY></ROW>
-<ROW><ENTRY>_pthread_cleanup_push</ENTRY><ENTRY>pthread_cleanup_push</ENTRY></ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
-</SECT2>
-<SECT2>
-<TITLE>Leftovers (This need to be eliminated)</TITLE>
-<PARA>
-</PARA>
-<TABLE>
-<TITLE></TITLE>
-<TGROUP COLS=5>
-<TBODY>
-<ROW><ENTRY>pthread_mutexattr_getkind_np</ENTRY><ENTRY>pthread_mutexattr_init</ENTRY><ENTRY>pthread_mutexattr_setkind_np</ENTRY><ENTRY></ENTRY><ENTRY></ENTRY></ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
-</SECT2>
-</SECT1>
-<SECT1>
-<TITLE> Data Definitions for libpthread</TITLE>
-<PARA>
-</PARA>
-<SECT2>
-<TITLE>pthread.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-int pthread_attr_destroy(pthread_attr_t *attr);
-int pthread_attr_getdetachstate(const pthread_attr_t *attr, int *detachstate);
-int pthread_attr_getinheritsched(const pthread_attr_t *attr, int *inheritsched);
-int pthread_attr_getschedparam(const pthread_attr_t *attr, struct sched_param *param);
-int pthread_attr_getschedpolicy(const pthread_attr_t *attr, int *policy);
-int pthread_attr_getscope(const pthread_attr_t *attr, int *contentionscope);
-int pthread_attr_init(pthread_attr_t *attr);
-int pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate);
-int pthread_attr_setinheritsched(pthread_attr_t *attr, int inheritsched);
-int pthread_attr_setschedparam(pthread_attr_t *attr, const struct sched_param *param);
-int pthread_attr_setschedpolicy(pthread_attr_t *attr, int policy);
-int pthread_attr_setscope(pthread_attr_t *attr, int contentionscope);
-int pthread_cond_broadcast(pthread_cond_t *cond);
-int pthread_cond_destroy(pthread_cond_t *cond);
-int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr);
-int pthread_cond_signal(pthread_cond_t *cond);
-int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);
-int pthread_condattr_destroy(pthread_condattr_t *attr);
-int pthread_condattr_init(pthread_condattr_t *attr);
-int pthread_equal(pthread_t t1, pthread_t t2);
-void pthread_exit(void *value_ptr);
-int pthread_getschedparam(pthread_t thread, int *policy, struct sched_param *param);
-int pthread_mutex_destroy(pthread_mutex_t *mutex);
-int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr);
-int pthread_mutex_lock(pthread_mutex_t *mutex);
-int pthread_mutex_unlock(pthread_mutex_t *mutex);
-pthread_t pthread_self(void);
-int pthread_setcancelstate(int state, int *oldstate);
-int pthread_setcanceltype(int type, int *oldtype);
-int pthread_setschedparam(pthread_t thread, int policy, const struct sched_param *param);
-int pthread_attr_getguardsize(const pthread_attr_t *attr, size_t *guardsize);
-int pthread_attr_setguardsize(pthread_attr_t *attr, size_t guardsize);
-int pthread_attr_setstackaddr(pthread_attr_t *attr, void *stackaddr);
-int pthread_attr_getstackaddr(const pthread_attr_t *attr, void **stackaddr);
-int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize);
-int pthread_attr_getstacksize(const pthread_attr_t *attr, size_t *stacksize);
-int pthread_cancel(pthread_t thread);
-void pthread_cleanup_push(void (*routine)(void*), void *arg);
-void pthread_cleanup_pop(int execute);
-int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime);
-int pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared);
-int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared);
-int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void*), void *arg);
-int pthread_detach(pthread_t thread);
-int pthread_getconcurrency(void);
-int pthread_setconcurrency(int new_level);
-int pthread_setspecific(pthread_key_t key, const void *value);
-void *pthread_getspecific(pthread_key_t key);
-int pthread_join(pthread_t thread, void **value_ptr);
-int pthread_key_delete(pthread_key_t key);
-int pthread_mutex_setprioceiling(pthread_mutex_t *mutex, int prioceiling, int *old_ceiling);
-int pthread_mutex_getprioceiling(const pthread_mutex_t *mutex, int *prioceiling);
-int pthread_mutex_trylock(pthread_mutex_t *mutex);
-int pthread_mutexattr_init(pthread_mutexattr_t *attr);
-int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
-int pthread_mutexattr_setprioceiling(pthread_mutexattr_t *attr, int prioceiling);
-int pthread_mutexattr_getprioceiling(const pthread_mutexattr_t *attr, int *prioceiling);
-int pthread_mutexattr_setprotocol(pthread_mutexattr_t *attr, int protocol);
-int pthread_mutexattr_getprotocol(const pthread_mutexattr_t *attr, int *protocol);
-int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared);
-int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared);
-int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
-int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type);
-int pthread_rwlock_init(pthread_rwlock_t *rwlock, const pthread_rwlockattr_t *attr);
-int pthread_rwlock_destroy(pthread_rwlock_t *rwlock);
-int pthread_rwlock_rdlock(pthread_rwlock_t *rwlock);
-int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock);
-int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock);
-int pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock);
-int pthread_rwlock_unlock(pthread_rwlock_t *rwlock);
-int pthread_rwlockattr_init(pthread_rwlockattr_t *attr);
-int pthread_rwlockattr_destroy(pthread_rwlockattr_t *attr);
-int pthread_rwlockattr_getpshared(const pthread_rwlockattr_t *attr, int *pshared);
-int pthread_rwlockattr_setpshared(pthread_rwlockattr_t *attr, int pshared);
-void pthread_testcancel(void);
-
-</SCREEN>
 </SECT2>
 </SECT1>
