@@ -67,7 +67,7 @@ include(linuxsecttypes.sgml)
 <SECT1 ID="elfspecial">
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
-The following sections are defined in the ELF reference Specification.
+The following sections are defined in the ELF reference specification.
 <TABLE>
 <TITLE>ELF Special Sections</TITLE>
 <TGROUP COLS=4>
@@ -79,7 +79,7 @@ include(elfsect.sgml)
 <SECT1 ID="linuxspecial">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
-The following Linux specific sections are defined here.
+The following Linux-specific sections are defined here.
 <TABLE>
 <TITLE>Linux Special Sections</TITLE>
 <TGROUP COLS=2>
