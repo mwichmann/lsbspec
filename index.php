@@ -71,7 +71,8 @@ Previous versions of the specification can be found <A HREF=oldspecs.shtml>Here<
 <p>
 The LSB Specification is written in OASIS V4.1 Docbook SGML.&nbsp; You
 can&nbsp; <a href="http://gforge.freestandards.org/scm/?group_id=5">checkout
-a copy</a> of the Docbook source from the LSB project on SourceForge.Net.
+a copy</a> of the Docbook source from the LSB project on
+gforge.freestandards.org.
 Portions of the document are produced from a <a href="db.shtml">database</a>
 that was designed and is maintained by the LSB. In the spec tree there
 is a <i>build.html </i>file which describes <a href="build.html">how to
