@@ -9,8 +9,8 @@ include(fhs.sgml)
 <TITLE>Minimal granted Directory and File permissions</TITLE>
 
 <PARA>
-In this Chapter "System" means an "LSB-compliant system" and                    
-"application" means an "LSB-compliant (third party vendor) application".        
+In this Chapter "System" means an "LSB conforming implementation" and
+"application" means an "LSB conforming (third party vendor) application".
 </PARA>
 
 <PARA>
