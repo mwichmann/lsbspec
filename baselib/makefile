@@ -11,7 +11,7 @@ FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
 TABLES=
 
 .cpp.sgml:
-	cpp -I../../code/headers $*.cpp | grep -v '^# ' >$@
+	cpp -I../../src/include $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 $*.m4 >$@
@@ -44,4 +44,4 @@ clean:
 
 baselib.sgml: libc.sgml libcman.sgml datadefs.sgml libm.sgml libpthread.sgml
 baselib.sgml: libdb.sgml libdl.sgml libcrypt.sgml $(MANPAGES)
-# datadefs.sgml: ../../code/headers/datadefs.sgml
+# datadefs.sgml: ../../src/include/datadefs.sgml
