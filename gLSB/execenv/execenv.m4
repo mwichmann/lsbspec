@@ -167,7 +167,7 @@ particularly its security.
 
 </CHAPTER>
 
-<chapter>
+<CHAPTER ID="execenv-addntl-bhvr">
 <title>Additional Behaviors</title>
 
 <para>This section specifies behaviors in which there is optional
@@ -250,6 +250,21 @@ having write access, but the LSB does not require this.</para>
 </footnote>
 </para>
 
-</chapter>
+</CHAPTER>
+
+<CHAPTER id=localization>
+<TITLE>Localization</TITLE>
+
+<PARA>
+Applications may either install a message catalog in the MO format as
+specified by the info page in version 0.10.40 of the gettext source package,
+or the application may execute the msgfmt command during it's installation
+to compile the message catalog. In either case, the resulting output must be
+located in the package's private area under <FILENAME>/opt</FILENAME>, and the
+application may use <FUNCTION>bindtextdomain()</FUNCTION> to specify this
+location.
+</PARA>
+
+</CHAPTER>
 
 </PART>
