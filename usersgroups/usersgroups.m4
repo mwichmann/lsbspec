@@ -155,11 +155,31 @@ Only a minimum working set of "user names" and their corresponding
 "user groups" should be defined.
 </PARA>
 <PARA>
-By default, all end-users should be in the same group "users" like
-everyone else on the system with the default umask of 022.   Under
-special circumstances the system administrator may wish to have users
-in their own group with the umask of 002; however, this is not the default
-behavior.
+Systems will put all normal users in the group 'users'. 
+(FIXME: why standardize this?  Red Hat 6.0 or so doesn't seem to do it;
+haven't checked others).
+All normal users and
+normal user groups will be above the uid/gid of 100. No system required uid
+or gid is to be placed above uid/gid 99 as this may clash with real users
+imported via NIS or LDAP from other Unix systems.
+(FIXME: What about Red Hat's use of 500 for this?  Do other Linux
+distributions all use 100?  Is there another standard we can reference
+which contains the 100 rule?)
+Applications cannot
+assume non system uids will be provided from the password file. The password
+file format is undocumented by this standard. The *pwnam(3) calls must
+be used to access it. 
+</PARA>
+<PARA>
+Applications cannot assume any policy for the default umask or the default
+directory permissions a user may have. Applications should enforce user
+only file permissions on private files such as mailboxes.  The location of
+the users home directory is also not defined by policy other than the
+recommendations of the FHS and must be obtained by the *pwnam(3) calls.
+</PARA>
+<PARA>
+When an application needs to add a user or a group to the system it must
+invoke the useradd or groupadd applications. 
 </PARA>
 </SECT1>
 
