@@ -12,7 +12,7 @@ nor may they modify the files in <FILENAME>/var/spool/cron/crontabs</FILENAME>.
 </PARA>
 <PARA>
 If a package wants to install a job that has to be executed via cron,
-it shall place a file with the name if the package in one of the
+it shall place a file with the name of the package in one of the
 following directories:
 </PARA>
 <PROGRAMLISTING>
@@ -28,7 +28,7 @@ daily, weekly, or monthly basis, respectively.
 
 If a certain job has to be executed more frequently than daily, the
 package shall install a file
-<FILENAME>/etc/cron.d/<MARKUP><</MARKUP>package-name<MARKUP>></MARKUP></FILENAME>
+<FILENAME>/etc/cron.d/&lt;package-name></FILENAME>
 tagged as configuration file. This file uses the same syntax as
 <FILENAME>/etc/crontab</FILENAME> and is processed by cron automatically.
 </PARA>
@@ -168,7 +168,7 @@ exit status codes.
 <MEMBER>1</MEMBER><MEMBER>program is dead and /var/run pid file exists</MEMBER>
 <MEMBER>2</MEMBER><MEMBER>program is dead and /var/lock lock file exists</MEMBER>
 <MEMBER>3</MEMBER><MEMBER>program is stopped</MEMBER>
-<MEMBER>4-100</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
+<MEMBER>4-99</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
 <MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
 <MEMBER>150-199</MEMBER><MEMBER>reserved for application use</MEMBER>
 <MEMBER>200-254</MEMBER><MEMBER>reserved</MEMBER>
@@ -213,7 +213,7 @@ one of the following non-zero exit status codes.
 <MEMBER>5</MEMBER><MEMBER>program is not installed</MEMBER>
 <MEMBER>6</MEMBER><MEMBER>program is not configured</MEMBER>
 <MEMBER>7</MEMBER><MEMBER>program is not running</MEMBER>
-<MEMBER>8-100</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
+<MEMBER>8-99</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
 <MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
 <MEMBER>150-199</MEMBER><MEMBER>reserved for application use</MEMBER>
 <MEMBER>200-254</MEMBER><MEMBER>reserved</MEMBER>
@@ -224,7 +224,6 @@ All error messages must be printed on standard error.  All status
 messages must be printed on standard output.
 </PARA>
 <PARA>
-
 Since init files may be run manually by a system administrator with
 non-standard environment variable values for PATH, USER, LOGNAME,
 etc. init files must not depend on the values of these environment
@@ -248,7 +247,7 @@ necessary so that the script can be run at boot-time.
 <FOOTNOTE><PARA>
 This specification does not require, but is designed to allow, the
 development of a system which runs boot scripts in parallel.  Hence,
-enforced serialization of scripts are avoided unless they are explicitly
+enforced-serialization of scripts is avoided unless it is explicitly
 necessary. 
 </PARA></FOOTNOTE>
 </PARA>
@@ -315,7 +314,7 @@ that does not match this criteria.
 An init.d file is installed by copying it into /etc/init.d (which may
 be a symlink to another location).  This can be done by the package
 installer.  During the package's postinstall script, the program
-"/usr/lib/lsb/install_initd" to configure the distribution's boot
+"/usr/lib/lsb/install_initd" configures the distribution's boot
 script system to call the package's init.d file at the appropriate
 time.
 </PARA>
@@ -335,8 +334,8 @@ When a software package is removed, the package's preuninstall script
 shall call /usr/lib/lsb/remove_initd and pass the pathname to the
 /etc/init.d file.  The package manager is still responsible for removing 
 the /etc/init.d file; the remove_initd program is provided in case the
-distribution needs to clean up any other modifications the distribution's
-boot script system which might have been made by the install_initd program.
+distribution needs to clean up any other modifications in the distribution's
+boot script system that might have been made by the install_initd program.
 For example:
 </PARA>
 
@@ -346,7 +345,7 @@ For example:
 
 
 <PARA>
-There should be a tool available to the user (ala RedHat's chkconfig)
+There should be a tool available to the user (e.g., RedHat's chkconfig)
 which can be used by the system administrator to easily manipulate at
 which init levels a particular init.d script is started or stopped.
 This specification currently does not specify such an interface,
@@ -418,43 +417,40 @@ this namespace are available:
 
 <ITEMIZEDLIST MARK="bullet">
 <LISTITEM><PARA>
-	Assigned namespace.  This namespace consists of names which
-		only use the character set [a-z0-9].  This space is
-		desirable for scripts which system administrators may
-		often wish to run manually: e.g., "/etc/init.d/named restart"
-		In order to avoid conflicts these init.d names must be reserved
-		through the Linux Assigned Names and Numbers
-		Authority (LANANA).  Information about the LANANA
-		may be found at
-		<ULINK URL="http://www.lanana.org">www.lanana.org</ULINK>.
-	</PARA>
-
-	<PARA>
-		Commonly used names shall be reserved in advance; 
-		developers for projects should be encouraged reserve names
-		from LANA, so that each distribution can use the same
-		name, and to avoid conflicts with other projects.
+Assigned namespace.  This namespace consists of names which
+only use the character set [a-z0-9].  This space is
+desirable for scripts which system administrators may
+often wish to run manually: e.g., "/etc/init.d/named restart"
+In order to avoid conflicts these init.d names must be reserved
+through the Linux Assigned Names and Numbers Authority (LANANA).  
+Information about the LANANA may be found at
+<ULINK URL="http://www.lanana.org">www.lanana.org</ULINK>.
+</PARA>
+<PARA>
+Commonly used names shall be reserved in advance; 
+developers for projects should be encouraged to reserve names
+from LANANA, so that each distribution can use the same
+name, and to avoid conflicts with other projects.
 </PARA></LISTITEM>
 
 <LISTITEM><PARA>
-	Hierarchical namespace.  This namespace consists of scripts
-		names which look like this: [hier1]-[hier2]-...-[name],
-		where name is again taken the character set [a-z0-9], 
-		and where there may be one or more [hier-n] components.  
-		[hier1] may either be an LSB provider name assigned
-		by the LANANA, or
-		it may be owners' DNS name in lower case, with at
-		least one '.'.  I.e., "debian.org", "staroffice.sun.com", etc.
-		The LSB provider name assigned by LANANA 
-		must only consist of the ASCII characters [a-z0-9].
+Hierarchical namespace.  This namespace consists of scripts
+names which look like this: [hier1]-[hier2]-...-[name],
+where name is again taken the character set [a-z0-9], 
+and where there may be one or more [hier-n] components.  
+[hier1] may either be an LSB provider name assigned
+by the LANANA, or it may be owners' DNS name in lower case, with at
+least one '.' (e.g., "debian.org", "staroffice.sun.com").
+The LSB provider name assigned by LANANA 
+must only consist of the ASCII characters [a-z0-9].
 </PARA></LISTITEM>
 
 <LISTITEM><PARA>
-	Reserved namespace.  This namespace consists of script names
-		which begin with the character '_', and is reserved for
-		distribution use only.  This namespace should be used
-		for core packages only, and in general use of this
-		namespace is highly discouraged.  
+Reserved namespace.  This namespace consists of script names
+which begin with the character '_', and is reserved for
+distribution use only.  This namespace should be used
+for core packages only, and in general use of this
+namespace is highly discouraged.  
 
 </PARA></LISTITEM>
 </ITEMIZEDLIST>
@@ -463,31 +459,29 @@ this namespace are available:
 <PARA>
 In general, if a package or some system function is likely to be used
 on multiple systems, the package developers or the distribution SHOULD
-get a registered name through LANA, and distributions should strive to
+get a registered name through LANANA, and distributions should strive to
 use the same name whenever possible.  For applications which may not
 be "core" or may not be commonly installed, the hierarchical namespace
 may be more appropriate.  An advantage to the hierarchical namespace
-is that there is no need to consult with the LANA before obtaining an
+is that there is no need to consult with the LANANA before obtaining an
 assigned name.
 </PARA>
 
 <PARA>
-Obviously, short names are highly desirable, since many system
+Short names are highly desirable, since many system
 administrators like to use them to manually start and stop services.
 Given this, they should be standardized on a per-package basis.  This
-is the rationale behind having a LANA organization to assign these
-names.  The LANA may be called upon to handle other namespace issues,
-such as package/prerequisites naming (which I'm sure will be a hot
-political topic, but essential to make prerequisites to work
-correctly).
+is the rationale behind having a LANANA organization to assign these
+names.  The LANANA may be called upon to handle other namespace issues,
+such as package/prerequisites naming (which is essential to making 
+prerequisites to work correctly).
 </PARA>
 
-<PARA> 
-
+<PARA>
 This specification shall pre-define the following script names as
 being reserved to the LANA.  They reflect names which are commonly in
 use today by distributions to start up various system programs/daemons.
-The behaviour of these scripts are not specified here, and not all
+The behavior of these scripts are not specified here, and not all
 distributions may use all of these script names.
 
 <ITEMIZEDLIST MARK="bullet">
@@ -538,7 +532,7 @@ distributions may use all of these script names.
 <TITLE>Init script Functions</TITLE>
 
 <PARA>
-Each LSB compliant init.d script must source the file
+Each LSB-compliant init.d script must source the file
 /lib/lsb/init-functions.  This file must cause the following shell
 script commands to be defined.  This can be done either by adding a
 directory to the PATH variable which defines these commands, or by
@@ -551,59 +545,65 @@ defined by POSIX.2.
 <SIMPLELIST type=horiz columns=2>
 <MEMBER>start_daemon [-f] [-n nicelevel] pathname [args]</MEMBER>
 
-<MEMBER>	    This runs the specified program as a daemon.
-		    start_daemon will check to see if there is a program
-		    named "daemon" already running.  If so, it will not
-		    start  another copy of the daemon unless the -f
-		    option is given.  The -n option specifies a nice
-		    level.  See nice(1).
+<MEMBER>
+This runs the specified program as a daemon.
+start_daemon will check to see if there is a program
+named "daemon" already running.  If so, it will not
+start another copy of the daemon unless the -f
+option is given. The -n option specifies a nice
+level. See nice(1).
 </MEMBER>
 
 <MEMBER>killproc basename [signal]</MEMBER>
 
-<MEMBER>	    This stops the specified program.	The program is 
-		    found using the algorithm given by pidofproc.  If  a
-		    signal is specified, the program is sent that
-		    signal.  Otherwise, a SIGTERM followed by a SIGKILL
-		    after some number of seconds is sent.
+<MEMBER>
+This stops the specified program. The program is 
+found using the algorithm given by pidofproc. If a
+signal is specified, the program is sent that
+signal. Otherwise, a SIGTERM followed by a SIGKILL
+after some number of seconds is sent.
 </MEMBER>
 
 <MEMBER>pidofproc basename</MEMBER>
 
-<MEMBER> This function returns one or more pid(s) for a particular
-		  daemon.  If an entry is found in
-		  /var/run/basename.pid, then that value is returned.
-		  Compliant implementations of the LSB may attempt
-		  other mechanisms for determining the pid(s),
-		  although this is not required.  (And not
-		  recommended, since a user can trick startup scripts
-		  by creating processes that appear to be system
-		  programs in the process list thus creating a
-		  potential security exposure.)  Hence, LSB complaint
-		  applications who wish to use the pidofproc function
-		  in their init scripts must store the pid in
-		  /var/run/basename.pid.
+<MEMBER>
+This function returns one or more pid(s) for a particular
+daemon. If an entry is found in
+/var/run/basename.pid, then that value is returned.
+Compliant implementations of the LSB may attempt
+other mechanisms for determining the pid(s),
+although this is not required (and not
+recommended, since a user can trick startup scripts
+by creating processes that appear to be system
+programs in the process list thus creating a
+potential security exposure).  Hence, LSB-complaint
+applications who wish to use the pidofproc function
+in their init scripts must store the pid in
+/var/run/basename.pid.
 </MEMBER>
 
 <MEMBER>log_success_msg "message"</MEMBER>
 
-<MEMBER>	This requests the distribution to print a success
-		message.  The message should be relatively short; no
-		More than 60 characters is highly desirable.
+<MEMBER>
+This requests the distribution to print a success
+message.  The message should be relatively short; no
+More than 60 characters is highly desirable.
 </MEMBER>
 
 <MEMBER>log_failure_msg "message"</MEMBER>
 
-<MEMBER>	This requests the distribution to print a failure
-		message.  The message should be relatively short; no
-		more than 60 characters is highly desirable.
+<MEMBER>
+This requests the distribution to print a failure
+message.  The message should be relatively short; no
+more than 60 characters is highly desirable.
 </MEMBER>
 
 <MEMBER>log_warning_msg "message"</MEMBER>
 
-<MEMBER>	This requests the distribution to print a warning
-		message.  The message should be relatively short; no
-		more than 60 characters is highly desirable.
+<MEMBER>
+This requests the distribution to print a warning
+message.  The message should be relatively short; no
+more than 60 characters is highly desirable.
 </MEMBER>
 
 </SIMPLELIST>

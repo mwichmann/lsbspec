@@ -1,17 +1,19 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.29 2001/11/19 16:33:28 anderson Exp 0 -->
-<!--    at Mon Nov 19 15:57:19 2001 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.31 2001/11/26 18:26:53 anderson Exp 0 -->
+<!--    at Mon Dec 10 21:09:03 2001 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
 </PARA>
 <PARA>
-LSB systems fundamentally support POSIX threads. Applications 
-should be written to observe either POSIX threads or the following 
-thread behaviors of historical Linux implementations.
+LSB systems support POSIX threads with the following exceptions.
+This list is intended to match the behavior of historical Linux
+implementations.  Applications should be written to deal with either
+POSIX threads or the thread behaviors described here.
 
 <ITEMIZEDLIST MARK=BULLET>
+
 <LISTITEM>
 <PARA>
 POSIX specifies a concept of per-process rather than per-thread
@@ -21,6 +23,7 @@ that applications cannot rely on getpid() returning the same value
 in different threads.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 Note: one implication of per-thread signals is that a core dump (for
@@ -28,6 +31,7 @@ example) may not stop all threads in a given process.  This may be an
 issue when designing ways to stop/start applications.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 Applications which create child processes (using fork() and the like)
@@ -37,6 +41,7 @@ way will work both with full POSIX threads and legacy Linux thread
 implementations.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 POSIX specifies that changing the user or group id instantly affects
@@ -46,6 +51,7 @@ Rationale: it seems unnecessary and it is a performance hit (an SMP
 kernel must lock the user id).
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 Although this standard doesn't have a way to list processes (/proc or
@@ -54,23 +60,27 @@ specify one way or the other whether multiple threads appear as
 separate processes or as a single process.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 Applications cannot rely on resource limits (getrusage and setrusage)
 being maintained per-process rather than per-thread.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 Applications must disconnect from the controlling tty before
 calling pthread_create.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 times() doesn't account for all threads, just the caller.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 Applications must not call pthread_cancel if they call any system
@@ -79,6 +89,7 @@ guaranteed to be thread safe.  Likewise, for such libraries, only one
 thread per process may call them.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 Applications cannot rely on fcntl/lockf locks being visible
@@ -86,11 +97,13 @@ per-process rather than per-thread.  Likewise for mandatory file
 locks.
 </PARA>
 </LISTITEM>
+
 <LISTITEM>
 <PARA>
 Threaded applications cannot use SIGUSR1 or SIGUSR2.
 </PARA>
 </LISTITEM>
+
 </ITEMIZEDLIST>
 </PARA>
 
@@ -145,6 +158,88 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 <PARA>
 </PARA>
 <SECT2>
+<TITLE>pthread.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+typedef unsigned int pthread_key_t;
+
+typedef int pthread_once_t;
+
+struct _pthread_fastlock
+{
+  int __spinlock;
+}
+ ;
+
+
+typedef unsigned long pthread_t;
+
+
+typedef struct _pthread_descr_struct *_pthread_descr;
+
+struct _pthread_descr_struct;
+
+
+typedef struct
+{
+  struct _pthread_fastlock lock;
+  _pthread_descr owner;
+  int kind;
+  unsigned int count;
+}
+pthread_mutex_t;
+
+typedef struct
+{
+  int __mutexkind;
+}
+pthread_mutexattr_t;
+
+
+typedef struct
+{
+  int __detachstate;
+  int __schedpolicy;
+  struct sched_param __schedparam;
+  int __inheritsched;
+  int __scope;
+  void *__stackaddr;
+  unsigned long __stacksize;
+}
+pthread_attr_t;
+
+
+typedef struct
+{
+  struct _pthread_fastlock lock;
+  _pthread_descr wait_chain;
+}
+pthread_cond_t;
+
+typedef void *pthread_condattr_t;
+
+
+
+#define PTHREAD_ONCE_INIT	0
+#define PTHREAD_CREATE_DETACHED	PTHREAD_CREATE_DETACHED
+#define PTHREAD_CREATE_JOINABLE	PTHREAD_CREATE_JOINABLE
+#define PTHREAD_EXPLICIT_SCHED	PTHREAD_EXPLICIT_SCHED
+#define PTHREAD_INHERIT_SCHED	PTHREAD_INHERIT_SCHED
+#define PTHREAD_PROCESS_PRIVATE	PTHREAD_PROCESS_PRIVATE
+#define PTHREAD_PROCESS_SHARED	PTHREAD_PROCESS_SHARED
+#define PTHREAD_SCOPE_PROCESS	PTHREAD_SCOPE_PROCESS
+#define PTHREAD_SCOPE_SYSTEM	PTHREAD_SCOPE_SYSTEM
+
+#define PTHREAD_CANCELED	((void*)-1)
+#define PTHREAD_CANCEL_ASYNCHRONOUS	PTHREAD_CANCEL_ASYNCHRONOUS
+#define PTHREAD_CANCEL_DEFERRED	PTHREAD_CANCEL_DEFERRED
+#define PTHREAD_CANCEL_DISABLE	PTHREAD_CANCEL_DISABLE
+#define PTHREAD_CANCEL_ENABLE	PTHREAD_CANCEL_ENABLE
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>semaphore.h</TITLE>
 <PARA>
 </PARA>
@@ -156,11 +251,14 @@ typedef struct
   long status;
   int spinlock;
 }
-sem_t
+sem_t;
+
+
 #define SEM_FAILED	((sem_t*)0)
+
 #define SEM_VALUE_MAX	((int)((~0u)>>1))
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.29 2001/11/19 16:33:28 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.31 2001/11/26 18:26:53 anderson Exp 0 -->
