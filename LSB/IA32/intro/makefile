@@ -13,7 +13,7 @@ TABLES=standards.sgml libraries.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable >standards.sgml
+	../../../mkstandardsgmltable -a IA32 >standards.sgml
 	../../../mklibsgmltable -a IA32 >libraries.sgml
 
 clean:
