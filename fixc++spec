@@ -72,14 +72,26 @@ while(<>) {
 			if(/<\/ROW>/) {
 				last;
 				}
+			$footnote="";
 			$entry=$_;
 			$entry=~s/std:://g;
 			$entry=~/<ENTRY>(.+)<\/ENTRY>/;
-			#print STDERR "Entry: $1\n";
+			print STDERR "Entry: $1\n";
 			$entry=$1;
 			$entry=~s/$group\:\://;
+			if(/FOOTNOTEREF/) {
+				print STDERR "Found a FOOTNOTEREF\n";
+				$footnote=$entry;
+				$footnote=~/(.+)<FOOTNOTEREF(.+)>/;
+				$entry=$1;
+				$footnote=$2;
+				}
 			$entry=~s/\</&lt;/g;
-			print "<ENTRY>$entry</ENTRY>\n";
+			print "<ENTRY>$entry";
+			if( $footnote ne "" ) {
+				print "<FOOTNOTEREF $footnote>";
+				}
+			print "</ENTRY>\n";
 			}
 	}
 	if(/<!--libgroupdata-->/) {
