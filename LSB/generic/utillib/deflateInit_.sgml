@@ -1,0 +1,156 @@
+<refentry id="zlib-deflateInit" xreflabel="deflateInit_">
+
+<refmeta>
+<refentrytitle>deflateInit_</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>deflateInit_</refname>
+<refpurpose>initialize compression system</refpurpose>
+<indexterm id="ix-utillib-deflateInit-1">
+  <primary>deflateInit_</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>deflateInit_</function>
+</funcdef>
+<paramdef>z_streamp
+<parameter>stream</parameter>
+</paramdef>
+<paramdef>int
+<parameter>level</parameter>
+</paramdef>
+<paramdef>const char *
+<parameter>version</parameter>
+</paramdef>
+<paramdef>int
+<parameter>stream_size</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>deflateInit_</function> function shall initialize 
+the compression
+system.
+On entry, <parameter>stream</parameter> shall refer to a user 
+supplied <type>z_stream</type>
+object (a <structname>z_stream_s</structname> structure). 
+The following fields shall be
+set on entry:
+<variablelist>
+<varlistentry>
+<term><structfield>zalloc</structfield></term>
+<listitem><para>
+a pointer to an <type>alloc_func</type> function, used to allocate state information.
+If this is <constant>NULL</constant>, a default allocation function will be used.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>zfree</structfield></term>
+<listitem><para>
+a pointer to a <type>free_func</type> function, used to free memory
+allocated by the
+<structfield>zalloc</structfield> function. If this is
+<constant>NULL</constant>
+a default free function will be used.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><structfield>opaque</structfield></term>
+<listitem><para>
+If <structfield>alloc_func</structfield> is not <constant>NULL</constant>,
+<structfield>opaque</structfield> is a user supplied pointer to data
+that will be passed to the
+<structfield>alloc_func</structfield> and
+<structfield>free_func</structfield> functions.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+If the <parameter>version</parameter> requested is not compatible with
+the version implemented, or if the size of the
+<structname>z_stream_s</structname> structure
+provided in <parameter>stream_size</parameter> does not match the size
+in the library
+implementation, <function>deflateInit_</function> shall fail, and return
+<constant>Z_VERSION_ERROR</constant>.
+</para>
+<para>
+The <parameter>level</parameter> supplied shall be a value between
+<constant>0</constant> and <constant>9</constant>, or the value
+<constant>Z_DEFAULT_COMPRESSION</constant>. A <parameter>level</parameter>
+of <constant>1</constant> requests the highest speed, while a
+<parameter>level</parameter>
+of <constant>9</constant> requests the highest compression.
+A <parameter>level</parameter> of <constant>0</constant> indicates that no
+compression should be used, and the output shall be the same as the input.
+</para>
+<para>
+The <function>deflateInit_</function> function is not in the source standard;
+it is only in the binary standard. Source applications should use the
+<function>deflateInit</function> macro.
+</para>
+<para>
+The <function>deflateInit_</function> function is equivalent to
+<programlisting>
+ deflateInit2_(stream, level, Z_DEFLATED, MAX_WBITS, DEF_MEM_LEVEL,
+                         Z_DEFAULT_STRATEGY, version, stream_size);
+</programlisting>
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, the <function>deflateInit_</function> function shall return 
+<constant>Z_OK</constant>. 
+Otherwise, <function>deflateInit_</function> shall return
+a value as described below to indicate the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>deflateInit_</function> shall return one
+of the following error indicators:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+Invalid parameter.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_VERSION_ERROR</constant></term>
+<listitem><para>
+The version requested is not compatible with the library version,
+or the <type>z_stream</type> size differs from that used by the library.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
+In addition, the <structfield>msg</structfield> field of the 
+<parameter>stream</parameter>
+may be set to an error message.
+</para>
+</refsect1>
+</refentry>

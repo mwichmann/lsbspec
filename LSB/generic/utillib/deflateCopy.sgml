@@ -1,0 +1,95 @@
+<refentry id="zlib-deflateCopy-1">
+
+<refmeta>
+<refentrytitle>deflateCopy</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>deflateCopy</refname>
+<refpurpose>copy compression stream</refpurpose>
+<indexterm id="ix-utillib-deflateCopy-1">
+  <primary>deflateCopy</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>deflateCopy</function>
+</funcdef>
+<paramdef>z_streamp
+<parameter>dest</parameter>
+</paramdef>
+<paramdef>z_streamp
+<parameter>source</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>deflateCopy</function> function shall copy the compression state
+information in <parameter>source</parameter> to the uninitialized
+<structname>z_stream</structname> structure referenced by 
+<parameter>dest</parameter>.
+</para>
+<para>
+On successful return, <parameter>dest</parameter> will be an exact copy
+of the stream referenced by <parameter>source</parameter>. The input and
+output buffer pointers in <structfield>next_in</structfield> and
+<structfield>next_out</structfield> will reference the same data.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>deflateCopy</function> shall return  
+<returnvalue>Z_OK</returnvalue>.
+Otherwise it shall return a value less than zero to indicate the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>deflateCopy</function> shall return a value as described 
+below:
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The state in <parameter>source</parameter> is inconsistent, or
+either <parameter>source</parameter> or
+<parameter>dest</parameter> was <constant>NULL</constant>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+<refsect1>
+<title>Application Usage (informative)</title>
+<para>
+This function can be useful when several compression strategies will
+be tried, for example when there are several ways of pre-processing the
+input data with a filter. The streams that will be discarded should then
+be freed by calling <function>deflateEnd</function>. Note that 
+<function>deflateCopy</function> duplicates the
+internal compression state which can be quite large, so this strategy
+may be slow and can consume lots of memory.
+</para>
+</refsect1>
+</refentry>
+

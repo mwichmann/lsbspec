@@ -1,0 +1,144 @@
+<refentry id="zlib-gzflush-1">
+
+<refmeta>
+<refentrytitle>gzflush</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzflush</refname>
+<refpurpose>flush a compressed file stream</refpurpose>
+<indexterm id="ix-utillib-gzflush-1">
+  <primary>gzflush</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>gzflush</function>
+</funcdef>
+<paramdef>gzFile
+<parameter>file</parameter>
+</paramdef>
+<paramdef>int
+<parameter>flush</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzflush</function> function shall flush pending
+output to the compressed file stream identified by
+<parameter>file</parameter>, which must be open for writing.
+
+</para>
+<refsect2>
+<title>Flush Operation</title>
+<para>
+The parameter <parameter>flush</parameter> determines which compressed bits 
+are added to the output file.
+If <parameter>flush</parameter> is <constant>Z_NO_FLUSH</constant>,
+<function>gzflush</function>
+may return with some data pending output, and not yet written to the file.
+</para>
+<para>
+If <parameter>flush</parameter> is <constant>Z_SYNC_FLUSH</constant>,
+<function>gzflush</function> shall flush all pending output to
+<parameter>file</parameter> and align the output to a byte 
+boundary.
+There may still be data pending compression that is not flushed.
+</para>
+<para>
+If <parameter>flush</parameter> is <constant>Z_FULL_FLUSH</constant>,
+all output shall be flushed, as for <constant>Z_SYNC_FLUSH</constant>,
+and the compression state shall be reset.
+There may still be data pending compression that is not flushed.
+<note><title>Rationale</title>
+<para>
+<constant>Z_SYNC_FLUSH</constant> is intended to ensure that the compressed
+data contains all the data compressed so far, and allows a decompressor
+to reconstruct all of the input data. <constant>Z_FULL_FLUSH</constant>
+allows decompression to restart from this point if the previous compressed
+data has been lost or damaged. Flushing is likely to degrade the
+performance of the compression system, and should only be used where
+necessary.
+</para>
+</note>
+</para>
+<para>
+If <parameter>flush</parameter> is set to <constant>Z_FINISH</constant>,
+all pending uncompressed data shall be compressed
+and all output shall be flushed.
+</para>
+
+</refsect2>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzflush</function> shall return the value
+<returnvalue>Z_OK</returnvalue>.
+Otherwise <function>gzflush</function> shall return
+a value to indicate the error, and may set the error number
+associated with the compressed file stream 
+<parameter>file</parameter>.
+<note><para>
+If <parameter>flush</parameter> is set to <constant>Z_FINISH</constant>
+and the flush operation is successful, <function>gzflush</function>
+will return <returnvalue>Z_OK</returnvalue>, but the compressed
+file stream error value may be set to <constant>Z_STREAM_END</constant>.
+</para></note>
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzwrite</function> shall return an error
+value, and may set
+the error number associated with the stream identified by 
+<parameter>file</parameter>
+to indicate the error. Applications may use <function>gzerror</function>
+to access this error value.
+</para>
+<para>
+<variablelist>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An underlying base library function has indicated an error.
+The global variable <varname>errno</varname> may be examined 
+for further information.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The stream is invalid, is not open for writing, or is in an invalid state.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+no compression progress is possible (see <function>deflate</function>).
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available to compress.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+
