@@ -68,15 +68,8 @@ corresponding group.
 <ROW><ENTRY>news</ENTRY><ENTRY>news</ENTRY><ENTRY>News special privileges</ENTRY></ROW>
 <ROW><ENTRY>uucp</ENTRY><ENTRY>uucp</ENTRY><ENTRY>UUCP special privileges</ENTRY></ROW>
 <ROW><ENTRY>operator</ENTRY><ENTRY>root</ENTRY><ENTRY>Operator special privileges</ENTRY></ROW>
-<ROW><ENTRY>games</ENTRY><ENTRY>users</ENTRY><ENTRY>Games</ENTRY></ROW>
-<ROW><ENTRY>gopher</ENTRY><ENTRY>gopher</ENTRY><ENTRY>Gopher special privileges</ENTRY></ROW>
-<ROW><ENTRY>ftp</ENTRY><ENTRY>ftp</ENTRY><ENTRY>FTP special privileges</ENTRY></ROW>
 <ROW><ENTRY>man</ENTRY><ENTRY>man</ENTRY><ENTRY>Man special privileges</ENTRY></ROW>
-<ROW><ENTRY>majordom</ENTRY><ENTRY>majordom</ENTRY><ENTRY></ENTRY></ROW>
-<ROW><ENTRY>gdm</ENTRY><ENTRY>gdm</ENTRY><ENTRY></ENTRY></ROW>
-<ROW><ENTRY>postgres</ENTRY><ENTRY>database</ENTRY><ENTRY>Postgres database</ENTRY></ROW>
-<ROW><ENTRY>mysql</ENTRY><ENTRY>database</ENTRY><ENTRY>MySQL database</ENTRY></ROW>
-<ROW><ENTRY>nobody</ENTRY><ENTRY>nobody</ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>nobody</ENTRY><ENTRY>nobody</ENTRY><ENTRY>Used by NFS</ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
