@@ -22,6 +22,7 @@
 <COPYRIGHT>
 <YEAR>2003</YEAR>
 <YEAR>2004</YEAR>
+<YEAR>2005</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
