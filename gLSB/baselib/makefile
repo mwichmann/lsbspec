@@ -53,7 +53,7 @@ gensrc:
 	../../mklibspec -a All -l libcrypt >libcrypt.sgml
 	../../mklibspec -a All -l libpam >libpam.sgml
 	../../mklibspec -a All -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../mklibspec -a IA32 -c 2 -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
+	../../mklibspec -a All -c 2 -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
 
 clean:
 	rm -f $(FILES)
