@@ -1,13 +1,21 @@
 #!/usr/bin/perl
 
 use Carp;
+use Getopt::Long;
 use Mysql;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
+GetOptions("r" => \$doref);
+
 $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER,$LSBDBPASSWD) || die $Mysql::db_errstr;
 
-$select = "SELECT * FROM Standard";
+if( $doref ) {
+	$select = "SELECT * FROM Standard WHERE Stype='Reference'";
+} else {
+	$select = "SELECT * FROM Standard WHERE Stype='Standard'";
+}
+
 #printf $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 

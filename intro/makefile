@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=intro.sgml
-TABLES=standards.sgml libraries.sgml
+TABLES=standards.sgml libraries.sgml refimpls.sgml
 
 .cpp.sgml:
 	cpp -I../../code/headers $*.cpp | grep -v '^# ' >$@
@@ -14,6 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	./mkstandardsgmltable >standards.sgml
+	./mkstandardsgmltable -r >refimpls.sgml
 	./mklibsgmltable >libraries.sgml
 
 clean:
