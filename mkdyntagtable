@@ -1,0 +1,87 @@
+#!/usr/bin/perl
+
+use Getopt::Long;
+use Mysql;
+
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+
+sub usage()
+{
+print STDERR "mkdyntagtable -a <archname>\n";
+die;
+}
+
+# Uncomment to trace SQL statments
+#$trace=1;
+
+#
+# 1) process the arguments
+#
+GetOptions("a=s" => \$archname,
+	   "s=s" => \$stdname);
+	   "c=i" => \$numcols);
+	   "d" => \$dodesc);
+
+if( !$archname ) { usage(); }
+
+#
+# 2) Establish connection to the database
+#
+$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+
+#
+# 3) get & print the architecture info
+#
+$select = "SELECT * FROM Architecture WHERE ";
+$select.= "Architecture.Aname=".$Dbh->quote($archname);
+print STDERR $select,"\n" if $trace;
+$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+
+%entry=$sth->fetchhash;
+$Aid=$entry{'Aid'};
+$Aname=$entry{'Aname'};
+
+#
+#
+#
+#if( $query->param('numcols') ) {
+#	$numcols=$query->param('numcols');
+#} else {
+#	$numcols=1;
+#}
+#if( $query->param('dodesc') ) {
+#	$dodesc=$query->param('dodesc');
+#} else {
+#	$dodesc='N';
+#}
+
+$numcols=1;
+$dodesc='N';
+
+$select  ="SELECT DEname,DEdescription ";
+$select .="FROM DynamicEntries,Standard ";
+$select .="WHERE DEstandard=Sid and Sname=".$Dbh->quote($query->param('Sname'));
+
+$select .=" ORDER BY DynamicEntries.DEname ";
+#print $select,"\n";
+$sth = $Dbh->query($select) || die $Dbh->errmsg();
+
+print "<TBODY>\n";
+print "<ROW>";
+$curcol=1;
+for(1..$sth->numrows) {
+	%entry=$sth->fetchhash;
+	printf "<ENTRY>%s</ENTRY>",$entry{'DEname'};
+	if ( $dodesc eq 'Y' ) {
+		printf "<ENTRY>%s</ENTRY>",$entry{'DEdescription'};
+	}
+	if( $curcol%$numcols == 0 && $_ != $sth->numrows) {
+		print "</ROW>\n";
+		print "<ROW>";
+		$curcol=1;
+	} else {
+		$curcol++;
+	}
+}
+print "</ROW>\n";
+print "</TBODY>\n";
