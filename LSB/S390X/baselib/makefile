@@ -21,6 +21,7 @@ gensrc:
 	../../../mklibspec -a S390X -l libpthread >libpthread.sgml
 	../../../mklibspec -a S390X -l libdl >libdl.sgml
 	../../../mklibspec -a S390X -l libcrypt >libcrypt.sgml
+	../../../mklibspec -a S390X -c 2 -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
 
 clean:
 	rm -f $(FILES)
