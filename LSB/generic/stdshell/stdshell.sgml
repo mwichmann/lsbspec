@@ -1,0 +1,92 @@
+<PART ID="tocstdshell">
+<TITLE>Standard Shell</TITLE>
+<CHAPTER ID="stdshell">
+<TITLE>Standard Shell</TITLE>
+<SECT1 ID="stdshellintro">
+<TITLE>Introduction</TITLE>
+<PARA>
+The process of identifying a single GNU/Linux shell as a standard requires 
+that features intrinsic to the shell be analyzed alongside attributes 
+relating to its usability and availability.  Among the many shells existing 
+at the time of the evaluation, two in particular possessed a favorable array 
+of features -- Bash and Pdksh.
+</PARA>
+<PARA>
+After careful research and testing, Bash shell was adopted as the standard 
+for GNU/Linux.  At the time of evaluation, Bash was found mostly compliant 
+with the POSIX-1003.2 standard, and its maintainer demonstrated interest in 
+bringing the shell to full compliance.  Bash already enjoys wide use among 
+shell users, and is even included in many distributions as the default shell.  
+Further, the abundance of documentation found both on the Internet and in 
+the bookstore makes Bash an easy shell to use.
+</PARA>
+<PARA>
+It should be noted that Bash supports many extensions -- features of a 
+supplemental nature -- to those explicitly specified in POSIX-1003.2.  
+Additionally, POSIX maintains extensions to its own express standard.  
+Such extensions to either Bash or POSIX are not beneficial to the portability 
+of a shell script.  The use of extensions must be avoided in order for a 
+shell implementation or shell script to be considered LSB-compliant.
+</PARA>
+<PARA>
+Provisions of the shell command language standard as documented in Section 3 
+of POSIX-1003.2 are applicable as specified.  GNU exceptions to certain 
+standards exist, and in such instances, the GNU method is preferred.  Either 
+variation, however, may be used to achieve LSB-compliance.  These cases follow.
+</PARA>
+</SECT1>
+<SECT1 ID="stdshellexcept1">
+<TITLE>Standard Shell Exception: pathname of $0</TITLE>
+
+<BridgeHead>POSIX Standard, section: 3.9.1.1, line: 779-784</BridgeHead>
+
+<PARA>
+When the search for command name using the PATH environment variable succeeds, 
+the command is executed with actions equivalent to calling 'execve()' with the 
+path argument set to the pathname resulting from the search, 'argv[0]' set to 
+the command name and the remaining arguments set to the operands.
+</PARA>
+<ProgramListing>
+if [ $0 = (basename $0) ]; then
+	echo "command name: " $0
+fi
+</ProgramListing>
+
+<BridgeHead>GNU Exception</BridgeHead>
+<PARA>
+When the search for command name using the PATH environment variable succeeds, 
+the command is executed with actions equivalent to calling 'execve()' with the 
+path argument set to the pathname resulting from the search, 'argv[0]' set to 
+the full-path command name and the remaining arguments set to the operands.
+</PARA>
+<ProgramListing>
+if [ $0 = (realpath $0) ]; then
+	echo "full pathname: " $0
+fi
+</ProgramListing>
+</SECT1>
+
+<SECT1 ID="stdshellexception2">
+<TITLE>Stand Shell Exception: sourcing non-executable files</TITLE>
+
+<BridgeHead>POSIX Standard, section: 3.14.4, line: 1493-1498</BridgeHead>
+
+<PARA>
+When PATH is used to locate a file for the dot utility, the file's readable 
+bit has to be set.  The executable bit is not important.  The POSIX shell
+ignores non-readable files.
+</PARA>
+
+<BridgeHead>GNU Exception</BridgeHead>
+
+<PARA>
+When PATH is used to locate a file for the dot utility, the file's readable 
+bit has to be set.  The executable bit is not important.
+
+If file is executable and not readable, then the interactive shell
+displays a diagnostic message to standard error, and the non-interactive shell 
+aborts.
+</PARA>
+</SECT1>
+</CHAPTER>
+</PART>
