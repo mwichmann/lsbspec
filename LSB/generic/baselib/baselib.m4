@@ -14,6 +14,7 @@ hardware in the system.
 <listitem><para>libm</para></listitem>
 <listitem><para>libgcc_s</para></listitem>
 <listitem><para>libdl</para></listitem>
+<listitem><para>librt</para></listitem>
 <listitem><para>libcrypt</para></listitem>
 <listitem><para>libpam</para></listitem>
 </itemizedlist>
@@ -38,6 +39,8 @@ include(libpthread.sgml)
 include(libgcc_s.sgml)
 
 include(libdl.sgml)
+
+include(librt.sgml)
 
 include(libcrypt.sgml)
 

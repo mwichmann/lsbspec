@@ -52,7 +52,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
-	libpam.sgml libstdcxx.sgml
+	libpam.sgml libstdcxx.sgml librt.sgml
 SCANFFILES=fscanf.sgml fwscanf.sgml scanf.sgml sscanf.sgml swscanf.sgml \
 	vfscanf.sgml vfwscanf.sgml vscanf.sgml vsscanf.sgml vswscanf.sgml \
 	vwscanf.sgml wscanf.sgml
@@ -71,6 +71,7 @@ gensrc:
 	../../../mklibspec -a All -l libdl >libdl.sgml
 	../../../mklibspec -a All -l libcrypt >libcrypt.sgml
 	../../../mklibspec -a All -l libpam >libpam.sgml
+	../../../mklibspec -a All -l librt >librt.sgml
 	../../../mklibspec -a All -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
 	../../../mklibspec -a All -c 1 -l libstdcxx -d | ../../../fixc++spec >libstdcxx.sgml
 
