@@ -1,0 +1,78 @@
+<SECT1 ID=iniscrptfunc>
+
+<TITLE>Init script Functions</TITLE>
+
+<PARA>
+Each LSB complaint init.d script must source the file
+/lib/lsb/init-functions.  This file must cause the following shell
+script commands to be defined.  This can be done either by adding a
+directory to the PATH variable which defines these commands, or by
+defining sh aliases.  While the distribution-provided aliases may
+choose to use bash extensions (at the distribution's option), the LSB
+init.d files themselves should only depend in /bin/sh features as
+defined by POSIX.2.
+</PARA>
+
+<SIMPLELIST type=horiz columns=2>
+<MEMBER>start_daemon [-f] [-n nicelevel] pathname [args]</MEMBER>
+
+<MEMBER>	    This runs the specified program as a daemon.
+		    start_daemon will check to see if there is a program
+		    named "daemon" already running.  If so, it will not
+		    start  another copy of the daemon unless the -f
+		    option is given.  The -n option specifies a nice
+		    level.  See nice(1).
+</MEMBER>
+
+<MEMBER>killproc basename [signal]</MEMBER>
+
+<MEMBER>	    This stops the specified program.	The program is 
+		    found using the algorithm given by pidofproc.  If  a
+		    signal is specified, the program is sent that
+		    signal.  Otherwise, a SIGTERM followed by a SIGKILL
+		    after some number of seconds is sent.
+		    [ Same as sysvinit package ]
+</MEMBER>
+
+<MEMBER>pidofproc basename</MEMBER>
+
+<MEMBER>	  This finds the pid(s) for a particular daemon.  If an
+		  entry is found in /var/run/basename.pid, then that
+		  value is returned.  If not, first the "pidof" program
+		  is used to try to find the daemon, and if that fails,
+		  pidofproc will search the ps listing, looking for a
+		  process name field of:
+
+			  basename
+			  (basename)
+			  [basename]
+			  basename: 
+
+		    [ Same as sysvinit package ]
+</MEMBER>
+
+<MEMBER>log_success_msg "message"</MEMBER>
+
+<MEMBER>	This requests the distribution to print a success
+		message.  The message should be relatively short; no
+		More than 60 characters is highly desireable.
+</MEMBER>
+
+<MEMBER>log_failure_msg "message"</MEMBER>
+
+<MEMBER>	This requests the distribution to print a failure
+		message.  The message should be relatively short; no
+		more than 60 characters is highly desireable.
+</MEMBER>
+
+<MEMBER>log_warning_msg "message"</MEMBER>
+
+<MEMBER>	This requests the distribution to print a warning
+		message.  The message should be relatively short; no
+		more than 60 characters is highly desireable.
+</MEMBER>
+
+</SIMPLELIST>
+
+</SECT1>
+

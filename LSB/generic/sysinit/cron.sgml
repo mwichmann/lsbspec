@@ -1,0 +1,41 @@
+<SECT1 ID=cronjobs>
+<TITLE>Cron Jobs</TITLE>
+<PARA>
+Packages may not touch the configuration file <FILENAME>/etc/crontab</FILENAME>,
+nor may they modify the files in <FILENAME>/var/spool/cron/crontabs</FILENAME>.
+</PARA>
+<PARA>
+If a package wants to install a job that has to be executed via cron,
+it shall place a file with the name if the package in one of the
+following directories:
+</PARA>
+<PROGRAMLISTING>
+/etc/cron.hourly
+/etc/cron.daily
+/etc/cron.weekly
+/etc/cron.monthly
+</PROGRAMLISTING>
+<PARA>
+As these directory names say, the files within them are executed on a
+daily, weekly, or monthly basis, respectively.
+</PARA>
+<PARA>
+If a certain job has to be executed more frequently than `daily,' the
+package shall install a file
+<FILENAME>/etc/cron.d/<MARKUP><</MARKUP>package-name<MARKUP>></MARKUP></FILENAME>
+tagged as configuration file. This file uses the same syntax as
+<FILENAME>/etc/crontab</FILENAME> and is processed by cron automatically.
+</PARA>
+<PARA>
+It is recommended that files installed in any of these directories be
+scripts (shell scripts, Perl scripts, etc.) so that they may be
+modified by the local system administrator. In addition, they must be
+registered as configuration file.
+</PARA>
+<PARA>
+The scripts in these directories have to check, if all necessary
+programs are installed before they try to execute them. Otherwise,
+problems will arise when a package was removed (but not purged), since
+the configuration files are kept on the system in this situation.
+</PARA>
+</SECT1>

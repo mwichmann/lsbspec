@@ -1,0 +1,17 @@
+
+SUBDIRS= IA32 IA64 MIPS PPC SPARC alpha
+
+all:
+	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+
+gensrc:
+	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
+
+clean::
+	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
+	rm -f $(HTML)
+
+spotless::
+	for dir in $(SUBDIRS);do (cd $$dir && make spotless);done
+	rm -f $(HTML)
+

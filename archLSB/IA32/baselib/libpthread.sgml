@@ -1,0 +1,154 @@
+<SECT1 ID=libpthread>
+<TITLE>libpthread</TITLE>
+<PARA>
+</PARA>
+<TABLE>
+<TITLE></TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Library:</ENTRY>
+<ENTRY>libpthread</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Runtime Path:</ENTRY>
+<ENTRY>libpthread.so.0</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+LSB systems support POSIX threads with the following exceptions.
+This list is intended to match the behavior of historical Linux
+implementations.  Applications should be written to deal with either
+POSIX threads or the thread behaviors described here.
+</PARA>
+
+<PARA>
+POSIX specifies a concept of per-process rather than per-thread
+signals.  The LSB does not require this behavior; traditional Linux
+implementations have had per-thread signals only.  A related issue is
+that applications cannot (using legacy Linux implementations, at
+least) rely on getpid() returning the same value in different threads.
+</PARA>
+
+<PARA>
+Note: one implication of per-thread signals is that a core dump (for
+example) may not stop all threads in a given process.  This may be an
+issue when designing ways to stop/start applications.
+</PARA>
+
+<PARA>
+Applications which create child processes (using fork() and the like)
+must then wait for them (using waitpid() family of functions) in the
+same thread as they created them.  Note that coding applications this
+way will work both with full POSIX threads and legacy Linux thread
+implementations.
+</PARA>
+
+<PARA>
+POSIX specifies that changing the user or group id instantly affects
+the behavior of all threads.  This behavior is not specified;
+applications must use their own lock if they need this behavior.
+Rationale: it seems unnecessary and it is a performance hit (an SMP
+kernel must lock the user id).  (FIXME: is this our current
+understanding?  It was discussed on lsb-spec on January 2000 but I'm
+not sure we reached a consensus).
+</PARA>
+
+<PARA>
+Although this standard doesn't have a way to list processes (/proc or
+"ps" command line isn't in, right?), it is our intention to not
+specify one way or the other whether multiple threads appear as
+separate processes or as a single process.
+</PARA>
+
+<PARA>
+Applications cannot rely on resource limits (getrusage and setrusage)
+being maintained per-process rather than per-thread.
+</PARA>
+
+<PARA>
+Applications must disconnect from the controlling tty before
+pthread_create (FIXME: have I summarized this correctly?).
+</PARA>
+
+<PARA>
+times() doesn't account for all threads, just the caller.
+</PARA>
+
+<PARA>
+Applications must not call pthread_cancel if they call any system
+libraries (most notably X windows), as system libraries are not
+guaranteed to be thread safe.  Likewise, for such libraries, only one
+thread per process may call them.
+</PARA>
+
+<PARA>
+Applications cannot rely on fcntl/lockf locks being visible
+per-process rather than per-thread.  Likewise for mandatory file
+locks.
+</PARA>
+
+<PARA>
+Threaded applications cannot use SIGUSR1 or SIGUSR2.
+</PARA>
+<PARA>
+The behaviour of the interfaces in this library is specified by the following Standards.<SIMPLELIST COLUMNS=1>
+<MEMBER>
+CAE Specification, January 1997, System Interfaces and Headers (XSH),
+Issue 5 (ISBN: 1-85912-181-0, C606)<FOOTNOTE ID="std-132-5">
+<PARA>
+CAE Specification, January 1997, System Interfaces and Headers (XSH),
+Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
+</FOOTNOTE>
+</MEMBER>
+</SIMPLELIST>
+</PARA>
+<SECT2>
+<TITLE>Posix Threads</TITLE>
+<PARA>
+</PARA>
+<TABLE>
+<TITLE></TITLE>
+<TGROUP COLS=5>
+<TBODY>
+<ROW><ENTRY>pthread_attr_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_attr_setscope<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_exit<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_once<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setschedparam<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getdetachstate<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_attr_setstackaddr<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_getschedparam<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setspecific<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getguardsize<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_attr_setstacksize<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_getspecific<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_sigmask<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getinheritsched<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cancel<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_join<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_rdlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_testcancel<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getschedparam<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_broadcast<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_key_create<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_tryrdlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getschedpolicy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_key_delete<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_trywrlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_getvalue<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getscope<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_kill<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_unlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getstackaddr<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_signal<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlock_wrlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_post<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_getstacksize<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_timedwait<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_trywait<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_cond_wait<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_lock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_getpshared<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_unlink<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setdetachstate<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_condattr_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_trylock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>sem_wait<FOOTNOTEREF LINKEND="std-132-5"></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setguardsize<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_condattr_init<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutex_unlock<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_rwlockattr_setpshared<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setinheritsched<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_create<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_destroy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_self<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setschedparam<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_detach<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_gettype<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setcancelstate<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>pthread_attr_setschedpolicy<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_equal<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_mutexattr_settype<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY>pthread_setcanceltype<FOOTNOTEREF LINKEND="std-132-5"></ENTRY><ENTRY></ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</SECT2>
+</SECT1>
+<SECT1 ID=libpthread-ddefs>
+<TITLE> Data Definitions for libpthread</TITLE>
+<PARA>
+</PARA>
+<SECT2>
+<TITLE>pthread.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>semaphore.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+</SCREEN>
+</SECT2>
+</SECT1>

@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+use Carp;
+use Getopt::Long;
+use Mysql;
+
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+
+GetOptions("r" => \$doref);
+
+$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER,$LSBDBPASSWD) || die $Mysql::db_errstr;
+
+if( $doref ) {
+	$select = "SELECT * FROM Standard WHERE Stype='Reference' ";
+} else {
+	$select = "SELECT * FROM Standard WHERE Stype='Standard' ";
+}
+$select.= "ORDER BY Sname";
+
+#printf $select,"\n";
+$sth = $Dbh->query($select) || die $Dbh->errmsg();
+
+print "<TBODY>\n";
+for(1..$sth->numrows) {
+	%entry=$sth->fetchhash;
+	print "<ROW>";
+	printf "<ENTRY>%s</ENTRY>",$entry{'Sname'};
+	printf "<ENTRY>%s</ENTRY>",$entry{'Sfull'};
+	printf "<ENTRY><ULINK URL=\"%s\">%s</ULINK></ENTRY>",
+					$entry{'Surl'}, $entry{'Surl'};
+	printf "<ENTRY>%s</ENTRY>",$entry{'Scomment'};
+	print "</ROW>\n";
+}
+print "</TBODY>\n";

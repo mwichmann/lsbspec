@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mklibspec -l <libname>\n";
+print STDERR "mklibspec -l <libname> -a <archname>\n";
 die;
 }
 
@@ -17,9 +17,11 @@ die;
 #
 # 1) process the arguments
 #
-GetOptions("l=s" => \$libname);
+GetOptions("l=s" => \$libname,
+	   "a=s" => \$archname);
 
 if( !$libname ) { usage(); }
+if( !$archname ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -27,7 +29,19 @@ if( !$libname ) { usage(); }
 $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
 
 #
-# 3) get & print the library info
+# 3) get & print the architecture info
+#
+$select = "SELECT * FROM Architecture WHERE ";
+$select.= "Architecture.Aname=".$Dbh->quote($archname);
+print STDERR $select,"\n" if $trace;
+$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+
+%entry=$sth->fetchhash;
+$Aid=$entry{'Aid'};
+$Aname=$entry{'Aname'};
+
+#
+# 4) get & print the library info
 #
 $select = "SELECT * FROM Library WHERE ";
 $select.= "Library.Lname=".$Dbh->quote($libname);
@@ -69,7 +83,7 @@ print "</TGROUP>\n";
 print "</TABLE>\n";
 
 #
-# 4) Check for additional description text for the library
+# 5) Check for additional description text for the library
 #
 if(open(DESC,"<$Lname.txt" )) {
 	while(<DESC>) {
@@ -78,7 +92,7 @@ if(open(DESC,"<$Lname.txt" )) {
 }
 
 #
-# 5) Get a list of the Standards that are used by this library
+# 6) Get a list of the Standards that are used by this library
 #
 print "<PARA>\n";
 $select = "SELECT DISTINCT Sfull,Sid FROM Standard,LibGroup,LGInt,Interface ";
@@ -111,7 +125,7 @@ if( $lsh->numrows) {
 print "</PARA>\n";
 
 #
-# 6) Get a list of the libgroups in the library
+# 7) Get a list of the libgroups in the library
 #
 $select = "SELECT * FROM LibGroup WHERE LGlib=$Lid ORDER BY LGorder";
 print STDERR $select,"\n" if $trace;
@@ -129,7 +143,7 @@ for(1..$lgh->numrows) {
 	print "<PARA>\n";
 	print "</PARA>\n";
 #
-# 7) Foreach group, make a table of the interfaces
+# 8) Foreach group, make a table of the interfaces
 #
 	$select = "SELECT * FROM Interface,LGInt ";
 	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype='Function' ";
@@ -203,7 +217,7 @@ for(1..$lgh->numrows) {
 	}
 
 #
-# 8) Get the mangles for this libgroup
+# 9) Get the mangles for this libgroup
 #
 
 # Leave out the Mangles until it is reimplemented in the DB
@@ -238,7 +252,7 @@ for(1..$lgh->numrows) {
 	print "</SECT2>\n";
 
 #
-# 9) Make a table of data interfaces
+# 10) Make a table of data interfaces
 #
 {
 	local(*datasym);
