@@ -3,25 +3,6 @@
 
 <CHAPTER ID="usersgroups">
 <TITLE>Users & Groups</TITLE>
-<PARA>
-A "user name" is a string that is used to identify a user.  A "login name" is
-a user name that is associated with a system login.   A "user id" is a non
-negative integer, which can be contained in an object of type
-uid_t, that is used to identify a system user.  
-</PARA>
-<PARA>
-When the identity of a user is associated with a process, a user ID value is 
-referred to as a real user ID, or an effective user ID.  [POSIX 1003.1-1996]
-</PARA>
-<PARA>
-A "group name" is a string that is used to identify a set of users.  
-A "group id" is a non negative integer, which can be contained in a object 
-of type gid_t, that is used to identify a group of system users.
-Each system user is a member of at least one group.   When the identity of a
-group is associated with a process, a group ID value is referred to as a real 
-group ID, or an effective group ID.  [POSIX 1003.1-1996]
-</PARA>
-
 <SECT1 ID="usergrpdatabase">
 <TITLE>User and Group Database</TITLE>
 <PARA>
@@ -44,7 +25,7 @@ The exception is the uid and gid for "root" which are equal to 0.
 <TBODY>
 <ROW><ENTRY>User</ENTRY><ENTRY>Group</ENTRY><ENTRY>Comments</ENTRY></ROW>
 <ROW><ENTRY>root</ENTRY><ENTRY>root</ENTRY><ENTRY>Administrative user
-with no restrictions</ENTRY>
+with all appropriate privileges</ENTRY>
 </ROW>
 <ROW><ENTRY>bin</ENTRY><ENTRY>bin</ENTRY><ENTRY>Legacy UID/GID<FOOTNOTE>
 <PARA>
@@ -113,10 +94,10 @@ recommendations of the FHS and shall be obtained by the *pwnam(3) calls.
 <TITLE>UID Ranges</TITLE>
 <PARA>
 The system UIDs from 0 to 99 should be statically allocated by the system,
-and not created by applications.
+and shall not be created by applications.
 </PARA>
 <PARA>
-The system UIDs from 100 to 499 should be reserved for dynamically
+The system UIDs from 100 to 499 should be reserved for dynamic
 allocation by system administrators and post install scripts using useradd(1).
 </PARA>
 </SECT1>
