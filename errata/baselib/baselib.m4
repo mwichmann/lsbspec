@@ -95,6 +95,12 @@ specified as <VARNAME>int</VARNAME>. It should have been <VARNAME>
 unsigned char</VARNAME>.
 </PARA>
 
+<para>
+LSB conforming systems
+may either return a  value of _POSIX_VERSION == 199506L or 200112L .
+</para>
+
 </CHAPTER>
 
 </PART>
+
