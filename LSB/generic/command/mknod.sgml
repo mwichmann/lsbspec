@@ -5,27 +5,34 @@
 <REFNAME>mknod</REFNAME>
 
 <REFPURPOSE>
-make block or character special files
+make special files
 </REFPURPOSE>
 
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-mknod [OPTION]... NAME TYPE [MAJOR MINOR]
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>mknod</COMMAND>
+<GROUP><ARG>-m <replaceable>mode</replaceable></ARG><ARG>--mode=<replaceable>mode</replaceable></ARG</GROUP>
+<ARG choice=plain>name</ARG>
+<ARG choice=plain>type</ARG>
+<ARG>major minor</ARG>
+<SBR>
+<COMMAND>mknod</COMMAND>
+<ARG>--version</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-Create the special file NAME of the given TYPE.
+The <command>mknod</command> command shall create a special file named
+<parameter>name</parameter> of the given <parameter>type</parameter>.
 </PARA>
 
 <PARA>
-MAJOR MINOR are forbidden for TYPE p, mandatory otherwise.  TYPE may
-be:
+The <parameter>type</parameter> shall be one of the following:
 </PARA>
 
 <variablelist>
@@ -34,7 +41,8 @@ be:
 <term>b</term>
 <listitem>
 <para>
-creates a block (buffered) special file.
+creates a block (buffered) special file with the specified
+<parameter>major</parameter> and <parameter>minor</parameter> device numbers.
 </para>
 </listitem>
 </varlistentry>
@@ -43,7 +51,8 @@ creates a block (buffered) special file.
 <term>c, u</term>
 <listitem>
 <para>
-creates a character (unbuffered) special file.
+creates a character (unbuffered) special file with the specified
+<parameter>major</parameter> and <parameter>minor</parameter> device numbers.
 </para>
 </listitem>
 </varlistentry>
@@ -62,14 +71,17 @@ creates a FIFO.
 </REFSECT1>
 
 <REFSECT1>
-<title>Standard Options</title>
+<title>Options</title>
 <variablelist>
 
 <varlistentry>
-<term>-m, --mode=MODE</term>
+<term>-m <replaceable>mode</>, --mode=<replaceable>mode</></term>
 <listitem>
 <para>
-sets permission mode (as in <COMMAND>chmod</COMMAND>), not a=rw - umask.
+create the special file with file access permissions set as described in
+<parameter>mode</>. The permissions may be any absolute value (i.e.
+one not containing <literal>'+'</> or <literal>'-'</>) acceptable to the
+<command>chmod</command> command.
 </para>
 </listitem>
 </varlistentry>
@@ -78,12 +90,30 @@ sets permission mode (as in <COMMAND>chmod</COMMAND>), not a=rw - umask.
 <term>--version</term>
 <listitem>
 <para>
-outputs version information and exits.
+output version information and exit.
+<NOTE><PARA>This option may be deprecated in a future release of this specification.
+</PARA>
+</NOTE>
 </para>
 </listitem>
 </varlistentry>
 
 </variablelist>
+<para>
+If <parameter>type</parameter> is <literal>p</>parameter,
+<parameter>major</parameter> and <parameter>minor</parameter>
+shall not be specified. Otherwise, these parameters are mandatory.
+</para>
 </REFSECT1>
 
+<REFSECT1>
+<TITLE>Future Directions</TITLE>
+<PARA>
+This command may be deprecated in a future version of this specification.
+The <PARAMETER>major</PARAMETER> and <PARAMETER>minor</PARAMETER> operands
+are insufficently portable to be specified usefully here.
+Only a FIFO can be portably created by this command, and the <COMMAND>mkfifo</COMMAND>
+is a simpler interface for that purpose.
+</PARA>
+</REFSECT1>
 </REFENTRY>
