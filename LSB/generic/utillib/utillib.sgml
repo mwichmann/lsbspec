@@ -14,7 +14,7 @@ information such as file formats and device names.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:25:30 2004 -->
+<!--    at Wed Sep 15 20:18:09 2004 -->
 <SECT1 ID=libz>
 <TITLE>Interfaces for libz</TITLE>
 <PARA>
@@ -231,7 +231,7 @@ typedef voidp gzFile;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:25:31 2004 -->
+<!--    at Wed Sep 15 20:18:10 2004 -->
 <SECT1 ID=libncurses>
 <TITLE>Interfaces for libncurses</TITLE>
 <PARA>
@@ -968,7 +968,7 @@ struct _win_st
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:25:32 2004 -->
+<!--    at Wed Sep 15 20:18:11 2004 -->
 <SECT1 ID=libutil>
 <TITLE>Interfaces for libutil</TITLE>
 <PARA>
@@ -1200,36 +1200,39 @@ Insufficient memory was available.
 <TITLE>Description
 </TITLE>
 <PARA>
-The <function>login()</function> function shall update the user accounting databases in
-<filename>/var/run/utmp</filename> and 
-<filename>/var/log/wtmp</filename>.
+The <function>login</function> function shall update the user 
+accounting databases.
 The <parameter>ut</parameter> parameter shall reference a 
-<VarName>utmp</VarName> structure that shall be updated as follows before 
-the accounting files are written:
+<STRUCTNAME>utmp</STRUCTNAME> structure 
+for all fields except the following:
 <ORDEREDLIST>
 <LISTITEM>
 <PARA>
-The <varname>ut_type</varname> field shall be set to <constant>
+The <STRUCTFIELD>ut_type</STRUCTFIELD> field shall be set to <constant>
 USER_PROCESS</constant>.
 </PARA></LISTITEM>
 <LISTITEM><PARA>
-The <varname>ut_pid</varname> field shall be set to the process identifier
+The <STRUCTFIELD>ut_pid</STRUCTFIELD> field shall be set to the process identifier
 for the current process.
 </PARA></LISTITEM>
 <LISTITEM><PARA>
-The <varname>ut_line</varname> field shall be set to the name of the 
+The <STRUCTFIELD>ut_line</STRUCTFIELD> field shall be set to the name of the 
 controlling terminal device.
 The name shall be found by examaning the device associated with the
 standard input, output and error streams in sequence, until one associated with
 a terminal device is found.
 If none of these streams refers to a terminal device, the 
-<varname>ut_line</varname> field shall be set to <constant>"???"</constant>.
+<STRUCTFIELD>ut_line</STRUCTFIELD> field shall be set to <constant>"???"</constant>.
 If the terminal device is in the <filename>/dev</filename> directory
-hierarchy, the <varname>ut_line</varname> field shall not contain the leading
+hierarchy, the <STRUCTFIELD>ut_line</STRUCTFIELD> field shall not contain the leading
 <constant>"/dev/"</constant>, otherwise it shall be set to the final component
-of the pathname of the device. If the <varname>ut_line</varname> field
-is not of sufficient size to hold the terminal device name, the name 
-shall be truncated to <CONSTANT>UT_LINESIZE</CONSTANT>-1 bytes.
+of the pathname of the device. 
+If the user
+accounting database imposes a limit on the size of the 
+<structfield>ut_line</structfield> field, it shall
+truncate the name, but any such limit shall not be smaller than 
+<CONSTANT>UT_LINESIZE</CONSTANT>
+(including a terminating null character).
 </PARA></LISTITEM>
 </ORDEREDLIST>
 </PARA>
@@ -1351,8 +1354,8 @@ ENOTTY
 </TITLE>
 <PARA>
 Given the device <parameter>line</parameter>,
-the <function>logout()</function> function shall search
-the <filename>/var/run/utmp</filename> user accounting database
+the <function>logout</function> function shall search
+the user accounting database which is read by <function>getutent</function>
 for an entry with the corresponding line,
 and with the type of <CONSTANT>USER_PROCESS</CONSTANT>.
 If a corresponding entry is located, it shall be updated as follows:

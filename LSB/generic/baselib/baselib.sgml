@@ -22,7 +22,7 @@ architecture-specific LSB specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:24:51 2004 -->
+<!--    at Wed Sep 15 20:17:22 2004 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -5244,7 +5244,7 @@ it is only in the binary standard.
 <REFNAME>
 </REFNAME>
 <REFPURPOSE>
-an alias for daylight
+Daylight savings time flag
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -5257,13 +5257,14 @@ int <VARNAME>__daylight</VARNAME>;
 </TITLE>
 <PARA>
 The integer variable <VARNAME>__daylight</VARNAME> 
-shall be an alias for <VARNAME>daylight</VARNAME>
+shall implement the daylight savings time flag <VARNAME>daylight</VARNAME>
 as specified in the 
 <XREF LINKEND="std.SUSv3"> header file <FILENAME>&lt;time.h&gt;</FILENAME>.
 </PARA>
 <PARA>
 <VARNAME>__daylight</VARNAME> is not in the source standard;
-it is only in the binary standard.
+it is only in the binary standard. <VARNAME>daylight</VARNAME>
+is not in the binary standard; it is only in the source standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5830,7 +5831,7 @@ initialization routine
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCPROTOTYPE>
- <FUNCDEF>void
+ <FUNCDEF>int
   <FUNCTION>__libc_start_main</FUNCTION></FUNCDEF>
  <PARAMDEF>int (*main) (int, char**, char**)</PARAMDEF>
  <PARAMDEF>int 
@@ -8467,7 +8468,7 @@ place of <errorname>ENXIO</errorname>
 
 Where the Single UNIX Specification specifies an ENXIO return, the
 implementation may return either ENXIO or ENODEV.  Implementations are
-encouarged to return ENXIO.
+encouraged to return ENXIO.
 <footnote>
 <para>
 As of spring 2004, we don't know of any Linux kernel patches to switch
@@ -8962,15 +8963,17 @@ bindtextdomain, bind_textdomain_codeset
 The <FUNCTION>err</FUNCTION> function
 shall display a formatted error message on the standard
 error stream.
-The output shall consist of the last component of the program name, a colon
+First, <function>err</function> shall write
+the last component of the program name, a colon
 character, and a space character. If <PARAMETER>fmt</PARAMETER> is non-NULL, it shall be used as a
 format string for the <FUNCTION>printf</FUNCTION>
-family of functions, and the formatted message, a
-colon character, and a space are written to <VarName>stderr</VarName>.
+family of functions, and <function>err</function> shall
+write the formatted message, a
+colon character, and a space.
 Finally,  the error message
 string affiliated with the current value of the global variable 
 <VarName>errno</VarName> shall be
-written to <VarName>stderr</VarName>, followed by a newline character.
+written, followed by a newline character.
 </PARA>
 <PARA>
 The <FUNCTION>err</FUNCTION> function shall not return, 
@@ -9406,7 +9409,7 @@ place of <errorname>ENXIO</errorname>
 
 Where the Single UNIX Specification specifies an ENXIO return, the
 implementation may return either ENXIO or ENODEV.  Implementations are
-encouarged to return ENXIO.
+encouraged to return ENXIO.
 <footnote>
 <para>
 As of spring 2004, we don't know of any Linux kernel patches to switch
@@ -9450,7 +9453,7 @@ place of <errorname>ENXIO</errorname>
 
 Where the Single UNIX Specification specifies an ENXIO return, the
 implementation may return either ENXIO or ENODEV.  Implementations are
-encouarged to return ENXIO.
+encouraged to return ENXIO.
 <footnote>
 <para>
 As of spring 2004, we don't know of any Linux kernel patches to switch
@@ -10286,7 +10289,7 @@ bindtextdomain, bind_textdomain_codeset
 <REFNAME>getutent
 </REFNAME>
 <REFPURPOSE>
-access user accounting database file entries	
+access user accounting database entries	
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -10341,23 +10344,6 @@ None defined.
 </PARA>
 </REFSECT1>
 
-<REFSECT1>
-<TITLE>
-Files
-</TITLE>
-<PARA>
-<SIMPLELIST>
-<MEMBER>
-<FILENAME>/var/run/utmp</FILENAME> database of currently logged-in users
-</MEMBER>
-<!--
-<MEMBER>
-<FILENAME>/var/log/wtmp</FILENAME> database of past user logins
-</MEMBER>
--->
-</SIMPLELIST>
-</PARA>
-</REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
 <!--        Version 1a, November 1998   -->
 </REFENTRY>
@@ -10457,22 +10443,84 @@ find pathnames matching a pattern  (Large File Support)
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>glob64</FUNCTION> searches for all the pathnames matching 
-<PARAMETER>pattern</PARAMETER> according to the rules used by the 
-shell. (See <FUNCTION>glob</FUNCTION>(7).) No tilde expansion or 
-parameter substitution is done; if you want these, use 
-<FUNCTION>wordexp</FUNCTION>(3).
+The <FUNCTION>glob64</FUNCTION> function is a large-file
+version of the <FUNCTION>glob</FUNCTION> defined in
+<XREF LINKEND=STD.SUSv3>.
+It shall search for pathnames matching
+<PARAMETER>pattern</PARAMETER> according to the rules used by
+the shell, <FILENAME>/bin/sh</FILENAME>.
+No tilde expansion or parameter substitution is done; see
+<FUNCTION>wordexp</FUNCTION>.
 </PARA>
 <PARA>
-The results of a <FUNCTION>glob64</FUNCTION> call are stored in the 
-structure pointed to by <PARAMETER>pglob</PARAMETER>, which is a 
-<STRUCTNAME>glob64_t</STRUCTNAME> declared in <FILENAME>glob.h</FILENAME> 
-and includes the following elements defined by <EMPHASIS>POSIX.2</EMPHASIS> 
-(more may be present as an extension):
+The results of a <FUNCTION>glob64</FUNCTION>
+call are stored in the structure pointed to by <PARAMETER>pglob</PARAMETER>,
+which is a <VARNAME>glob64_t</VARNAME> declared in 
+<FILENAME>glob.h</FILENAME> with the following members:
+
+<SYNOPSIS>
+typedef struct
+{
+  size_t <STRUCTFIELD>gl_pathc</STRUCTFIELD>;
+  char **<STRUCTFIELD>gl_pathv</STRUCTFIELD>;
+  size_t <STRUCTFIELD>gl_offs</STRUCTFIELD>;
+  int <STRUCTFIELD>gl_flags</STRUCTFIELD>;
+  void (*<STRUCTFIELD>gl_closedir</STRUCTFIELD>) (void *);
+  struct dirent64 *(*<STRUCTFIELD>gl_readdir64</STRUCTFIELD>) (void *);
+  void *(*<STRUCTFIELD>gl_opendir</STRUCTFIELD>) (const char *);
+  int (*<STRUCTFIELD>gl_lstat</STRUCTFIELD>) (const char *, struct stat *);
+  int (*<STRUCTFIELD>gl_stat</STRUCTFIELD>) (const char *, struct stat *);
+}
+glob64_t;
+</SYNOPSIS>
 </PARA>
 <PARA>
-<FUNCTION>glob64</FUNCTION> is a 64-bit version of 
-<FUNCTION>glob</FUNCTION>.
+Structure members with the same name as corresponding members of a 
+<VARNAME>glob_t</VARNAME> as
+defined in <XREF LINKEND=STD.SUSv3> shall have the same purpose.
+</PARA>
+<PARA>
+Other members are defined as follows:
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_flags</STRUCTFIELD></TERM>
+<LISTITEM><PARA>reserved for internal use
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_closedir</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of closing a directory opened by 
+<STRUCTFIELD>gl_opendir</STRUCTFIELD>
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_readdir64</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of reading entries in a large 
+directory
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_opendir</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of opening a large directory
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_stat</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of returning file status 
+for a large file
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_lstat</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of returning file status 
+information for a large file or symbolic link
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+<PARA>
+A large file or large directory is one with a size greater than 
+<CONSTANT>4294967295</CONSTANT> bytes.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -10715,8 +10763,9 @@ the type and value of the third parameter
 is dependent on the device and <PARAMETER>request</PARAMETER>.
 </PARA>
 <PARA>
-Conforming LSB applications may not call <FUNCTION>ioctl</FUNCTION> except for 
-situations explicitly stated in this specification.
+Conforming LSB applications should not call <FUNCTION>ioctl</FUNCTION> 
+except for situations explicitly stated in this specification or in 
+<XREF LINKEND=STD.SUSv3>.
 </PARA>
 
 </REFSECT1>
@@ -11335,7 +11384,7 @@ multi-thread safe.
 <REFNAMEDIV>
 <REFNAME>memmem</REFNAME>
 <REFPURPOSE>
-locate a substring
+locate bytes
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -11369,7 +11418,7 @@ locate a substring
 </TITLE>
 <PARA>
 <FUNCTION>memmem</FUNCTION> finds the start of the first 
-occurrence of the bytre array referenced by 
+occurrence of the byte array referenced by 
 <PARAMETER>needle</PARAMETER> 
 of length <PARAMETER>needlelen</PARAMETER> in the memory 
 area <PARAMETER>haystack</PARAMETER> of length 
@@ -12670,7 +12719,7 @@ the global variable <VARNAME>errno</VARNAME> is set appropriately.
 <REFNAME>setutent
 </REFNAME>
 <REFPURPOSE>
-access utmp file entries
+access user accounting database entries
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -12704,10 +12753,7 @@ record in the database.
 It is recommended to
 call it before any of the other functions that operate on
 the user accounting databases (e.g.
-<function>getutent</function>,
-<function>getutid</function>,
-<function>getutline</function>, or
-<function>pututline</function>).
+<function>getutent</function>)
 </PARA>
 </REFSECT1>
 
@@ -12719,20 +12765,6 @@ None.
 </PARA>
 </REFSECT1>
 
-<REFSECT1>
-<TITLE>Files
-</TITLE>
-<PARA>
-<SIMPLELIST>
-<MEMBER>
-<FILENAME>/var/run/utmp</FILENAME> database of currently logged-in users
-</MEMBER>
-<MEMBER>
-<FILENAME>/var/log/wtmp</FILENAME> database of past user logins
-</MEMBER>
-</SIMPLELIST>
-</PARA>
-</REFSECT1>
 <!--	  LDP GENERAL PUBLIC LICENSE  -->
 <!--        Version 1a, November 1998   -->
 </REFENTRY>
@@ -16246,7 +16278,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:24:55 2004 -->
+<!--    at Wed Sep 15 20:17:27 2004 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -16805,7 +16837,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:24:56 2004 -->
+<!--    at Wed Sep 15 20:17:28 2004 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -17267,7 +17299,7 @@ source standard; it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:25:00 2004 -->
+<!--    at Wed Sep 15 20:17:31 2004 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -17365,7 +17397,7 @@ struct _Unwind_Exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:24:57 2004 -->
+<!--    at Wed Sep 15 20:17:29 2004 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -17727,7 +17759,7 @@ with the behavior as described in <XREF LINKEND="std.SUSv3">.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:24:58 2004 -->
+<!--    at Wed Sep 15 20:17:29 2004 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -17798,7 +17830,7 @@ underlying specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.62 2004/07/20 15:58:46 nick Exp 0 -->
-<!--    at Sat Sep  4 09:24:59 2004 -->
+<!--    at Wed Sep 15 20:17:30 2004 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>

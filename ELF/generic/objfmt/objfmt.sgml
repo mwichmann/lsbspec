@@ -34,11 +34,22 @@ Conforming implementations may also support other unspecified object file format
 <CHAPTER ID=Sections>
 <TITLE>Sections</TITLE>
 <PARA>
+As described in <XREF LINKEND="std.gABI41">,
+an ELF object file contains a number of <emphasis>sections</emphasis>.
 </PARA>
 <SECT1 ID="elftypes">
 <TITLE>Sections Types</TITLE>
 <PARA>
-A section header's <COMPUTEROUTPUT>sh_type</COMPUTEROUTPUT> member specifies the sections's semantics.
+The section header table is an array of 
+<STRUCTNAME>Elf32_Shdr</STRUCTNAME> or 
+<STRUCTNAME>Elf64_Shdr</STRUCTNAME> structures as 
+described in <XREF LINKEND=STD.gABI41>. The 
+<STRUCTFIELD>sh_type</STRUCTFIELD> member shall be either a value from
+<XREF LINKEND=tbl.ABIUpdate>, drawn from the System V 
+ABI, or one of the additional values specified in <XREF LINKEND=tbl.LSB>.
+</PARA>
+<PARA>
+A section header's <STRUCTFIELD>sh_type</STRUCTFIELD> member specifies the sections's semantics.
 </PARA>
 <SECT2>
 <TITLE>ELF Section Types</TITLE>
@@ -50,7 +61,7 @@ and the
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksecttypestable,v 1.8 2002/06/12 14:19:51 anderson Exp 0 -->
-<!--    at Sat Sep  4 09:20:18 2004 -->
+<!--    at Wed Sep 15 21:17:56 2004 -->
 <TABLE>
 <TITLE>ELF Section Types</TITLE>
 <TGROUP COLS=3>
@@ -60,7 +71,10 @@ and the
 </THEAD>
 <TBODY>
 <ROW><ENTRY>SHT_DYNAMIC</ENTRY><ENTRY>0x6</ENTRY><ENTRY>The section holds information for dynamic linking. Currently, an object file shall have only one dynamic section, but this restriction may be relaxed in the future. See `Dynamic Section' in Chapter 5 for details.</ENTRY></ROW>
-<ROW><ENTRY>SHT_DYNSYM</ENTRY><ENTRY>0xb</ENTRY><ENTRY></ENTRY></ROW>
+<ROW><ENTRY>SHT_DYNSYM</ENTRY><ENTRY>0xb</ENTRY><ENTRY>This section holds a minimal set of symbols adequate for dynamic linking. See 
+also SHT_SYMTAB. Currently, an object file may have either a section of 
+SHT_SYMTAB type or a section of SHT_DYNSYM type, but not both. This restriction 
+may be relaxed in the future.</ENTRY></ROW>
 <ROW><ENTRY>SHT_FINI_ARRAY</ENTRY><ENTRY>0xf</ENTRY><ENTRY>This section contains an array of pointers to termination functions, as described in `Initialization and Termination Functions' in Chapter 5. Each pointer in the array is taken as a parameterless procedure with a void return.</ENTRY></ROW>
 <ROW><ENTRY>SHT_HASH</ENTRY><ENTRY>0x5</ENTRY><ENTRY>The section holds a symbol hash table. Currently, an object file shall have only one hash table, but this restriction may be relaxed in the future. See `Hash Table' in the Chapter 5 for details.</ENTRY></ROW>
 <ROW><ENTRY>SHT_HIPROC</ENTRY><ENTRY>0x7fffffff</ENTRY><ENTRY>Values in this inclusive range are reserved for processor-specific semantics.</ENTRY></ROW>
@@ -77,7 +91,12 @@ and the
 <ROW><ENTRY>SHT_RELA</ENTRY><ENTRY>0x4</ENTRY><ENTRY>The section holds relocation entries with explicit addends, such as type Elf32_Rela for the 32-bit class of object files or type Elf64_Rela for the 64-bit class of object files. An object file may have multiple relocation sections. `Relocation' b</ENTRY></ROW>
 <ROW><ENTRY>SHT_SHLIB</ENTRY><ENTRY>0xa</ENTRY><ENTRY>This section type is reserved but has unspecified semantics.</ENTRY></ROW>
 <ROW><ENTRY>SHT_STRTAB</ENTRY><ENTRY>0x3</ENTRY><ENTRY>The section holds a string table. An object file may have multiple string table sections. See `String Table' below for details.</ENTRY></ROW>
-<ROW><ENTRY>SHT_SYMTAB</ENTRY><ENTRY>0x2</ENTRY><ENTRY>These sections hold a symbol table. Currently, an object file shall have only one section of each type, but this restriction may be relaxed in the future. Typically, SHT_SYMTAB provides symbols for link editing, though it may also be used for dynamic linking.</ENTRY></ROW>
+<ROW><ENTRY>SHT_SYMTAB</ENTRY><ENTRY>0x2</ENTRY><ENTRY>This section holds a symbol table. Currently, an object file may have either a 
+section of SHT_SYMTAB type or a section of SHT_DYNSYM type, but not both. This 
+restriction may be relaxed in the future. Typically, SHT_SYMTAB provides 
+symbols for link editing, though it may also be used for dynamic linking. As a 
+complete symbol table, it may contain many symbols unnecessary for dynamic 
+linking.</ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
@@ -94,7 +113,7 @@ The following additional section types are defined here.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksecttypestable,v 1.8 2002/06/12 14:19:51 anderson Exp 0 -->
-<!--    at Sat Sep  4 09:20:18 2004 -->
+<!--    at Wed Sep 15 21:17:56 2004 -->
 <TABLE>
 <TITLE>Additional Section Types</TITLE>
 <TGROUP COLS=3>
@@ -134,7 +153,7 @@ and the
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksectiontable,v 1.10 2002/06/20 20:35:42 anderson Exp 0 -->
-<!--    at Sat Sep  4 09:20:18 2004 -->
+<!--    at Wed Sep 15 21:17:56 2004 -->
 <TABLE>
 <TITLE>ELF Special Sections</TITLE>
 <TGROUP COLS=3>
@@ -210,7 +229,7 @@ the additional special sections described below.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksectiontable,v 1.10 2002/06/20 20:35:42 anderson Exp 0 -->
-<!--    at Sat Sep  4 09:20:18 2004 -->
+<!--    at Wed Sep 15 21:17:56 2004 -->
 <TABLE>
 <TITLE>Additional Special Sections</TITLE>
 <TGROUP COLS=3>
