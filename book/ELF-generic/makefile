@@ -59,13 +59,13 @@ source:
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
-gELF.sgml: gELF.sgml.sed ../../lsbversion
-	echo `cat ../../lsbversion` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../lsbversion`#" <gELF.sgml.sed >gELF.sgml
+gELF.sgml: gELF.sgml.sed ../../ELF/version
+	echo `cat ../../ELF/version` >buildversion
+	sed -e "s#LSBVERSION#`cat ../../ELF/version`#" <gELF.sgml.sed >gELF.sgml
 
 autobuild: gensrc source
-	echo `cat ../../lsbversion`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../lsbversion`-`date +"%Y%m%d"`#" <gELF.sgml.sed >gELF.sgml
+	echo `cat ../../ELF/version`-`date +"%Y%m%d"` >buildversion
+	sed -e "s#LSBVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <gELF.sgml.sed >gELF.sgml
 	make buildspecs
 	
 clean::
