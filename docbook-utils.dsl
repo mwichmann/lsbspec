@@ -898,6 +898,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element symbol ($charseq$))
 (element emphasis ($italic-seq$))
 (element cmdsynopsis ($mono-seq$))
+(element structname ($mono-seq$))
 
 ;;Show comment element?
 (define %show-comments%
