@@ -478,6 +478,7 @@ section is defined by <XREF LINKEND="std.RFC1952">.
 <PARA>
 When uncompressed, the cpio archive contains a sequence of records for each
 file. Each record contains a CPIO Header, Filename, Padding, and File Data.
+</PARA>
 <TABLE>
 <TITLE>CPIO File Format</TITLE>
 <TGROUP COLS=2>
@@ -678,9 +679,12 @@ This field  must match the corresponding value in the
 <TERM><STRUCTFIELD>c_namesize</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value identifying the length of the filename, which is locatted immediately
+Value identifying the length of the filename, which is located immediately
 following the CPIO Header structure.
 </PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
 <VARLISTENTRY>
 <TERM><STRUCTFIELD>c_checksum</STRUCTFIELD></TERM>
 <LISTITEM>
