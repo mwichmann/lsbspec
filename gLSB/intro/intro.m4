@@ -126,7 +126,8 @@ include(libraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
-These libraries will be in a default location found by the dynamic linker.
+These libraries will be in an implementation-dependent directory which
+the dynamic linker will search by default".
 </PARA>
 </SECT1>
 
