@@ -77,7 +77,7 @@ the specification is to be considered normative.
 </PARA>
 <TABLE>
 <TITLE>Related Standards</TITLE>
-<TGROUP COLS=3>
+<TGROUP COLS=2>
 include(standards.sgml)
 </TGROUP>
 </TABLE>
@@ -91,7 +91,7 @@ Linux Standard Base when no formal specification is available.
 </PARA>
 <TABLE>
 <TITLE>Related Implementations</TITLE>
-<TGROUP COLS=3>
+<TGROUP COLS=2>
 include(refimpls.sgml)
 </TGROUP>
 </TABLE>
