@@ -3,15 +3,43 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <title>LSB Written Specification</title>
-   <LINK REL="StyleSheet" HREF="/themes/LSB/style/style.css" TYPE="text/css">
+   <LINK REL="StyleSheet" HREF="/themes/FreeStandards/style/style.css" TYPE="text/css">
 </head>
-<body>
+<body bgcolor="#ffffff" text="#000000" link="#006600" vlink="#336633" alink="#009900" background="/themes/FreeStandards/images/fs_back.gif">
 
+<table cellpadding="0" cellspacing="0" width="90%" align="center" class="head">
+<tr>
 <?
-virtual("/themes/LSB/header.inc");
-?>
+$thisSite = $_SERVER['SERVER_NAME'];
+if(preg_match("/^(http:\/\/)?(w{3}\.)?([-A-Z]+)\./i", $thisSite, $match))
+{
+$subSiteName = $match[3];
+}
 
-<table width="97%" align="center" cellspacing="5" style="background: white; color: black">
+virtual("/themes/FreeStandards/top.linuxbase.php");
+
+echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\" align=\"center\" class=\"main2\">\n"
+// SECTION NAV ROW
+."<tr>\n"
+."<td background=\"/themes/FreeStandards/images/tophighlight.png\" align= \"center\" height=\"20\">\n";
+
+virtual("/themes/FreeStandards/nav.linuxbase.php");
+?>
+</td>
+<td width=\"80\">&nbsp;</td>
+</tr>
+</table>
+</td></tr>
+</table>
+
+<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center" class="main2">
+<tr valign="top">
+<td colspan="2"><img src="/themes/FreeStandards/images/pixel.gif" width="1" height="5" border="0" alt=""></td>
+</tr>
+</table>
+
+
+<table width="90%" align="center" cellspacing="5" class="main2">
 <tr><td>
 <blockquote style="background-color: #ffffdd">
 <p>The LSB specification is composed of a set of specifications:
