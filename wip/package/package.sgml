@@ -1,0 +1,265 @@
+<PART ID="packagefmt">
+<TITLE>Package Format and Installation</TITLE>
+
+<CHAPTER ID=swinstall>
+<TITLE>Software Installation</TITLE>
+<PARA>
+Applications should be provided in the RPM packaging format as defined in this specification.
+<FOOTNOTE ID="pkg-1">
+<PARA>
+Some versions of RPM may produce packages which contain extensions or 
+modifications to the RPM package format beyond what has been documented 
+in this specification.  An LSB-conformant package must 
+not contain any of these extensions, in order to assure interoperability
+with the largest number of versions of RPM and packaging systems which
+understand how to import RPM format packages.
+</PARA>
+</FOOTNOTE>
+</PARA>
+<PARA>
+Distributions must provide a mechanism for installing applications in
+this packaging format with some restrictions listed
+below.
+<FOOTNOTE ID="pkg-2">
+<PARA>
+The distribution itself may use a different packaging format for its
+own packages, and of course it may use any available mechanism for 
+installing the LSB-conformant packages.
+</PARA>
+</FOOTNOTE>
+</PARA>
+
+<SECT1 ID=pkgformat>
+<TITLE>Package File Format</TITLE>
+<PARA>
+An RPM format file consists of 4 parts, the Lead, Signature, Header, and the Archive.
+</PARA>
+<TABLE>
+<TITLE>RPM File Format</TITLE>
+<TGROUP COLS=1>
+<TBODY>
+<ROW>
+<ENTRY>Lead</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Signature</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Header</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Archive</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+These 4 parts must exist in the order specified.
+</PARA>
+<PARA>
+</PARA>
+<SECT2>
+<TITLE>Lead Format</TITLE>
+<PARA>
+The format of the Lead part is defined in the following table. All fields are packed sequentially.
+</PARA>
+<TABLE>
+<TITLE>Lead Format</TITLE>
+<TGROUP COLS=3>
+<THEAD>
+<ROW>
+<ENTRY>
+Field
+</ENTRY>
+<ENTRY>
+Size (in bytes)
+</ENTRY>
+<ENTRY>
+Meaning
+</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>magic</ENTRY>
+<ENTRY>4</ENTRY>
+<ENTRY>Value identifying this file as an RPM format file. This value must be "\355\253\356\333"</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>major</ENTRY>
+<ENTRY>1</ENTRY>
+<ENTRY>Value indicating the major version number of the file format version. This value must be 3.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>minor</ENTRY>
+<ENTRY>1</ENTRY>
+<ENTRY>Value indicating the minor revision nuber of file format version. This value must be 0.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>type</ENTRY>
+<ENTRY>2</ENTRY>
+<ENTRY>Value indicating the type (source or binary) of the package. This value must be 0.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>archnum</ENTRY>
+<ENTRY>2</ENTRY>
+<ENTRY>Value indicating the architecture for which this package is valid. This value is specified in the
+architecture-specific LSB specification.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>name</ENTRY>
+<ENTRY>66</ENTRY>
+<ENTRY>A string that provides the package name. This name must conform with the Package Naming section of this specification.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>osnum</ENTRY>
+<ENTRY>2</ENTRY>
+<ENTRY>Value indicating the Operating Systgem for which this package is valid. This value must be 0x0100.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>signature_type</ENTRY>
+<ENTRY>2</ENTRY>
+<ENTRY>Value indicating the type of the signature used int he Signature part of the file. This value must be 0x0500.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>reserved</ENTRY>
+<ENTRY>16</ENTRY>
+<ENTRY>Reserved space. The value is undefined.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</SECT2>
+<SECT2>
+<TITLE>Signature Format</TITLE>
+<PARA>
+</PARA>
+<TABLE>
+<TITLE>Header Format</TITLE>
+<TGROUP COLS=3>
+<THEAD>
+<ROW>
+<ENTRY>
+Field
+</ENTRY>
+<ENTRY>
+Size (in bytes)
+</ENTRY>
+<ENTRY>
+Meaning
+</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>magic</ENTRY>
+<ENTRY>4</ENTRY>
+<ENTRY>Value identifying this file as an RPM format file. This value must be "\355\253\356\333"</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</SECT2>
+<SECT2>
+<TITLE>Header Format</TITLE>
+<PARA>
+</PARA>
+</SECT2>
+<SECT2>
+<TITLE>Archive Format</TITLE>
+<PARA>
+</PARA>
+</SECT2>
+</SECT1>
+
+<SECT1 ID=pkgscripts>
+<TITLE>Package Script Restrictions</TITLE>
+<PARA>
+Scripts used as part of the package install and uninstall may only use
+commands and interfaces that are specified by the LSB. All other commands are
+not guaranteed to be present, or to behave in expected ways.
+</PARA>
+
+<PARA>
+Packages may not use RPM triggers.
+</PARA>
+
+<PARA>
+Packages may not depend on the order in which scripts are executed
+(pre-install, pre-uninstall, &amp;c), when doing an upgrade.
+</PARA>
+</SECT1>
+
+<SECT1 ID=pkgtools>
+<TITLE>Package Tools</TITLE>
+<PARA>
+The LSB does not specify the interface to the tools used to manipulate 
+LSB-conformant packages. Each conforming distribution will provide 
+documentation for installing LSB packages.
+</PARA>
+
+</SECT1>
+
+<SECT1 ID=pkgnameconv>
+<TITLE>Package Naming</TITLE>
+<PARA>
+Because there is no consistent packaging naming among the various
+Linux distributions, it is necessary for LSB-conformant packages to
+adhere the following naming rules to avoid conflicts with packages 
+provided by the distributions.
+</PARA>
+
+<ITEMIZEDLIST MARK="bullet">
+<LISTITEM> <PARA>
+All LSB package names must begin with the prefix "lsb-" to avoid conflicting
+with existing packages used by Linux distributions.
+</PARA>
+</LISTITEM>
+
+<LISTITEM><PARA>
+If the package name contains only one hyphen (including the one in the 
+"lsb-" prefix) then the package name must be assigned by the 
+<ULINK URL="http://www.lanana.org">Linux Assigned Names and 
+Numbers Authority</ULINK> (LANANA), which shall maintain a
+registry of LSB names.
+</PARA></LISTITEM>
+
+<LISTITEM><PARA>
+If the package name contains more than one hyphen (i.e., 
+"lsb-www.redhat.com-redhat-database", "lsb-gnome-gnumeric"), then 
+the portion of the package name between first and second hyphens must 
+either be an LSB provider name assigned by the LANANA, or it may be 
+one of the owners' fully-qualified domain name in lower case (e.g., 
+"debian.org", "staroffice.sun.com"). The LSB provider name assigned 
+by LANANA must only consist of the ASCII characters [a-z0-9].
+</PARA></LISTITEM>
+</ITEMIZEDLIST>
+
+</SECT1>
+
+<SECT1 ID=pkgdepend>
+<TITLE>Package Dependencies</TITLE>
+<PARA>
+Packages must depend on a dependency "lsb".  They may not depend on
+other system-provided dependencies.  They must not depend on
+non-system-provided dependencies unless the dependencies are fulfilled
+by packages which are part of the same application.
+If a package includes "Provides"
+it must only provide a virtual package name which is registered to
+that application.
+</PARA>
+
+</SECT1>
+
+<SECT1 ID=pkgarchcon>
+<TITLE>Package Architecture Considerations</TITLE>
+<PARA>
+Additional specifications or restrictions may be found in the architecture
+specific LSB specification.
+</PARA>
+
+</SECT1>
+
+</CHAPTER>
+
+</PART>
