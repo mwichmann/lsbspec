@@ -1,13 +1,14 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 
 use CGI;
 use Carp;
 use Mysql;
 
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+
 $query = new CGI(%ARGV);
 
-$Dbh = Mysql->connect(localhost) || die $Mysql::db_errstr;
-$Dbh->selectdb("Linux") || die $Dbh->errmsg();
+$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
 
 $select  ="SELECT DISTINCT Interface.Iname ";
 $select .="FROM Standard,Interface,StandInt";
