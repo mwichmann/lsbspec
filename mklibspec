@@ -96,11 +96,14 @@ if( $lsh->numrows) {
 		# NB: Footnotes must be unique across the entire document
 		print "<MEMBER>\n";
 		print $entry{'Sfull'};
-		printf "<FOOTNOTE ID=\"std-%d-%d\">\n",$Lid, $entry{'Sid'};
-		print "<PARA>\n";
-		print $entry{'Sfull'};
-		print "</PARA>\n";
-		print "</FOOTNOTE>\n";
+		if( $entry{'Sid'} != 0 ) {
+			printf "<FOOTNOTE ID=\"std-%d-%d\">\n",
+					$Lid, $entry{'Sid'};
+			print "<PARA>\n";
+			print $entry{'Sfull'};
+			print "</PARA>\n";
+			print "</FOOTNOTE>\n";
+		}
 		print "</MEMBER>\n";
 		}
 	print "</SIMPLELIST>\n";
@@ -136,6 +139,7 @@ for(1..$lgh->numrows) {
 		%entry=$inh->fetchhash;
 		$entry[$_]=$entry{'Iname'};
 		$std[$_]=$entry{'Istandard'};
+		$symver[$_]=$entry{'Iversion'};
 	}
 	print "<TABLE>\n";
 	print "<TITLE></TITLE>\n";
@@ -145,31 +149,46 @@ for(1..$lgh->numrows) {
 	for(1..$inc) {
 		print "<ROW>";
 		printf "<ENTRY>%s", $entry[$_];
-		if( $entry[$_] ) {
+		if( $symver[$_] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_] ) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_];
 		}
 		printf "</ENTRY>";
 		printf "<ENTRY>%s", $entry[$_+$inc];
-		if( $entry[$_+$inc] ) {
+		if( $symver[$_+$inc] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_+$inc] ) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_+$inc];
 		}
 		printf "</ENTRY>";
 		printf "<ENTRY>%s", $entry[$_+(2*$inc)];
-		if( $entry[$_+(2*$inc)] ) {
+		if( $symver[$_+(2*$inc)] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_+(2*$inc)] ) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_+(2*$inc)];
 		}
 		printf "</ENTRY>";
 		printf "<ENTRY>%s", $entry[$_+(3*$inc)];
-		if( $entry[$_+(3*$inc)] ) {
+		if( $symver[$_+(3*$inc)] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_+(3*$inc)] ) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_+(3*$inc)];
 		}
 		printf "</ENTRY>";
 		printf "<ENTRY>%s", $entry[$_+(4*$inc)];
-		if( $entry[$_+(4*$inc)] ) {
+		if( $symver[$_+(4*$inc)] ) {
+			printf "(%s)", $symver[$_];
+		}
+		if( $std[$_+(4*$inc)] ) {
 			printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 							$Lid, $std[$_+(4*$inc)];
 		}
@@ -213,7 +232,7 @@ for(1..$lgh->numrows) {
 #		print "</TGROUP>\n";
 #		print "</TABLE>\n";
 #	}
-#	print "</SECT2>\n";
+	print "</SECT2>\n";
 
 #
 # 9) Make a table of data interfaces
@@ -244,7 +263,7 @@ for(1..$lgh->numrows) {
 		for(1..$inc) {
 			print "<ROW>";
 			printf "<ENTRY>%s",$datasym[$_];
-			if( $datasym[$_] ) {
+			if( $datasym[$_] && $std[$_] ) {
 				printf "<FOOTNOTEREF LINKEND=\"std-%d-%d\">",
 								$Lid, $std[$_];
 			}
