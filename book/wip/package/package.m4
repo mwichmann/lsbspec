@@ -432,6 +432,197 @@ include(rpmdeps.sgml)
 <SECT2>
 <TITLE>Archive Section</TITLE>
 <PARA>
+The Archive section contains a compressed cpio archive. The format of this
+section is defined by <XREF LINKEND="std.RFC1952">.
+</PARA>
+<PARA>
+When uncompressed, the cpio format contains a sequence of records for each
+file. Each record contains a CPIO Header, Filename, Padding, and File Data.
+<TABLE>
+<TITLE>CPIO File Format</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>CPIO Header</ENTRY>
+<ENTRY>Header structure as defined below.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Filename</ENTRY>
+<ENTRY>ASCII string containing the name of the file.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Padding</ENTRY>
+<ENTRY>1-3 bytes as needed to align the file stream to a 4 byte boundary.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>File data</ENTRY>
+<ENTRY>The contents of the file.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Padding</ENTRY>
+<ENTRY>1-3 bytes as needed to align the file stream to a 4 byte boundary.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+The CPIO Header uses the following header structure (sometimes referred to
+as "new ASCII" or "SVR4 cpio"). All numbers are stored as ASCII
+representations of their octal value.
+</PARA>
+<SCREEN>
+struct {
+        char    c_magic[6];
+        char    c_ino[8];
+        char    c_mode[8];
+        char    c_uid[8];
+        char    c_gid[8];
+        char    c_nlink[8];
+        char    c_mtime[8];
+        char    c_filesize[8];
+        char    c_devmajor[8];
+        char    c_devminor[8];
+        char    c_rdevmajor[8];
+        char    c_rdevminor[8];
+        char    c_namesize[8];
+        char    c_checksum[8];
+        };
+</SCREEN>
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_magic</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying this cpio format. This value must be "070701".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_ino</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+This field contains the inode number from the filesystem from which the
+file was read.  This field is ignored when installing a package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_mode</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Permission bits of the file. This is an ascii representation of the octal
+number representing the bit as defined for the
+<STRUCTFIELD>st_mode</STRUCTFIELD> field of the <STRUCTNAME>stat</STRUCTNAME>
+structure defined for the <VARNAME>stat</VARNAME> function.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_uid</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying this owner of this file.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_gid</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying this group of this file.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_nlink</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the number of links associated with this file. If the value
+is greater than 1, then this filename will be linked to 1 or more files in this
+archive that has a matching value for the c_ino, c_devmajor and c_devminor
+fields.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_mtime</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the modification time of the file when it was read.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_filesize</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the size of the file.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_devmajor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The major number of the device containing the file system from which the
+file was read.
+With the exception of processing files with c_nlink >1, this field is ignored
+when installing a package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_devminor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The minor number of the device containing the file system from which the
+file was read.
+With the exception of processing files with c_nlink >1, this field is ignored
+when installing a package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_rdevmajor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The major number of the raw device containing the file system from which the
+file was read.
+This field is ignored when installing a package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_rdevminor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+The minor number of the raw device containing the file system from which the
+file was read.
+This field is ignored when installing a package.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_namesize</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value identifying the length of the filename, which is locatted immediately
+following the CPIO Header structure.
+</PARA>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>c_checksum</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Value containing the CRC checksum of the file data.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+<PARA>
+A record with the filename "TRAILER!!!" indicates the last record in the
+archive.
 </PARA>
 </SECT2>
 </SECT1>

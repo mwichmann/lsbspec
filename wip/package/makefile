@@ -22,4 +22,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-baselib.sgml: baselib.m4 libstdcxx.sgml
+package.sgml: package.m4 privtags.sgml sigtags.sgml hdrtags.sgml
