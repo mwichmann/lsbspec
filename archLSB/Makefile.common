@@ -34,7 +34,11 @@ psspec: source
 	$(DB2PS) spec.sgml
 
 source:
-	sed -e "s#LSBVERSION#`cat ../../lsbversion.`basename `pwd```#" <spec.sgml.sed >spec.sgml
+	(pwd=`pwd`;\
+	echo "pwd=$$pwd";\
+	arch=`basename $$pwd`;\
+	echo "arch=$$arch";\
+	sed -e "s#LSBVERSION#`cat ../../lsbversion.$$arch`#" <spec.sgml.sed >spec.sgml)
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 gensrc:
