@@ -34,8 +34,9 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
 	wcstoq.sgml wcstouq.sgml ngettext.sgml dgettext.sgml dngettext.sgml \
 	dcgettext.sgml dcngettext.sgml bind_textdomain_codeset.sgml \
-	pmap_getport.sgml pmap_set.sgml svc_run.sgml \
-	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml
+	pmap_getport.sgml pmap_set.sgml svc_run.sgml __register_atfork.sgml \
+	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml dladdr.sgml \
+	dlopen.sgml dlsym.sgml
 
 FILES=baselib.sgml 
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
