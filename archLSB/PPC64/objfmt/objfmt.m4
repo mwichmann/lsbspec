@@ -58,8 +58,6 @@ LSB-conforming applications shall use the Machine Information as defined in
 <PARA>
 The following sections are defined in the <XREF LINKEND="std.PPC64.ABI">.
 include(elfsect.sgml)
-Note that the .tags, .taglist and .tagsym sections described in 
-<XREF LINKEND="std.PPC64.ABI"> are not supported.
 </PARA>
 </SECT1>
 <SECT1 ID="linuxspecial">
