@@ -20,6 +20,13 @@ htmlspec: source
 	if [ -d spec.junk/CVS -a ! -d spec/CVS ];then mv spec.junk/CVS spec; fi
 	rm -rf spec.junk
 
+onehtmlspec: source
+	$(DB2ONEHTML) spec.sgml
+
+txtspec: source
+	$(DB2TXT) spec.sgml
+	nl -ba spec.txt > spec_lines.txt
+
 rtfspec: source
 	$(DB2RTF) spec.sgml
 
