@@ -5,13 +5,20 @@
 <PARA>
 Each LSB-compliant init.d script shall source the file
 <filename>/lib/lsb/init-functions</filename>. This file shall cause the
-following shell script commands to be defined.  
+following shell script commands to be defined in an unspecified manner.  
+<note>
+<para>
 This can be done either by
-adding a directory to the PATH variable which defines these commands, or by
-defining sh aliases.  While the distribution-provided aliases may
-choose to use shell extensions (at the distribution's option), the LSB
-init.d files themselves should only depend in shell features as
-defined by the LSB.
+adding a directory to the 
+<envar>PATH</envar> variable which defines these commands, or by
+defining shell aliases.  
+</para>
+<para>
+Although the commands made available via this mechanism need not
+be LSB conforming applications in their own right, applications that
+use them should only depend on features described in the LSB.
+</para>
+</note>
 Conforming scripts
 shall not specify the "exit on error" option (i.e. 
 <command>set -e</command>) when sourcing this file, or calling any of the
@@ -23,11 +30,29 @@ The <command>start_daemon</command>, <command>killproc</command> and
 <command>pidofproc</command> functions shall use 
 the following algorithm for determining
 the status and the process identifiers of the specified program. 
-They shall read the 
-<filename>pidfile</filename>
-specified or otherwise
-<filename>/var/run/<replaceable>basename</replaceable>.pid</filename> and use
-the process identifiers therein when determining whether a program is running. 
+<orderedlist numeration=arabic>
+<listitem><para>If the <parameter>-p pidfile</parameter> option is specified,
+and the named <filename>pidfile</filename> exists,
+a single line at the start of the <filename>pidfile</filename> shall be read. 
+If this line contains one or more numeric values, separated by spaces,
+these values shall be used.
+</para></listitem>
+<listitem><para>
+Otherwise, 
+<filename>/var/run/<replaceable>basename</replaceable>.pid</filename> 
+shall be read in a similar fashion.
+If this contains one or more numeric values on the first line, these values
+shall be used.
+</para>
+</listitem>
+<listitem>
+<para>
+Optionally, if neither of the above methods has determined the
+process identifiers required, implementations may use unspecified additional
+methods to locate the process identifiers required.
+</para>
+</listitem>
+</orderedlist>
 The method used
 to determine the status is implementation defined, but should allow for
 non-binary programs.
