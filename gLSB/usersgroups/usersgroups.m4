@@ -44,15 +44,6 @@ getgrent(3), setgrent(3), sendgrent(3), and groups(1).
 The layout of the group(5) file is not specified by this standard, because
 it is access via an API.
 </PARA>
-<NOTE>
-<PARA>
-According to JFH, the original author of shadow-utils, 
-there are no group write APIs; therefore, do not be tempted to edit the group 
-database file directly, use the system admin. commands such as groupadd(1),
-groupdel(1), groupmod(1).  Use usermod(1) to add and remove a user 
-from supplementary groups.
-</PARA>
-</NOTE>
 </SECT1>
 
 <SECT1 ID="userlibs">
