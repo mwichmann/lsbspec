@@ -34,9 +34,8 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
 	wcstoq.sgml wcstouq.sgml
 
-FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
-	libdl.sgml libcrypt.sgml librt.sgml #libdb.sgml
-TABLES=
+FILES=baselib.sgml 
+GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml
 
 .cpp.sgml:
 	cpp -I../../../src/include $*.cpp | grep -v '^# ' >$@
@@ -44,7 +43,7 @@ TABLES=
 .m4.sgml:
 	m4 -Uindex -Uformat $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all: $(FILES) $(GENFILES)
 
 gensrc:
 	../../mklibspec -a All -l libc >libc.sgml
@@ -59,8 +58,7 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES)
+	rm -f $(GENFILES) $(FILES)
 
 baselib.sgml: libc.sgml datadefs.sgml libm.sgml libpthread.sgml
 baselib.sgml: libdb.sgml libdl.sgml libcrypt.sgml $(MANPAGES)
-datadefs.sgml: ../../../src/include/datadefs.sgml
