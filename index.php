@@ -365,7 +365,7 @@ Past version of the specification can be found <A HREF=oldspecs.shtml>Here</A>.
 
 <H2>About the Specification</H2>
 The LSB Specification is written in OASIS V4.1 Docbook SGML.&nbsp; You
-can&nbsp; <a href="http://sourceforge.net/cvs/?group_id=1107">checkout
+can&nbsp; <a href="http://gforge.freestandards.org/scm/?group_id=5">checkout
 a copy</a> of the Docbook source from the LSB project on SourceForge.Net.
 Portions of the document are produced from a <a href="db.shtml">database</a>
 that was designed and is maintained by the LSB. In the spec tree there
@@ -378,7 +378,7 @@ is to read and review the specification, then email your questions and
 comments to the <i>lsb-spec</i> <a href="../lists.html">email list</a>.&nbsp;&nbsp;
 The second way is to send your corrections for the spec in context diff
 format to the <i>lsb-spec</i> email list.&nbsp;&nbsp; The third way is
-to <a href="http://sourceforge.net/project/memberlist.php?group_id=1107">find
+to <a href="http://gforge.freestandards.org.net/project/memberlist.php?group_id=5">find
 an LSB developer</a>, then send him/her your corrections.&nbsp; The final
 way to contribute to the LSB written specification is to become an LSB
 developer to make CVS changes directly to the tree with your and other's
