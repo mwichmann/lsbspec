@@ -24,19 +24,21 @@ DB2ONEHTML=sgmltools -b onehtml
 DB2TXT=sgmltools -b txt
 #DB2TXT=docbook2txt -d ../docbook-utils.dsl\#print
 
-all:: htmlspec rtfspec txtspec onehtmlspec linespec
+all:: buildspecs
 
-htmlspec: source
+buildspecs: htmlspec rtfspec txtspec onehtmlspec linespec
+
+htmlspec: gLSB.sgml source
 	rm -rf gLSB.junk
 	-mv gLSB gLSB.junk
 	$(DB2HTML) gLSB.sgml
 	if [ -d gLSB.junk/CVS -a ! -d gLSB/CVS ];then mv gLSB.junk/CVS gLSB; fi
 	rm -rf gLSB.junk
 
-onehtmlspec: source
+onehtmlspec: gLSB.sgml source
 	$(DB2ONEHTML) gLSB.sgml
 
-txtspec: source
+txtspec: gLSB.sgml source
 	$(DB2TXT) gLSB.sgml
 
 linespec: gLSB_lines.txt
@@ -44,27 +46,32 @@ linespec: gLSB_lines.txt
 gLSB_lines.txt: gLSB.txt
 	nl -ba gLSB.txt > gLSB_lines.txt
 
-rtfspec: source
+rtfspec: gLSB.sgml source
 	$(DB2RTF) gLSB.sgml
 
-pdfspec: source
+pdfspec: gLSB.sgml source
 	$(DB2PDF) gLSB.sgml
 
-psspec: source
+psspec: gLSB.sgml source
 	$(DB2PS) gLSB.sgml
 
-index: source
+index: gLSB.sgml source
 	collateindex.pl -N -o index.sgml
 	$(DB2HTML) -j '-V %use-id-as-filename% -V html-index' gLSB.sgml
 	collateindex.pl -o index.sgml HTML.index
 
 source:
-	sed -e "s#LSBVERSION#`cat ../lsbversion`#" <gLSB.sgml.sed >gLSB.sgml
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
+gLSB.sgml: gLSB.sgml.sed ../lsbversion
+	sed -e "s#LSBVERSION#`cat ../lsbversion`#" <gLSB.sgml.sed >gLSB.sgml
+
+autobuild: gensrc source buildspecs
+	sed -e "s#LSBVERSION#`cat ../lsbversion`-`date +"%Y%m%d"`#" <gLSB.sgml.sed >gLSB.sgml
+	
 clean::
 	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
 
