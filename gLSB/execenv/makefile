@@ -8,7 +8,7 @@ TABLES=
 	cpp -I../../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 $*.m4 >$@
+	m4 -Uindex -Uformat $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
@@ -19,3 +19,5 @@ clean:
 
 spotless: clean
 	rm -f $(TABLES)
+
+execenv.sgml: execenv.m4 fhs.sgml procfs.sgml
