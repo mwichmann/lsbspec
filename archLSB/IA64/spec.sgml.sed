@@ -19,7 +19,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the IA64 Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the &itanium; Architecture &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2002</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
