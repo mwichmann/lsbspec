@@ -1,0 +1,113 @@
+<REFENTRY ID="baselib-clone-1"> <REFMETA>
+<REFENTRYTITLE>__clone</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__clone
+</REFNAME>
+<REFPURPOSE>create a thread
+</REFPURPOSE>
+<INDEXTERM ID="ix-baselib-clone-2"><PRIMARY>__clone</PRIMARY></INDEXTERM>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>27 February 2000</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int __clone (int (* <replaceable class="parameter" >fn</replaceable>) (void *<replaceable class="parameter" >arg</replaceable>),
+             void *<replaceable class="parameter" >child_stack</replaceable>,
+             int <replaceable class="parameter" >flags</replaceable>,
+             void *<replaceable class="parameter" >arg</replaceable>)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>27 February 2000</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+__clone creates a new process like fork does.  Unlike fork, __clone
+allows the child process to share parts of its execution context with
+its parent process, such as the memory space, the table of file
+descriptors, and the table of signal handlers.  The main use of
+__clone is to implement threads: multiple threads of control in a
+program that run concurrently in a shared memory space.
+</PARA>
+<PARA>
+When the child process is created, it executes the function
+application fn(arg).  The fn argument is a pointer to a function that
+is called by the child process at the beginning of its execution.  The
+arg argument is passed back to the fn function.
+</PARA>
+<PARA>
+When the fn(arg) function application returns,  the  child
+process  terminates.   The  integer  returned by fn is the
+exit code for the child process.  The  child  process  may
+also  terminate  explicitely  by  calling exit() or after
+receiving a fatal signal.
+</PARA>
+<PARA>
+The child_stack argument specifies the location of the stack used by
+the child process.  Since the child and parent processes share memory,
+it is not possible in general for the child process to execute in the
+same stack as the parent process.  The parent process must therefore
+set up memory space for the child stack and pass a pointer to this
+space to __clone.  Stacks grow downwards on all processors that run
+Linux (except the HP PA processors), so child_stack usually points to
+the topmost address of the memory space set up for the child stack.
+</PARA>
+<PARA>
+The low byte of flags contains the number of the signal sent to the
+parent when the child dies.  flags must also be bitwise-or'ed with
+exactly the following constants (FIXME: are these in our constant
+database?): CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND.
+No other combination of flags is supported by this standard.
+The parent and child share memory space, mappings and unmappings
+performed with mmap, root of the file system, the current working
+directory, umask, file descriptor table, and signal handlers.  If the
+parent or child changes these resources, the other process is also
+affected.
+</PARA>
+</REFSECT1>
+<refsect1>
+<title>
+Return value
+</title>
+<para>
+On success, the PID of the child process  is  returned  in
+the  parent's  thread of execution.  On failure, a -1 will
+be returned in the parent's context, no child process will
+be created, and errno will be set appropriately.
+</para>
+</refsect1>
+<refsect1>
+<title>
+Errors
+</title>
+<para>
+EAGAIN Too many processes are already running.
+</para>
+<para>
+ENOMEM __clone cannot allocate sufficient memory to allocate a task
+structure for the child, or to copy those parts of the parent's
+context that need to be copied.
+</para>
+</refsect1>
+<REFSECT1>
+<TITLE>Notes/rationale
+</TITLE>
+<PARA>
+This subset of clone is sufficient to implement the LinuxThreads
+package (as of this writing).  FIXME: someone should check pth.
+</PARA>
+<PARA>
+Although portability to non-Linux systems is a secondary goal for the
+Linux Standard Base, it is believed that this subset of clone can be
+implemented on top of a variety of threads API's.
+</PARA>
+<PARA>
+FIXME: What about __WCLONE flag to waitpid()?
+</PARA>
+</REFSECT1>
+</REFENTRY>

@@ -1,7 +1,11 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES=__assert_fail.sgml __xstat.sgml select.sgml
+MANPAGES=__assert_fail.sgml __clone.sgml __errno_location.sgml \
+	__h_errno_location.sgml __strtod_internal.sgml \
+	__strtof_internal.sgml __strtol_internal.sgml __strtoul_internal.sgml \
+	__xstat.sgml select.sgml
+
 FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
 	libdb.sgml libdl.sgml libcrypt.sgml
 TABLES=
