@@ -10,7 +10,7 @@
 <?
 virtual("/themes/FreeStandards2/contentheader.html");
 virtual("/themes/FreeStandards2/nav.linuxbase.php");
-virtual("/themes/FreeStandards2/contentmail.html");
+virtual("/themes/FreeStandards2/contentmain.html");
 ?>
 
 <blockquote style="background-color: #ffffdd">
@@ -51,7 +51,7 @@ is a <i>build.html </i>file which describes <a href="build.html">how to
 build the specification</a> from the CVS Docbook source.</p>
 
 <?
-virtual("/themes/FreeStandards2/contentheader.html");
+virtual("/themes/FreeStandards2/contentfooter.html");
 ?>
 </body>
 </html>
