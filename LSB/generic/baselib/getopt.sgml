@@ -14,6 +14,9 @@ parse command line options
 <DATE>20 March 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;unistd.h&gt;
+</FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>getopt</FUNCTION></FUNCDEF>
@@ -37,7 +40,7 @@ extern int <VARNAME>optind</VARNAME>, <VARNAME>opterr</VARNAME>, <VARNAME>optopt
 <TITLE>Description
 </TITLE>
 <PARA>
-The <FUNCTION>getopt</FUNCTION> function shall parse command line arguments.
+The <FUNCTION>getopt</FUNCTION> function shall parse command line arguments
 as described in <XREF LINKEND=STD.SUSv3>, with the following exceptions,
 where LSB and POSIX specifications vary.
 LSB systems shall
@@ -53,7 +56,16 @@ referenced by <parameter>argv</parameter> in one of three ways:
 <TERM>PERMUTE</TERM><LISTITEM><PARA>the order of arguments in
 <parameter>argv</parameter> is altered so that all options (and
 their arguments) are moved in front of all of the operands.
-This is the default behavior.</PARA></LISTITEM>
+This is the default behavior.
+<NOTE><PARA>This behavior has undefined results if 
+<PARAMETER>argv</PARAMETER> is not modifiable. This is to support
+historic behavior predating the use of <token>const</token> and
+<XREF LINKEND=STD.ISOC99>. The function prototype was aligned
+with <XREF LINKEND=STD.SUSv3> despite the fact that it modifies
+<PARAMETER>argv</PARAMETER>, 
+and the library maintainers are unwilling to change this.
+</PARA></NOTE>
+</PARA></LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
 <TERM>REQUIRE_ORDER</TERM><LISTITEM><PARA>The arguments in
@@ -178,7 +190,7 @@ description.
 <LISTITEM>
 <PARA>
 if a character is followed by two colons, the option takes an optional 
-arg; if there is text in the current <PARAMETER>argv</PARAMETER> element, 
+argument; if there is text in the current <PARAMETER>argv</PARAMETER> element, 
 it is returned in <PARAMETER>optarg</PARAMETER>, otherwise 
 <PARAMETER>optarg</PARAMETER> is set to <LITERAL>0</LITERAL>.
 </PARA>
@@ -216,7 +228,8 @@ effect (see above)
 <PARA>
 if the first character is ':', then 
 <FUNCTION>getopt</FUNCTION> shall return ':' instead of '?'
-to indicate a missing option argument. 
+to indicate a missing option argument, and shall not print any
+diagnostic message to <VARNAME>stderr</VARNAME>.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -294,13 +307,6 @@ character of <VARNAME>optstring</VARNAME> is not '<TOKEN>:</TOKEN>'.
 <PARA>
 if the variable <VARNAME>POSIXLY_CORRECT</VARNAME> is set, option 
 processing stops as soon as a non-option argument is encountered.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-if <VARNAME>POSIXLY_CORRECT</VARNAME> is set, <EMPHASIS>LSB</EMPHASIS> 
-<FUNCTION>getopt</FUNCTION> conforms to <EMPHASIS>
-<XREF LINKEND="STD.SUSv3"></EMPHASIS>.
 </PARA>
 </LISTITEM>
 <LISTITEM>
