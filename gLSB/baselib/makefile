@@ -4,7 +4,8 @@
 MANPAGES=__assert_fail.sgml __clone.sgml __errno_location.sgml \
 	__h_errno_location.sgml __strtod_internal.sgml \
 	__strtof_internal.sgml __strtol_internal.sgml __strtoul_internal.sgml \
-	__xstat.sgml select.sgml _IO_2_1_stderr_.sgml _IO_2_1_stdin_.sgml \
+	__xstat.sgml __xstat64.sgml \
+	select.sgml _IO_2_1_stderr_.sgml _IO_2_1_stdin_.sgml \
 	_IO_2_1_stdout_.sgml _IO_feof.sgml _IO_getc.sgml _IO_putc.sgml \
 	_IO_puts.sgml __bzero.sgml __ctype_get_mb_cur_max.sgml __getpgid.sgml \
 	__libc_current_sigrtmax.sgml __libc_current_sigrtmin.sgml \
