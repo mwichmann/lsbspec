@@ -36,7 +36,7 @@ psspec: source
 	sgmltools -b ps spec.sgml
 
 source:
-	for dir in $(SUBDIRS);do (cd $$dir;make all);done
+	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 all:: $(HTML)
 
@@ -129,5 +129,5 @@ SUS.html::
 
 
 clean::
-	for dir in $(SUBDIRS);do (cd $$dir;make clean);done
+	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
 	rm -f $(HTML)
