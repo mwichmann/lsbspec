@@ -155,11 +155,11 @@ function formatProject($project, $level = 0)
 			$finish = 0;
 		}
 		$packagesstr .= " <tr style=\"background: ".$colours[$package->specversion].";\">\n";
-		$packagesstr .="  <td><a href=\"".$package->link."\">".$package->name."</a>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->link."\">".$package->name."</a>";
 		$packagesstr .="  <td>".$package->version."</td>\n";
-		$packagesstr .="  <td><a href=\"".$package->rtflink."\">".$package->name."</a>";
-		$packagesstr .="  <td><a href=\"".$package->txtlink."\">".$package->name."</a>";
-		$packagesstr .="  <td><a href=\"".$package->txt1link."\">".$package->name."</a>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->rtflink."\">".$package->name."</a>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->txtlink."\">".$package->name."</a>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->txt1link."\">".$package->name."</a>";
 		$finish = 1;
 		$prevspecversion = $package->specversion;
 		$prevversion = $package->version;
