@@ -12,7 +12,7 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mklibspec -a All -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
+	../../mklibspec -a All -c 2 -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
 	../../mklibspec -a All -l libpam >libpam.sgml
 
 clean:
