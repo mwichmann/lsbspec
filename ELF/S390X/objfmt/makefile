@@ -14,10 +14,10 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mksecttypestable -a S390 -s 'S390 ABI' -t 'ELF Section Types' >elfsecttypes.sgml
-	../../../mksecttypestable -a S390 -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
-	../../../mksectiontable -a S390 -s 'S390 ABI' -t 'ELF Special Sections' >elfsect.sgml
-	../../../mksectiontable -a S390 -s 'LSB' -t 'Additional Special Sections' >linuxsect.sgml
+	../../../mksecttypestable -a S390X -s 'S390X ABI' -t 'ELF Section Types' >elfsecttypes.sgml
+	../../../mksecttypestable -a S390X -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
+	../../../mksectiontable -a S390X -s 'S390X ABI' -t 'ELF Special Sections' >elfsect.sgml
+	../../../mksectiontable -a S390X -s 'LSB' -t 'Additional Special Sections' >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)
