@@ -12,8 +12,8 @@ hardware in the system.
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
-<!--    at Thu Sep 19 19:50:58 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
+<!--    at Tue Sep 24 11:56:25 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1853,9 +1853,9 @@ struct flock64
 
 
 
-#define FNM_PATHNAME	(1<<0)
-#define FNM_NOESCAPE	(1<<1)
-#define FNM_PERIOD	(1<<2)
+#define FNM_PATHNAME	(1&lt;&lt;0)
+#define FNM_NOESCAPE	(1&lt;&lt;1)
+#define FNM_PERIOD	(1&lt;&lt;2)
 #define FNM_NOMATCH	1
 </SCREEN>
 </SECT2>
@@ -1966,21 +1966,21 @@ typedef struct
   int (*gl_stat) (void);
 }
 glob64_t;
-#define GLOB_ERR	(1<<0)
-#define GLOB_MARK	(1<<1)
-#define GLOB_BRACE	(1<<10)
-#define GLOB_NOMAGIC	(1<<11)
-#define GLOB_TILDE	(1<<12)
-#define GLOB_ONLYDIR	(1<<13)
-#define GLOB_TILDE_CHECK	(1<<14)
-#define GLOB_NOSORT	(1<<2)
-#define GLOB_DOOFFS	(1<<3)
-#define GLOB_NOCHECK	(1<<4)
-#define GLOB_APPEND	(1<<5)
-#define GLOB_NOESCAPE	(1<<6)
-#define GLOB_PERIOD	(1<<7)
-#define GLOB_MAGCHAR	(1<<8)
-#define GLOB_ALTDIRFUNC	(1<<9)
+#define GLOB_ERR	(1&lt;&lt;0)
+#define GLOB_MARK	(1&lt;&lt;1)
+#define GLOB_BRACE	(1&lt;&lt;10)
+#define GLOB_NOMAGIC	(1&lt;&lt;11)
+#define GLOB_TILDE	(1&lt;&lt;12)
+#define GLOB_ONLYDIR	(1&lt;&lt;13)
+#define GLOB_TILDE_CHECK	(1&lt;&lt;14)
+#define GLOB_NOSORT	(1&lt;&lt;2)
+#define GLOB_DOOFFS	(1&lt;&lt;3)
+#define GLOB_NOCHECK	(1&lt;&lt;4)
+#define GLOB_APPEND	(1&lt;&lt;5)
+#define GLOB_NOESCAPE	(1&lt;&lt;6)
+#define GLOB_PERIOD	(1&lt;&lt;7)
+#define GLOB_MAGCHAR	(1&lt;&lt;8)
+#define GLOB_ALTDIRFUNC	(1&lt;&lt;9)
 
 
 
@@ -2147,6 +2147,45 @@ typedef long long uint64_t;
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>limits.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define OPEN_MAX	256
+#define PATH_MAX	4096
+
+
+
+#define MB_LEN_MAX	16
+
+
+
+#define SCHAR_MIN	(-128)
+#define SCHAR_MAX	127
+#define UCHAR_MAX	255
+#define CHAR_BIT	8
+#define CHAR_MAX	SCHAR_MAX
+#define CHAR_MIN	SCHAR_MIN
+
+
+
+#define SHRT_MIN	(-32768)
+#define SHRT_MAX	32767
+#define USHRT_MAX	65535
+
+
+
+#define INT_MIN	(-INT_MAX-1)
+#define INT_MAX	2147483647
+#define UINT_MAX	4294967295U
+
+
+
+#define LONG_MIN	(-LONG_MAX-1L)
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>locale.h</TITLE>
 <PARA>
 </PARA>
@@ -2201,38 +2240,83 @@ struct lconv
 </SCREEN>
 </SECT2>
 <SECT2>
-<TITLE>math.h</TITLE>
+<TITLE>net/if.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-#define HUGE_VAL	0x7FF00000UL
-#define DOMAIN	1
-#define SING	2
+#define IF_NAMESIZE	16
 
 
-struct exception
+
+#define IFF_UP	0x01
+#define IFF_BROADCAST	0x02
+#define IFF_DEBUG	0x04
+#define IFF_LOOPBACK	0x08
+#define IFF_POINTOPOINT	0x10
+#define IFF_PROMISC	0x100
+#define IFF_MULTICAST	0x1000
+#define IFF_NOTRAILERS	0x20
+#define IFF_RUNNING	0x40
+#define IFF_NOARP	0x80
+
+
+
+
+
+struct ifaddr
 {
-  int type;
-  char *name;
-  double arg1;
-  double arg2;
-  double retval;
+  struct sockaddr ifa_addr;
+  union
+  {
+    struct sockaddr ifu_broadaddr;
+    struct sockaddr ifu_dstaddr;
+  }
+  ifa_ifu;
+  void *__pad1;
+  void *__pad2;
 }
  ;
-#define M_1_PI	0.31830988618379067154
-#define M_LOG10E	0.43429448190325182765
-#define M_2_PI	0.63661977236758134308
-#define M_LN2	0.69314718055994530942
-#define M_SQRT1_2	0.70710678118654752440
-#define M_PI_4	0.78539816339744830962
-#define M_2_SQRTPI	1.12837916709551257390
-#define M_SQRT2	1.41421356237309504880
-#define M_LOG2E	1.4426950408889634074
-#define M_PI_2	1.57079632679489661923
-#define M_LN10	2.30258509299404568402
-#define M_E	2.7182818284590452354
-#define M_PI	3.14159265358979323846
+#define IFNAMSIZ	IF_NAMESIZE
+
+
+struct ifreq
+{
+  union
+  {
+    char ifrn_name[IFNAMSIZ];
+  }
+  ifr_ifrn;
+  union
+  {
+    struct sockaddr ifru_addr;
+    struct sockaddr ifru_dstaddr;
+    struct sockaddr ifru_broadaddr;
+    struct sockaddr ifru_netmask;
+    struct sockaddr ifru_hwaddr;
+    short ifru_flags;
+    int ifru_ivalue;
+    int ifru_mtu;
+    char ifru_slave[IFNAMSIZ];
+    char ifru_newname[IFNAMSIZ];
+    caddr_t ifru_data;
+  }
+  ifr_ifru;
+}
+ ;
+
+
+struct ifconf
+{
+  int ifc_len;
+  union
+  {
+    caddr_t ifcu_buf;
+    struct ifreq *ifcu_req;
+  }
+  ifc_ifcu;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2318,6 +2402,15 @@ struct sockaddr_in
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>netinet/tcp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define TCP_NODELAY	1
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>nl_types.h</TITLE>
 <PARA>
 </PARA>
@@ -2371,33 +2464,33 @@ struct passwd
 
 #define RE_SYNTAX_GNU_AWK	((RE_SYNTAX_POSIX_EXTENDED|RE_BACKSLASH_ESCAPE_IN_LISTS|RE_DEBUG)&amp  ~(RE_DOT_NOT_NULL | RE_INTERVALS | RE_CONTEXT_INDEP_OPS))
 #define RE_BACKSLASH_ESCAPE_IN_LISTS	((unsigned long int)1)
-#define RE_BK_PLUS_QM	(RE_BACKSLASH_ESCAPE_IN_LISTS<<1)
+#define RE_BK_PLUS_QM	(RE_BACKSLASH_ESCAPE_IN_LISTS&lt;&lt;1)
 #define RE_SYNTAX_AWK	(RE_BACKSLASH_ESCAPE_IN_LISTS|RE_DOT_NOT_NULL|RE_NO_BK_PARENS| RE_NO_BK_REFS| RE_NO_BK_VBAR| RE_NO_EMPTY_RANGES| RE_DOT_NEWLINE| RE_CONTEXT_INDEP_ANCHORS| RE_UNMATCHED_RIGHT_PAREN_ORD | RE_NO_GNU_OPS)
-#define RE_CHAR_CLASSES	(RE_BK_PLUS_QM<<1)
+#define RE_CHAR_CLASSES	(RE_BK_PLUS_QM&lt;&lt;1)
 #define RE_SYNTAX_GREP	(RE_BK_PLUS_QM|RE_CHAR_CLASSES|RE_HAT_LISTS_NOT_NEWLINE|RE_INTERVALS|RE_NEWLINE_ALT)
-#define RE_CONTEXT_INDEP_ANCHORS	(RE_CHAR_CLASSES<<1)
+#define RE_CONTEXT_INDEP_ANCHORS	(RE_CHAR_CLASSES&lt;&lt;1)
 #define RE_SYNTAX_EGREP	(RE_CHAR_CLASSES|RE_CONTEXT_INDEP_ANCHORS| RE_CONTEXT_INDEP_OPS|RE_HAT_LISTS_NOT_NEWLINE|RE_NEWLINE_ALT|RE_NO_BK_PARENS|RE_NO_BK_VBAR)
 #define _RE_SYNTAX_POSIX_COMMON	(RE_CHAR_CLASSES|RE_DOT_NEWLINE|RE_DOT_NOT_NULL|RE_INTERVALS)
-#define RE_CONTEXT_INDEP_OPS	(RE_CONTEXT_INDEP_ANCHORS<<1)
-#define RE_CONTEXT_INVALID_OPS	(RE_CONTEXT_INDEP_OPS<<1)
-#define RE_DOT_NEWLINE	(RE_CONTEXT_INVALID_OPS<<1)
-#define RE_INVALID_INTERVAL_ORD	(RE_DEBUG<<1)
-#define RE_DOT_NOT_NULL	(RE_DOT_NEWLINE<<1)
-#define RE_HAT_LISTS_NOT_NEWLINE	(RE_DOT_NOT_NULL<<1)
-#define RE_INTERVALS	(RE_HAT_LISTS_NOT_NEWLINE<<1)
-#define RE_LIMITED_OPS	(RE_INTERVALS<<1)
-#define RE_NEWLINE_ALT	(RE_LIMITED_OPS<<1)
-#define RE_NO_BK_BRACES	(RE_NEWLINE_ALT<<1)
-#define RE_NO_BK_PARENS	(RE_NO_BK_BRACES<<1)
-#define RE_NO_BK_REFS	(RE_NO_BK_PARENS<<1)
-#define RE_NO_BK_VBAR	(RE_NO_BK_REFS<<1)
-#define RE_NO_EMPTY_RANGES	(RE_NO_BK_VBAR<<1)
-#define RE_UNMATCHED_RIGHT_PAREN_ORD	(RE_NO_EMPTY_RANGES<<1)
-#define RE_DEBUG	(RE_NO_GNU_OPS<<1)
-#define RE_NO_GNU_OPS	(RE_NO_POSIX_BACKTRACKING<<1)
+#define RE_CONTEXT_INDEP_OPS	(RE_CONTEXT_INDEP_ANCHORS&lt;&lt;1)
+#define RE_CONTEXT_INVALID_OPS	(RE_CONTEXT_INDEP_OPS&lt;&lt;1)
+#define RE_DOT_NEWLINE	(RE_CONTEXT_INVALID_OPS&lt;&lt;1)
+#define RE_INVALID_INTERVAL_ORD	(RE_DEBUG&lt;&lt;1)
+#define RE_DOT_NOT_NULL	(RE_DOT_NEWLINE&lt;&lt;1)
+#define RE_HAT_LISTS_NOT_NEWLINE	(RE_DOT_NOT_NULL&lt;&lt;1)
+#define RE_INTERVALS	(RE_HAT_LISTS_NOT_NEWLINE&lt;&lt;1)
+#define RE_LIMITED_OPS	(RE_INTERVALS&lt;&lt;1)
+#define RE_NEWLINE_ALT	(RE_LIMITED_OPS&lt;&lt;1)
+#define RE_NO_BK_BRACES	(RE_NEWLINE_ALT&lt;&lt;1)
+#define RE_NO_BK_PARENS	(RE_NO_BK_BRACES&lt;&lt;1)
+#define RE_NO_BK_REFS	(RE_NO_BK_PARENS&lt;&lt;1)
+#define RE_NO_BK_VBAR	(RE_NO_BK_REFS&lt;&lt;1)
+#define RE_NO_EMPTY_RANGES	(RE_NO_BK_VBAR&lt;&lt;1)
+#define RE_UNMATCHED_RIGHT_PAREN_ORD	(RE_NO_EMPTY_RANGES&lt;&lt;1)
+#define RE_DEBUG	(RE_NO_GNU_OPS&lt;&lt;1)
+#define RE_NO_GNU_OPS	(RE_NO_POSIX_BACKTRACKING&lt;&lt;1)
 #define RE_SYNTAX_POSIX_EGREP	(RE_SYNTAX_EGREP|RE_INTERVALS|RE_NO_BK_BRACES|RE_INVALID_INTERVAL_ORD)
 #define RE_SYNTAX_POSIX_AWK	(RE_SYNTAX_POSIX_EXTENDED|RE_BACKSLASH_ESCAPE_IN_LISTS|RE_INTERVALS|RE_NO_GNU_OPS)
-#define RE_NO_POSIX_BACKTRACKING	(RE_UNMATCHED_RIGHT_PAREN_ORD<<1)
+#define RE_NO_POSIX_BACKTRACKING	(RE_UNMATCHED_RIGHT_PAREN_ORD&lt;&lt;1)
 #define RE_SYNTAX_POSIX_BASIC	(_RE_SYNTAX_POSIX_COMMON|RE_BK_PLUS_QM)
 #define RE_SYNTAX_POSIX_EXTENDED	(_RE_SYNTAX_POSIX_COMMON|RE_CONTEXT_INDEP_ANCHORS|RE_CONTEXT_INDEP_OPS|RE_NO_BK_BRACES|RE_NO_BK_PARENS|RE_NO_BK_VBAR|RE_CONTEXT_INVALID_OPS|RE_UNMATCHED_RIGHT_PAREN_ORD)
 #define RE_SYNTAX_POSIX_MINIMAL_EXTENDED	(_RE_SYNTAX_POSIX_COMMON|RE_CONTEXT_INDEP_ANCHORS|RE_CONTEXT_INVALID_OPS|RE_NO_BK_BRACES|RE_NO_BK_PARENS|RE_NO_BK_REFS|RE_NO_BK_VBAR|RE_UNMATCHED_RIGHT_PAREN_ORD)
@@ -2437,10 +2530,10 @@ typedef struct
   regoff_t rm_eo;
 }
 regmatch_t;
-#define REG_NOTEOL	(1<<1)
-#define REG_ICASE	(REG_EXTENDED<<1)
-#define REG_NEWLINE	(REG_ICASE<<1)
-#define REG_NOSUB	(REG_NEWLINE<<1)
+#define REG_NOTEOL	(1&lt;&lt;1)
+#define REG_ICASE	(REG_EXTENDED&lt;&lt;1)
+#define REG_NEWLINE	(REG_ICASE&lt;&lt;1)
+#define REG_NOSUB	(REG_NEWLINE&lt;&lt;1)
 #define REG_NOMATCH	-1
 #define REG_EXTENDED	1
 #define REG_NOTBOL	1
@@ -2571,9 +2664,9 @@ struct sigstack
 
 
 typedef void (*__sighandler_t) (int);
-#define SV_ONSTACK	(1<<0)
-#define SV_INTERRUPT	(1<<1)
-#define SV_RESETHAND	(1<<2)
+#define SV_ONSTACK	(1&lt;&lt;0)
+#define SV_INTERRUPT	(1&lt;&lt;1)
+#define SV_RESETHAND	(1&lt;&lt;2)
 
 
 typedef union sigval
@@ -2717,6 +2810,21 @@ typedef struct sigaltstack
   size_t ss_size;
 }
 stack_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>stddef.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define offsetof(TYPE,MEMBER)	((size_t)&amp ((TYPE*)0)->MEMBER)
+#define NULL	(0)
+
+
+typedef long wchar_t;
+typedef unsigned int size_t;
+typedef long ptrdiff_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2902,6 +3010,39 @@ struct msqid_ds
   pid_t msg_lrpid;
   unsigned long __unused4;
   unsigned long __unused5;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/param.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define NOFILE	256
+#define MAXPATHLEN	4096
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/poll.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define POLLIN	0x0001
+#define POLLPRI	0x0002
+#define POLLOUT	0x0004
+#define POLLERR	0x0008
+#define POLLHUP	0x0010
+#define POLLNVAL	0x0020
+
+
+struct pollfd
+{
+  int fd;
+  short events;
+  short revents;
 }
  ;
 </SCREEN>
@@ -3369,6 +3510,97 @@ struct tms
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>sys/types.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define FD_ISSET(d,set)	((set)->fds_bits[0]&amp (1&lt;&lt;d))
+#define FD_CLR(d,set)	((set)->fds_bits[0]&amp =~(1&lt;&lt;d))
+#define FD_SET(d,set)	((set)->fds_bits[0]|=(1&lt;&lt;d))
+#define FD_SETSIZE	1024
+#define FD_ZERO(fdsetp)	bzero(fdsetp, sizeof(*(fdsetp)))
+
+
+typedef char int8_t;
+typedef short int16_t;
+typedef int int32_t;
+typedef long long int64_t;
+typedef unsigned char u_int8_t;
+typedef unsigned short u_int16_t;
+typedef unsigned int u_int32_t;
+typedef int ssize_t;
+typedef unsigned int uid_t;
+typedef int pid_t;
+typedef unsigned long off_t;
+typedef int key_t;
+typedef unsigned int id_t;
+typedef long suseconds_t;
+typedef struct
+{
+  int __val[2];
+}
+fsid_t;
+typedef unsigned long blksize_t;
+typedef long fd_mask;
+typedef int timer_t;
+typedef int clockid_t;
+
+
+
+
+
+typedef unsigned long long ino64_t;
+typedef long long loff_t;
+typedef unsigned long blkcnt_t;
+typedef unsigned long fsblkcnt_t;
+typedef unsigned long fsfilcnt_t;
+typedef unsigned long long blkcnt64_t;
+typedef unsigned long long fsblkcnt64_t;
+typedef unsigned long long fsfilcnt64_t;
+typedef unsigned char u_char;
+typedef unsigned short u_short;
+typedef unsigned long u_long;
+
+
+typedef int ino_t;
+typedef unsigned int gid_t;
+typedef unsigned long long dev_t;
+typedef unsigned int mode_t;
+typedef int nlink_t;
+typedef char *caddr_t;
+typedef unsigned short ushort;
+
+
+typedef struct
+{
+  unsigned long fds_bits[__FDSET_LONGS];
+}
+fd_set;
+
+
+typedef long clock_t;
+typedef long time_t;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/un.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define UNIX_PATH_MAX	108
+
+
+struct sockaddr_un
+{
+  sa_family_t sun_family;
+  char sun_path[UNIX_PATH_MAX];
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/utsname.h</TITLE>
 <PARA>
 </PARA>
@@ -3433,34 +3665,34 @@ idtype_t;
 
 
 
-#define LOG_KERN	(0<<3)
-#define LOG_AUTHPRIV	(10<<3)
-#define LOG_FTP	(11<<3)
-#define LOG_USER	(1<<3)
-#define LOG_MAIL	(2<<3)
-#define LOG_DAEMON	(3<<3)
-#define LOG_AUTH	(4<<3)
-#define LOG_SYSLOG	(5<<3)
-#define LOG_LPR	(6<<3)
-#define LOG_NEWS	(7<<3)
-#define LOG_UUCP	(8<<3)
-#define LOG_CRON	(9<<3)
+#define LOG_KERN	(0&lt;&lt;3)
+#define LOG_AUTHPRIV	(10&lt;&lt;3)
+#define LOG_FTP	(11&lt;&lt;3)
+#define LOG_USER	(1&lt;&lt;3)
+#define LOG_MAIL	(2&lt;&lt;3)
+#define LOG_DAEMON	(3&lt;&lt;3)
+#define LOG_AUTH	(4&lt;&lt;3)
+#define LOG_SYSLOG	(5&lt;&lt;3)
+#define LOG_LPR	(6&lt;&lt;3)
+#define LOG_NEWS	(7&lt;&lt;3)
+#define LOG_UUCP	(8&lt;&lt;3)
+#define LOG_CRON	(9&lt;&lt;3)
 
 
 
-#define LOG_LOCAL0	(16<<3)
-#define LOG_LOCAL1	(17<<3)
-#define LOG_LOCAL2	(18<<3)
-#define LOG_LOCAL3	(19<<3)
-#define LOG_LOCAL4	(20<<3)
-#define LOG_LOCAL5	(21<<3)
-#define LOG_LOCAL6	(22<<3)
-#define LOG_LOCAL7	(23<<3)
+#define LOG_LOCAL0	(16&lt;&lt;3)
+#define LOG_LOCAL1	(17&lt;&lt;3)
+#define LOG_LOCAL2	(18&lt;&lt;3)
+#define LOG_LOCAL3	(19&lt;&lt;3)
+#define LOG_LOCAL4	(20&lt;&lt;3)
+#define LOG_LOCAL5	(21&lt;&lt;3)
+#define LOG_LOCAL6	(22&lt;&lt;3)
+#define LOG_LOCAL7	(23&lt;&lt;3)
 
 
 
-#define LOG_UPTO(pri)	((1 << ((pri)+1)) - 1)
-#define LOG_MASK(pri)	(1 << (pri))
+#define LOG_UPTO(pri)	((1 &lt;&lt; ((pri)+1)) - 1)
+#define LOG_MASK(pri)	(1 &lt;&lt; (pri))
 
 
 
@@ -13237,13 +13469,13 @@ Convert initial portion of wide string NPTR to unsigned long long int representa
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
-<!--    at Thu Sep 19 19:52:13 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
+<!--    at Tue Sep 24 11:57:34 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -13700,6 +13932,15 @@ This section contains standard data definitions that describe system data. These
 <PARA>
 ISO C serves as the LSB reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
 <SECT2>
+<TITLE>float.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define DBL_MAX	1.7976931348623157e+308
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>math.h</TITLE>
 <PARA>
 </PARA>
@@ -13736,13 +13977,13 @@ struct exception
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
-<!--    at Thu Sep 19 19:52:42 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
+<!--    at Tue Sep 24 11:58:02 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -14149,200 +14390,6 @@ sem_t;
 #define SEM_VALUE_MAX	((int)((~0u)>>1))
 </SCREEN>
 </SECT2>
-<SECT2>
-<TITLE>signal.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-#define SIGRTMAX	(__libc_current_sigrtmax ())
-#define SIGRTMIN	(__libc_current_sigrtmin ())
-#define SIG_BLOCK	0
-#define SIG_UNBLOCK	1
-#define SIG_SETMASK	2
-#define NSIG	64
-
-
-typedef int sig_atomic_t;
-struct sigstack
-{
-  void *ss_sp;
-  int ss_onstack;
-}
- ;
-#define SIG_ERR	((__sighandler_t)-1)
-#define SIG_DFL	((__sighandler_t)0)
-#define SIG_IGN	((__sighandler_t)1)
-#define SIGHUP	1
-#define SIGSEGV	11
-#define SIGPIPE	13
-#define SIGALRM	14
-#define SIGTERM	15
-#define SIGINT	2
-#define SIGPROF	27
-#define SIGQUIT	3
-#define SIGILL	4
-#define SIGTRAP	5
-#define SIGABRT	6
-#define SIGIOT	6
-#define SIGFPE	8
-#define SIGKILL	9
-#define SIGCLD	SIGCHLD
-#define SIGPOLL	SIGIO
-
-
-
-
-
-typedef void (*__sighandler_t) (int);
-#define SV_ONSTACK	(1<<0)
-#define SV_INTERRUPT	(1<<1)
-#define SV_RESETHAND	(1<<2)
-
-
-typedef union sigval
-{
-  int sival_int;
-  void *sival_ptr;
-}
-sigval_t;
-#define SIGEV_SIGNAL	0
-#define SIGEV_NONE	1
-#define SIGEV_THREAD	2
-
-
-typedef struct sigevent
-{
-  sigval_t sigev_value;
-  int sigev_signo;
-  int sigev_notify;
-  union
-  {
-    int _pad[SIGEV_PAD_SIZE];
-    struct
-    {
-      void (*sigev_thread_func) (void);
-      void *_attribute;
-    }
-    _sigev_thread;
-  }
-  _sigev_un;
-}
-sigevent_t;
-#define SI_QUEUE	-1
-#define SI_TIMER	-2
-#define SI_MESGQ	-3
-#define SI_ASYNCIO	-4
-#define SI_USER	0
-#define si_pid	_sifields._kill._pid
-#define si_uid	_sifields._kill._uid
-#define si_value	_sifields._rt._sigval
-#define si_int	_sifields._rt._sigval.sival_int
-#define si_ptr	_sifields._rt._sigval.sival_ptr
-#define si_status	_sifields._sigchld._status
-#define si_stime	_sifields._sigchld._stime
-#define si_utime	_sifields._sigchld._utime
-#define si_addr	_sifields._sigfault._addr
-#define si_band	_sifields._sigpoll._band
-#define si_fd	_sifields._sigpoll._fd
-#define si_timer1	_sifields._timer._timer1
-#define si_timer2	_sifields._timer._timer2
-
-
-typedef struct siginfo
-{
-  int si_signo;
-  int si_errno;
-  int si_code;
-  union
-  {
-    int _pad[SI_PAD_SIZE];
-    struct
-    {
-      pid_t _pid;
-      uid_t _uid;
-    }
-    _kill;
-    struct
-    {
-      unsigned int _timer1;
-      unsigned int _timer2;
-    }
-    _timer;
-    struct
-    {
-      pid_t _pid;
-      uid_t _uid;
-      sigval_t _sigval;
-    }
-    _rt;
-    struct
-    {
-      pid_t _pid;
-      uid_t _uid;
-      int _status;
-      clock_t _utime;
-      clock_t _stime;
-    }
-    _sigchld;
-    struct
-    {
-      void *_addr;
-    }
-    _sigfault;
-    struct
-    {
-      int _band;
-      int _fd;
-    }
-    _sigpoll;
-  }
-  _sifields;
-}
-siginfo_t;
-
-
-typedef struct
-{
-  unsigned long sig[_SIGSET_NWORDS];
-}
-sigset_t;
-#define SA_NOCLDSTOP	0x00000001
-#define SA_NOCLDWAIT	0x00000002
-#define SA_SIGINFO	0x00000004
-#define SA_ONSTACK	0x08000000
-#define SA_RESTART	0x10000000
-#define SA_INTERRUPT	0x20000000
-#define SA_NODEFER	0x40000000
-#define SA_RESETHAND	0x80000000
-#define SA_NOMASK	SA_NODEFER
-#define SA_ONESHOT	SA_RESETHAND
-
-
-struct sigaction
-{
-  union
-  {
-    __sighandler_t _sa_handler;
-    void (*_sa_sigaction) (void);
-  }
-  __sigaction_handler;
-  unsigned long sa_flags;
-  void (*sa_restorer) (void);
-  sigset_t sa_mask;
-}
- ;
-
-
-typedef struct sigaltstack
-{
-  void *ss_sp;
-  int ss_flags;
-  size_t ss_size;
-}
-stack_t;
-</SCREEN>
-</SECT2>
 </SECT1>
 <SECT1 ID=libpthreadman>
 <TITLE>Interfaces Definitions for libpthread</TITLE>
@@ -14385,13 +14432,13 @@ sem_timedwait() waits for semaphore object SEM being posted. It is a new functio
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
-<!--    at Thu Sep 19 19:52:58 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
+<!--    at Tue Sep 24 11:58:18 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -14601,13 +14648,13 @@ directory search-path for object files
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
-<!--    at Thu Sep 19 19:53:12 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
+<!--    at Tue Sep 24 11:58:29 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -14664,174 +14711,9 @@ CAE Specification, January 1997, System Interfaces and Headers (XSH),Issue 5 (IS
 This section contains standard data definitions that describe system data. These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
 <PARA>
 ISO C serves as the LSB reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
-<SECT2>
-<TITLE>unistd.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-#define SEEK_SET	0
-#define STDIN_FILENO	0
-#define SEEK_CUR	1
-#define STDOUT_FILENO	1
-#define SEEK_END	2
-#define STDERR_FILENO	2
-
-
-typedef long long off64_t;
-typedef int *intptr_t;
-#define F_OK	0
-#define X_OK	1
-#define W_OK	2
-#define R_OK	4
-
-
-
-#define _POSIX_VDISABLE	'\0'
-#define _POSIX_ASYNCHRONOUS_IO	1
-#define _POSIX_CHOWN_RESTRICTED	1
-#define _POSIX_FSYNC	1
-#define _POSIX_MAPPED_FILES	1
-#define _POSIX_MEMLOCK	1
-#define _POSIX_MEMLOCK_RANGE	1
-#define _POSIX_MEMORY_PROTECTION	1
-#define _POSIX_MESSAGE_PASSING	1
-#define _POSIX_NO_TRUNC	1
-#define _POSIX_PRIORITY_SCHEDULING	1
-#define _POSIX_REALTIME_SIGNALS	1
-#define _POSIX_SEMAPHORES	1
-#define _POSIX_SHARED_MEMORY_OBJECTS	1
-#define _POSIX_SYNCHRONIZED_IO	1
-#define _POSIX_TIMERS	1
-#define _POSIX2_C_VERSION	199209L
-#define _POSIX2_VERSION	199209L
-#define _POSIX_VERSION	199506L
-
-
-
-#define _PC_LINK_MAX	0
-#define _PC_MAX_CANON	1
-#define _PC_ASYNC_IO	10
-#define _PC_PRIO_IO	11
-#define _PC_FILESIZEBITS	13
-#define _PC_MAX_INPUT	2
-#define _PC_NAME_MAX	3
-#define _PC_PATH_MAX	4
-#define _PC_PIPE_BUF	5
-#define _PC_CHOWN_RESTRICTED	6
-#define _PC_NO_TRUNC	7
-#define _PC_VDISABLE	8
-#define _PC_SYNC_IO	9
-
-
-
-#define _SC_ARG_MAX	0
-#define _SC_CHILD_MAX	1
-#define _SC_PRIORITY_SCHEDULING	10
-#define _SC_TIMERS	11
-#define _SC_ASYNCHRONOUS_IO	12
-#define _SC_XBS5_ILP32_OFF32	125
-#define _SC_XBS5_ILP32_OFFBIG	126
-#define _SC_XBS5_LP64_OFF64	127
-#define _SC_XBS5_LPBIG_OFFBIG	128
-#define _SC_XOPEN_LEGACY	129
-#define _SC_PRIORITIZED_IO	13
-#define _SC_XOPEN_REALTIME	130
-#define _SC_SYNCHRONIZED_IO	14
-#define _SC_MAPPED_FILES	16
-#define _SC_MEMLOCK	17
-#define _SC_MEMLOCK_RANGE	18
-#define _SC_MEMORY_PROTECTION	19
-#define _SC_CLK_TCK	2
-#define _SC_MESSAGE_PASSING	20
-#define _SC_SEMAPHORES	21
-#define _SC_SHARED_MEMORY_OBJECTS	22
-#define _SC_AIO_LISTIO_MAX	23
-#define _SC_AIO_MAX	24
-#define _SC_AIO_PRIO_DELTA_MAX	25
-#define _SC_DELAYTIMER_MAX	26
-#define _SC_MQ_OPEN_MAX	27
-#define _SC_MQ_PRIO_MAX	28
-#define _SC_VERSION	29
-#define _SC_NGROUPS_MAX	3
-#define _SC_PAGESIZE	30
-#define _SC_RTSIG_MAX	31
-#define _SC_SEM_NSEMS_MAX	32
-#define _SC_SEM_VALUE_MAX	33
-#define _SC_SIGQUEUE_MAX	34
-#define _SC_TIMER_MAX	35
-#define _SC_BC_BASE_MAX	36
-#define _SC_BC_DIM_MAX	37
-#define _SC_BC_SCALE_MAX	38
-#define _SC_BC_STRING_MAX	39
-#define _SC_OPEN_MAX	4
-#define _SC_COLL_WEIGHTS_MAX	40
-#define _SC_EXPR_NEST_MAX	42
-#define _SC_LINE_MAX	43
-#define _SC_RE_DUP_MAX	44
-#define _SC_2_VERSION	46
-#define _SC_2_C_BIND	47
-#define _SC_2_C_DEV	48
-#define _SC_2_FORT_DEV	49
-#define _SC_STREAM_MAX	5
-#define _SC_2_FORT_RUN	50
-#define _SC_2_SW_DEV	51
-#define _SC_2_LOCALEDEF	52
-#define _SC_TZNAME_MAX	6
-#define _SC_THREADS	67
-#define _SC_THREAD_SAFE_FUNCTIONS	68
-#define _SC_JOB_CONTROL	7
-#define _SC_THREAD_DESTRUCTOR_ITERATIONS	73
-#define _SC_THREAD_KEYS_MAX	74
-#define _SC_THREAD_STACK_MIN	75
-#define _SC_THREAD_THREADS_MAX	76
-#define _SC_THREAD_ATTR_STACKADDR	77
-#define _SC_THREAD_ATTR_STACKSIZE	78
-#define _SC_THREAD_PRIORITY_SCHEDULING	79
-#define _SC_SAVED_IDS	8
-#define _SC_THREAD_PRIO_INHERIT	80
-#define _SC_THREAD_PRIO_PROTECT	81
-#define _SC_THREAD_PROCESS_SHARED	82
-#define _SC_PASS_MAX	88
-#define _SC_XOPEN_VERSION	89
-#define _SC_REALTIME_SIGNALS	9
-#define _SC_XOPEN_CRYPT	92
-#define _SC_XOPEN_ENH_I18N	93
-#define _SC_XOPEN_SHM	94
-#define _SC_2_C_VERSION	96
-#define _SC_2_UPE	97
-
-
-
-#define _CS_PATH	0
-#define _CS_XBS5_ILP32_OFF32_CFLAGS	1100
-#define _CS_XBS5_ILP32_OFF32_LDFLAGS	1101
-#define _CS_XBS5_ILP32_OFF32_LIBS	1102
-#define _CS_XBS5_ILP32_OFF32_LINTFLAGS	1103
-#define _CS_XBS5_ILP32_OFFBIG_CFLAGS	1104
-#define _CS_XBS5_ILP32_OFFBIG_LDFLAGS	1105
-#define _CS_XBS5_ILP32_OFFBIG_LIBS	1106
-#define _CS_XBS5_ILP32_OFFBIG_LINTFLAGS	1107
-#define _CS_XBS5_LP64_OFF64_CFLAGS	1108
-#define _CS_XBS5_LP64_OFF64_LDFLAGS	1109
-#define _CS_XBS5_LP64_OFF64_LIBS	1110
-#define _CS_XBS5_LP64_OFF64_LINTFLAGS	1111
-#define _CS_XBS5_LPBIG_OFFBIG_CFLAGS	1112
-#define _CS_XBS5_LPBIG_OFFBIG_LDFLAGS	1113
-#define _CS_XBS5_LPBIG_OFFBIG_LIBS	1114
-#define _CS_XBS5_LPBIG_OFFBIG_LINTFLAGS	1115
-
-
-
-#define _XOPEN_REALTIME	1
-#define _XOPEN_XPG4	1
-#define _XOPEN_XCU_VERSION	4
-#define _XOPEN_VERSION	500
-</SCREEN>
-</SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.44 2002/09/19 19:58:30 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.46 2002/09/24 13:10:00 anderson Exp 0 -->
 
 
 </CHAPTER>
