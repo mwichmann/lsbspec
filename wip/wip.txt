@@ -1,0 +1,1807 @@
+Linux Standard Base Work In Progress
+
+Copyright © 2000, 2001, 2002 Free Standards Group
+
+Permission is granted to copy, distribute and/or modify this document under the
+terms of the GNU Free Documentation License, Version 1.1; with no Invariant
+Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of
+the license is included in the section entitled "GNU Free Documentation
+License".
+
+Portions of the text were taken from other copyrighted documents in accordance
+with the respective licenses of those documents.
+
+Linux is a trademark of Linus Torvalds.
+
+UNIX a registered trademark of the Open Group in the United States and other
+countries.
+
+Intel386 and Itanium are trademarks of Intel Corporation.
+
+OpenGL is a registered trademark of Silicon Graphics, Inc.
+
+-------------------------------------------------------------------------------
+
+Table of Contents
+I. Introduction
+   
+    1. Introduction
+       
+        Introduction
+        Purpose
+        Related Standards
+        Relevant Libraries
+        How to Use this Standard
+       
+II. Base Libraries
+   
+    2. Libraries
+       
+        Interfaces for libstdcxx
+        Interfaces for libpam
+        Data Definitions for libpam
+       
+III. Package Format and Installation
+   
+    3. Software Installation
+       
+        Package File Format
+        Package Script Restrictions
+        Package Tools
+        Package Naming
+        Package Dependencies
+        Package Architecture Considerations
+       
+List of Tables
+1-1. Related Standards
+1-2. Standard Libraries Names
+1-3. Standard Library Names defined in the Architecture Specific Supplement
+2-1. libstdcxx Definition
+2-2. libstdcxx - 18.4 C++ Dynamic Memory Managment Function Interfaces
+2-3. libstdcxx - 18.5 C++ Type identification Function Interfaces
+2-4. libstdcxx - 18.6 C++ Exception handling Function Interfaces
+2-5. libstdcxx - 18.6.1 C++ Class exception Function Interfaces
+2-6. libstdcxx - 18.6.2.1 C++ Class bad_exception Function Interfaces
+2-7. libstdcxx - 19.1 Exception classes Function Interfaces
+2-8. libstdcxx - 21.3.1 C++ Class basic_string constructors Function Interfaces
+2-9. libstdcxx - 21.3.2 C++ Class basic_string iterator support Function
+    Interfaces
+2-10. libstdcxx - 21.3.3 C++ Class basic_string capacity Function Interfaces
+2-11. libstdcxx - 21.3.4 C++ Class basic_string element access Function
+    Interfaces
+2-12. libstdcxx - 21.3.5 C++ Class basic_string modifiers Function Interfaces
+2-13. libstdcxx - 21.3.6 C++ Class basic_string string operations Function
+    Interfaces
+2-14. libstdcxx - 22.1.1 C++ Class locale Function Interfaces
+2-15. libstdcxx - 22.2.1.3 C++ ctype specializations ctype<char> Function
+    Interfaces
+2-16. libstdcxx - 22.2.1.3 C++ ctype specializations ctype<char> Data
+    Interfaces
+2-17. libstdcxx - 22.2.1.3 C++ ctype specializations ctype<wchar_t> Function
+    Interfaces
+2-18. libstdcxx - 22.2.1.3 C++ ctype specializations ctype<wchar_t> Data
+    Interfaces
+2-19. libstdcxx - 22.2.1.4 C++ class ctype_byname<char> Function Interfaces
+2-20. libstdcxx - 22.2.1.4 C++ class ctype_byname<char> Data Interfaces
+2-21. libstdcxx - 22.2.1.4 C++ class ctype_byname<wchar_t> Function Interfaces
+2-22. libstdcxx - 22.2.1.5 C++ Class codecvt<char> Function Interfaces
+2-23. libstdcxx - 22.2.1.5 C++ Class codecvt<char> Data Interfaces
+2-24. libstdcxx - 22.2.1.5 C++ Class codecvt<wchar_t> Function Interfaces
+2-25. libstdcxx - 22.2.1.5 C++ Class codecvt<wchar_t> Data Interfaces
+2-26. libpam Definition
+2-27. libpam - Pluggable Authentication API Function Interfaces
+3-1. RPM File Format
+3-2. Signature Format
+3-3. Index Type values
+
+I. Introduction
+
+Table of Contents
+1. Introduction
+
+-------------------------------------------------------------------------------
+
+Chapter 1. Introduction
+
+Introduction
+
+This is the Linux Standard Base Work In Progress . An implementation of
+anything in this document may not claim to be an implementation of the Linux
+Standard Base until such time as the feature moves into the Linux Standards
+Base Specification.
+
+-------------------------------------------------------------------------------
+
+Purpose
+
+The Linux Standard Base (LSB) defines a system interface for compiled
+applications and a minimal environment for support of installation scripts. Its
+purpose is to enable a uniform industry standard environment for high-volume
+applications conforming to the LSB.
+
+The LSB defines a binary interface for application programs that are compiled
+and packaged for LSB-conforming implementations on many different hardware
+architectures. Since a binary specification must include information specific
+to the computer processor architecture for which it is intended, it is not
+possible for a single document to specify the interface for all possible
+LSB-conforming implementations. Therefore, the LSB is a family of
+specifications, rather than a single one.
+
+The LSB is composed of two basic parts: A common specification ("generic LSB"
+or "gLSB") describing those parts of the interface that remain constant across
+all implementations of the LSB, and an architecture-specific specification
+("archLSB") describing the parts of the interface that vary by processor
+architecture. Together, the generic LSB and the architecture-specific
+supplement for a single hardware architecture provide a complete interface
+specification for compiled application programs on systems that share a common
+hardware architecture.
+
+This document is the generic LSB. It must be used in conjunction with an
+architecture-specific supplement. Whenever a section of this specification must
+be supplemented by architecture-specific information, this document includes a
+reference to the architecture supplement. Architecture supplements may also
+contain additional information that is not referenced here.
+
+This document should be used in conjunction with the documents it references.
+This document enumerates the system components it includes, but descriptions of
+those components may be included entirely or partly in this document, partly in
+other documents, or entirely in other reference documents. For example, the
+section that describes system service routines includes a list of the system
+routines supported in this interface, formal declarations of the data
+structures they use that are visible to applications, and a pointer to the
+underlying referenced specification for information about the syntax and
+semantics of each call. Only those routines not described in standards
+referenced by this document, or extensions to those standards, are described in
+the detail. Information referenced in this way is as much a part of this
+document as is the information explicitly included here.
+
+-------------------------------------------------------------------------------
+
+Related Standards
+
+The specifications listed below are referenced in whole or in part by the Linux
+Standard Base. When a specification is referenced in a way that imposes a
+requirement (for example, "foo must behave as specified in the XyzzySpec"),
+then the relevant requirements of that specification apply as if they were part
+of the LSB itself. However, if the LSB refers to a specification without
+imposing a requirement, then it is merely a reference and does not add
+additional requirements. The LSB may refer to a portion of a specification (for
+example, to define a specific function or group of functions); in such cases,
+only the explicitly referenced portion of the specification applies.
+
+Table 1-1. Related Standards
+
++-----------------------------------------------------------------------------+
+|System V Application Binary Interface - DRAFT - |http://www.caldera.com/     |
+|22 June 2000                                    |developers/gabi/2000-07-17/ |
+|                                                |contents.html               |
+|------------------------------------------------+----------------------------|
+|Filesystem Hierarchy Standard (FHS) 2.2         |http://www.pathname.com/fhs/|
+|------------------------------------------------+----------------------------|
+|IEEE Standard for Binary Floating-Point         |http://www.ieee.org/        |
+|Arithmetic                                      |                            |
+|------------------------------------------------+----------------------------|
+|System V Application Binary Interface, Edition  |http://www.caldera.com/     |
+|4.1                                             |developers/devspecs/        |
+|                                                |gabi41.pdf                  |
+|------------------------------------------------+----------------------------|
+|ISO/IEC 9899: 1990, Programming Languages --C   |                            |
+|------------------------------------------------+----------------------------|
+|ISO/IEC 9899: 1999, Programming Languages --C   |                            |
+|------------------------------------------------+----------------------------|
+|ISO/IEC 14882: 1998(E) Programming languages    |                            |
+|--C++                                           |                            |
+|------------------------------------------------+----------------------------|
+|Linux Assigned Names And Numbers Authority      |http://www.lanana.org/      |
+|------------------------------------------------+----------------------------|
+|Large File Support                              |http://www.UNIX-systems.org/|
+|                                                |version2/whatsnew/          |
+|                                                |lfs20mar.html               |
+|------------------------------------------------+----------------------------|
+|LI18NUX 2000 Globalization Specification,       |http://www.li18nux.org/docs/|
+|Version 1.0 with Amendment 4                    |html/LI18NUX-2000-amd4.htm  |
+|------------------------------------------------+----------------------------|
+|Linux Standard Base                             |http://www.linuxbase.org/   |
+|                                                |spec/                       |
+|------------------------------------------------+----------------------------|
+|OpenGL® Application Binary Interface for Linux  |http://oss.sgi.com/projects/|
+|                                                |ogl-sample/ABI/             |
+|------------------------------------------------+----------------------------|
+|OSF-RFC 86.0                                    |http://www.opengroup.org/   |
+|                                                |tech/rfc/mirror-rfc/        |
+|                                                |rfc86.0.txt                 |
+|------------------------------------------------+----------------------------|
+|IEEE Std POSIX 1003.2-1992 (ISO/IEC 9945-2:1993)|http://www.ieee.org/        |
+|------------------------------------------------+----------------------------|
+|System V Application Binary Interface PowerPC   |http://www.esofta.com/pdfs/ |
+|Processor Supplement                            |SVR4abippc.pdf              |
+|------------------------------------------------+----------------------------|
+|POSIX 1003.1c                                   |http://www.ieee.org/        |
+|------------------------------------------------+----------------------------|
+|CAE Specification, May 1996, X/Open Curses,     |http://www.opengroup.org/   |
+|Issue 4, Version 2 (ISBN: 1-85912-171-3, C610), |                            |
+|plus Corrigendum U018                           |                            |
+|------------------------------------------------+----------------------------|
+|CAE Specification, January 1997, System         |http://www.opengroup.org/   |
+|Interface Definitions (XBD),Issue 5 (ISBN:      |                            |
+|1-85912-186-1, C605)                            |                            |
+|------------------------------------------------+----------------------------|
+|CAE Specification, January 1997, Commands and   |http://www.opengroup.org/   |
+|Utilities (XCU), Issue 5 (ISBN: 1-85912-191-8,  |                            |
+|C604)                                           |                            |
+|------------------------------------------------+----------------------------|
+|CAE Specification, February 1997, Networking    |http://www.opengroup.org/   |
+|Services (XNS), Issue 5(ISBN: 1-85912-165-9,    |                            |
+|C523)                                           |                            |
+|------------------------------------------------+----------------------------|
+|CAE Specification, January 1997, System         |http://www.opengroup.org/   |
+|Interfaces and Headers (XSH),Issue 5 (ISBN:     |                            |
+|1-85912-181-0, C606)                            |                            |
+|------------------------------------------------+----------------------------|
+|The Single UNIX® Specification(SUS) Version 1   |http://www.opengroup.org/   |
+|(UNIX 95) System Interfaces & Headers           |                            |
+|------------------------------------------------+----------------------------|
+|System V Interface Definition, Issue 3 (ISBN    |                            |
+|0201566524)                                     |                            |
+|------------------------------------------------+----------------------------|
+|System V Interface Definition,Fourth Edition    |                            |
+|------------------------------------------------+----------------------------|
+|Double Buffer Extension Library                 |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|X Display Power Management Signaling (DPMS)     |http://www.x.org/           |
+|Extension, Library Specification                |                            |
+|------------------------------------------------+----------------------------|
+|X Record Extension Library                      |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|Security Extension Specification, Version 7.1   |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|X Nonrectangular Window Shape Extension Library |http://www.x.org/           |
+|Version 1.0                                     |                            |
+|------------------------------------------------+----------------------------|
+|MIT-SHM--The MIT Shared Memory Extension        |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|X Synchronization Extension Library             |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|XTEST Extension Library                         |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|X11R6.4 X Inter-Client Exchange (ICE) Protocol  |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|X11R6.4 X11 Input Extension Library             |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|X11R6.4 Xlib - C library                        |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|X/Open Portability Guide, Issue 4               |http://www.opengroup.org/   |
+|------------------------------------------------+----------------------------|
+|X11R6.4 X Session Management Library            |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|X11R6.4 X Toolkit Intrinsics                    |http://www.x.org/           |
+|------------------------------------------------+----------------------------|
+|zlib 1.1.3 Manual                               |http://www.gzip.org/zlib/   |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+Relevant Libraries
+
+The libraries listed here shall be available on a Linux Standard Base system.
+This list may be supplemented or amended by the architecture-specific
+specifications.
+
+Table 1-2. Standard Libraries Names
+
++---------------------------+
+|Library   |Runtime Name    |
+|----------+----------------|
+|libX11    |libX11.so.6     |
+|----------+----------------|
+|libXt     |libXt.so.6      |
+|----------+----------------|
+|libGL     |libGL.so.1      |
+|----------+----------------|
+|libXext   |libXext.so.6    |
+|----------+----------------|
+|libICE    |libICE.so.6     |
+|----------+----------------|
+|libSM     |libSM.so.6      |
+|----------+----------------|
+|libdl     |libdl.so.2      |
+|----------+----------------|
+|libcrypt  |libcrypt.so.1   |
+|----------+----------------|
+|libz      |libz.so.1       |
+|----------+----------------|
+|libncurses|libncurses.so.5 |
+|----------+----------------|
+|libutil   |libutil.so.1    |
+|----------+----------------|
+|libpthread|libpthread.so.0 |
+|----------+----------------|
+|libstdcxx |libstdc++.so.5  |
+|----------+----------------|
+|libpam    |libpam.so.0     |
++---------------------------+
+
+Table 1-3. Standard Library Names defined in the Architecture Specific
+Supplement
+
++------------------------+
+|Library   |Runtime Name |
+|----------+-------------|
+|libm      |See archLSB  |
+|----------+-------------|
+|libc      |See archLSB  |
+|----------+-------------|
+|proginterp|See archLSB  |
++------------------------+
+
+These libraries will be in an implementation-dependent directory which the
+dynamic linker will search by default.
+
+-------------------------------------------------------------------------------
+
+How to Use this Standard
+
+The complete LSB specification is composed of this generic LSB specification
+and the supplemental processor-specific specification for a particular
+processor architecture. These two documents constitute a specification that
+should be used in conjunction with the publicly-available standards documents
+it references. The LSB enumerates the system components it includes, but
+descriptions of those components may be included entirely in the LSB, partly in
+the LSB and partly in other documents, or entirely in other reference
+documents.
+
+II. Base Libraries
+
+Table of Contents
+2. Libraries
+
+-------------------------------------------------------------------------------
+
+Chapter 2. Libraries
+
+An LSB-conforming implementation shall support some base libraries which
+provide interfaces for accessing the operating system, processor and other
+hardware in the system.
+
+-------------------------------------------------------------------------------
+
+Interfaces for libstdcxx
+
+Table 2-1. libstdcxx Definition
+
++------------------------+
+|Library:|libstdcxx      |
+|--------+---------------|
+|SONAME: |libstdc++.so.5 |
++------------------------+
+
+The behavior of the interfaces in this library is specified by the following
+standards.
+
+ISO/IEC 14882: 1998(E) Programming languages --C++[1]
+
+-------------------------------------------------------------------------------
+
+18.4 C++ Dynamic Memory Managment
+
+Table 2-2. libstdcxx - 18.4 C++ Dynamic Memory Managment Function Interfaces
+
++-----------------------------------------------------------------------------+
+|operator delete&   |operator delete  |operator new&lsqb;]|operator new     | |
+|lsqb;](void*)      |(void*)          |(unsigned)         |(unsigned)       | |
+|(GLIBCPP_3.2)[1]   |(GLIBCPP_3.2)[1] |(GLIBCPP_3.2)[1]   |(GLIBCPP_3.2)[1] | |
+|-------------------+-----------------+-------------------+-----------------+-|
+|operator delete&   |operator delete  |operator new&lsqb;]|operator new     | |
+|lsqb;](void*,      |(void*, nothrow_t|(unsigned,         |(unsigned,       | |
+|nothrow_t const&)  |const&)          |nothrow_t const&)  |nothrow_t const&)| |
+|(GLIBCPP_3.2)[1]   |(GLIBCPP_3.2)[1] |(GLIBCPP_3.2)[1]   |(GLIBCPP_3.2)[1] | |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+18.5 C++ Type identification
+
+Table 2-3. libstdcxx - 18.5 C++ Type identification Function Interfaces
+
++----------------------------------------------------------------------------------+
+|type_info::      |type_info::    |bad_typeid::  |bad_cast::    |type_info::       |
+|__do_catch       |__is_function_p|~bad_typeid & |~bad_cast &   |~type_info &lsqb; |
+|(type_info const |() const       |lsqb;         |lsqb;         |not-in-charge]()  |
+|*, void**,       |(GLIBCPP_3.2)  |not-in-charge]|not-in-charge]|(GLIBCPP_3.2)     |
+|unsigned) const  |               |()            |()            |                  |
+|(GLIBCPP_3.2)    |               |(GLIBCPP_3.2) |(GLIBCPP_3.2) |                  |
+|                 |               |[1]           |[1]           |                  |
+|-----------------+---------------+--------------+--------------+------------------|
+|type_info::      |bad_typeid::   |bad_cast::    |type_info::   |__throw_bad_typeid|
+|__do_upcast      |~bad_typeid &  |~bad_cast &   |~type_info &  |()(GLIBCPP_3.2)[1]|
+|(__cxxabiv1::    |lsqb;in-charge |lsqb;in-charge|lsqb;in-charge|                  |
+|__class_type_info|deleting]()    |deleting]()   |deleting]()   |                  |
+|const*, void**)  |(GLIBCPP_3.2)  |(GLIBCPP_3.2) |(GLIBCPP_3.2) |                  |
+|const            |[1]            |[1]           |              |                  |
+|(GLIBCPP_3.2)    |               |              |              |                  |
+|-----------------+---------------+--------------+--------------+------------------|
+|type_info::      |bad_typeid::   |bad_cast::    |type_info::   |                  |
+|__is_pointer_p() |~bad_typeid &  |~bad_cast &   |~type_info &  |                  |
+|const            |lsqb;in-charge]|lsqb;         |lsqb;         |                  |
+|(GLIBCPP_3.2)    |()(GLIBCPP_3.2)|in-charge]()  |in-charge]()  |                  |
+|                 |[1]            |(GLIBCPP_3.2) |(GLIBCPP_3.2) |                  |
+|                 |               |[1]           |              |                  |
++----------------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+18.6 C++ Exception handling
+
+Table 2-4. libstdcxx - 18.6 C++ Exception handling Function Interfaces
+
++-----------------------------------------------------------------------------+
+|unexpected()   |set_unexpected(void (*)|uncaught_exception |terminate()    | |
+|(GLIBCPP_3.2)  |())(GLIBCPP_3.2)[1]    |()(GLIBCPP_3.2)[1] |(GLIBCPP_3.2)  | |
+|[1]            |                       |                   |[1]            | |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+18.6.1 C++ Class exception
+
+Table 2-5. libstdcxx - 18.6.1 C++ Class exception Function Interfaces
+
++-----------------------------------------------------------------------------+
+|exception::  |exception::~exception|exception::       |exception::         | |
+|what() const |&lsqb;in-charge      |~exception &lsqb; |~exception &lsqb;   | |
+|(GLIBCPP_3.2)|deleting]()          |in-charge]()      |not-in-charge]()    | |
+|[1]          |(GLIBCPP_3.2)[1]     |(GLIBCPP_3.2)[1]  |(GLIBCPP_3.2)[1]    | |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+18.6.2.1 C++ Class bad_exception
+
+Table 2-6. libstdcxx - 18.6.2.1 C++ Class bad_exception Function Interfaces
+
++-----------------------------------------------------------------------------+
+|domain_error::    |bad_exception::    |bad_exception::  |bad_exception::   | |
+|~domain_error &   |~bad_exception &   |~bad_exception & |~bad_exception &  | |
+|lsqb;in-charge    |lsqb;in-charge     |lsqb;in-charge]()|lsqb;             | |
+|deleting]()       |deleting]()        |(GLIBCPP_3.2)[1] |not-in-charge]()  | |
+|(GLIBCPP_3.2)[1]  |(GLIBCPP_3.2)[1]   |                 |(GLIBCPP_3.2)[1]  | |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+19.1 Exception classes
+
+Table 2-7. libstdcxx - 19.1 Exception classes Function Interfaces
+
++----------------------------------------------------------------------------------+
+|logic_error:: |range_error:: |length_error:: |runtime_error::  |underflow_error:: |
+|what() const  |~range_error &|~length_error &|~runtime_error & |~underflow_error &|
+|(GLIBCPP_3.2) |lsqb;in-charge|lsqb;in-charge]|lsqb;in-charge]()|lsqb;in-charge    |
+|[1]           |deleting]()   |()(GLIBCPP_3.2)|(GLIBCPP_3.2)[1] |deleting]()       |
+|              |(GLIBCPP_3.2) |[1]            |                 |(GLIBCPP_3.2)[1]  |
+|              |[1]           |               |                 |                  |
+|--------------+--------------+---------------+-----------------+------------------|
+|logic_error:: |range_error:: |out_of_range:: |runtime_error::  |underflow_error:: |
+|logic_error&  |~range_error &|out_of_range&  |~runtime_error & |~underflow_error &|
+|lsqb;         |lsqb;         |lsqb;in-charge]|lsqb;            |lsqb;in-charge]() |
+|in-charge]    |in-charge]()  |(basic_string  |not-in-charge]() |(GLIBCPP_3.2)[1]  |
+|(basic_string |(GLIBCPP_3.2) |<char,         |(GLIBCPP_3.2)[1] |                  |
+|<char,        |[1]           |char_traits    |                 |                  |
+|char_traits   |              |<char>,        |                 |                  |
+|<char>,       |              |allocator<char>|                 |                  |
+|allocator     |              |> const&)      |                 |                  |
+|<char> > const|              |(GLIBCPP_3.2)  |                 |                  |
+|&)            |              |[1]            |                 |                  |
+|(GLIBCPP_3.2) |              |               |                 |                  |
+|[1]           |              |               |                 |                  |
+|--------------+--------------+---------------+-----------------+------------------|
+|logic_error:: |domain_error::|out_of_range:: |overflow_error:: |invalid_argument::|
+|logic_error&  |domain_error& |out_of_range&  |overflow_error&  |invalid_argument& |
+|lsqb;         |lsqb;         |lsqb;          |lsqb;in-charge]  |lsqb;in-charge]   |
+|not-in-charge]|in-charge]    |not-in-charge] |(basic_string    |(basic_string     |
+|(basic_string |(basic_string |(basic_string  |<char,           |<char, char_traits|
+|<char,        |<char,        |<char,         |char_traits      |<char>, allocator |
+|char_traits   |char_traits   |char_traits    |<char>, allocator|<char> > const&)  |
+|<char>,       |<char>,       |<char>,        |<char> > const&) |(GLIBCPP_3.2)[1]  |
+|allocator     |allocator     |allocator<char>|(GLIBCPP_3.2)[1] |                  |
+|<char> > const|<char> > const|> const&)      |                 |                  |
+|&)            |&)            |(GLIBCPP_3.2)  |                 |                  |
+|(GLIBCPP_3.2) |(GLIBCPP_3.2) |[1]            |                 |                  |
+|[1]           |[1]           |               |                 |                  |
+|--------------+--------------+---------------+-----------------+------------------|
+|logic_error:: |domain_error::|out_of_range:: |overflow_error:: |invalid_argument::|
+|~logic_error &|domain_error& |~out_of_range &|overflow_error&  |invalid_argument& |
+|lsqb;in-charge|lsqb;         |lsqb;in-charge |lsqb;            |lsqb;             |
+|deleting]()   |not-in-charge]|deleting]()    |not-in-charge]   |not-in-charge]    |
+|(GLIBCPP_3.2) |(basic_string |(GLIBCPP_3.2)  |(basic_string    |(basic_string     |
+|[1]           |<char,        |[1]            |<char,           |<char, char_traits|
+|              |char_traits   |               |char_traits      |<char>, allocator |
+|              |<char>,       |               |<char>, allocator|<char> > const&)  |
+|              |allocator     |               |<char> > const&) |(GLIBCPP_3.2)[1]  |
+|              |<char> > const|               |(GLIBCPP_3.2)[1] |                  |
+|              |&)            |               |                 |                  |
+|              |(GLIBCPP_3.2) |               |                 |                  |
+|              |[1]           |               |                 |                  |
+|--------------+--------------+---------------+-----------------+------------------|
+|logic_error:: |domain_error::|out_of_range:: |overflow_error:: |invalid_argument::|
+|~logic_error &|~domain_error |~out_of_range &|~overflow_error &|~invalid_argument |
+|lsqb;         |&lsqb;        |lsqb;in-charge]|lsqb;in-charge   |&lsqb;in-charge   |
+|in-charge]()  |in-charge]()  |()(GLIBCPP_3.2)|deleting]()      |deleting]()       |
+|(GLIBCPP_3.2) |(GLIBCPP_3.2) |[1]            |(GLIBCPP_3.2)[1] |(GLIBCPP_3.2)[1]  |
+|[1]           |[1]           |               |                 |                  |
+|--------------+--------------+---------------+-----------------+------------------|
+|logic_error:: |length_error::|runtime_error::|overflow_error:: |invalid_argument::|
+|~logic_error &|length_error& |runtime_error& |~overflow_error &|~invalid_argument |
+|lsqb;         |lsqb;         |lsqb;in-charge]|lsqb;in-charge]()|&lsqb;in-charge]()|
+|not-in-charge]|in-charge]    |(basic_string  |(GLIBCPP_3.2)[1] |(GLIBCPP_3.2)[1]  |
+|()            |(basic_string |<char,         |                 |                  |
+|(GLIBCPP_3.2) |<char,        |char_traits    |                 |                  |
+|[1]           |char_traits   |<char>,        |                 |                  |
+|              |<char>,       |allocator<char>|                 |                  |
+|              |allocator     |> const&)      |                 |                  |
+|              |<char> > const|(GLIBCPP_3.2)  |                 |                  |
+|              |&)            |[1]            |                 |                  |
+|              |(GLIBCPP_3.2) |               |                 |                  |
+|              |[1]           |               |                 |                  |
+|--------------+--------------+---------------+-----------------+------------------|
+|range_error:: |length_error::|runtime_error::|underflow_error::|                  |
+|range_error&  |length_error& |runtime_error& |underflow_error& |                  |
+|lsqb;         |lsqb;         |lsqb;          |lsqb;in-charge]  |                  |
+|in-charge]    |not-in-charge]|not-in-charge] |(basic_string    |                  |
+|(basic_string |(basic_string |(basic_string  |<char,           |                  |
+|<char,        |<char,        |<char,         |char_traits      |                  |
+|char_traits   |char_traits   |char_traits    |<char>, allocator|                  |
+|<char>,       |<char>,       |<char>,        |<char> > const&) |                  |
+|allocator     |allocator     |allocator<char>|(GLIBCPP_3.2)[1] |                  |
+|<char> > const|<char> > const|> const&)      |                 |                  |
+|&)            |&)            |(GLIBCPP_3.2)  |                 |                  |
+|(GLIBCPP_3.2) |(GLIBCPP_3.2) |[1]            |                 |                  |
+|[1]           |[1]           |               |                 |                  |
+|--------------+--------------+---------------+-----------------+------------------|
+|range_error:: |length_error::|runtime_error::|underflow_error::|                  |
+|range_error&  |~length_error |~runtime_error |underflow_error& |                  |
+|lsqb;         |&lsqb;        |&lsqb;in-charge|lsqb;            |                  |
+|not-in-charge]|in-charge     |deleting]()    |not-in-charge]   |                  |
+|(basic_string |deleting]()   |(GLIBCPP_3.2)  |(basic_string    |                  |
+|<char,        |(GLIBCPP_3.2) |[1]            |<char,           |                  |
+|char_traits   |[1]           |               |char_traits      |                  |
+|<char>,       |              |               |<char>, allocator|                  |
+|allocator     |              |               |<char> > const&) |                  |
+|<char> > const|              |               |(GLIBCPP_3.2)[1] |                  |
+|&)            |              |               |                 |                  |
+|(GLIBCPP_3.2) |              |               |                 |                  |
+|[1]           |              |               |                 |                  |
++----------------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+21.3.1 C++ Class basic_string constructors
+
+Table 2-8. libstdcxx - 21.3.1 C++ Class basic_string constructors Function
+Interfaces
+
++-------------------------------------------------------------------------------+
+|basic_string |basic_string     |basic_string  |basic_string     |basic_string  |
+|<wchar_t,    |<wchar_t,        |<wchar_t,     |<wchar_t,        |<wchar_t,     |
+|char_traits  |char_traits      |char_traits   |char_traits      |char_traits   |
+|<wchar_t>,   |<wchar_t>,       |<wchar_t>,    |<wchar_t>,       |<wchar_t>,    |
+|allocator    |allocator        |allocator     |allocator        |allocator     |
+|<wchar_t> >::|<wchar_t> >::    |<wchar_t> >:: |<wchar_t> >::    |<wchar_t> >:: |
+|basic_string&|basic_string&    |basic_string& |basic_string&    |~basic_string |
+|lsqb;        |lsqb;in-charge]  |lsqb;         |lsqb;            |&lsqb;        |
+|in-charge]   |(unsigned,       |not-in-charge]|not-in-charge]   |in-charge]()  |
+|(wchar_t     |wchar_t,         |(wchar_t const|(unsigned,       |(GLIBCPP_3.2) |
+|const*,      |allocator        |*, allocator  |wchar_t,         |[1]           |
+|allocator    |<wchar_t> const&)|<wchar_t>     |allocator        |              |
+|<wchar_t>    |(GLIBCPP_3.2)[1] |const&)       |<wchar_t> const&)|              |
+|const&)      |                 |(GLIBCPP_3.2) |(GLIBCPP_3.2)[1] |              |
+|(GLIBCPP_3.2)|                 |[1]           |                 |              |
+|[1]          |                 |              |                 |              |
+|-------------+-----------------+--------------+-----------------+--------------|
+|basic_string |basic_string     |basic_string  |basic_string     |basic_string  |
+|<wchar_t,    |<wchar_t,        |<wchar_t,     |<wchar_t,        |<wchar_t,     |
+|char_traits  |char_traits      |char_traits   |char_traits      |char_traits   |
+|<wchar_t>,   |<wchar_t>,       |<wchar_t>,    |<wchar_t>,       |<wchar_t>,    |
+|allocator    |allocator        |allocator     |allocator        |allocator     |
+|<wchar_t> >::|<wchar_t> >::    |<wchar_t> >:: |<wchar_t> >::    |<wchar_t> >:: |
+|basic_string&|basic_string&    |basic_string& |basic_string&    |~basic_string |
+|lsqb;        |lsqb;in-charge]()|lsqb;         |lsqb;            |&lsqb;        |
+|in-charge]   |(GLIBCPP_3.2)[1] |not-in-charge]|not-in-charge]() |not-in-charge]|
+|(wchar_t     |                 |(wchar_t const|(GLIBCPP_3.2)[1] |()            |
+|const*,      |                 |*, unsigned,  |                 |(GLIBCPP_3.2) |
+|unsigned,    |                 |allocator     |                 |[1]           |
+|allocator    |                 |<wchar_t>     |                 |              |
+|<wchar_t>    |                 |const&)       |                 |              |
+|const&)      |                 |(GLIBCPP_3.2) |                 |              |
+|(GLIBCPP_3.2)|                 |[1]           |                 |              |
+|[1]          |                 |              |                 |              |
+|-------------+-----------------+--------------+-----------------+--------------|
+|basic_string |basic_string     |basic_string  |basic_string     |basic_string  |
+|<wchar_t,    |<wchar_t,        |<wchar_t,     |<wchar_t,        |<wchar_t,     |
+|char_traits  |char_traits      |char_traits   |char_traits      |char_traits   |
+|<wchar_t>,   |<wchar_t>,       |<wchar_t>,    |<wchar_t>,       |<wchar_t>,    |
+|allocator    |allocator        |allocator     |allocator        |allocator     |
+|<wchar_t> >::|<wchar_t> >::    |<wchar_t> >:: |<wchar_t> >::    |<wchar_t> >:: |
+|basic_string&|basic_string&    |basic_string& |basic_string&    |operator=     |
+|lsqb;        |lsqb;in-charge]  |lsqb;         |lsqb;            |(wchar_t const|
+|in-charge]   |<__gnu_cxx::     |not-in-charge]|not-in-charge]   |*)            |
+|(allocator   |__normal_iterator|(allocator    |<__gnu_cxx::     |(GLIBCPP_3.2) |
+|<wchar_t>    |<wchar_t const*, |<wchar_t>     |__normal_iterator|[1]           |
+|const&)      |basic_string     |const&)       |<wchar_t const*, |              |
+|(GLIBCPP_3.2)|<wchar_t,        |(GLIBCPP_3.2) |basic_string     |              |
+|[1]          |char_traits      |[1]           |<wchar_t,        |              |
+|             |<wchar_t>,       |              |char_traits      |              |
+|             |allocator        |              |<wchar_t>,       |              |
+|             |<wchar_t> > > >  |              |allocator        |              |
+|             |(__gnu_cxx::     |              |<wchar_t> > > >  |              |
+|             |__normal_iterator|              |(__gnu_cxx::     |              |
+|             |<wchar_t const*, |              |__normal_iterator|              |
+|             |basic_string     |              |<wchar_t const*, |              |
+|             |<wchar_t,        |              |basic_string     |              |
+|             |char_traits      |              |<wchar_t,        |              |
+|             |<wchar_t>,       |              |char_traits      |              |
+|             |allocator        |              |<wchar_t>,       |              |
+|             |<wchar_t> > >,   |              |allocator        |              |
+|             |__gnu_cxx::      |              |<wchar_t> > >,   |              |
+|             |__normal_iterator|              |__gnu_cxx::      |              |
+|             |<wchar_t const*, |              |__normal_iterator|              |
+|             |basic_string     |              |<wchar_t const*, |              |
+|             |<wchar_t,        |              |basic_string     |              |
+|             |char_traits      |              |<wchar_t,        |              |
+|             |<wchar_t>,       |              |char_traits      |              |
+|             |allocator        |              |<wchar_t>,       |              |
+|             |<wchar_t> > >,   |              |allocator        |              |
+|             |allocator        |              |<wchar_t> > >,   |              |
+|             |<wchar_t> const&)|              |allocator        |              |
+|             |(GLIBCPP_3.2)[1] |              |<wchar_t> const&)|              |
+|             |                 |              |(GLIBCPP_3.2)[1] |              |
+|-------------+-----------------+--------------+-----------------+--------------|
+|basic_string |basic_string     |basic_string  |basic_string     |basic_string  |
+|<wchar_t,    |<wchar_t,        |<wchar_t,     |<wchar_t,        |<wchar_t,     |
+|char_traits  |char_traits      |char_traits   |char_traits      |char_traits   |
+|<wchar_t>,   |<wchar_t>,       |<wchar_t>,    |<wchar_t>,       |<wchar_t>,    |
+|allocator    |allocator        |allocator     |allocator        |allocator     |
+|<wchar_t> >::|<wchar_t> >::    |<wchar_t> >:: |<wchar_t> >::    |<wchar_t> >:: |
+|basic_string&|basic_string&    |basic_string& |basic_string&    |operator=     |
+|lsqb;        |lsqb;in-charge]  |lsqb;         |lsqb;            |(basic_string |
+|in-charge]   |<__gnu_cxx::     |not-in-charge]|not-in-charge]   |<wchar_t,     |
+|(basic_string|__normal_iterator|(basic_string |<__gnu_cxx::     |char_traits   |
+|<wchar_t,    |<wchar_t*,       |<wchar_t,     |__normal_iterator|<wchar_t>,    |
+|char_traits  |basic_string     |char_traits   |<wchar_t*,       |allocator     |
+|<wchar_t>,   |<wchar_t,        |<wchar_t>,    |basic_string     |<wchar_t> >   |
+|allocator    |char_traits      |allocator     |<wchar_t,        |const&)       |
+|<wchar_t> >  |<wchar_t>,       |<wchar_t> >   |char_traits      |(GLIBCPP_3.2) |
+|const&)      |allocator        |const&)       |<wchar_t>,       |[1]           |
+|(GLIBCPP_3.2)|<wchar_t> > > >  |(GLIBCPP_3.2) |allocator        |              |
+|[1]          |(__gnu_cxx::     |[1]           |<wchar_t> > > >  |              |
+|             |__normal_iterator|              |(__gnu_cxx::     |              |
+|             |<wchar_t*,       |              |__normal_iterator|              |
+|             |basic_string     |              |<wchar_t*,       |              |
+|             |<wchar_t,        |              |basic_string     |              |
+|             |char_traits      |              |<wchar_t,        |              |
+|             |<wchar_t>,       |              |char_traits      |              |
+|             |allocator        |              |<wchar_t>,       |              |
+|             |<wchar_t> > >,   |              |allocator        |              |
+|             |__gnu_cxx::      |              |<wchar_t> > >,   |              |
+|             |__normal_iterator|              |__gnu_cxx::      |              |
+|             |<wchar_t*,       |              |__normal_iterator|              |
+|             |basic_string     |              |<wchar_t*,       |              |
+|             |<wchar_t,        |              |basic_string     |              |
+|             |char_traits      |              |<wchar_t,        |              |
+|             |<wchar_t>,       |              |char_traits      |              |
+|             |allocator        |              |<wchar_t>,       |              |
+|             |<wchar_t> > >,   |              |allocator        |              |
+|             |allocator        |              |<wchar_t> > >,   |              |
+|             |<wchar_t> const&)|              |allocator        |              |
+|             |(GLIBCPP_3.2)[1] |              |<wchar_t> const&)|              |
+|             |                 |              |(GLIBCPP_3.2)[1] |              |
+|-------------+-----------------+--------------+-----------------+--------------|
+|basic_string |basic_string     |basic_string  |basic_string     |basic_string  |
+|<wchar_t,    |<wchar_t,        |<wchar_t,     |<wchar_t,        |<wchar_t,     |
+|char_traits  |char_traits      |char_traits   |char_traits      |char_traits   |
+|<wchar_t>,   |<wchar_t>,       |<wchar_t>,    |<wchar_t>,       |<wchar_t>,    |
+|allocator    |allocator        |allocator     |allocator        |allocator     |
+|<wchar_t> >::|<wchar_t> >::    |<wchar_t> >:: |<wchar_t> >::    |<wchar_t> >:: |
+|basic_string&|basic_string&    |basic_string& |basic_string&    |operator=     |
+|lsqb;        |lsqb;in-charge]  |lsqb;         |lsqb;            |(wchar_t)     |
+|in-charge]   |<wchar_t const*> |not-in-charge]|not-in-charge]   |(GLIBCPP_3.2) |
+|(basic_string|(wchar_t const*, |(basic_string |<wchar_t const*> |[1]           |
+|<wchar_t,    |wchar_t const*,  |<wchar_t,     |(wchar_t const*, |              |
+|char_traits  |allocator        |char_traits   |wchar_t const*,  |              |
+|<wchar_t>,   |<wchar_t> const&)|<wchar_t>,    |allocator        |              |
+|allocator    |(GLIBCPP_3.2)[1] |allocator     |<wchar_t> const&)|              |
+|<wchar_t> >  |                 |<wchar_t> >   |(GLIBCPP_3.2)[1] |              |
+|const&,      |                 |const&,       |                 |              |
+|unsigned,    |                 |unsigned,     |                 |              |
+|unsigned)    |                 |unsigned)     |                 |              |
+|(GLIBCPP_3.2)|                 |(GLIBCPP_3.2) |                 |              |
+|[1]          |                 |[1]           |                 |              |
+|-------------+-----------------+--------------+-----------------+--------------|
+|basic_string |basic_string     |basic_string  |basic_string     |              |
+|<wchar_t,    |<wchar_t,        |<wchar_t,     |<wchar_t,        |              |
+|char_traits  |char_traits      |char_traits   |char_traits      |              |
+|<wchar_t>,   |<wchar_t>,       |<wchar_t>,    |<wchar_t>,       |              |
+|allocator    |allocator        |allocator     |allocator        |              |
+|<wchar_t> >::|<wchar_t> >::    |<wchar_t> >:: |<wchar_t> >::    |              |
+|basic_string&|basic_string&    |basic_string& |basic_string&    |              |
+|lsqb;        |lsqb;in-charge]  |lsqb;         |lsqb;            |              |
+|in-charge]   |<wchar_t*>       |not-in-charge]|not-in-charge]   |              |
+|(basic_string|(wchar_t*,       |(basic_string |<wchar_t*>       |              |
+|<wchar_t,    |wchar_t*,        |<wchar_t,     |(wchar_t*,       |              |
+|char_traits  |allocator        |char_traits   |wchar_t*,        |              |
+|<wchar_t>,   |<wchar_t> const&)|<wchar_t>,    |allocator        |              |
+|allocator    |(GLIBCPP_3.2)[1] |allocator     |<wchar_t> const&)|              |
+|<wchar_t> >  |                 |<wchar_t> >   |(GLIBCPP_3.2)[1] |              |
+|const&,      |                 |const&,       |                 |              |
+|unsigned,    |                 |unsigned,     |                 |              |
+|unsigned,    |                 |unsigned,     |                 |              |
+|allocator    |                 |allocator     |                 |              |
+|<wchar_t>    |                 |<wchar_t>     |                 |              |
+|const&)      |                 |const&)       |                 |              |
+|(GLIBCPP_3.2)|                 |(GLIBCPP_3.2) |                 |              |
+|[1]          |                 |[1]           |                 |              |
++-------------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+21.3.2 C++ Class basic_string iterator support
+
+Table 2-9. libstdcxx - 21.3.2 C++ Class basic_string iterator support Function
+Interfaces
+
++-----------------------------------------------------------------------------+
+|basic_string<char,|basic_string<char,|basic_string<char,|basic_string<char,| |
+|char_traits<char>,|char_traits<char>,|char_traits<char>,|char_traits<char>,| |
+|allocator<char>   |allocator<char>   |allocator<char>   |allocator<char>   | |
+|>::end() const    |>::rend() const   |>::begin() const  |>::rbegin() const | |
+|(GLIBCPP_3.2)[1]  |(GLIBCPP_3.2)[1]  |(GLIBCPP_3.2)[1]  |(GLIBCPP_3.2)[1]  | |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+21.3.3 C++ Class basic_string capacity
+
+Table 2-10. libstdcxx - 21.3.3 C++ Class basic_string capacity Function
+Interfaces
+
++-----------------------------------------------------------------------------+
+|basic_string     |basic_string<char,|basic_string<char, |basic_string<char,| |
+|<char,           |char_traits<char>,|char_traits<char>, |char_traits<char>,| |
+|char_traits      |allocator<char>   |allocator<char> >::|allocator<char>   | |
+|<char>, allocator|>::max_size()     |resize(unsigned)   |>::reserve        | |
+|<char> >::size() |const(GLIBCPP_3.2)|(GLIBCPP_3.2)[1]   |(unsigned)        | |
+|const            |[1]               |                   |(GLIBCPP_3.2)[1]  | |
+|(GLIBCPP_3.2)[1] |                  |                   |                  | |
+|-----------------+------------------+-------------------+------------------+-|
+|basic_string     |basic_string<char,|basic_string<char, |                  | |
+|<char,           |char_traits<char>,|char_traits<char>, |                  | |
+|char_traits      |allocator<char>   |allocator<char> >::|                  | |
+|<char>, allocator|>::clear()        |resize(unsigned,   |                  | |
+|<char> >::length |(GLIBCPP_3.2)[1]  |char)(GLIBCPP_3.2) |                  | |
+|() const         |                  |[1]                |                  | |
+|(GLIBCPP_3.2)[1] |                  |                   |                  | |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+21.3.4 C++ Class basic_string element access
+
+Table 2-11. libstdcxx - 21.3.4 C++ Class basic_string element access Function
+Interfaces
+
++-----------------------------------------------------------------------------+
+|basic_string<char, char_traits    |basic_string<char, char_traits      | | | |
+|<char>, allocator<char> >::at     |<char>, allocator<char> >::operator&| | | |
+|(unsigned) const(GLIBCPP_3.2)[1]  |lsqb;](unsigned)(GLIBCPP_3.2)[1]    | | | |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+21.3.5 C++ Class basic_string modifiers
+
+Table 2-12. libstdcxx - 21.3.5 C++ Class basic_string modifiers Function
+Interfaces
+
++-------------------------------------------------------------------------------------+
+|basic_string     |basic_string     |basic_string     |basic_string     |basic_string |
+|<char,           |<char,           |<char,           |<char,           |<char,       |
+|char_traits      |char_traits      |char_traits      |char_traits      |char_traits  |
+|<char>, allocator|<char>, allocator|<char>, allocator|<char>, allocator|<char>,      |
+|<char> >::copy   |<char> >::append |<char> >::insert |<char> >::replace|allocator    |
+|(char*, unsigned,|(basic_string    |(__gnu_cxx::     |(__gnu_cxx::     |<char> >::   |
+|unsigned) const  |<char,           |__normal_iterator|__normal_iterator|replace      |
+|(GLIBCPP_3.2)[1] |char_traits      |<char*,          |<char*,          |(unsigned,   |
+|                 |<char>, allocator|basic_string     |basic_string     |unsigned,    |
+|                 |<char> > const&, |<char,           |<char,           |basic_string |
+|                 |unsigned,        |char_traits      |char_traits      |<char,       |
+|                 |unsigned)        |<char>, allocator|<char>, allocator|char_traits  |
+|                 |(GLIBCPP_3.2)[1] |<char> > >,      |<char> > >,      |<char>,      |
+|                 |                 |unsigned, char)  |__gnu_cxx::      |allocator    |
+|                 |                 |(GLIBCPP_3.2)[1] |__normal_iterator|<char> >     |
+|                 |                 |                 |<char*,          |const&)      |
+|                 |                 |                 |basic_string     |(GLIBCPP_3.2)|
+|                 |                 |                 |<char,           |[1]          |
+|                 |                 |                 |char_traits      |             |
+|                 |                 |                 |<char>, allocator|             |
+|                 |                 |                 |<char> > >, char |             |
+|                 |                 |                 |const*, char     |             |
+|                 |                 |                 |const*)          |             |
+|                 |                 |                 |(GLIBCPP_3.2)[1] |             |
+|-----------------+-----------------+-----------------+-----------------+-------------|
+|basic_string     |basic_string     |basic_string     |basic_string     |basic_string |
+|<char,           |<char,           |<char,           |<char,           |<char,       |
+|char_traits      |char_traits      |char_traits      |char_traits      |char_traits  |
+|<char>, allocator|<char>, allocator|<char>, allocator|<char>, allocator|<char>,      |
+|<char> >::swap   |<char> >::append |<char> >::insert |<char> >::replace|allocator    |
+|(basic_string    |(unsigned, char) |(unsigned, char  |(__gnu_cxx::     |<char> >::   |
+|<char,           |(GLIBCPP_3.2)[1] |const*)          |__normal_iterator|replace      |
+|char_traits      |                 |(GLIBCPP_3.2)[1] |<char*,          |(unsigned,   |
+|<char>, allocator|                 |                 |basic_string     |unsigned,    |
+|<char> >&)       |                 |                 |<char,           |basic_string |
+|(GLIBCPP_3.2)[1] |                 |                 |char_traits      |<char,       |
+|                 |                 |                 |<char>, allocator|char_traits  |
+|                 |                 |                 |<char> > >,      |<char>,      |
+|                 |                 |                 |__gnu_cxx::      |allocator    |
+|                 |                 |                 |__normal_iterator|<char> >     |
+|                 |                 |                 |<char*,          |const&,      |
+|                 |                 |                 |basic_string     |unsigned,    |
+|                 |                 |                 |<char,           |unsigned)    |
+|                 |                 |                 |char_traits      |(GLIBCPP_3.2)|
+|                 |                 |                 |<char>, allocator|[1]          |
+|                 |                 |                 |<char> > >, char |             |
+|                 |                 |                 |const*, unsigned)|             |
+|                 |                 |                 |(GLIBCPP_3.2)[1] |             |
+|-----------------+-----------------+-----------------+-----------------+-------------|
+|basic_string     |basic_string     |basic_string     |basic_string     |basic_string |
+|<char,           |<char,           |<char,           |<char,           |<char,       |
+|char_traits      |char_traits      |char_traits      |char_traits      |char_traits  |
+|<char>, allocator|<char>, allocator|<char>, allocator|<char>, allocator|<char>,      |
+|<char> >::erase  |<char> >::assign |<char> >::insert |<char> >::replace|allocator    |
+|(__gnu_cxx::     |(char const*)    |(unsigned, char  |(__gnu_cxx::     |<char> >::   |
+|__normal_iterator|(GLIBCPP_3.2)[1] |const*, unsigned)|__normal_iterator|replace      |
+|<char*,          |                 |(GLIBCPP_3.2)[1] |<char*,          |(unsigned,   |
+|basic_string     |                 |                 |basic_string     |unsigned,    |
+|<char,           |                 |                 |<char,           |unsigned,    |
+|char_traits      |                 |                 |char_traits      |char)        |
+|<char>, allocator|                 |                 |<char>, allocator|(GLIBCPP_3.2)|
+|<char> > >)      |                 |                 |<char> > >,      |[1]          |
+|(GLIBCPP_3.2)[1] |                 |                 |__gnu_cxx::      |             |
+|                 |                 |                 |__normal_iterator|             |
+|                 |                 |                 |<char*,          |             |
+|                 |                 |                 |basic_string     |             |
+|                 |                 |                 |<char,           |             |
+|                 |                 |                 |char_traits      |             |
+|                 |                 |                 |<char>, allocator|             |
+|                 |                 |                 |<char> > >,      |             |
+|                 |                 |                 |basic_string     |             |
+|                 |                 |                 |<char,           |             |
+|                 |                 |                 |char_traits      |             |
+|                 |                 |                 |<char>, allocator|             |
+|                 |                 |                 |<char> > const&) |             |
+|                 |                 |                 |(GLIBCPP_3.2)[1] |             |
+|-----------------+-----------------+-----------------+-----------------+-------------|
+|basic_string     |basic_string     |basic_string     |basic_string     |basic_string |
+|<char,           |<char,           |<char,           |<char,           |<char,       |
+|char_traits      |char_traits      |char_traits      |char_traits      |char_traits  |
+|<char>, allocator|<char>, allocator|<char>, allocator|<char>, allocator|<char>,      |
+|<char> >::erase  |<char> >::assign |<char> >::insert |<char> >::replace|allocator    |
+|(__gnu_cxx::     |(char const*,    |(unsigned,       |(__gnu_cxx::     |<char> >::   |
+|__normal_iterator|unsigned)        |basic_string     |__normal_iterator|operator=    |
+|<char*,          |(GLIBCPP_3.2)[1] |<char,           |<char*,          |(char const*)|
+|basic_string     |                 |char_traits      |basic_string     |(GLIBCPP_3.2)|
+|<char,           |                 |<char>, allocator|<char,           |[1]          |
+|char_traits      |                 |<char> > const&) |char_traits      |             |
+|<char>, allocator|                 |(GLIBCPP_3.2)[1] |<char>, allocator|             |
+|<char> > >,      |                 |                 |<char> > >,      |             |
+|__gnu_cxx::      |                 |                 |__gnu_cxx::      |             |
+|__normal_iterator|                 |                 |__normal_iterator|             |
+|<char*,          |                 |                 |<char*,          |             |
+|basic_string     |                 |                 |basic_string     |             |
+|<char,           |                 |                 |<char,           |             |
+|char_traits      |                 |                 |char_traits      |             |
+|<char>, allocator|                 |                 |<char>, allocator|             |
+|<char> > >)      |                 |                 |<char> > >, char |             |
+|(GLIBCPP_3.2)[1] |                 |                 |*, char*)        |             |
+|                 |                 |                 |(GLIBCPP_3.2)[1] |             |
+|-----------------+-----------------+-----------------+-----------------+-------------|
+|basic_string     |basic_string     |basic_string     |basic_string     |basic_string |
+|<char,           |<char,           |<char,           |<char,           |<char,       |
+|char_traits      |char_traits      |char_traits      |char_traits      |char_traits  |
+|<char>, allocator|<char>, allocator|<char>, allocator|<char>, allocator|<char>,      |
+|<char> >::erase  |<char> >::assign |<char> >::insert |<char> >::replace|allocator    |
+|(unsigned,       |(basic_string    |(unsigned,       |(__gnu_cxx::     |<char> >::   |
+|unsigned)        |<char,           |basic_string     |__normal_iterator|operator=    |
+|(GLIBCPP_3.2)[1] |char_traits      |<char,           |<char*,          |(basic_string|
+|                 |<char>, allocator|char_traits      |basic_string     |<char,       |
+|                 |<char> > const&) |<char>, allocator|<char,           |char_traits  |
+|                 |(GLIBCPP_3.2)[1] |<char> > const&, |char_traits      |<char>,      |
+|                 |                 |unsigned,        |<char>, allocator|allocator    |
+|                 |                 |unsigned)        |<char> > >,      |<char> >     |
+|                 |                 |(GLIBCPP_3.2)[1] |__gnu_cxx::      |const&)      |
+|                 |                 |                 |__normal_iterator|(GLIBCPP_3.2)|
+|                 |                 |                 |<char*,          |[1]          |
+|                 |                 |                 |basic_string     |             |
+|                 |                 |                 |<char,           |             |
+|                 |                 |                 |char_traits      |             |
+|                 |                 |                 |<char>, allocator|             |
+|                 |                 |                 |<char> > >,      |             |
+|                 |                 |                 |__gnu_cxx::      |             |
+|                 |                 |                 |__normal_iterator|             |
+|                 |                 |                 |<char*,          |             |
+|                 |                 |                 |basic_string     |             |
+|                 |                 |                 |<char,           |             |
+|                 |                 |                 |char_traits      |             |
+|                 |                 |                 |<char>, allocator|             |
+|                 |                 |                 |<char> > >,      |             |
+|                 |                 |                 |__gnu_cxx::      |             |
+|                 |                 |                 |__normal_iterator|             |
+|                 |                 |                 |<char*,          |             |
+|                 |                 |                 |basic_string     |             |
+|                 |                 |                 |<char,           |             |
+|                 |                 |                 |char_traits      |             |
+|                 |                 |                 |<char>, allocator|             |
+|                 |                 |                 |<char> > >)      |             |
+|                 |                 |                 |(GLIBCPP_3.2)[1] |             |
+|-----------------+-----------------+-----------------+-----------------+-------------|
+|basic_string     |basic_string     |basic_string     |basic_string     |basic_string |
+|<char,           |<char,           |<char,           |<char,           |<char,       |
+|char_traits      |char_traits      |char_traits      |char_traits      |char_traits  |
+|<char>, allocator|<char>, allocator|<char>, allocator|<char>, allocator|<char>,      |
+|<char> >::append |<char> >::assign |<char> >::insert |<char> >::replace|allocator    |
+|(char const*)    |(basic_string    |(unsigned,       |(__gnu_cxx::     |<char> >::   |
+|(GLIBCPP_3.2)[1] |<char,           |unsigned, char)  |__normal_iterator|operator=    |
+|                 |char_traits      |(GLIBCPP_3.2)[1] |<char*,          |(char)       |
+|                 |<char>, allocator|                 |basic_string     |(GLIBCPP_3.2)|
+|                 |<char> > const&, |                 |<char,           |[1]          |
+|                 |unsigned,        |                 |char_traits      |             |
+|                 |unsigned)        |                 |<char>, allocator|             |
+|                 |(GLIBCPP_3.2)[1] |                 |<char> > >,      |             |
+|                 |                 |                 |__gnu_cxx::      |             |
+|                 |                 |                 |__normal_iterator|             |
+|                 |                 |                 |<char*,          |             |
+|                 |                 |                 |basic_string     |             |
+|                 |                 |                 |<char,           |             |
+|                 |                 |                 |char_traits      |             |
+|                 |                 |                 |<char>, allocator|             |
+|                 |                 |                 |<char> > >,      |             |
+|                 |                 |                 |unsigned, char)  |             |
+|                 |                 |                 |(GLIBCPP_3.2)[1] |             |
+|-----------------+-----------------+-----------------+-----------------+-------------|
+|basic_string     |basic_string     |basic_string     |basic_string     |             |
+|<char,           |<char,           |<char,           |<char,           |             |
+|char_traits      |char_traits      |char_traits      |char_traits      |             |
+|<char>, allocator|<char>, allocator|<char>, allocator|<char>, allocator|             |
+|<char> >::append |<char> >::assign |<char> >::replace|<char> >::replace|             |
+|(char const*,    |(unsigned, char) |(__gnu_cxx::     |(unsigned,       |             |
+|unsigned)        |(GLIBCPP_3.2)[1] |__normal_iterator|unsigned, char   |             |
+|(GLIBCPP_3.2)[1] |                 |<char*,          |const*)          |             |
+|                 |                 |basic_string     |(GLIBCPP_3.2)[1] |             |
+|                 |                 |<char,           |                 |             |
+|                 |                 |char_traits      |                 |             |
+|                 |                 |<char>, allocator|                 |             |
+|                 |                 |<char> > >,      |                 |             |
+|                 |                 |__gnu_cxx::      |                 |             |
+|                 |                 |__normal_iterator|                 |             |
+|                 |                 |<char*,          |                 |             |
+|                 |                 |basic_string     |                 |             |
+|                 |                 |<char,           |                 |             |
+|                 |                 |char_traits      |                 |             |
+|                 |                 |<char>, allocator|                 |             |
+|                 |                 |<char> > >,      |                 |             |
+|                 |                 |__gnu_cxx::      |                 |             |
+|                 |                 |__normal_iterator|                 |             |
+|                 |                 |<char const*,    |                 |             |
+|                 |                 |basic_string     |                 |             |
+|                 |                 |<char,           |                 |             |
+|                 |                 |char_traits      |                 |             |
+|                 |                 |<char>, allocator|                 |             |
+|                 |                 |<char> > >,      |                 |             |
+|                 |                 |__gnu_cxx::      |                 |             |
+|                 |                 |__normal_iterator|                 |             |
+|                 |                 |<char const*,    |                 |             |
+|                 |                 |basic_string     |                 |             |
+|                 |                 |<char,           |                 |             |
+|                 |                 |char_traits      |                 |             |
+|                 |                 |<char>, allocator|                 |             |
+|                 |                 |<char> > >)      |                 |             |
+|                 |                 |(GLIBCPP_3.2)[1] |                 |             |
+|-----------------+-----------------+-----------------+-----------------+-------------|
+|basic_string     |basic_string     |basic_string     |basic_string     |             |
+|<char,           |<char,           |<char,           |<char,           |             |
+|char_traits      |char_traits      |char_traits      |char_traits      |             |
+|<char>, allocator|<char>, allocator|<char>, allocator|<char>, allocator|             |
+|<char> >::append |<char> >::insert |<char> >::replace|<char> >::replace|             |
+|(basic_string    |(__gnu_cxx::     |(__gnu_cxx::     |(unsigned,       |             |
+|<char,           |__normal_iterator|__normal_iterator|unsigned, char   |             |
+|char_traits      |<char*,          |<char*,          |const*, unsigned)|             |
+|<char>, allocator|basic_string     |basic_string     |(GLIBCPP_3.2)[1] |             |
+|<char> > const&) |<char,           |<char,           |                 |             |
+|(GLIBCPP_3.2)[1] |char_traits      |char_traits      |                 |             |
+|                 |<char>, allocator|<char>, allocator|                 |             |
+|                 |<char> > >, char)|<char> > >,      |                 |             |
+|                 |(GLIBCPP_3.2)[1] |__gnu_cxx::      |                 |             |
+|                 |                 |__normal_iterator|                 |             |
+|                 |                 |<char*,          |                 |             |
+|                 |                 |basic_string     |                 |             |
+|                 |                 |<char,           |                 |             |
+|                 |                 |char_traits      |                 |             |
+|                 |                 |<char>, allocator|                 |             |
+|                 |                 |<char> > >, char |                 |             |
+|                 |                 |const*)          |                 |             |
+|                 |                 |(GLIBCPP_3.2)[1] |                 |             |
++-------------------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+21.3.6 C++ Class basic_string string operations
+
+Table 2-13. libstdcxx - 21.3.6 C++ Class basic_string string operations
+Function Interfaces
+
++-----------------------------------------------------------------------------+
+|basic_string |basic_string     |basic_string     |basic_string |basic_string |
+|<char,       |<char,           |<char,           |<char,       |<char,       |
+|char_traits  |char_traits      |char_traits      |char_traits  |char_traits  |
+|<char>,      |<char>, allocator|<char>, allocator|<char>,      |<char>,      |
+|allocator    |<char> >::       |<char> >::       |allocator    |allocator    |
+|<char> >::   |find_first_of    |find_first_not_of|<char> >::   |<char> >::   |
+|find_last_of |(basic_string    |(char, unsigned) |c_str() const|compare(char |
+|(char const*,|<char,           |const            |(GLIBCPP_3.2)|const*) const|
+|unsigned)    |char_traits      |(GLIBCPP_3.2)[1] |[1]          |(GLIBCPP_3.2)|
+|const        |<char>, allocator|                 |             |[1]          |
+|(GLIBCPP_3.2)|<char> > const&, |                 |             |             |
+|[1]          |unsigned) const  |                 |             |             |
+|             |(GLIBCPP_3.2)[1] |                 |             |             |
+|-------------+-----------------+-----------------+-------------+-------------|
+|basic_string |basic_string     |basic_string     |basic_string |basic_string |
+|<char,       |<char,           |<char,           |<char,       |<char,       |
+|char_traits  |char_traits      |char_traits      |char_traits  |char_traits  |
+|<char>,      |<char>, allocator|<char>, allocator|<char>,      |<char>,      |
+|allocator    |<char> >::       |<char> >::data() |allocator    |allocator    |
+|<char> >::   |find_first_of    |const            |<char> >::   |<char> >::   |
+|find_last_of |(char, unsigned) |(GLIBCPP_3.2)[1] |rfind(char   |compare      |
+|(char const*,|const            |                 |const*,      |(basic_string|
+|unsigned,    |(GLIBCPP_3.2)[1] |                 |unsigned)    |<char,       |
+|unsigned)    |                 |                 |const        |char_traits  |
+|const        |                 |                 |(GLIBCPP_3.2)|<char>,      |
+|(GLIBCPP_3.2)|                 |                 |[1]          |allocator    |
+|[1]          |                 |                 |             |<char> >     |
+|             |                 |                 |             |const&) const|
+|             |                 |                 |             |(GLIBCPP_3.2)|
+|             |                 |                 |             |[1]          |
+|-------------+-----------------+-----------------+-------------+-------------|
+|basic_string |basic_string     |basic_string     |basic_string |basic_string |
+|<char,       |<char,           |<char,           |<char,       |<char,       |
+|char_traits  |char_traits      |char_traits      |char_traits  |char_traits  |
+|<char>,      |<char>, allocator|<char>, allocator|<char>,      |<char>,      |
+|allocator    |<char> >::       |<char> >::find   |allocator    |allocator    |
+|<char> >::   |get_allocator()  |(char const*,    |<char> >::   |<char> >::   |
+|find_last_of |const            |unsigned) const  |rfind(char   |compare      |
+|(basic_string|(GLIBCPP_3.2)[1] |(GLIBCPP_3.2)[1] |const*,      |(unsigned,   |
+|<char,       |                 |                 |unsigned,    |unsigned,    |
+|char_traits  |                 |                 |unsigned)    |char const*) |
+|<char>,      |                 |                 |const        |const        |
+|allocator    |                 |                 |(GLIBCPP_3.2)|(GLIBCPP_3.2)|
+|<char> >     |                 |                 |[1]          |[1]          |
+|const&,      |                 |                 |             |             |
+|unsigned)    |                 |                 |             |             |
+|const        |                 |                 |             |             |
+|(GLIBCPP_3.2)|                 |                 |             |             |
+|[1]          |                 |                 |             |             |
+|-------------+-----------------+-----------------+-------------+-------------|
+|basic_string |basic_string     |basic_string     |basic_string |basic_string |
+|<char,       |<char,           |<char,           |<char,       |<char,       |
+|char_traits  |char_traits      |char_traits      |char_traits  |char_traits  |
+|<char>,      |<char>, allocator|<char>, allocator|<char>,      |<char>,      |
+|allocator    |<char> >::       |<char> >::find   |allocator    |allocator    |
+|<char> >::   |find_first_not_of|(char const*,    |<char> >::   |<char> >::   |
+|find_last_of |(char const*,    |unsigned,        |rfind        |compare      |
+|(char,       |unsigned) const  |unsigned) const  |(basic_string|(unsigned,   |
+|unsigned)    |(GLIBCPP_3.2)[1] |(GLIBCPP_3.2)[1] |<char,       |unsigned,    |
+|const        |                 |                 |char_traits  |char const*, |
+|(GLIBCPP_3.2)|                 |                 |<char>,      |unsigned)    |
+|[1]          |                 |                 |allocator    |const        |
+|             |                 |                 |<char> >     |(GLIBCPP_3.2)|
+|             |                 |                 |const&,      |[1]          |
+|             |                 |                 |unsigned)    |             |
+|             |                 |                 |const        |             |
+|             |                 |                 |(GLIBCPP_3.2)|             |
+|             |                 |                 |[1]          |             |
+|-------------+-----------------+-----------------+-------------+-------------|
+|basic_string |basic_string     |basic_string     |basic_string |basic_string |
+|<char,       |<char,           |<char,           |<char,       |<char,       |
+|char_traits  |char_traits      |char_traits      |char_traits  |char_traits  |
+|<char>,      |<char>, allocator|<char>, allocator|<char>,      |<char>,      |
+|allocator    |<char> >::       |<char> >::find   |allocator    |allocator    |
+|<char> >::   |find_first_not_of|(basic_string    |<char> >::   |<char> >::   |
+|find_first_of|(char const*,    |<char,           |rfind(char,  |compare      |
+|(char const*,|unsigned,        |char_traits      |unsigned)    |(unsigned,   |
+|unsigned)    |unsigned) const  |<char>, allocator|const        |unsigned,    |
+|const        |(GLIBCPP_3.2)[1] |<char> > const&, |(GLIBCPP_3.2)|basic_string |
+|(GLIBCPP_3.2)|                 |unsigned) const  |[1]          |<char,       |
+|[1]          |                 |(GLIBCPP_3.2)[1] |             |char_traits  |
+|             |                 |                 |             |<char>,      |
+|             |                 |                 |             |allocator    |
+|             |                 |                 |             |<char> >     |
+|             |                 |                 |             |const&) const|
+|             |                 |                 |             |(GLIBCPP_3.2)|
+|             |                 |                 |             |[1]          |
+|-------------+-----------------+-----------------+-------------+-------------|
+|basic_string |basic_string     |basic_string     |basic_string |basic_string |
+|<char,       |<char,           |<char,           |<char,       |<char,       |
+|char_traits  |char_traits      |char_traits      |char_traits  |char_traits  |
+|<char>,      |<char>, allocator|<char>, allocator|<char>,      |<char>,      |
+|allocator    |<char> >::       |<char> >::find   |allocator    |allocator    |
+|<char> >::   |find_first_not_of|(char, unsigned) |<char> >::   |<char> >::   |
+|find_first_of|(basic_string    |const            |substr       |compare      |
+|(char const*,|<char,           |(GLIBCPP_3.2)[1] |(unsigned,   |(unsigned,   |
+|unsigned,    |char_traits      |                 |unsigned)    |unsigned,    |
+|unsigned)    |<char>, allocator|                 |const        |basic_string |
+|const        |<char> > const&, |                 |(GLIBCPP_3.2)|<char,       |
+|(GLIBCPP_3.2)|unsigned) const  |                 |[1]          |char_traits  |
+|[1]          |(GLIBCPP_3.2)[1] |                 |             |<char>,      |
+|             |                 |                 |             |allocator    |
+|             |                 |                 |             |<char> >     |
+|             |                 |                 |             |const&,      |
+|             |                 |                 |             |unsigned,    |
+|             |                 |                 |             |unsigned)    |
+|             |                 |                 |             |const        |
+|             |                 |                 |             |(GLIBCPP_3.2)|
+|             |                 |                 |             |[1]          |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+21.3.7 C++ class basic_string non-member functions
+
+-------------------------------------------------------------------------------
+
+22.1.1 C++ Class locale
+
+Table 2-14. libstdcxx - 22.1.1 C++ Class locale Function Interfaces
+
++-----------------------------------------------------------------------------+
+|locale::name()|locale::  |locale::locale& |locale::locale& |locale::locale&  |
+|const[1]      |global    |lsqb;in-charge] |lsqb;           |lsqb;            |
+|              |(locale   |(locale const&) |not-in-charge]  |not-in-charge]   |
+|              |const&)[1]|[1]             |(char const*)[1]|(locale const&,  |
+|              |          |                |                |locale const&,   |
+|              |          |                |                |unsigned)[1]     |
+|--------------+----------+----------------+----------------+-----------------|
+|locale::      |locale::  |locale::locale& |locale::locale& |locale::locale&  |
+|operator==    |classic() |lsqb;in-charge] |lsqb;           |lsqb;            |
+|(locale const |[1]       |(locale const&, |not-in-charge]  |not-in-charge]() |
+|&) const[1]   |          |char const*,    |(locale::_Impl*)|[1]              |
+|              |          |unsigned)[1]    |[1]             |                 |
+|--------------+----------+----------------+----------------+-----------------|
+|locale::id::id|locale::  |locale::locale& |locale::locale& |locale::~locale &|
+|&lsqb;        |locale&   |lsqb;in-charge] |lsqb;           |lsqb;in-charge]()|
+|in-charge]()  |lsqb;     |(locale const&, |not-in-charge]  |[1]              |
+|[1]           |in-charge]|locale const&,  |(locale const&) |                 |
+|              |(char     |unsigned)[1]    |[1]             |                 |
+|              |const*)[1]|                |                |                 |
+|--------------+----------+----------------+----------------+-----------------|
+|locale::id::id|locale::  |locale::locale& |locale::locale& |locale::~locale &|
+|&lsqb;        |locale&   |lsqb;in-charge] |lsqb;           |lsqb;            |
+|not-in-charge]|lsqb;     |()[1]           |not-in-charge]  |not-in-charge]() |
+|()[1]         |in-charge]|                |(locale const&, |[1]              |
+|              |(locale:: |                |char const*,    |                 |
+|              |_Impl*)[1]|                |unsigned)[1]    |                 |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+22.2.1.3 C++ ctype specializations ctype<char>
+
+Table 2-15. libstdcxx - 22.2.1.3 C++ ctype specializations ctype<char> Function
+Interfaces
+
++-----------------------------------------------------------------------------+
+|ctype<char>::|ctype<char>:: |ctype<char>::|ctype<char>::     |ctype<char>::  |
+|do_scan_is   |do_toupper    |do_widen(char|classic_table()[1]|ctype&lsqb;    |
+|(unsigned    |(char) const  |const*, char |                  |not-in-charge] |
+|short, char  |[1]           |const*, char |                  |(unsigned short|
+|const*, char |              |*) const[1]  |                  |const*, bool,  |
+|const*) const|              |             |                  |unsigned)[1]   |
+|[1]          |              |             |                  |               |
+|-------------+--------------+-------------+------------------+---------------|
+|ctype<char>::|ctype<char>:: |ctype<char>::|ctype<char>::ctype|ctype<char>::  |
+|do_tolower   |do_scan_not   |do_widen     |&lsqb;in-charge]  |~ctype &lsqb;  |
+|(char*, char |(unsigned     |(char) const |(__locale_struct*,|in-charge      |
+|const*) const|short, char   |[1]          |unsigned short    |deleting]()[1] |
+|[1]          |const*, char  |             |const*, bool,     |               |
+|             |const*) const |             |unsigned)[1]      |               |
+|             |[1]           |             |                  |               |
+|-------------+--------------+-------------+------------------+---------------|
+|ctype<char>::|ctype<char>:: |ctype<char>::|ctype<char>::ctype|ctype<char>::  |
+|do_tolower   |do_is(char    |do_narrow    |&lsqb;in-charge]  |~ctype &lsqb;  |
+|(char) const |const*, char  |(char const*,|(unsigned short   |in-charge]()[1]|
+|[1]          |const*,       |char const*, |const*, bool,     |               |
+|             |unsigned short|char, char*) |unsigned)[1]      |               |
+|             |*) const[1]   |const[1]     |                  |               |
+|-------------+--------------+-------------+------------------+---------------|
+|ctype<char>::|ctype<char>:: |ctype<char>::|ctype<char>::ctype|ctype<char>::  |
+|do_toupper   |do_is(unsigned|do_narrow    |&lsqb;            |~ctype &lsqb;  |
+|(char*, char |short, char)  |(char, char) |not-in-charge]    |not-in-charge] |
+|const*) const|const[1]      |const[1]     |(__locale_struct*,|()[1]          |
+|[1]          |              |             |unsigned short    |               |
+|             |              |             |const*, bool,     |               |
+|             |              |             |unsigned)[1]      |               |
++-----------------------------------------------------------------------------+
+
+Table 2-16. libstdcxx - 22.2.1.3 C++ ctype specializations ctype<char> Data
+Interfaces
+
++---------------------------+
+|ctype<char>::id[1] | | | | |
++---------------------------+
+-------------------------------------------------------------------------------
+
+22.2.1.3 C++ ctype specializations ctype<wchar_t>
+
+Table 2-17. libstdcxx - 22.2.1.3 C++ ctype specializations ctype<wchar_t>
+Function Interfaces
+
++-----------------------------------------------------------------------------+
+|ctype       |ctype<wchar_t>::   |ctype       |ctype<wchar_t>::|ctype         |
+|<wchar_t>:: |do_toupper(wchar_t)|<wchar_t>:: |do_narrow       |<wchar_t>::   |
+|do_scan_is  |const[1]           |do_is       |(wchar_t, char) |ctype&lsqb;   |
+|(unsigned   |                   |(unsigned   |const[1]        |not-in-charge]|
+|short,      |                   |short,      |                |(unsigned)[1] |
+|wchar_t     |                   |wchar_t)    |                |              |
+|const*,     |                   |const[1]    |                |              |
+|wchar_t     |                   |            |                |              |
+|const*)     |                   |            |                |              |
+|const[1]    |                   |            |                |              |
+|------------+-------------------+------------+----------------+--------------|
+|ctype       |ctype<wchar_t>::   |ctype       |ctype<wchar_t>::|ctype         |
+|<wchar_t>:: |do_scan_not        |<wchar_t>:: |ctype&lsqb;     |<wchar_t>::   |
+|do_tolower  |(unsigned short,   |do_widen    |in-charge]      |~ctype &lsqb; |
+|(wchar_t*,  |wchar_t const*,    |(char const |(__locale_struct|in-charge     |
+|wchar_t     |wchar_t const*)    |*, char     |*, unsigned)[1] |deleting]()[1]|
+|const*)     |const[1]           |const*,     |                |              |
+|const[1]    |                   |wchar_t*)   |                |              |
+|            |                   |const[1]    |                |              |
+|------------+-------------------+------------+----------------+--------------|
+|ctype       |ctype<wchar_t>::   |ctype       |ctype<wchar_t>::|ctype         |
+|<wchar_t>:: |_M_convert_to_wmask|<wchar_t>:: |ctype&lsqb;     |<wchar_t>::   |
+|do_tolower  |(unsigned short)   |do_widen    |in-charge]      |~ctype &lsqb; |
+|(wchar_t)   |const[1]           |(char) const|(unsigned)[1]   |in-charge]()  |
+|const[1]    |                   |[1]         |                |[1]           |
+|------------+-------------------+------------+----------------+--------------|
+|ctype       |ctype<wchar_t>::   |ctype       |ctype<wchar_t>::|ctype         |
+|<wchar_t>:: |do_is(wchar_t const|<wchar_t>:: |ctype&lsqb;     |<wchar_t>::   |
+|do_toupper  |*, wchar_t const*, |do_narrow   |not-in-charge]  |~ctype &lsqb; |
+|(wchar_t*,  |unsigned short*)   |(wchar_t    |(__locale_struct|not-in-charge]|
+|wchar_t     |const[1]           |const*,     |*, unsigned)[1] |()[1]         |
+|const*)     |                   |wchar_t     |                |              |
+|const[1]    |                   |const*,     |                |              |
+|            |                   |char, char*)|                |              |
+|            |                   |const[1]    |                |              |
++-----------------------------------------------------------------------------+
+
+Table 2-18. libstdcxx - 22.2.1.3 C++ ctype specializations ctype<wchar_t> Data
+Interfaces
+
++------------------------------+
+|ctype<wchar_t>::id[1] | | | | |
++------------------------------+
+-------------------------------------------------------------------------------
+
+22.2.1.4 C++ class ctype_byname<char>
+
+Table 2-19. libstdcxx - 22.2.1.4 C++ class ctype_byname<char> Function
+Interfaces
+
++-----------------------------------------------------------------------------+
+|ctype_byname<char>::ctype_byname& |ctype_byname<char>::ctype_byname&   | | | |
+|lsqb;in-charge](char const*,      |lsqb;not-in-charge](char const*,    | | | |
+|unsigned)[1]                      |unsigned)[1]                        | | | |
++-----------------------------------------------------------------------------+
+
+Table 2-20. libstdcxx - 22.2.1.4 C++ class ctype_byname<char> Data Interfaces
+
++-----------------------------------------------------------------------------+
+|ctype_byname<char>::     |ctype_byname<char>::  |ctype_byname<char>::    | | |
+|~ctype_byname &lsqb;     |~ctype_byname &lsqb;  |~ctype_byname &lsqb;    | | |
+|in-charge deleting]()[1] |in-charge]()[1]       |not-in-charge]()[1]     | | |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+22.2.1.4 C++ class ctype_byname<wchar_t>
+
+Table 2-21. libstdcxx - 22.2.1.4 C++ class ctype_byname<wchar_t> Function
+Interfaces
+
++-----------------------------------------------------------------------------+
+|ctype_byname    |ctype_byname    |ctype_byname  |ctype_byname |ctype_byname  |
+|<wchar_t>::     |<wchar_t>::     |<wchar_t>::   |<wchar_t>::  |<wchar_t>::   |
+|ctype_byname&   |ctype_byname&   |~ctype_byname |~ctype_byname|~ctype_byname |
+|lsqb;in-charge] |lsqb;           |&lsqb;        |&lsqb;       |&lsqb;        |
+|(char const*,   |not-in-charge]  |in-charge     |in-charge]() |not-in-charge]|
+|unsigned)[1]    |(char const*,   |deleting]()[1]|[1]          |()[1]         |
+|                |unsigned)[1]    |              |             |              |
++-----------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+22.2.1.5 C++ Class codecvt<char>
+
+Table 2-22. libstdcxx - 22.2.1.5 C++ Class codecvt<char> Function Interfaces
+
++-----------------------------------------------------------------------------+
+|codecvt<char,    |codecvt<char, char,   |codecvt<char, char,|codecvt<char, | |
+|char,            |__mbstate_t>::        |__mbstate_t>::     |char,         | |
+|__mbstate_t>::   |do_always_noconv()    |do_length          |__mbstate_t>::| |
+|do_unshift       |const[1]              |(__mbstate_t const |~codecvt &    | |
+|(__mbstate_t&,   |                      |&, char const*,    |lsqb;in-charge| |
+|char*, char*,    |                      |char const*,       |deleting]()[1]| |
+|char*&) const[1] |                      |unsigned) const[1] |              | |
+|-----------------+----------------------+-------------------+--------------+-|
+|codecvt<char,    |codecvt<char, char,   |codecvt<char, char,|codecvt<char, | |
+|char,            |__mbstate_t>::do_in   |__mbstate_t>::     |char,         | |
+|__mbstate_t>::   |(__mbstate_t&, char   |codecvt&lsqb;      |__mbstate_t>::| |
+|do_encoding()    |const*, char const*,  |in-charge]         |~codecvt &    | |
+|const[1]         |char const*&, char*,  |(unsigned)[1]      |lsqb;         | |
+|                 |char*, char*&) const  |                   |in-charge]()  | |
+|                 |[1]                   |                   |[1]           | |
+|-----------------+----------------------+-------------------+--------------+-|
+|codecvt<char,    |codecvt<char, char,   |codecvt<char, char,|codecvt<char, | |
+|char,            |__mbstate_t>::do_out  |__mbstate_t>::     |char,         | |
+|__mbstate_t>::   |(__mbstate_t&, char   |codecvt&lsqb;      |__mbstate_t>::| |
+|do_max_length()  |const*, char const*,  |not-in-charge]     |~codecvt &    | |
+|const[1]         |char const*&, char*,  |(unsigned)[1]      |lsqb;         | |
+|                 |char*, char*&) const  |                   |not-in-charge]| |
+|                 |[1]                   |                   |()[1]         | |
++-----------------------------------------------------------------------------+
+
+Table 2-23. libstdcxx - 22.2.1.5 C++ Class codecvt<char> Data Interfaces
+
++-----------------------------------------------+
+|codecvt<char, char, __mbstate_t>::id[1]| | | | |
++-----------------------------------------------+
+-------------------------------------------------------------------------------
+
+22.2.1.5 C++ Class codecvt<wchar_t>
+
+Table 2-24. libstdcxx - 22.2.1.5 C++ Class codecvt<wchar_t> Function Interfaces
+
++-----------------------------------------------------------------------------+
+|codecvt<wchar_t, |codecvt<wchar_t, char,|codecvt<wchar_t,   |codecvt       | |
+|char,            |__mbstate_t>::        |char,              |<wchar_t,     | |
+|__mbstate_t>::   |do_always_noconv()    |__mbstate_t>::     |char,         | |
+|do_unshift       |const[1]              |do_length          |__mbstate_t>::| |
+|(__mbstate_t&,   |                      |(__mbstate_t const |~codecvt &    | |
+|char*, char*,    |                      |&, char const*,    |lsqb;in-charge| |
+|char*&) const[1] |                      |char const*,       |deleting]()[1]| |
+|                 |                      |unsigned) const[1] |              | |
+|-----------------+----------------------+-------------------+--------------+-|
+|codecvt<wchar_t, |codecvt<wchar_t, char,|codecvt<wchar_t,   |codecvt       | |
+|char,            |__mbstate_t>::do_in   |char,              |<wchar_t,     | |
+|__mbstate_t>::   |(__mbstate_t&, char   |__mbstate_t>::     |char,         | |
+|do_encoding()    |const*, char const*,  |codecvt&lsqb;      |__mbstate_t>::| |
+|const[1]         |char const*&, wchar_t |in-charge]         |~codecvt &    | |
+|                 |*, wchar_t*, wchar_t* |(unsigned)[1]      |lsqb;         | |
+|                 |&) const[1]           |                   |in-charge]()  | |
+|                 |                      |                   |[1]           | |
+|-----------------+----------------------+-------------------+--------------+-|
+|codecvt<wchar_t, |codecvt<wchar_t, char,|codecvt<wchar_t,   |codecvt       | |
+|char,            |__mbstate_t>::do_out  |char,              |<wchar_t,     | |
+|__mbstate_t>::   |(__mbstate_t&, wchar_t|__mbstate_t>::     |char,         | |
+|do_max_length()  |const*, wchar_t const |codecvt&lsqb;      |__mbstate_t>::| |
+|const[1]         |*, wchar_t const*&,   |not-in-charge]     |~codecvt &    | |
+|                 |char*, char*, char*&) |(unsigned)[1]      |lsqb;         | |
+|                 |const[1]              |                   |not-in-charge]| |
+|                 |                      |                   |()[1]         | |
++-----------------------------------------------------------------------------+
+
+Table 2-25. libstdcxx - 22.2.1.5 C++ Class codecvt<wchar_t> Data Interfaces
+
++--------------------------------------------------+
+|codecvt<wchar_t, char, __mbstate_t>::id[1]| | | | |
++--------------------------------------------------+
+-------------------------------------------------------------------------------
+
+22.2.2.1 C++ Class num_get<char>
+
+-------------------------------------------------------------------------------
+
+22.2.2.1 C++ Class num_get<wchar_t>
+
+-------------------------------------------------------------------------------
+
+Interfaces for libpam
+
+Table 2-26. libpam Definition
+
++---------------------+
+|Library:|libpam      |
+|--------+------------|
+|SONAME: |libpam.so.0 |
++---------------------+
+
+The behavior of the interfaces in this library is specified by the following
+standards.
+
+OSF-RFC 86.0[2]
+
+-------------------------------------------------------------------------------
+
+Pluggable Authentication API
+
+Table 2-27. libpam - Pluggable Authentication API Function Interfaces
+
++--------------------------------------------------------------------------+
+|pam_acct_mgmt[2]    |pam_end[2]         |pam_set_data[2]|pam_start[2]   | |
+|--------------------+-------------------+---------------+---------------+-|
+|pam_authenticate[2] |pam_get_item[2]    |pam_set_item[2]|pam_strerror[2]| |
+|--------------------+-------------------+---------------+---------------+-|
+|pam_close_session[2]|pam_open_session[2]|pam_setcred[2] |               | |
++--------------------------------------------------------------------------+
+-------------------------------------------------------------------------------
+
+Data Definitions for libpam
+
+This section contains standard data definitions that describe system data.
+These definitions are organized into groups that correspond to system headers.
+This convention is used as a convenience for the reader, and does not imply the
+existence of these headers, or their content.
+
+ISO C serves as the LSB reference programming language, and data definitions
+are specified in ISO C format. The C language is used here as a convenient
+notation. Using a C language description of these data objects does not
+preclude their use by other programming languages.
+
+-------------------------------------------------------------------------------
+
+security/pam_appl.h
+
+
+
+
+
+
+struct pam_message
+{
+  int msg_style;
+  const char *msg;
+}
+ ;
+struct pam_response
+{
+  char *resp;
+  int resp_retcode;
+}
+ ;
+
+
+struct pam_conv
+{
+  int (*conv) (int num_msg, const struct pam_message * *msg,
+               struct pam_response * *resp, void *appdata_ptr);
+  void *appdata_ptr;
+}
+ ;
+#define PAM_SERVICE     1
+#define PAM_USER        2
+#define PAM_TTY 3
+#define PAM_RHOST       4
+#define PAM_CONV        5
+
+III. Package Format and Installation
+
+Table of Contents
+3. Software Installation
+
+-------------------------------------------------------------------------------
+
+Chapter 3. Software Installation
+
+Applications should be provided in the RPM packaging format as defined in this
+specification. [3]
+
+Distributions must provide a mechanism for installing applications in this
+packaging format with some restrictions listed below. [4]
+
+-------------------------------------------------------------------------------
+
+Package File Format
+
+An RPM format file consists of 4 sections, the Lead, Signature, Header, and the
+Archive. All values are stored in network byte order.
+
+Table 3-1. RPM File Format
+
++---------+
+|Lead     |
+|---------|
+|Signature|
+|---------|
+|Header   |
+|---------|
+|Archive  |
++---------+
+
+These 4 sections must exist in the order specified.
+
+The lead section is used to identify the package file.
+
+The signature section is used to verify the integrity, and optionally, the
+authenticity of the majority of the package file.
+
+The header section contains all available information about the package.
+Entries such as the package's name, version, and file list, are contained in
+the header.
+
+The archive section holds the actual files that comprise the package.
+
+-------------------------------------------------------------------------------
+
+Lead Section
+
+struct rpmlead {
+    unsigned char magic[4];
+    unsigned char major, minor;
+    short type;
+    short archnum;
+    char name[66];
+    short osnum;
+    short signature_type;
+    char reserved[16];
+} ;
+
+magic
+   
+    Value identifying this file as an RPM format file. This value must be "\355
+    \253\356\333".
+   
+major
+   
+    Value indicating the major version number of the file format version. This
+    value must be 3.
+   
+minor
+   
+    Value indicating the minor revision nuber of file format version. This
+    value must be 0.
+   
+type
+   
+    Value indicating the minor revision nuber of file format version. This
+    value must be 0.
+   
+archnum
+   
+    Value indicating the architecture for which this package is valid. This
+    value is specified in the architecture-specific LSB specification.
+   
+name
+   
+    A NULL terminated string that provides the package name. This name must
+    conform with the Package Naming section of this specification.
+   
+osnum
+   
+    Value indicating the Operating Systgem for which this package is valid.
+    This value must be 0x0100.
+   
+signature_type
+   
+    Value indicating the type of the signature used in the Signature part of
+    the file. This value must be 0x0500.
+   
+reserved
+   
+    Reserved space. The value is undefined.
+   
+-------------------------------------------------------------------------------
+
+Header Structure
+
+The Header structure is used for both the Signature and Header Sections. A
+Header Structure consista of 3 parts, a Header record, followed by 1 or more
+Index records, followed by 0 or more bytes of data associated with the Index
+records.
+
+Table 3-2. Signature Format
+
++----------------------+
+|Header Record         |
+|----------------------|
+|Array of Index Records|
+|----------------------|
+|Store of Index Values |
++----------------------+
+-------------------------------------------------------------------------------
+
+Header Record
+
+struct rpmheader {
+    unsigned char magic[3];
+    unsigned char version;
+    char reserved[4];
+    int nindex;
+    int hsize;
+    } ;
+
+magic
+   
+    Value identifying this record as an RPM header record. This value must be "
+    \216\255\350".
+   
+version
+   
+    Value identifying the version of this RPM header record. This value must be
+    1.
+   
+reserved
+   
+    Reserved space.
+   
+nindex
+   
+    The number of Index Records that follow this Heaer Record. There must be at
+    least 1 Index Record.
+   
+hsize
+   
+    The size of the storage area for the data pointed to by the Index Records.
+   
+-------------------------------------------------------------------------------
+
+Index Record
+
+struct rpmhdrindex {
+    int tag;
+    int type;
+    int offset;
+    int count;
+    } ;
+
+tag
+   
+    Value identifying the purpose of the data associated with this Index
+    Record. This value of this field is dependent on the context in which the
+    Index Record is used, and is defined in later sections.
+   
+type
+   
+    Value identifying the type of the data associated with this Index Record.
+   
+    Table 3-3. Index Type values
+   
+    +------------------------------------+
+    |Type         |Value|Size (in Octets)|
+    |-------------+-----+----------------|
+    |NULL_TYPE    |0    |0               |
+    |-------------+-----+----------------|
+    |INT8         |1    |1               |
+    |-------------+-----+----------------|
+    |INT16        |2    |2               |
+    |-------------+-----+----------------|
+    |INT32        |3    |4               |
+    |-------------+-----+----------------|
+    |INT64        |4    |8               |
+    |-------------+-----+----------------|
+    |STRING       |6    |variable        |
+    |-------------+-----+----------------|
+    |BIN          |7    |1               |
+    |-------------+-----+----------------|
+    |STRINGS_ARRAY|8    |?               |
+    |-------------+-----+----------------|
+    |I18NSTRING   |9    |?               |
+    |-------------+-----+----------------|
+    |NULL_TYPE    |0    |0               |
+    +------------------------------------+
+offset
+   
+    Location in the Store of the data associated with this Index Record.
+   
+count
+   
+    Size of the data associated with this Index Record. The Count is the number
+    of elements whose size is defined by the type of this Record.
+   
+-------------------------------------------------------------------------------
+
+Header Store
+
+The header store contains the values specified by the Index structures. The
+store is located immediately following the Index structures. The store may be
+padded with zeros to ensure it ends on a 8 byte boundary.
+
+-------------------------------------------------------------------------------
+
+Signature Section
+
+The Signature section is implemented using the Header structure. The signature
+section defines 3 tag value which may be used in the Index structures.
+
+SIGTAG_SIZE
+   
+    This tag specifies the combined size of the Header and Archive sections.
+    The value of this tag is 1000.
+   
+SIGTAG_MD5
+   
+    This tag specifies the 128-bit MD5 checksum of the combined Header and
+    Archive sections. The value of this tag is 1001.
+   
+SIGTAG_PGP
+   
+    This tag specifies the 1216-bit PGP signature block of the combined Header
+    and Archive sections. The value of this tag is 1002.
+   
+-------------------------------------------------------------------------------
+
+Header Section
+
+-------------------------------------------------------------------------------
+
+Archive Section
+
+-------------------------------------------------------------------------------
+
+Package Script Restrictions
+
+Scripts used as part of the package install and uninstall may only use commands
+and interfaces that are specified by the LSB. All other commands are not
+guaranteed to be present, or to behave in expected ways.
+
+Packages may not use RPM triggers.
+
+Packages may not depend on the order in which scripts are executed
+(pre-install, pre-uninstall, &c), when doing an upgrade.
+
+-------------------------------------------------------------------------------
+
+Package Tools
+
+The LSB does not specify the interface to the tools used to manipulate
+LSB-conformant packages. Each conforming distribution will provide
+documentation for installing LSB packages.
+
+-------------------------------------------------------------------------------
+
+Package Naming
+
+Because there is no consistent packaging naming among the various Linux
+distributions, it is necessary for LSB-conformant packages to adhere the
+following naming rules to avoid conflicts with packages provided by the
+distributions.
+
+  * All LSB package names must begin with the prefix "lsb-" to avoid
+    conflicting with existing packages used by Linux distributions.
+   
+  * If the package name contains only one hyphen (including the one in the
+    "lsb-" prefix) then the package name must be assigned by the Linux Assigned
+    Names and Numbers Authority (LANANA), which shall maintain a registry of
+    LSB names.
+   
+  * If the package name contains more than one hyphen (i.e.,
+    "lsb-www.redhat.com-redhat-database", "lsb-gnome-gnumeric"), then the
+    portion of the package name between first and second hyphens must either be
+    an LSB provider name assigned by the LANANA, or it may be one of the
+    owners' fully-qualified domain name in lower case (e.g., "debian.org",
+    "staroffice.sun.com"). The LSB provider name assigned by LANANA must only
+    consist of the ASCII characters [a-z0-9].
+   
+-------------------------------------------------------------------------------
+
+Package Dependencies
+
+Packages must depend on a dependency "lsb". They may not depend on other
+system-provided dependencies. They must not depend on non-system-provided
+dependencies unless the dependencies are fulfilled by packages which are part
+of the same application. If a package includes "Provides" it must only provide
+a virtual package name which is registered to that application.
+
+-------------------------------------------------------------------------------
+
+Package Architecture Considerations
+
+Additional specifications or restrictions may be found in the architecture
+specific LSB specification.
+
+Notes
+
+[1]  ISO/IEC 14882: 1998(E) Programming languages --C++                        
+                                                                               
+[2]  OSF-RFC 86.0                                                              
+                                                                               
+[3]  Some versions of RPM may produce packages which contain extensions or     
+     modifications to the RPM package format beyond what has been documented in
+     this specification. An LSB-conformant package must not contain any of     
+     these extensions, in order to assure interoperability with the largest    
+     number of versions of RPM and packaging systems which understand how to   
+     import RPM format packages.                                               
+                                                                               
+[4]  The distribution itself may use a different packaging format for its own  
+     packages, and of course it may use any available mechanism for installing 
+     the LSB-conformant packages.                                              
+

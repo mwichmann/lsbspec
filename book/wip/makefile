@@ -29,7 +29,7 @@ onehtmlspec: source
 
 txtspec: source
 	$(DB2TXT) wip.sgml
-	nl -ba wip.txt > wip.txt
+	nl -ba wip.txt > wip_lines.txt
 
 rtfspec: source
 	$(DB2RTF) wip.sgml
