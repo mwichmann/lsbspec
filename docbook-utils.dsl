@@ -10,6 +10,8 @@ Stylesheet//EN" CDATA dsssl>
 <!ENTITY docbook.dsl PUBLIC "-//Norman Walsh//DOCUMENT DocBook Print 
 Stylesheet//EN" CDATA dsssl>
 ]]>
+<!ENTITY % iso.entities SYSTEM "dbiso.ent">
+%iso.entities;
 ]>
 
 <!--
@@ -108,6 +110,10 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;Do you want a separate page for the title?
 (define %generate-book-titlepage-on-separate-page%
+ #t)
+
+;;Generate Set TOC?
+(define %generate-set-toc%
  #t)
 
 ;;Generate Book TOC?
@@ -235,6 +241,10 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (define %mono-font-family% 
  "Courier New")
 
+;;What font would you like for admonitions?
+(define %admon-font-family% 
+ "Palatino")
+
 ;;If the base fontsize is 10pt, and '%hsize-bump-factor%' is
 ;; 1.2, hsize 1 is 12pt, hsize 2 is 14.4pt, hsize 3 is 17.28pt, etc
 (define %hsize-bump-factor% 
@@ -307,7 +317,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 ;;Admon Graphics
 ;;======================================
 
-;;Do you want admon graohics on?
+;;Do you want admon graphics on?
 (define %admon-graphics%
  #f)
 
@@ -489,10 +499,10 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 ;;Change the way Formal Paragraph titles are displayed. The commented
 ;;out section will run the titles in the paragraphs. 
 (element (formalpara title)
-  ;(make sequence
-  ;font-weight: 'bold
-  ;($runinhead$))
-  ($lowtitle$ 5 7))
+  (string-with-space (make sequence
+  font-weight: 'bold
+  ($runinhead$))))
+  ;($lowtitle$ 5 7))
 
 ;;======================================
 ;;Inlines
@@ -516,6 +526,118 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (element emphasis ($italic-seq$))
 (element cmdsynopsis ($mono-seq$))
 (element structname ($mono-seq$))
+
+;=============================================
+; ISO Style additions
+;=============================================
+; change the english version of label-title-sep
+; to remove the periods in several places the ISO guide
+; says there shouldn't be any (Chapters, sections, appendixes, etc)
+(define (local-en-label-title-sep)
+  (list
+   (list (normalize "abstract")		": ")
+   (list (normalize "answer")		" ")
+   (list (normalize "appendix")		" ")
+   (list (normalize "caution")		"")
+   (list (normalize "chapter")		" ")
+   (list (normalize "equation")		" ")
+   (list (normalize "example")		" ")
+   (list (normalize "figure")		" ")
+   (list (normalize "footnote")		" ")
+   (list (normalize "glosssee")		": ")
+   (list (normalize "glossseealso")	": ")
+   (list (normalize "important")	": ")
+   (list (normalize "note")		": ")
+   (list (normalize "orderedlist")	". ")
+   (list (normalize "part")		" ")
+   (list (normalize "procedure")	". ")
+   (list (normalize "prefix")		". ")
+   (list (normalize "question")		" ")
+   (list (normalize "refentry")		"")
+   (list (normalize "reference")	". ")
+   (list (normalize "refsect1")		". ")
+   (list (normalize "refsect2")		". ")
+   (list (normalize "refsect3")		". ")
+   (list (normalize "sect1")		" ")
+   (list (normalize "sect2")		" ")
+   (list (normalize "sect3")		" ")
+   (list (normalize "sect4")		" ")
+   (list (normalize "sect5")		" ")
+   (list (normalize "section")		" ")
+   (list (normalize "simplesect")	". ")
+   (list (normalize "seeie")		" ")
+   (list (normalize "seealsoie")	" ")
+   (list (normalize "step")		". ")
+   (list (normalize "table")		" ")
+   (list (normalize "tip")		": ")
+   (list (normalize "warning")		"")
+   ))
+
+;; gentext-element-name returns the generated text that should be 
+;; used to make reference to the selected element.
+;;
+
+(define (en-element-name)
+  (list
+   (list (normalize "abstract")		"&Abstract;")
+   (list (normalize "answer")		"&Answer;")
+   (list (normalize "appendix")		"&Appendix;")
+   (list (normalize "article")		"&Article;")
+   (list (normalize "bibliography")	"&Bibliography;")
+   (list (normalize "book")		"&Book;")
+   (list (normalize "calloutlist")	"")
+   (list (normalize "caution")		"&Caution;")
+   (list (normalize "chapter")		"")
+   (list (normalize "copyright")	"&Copyright;")
+   (list (normalize "dedication")	"&Dedication;")
+   (list (normalize "edition")		"&Edition;")
+   (list (normalize "equation")		"&Equation;")
+   (list (normalize "example")		"&Example;")
+   (list (normalize "figure")		"&Figure;")
+   (list (normalize "glossary")		"&Glossary;")
+   (list (normalize "glosssee")		"&GlossSee;")
+   (list (normalize "glossseealso")	"&GlossSeeAlso;")
+   (list (normalize "important")	"&Important;")
+   (list (normalize "index")		"&Index;")
+   (list (normalize "colophon")		"&Colophon;")
+   (list (normalize "setindex")		"&SetIndex;")
+   (list (normalize "isbn")		"&isbn;")
+   (list (normalize "legalnotice")	"&LegalNotice;")
+   (list (normalize "msgaud")		"&MsgAud;")
+   (list (normalize "msglevel")		"&MsgLevel;")
+   (list (normalize "msgorig")		"&MsgOrig;")
+   (list (normalize "note")		"&Note;")
+   (list (normalize "part")		"&Chapter;")
+   (list (normalize "preface")		"&Preface;")
+   (list (normalize "procedure")	"&Procedure;")
+   (list (normalize "pubdate")		"&Published;")
+   (list (normalize "question")		"&Question;")
+   (list (normalize "refentry")		"&RefEntry;")
+   (list (normalize "reference")	"&Reference;")
+   (list (normalize "refname")		"&RefName;")
+   (list (normalize "revhistory")	"&RevHistory;")
+   (list (normalize "refsect1")		"&RefSection;")
+   (list (normalize "refsect2")		"&RefSection;")
+   (list (normalize "refsect3")		"&RefSection;")
+   (list (normalize "refsynopsisdiv")	"&RefSynopsisDiv;")
+   (list (normalize "revision")		"&Revision;")
+   (list (normalize "sect1")		"&Section;")
+   (list (normalize "sect2")		"&Section;")
+   (list (normalize "sect3")		"&Section;")
+   (list (normalize "sect4")		"&Section;")
+   (list (normalize "sect5")		"&Section;")
+   (list (normalize "section")		"&Section;")
+   (list (normalize "simplesect")	"&Section;")
+   (list (normalize "seeie")		"&see;")
+   (list (normalize "seealsoie")	"&seealso;")
+   (list (normalize "set")		"&Set;")
+   (list (normalize "sidebar")		"&Sidebar;")
+   (list (normalize "step")		"&step;")
+   (list (normalize "table")		"&Table;")
+   (list (normalize "tip")		"&Tip;")
+   (list (normalize "toc")		"&TableofContents;")
+   (list (normalize "warning")		"&Warning;")
+   ))
 
 </style-specification-body>
 </style-specification>
@@ -570,6 +692,10 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 ;;=========================
 ;;Book Stuff
 ;;=========================
+
+;;Do you want a TOC for Sets?
+(define %generate-set-toc% 
+  #t)
 
 ;;Do you want a TOC for Books?
 (define %generate-book-toc% 
