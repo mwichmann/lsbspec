@@ -5,9 +5,18 @@
 <TITLE>Libraries</TITLE>
 <SECT1><TITLE>Introduction</TITLE>
 <PARA>
-An LSB-conforming implementation shall support some base libraries which
+An LSB-conforming implementation shall support the following
+base libraries which
 provide interfaces for accessing the operating system, processor and other
 hardware in the system.
+<itemizedlist>
+<listitem><para>libc</para></listitem>
+<listitem><para>libm</para></listitem>
+<listitem><para>libgcc_s</para></listitem>
+<listitem><para>libdl</para></listitem>
+<listitem><para>libcrypt</para></listitem>
+<listitem><para>libpam</para></listitem>
+</itemizedlist>
 </PARA>
 </SECT1>
 
