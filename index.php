@@ -92,20 +92,6 @@ include("refspecs/LSB_1.3.0/PPC32/lsbversion.PPC32")
 <TD ALIGN=center><a href="refspecs/LSB_1.3.0/PPC32/spec_lines.txt">TXT</a></TD>
 </TR>
 <TR>
-<TD>LSB PPC64</TD>
-<TD ALIGN=center><B>
-<?
-include("refspecs/LSB_1.3.0/PPC64/lsbversion.PPC64")
-?>
-</B></TD>
-<TD><a href="refspecs/LSB_1.3.0/PPC64/spec/book1.html">HTML</a></TD>
-<TD><a href="refspecs/LSB_1.3.0/PPC64/spec.rtf">RTF</a></TD>
-<TD><a href="refspecs/LSB_1.3.0/PPC64/spec.pdf">PDF</a></TD>
-<TD ALIGN=center><a href="refspecs/LSB_1.3.0/PPC64/spec.html">HTML</a></TD>
-<TD ALIGN=center><a href="refspecs/LSB_1.3.0/PPC64/spec.txt">TXT</a></TD>
-<TD ALIGN=center><a href="refspecs/LSB_1.3.0/PPC64/spec_lines.txt">TXT</a></TD>
-</TR>
-<TR>
 <TD>LSB S390</TD>
 <TD ALIGN=center><B>
 <?
