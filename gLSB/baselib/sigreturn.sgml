@@ -1,4 +1,4 @@
-<REFENTRY ID="baselib-sigreturn-1"> <REFMETA>
+<REFENTRY ID="baselib-sigreturn-2"> <REFMETA>
 <REFENTRYTITLE>sigreturn</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
@@ -26,8 +26,12 @@ int sigreturn(unsigned long __unused);
 <TITLE>Description
 </TITLE>
 <PARA>
-The specification for "sigreturn" is as specified in the 4.4BSD-lite but with 
-the following differences as listed below.
+ When the Linux kernel creates the stack frame for a signal
+       handler,  a  call  to sigreturn is inserted into the stack
+       frame so that the the signal handler will  call  sigreturn
+       upon return. This inserted call to sigreturn cleans up the
+       stack so that the process can restart from  where  it  was
+       interrupted by the signal.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -39,14 +43,13 @@ sigreturn never returns.
 </PARA>
 </REFSECT1>
 <REFSECT1>
-<TITLE>Errors
+<TITLE>WARNING
 </TITLE>
 <PARA>
-The following error types are not specified in GNU:
-</PARA><PARA>
-EFAULT
-</PARA><PARA>
-EINVAL
+sigreturn call is used by the kernel to implement sig-
+       nal handlers. It should never be called  directly.  Better
+       yet,  the  specific  use  of  the __unused argument varies
+       depending on the architecture.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -56,8 +59,10 @@ EINVAL
 /usr/src/linux/arch/i386/kernel/signal.c
 </PARA><PARA>
 /usr/src/linux/arch/alpha/kernel/entry.s
-</PARA><PARA>
-Note: the specific  use  of  the __unused argument varies depending on the architecture.
 </PARA>
 </REFSECT1>
+
+<!-- LDP GENERAL PUBLIC LICENSE  -->
+<!-- Version 1a, November 1998   -->
+
 </REFENTRY>

@@ -1,0 +1,113 @@
+
+<REFENTRY ID="baselib-mbsnrtowcs-3"> <REFMETA>
+<REFENTRYTITLE>mbsnrtowcs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>mbsnrtowcs
+</REFNAME>
+<REFPURPOSE>
+convert a multibyte string to a wide character string
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;wchar.h>
+
+       size_t mbsnrtowcs (wchar_t *dest, const char **src,
+                          size_t nms, size_t len, mbstate_t *ps);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       The mbsnrtowcs function is like  the  mbsrtowcs  function,
+       except  that the number of bytes to be converted, starting
+       at *src, is limited to nms.
+
+</PARA><PARA>
+       If dest is not a NULL  pointer,  the  mbsnrtowcs  function
+       converts  at most nms bytes from the multibyte string *src
+       to a wide-character string starting at dest.  At most  len
+       wide  characters  are written to dest. The shift state *ps
+       is updated. The conversion  is  effectively  performed  by
+       repeatedly calling mbrtowc(dest,*src,n,ps) where n is some
+       positive number, as long as this call succeeds,  and  then
+       incrementing  dest  by one and *src by the number of bytes
+       consumed. The conversion can stop for three reasons:
+
+</PARA><PARA>
+       1. An invalid multibyte sequence has been encountered.  In
+       this  case  *src is left pointing to the invalid multibyte
+       sequence, (size_t)(-1) is returned, and errno  is  set  to
+       EILSEQ.
+
+</PARA><PARA>
+       2.  The  nms  limit  forces  a stop, or len non-L'\0' wide
+       characters have been stored at dest. In this case *src  is
+       left  pointing  to  the next multibyte sequence to be con-
+       verted, and the number of wide characters written to  dest
+       is returned.
+
+</PARA><PARA>
+ 3.  The  multibyte  string  has been completely converted,
+       including the terminating '\0' (which has the side  effect
+       of  bringing  back *ps to the initial state). In this case
+       *src is set to NULL, and the  number  of  wide  characters
+       written  to  dest, excluding the terminating L'\0' charac-
+       ter, is returned.
+
+</PARA><PARA>
+       If dest is NULL, len is ignored, and the  conversion  pro-
+       ceeds  as above, except that the converted wide characters
+       are not written out to memory,  and  that  no  destination
+       length limit exists.
+
+</PARA><PARA>
+       In  both  of  the  above cases, if ps is a NULL pointer, a
+       static anonymous state only known to the mbsnrtowcs  func-
+       tion is used instead.
+
+</PARA><PARA>
+       The programmer must ensure that there is room for at least
+       len wide characters at dest.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       The mbsnrtowcs function returns the number of wide charac-
+       ters that make up the converted part of the wide character
+       string, not including the terminating null wide character.
+       If   an   invalid   multibyte  sequence  was  encountered,
+       (size_t)(-1) is returned, and errno set to EILSEQ.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       The behaviour of mbsnrtowcs depends on the LC_CTYPE  cate-
+       gory of the current locale.
+
+</PARA><PARA>
+       Passing NULL as ps is not multi-thread safe.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>

@@ -1,0 +1,181 @@
+<REFENTRY ID="baselib-adjtimex-3"> <REFMETA>
+<REFENTRYTITLE>adjtimex</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>adjtimex</REFNAME>
+<REFPURPOSE>
+tune kernel clock
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;sys/timex.h>
+
+int adjtimex(struct timex *buf);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Linux uses David L. Mills' clock adjustment algorithm (see
+RFC 1305).  The system call adjtimex reads and  optionally
+sets adjustment parameters for this algorithm.  It takes a
+pointer to a timex structure,  updates  kernel  parameters
+from  field  values,  and  returns the same structure with
+current kernel values.  This structure is declared as follows:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct timex {
+</TERM>
+<LISTITEM>
+<PARA>
+                  int modes;           /* mode selector */
+</PARA><PARA>
+                  long offset;         /* time offset (usec) */
+</PARA><PARA>
+                  long freq;           /* frequency offset (scaled ppm) */
+</PARA><PARA>
+                  long maxerror;       /* maximum error (usec) */
+</PARA><PARA>
+                  long esterror;       /* estimated error (usec) */
+</PARA><PARA>
+                  int status;          /* clock command/status */
+</PARA><PARA>
+                  long constant;       /* pll time constant */
+</PARA><PARA>
+                  long precision;      /* clock precision (usec) (read only) */
+</PARA><PARA>
+                  long tolerance;      /* clock frequency tolerance (ppm)
+                                          (read only) */
+</PARA><PARA>
+                  struct timeval time; /* current time (read only) */
+</PARA><PARA>
+                  long tick;           /* usecs between clock ticks */
+</PARA><PARA>
+              };
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+The  modes  field  determines which parameters, if any, to
+set.  It may contain a bitwise-or combination of  zero  or
+more of the following bits:
+</PARA><PARA>
+              #define ADJ_OFFSET            0x0001 /* time offset */
+</PARA><PARA>
+              #define ADJ_FREQUENCY         0x0002 /* frequency offset */
+</PARA><PARA>
+              #define ADJ_MAXERROR          0x0004 /* maximum time error */
+</PARA><PARA>
+              #define ADJ_ESTERROR          0x0008 /* estimated time error */
+</PARA><PARA>
+              #define ADJ_STATUS            0x0010 /* clock status */
+</PARA><PARA>
+              #define ADJ_TIMECONST         0x0020 /* pll time constant */
+</PARA><PARA>
+              #define ADJ_TICK              0x4000 /* tick value */
+</PARA><PARA>
+              #define ADJ_OFFSET_SINGLESHOT 0x8001 /* old-fashioned adjtime */
+</PARA><PARA>
+Ordinary  users  are  restricted to a zero value for mode.
+Only the superuser may set any parameters.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+On success, adjtimex returns the clock state:
+</PARA><PARA>
+
+              #define TIME_OK   0 /* clock synchronized */
+</PARA><PARA>
+              #define TIME_INS  1 /* insert leap second */
+</PARA><PARA>
+              #define TIME_DEL  2 /* delete leap second */
+</PARA><PARA>
+              #define TIME_OOP  3 /* leap second in progress */
+</PARA><PARA>
+              #define TIME_WAIT 4 /* leap second has occurred */
+</PARA><PARA>
+              #define TIME_BAD  5 /* clock not synchronized */
+</PARA><PARA>
+
+On failure, adjtimex returns -1 and sets errno.
+</PARA>
+
+</REFSECT1><REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EFAULT 
+</TERM>
+<LISTITEM>
+<PARA>
+buf does not point to writable memory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPERM  
+</TERM>
+<LISTITEM>
+<PARA>
+buf.mode is non-zero and the  user  is  not  super-
+       user.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL 
+</TERM>
+<LISTITEM>
+<PARA>
+An attempt is made to set buf.offset to a value
+       outside the range -131071 to  +131071,  or  to  set
+       buf.status  to  a  value  other  than  those listed
+       above, or to set buf.tick to a  value  outside  the
+       range 900000/HZ to 1100000/HZ, where HZ is the sys-
+       tem timer interrupt frequency.
+
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+

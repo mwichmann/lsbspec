@@ -1,4 +1,4 @@
-<REFENTRY ID="baselib-fstatfs-1"> <REFMETA>
+<REFENTRY ID="baselib-fstatfs-2"> <REFMETA>
 <REFENTRYTITLE>fstatfs</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
@@ -10,25 +10,33 @@
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>4 March 2001</DATE>
+<DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
+#include &lt;sys/vfs.h>
+
 int fstatfs(int fd, struct statfs *buf);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
-<DATE>30 March 2001</DATE>
+<DATE>2 April 2001</DATE>
 </REFSECT1INFO>
-<TITLE>Description
+<TITLE>
+Description
 </TITLE>
 <PARA>
-The specification for "fstatfs" is as specified in the 4.4BSD-lite but with the following differences as listed below. 
-</PARA><PARA>
-buf is a pointer to a statfs structure defined as follow:
-</PARA><PARA>
-truct statfs {
-</PARA><PARA>
+fstatfs  returns  information  about a mounted file system.  fd is the open file descriptor of any file within the mounted filesystem.   buf  is  a  pointer  to  a  statfs structure defined as follows:
+
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+struct statfs {
+</TERM>
+<LISTITEM>
+<PARA>
                  long    f_type;     /* type of filesystem (see below) */
 </PARA><PARA>
                  long    f_bsize;    /* optimal transfer block size */
@@ -50,15 +58,71 @@ truct statfs {
                  long    f_spare[6]; /* spare for later */
 </PARA><PARA>
               };
-</PARA><PARA>
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
 Fields that are undefined for a particular file system are set to 0.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+On success, zero is returned.  On error, -1  is  returned, and errno is set appropriately.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>ERRORS
 </TITLE>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EBADF
+</TERM>
+<LISTITEM>
 <PARA>
-ENOSYS The filesystem fd is open on does not support statfs.
+fd is not a valid open file descriptor.
 </PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT
+</TERM>
+<LISTITEM>
+<PARA>
+ buf points to an invalid address.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EIO
+</TERM>
+<LISTITEM>
+<PARA>
+An I/O error occurred while reading from or writing to the file system.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOSYS
+</TERM>
+<LISTITEM>
+<PARA>
+The  filesystem  fd  is  open  on  does not support statfs.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
 </REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
 </REFENTRY>

@@ -1,0 +1,91 @@
+<REFENTRY ID="baselib-setegid-2"> <REFMETA>
+<REFENTRYTITLE>setegid</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>setegid
+</REFNAME>
+<REFPURPOSE>
+ set real and / or effective group ID
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;sys/types.h>
+       #include &lt;unistd.h>
+
+       int setegid(gid_t egid);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       setegid sets real and effective group ID's of the current
+       process.  Un-privileged users may change the real group ID
+       to the effective group ID and vice-versa.
+
+</PARA><PARA>
+       Prior  to  Linux  1.1.38, the saved ID paradigm, when used
+       with setegid was broken.  Starting at  1.1.38,
+       it is also possible to set the effective group ID from the
+       saved group ID.
+
+</PARA><PARA>
+       Only the super-user may make other changes.
+
+</PARA><PARA>
+       Supplying a value of -1 for either the real  or  effective
+       group ID forces the system to leave that ID unchanged.
+
+</PARA><PARA>
+       Currently   (libc-4.x.x),  setegid(egid)  is  functionally
+       equivalent to setregid(-1, egid).
+
+</PARA><PARA>
+       If the real group ID is changed or the effective group  ID
+       is set to a value not equal to the previous real group ID,
+       the saved group ID will be set to the new effective  group
+       ID.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       On  success,  zero is returned.  On error, -1 is returned,
+       and errno is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<PARA>
+       EPERM 
+</PARA>
+<BLOCKQUOTE>
+<PARA>
+	      The current  process  is  not  the  super-user  and
+              changes other than (i) swapping the effective group
+              ID with the real group ID or (ii)  setting  one  to
+              the  value of the other or (iii) setting the effec
+              tive group ID to the value of the  saved  group  ID
+              was specified.
+</PARA>
+</BLOCKQUOTE>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>

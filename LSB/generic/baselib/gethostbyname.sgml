@@ -1,46 +1,111 @@
-<REFENTRY ID="baselib-gethostbyname-1"> <REFMETA>
+<REFENTRY ID="baselib-gethostbyname-3"> <REFMETA>
 <REFENTRYTITLE>gethostbyname</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>gethostbyname
-</REFNAME>
-<REFPURPOSE>get network host entry
+<REFNAME>gethostbyname</REFNAME>
+<REFPURPOSE>
+get network host entry
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>4 Arpil 2001</DATE>
+<DATE>2 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-truct hostent *gethostbyname(const char *name);
+#include &lt;netdb.h>
+extern int h_errno;
+
+struct hostent *gethostbyname(const char *name);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
-<DATE>4 April 2001</DATE>
+<DATE>2 April 2001</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
-The specification for "gethostbyname" is as specified in the 4.4BSD-lite but with the following differences as listed below.
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>ERRORS:
-</TITLE>
-<PARA>
-The following error type is not specified in GNU:
+The gethostbyname() function returns a structure  of  type
+hostent  for  the  given host name.  Here name is either a
+host name, or an IPv4 address in standard dot notation, or
+an IPv6 address in colon (and possibly dot) notation. (See
+RFC 1884 for the description of IPv6 addresses.)  If  name
+is  an  IPv4  or  IPv6 address, no lookup is performed and
+gethostbyname() simply copies name into the  h_name  field
+and  its struct in_addr equivalent into the h_addr_list[0]
+field of the returned hostent structure.  If name  doesn't
+end  in  a dot and the environment variable HOSTALIASES is
+set, the alias file pointed to by HOSTALIASES  will  first
+be  searched  for  name (see hostname(7) for the file for-
+mat).  The current domain and  its  parents  are  searched
+unless name ends in a dot.
 </PARA><PARA>
-NETDB_INTERNAL
+
+The domain name queries carried out by gethostbyname()
+use  a  combination  of any or all of the name server
+named(8), a broken out line  from  /etc/hosts, and the 
+Network Information Service (NIS or YP), depending upon
+the contents of the  order  line  in  /etc/host.conf.
+(See   resolv+(8)).    The  default  action  is  to  query
+named(8), followed by /etc/hosts.
+</PARA><PARA>
+The hostent structure is defined in &lt;netdb.h> as follows:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+struct hostent {
+</TERM>
+<LISTITEM>
+<PARA>
+       char    *h_name;        /* official name of host */
+</PARA><PARA>
+       char    **h_aliases;    /* alias list */
+</PARA><PARA>
+       int     h_addrtype;     /* host address type */
+</PARA><PARA>
+       int     h_length;       /* length of address */
+</PARA><PARA>
+       char    **h_addr_list;  /* list of addresses */
+</PARA><PARA>
+              }
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+#define h_addr  h_addr_list[0]  /* for backward compatibility */
 </PARA>
 </REFSECT1>
 <REFSECT1>
-<TITLE>FILES:
+<TITLE>RETURN VALUE
 </TITLE>
 <PARA>
-/etc/host.conf
-              resolver configuration file
+The  gethostbyname()) functions return the hostent
+structure  or  a  NULL  pointer  if  an  error occurs.  
+On  error,  the  h_errno variable holds an error
+number
 </PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+<PARA>
+ENOMEM Insufficient memory to complete the operation. 
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
 </REFSECT1>
 </REFENTRY>
+
+
+
+
+
+
+
+
