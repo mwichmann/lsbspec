@@ -3,6 +3,7 @@
 <!entity specversion "Work In Progress LSBVERSION">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
+<!entity lowlevel.sgm system "lowlevel/lowlevel.sgml">
 <!entity objfmt.sgm system "objfmt/objfmt.sgml">
 <!entity dynlnk.sgm system "dynlnk/dynlnk.sgml">
 <!entity baselib.sgm system "baselib/baselib.sgml">
@@ -29,12 +30,14 @@
 <YEAR>2000</YEAR>
 <YEAR>2001</YEAR>
 <YEAR>2002</YEAR>
+<YEAR>2003</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal.sgm;
 </BOOKINFO>
 
 &intro.sgm;
+&lowlevel.sgm;
 &baselib.sgm;
 &sysinit.sgm;
 </BOOK>
