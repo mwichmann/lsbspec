@@ -7,7 +7,11 @@
 <SECT1 ID="datarepresentation">
 <TITLE>C++ Data Representation</TITLE>
 <PARA>
-C++ Classes shall be represented as defined in <XREF LINKEND="std.CXXABI">.
+Support for the C++ language shall be as specified in
+<XREF LINKEND="std.CXXABI">. This section provides additional information to
+supplement <XREF LINKEND="std.CXXABI">. Definitions in that document are
+sometimes made in terms of C++. This section provides addition explanations
+using C terms to avoid self-referential problems.
 </PARA>
 <PARA>
 </PARA>
@@ -15,7 +19,9 @@ C++ Classes shall be represented as defined in <XREF LINKEND="std.CXXABI">.
 <SECT2 ID="classes">
 <TITLE>Class Representation</TITLE>
 <PARA>
-A C++ Class is represented by several closely related data objects. 
+A C++ Class is represented by several closely related data objects. These data
+objects are create by the compiler as part of the compilation process, and are
+not a visible part of the source code.
 <TABLE>
 <TITLE>Class Components</TITLE>
 <TGROUP COLS=2>
@@ -55,7 +61,7 @@ A C++ Class is represented by several closely related data objects.
 </TABLE>
 </PARA>
 
-<SECT3 ID="classordering">
+<!-- SECT3 ID="classordering">
 <TITLE>Class Ordering</TITLE>
 <PARA>
 Derived classes have a unique linear ordering of all base classes, referred to
@@ -68,9 +74,9 @@ the most-derived class object to base objects, where:
 We need some good examples here.
 </PARA>
 </NOTE>
-</SECT3>
+</SECT3 -->
 
-<SECT3 ID="classdata">
+<!-- SECT3 ID="classdata">
 <TITLE>Class Data</TITLE>
 <PARA>
 Non-static class members are arranged as if in a C structure according to
@@ -81,13 +87,16 @@ the following rules.
 Fill in algorithm from Itanium C++ ABI document
 </PARA>
 </NOTE>
-</SECT3>
+</SECT3 -->
 
 <SECT3 ID="virtualtable">
 <TITLE>Virtual Table</TITLE>
 <PARA>
 There are two types of Virtual tables which can be create. These types
-are specified in section 2.5.3 of <XREF LINKEND="std.CXXABI">.
+are specified in
+
+Section 2.5.3 of <XREF LINKEND="std.CXXABI"> specifies 4 catagories of Virtual
+tables which can be created. Additional details on the layout of categories 1 and 2 are provided here.
 </PARA>
 <FIGURE ID="CXX-virtualtable-cat1">
 <TITLE>
@@ -119,9 +128,10 @@ struct {
 <TITLE>Run-Time Type Information</TITLE>
 <PARA>
 Each type used in a C++ program has a data structure associated with it that
-provide information about the type which is used at runtime. This Rune-Time
-Type  Information (RTTI) is defined in section 2.9.5 in
-<XREF LINKEND="std.CXXABI">.
+provide information about the type which is used at runtime. This Run Time
+Type Information (RTTI) is defined in section 2.9.5 in
+<XREF LINKEND="std.CXXABI">. Additional details about the layout of this
+data is provided here.
 </PARA>
 <FIGURE ID="CXX-RTTI">
 <TITLE>
@@ -130,18 +140,18 @@ Run-Time Type Information Prefix
 <SCREEN>
 struct {
        void      *basevtable;
-       char      *__name;
+       char      *name;
        };
 </SCREEN>
 </FIGURE>
 <FIGURE ID="CXX-RTTI-class">
 <TITLE>
-Run-Time Type Information For Classes
+Run-Time Type Information For Classes with no base class
 </TITLE>
 <SCREEN>
 struct {
        void      *basevtable;
-       char      *__name;
+       char      *name;
        void      *basetypeinfo[0];
        };
 </SCREEN>
@@ -153,7 +163,7 @@ Run-Time Type Information for Classes with a single base class
 <SCREEN>
 struct {
        void      *basevtable;
-       char      *__name;
+       char      *name;
        void      *basetype;
        void      *basetypeinfo[0];
        };
@@ -161,7 +171,7 @@ struct {
 </FIGURE>
 <FIGURE ID="CXX-RTTI-vmiclass">
 <TITLE>
-Run-Time Type Information Prefix
+Run-Time Type Information for classes with multiple inheritance
 </TITLE>
 <SCREEN>
 struct base_type_info {
@@ -174,17 +184,46 @@ struct {
        char    *name;
        unsigned int    flags;
        unsigned int    base_count;
-       struct base_type_info_mem base_info[0];
+       struct base_type_info base_info[0];
+       };
+</SCREEN>
+</FIGURE>
+<FIGURE ID="CXX-RTTI-pointerclass">
+<TITLE>
+Run-Time Type Information for pointer types
+</TITLE>
+<SCREEN>
+struct {
+       void    *basevtable;
+       char    *name;
+       unsigned int    flags;
+       void    *pointee;
+       void    *basetypeinfo[0];
+       };
+</SCREEN>
+</FIGURE>
+<FIGURE ID="CXX-RTTI-ptomemberclass">
+<TITLE>
+Run-Time Type Information for pointer to member types
+</TITLE>
+<SCREEN>
+struct {
+       void    *basevtable;
+       char    *name;
+       unsigned int    flags;
+       void    *pointee;
+       void    *context;
+       void    *basetypeinfo[0];
        };
 </SCREEN>
 </FIGURE>
 </SECT3>
+<!--
 <SECT3 ID="typeinfoname">
 <TITLE>Typeinfo Name</TITLE>
 <PARA>
 </PARA>
 </SECT3>
-<!--
 <SECT3 ID="constructionvirtualtable">
 <TITLE>Construction Virtual Table</TITLE>
 <PARA>
