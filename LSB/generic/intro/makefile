@@ -1,7 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-FILES=intro.sgml
+FILES=intro.sgml cxxintro.sgml
 TABLES=standards.sgml glibraries.sgml
 
 .cpp.sgml:
