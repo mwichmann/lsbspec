@@ -4,12 +4,8 @@
 <PARA>
 LSB-conforming implementations shall support an object file format, called
 Executable and Linking Format (ELF) as defined by the 
-<LINK LINKEND="std.gABI.41">
-<XREF LINKEND="std.gABI.41">
-</LINK>
-<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.gABI.41">,
 <XREF LINKEND="std.IA64.ABI">
-</LINK>,
 and as supplemented by the Linux Standard
 Base Specification and this document.
 </PARA>
@@ -21,9 +17,8 @@ Base Specification and this document.
 <TITLE>Machine Information</TITLE>
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 4.
+<XREF LINKEND="std.IA64.ABI">,
+Chapter 4.
 Implementations shall support the LP64 model. It is unspecified whether or
 not the ILP32 model shall also be supported.
 </PARA>
@@ -61,9 +56,8 @@ shall contain the value <literal>EM_IA_64</literal>.
 <TITLE>Processor Specific Flags</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 4.1.1.6.
+<XREF LINKEND="std.IA64.ABI">,
+Chapter 4.1.1.6.
 </PARA>
 </SECT2>
 </SECT1>
@@ -74,17 +68,14 @@ See
 <PARA>
 The &itanium; architecture defines two processor-specific
 section types, as described in
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 4.
+<XREF LINKEND="std.IA64.ABI">,
+Chapter 4.
 </PARA>
 <SECT1 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
 The following sections are defined in the 
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>.
+<XREF LINKEND="std.IA64.ABI">.
 include(elfsect.sgml)
 </PARA>
 </SECT1>
@@ -100,9 +91,8 @@ include(linuxsect.sgml)
 <TITLE>Section Types</TITLE>
 <PARA>
 Section Types are described in the 
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 4.2.
+<XREF LINKEND="std.IA64.ABI">,
+Chapter 4.2.
 LSB conforming implementations are not
 required to use any sections in the range from
 <SystemItem class="Constant">SHT_IA_64_LOPSREG</SystemItem> to
@@ -120,9 +110,8 @@ in the object file created by the static linker.
 <TITLE>Section Attribute Flags</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 4.2.2.
+<XREF LINKEND="std.IA64.ABI">,
+Chapter 4.2.2.
 </PARA>
 </SECT1>
 
@@ -130,9 +119,8 @@ See
 <TITLE>Special Section Types</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 4.2.3.
+<XREF LINKEND="std.IA64.ABI">,
+Chapter 4.2.3.
 </PARA>
 </SECT1>
 
@@ -171,18 +159,16 @@ Need to add something here about st_info and st_other ...
 
 <PARA>
 LSB-conforming applications shall use Relocations as defined in
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 4.3.
+<XREF LINKEND="std.IA64.ABI">,
+Chapter 4.3.
 </PARA>
 
 <SECT1 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
 See
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>, Chapter 4.3.
+<XREF LINKEND="std.IA64.ABI">,
+Chapter 4.3.
 </PARA>
 </SECT1>
 
