@@ -91,6 +91,7 @@ include(standards.sgml)
 </TABLE>
 </CHAPTER>
 
+<!--
 <CHAPTER ID="REQUIREMENTS">
 <TITLE>Requirements</TITLE>
 <SECT1 ID="Implementation"><TITLE>Linux Implementation Conformance </TITLE>
@@ -98,7 +99,6 @@ include(standards.sgml)
 An implementation shall satisfy the following requirements:
 </PARA>
 <PARA>
-<!--
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
 The implementation shall implement fully the architecture described in the hardware manual for the target processor architecture. 
@@ -161,7 +161,6 @@ The implementation may provide additional interfaces with different names. It ma
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
--->
 </PARA>
 </SECT1>
 <SECT1 ID="Application"><TITLE>Linux Package Conformance </TITLE>
@@ -169,7 +168,6 @@ The implementation may provide additional interfaces with different names. It ma
 A package shall satisfy the following requirements:
 </PARA>
 <PARA>
-<!--
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
 Its executable files are either shell scripts or object files in the format defined for the Object File Format system interface.
@@ -211,10 +209,10 @@ It shall not use any values for a named interface that are reserved for vendor e
 </PARA>
 </LISTITEM></ITEMIZEDLIST>
 A strictly conforming application does not require or use any interface, facility, or implementation-defined extension that is not defined in this document in order to be installed or to execute successfully. 
--->
 </PARA>
 </SECT1>
 </CHAPTER>
+-->
 
 &definitions
 
