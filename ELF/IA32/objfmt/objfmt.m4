@@ -16,6 +16,9 @@ Base Specification and this document.
 <SECT1 ID="machineinfo">
 <TITLE>Machine Information</TITLE>
 <PARA>
+LSB-conforming applications shall use the Machine Information as defined in
+Chapter 4 of the System V Application Binary Interface - Intel386 Architecture
+Processor Supplement.
 </PARA>
 <SECT2 ID="mifileclass">
 <TITLE>File Class</TITLE>
@@ -54,24 +57,14 @@ Base Specification and this document.
 <PARA>
 The following sections are defined in the System V Application Binary
 Interface - Intel386 Architecture Processor Supplement.
-<TABLE>
-<TITLE>ELF Special Sections</TITLE>
-<TGROUP COLS=4>
 include(elfsect.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 <SECT1 ID="linuxspecial">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
 The following Linux IA-32 specific sections are defined here.
-<TABLE>
-<TITLE>Linux Special Sections</TITLE>
-<TGROUP COLS=2>
 include(linuxsect.sgml)
-</TGROUP>
-</TABLE>
 </PARA>
 </SECT1>
 
