@@ -244,7 +244,7 @@ human-readable form.
 <PARA>
 Without this, the local system administrator 
 would have to blindly trust a piece of software,
-particularly its security.
+particularly with respect to its security.
 </PARA>
   
 </SECT2>
@@ -259,79 +259,75 @@ particularly its security.
 behavior in one of the standards on which the LSB relies, and where
 the LSB requires a specific behavior.
 <footnote><para>
-The intention is that none of these choices will create problems in
-practice (for example, for LSB implementations on top of non-Linux
-kernels).  Future versions of the LSB may relax these requirements if
-needed.</para></footnote>
+The LSB does not require the kernel to be Linux; the set of mandated 
+options reflects current existing practice, but may be modified in
+future releases.
+</para></footnote>
 </para>
 
-<para>The fcntl() function shall detect EDEADLK, as described as
-optional behavior in the Single UNIX Specification.</para>
+<para>
+LSB conforming implementations shall support the following options defined
+within the <CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>:
+<SIMPLELIST COLUMNS=1>
+<MEMBER>_POSIX_FSYNC</MEMBER>
+<MEMBER>_POSIX_MAPPED_FILES</MEMBER>
+<MEMBER>_POSIX_MEMLOCK</MEMBER>
+<MEMBER>_POSIX_MEMLOCK_RANGE</MEMBER>
+<MEMBER>_POSIX_MEMORY_PROTECTION</MEMBER>
+<MEMBER>_POSIX_PRIORITY_SCHEDULING</MEMBER>
+<MEMBER>_POSIX_REALTIME_SIGNALS</MEMBER>
+<MEMBER>_POSIX_THREAD_ATTR_STACKADDR</MEMBER>
+<MEMBER>_POSIX_THREAD_ATTR_STACKSIZE</MEMBER>
+<MEMBER>_POSIX_THREAD_PROCESS_SHARED</MEMBER>
+<MEMBER>_POSIX_THREAD_SAFE_FUNCTIONS</MEMBER>
+<MEMBER>_POSIX_THREADS</MEMBER>
+<MEMBER>_XOPEN_UNIX</MEMBER>
+<!-- not sure about the following, so leaving them out for now ...
+<MEMBER>_POSIX_ASYNCHRONOUS_IO</MEMBER>
+<MEMBER>_POSIX_SEMAPHORES</MEMBER>
+<MEMBER>_POSIX_SHARED_MEMORY_OBJECTS</MEMBER>
+<MEMBER>_POSIX_TIMERS</MEMBER>
+-->
+</SIMPLELIST>
+</PARA>
 
-<para>The fcntl() function shall treat the "cmd" value -1 as
-invalid.</para>
-
-<para>The "whence" value -1 shall be an invalid value for the
-lseek(), fseek() and fcntl() functions.</para>
-
-<para>The value "-5" shall be an invalid signal number.</para>
-
-<para>The opendir() function shall detect EMFILE and ENFILE, as
-described as optional behavior in the Single UNIX Specification.</para>
-
-<para>The readdir() and closedir() functions shall detect EBADF, as
-described as optional behavior in the Single UNIX Specification.</para>
-
-<para>If the sigaddset() or sigdelset() functions are passed an
-invalid signal number, they shall return with EINVAL.  Implementations
-are only required to enforce this requirement for signal numbers which
-are specified to be invalid by this specification (such as the -5
-mentioned above).</para>
+<para>The <FUNCTION>opendir()</FUNCTION>
+function shall consume a file descriptor in the same
+fashion as <FUNCTION>open</FUNCTION>, and therefore may fail with 
+<CONSTANT>EMFILE</CONSTANT> or <CONSTANT>ENFILE</CONSTANT>.
+</para>
 
 <para>The START and STOP termios characters shall be changeable, as
 described as optional behavior in the "General Terminal Interface"
-section of the Single UNIX Specification.</para>
+section of the 
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>.
+</para>
 
-<para>The mode value "-1" to the access() function shall be treated as
-invalid.</para>
+<para>The <function>access()</function> function
+function shall fail with <VARNAME>errno</VARNAME>
+set to <CONSTANT>EINVAL</CONSTANT> if the 
+<parameter>amode</parameter> argument contains bits other than 
+those set by the bitwise inclusive OR of 
+<CONSTANT>R_OK</CONSTANT>, 
+<CONSTANT>W_OK</CONSTANT>, 
+<CONSTANT>X_OK</CONSTANT> and 
+<CONSTANT>F_OK</CONSTANT>.
+</para>
 
-<para>A value of -1 shall be an invalid "_PC_..." value for
-pathconf().</para>
-
-<para>A value of -1 shall be an invalid "_SC..." value for
-sysconf().</para>
-
-<para>The link() function shall require access to the existing file in
-order to succeed, as described as optional behavior in the Single UNIX
-Specification.</para>
+<para>The <FUNCTION>link()</FUNCTION> function shall require access
+to the existing file in
+order to succeed, as described as optional behavior in the 
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>.
+</para>
 
 <para id="exec-link-unlink"
 XRefLabel="Additional behaviors: unlink/link on directory"
->Calling unlink() on a directory shall fail.
-Calling link() specifying a directory as the first
-argument shall fail.  See also <xref linkend="baselib-unlink-3" />.</para>
-
-<para>The link() function shall not work across file systems, and
-shall return with EXDEV as described as optional behavior in the
-Single UNIX Specification.</para>
-
-<para>The nl_item value "-1" shall be invalid for nl_langinfo.</para>
-
-<para>The value -1 shall be an invalid "_CS_..." value for confstr().</para>
-
-<para>The value "z" shall be an invalid mode argument to popen().</para>
-
-<para>
+>Calling <FUNCTION>unlink()</FUNCTION> on a directory shall fail.
+Calling <FUNCTION>link()</FUNCTION> specifying a directory as the first
+argument shall fail.  See also <xref linkend="baselib-unlink-3">.
 <footnote>
 <para>
-On a Linux kernel, removing or renaming a directory will give EBUSY
-only when the directory is in use by a system process.  However, the
-LSB does not specify this behavior on the grounds that it is of no use
-to applications and may be difficult to implement on some kernels.
-</para>
-
-<para>
-Linux allows one to call rename() on a directory without
+Linux allows <FUNCTION>rename()</FUNCTION> on a directory without
 having write access, but the LSB does not require this.</para>
 </footnote>
 </para>
