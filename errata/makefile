@@ -22,7 +22,9 @@ DB2ONEHTML=sgmltools -b onehtml
 DB2TXT=sgmltools -b txt
 #DB2TXT=docbook2txt -d ../docbook-utils.dsl\#print
 
-all:: htmlspec onehtmlspec txtspec rtfspec
+all:: buildspecs
+
+buildspecs: htmlspec onehtmlspec txtspec rtfspec
 
 htmlspec: source
 	rm -rf errata.junk
@@ -48,11 +50,18 @@ psspec: source
 	$(DB2PS) errata.sgml
 
 source:
-	sed -e "s#LSBVERSION#`date +"%Y%m%d"`#" <errata.sgml.sed >errata.sgml
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
+
+errata.sgml: errata.sgml.sed
+	sed -e "s#LSBVERSION#`date +"%Y%m%d"`#" <errata.sgml.sed >errata.sgml
+
+autobuild: gensrc source
+	echo `date +"%Y%m%d"` >buildversion
+	sed -e "s#LSBVERSION#`date +"%Y%m%d"`#" <errata.sgml.sed >errata.sgml
+	make buildspecs
 
 clean::
 	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
