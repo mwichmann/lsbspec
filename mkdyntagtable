@@ -52,12 +52,22 @@ $select.= " ORDER BY DynamicEntries.DEname ";
 #print $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
-print "<VARIABLELIST>\n";
-for(1..$sth->numrows) {
-	print "<VARLISTENTRY>";
-	%entry=$sth->fetchhash;
-	printf "<TERM>%s</TERM>",$entry{'DEname'};
-	printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry{'DEdescription'};
-	print "</VARLISTENTRY>";
-}
+printf("<!-- Start of text generated from database -->\n");
+printf("<!-- generated from the LSB specification database -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkdyntagtable,v 1.4 2001-12-24 16:25:54 anderson Exp $- -->\n");
+my $now_string = localtime;
+printf("<!--    at %s -->\n", $now_string );
+
+if($sth->numrows) {
+	print "<VARIABLELIST>\n";
+	for(1..$sth->numrows) {
+		print "<VARLISTENTRY>";
+		%entry=$sth->fetchhash;
+		printf "<TERM>%s</TERM>",$entry{'DEname'};
+		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry{'DEdescription'};
+		print "</VARLISTENTRY>";
+	}
 print "</VARIABLELIST>\n";
+}
+printf("<!-- End of text generated from database -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkdyntagtable,v 1.4 2001-12-24 16:25:54 anderson Exp $- -->\n");
