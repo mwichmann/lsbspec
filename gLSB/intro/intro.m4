@@ -93,7 +93,7 @@ system. This list may be supplemented or amended by the architecture-specific
 specifications.
 </PARA>
 <TABLE>
-<TITLE>Standards Libraries</TITLE>
+<TITLE>Standard Libraries Names</TITLE>
 <TGROUP COLS=2>
 <THEAD>
 <ROW>
@@ -105,7 +105,7 @@ include(libraries.sgml)
 </TGROUP>
 </TABLE>
 <TABLE>
-<TITLE>Standards Libraries specificed in the Processor Specific document</TITLE>
+<TITLE>Standard Library Names defined in the Architecture Specific Supplement</TITLE>
 <TGROUP COLS=2>
 <THEAD>
 <ROW>

@@ -90,7 +90,7 @@ The libraries listed here shall be available on a Linux Standard Base
 system. This list is an addition to the list in the general specification.
 </PARA>
 <TABLE>
-<TITLE>Relevant Libraries</TITLE>
+<TITLE>Standard Library Names</TITLE>
 <TGROUP COLS=2>
 <THEAD>
 <ROW>
