@@ -6,7 +6,9 @@
 LSB-conforming implementations shall support an object file format,
 called Executable and Linking Format (ELF) as defined by the <XREF
 LINKEND="std.PPC32.ABI"> and as supplemented by the Linux Standard
-Base Specification and this document.
+Base Specification and this document. LSB-conforming implementations
+need not support tags related functionality. LSB-conforming applications
+must not rely on tags related functionality.
 
 </PARA>
 </PARTINTRO>
