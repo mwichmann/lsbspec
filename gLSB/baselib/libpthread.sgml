@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
-<!--    at Mon Apr 22 16:42:56 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.35 2002/04/23 02:23:16 anderson Exp 0 -->
+<!--    at Wed May  1 12:09:05 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -184,14 +184,16 @@ Issue 5 (ISBN: 1-85912-181-0, C606)</PARA>
 
 typedef unsigned int pthread_key_t;
 typedef int pthread_once_t;
-struct _pthread_fastlock
-{
-  int __spinlock;
-}
- ;
+typedef int __atomic_lock_t;
 
 
 typedef unsigned long pthread_t;
+struct _pthread_fastlock
+{
+  long __status;
+  __atomic_lock_t __spinlock;
+}
+ ;
 
 
 typedef struct _pthread_descr_struct *_pthread_descr;
@@ -199,10 +201,11 @@ typedef struct _pthread_descr_struct *_pthread_descr;
 
 typedef struct
 {
-  struct _pthread_fastlock lock;
-  _pthread_descr owner;
-  int kind;
-  unsigned int count;
+  int __m_reserved;
+  int __m_count;
+  _pthread_descr __m_owner;
+  int __m_kind;
+  struct _pthread_fastlock __m_lock;
 }
 pthread_mutex_t;
 typedef struct
@@ -219,6 +222,8 @@ typedef struct
   struct sched_param __schedparam;
   int __inheritsched;
   int __scope;
+  size_t __guardsize;
+  int __stackaddr_set;
   void *__stackaddr;
   unsigned long __stacksize;
 }
@@ -236,22 +241,22 @@ typedef void *pthread_condattr_t;
 
 
 #define PTHREAD_ONCE_INIT	0
-#define PTHREAD_CREATE_DETACHED	PTHREAD_CREATE_DETACHED
-#define PTHREAD_CREATE_JOINABLE	PTHREAD_CREATE_JOINABLE
-#define PTHREAD_EXPLICIT_SCHED	PTHREAD_EXPLICIT_SCHED
-#define PTHREAD_INHERIT_SCHED	PTHREAD_INHERIT_SCHED
-#define PTHREAD_PROCESS_PRIVATE	PTHREAD_PROCESS_PRIVATE
-#define PTHREAD_PROCESS_SHARED	PTHREAD_PROCESS_SHARED
-#define PTHREAD_SCOPE_PROCESS	PTHREAD_SCOPE_PROCESS
-#define PTHREAD_SCOPE_SYSTEM	PTHREAD_SCOPE_SYSTEM
+#define PTHREAD_CREATE_DETACHED	1
+#define PTHREAD_CREATE_JOINABLE	2
+#define PTHREAD_EXPLICIT_SCHED	3
+#define PTHREAD_INHERIT_SCHED	4
+#define PTHREAD_PROCESS_PRIVATE	5
+#define PTHREAD_PROCESS_SHARED	6
+#define PTHREAD_SCOPE_PROCESS	7
+#define PTHREAD_SCOPE_SYSTEM	8
 
 
 
 #define PTHREAD_CANCELED	((void*)-1)
-#define PTHREAD_CANCEL_ASYNCHRONOUS	PTHREAD_CANCEL_ASYNCHRONOUS
-#define PTHREAD_CANCEL_DEFERRED	PTHREAD_CANCEL_DEFERRED
-#define PTHREAD_CANCEL_DISABLE	PTHREAD_CANCEL_DISABLE
-#define PTHREAD_CANCEL_ENABLE	PTHREAD_CANCEL_ENABLE
+#define PTHREAD_CANCEL_ASYNCHRONOUS	2
+#define PTHREAD_CANCEL_DEFERRED	3
+#define PTHREAD_CANCEL_DISABLE	4
+#define PTHREAD_CANCEL_ENABLE	5
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -267,8 +272,9 @@ typedef void *pthread_condattr_t;
 
 typedef struct
 {
-  long status;
-  int spinlock;
+  struct _pthread_fastlock __sem_lock;
+  int __sem_value;
+  _pthread_descr __sem_waiting;
 }
 sem_t;
 #define SEM_FAILED	((sem_t*)0)
@@ -526,4 +532,4 @@ struct sigcontext
 include(sem_timedwait.sgml)
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.34 2002/04/12 20:12:28 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.35 2002/04/23 02:23:16 anderson Exp 0 -->
