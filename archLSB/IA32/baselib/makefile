@@ -1,9 +1,19 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES= __divdi3.sgml ioperm.sgml iopl.sgml 
+UNWINDPAGES= _Unwind_DeleteException.sgml _Unwind_Find_FDE.sgml \
+	     _Unwind_ForcedUnwind.sgml _Unwind_GetDataRelBase.sgml \
+	     _Unwind_GetGR.sgml _Unwind_GetIP.sgml \
+	     _Unwind_GetLanguageSpecificData.sgml _Unwind_GetRegionStart.sgml \
+	     _Unwind_GetTextRelBase.sgml _Unwind_RaiseException.sgml \
+	     _Unwind_Resume.sgml _Unwind_SetGR.sgml _Unwind_SetIP.sgml
 
-FILES=baselib.sgml libc.sgml libm.sgml 
+MANPAGES= __divdi3.sgml ioperm.sgml iopl.sgml $(UNWINDPAGES)
+
+LIBS=libc.sgml libm.sgml libgcc_s.sgml libpthread.sgml libdl.sgml \
+	libcrypt.sgml libstdcxx.sgml
+
+FILES=baselib.sgml
 
 TABLES=
 
@@ -11,9 +21,9 @@ TABLES=
 	cpp -I../../../../src/include $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 -Uindex -Uformat $*.m4 >$@
+	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all: $(FILES) $(TABLES) $(MANPAGES)
 
 gensrc:
 	../../../mklibspec -a IA32 -l libc >libc.sgml
@@ -21,13 +31,17 @@ gensrc:
 	../../../mklibspec -a IA32 -l libpthread >libpthread.sgml
 	../../../mklibspec -a IA32 -l libdl >libdl.sgml
 	../../../mklibspec -a IA32 -l libcrypt >libcrypt.sgml
+	../../../mklibspec -a IA32 -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/ >libgcc_s.sgml
 	../../../mklibspec -a IA32 -c 2 -l libstdcxx | c++filt | ../../../fixc++spec >libstdcxx.sgml
 
+_Unwind_%.sgml: 
+	cp ../../generic/baselib/$@ .
+
 clean:
-	rm -f $(FILES)
+	rm -f $(FILES) $(UNWINDPAGES)
 
 spotless: clean
-	rm -f $(TABLES)
+	rm -f $(LIBS)
 
-baselib.sgml: libc.sgml libm.sgml
-baselib.sgml: $(MANPAGES)
+baselib.sgml: libc.sgml libm.sgml libgcc_s.sgml
+baselib.sgml: $(MANPAGES) $(LIBS)
