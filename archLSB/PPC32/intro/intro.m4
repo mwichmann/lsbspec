@@ -6,13 +6,12 @@
 <SECT1 ID="overview">
 <TITLE>Introduction</TITLE>
 <PARA>
-This is version &specversion of the Linux Standard Base Specification for
-the PPC32 Architecture. An implementation of this version of the specification
-may not claim to be an implementation of the Linux Standard Base unless it
-has successfully completed the compliance process as defined by the
-Free Standards Group.
-</PARA>
-</SECT1>
+This is version &specversion of the Linux Standard Base Specification
+for 32 bit implementations of the &powerpc; Architecture. An
+implementation of this version of the specification may not claim to
+be an implementation of the Linux Standard Base unless it has
+successfully completed the compliance process as defined by the Free
+Standards Group.  </PARA> </SECT1>
 
 <SECT1 ID="overpurp">
 <TITLE>Purpose</TITLE>
