@@ -135,7 +135,7 @@ file.
 <PARA>
 This chapter describes the Symbol Versioning mechanism. All ELF objects may
 provide or depend on versioned symbols. Symbol Versioning is implemented by 3
-section types: SHT_GNU_VERSYM, SHT_GNU_VERDEF, and SHT_GNU_VERNEED.
+section types: SHT_GNU_versym, SHT_GNU_verdef, and SHT_GNU_verneed.
 </PARA>
 <PARA>
 The term "Elfxx" means "Elf32" or "Elf64" depending on the architecture.
@@ -150,7 +150,7 @@ strings. This allows for more efficient processing.
 <PARA>
 The Symbol Version Table is contained in the special section <COMPUTEROUTPUT>
 .gnu.version</COMPUTEROUTPUT> which has a section type of <COMPUTEROUTPUT>
-SHT_GNU_VERSYM</COMPUTEROUTPUT>. This section has the same number of entries
+SHT_GNU_versym</COMPUTEROUTPUT>. This section has the same number of entries
 as the Dynamic Symbol Table.
 </PARA>
 <PARA>
@@ -199,7 +199,7 @@ the symbol.
 <PARA>
 Symbol definitions are contained in the special section <COMPUTEROUTPUT>
 .gnu.version_d</COMPUTEROUTPUT> which has a section type of <COMPUTEROUTPUT>
-SHT_GNU_VERDEF</COMPUTEROUTPUT>. The number of entries in this section
+SHT_GNU_verdef</COMPUTEROUTPUT>. The number of entries in this section
 is contained in the <COMPUTEROUTPUT>DT_VERDEFNUM</COMPUTEROUTPUT> entry
 of the Dynamic Section.  The <COMPUTEROUTPUT>sh_link</COMPUTEROUTPUT>
 member of the section header points to the section that contains the strings
@@ -310,13 +310,12 @@ Offset to the next verdaux entry, in bytes.
 <PARA>
 Symbol definitions are contained in the special section <COMPUTEROUTPUT>
 .gnu.version_r</COMPUTEROUTPUT> which has a section type of <COMPUTEROUTPUT>
-SHT_GNU_VERNEED</COMPUTEROUTPUT>. The number of entries in this section
+SHT_GNU_verneed</COMPUTEROUTPUT>. The number of entries in this section
 is contained in the <COMPUTEROUTPUT>DT_VERNEEDNUM</COMPUTEROUTPUT> entry
 of the Dynamic Section.  The <COMPUTEROUTPUT>sh_link</COMPUTEROUTPUT>
 member of the section header points to the section that contains the strings
 referenced by this section.
-</PARA>
-<FIGURE>
+</PARA><FIGURE>
 <TITLE>Version Needed Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
