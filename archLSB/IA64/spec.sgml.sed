@@ -13,7 +13,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the IA32 Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the IA64 Architecture &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2001</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
