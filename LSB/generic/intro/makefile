@@ -14,7 +14,7 @@ all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mkstandardsgmltable -a All >standards.sgml
-	../../../mkstandardsgmltable -m CXX >cxxstandards.sgml
+	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI'" >cxxstandards.sgml
 	../../../mklibsgmltable -a All >glibraries.sgml
 	../../../mklibsgmltable -a None >pslibs.sgml
 
