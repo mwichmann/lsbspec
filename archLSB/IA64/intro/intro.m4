@@ -7,7 +7,7 @@
 <TITLE>Introduction</TITLE>
 <PARA>
 This is version &specversion of the Linux Standard Base Specification for
-the IA64 Architecture. An implementation of this version of the specification
+the &itanium; Architecture. An implementation of this version of the specification
 may not claim to be an implementation of the Linux Standard Base unless it 
 has successfully completed the compliance process as defined by the 
 Free Standards Group.
