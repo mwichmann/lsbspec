@@ -13,8 +13,6 @@ include(libz.sgml)
 
 include(libcurses.sgml)
 
-include(libresolv.sgml)
-
 include(libutil.sgml)
 
 </CHAPTER>

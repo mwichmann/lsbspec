@@ -1,7 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-FILES=utillib.sgml libz.sgml libcurses.sgml libresolv.sgml libutil.sgml
+FILES=utillib.sgml libz.sgml libcurses.sgml libutil.sgml
 TABLES=
 
 .cpp.sgml:
@@ -15,7 +15,6 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../mklibspec -l libz >libz.sgml
 	../mklibspec -l libcurses >libcurses.sgml
-	../mklibspec -l libresolv >libresolv.sgml
 	../mklibspec -l libutil >libutil.sgml
 
 clean:
@@ -25,4 +24,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-utillib.sgml:  libz.sgml libcurses.sgml libresolv.sgml libutil.sgml
+utillib.sgml:  libz.sgml libcurses.sgml libutil.sgml
