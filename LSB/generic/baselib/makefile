@@ -9,6 +9,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	__lxstat.sgml \
 	_nl_msg_cat_cntr.sgml _obstack_begin.sgml _obstack_newchunk.sgml \
 	__stpcpy.sgml __strtod_internal.sgml __strtol_internal.sgml _sys_errlist.sgml \
+	__timezone.sgml __tzname.sgml __xstat.sgml __xstat64.sgml \
 	_sys_siglist.sgml __xmknod.sgml acct.sgml adjtime.sgml adjtimex.sgml \
 	bindtextdomain.sgml cfmakeraw.sgml \
 	cfsetspeed.sgml daemon.sgml dcgettext.sgml dladdr.sgml endutent.sgml \
