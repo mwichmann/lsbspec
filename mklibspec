@@ -94,6 +94,7 @@ $lgh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 for(1..$lgh->numrows) {
 	local(*entry);
 	local(*std);
+	local(*mangle);
 	%entry=$lgh->fetchhash;
 	$LGid=$entry{'LGid'};
 	print "<SECT2>\n";
@@ -106,7 +107,7 @@ for(1..$lgh->numrows) {
 # Fifth, foreach group, make a table of the interfaces
 #
 	$select = "SELECT * FROM Interface ".
-		  "WHERE Ilibgroup=$LGid ORDER BY Iname";
+		  "WHERE Ilibgroup=$LGid AND Itype='F' ORDER BY Iname";
 	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	for(1..$inh->numrows) {
 		%entry=$inh->fetchhash;
@@ -155,40 +156,70 @@ for(1..$lgh->numrows) {
 	print "</TBODY>\n";
 	print "</TGROUP>\n";
 	print "</TABLE>\n";
-	#print "<PARA>\n";
-	# NB: Footnotes must be unique across the entire document
-	#printf "<FOOTNOTE ID=\"std-%d-1\">\n",$LGid;
-	#print "<PARA>\n";
-	#print "</PARA>\n";
-	#print "</FOOTNOTE>\n";
-	#print "</PARA>\n";
-	print "</SECT2>\n";
-}
 
-
-#
-# Sixth, make a table of the mangled interfaces 
-#
-{
-	local(*mangle);
+	#
+	# Get the mangles for this libgroup
+	#
 	$select = "SELECT DISTINCT * FROM Mangle ".
-		  "WHERE Mlib=$Lid ".
+		  "WHERE Mlibgroup=$LGid ".
 		  "ORDER BY Mname";
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	if ($sth->numrows > 0 ) {
-		print "<SECT2>\n";
-		print "<TITLE>Mangled Symbols</TITLE>\n";
-		print "<PARA>\n";
-		print "</PARA>\n";
 		print "<TABLE>\n";
-		print "<TITLE></TITLE>\n";
-		print "<TGROUP COLS=5>\n";
+		print "<TITLE>Mangled Symbol Mappings</TITLE>\n";
+		print "<TGROUP COLS=2>\n";
+		print "<THEAD>";
+		print "<ROW>";
+		print "<ENTRY>Symbol</ENTRY>";
+		print "<ENTRY>Implements</ENTRY>";
+		print "</ROW>";
+		print "</THEAD>\n";
 		print "<TBODY>\n";
 		for(1..$sth->numrows) {
 			%mangle=$sth->fetchhash;
 			print "<ROW>";
+			printf "<ENTRY>%s</ENTRY>",$mangle{'Mmname'};
 			printf "<ENTRY>%s</ENTRY>",$mangle{'Mname'};
-			printf "<ENTRY>%s</ENTRY>",$mangle{'Mprototype'};
+			print "</ROW>\n";
+		}
+		print "</TBODY>\n";
+		print "</TGROUP>\n";
+		print "</TABLE>\n";
+	}
+	print "</SECT2>\n";
+}
+
+#
+# Sixth, make a table of data interaces
+#
+{
+	local(*lftovr);
+	$select = "SELECT DISTINCT * FROM Interface,LibInt ".
+		  "WHERE LibInt.LIlib=".$Lid." AND ".
+		  "LibInt.LIint=Interface.Iid AND IType='D' ".
+		  "ORDER BY Iname";
+	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	if ($sth->numrows > 0 ) {
+		print "<SECT2>\n";
+		print "<TITLE>Data Symbols</TITLE>\n";
+		print "<PARA>\n";
+		print "</PARA>\n";
+		for(1..$sth->numrows) {
+			%lftovr=$sth->fetchhash;
+			$lftovr[$_]=$lftovr{'Iname'};
+		}
+		print "<TABLE>\n";
+		print "<TITLE></TITLE>\n";
+		print "<TGROUP COLS=5>\n";
+		print "<TBODY>\n";
+		$inc=($sth->numrows+4)/5;
+		for(1..$inc) {
+			print "<ROW>";
+			printf "<ENTRY>%s</ENTRY>",$lftovr[$_];
+			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+$inc];
+			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(2*$inc)];
+			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(3*$inc)];
+			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(4*$inc)];
 			print "</ROW>\n";
 		}
 		print "</TBODY>\n";
@@ -198,6 +229,7 @@ for(1..$lgh->numrows) {
 	}
 }
 
+
 #
 # Seventh, make a table of the interfaces not in a group
 #
@@ -205,7 +237,8 @@ for(1..$lgh->numrows) {
 	local(*lftovr);
 	$select = "SELECT DISTINCT * FROM Interface,LibInt ".
 		  "WHERE LibInt.LIlib=".$Lid." AND ".
-		  "LibInt.LIint=Interface.Iid AND Ilibgroup is NULL ".
+		  "LibInt.LIint=Interface.Iid AND ".
+		  "Itype!='D' AND Ilibgroup is NULL ".
 		  "ORDER BY Iname";
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	if ($sth->numrows > 0 ) {
@@ -229,6 +262,38 @@ for(1..$lgh->numrows) {
 			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(2*$inc)];
 			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(3*$inc)];
 			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(4*$inc)];
+			print "</ROW>\n";
+		}
+		print "</TBODY>\n";
+		print "</TGROUP>\n";
+		print "</TABLE>\n";
+		print "</SECT2>\n";
+	}
+}
+
+#
+# Eigth, make a table of the dangling mangled interfaces 
+#
+{
+	local(*mangle);
+	$select = "SELECT DISTINCT * FROM Mangle ".
+		  "WHERE Mlib=$Lid AND Mlibgroup=0 ".
+		  "ORDER BY Mname";
+	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	if ($sth->numrows > 0 ) {
+		print "<SECT2>\n";
+		print "<TITLE>Leftover Mangled Symbols</TITLE>\n";
+		print "<PARA>\n";
+		print "</PARA>\n";
+		print "<TABLE>\n";
+		print "<TITLE></TITLE>\n";
+		print "<TGROUP COLS=5>\n";
+		print "<TBODY>\n";
+		for(1..$sth->numrows) {
+			%mangle=$sth->fetchhash;
+			print "<ROW>";
+			printf "<ENTRY>%s</ENTRY>",$mangle{'Mname'};
+			printf "<ENTRY>%s</ENTRY>",$mangle{'Mprototype'};
 			print "</ROW>\n";
 		}
 		print "</TBODY>\n";
