@@ -1,13 +1,14 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES=
-
-FILES=baselib.sgml
+FILES=lowlevel.sgml
 TABLES=
 
+.cpp.sgml:
+	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
+
 .m4.sgml:
-	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
+	m4 -Uindex -Uformat $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
@@ -19,4 +20,5 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-baselib.sgml: baselib.m4 
+
+lowlevel.sgml: 

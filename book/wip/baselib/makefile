@@ -3,7 +3,7 @@
 
 MANPAGES=
 
-FILES=baselib.sgml libstdcxx.sgml
+FILES=baselib.sgml
 TABLES=
 
 .m4.sgml:
@@ -12,7 +12,6 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mklibspec -a IA32 -c 2 -l libstdcxx | c++filt | ../../fixc++spec >libstdcxx.sgml
 
 clean:
 	rm -f $(FILES)
@@ -20,4 +19,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-baselib.sgml: baselib.m4 libstdcxx.sgml
+baselib.sgml: baselib.m4 

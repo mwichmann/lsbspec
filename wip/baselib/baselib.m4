@@ -10,8 +10,6 @@ provide interfaces for accessing the operating system, processor and other
 hardware in the system.
 </PARA>
 
-include(libstdcxx.sgml)
-
 </CHAPTER>
 
 </PART>

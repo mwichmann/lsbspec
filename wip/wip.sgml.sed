@@ -38,6 +38,4 @@
 
 &intro.sgm;
 &lowlevel.sgm;
-&baselib.sgm;
-&sysinit.sgm;
 </BOOK>
