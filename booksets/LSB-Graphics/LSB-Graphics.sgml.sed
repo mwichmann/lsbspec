@@ -34,5 +34,11 @@
 </BOOKINFO>
 &graphics-contents;
 </BOOK>
+<BOOK>
+<BOOKINFO>
+<TITLE>Free Documentation License</TITLE>
+</BOOKINFO>
+&fdl;
+</BOOK>
 
 </SET>
