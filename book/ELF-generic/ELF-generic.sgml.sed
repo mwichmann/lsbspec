@@ -3,6 +3,8 @@
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "contents">
 
+<!entity specversion "ELFVERSION">
+
 %entities;
 
 ]>

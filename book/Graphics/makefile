@@ -1,6 +1,6 @@
 
 DB2HTML=sgmltools -b html
-#DB2HTML=docbook2html -d ../docbook-utils.dsl\#html -o Desktop -p '/usr/bin/jade -V %use-id-as-filename%'
+#DB2HTML=docbook2html -d ../docbook-utils.dsl\#html -o Graphics -p '/usr/bin/jade -V %use-id-as-filename%'
 
 DB2RTF=sgmltools -b rtf
 #DB2RTF=docbook2rtf -d ../docbook-utils.dsl\#print
@@ -21,36 +21,36 @@ all:: buildspecs
 
 buildspecs: htmlspec rtfspec txtspec onehtmlspec linespec
 
-htmlspec: Desktop.sgml source
-	rm -rf Desktop.junk
-	-mv Desktop Desktop.junk
-	$(DB2HTML) Desktop.sgml
-	if [ -d Desktop.junk/CVS -a ! -d Desktop/CVS ];then mv Desktop.junk/CVS Desktop; fi
-	rm -rf Desktop.junk
+htmlspec: Graphics.sgml source
+	rm -rf Graphics.junk
+	-mv Graphics Graphics.junk
+	$(DB2HTML) Graphics.sgml
+	if [ -d Graphics.junk/CVS -a ! -d Graphics/CVS ];then mv Graphics.junk/CVS Graphics; fi
+	rm -rf Graphics.junk
 
-onehtmlspec: Desktop.sgml source
-	$(DB2ONEHTML) Desktop.sgml
+onehtmlspec: Graphics.sgml source
+	$(DB2ONEHTML) Graphics.sgml
 
-txtspec: Desktop.sgml source
-	$(DB2TXT) Desktop.sgml
+txtspec: Graphics.sgml source
+	$(DB2TXT) Graphics.sgml
 
-linespec: Desktop_lines.txt
+linespec: Graphics_lines.txt
 
-Desktop_lines.txt: Desktop.txt
-	nl -ba Desktop.txt > Desktop_lines.txt
+Graphics_lines.txt: Graphics.txt
+	nl -ba Graphics.txt > Graphics_lines.txt
 
-rtfspec: Desktop.sgml source
-	$(DB2RTF) Desktop.sgml
+rtfspec: Graphics.sgml source
+	$(DB2RTF) Graphics.sgml
 
-pdfspec: Desktop.sgml source
-	$(DB2PDF) Desktop.sgml
+pdfspec: Graphics.sgml source
+	$(DB2PDF) Graphics.sgml
 
-psspec: Desktop.sgml source
-	$(DB2PS) Desktop.sgml
+psspec: Graphics.sgml source
+	$(DB2PS) Graphics.sgml
 
-index: Desktop.sgml source
+index: Graphics.sgml source
 	collateindex.pl -N -o index.sgml
-	$(DB2HTML) -j '-V %use-id-as-filename% -V html-index' Desktop.sgml
+	$(DB2HTML) -j '-V %use-id-as-filename% -V html-index' Graphics.sgml
 	collateindex.pl -o index.sgml HTML.index
 
 source:
@@ -59,13 +59,13 @@ source:
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
-Desktop.sgml: Desktop.sgml.sed ../../Desktop/version
+Graphics.sgml: Graphics.sgml.sed ../../Desktop/version
 	echo `cat ../../Desktop/version` >buildversion
-	sed -e "s#VERSION#`cat ../../Desktop/version`#" <Desktop.sgml.sed >Desktop.sgml
+	sed -e "s#VERSION#`cat ../../Desktop/version`#" <Graphics.sgml.sed >Graphics.sgml
 
 autobuild: gensrc source
 	echo `cat ../../Desktop/version`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#VERSION#`cat ../../Desktop/version`-`date +"%Y%m%d"`#" <Desktop.sgml.sed >Desktop.sgml
+	sed -e "s#VERSION#`cat ../../Desktop/version`-`date +"%Y%m%d"`#" <Graphics.sgml.sed >Graphics.sgml
 	make buildspecs
 	
 clean::

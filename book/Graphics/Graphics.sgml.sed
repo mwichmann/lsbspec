@@ -12,15 +12,15 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Desktop Specification</TITLE>
+<TITLE>LSB-Graphics Module Specification</TITLE>
 <COPYRIGHT>
-<YEAR>2003</YEAR>
+<YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
 </BOOKINFO>
 
-&desktop-intro;
+&graphics-intro;
 &contents;
 &contents-gl;
 

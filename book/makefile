@@ -1,7 +1,8 @@
 
-SUBDIRS= Desktop ELF-generic \
+SUBDIRS= Desktop Graphics Packaging errata wip \
+	ELF-AMD64 ELF-IA32 ELF-IA64 ELF-PPC32 ELF-generic \
 	LSB-AMD64 LSB-IA32 LSB-IA64 LSB-PPC32 LSB-PPC64 LSB-S390 LSB-S390X \
-	LSB-generic Packaging
+	LSB-generic
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done

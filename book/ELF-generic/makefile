@@ -61,11 +61,11 @@ gensrc:
 
 ELF-generic.sgml: ELF-generic.sgml.sed ../../ELF/version
 	echo `cat ../../ELF/version` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../ELF/version`#" <ELF-generic.sgml.sed >ELF-generic.sgml
+	sed -e "s#ELFVERSION#`cat ../../ELF/version`#" <ELF-generic.sgml.sed >ELF-generic.sgml
 
 autobuild: gensrc source
 	echo `cat ../../ELF/version`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <ELF-generic.sgml.sed >ELF-generic.sgml
+	sed -e "s#ELFVERSION#`cat ../../ELF/version`-`date +"%Y%m%d"`#" <ELF-generic.sgml.sed >ELF-generic.sgml
 	make buildspecs
 	
 clean::
