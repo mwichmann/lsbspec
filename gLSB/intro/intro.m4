@@ -151,14 +151,6 @@ Need to enumerate the rest of the procedure.
 
 <SECT1 ID="defns">
 <TITLE>Definitions</TITLE>
-<NOTE>
-<PARA>
-The Application Binary  Interface (ABI) defined the following terms. We
-probably want to have something similar here. ABI, generic ABI, processor
-specific ABI, ABI-conforming system, ABI-conforming program, ABI-nonconforming
-program, undefined behavior, unspecified property.
-</PARA>
-</NOTE>
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
