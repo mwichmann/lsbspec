@@ -17,7 +17,8 @@
 <!entity sysinit.sgm system "sysinit/sysinit.sgml">
 <!entity sgmlspec.sgm system "sgmlspec/sgmlspec.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
-<!entity appB.sgm system "appendix/howtocompliant.sgml">
+<!entity appB.sgm system "appendix/fdl.sgml">
+<!entity appZ.sgm system "appendix/howtocompliant.sgml">
 ]>
 
 <BOOK>
@@ -31,14 +32,11 @@
 </COPYRIGHT>
 <LEGALNOTICE>
 <PARA>
-This material may be distributed only subject to the terms and conditions set
-forth in the Open Publication License, v1.0 or later (the latest version is
-presently available at <ULINK URL="http://www.opencontent.org/openpub/">
-http://www.opencontent.org/openpub/</ULINK>)
-and provided that neither the name of the Free Standards Group, the name
-of the Linux Standard Base, nor the names of its contributors may be
-used to endorse or promote derived works without specific prior written
-permission.
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1;
+with no Invariant Sections, with no Front-Cover Texts, and with no 
+Back-Cover Texts.  A copy of the license is included in the section 
+entitled "GNU Free Documentation License".
 </PARA>
 </LEGALNOTICE>
 <LEGALNOTICE>
@@ -63,4 +61,5 @@ with the respective license of those documents.
 &execenv.sgm;
 &sysinit.sgm;
 &appA.sgm;
+&appB.sgm;
 </BOOK>
