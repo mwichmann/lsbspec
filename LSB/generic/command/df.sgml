@@ -12,7 +12,7 @@ report filesystem disk space usage
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>df</COMMAND> is as specified in 
+The <COMMAND>df</COMMAND> command shall behave as specified in 
 <XREF LINKEND=STD.SUSv3>, but with
 differences as listed below.
 </PARA>
@@ -20,18 +20,48 @@ differences as listed below.
 
 <REFSECT1>
 <TITLE>Differences</TITLE>
+<REFSECT2>
+<TITLE>Options</TITLE>
 <PARA>
-If the <PARAMETER>-k</PARAMETER> option is not specified, disk space is shown in unspecified
-units.  Applications should specify <PARAMETER>-k</PARAMETER>.
+If the <PARAMETER>-k</PARAMETER> option is not specified, 
+disk space is shown in unspecified
+units.  If the <PARAMETER>-P</PARAMETER> option is specified,
+the size of the unit shall be printed on the header line in the format 
+<literal>"%4s-blocks"</literal>.
+Applications should specify <PARAMETER>-k</PARAMETER>.
 </PARA>
 <PARA>
-If  an argument is the absolute file name of a disk device
-node containing a mounted filesystem, <COMMAND>df</COMMAND>
-shows  the  space
+The XSI option <parameter>-t</parameter> need not be supported.
+Applications should not specify <parameter>-t</parameter>.
+<note>
+<para>
+The most common implementation of <command>df</command> uses
+the <parameter>-t</parameter> option for a different purpose
+(restricting output to a particular filesystem type), and
+use of <parameter>-t</parameter> is therefore non-portable.
+</para>
+</note>
+</PARA>
+</REFSECT2>
+<REFSECT2>
+<TITLE>Operand May Identify Special File</TITLE>
+<PARA>
+If  an argument is the absolute file name of a special file
+containing a mounted filesystem, <COMMAND>df</COMMAND>
+shall show  the  space
 available on that filesystem rather than on the filesystem
-containing the device  node  (which  is  typically  the  root
+containing the special file (which  is  typically  the  root
 filesystem).
+<NOTE>
+<PARA>
+In <XREF LINKEND="STD.SUSv3"> the XSI optional behavior permits
+an operand to name a special file, but appears to require the
+operation be performed on the filesystem containing the special file.
+A defect report has been submitted for this case.
 </PARA>
+</NOTE>
+</PARA>
+</REFSECT2>
 </REFSECT1>
 
 </REFENTRY>
