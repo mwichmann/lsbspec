@@ -12,6 +12,8 @@ TABLES=
 
 all: $(FILES) $(TABLES)
 
+source: all
+
 gensrc:
 
 clean:

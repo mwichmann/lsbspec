@@ -12,6 +12,8 @@ TABLES=standards.sgml
 
 all source: $(FILES) $(TABLES)
 
+source: all
+
 gensrc:
 	../../../mkstandardsgmltable -a S390 >standards.sgml
 

@@ -12,6 +12,8 @@ TABLES=
 
 all: $(FILES) $(TABLES)
 
+source: all
+
 gensrc:
 	../../../mkdyntagtable -a S390 -s 'S390 ABI' -c 4 >dyntag.sgml
 	../../../mkdyntagtable -a S390 -s 'LSB' -d >linuxtag.sgml
