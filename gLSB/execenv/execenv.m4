@@ -29,7 +29,7 @@ mentioned in the LSB document and included standards.
 
 <PARA>
 The application should not depend on having directory write 
-permission outside /tmp, /var/tmp, its home directory and
+permission outside /tmp, /var/tmp, invoking user's home directory and
 /var/opt/<replaceable>package</replaceable>,
 (where <replaceable>package</replaceable> is the name of the 
 application package). 
