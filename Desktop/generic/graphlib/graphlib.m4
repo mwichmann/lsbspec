@@ -17,6 +17,7 @@ include(libSM.sgml)
 include(libICE.sgml)
 
 include(libXt.sgml)
+include(libXtman.sgml)
 
 include(libGL.sgml)
 

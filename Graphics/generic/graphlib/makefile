@@ -1,6 +1,9 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
+MANPAGES=_XtCopyFromArg.sgml _XtInheritTranslations.sgml _XtInherit.sgml \
+	_XtIsSubclassOf.sgml
+
 FILES=graphlib.sgml
 TABLES= libICE.sgml libSM.sgml libX11.sgml libXext.sgml libXt.sgml libGL.sgml
 
@@ -28,3 +31,4 @@ spotless: clean
 
 
 graphlib.sgml: libX11.sgml libXext.sgml libICE.sgml libSM.sgml libXt.sgml libGL.sgml
+graphlib.sgml: $(MANPAGES)
