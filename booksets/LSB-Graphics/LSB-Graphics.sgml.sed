@@ -12,7 +12,7 @@
 
 <SET>
 <SETINFO>
-<TITLE>Linux Standard Base Graphics Specification &specversion</TITLE>
+<TITLE>Linux Standard Base Graphics Module Specification &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
