@@ -24,4 +24,6 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-utillib.sgml:  libz.sgml libcurses.sgml libutil.sgml openpty.sgml
+utillib.sgml:  libz.sgml libcurses.sgml libutil.sgml \
+	forkpty.sgml getutent_r.sgml getutid_r.sgml getutline_r.sgml \
+	login.sgml login_tty.sgml logout.sgml openpty.sgml
