@@ -49,7 +49,16 @@ print "</TGROUP>\n";
 print "</TABLE>\n";
 
 #
-# Second, get a list of the Standards that are used by this library
+# Second, Check for additional description text for the library
+#
+if(open(DESC,"<$Lname.txt" )) {
+	while(<DESC>) {
+		print $_;
+	}
+}
+
+#
+# Third, get a list of the Standards that are used by this library
 #
 print "<PARA>\n";
 $select = "SELECT DISTINCT Sfull,Sid FROM Standard,LibGroup,Interface ";
@@ -78,7 +87,7 @@ if( $lsh->numrows) {
 print "</PARA>\n";
 
 #
-# Third, get a list of the libgroups in the library
+# Fourth, get a list of the libgroups in the library
 #
 $select = "SELECT * FROM LibGroup WHERE LGlib=$Lid ORDER BY LGorder";
 $lgh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -94,7 +103,7 @@ for(1..$lgh->numrows) {
 	print "<PARA>\n";
 	print "</PARA>\n";
 #
-# Fourth, foreach group, make a table of the interfaces
+# Fifth, foreach group, make a table of the interfaces
 #
 	$select = "SELECT * FROM Interface ".
 		  "WHERE Ilibgroup=$LGid ORDER BY Iname";
@@ -241,7 +250,7 @@ if( $hdh->numrows ) {
 	print "<PARA>\n";
 	print "</PARA>\n";
 #
-# Now, get a list of all headers associate wit hthis library
+# Now, get a list of all headers associate with this library
 #
 	$select = "SELECT * FROM Headers WHERE Hlibrary=$Lid ORDER BY Hname";
 	$hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
