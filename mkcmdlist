@@ -1,0 +1,61 @@
+#!/usr/bin/perl
+
+use Getopt::Long;
+use Mysql;
+
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+
+sub usage()
+{
+print STDERR "mkcmdlist\n";
+die;
+}
+
+# Uncomment to trace SQL statments
+#$trace=1;
+
+#
+# 1) process the arguments
+#
+# Commands are not per architecture
+#GetOptions("a=s" => \$archname);
+
+#if( !$archname ) { usage(); }
+
+#
+# 2) Establish connection to the database
+#
+$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+
+printf("<!-- Start of text generated from database -->\n");
+printf("<!-- generated from the LSB specification database -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkcmdlist,v 1.1 2002-05-22 15:18:20 anderson Exp $- -->\n");
+my $now_string = localtime;
+printf("<!--    at %s -->\n", $now_string );
+
+print "<SECT1 ID=cmdbehav>\n";
+print "<TITLE>Command Behavior</TITLE>\n";
+print "<PARA>\n";
+print "This section contains descriptions for commands and utilities whose\n";
+print "specified behavior in the LSB contradicts or extends the standards\n";
+print "referenced. It also contains commands and utilities only required by\n";
+print "the LSB and not specified by other standards.\n";
+print "</PARA>\n";
+#
+# 3) get & print the library info
+#
+$select = "SELECT * FROM Command ";
+$select.= "LEFT JOIN Standard ON Sid=Cstandard ";
+$select.= "WHERE Cstatus='Included' ";
+$select.= "AND Sname='LSB'";
+$select.= "ORDER BY Cname";
+print STDERR $select,"\n" if $trace;
+$cth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+for(1..$cth->numrows) {
+	%entry=$cth->fetchhash;
+	print "include(".$entry{'Cname'}.".sgml)\n";
+}
+
+print "</SECT1>\n";
+printf("<!-- End of text generated from database -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkcmdlist,v 1.1 2002-05-22 15:18:20 anderson Exp $- -->\n");
