@@ -3,11 +3,11 @@
 <PARTINTRO>
 <PARA>
 LSB-conforming implementations shall support the object file information and
-system actions that create running programs as specified in the System V
-Application Binary Interface, Edition 4.1, the System V Application Binary
-Interface - DRAFT - April 29, 1998, System V Application Binary Interface -
-Intel386 Architecture Processor Supplement and as supplemented by the Linux
-Standard Base Specification and this document.
+system actions that create running programs as specified in the
+<XREF LINKEND="std.gABI.41"> , <XREF LINKEND="std.ABIUpdate"> ,
+<XREF LINKEND="std.IA32.ABI.4"> and as supplemented by the
+<XREF LINKEND="std.LSB">
+and this document.
 </PARA>
 </PARTINTRO>
 
@@ -55,8 +55,8 @@ The LSB specifies the Program Interpreter to be
 <SECT1 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
-The following dynamic entries are defined in the System V Application Binary
-Interface - Intel386 Architecture Processor Supplement.
+The following dynamic entries are defined in the
+<XREF LINKEND="std.IA32.ABI.4">.
 include(dyntag.sgml)
 </PARA>
 </SECT1>
