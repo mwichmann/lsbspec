@@ -14,10 +14,10 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	./mksectiontable Sname='ELF Specification' numcols=4 >elfsect.sgml
-	./mksectiontable Sname='LSB' dodesc=Y >linuxsect.sgml
-	./mksecttypestable Sname='ELF Specification' numcols=4 >elfsecttypes.sgml
-	./mksecttypestable Sname='LSB' dodesc=Y >linuxsecttypes.sgml
+	../../mksectiontable -a All -s 'ELF Specification' -c 4 >elfsect.sgml
+	../../mksectiontable -a All -s 'LSB' -d >linuxsect.sgml
+	../../mksecttypestable -a All -s 'ELF Specification' -c 4 >elfsecttypes.sgml
+	../../mksecttypestable -a All -s 'LSB' -d >linuxsecttypes.sgml
 
 clean:
 	rm -f $(FILES)
