@@ -1,7 +1,4 @@
-<PART ID="TOCINTRO">
-<TITLE>Introduction</TITLE>
-
-<CHAPTER id="OVERVIEW">
+<PREFACE id="OVERVIEW">
 <TITLE>Foreward</TITLE>
 <PARA>
 This is version &specversion; of the Linux Standard Base Specification.
@@ -17,9 +14,9 @@ to be an implementation of the Linux Standard Base unless it has successfully
 completed the compliance process as defined by the Free Standards Group.
 -->
 </PARA>
-</CHAPTER>
+</PREFACE>
 
-<CHAPTER ID="INTRO"><TITLE>Introduction</TITLE>
+<PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
 The LSB defines a binary interface for application programs that are compiled
 and packaged for LSB-conforming implementations on many different hardware
@@ -44,8 +41,10 @@ referenced by this document, or extensions to those standards, are described in
 the detail. Information referenced in this way is as much a part of this
 document as is the information explicitly included here.
 </PARA>
-</CHAPTER>
+</PREFACE>
 
+<PART ID="TOCINTRO">
+<TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
@@ -70,7 +69,7 @@ that share a common hardware architecture.
 <PARA>
 This document is the generic LSB. It shall be used in conjunction with an
 architecture-specific supplement. Whenever a section of this specification
-must be supplemented by architecture-specific information, this document
+shall be supplemented by architecture-specific information, this document
 includes a reference to the architecture supplement. Architecture supplements
 may also contain additional information that is not referenced here.
 </PARA>
@@ -94,21 +93,6 @@ the specification is to be considered normative.
 include(standards.sgml)
 </TGROUP>
 </TABLE>
-</CHAPTER>
-
-<CHAPTER ID="howto">
-<TITLE>How to Use this Standard</TITLE>
-<PARA>
-The complete LSB specification is composed of this generic LSB specification 
-and the supplemental processor-specific specification for a particular 
-processor architecture. These two documents constitute a specification that 
-should be used in conjunction with the publicly-available standards documents 
-it references. The LSB enumerates the system components it includes, but 
-descriptions of those components may be included entirely in the LSB, partly 
-in the LSB and partly in other documents, or entirely in other reference 
-documents.  Its executable files are either shell scripts or object files in 
-the format defined for the Object File Format system interface.
-</PARA>
 </CHAPTER>
 
 <CHAPTER ID="REQUIREMENTS">
@@ -263,38 +247,6 @@ It shall not use any values for a named interface that are reserved for vendor e
 </LISTITEM></ITEMIZEDLIST>
 
 A strictly conforming application does not require or use any interface, facility, or implementation-defined extension that is not defined in this document in order to be installed or to execute successfully. 
-</PARA>
-</SECT1>
-	<SECT1 ID="RATIONALE"><TITLE>Rationale</TITLE>
-	<PARA>
-An LSB conforming application is expected to have no dependencies on any 
-vendor extensions to this document. The most common such extensions are 
-additional function entry points and additional libraries other than the 
-ones defined in this document. If an application requires such extensions, 
-it is not portable, since other LSB conforming implementations may not 
-provide those extensions. 
-</PARA>
-<PARA>
-An LSB conforming application is required to use system services on the 
-implementation on which it is running, rather than importing system 
-routines from some other implementation. Thus, it shall link dynamically 
-to any routines in the implementation that perform system traps to 
-kernel services. 
-</PARA>
-<PARA>
-It is to be expected that some applications may be companion applications 
-to other applications. For example, a query application may be a 
-companion to a database application; a preprocessor may be an adjunct 
-to one or more compilers; a data reformatter may convert data from one 
-document manager to another. In such cases, the application may or may 
-not be LSB conforming, regardless of whether the other application on 
-which it is dependent is LSB conforming. If such an application merely 
-uses data produced by another application, the application's compliance is 
-independent of the other application's compliance. If such an application 
-actually invokes another application during execution (as, for example, 
-a third-party math library), the invoking application is LSB conforming
-only if it also constitutes a LSB conforming application in combination 
-with the invoked application. 
 </PARA>
 </SECT1>
 </CHAPTER>
