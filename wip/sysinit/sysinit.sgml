@@ -109,7 +109,7 @@ saying what to do:
 <MEMBER>stop</MEMBER><MEMBER>stop the service</MEMBER>
 <MEMBER>restart</MEMBER><MEMBER>stop and restart the service if the service
 is already running, otherwise start the service</MEMBER>
-<MEMBER>try-restart</MEMBER> restart the service if the service
+<MEMBER>try-restart</MEMBER><MEMBER>restart the service if the service
 is already running</MEMBER>
 <MEMBER>reload</MEMBER><MEMBER>cause the configuration of the service to be
 reloaded without actually stopping and restarting the service</MEMBER>
@@ -119,7 +119,7 @@ if the service supports this, otherwise restart the service</MEMBER>
 </SIMPLELIST>
 <PARA>
 The start, stop, restart, force-reload, and status commands must be
-supported by all init files; the reload and the try-restart options are optional.  Other init
+supported by all init files; the reload and the try-restart options are optional.  Other init 
 script actions may be defined by the init script.
 </PARA>
 <PARA>
@@ -263,6 +263,8 @@ defined in this specification:
 	# Provides: boot_facility_1 [ boot_facility_2 ...]
 	# Required-Start: boot_facility_1 [ boot_facility_2 ...]
 	# Required-Stop: boot_facility_1 [ boot_facility_2 ...]
+	# Should-Start: boot_facility_1 [ boot_facility_2 ...]
+	# Should-Stop: boot_facility_1 [ boot_facility_2 ...]
 	# Default-Start: run_level_1 [ run_level_2 ...]
 	# Default-Stop: run_level_1 [ run_level_2 ...]
 	# Short-Description: short_description
@@ -299,6 +301,19 @@ those facilities until this shell script is stopped.
 </PARA>
 
 <PARA>
+The "Should-Start:" header defines which facilities if present should
+be started before this service. This allows for weak dependencies which
+do not cause the service to fail if a facility is not available.
+But may cause reduced functionality of the service.
+Compliant applications should not rely on the existence of this feature.
+</PARA>
+
+<PARA>
+The "Should-Stop:" header defines which facilities should be still
+available during the shutdown of that service.
+</PARA>
+
+<PARA>
 The "Default-Start" and "Default-Stop" headers define which run levels
 should by default run the script with a start or stop argument,
 respectively, to start or stop the services controlled by the init script.
@@ -321,17 +336,6 @@ The comment conventions described in this session are only required for
 use by LSB-compliant applications; system init scripts as provided by
 LSB-compliant run-time environments are <emphasis>not</emphasis> 
 required to use the scheme outlined here.
-<FOOTNOTE><PARA>
-While these comment conventions do not prohibited in system
-init scripts, they do not provide sufficient functionality for most
-distributions' needs.  Extensions which would addressed these needs (for 
-example, "Should-Start:" and "Should-Stop:") would have substantially
-complicated the design of the install_initd script, which is why they
-were not included in this specification.  Future versions of this
-specification may extend these comment conventions to add this
-functionality, if and when reference implementations which implement
-these extensions become available for use by distributions.
-</PARA></FOOTNOTE>
 </PARA>
 
 </SECT1>
@@ -583,9 +587,12 @@ named "daemon" already running.  If so, it will not
 start another copy of the daemon unless the -f
 option is given. The -n option specifies a nice
 level. See nice(1).
+start_daemon should return the LSB defined exit status codes. It
+shall return 0 if the program has been successfully started or
+is running and not 0 otherwise.
 </MEMBER>
 
-<MEMBER>killproc basename [signal]</MEMBER>
+<MEMBER>killproc [-p pidfile] pathname [signal]</MEMBER>
 
 <MEMBER>
 This stops the specified program. The program is 
@@ -597,14 +604,22 @@ specified by the <command>kill</command> command,
 the program is sent that signal.
 Otherwise, a SIGTERM followed by a SIGKILL
 after some number of seconds is sent.
+Compliant applications may use the basename instead of the 
+pathname.
+killproc should return the LSB defined exit status codes. It
+shall return 0 if the program has been stopped or is not running
+and not 0 otherwise. 
 </MEMBER>
 
-<MEMBER>pidofproc basename</MEMBER>
+<MEMBER>pidofproc [-p pidfile] pathname</MEMBER>
 
 <MEMBER>
 This function returns one or more pid(s) for a particular
 daemon. If an entry is found in
 /var/run/basename.pid, then that value is returned.
+If the -p option is used, the given pidfile is used instead.
+Compliant applications may use the basename instead of the
+pathname.
 Compliant implementations of the LSB may attempt
 other mechanisms for determining the pid(s),
 although this is not required (and not
@@ -615,6 +630,9 @@ potential security exposure).  Hence, LSB-complaint
 applications who wish to use the pidofproc function
 in their init scripts must store the pid in
 /var/run/basename.pid.
+pidofproc should return the LSB defined exist status
+codes for "status". It shall return 0 if the program is
+the process is running and not 0 otherwise.
 </MEMBER>
 
 <MEMBER>log_success_msg "message"</MEMBER>
