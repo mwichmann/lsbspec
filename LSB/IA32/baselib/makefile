@@ -1,7 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES=
+MANPAGES= __divdi3.sgml ioperm.sgml iopl.sgml 
 
 FILES=baselib.sgml libc.sgml libm.sgml 
 
