@@ -139,7 +139,9 @@ architecture-specific specification.
 The libraries listed in <XREF LINKEND='TBLTARGET`> shall
 be available on 'ARCH` Linux Standard Base systems, with the specified
 runtime names. These names override or supplement the names specified
-in the generic LSB specification.
+in the generic LSB specification. The dynamic linker and loader, referred to
+as proginterp in this table,
+shall be used to load these shared libraries at run time.
 ')
 </PARA>
 <TABLE ID=TBLTARGET>
