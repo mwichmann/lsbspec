@@ -9,7 +9,7 @@ LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the System V
 Application Binary Interface, Edition 4.1 and the System V Application Binary
 Interface - DRAFT - April 29, 1998 and as supplemented by this document and
-an architecture specific LSB specification.
+an architecture-specific LSB specification.
 </PARA>
 
 <PARA>
@@ -59,8 +59,8 @@ Program Interpreter
 <TITLE>
 </TITLE>
 <PARA>
-The Program Interpreter is specified in the appropriate architecture
-specific LSB specification.
+The Program Interpreter is specified in the appropriate
+architecture-specific LSB specification.
 </PARA>
 </SECT1>
 </CHAPTER>
