@@ -1,6 +1,6 @@
-Linux Standard Base Work In Progress 20030723
+Linux Standard Base Work In Progress 20030901
 
-Copyright © 2000, 2001, 2002, 2003 by Free Standards Group
+Copyright © 2000, 2001, 2002, 2003 Free Standards Group
 
 Permission is granted to copy, distribute and/or modify this document under the
 terms of the GNU Free Documentation License, Version 1.1; with no Invariant
@@ -87,6 +87,12 @@ List of Tables
 2-1. Scalar Types
 2-2. Class Components
 
+List of Figures
+2-1. Vitual Table Prefix
+2-2. Run-Time Type Information Prefix
+2-3. Construction Cirtual Table Prefix
+2-4. Virtual Type Table Prefix
+
 I. Introduction
 
 Table of Contents
@@ -98,7 +104,7 @@ Chapter 1. Introduction
 
 Introduction
 
-This is the Linux Standard Base Work In Progress 20030723 . An implementation
+This is the Linux Standard Base Work In Progress 20030901 . An implementation
 of anything in this document may not claim to be an implementation of the Linux
 Standard Base until such time as the feature moves into the Linux Standards
 Base Specification.
@@ -190,8 +196,8 @@ Table 1-1. Related Standards
 |------------------------------------------------+----------------------------|
 |Linux Assigned Names And Numbers Authority      |http://www.lanana.org/      |
 |------------------------------------------------+----------------------------|
-|Large File Support                              |http://www.UNIX-systems.org/|
-|                                                |version2/whatsnew/          |
+|                                                |http://www.UNIX-systems.org/|
+|Large File Support                              |version2/whatsnew/          |
 |                                                |lfs20mar.html               |
 |------------------------------------------------+----------------------------|
 |LI18NUX 2000 Globalization Specification,       |http://www.li18nux.org/docs/|
@@ -203,8 +209,8 @@ Table 1-1. Related Standards
 |OpenGL® Application Binary Interface for Linux  |http://oss.sgi.com/projects/|
 |                                                |ogl-sample/ABI/             |
 |------------------------------------------------+----------------------------|
-|OSF-RFC 86.0                                    |http://www.opengroup.org/   |
-|                                                |tech/rfc/mirror-rfc/        |
+|                                                |http://www.opengroup.org/   |
+|OSF-RFC 86.0                                    |tech/rfc/mirror-rfc/        |
 |                                                |rfc86.0.txt                 |
 |------------------------------------------------+----------------------------|
 |IEEE Std POSIX 1003.2-1992 (ISO/IEC 9945-2:1993)|http://www.ieee.org/        |
@@ -228,8 +234,8 @@ Table 1-1. Related Standards
 |Utilities (XCU), Issue 5 (ISBN: 1-85912-191-8,  |publications/catalog/un.htm |
 |C604)                                           |                            |
 |------------------------------------------------+----------------------------|
-|CAE Specification, February 1997, Networking    |http://www.opengroup.org/   |
-|Services (XNS), Issue 5(ISBN: 1-85912-165-9,    |                            |
+|CAE Specification, February 1997, Networking    |                            |
+|Services (XNS), Issue 5(ISBN: 1-85912-165-9,    |http://www.opengroup.org/   |
 |C523)                                           |                            |
 |------------------------------------------------+----------------------------|
 |CAE Specification, January 1997, System         |http://www.opengroup.org/   |
@@ -290,7 +296,7 @@ specifications.
 Table 1-2. Standard Libraries Names
 
 +---------------------------+
-|Library   |Runtime Name    |
+| Library  |  Runtime Name  |
 |----------+----------------|
 |libX11    |libX11.so.6     |
 |----------+----------------|
@@ -327,7 +333,7 @@ Table 1-3. Standard Library Names defined in the Architecture Specific
 Supplement
 
 +------------------------+
-|Library   |Runtime Name |
+| Library  |Runtime Name |
 |----------+-------------|
 |libm      |See archLSB  |
 |----------+-------------|
@@ -384,7 +390,7 @@ types are defined here.
 Table 2-1. Scalar Types
 
 +---------------------------------------------------------------------------+
-|Type    |C                 |sizeof|Alignment (bytes)|IntelI386 Architecture|
+|  Type  |        C         |sizeof|Alignment (bytes)|IntelI386 Architecture|
 |--------+------------------+------+-----------------+----------------------|
 |Boolean |bool              |1     |1                |signed byte           |
 |--------+------------------+------+-----------------+----------------------|
@@ -420,12 +426,12 @@ A C++ Class is represented by several closely related data objects.
 Table 2-2. Class Components
 
 +-----------------------------------------------------------------------------+
-|Object        |Contains                                                      |
+|    Object    |                           Contains                           |
 |--------------+--------------------------------------------------------------|
 |Class Data    |All non-static Class members                                  |
 |--------------+--------------------------------------------------------------|
-|Virtual Table |Information needed to dispatch virtual functions, access      |
-|              |virtual base class subobjects and to access the RTTI          |
+|              |Information needed to dispatch virtual functions, access      |
+|Virtual Table |virtual base class subobjects and to access the RTTI          |
 |              |information                                                   |
 |--------------+--------------------------------------------------------------|
 |RTTI          |Run-Time Type Information used by the typeid and dynamic_cast |
@@ -444,7 +450,68 @@ Table 2-2. Class Components
 
 Class Ordering
 
-Derived classes
+Derived classes have a unique linear ordering of all base classes. This
+ordering is determined from the application ofthe folowing rules to the class
+definition.
+
+    Note: Fill in algorithm from Itanium C++ ABI document
+   
+-------------------------------------------------------------------------------
+
+Class Data
+
+Non-static class members are arranged as if in a C structure according to the
+following rules.
+
+    Note: Fill in algorithm from Itanium C++ ABI document
+   
+-------------------------------------------------------------------------------
+
+Virtual Table
+
+Figure 2-1. Vitual Table Prefix
+
+struct {
+       ptrdiff_t  baseobject;
+       const void *typeinfo;
+       const void *virtfuncs[0];
+       };
+
+-------------------------------------------------------------------------------
+
+Run-Time Type Information
+
+Figure 2-2. Run-Time Type Information Prefix
+
+struct {
+       void      *basevtable;
+       char      *__name;
+       void      *basetypeinfo[0];
+       };
+
+-------------------------------------------------------------------------------
+
+Typeinfo Name
+
+-------------------------------------------------------------------------------
+
+Construction Virtual Table
+
+Figure 2-3. Construction Cirtual Table Prefix
+
+struct {
+       ????
+       };
+
+-------------------------------------------------------------------------------
+
+Virtual Type Tables
+
+Figure 2-4. Virtual Type Table Prefix
+
+struct {
+       ???
+       };
 
 -------------------------------------------------------------------------------
 

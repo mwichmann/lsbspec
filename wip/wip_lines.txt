@@ -1,6 +1,6 @@
-     1	Linux Standard Base Work In Progress 20030723
+     1	Linux Standard Base Work In Progress 20030901
      2	
-     3	Copyright © 2000, 2001, 2002, 2003 by Free Standards Group
+     3	Copyright © 2000, 2001, 2002, 2003 Free Standards Group
      4	
      5	Permission is granted to copy, distribute and/or modify this document under the
      6	terms of the GNU Free Documentation License, Version 1.1; with no Invariant
@@ -87,578 +87,645 @@
     87	2-1. Scalar Types
     88	2-2. Class Components
     89	
-    90	I. Introduction
-    91	
-    92	Table of Contents
-    93	1. Introduction
-    94	
-    95	-------------------------------------------------------------------------------
-    96	
-    97	Chapter 1. Introduction
-    98	
-    99	Introduction
+    90	List of Figures
+    91	2-1. Vitual Table Prefix
+    92	2-2. Run-Time Type Information Prefix
+    93	2-3. Construction Cirtual Table Prefix
+    94	2-4. Virtual Type Table Prefix
+    95	
+    96	I. Introduction
+    97	
+    98	Table of Contents
+    99	1. Introduction
    100	
-   101	This is the Linux Standard Base Work In Progress 20030723 . An implementation
-   102	of anything in this document may not claim to be an implementation of the Linux
-   103	Standard Base until such time as the feature moves into the Linux Standards
-   104	Base Specification.
-   105	
-   106	-------------------------------------------------------------------------------
-   107	
-   108	Purpose
-   109	
-   110	The Linux Standard Base (LSB) defines a system interface for compiled
-   111	applications and a minimal environment for support of installation scripts. Its
-   112	purpose is to enable a uniform industry standard environment for high-volume
-   113	applications conforming to the LSB.
-   114	
-   115	The LSB defines a binary interface for application programs that are compiled
-   116	and packaged for LSB-conforming implementations on many different hardware
-   117	architectures. Since a binary specification must include information specific
-   118	to the computer processor architecture for which it is intended, it is not
-   119	possible for a single document to specify the interface for all possible
-   120	LSB-conforming implementations. Therefore, the LSB is a family of
-   121	specifications, rather than a single one.
-   122	
-   123	The LSB is composed of two basic parts: A common specification ("generic LSB"
-   124	or "gLSB") describing those parts of the interface that remain constant across
-   125	all implementations of the LSB, and an architecture-specific specification
-   126	("archLSB") describing the parts of the interface that vary by processor
-   127	architecture. Together, the generic LSB and the architecture-specific
-   128	supplement for a single hardware architecture provide a complete interface
-   129	specification for compiled application programs on systems that share a common
-   130	hardware architecture.
-   131	
-   132	This document is the generic LSB. It must be used in conjunction with an
-   133	architecture-specific supplement. Whenever a section of this specification must
-   134	be supplemented by architecture-specific information, this document includes a
-   135	reference to the architecture supplement. Architecture supplements may also
-   136	contain additional information that is not referenced here.
+   101	-------------------------------------------------------------------------------
+   102	
+   103	Chapter 1. Introduction
+   104	
+   105	Introduction
+   106	
+   107	This is the Linux Standard Base Work In Progress 20030901 . An implementation
+   108	of anything in this document may not claim to be an implementation of the Linux
+   109	Standard Base until such time as the feature moves into the Linux Standards
+   110	Base Specification.
+   111	
+   112	-------------------------------------------------------------------------------
+   113	
+   114	Purpose
+   115	
+   116	The Linux Standard Base (LSB) defines a system interface for compiled
+   117	applications and a minimal environment for support of installation scripts. Its
+   118	purpose is to enable a uniform industry standard environment for high-volume
+   119	applications conforming to the LSB.
+   120	
+   121	The LSB defines a binary interface for application programs that are compiled
+   122	and packaged for LSB-conforming implementations on many different hardware
+   123	architectures. Since a binary specification must include information specific
+   124	to the computer processor architecture for which it is intended, it is not
+   125	possible for a single document to specify the interface for all possible
+   126	LSB-conforming implementations. Therefore, the LSB is a family of
+   127	specifications, rather than a single one.
+   128	
+   129	The LSB is composed of two basic parts: A common specification ("generic LSB"
+   130	or "gLSB") describing those parts of the interface that remain constant across
+   131	all implementations of the LSB, and an architecture-specific specification
+   132	("archLSB") describing the parts of the interface that vary by processor
+   133	architecture. Together, the generic LSB and the architecture-specific
+   134	supplement for a single hardware architecture provide a complete interface
+   135	specification for compiled application programs on systems that share a common
+   136	hardware architecture.
    137	
-   138	This document should be used in conjunction with the documents it references.
-   139	This document enumerates the system components it includes, but descriptions of
-   140	those components may be included entirely or partly in this document, partly in
-   141	other documents, or entirely in other reference documents. For example, the
-   142	section that describes system service routines includes a list of the system
-   143	routines supported in this interface, formal declarations of the data
-   144	structures they use that are visible to applications, and a pointer to the
-   145	underlying referenced specification for information about the syntax and
-   146	semantics of each call. Only those routines not described in standards
-   147	referenced by this document, or extensions to those standards, are described in
-   148	the detail. Information referenced in this way is as much a part of this
-   149	document as is the information explicitly included here.
-   150	
-   151	-------------------------------------------------------------------------------
-   152	
-   153	Related Standards
-   154	
-   155	The specifications listed below are referenced in whole or in part by the Linux
-   156	Standard Base. When a specification is referenced in a way that imposes a
-   157	requirement (for example, "foo must behave as specified in the XyzzySpec"),
-   158	then the relevant requirements of that specification apply as if they were part
-   159	of the LSB itself. However, if the LSB refers to a specification without
-   160	imposing a requirement, then it is merely a reference and does not add
-   161	additional requirements. The LSB may refer to a portion of a specification (for
-   162	example, to define a specific function or group of functions); in such cases,
-   163	only the explicitly referenced portion of the specification applies.
-   164	
-   165	Table 1-1. Related Standards
-   166	
-   167	+-----------------------------------------------------------------------------+
-   168	|System V Application Binary Interface - DRAFT - |http://www.caldera.com/     |
-   169	|22 June 2000                                    |developers/gabi/2000-07-17/ |
-   170	|                                                |contents.html               |
-   171	|------------------------------------------------+----------------------------|
-   172	|DWARF Debugging Information Format, Revision    |                            |
-   173	|2.0.0 (July 27, 1993)                           |                            |
-   174	|------------------------------------------------+----------------------------|
-   175	|Filesystem Hierarchy Standard (FHS) 2.2         |http://www.pathname.com/fhs/|
-   176	|------------------------------------------------+----------------------------|
-   177	|IEEE Standard for Binary Floating-Point         |http://www.ieee.org/        |
-   178	|Arithmetic                                      |                            |
-   179	|------------------------------------------------+----------------------------|
-   180	|System V Application Binary Interface, Edition  |http://www.caldera.com/     |
-   181	|4.1                                             |developers/devspecs/        |
-   182	|                                                |gabi41.pdf                  |
-   183	|------------------------------------------------+----------------------------|
-   184	|ISO/IEC 9899: 1990, Programming Languages --C   |                            |
+   138	This document is the generic LSB. It must be used in conjunction with an
+   139	architecture-specific supplement. Whenever a section of this specification must
+   140	be supplemented by architecture-specific information, this document includes a
+   141	reference to the architecture supplement. Architecture supplements may also
+   142	contain additional information that is not referenced here.
+   143	
+   144	This document should be used in conjunction with the documents it references.
+   145	This document enumerates the system components it includes, but descriptions of
+   146	those components may be included entirely or partly in this document, partly in
+   147	other documents, or entirely in other reference documents. For example, the
+   148	section that describes system service routines includes a list of the system
+   149	routines supported in this interface, formal declarations of the data
+   150	structures they use that are visible to applications, and a pointer to the
+   151	underlying referenced specification for information about the syntax and
+   152	semantics of each call. Only those routines not described in standards
+   153	referenced by this document, or extensions to those standards, are described in
+   154	the detail. Information referenced in this way is as much a part of this
+   155	document as is the information explicitly included here.
+   156	
+   157	-------------------------------------------------------------------------------
+   158	
+   159	Related Standards
+   160	
+   161	The specifications listed below are referenced in whole or in part by the Linux
+   162	Standard Base. When a specification is referenced in a way that imposes a
+   163	requirement (for example, "foo must behave as specified in the XyzzySpec"),
+   164	then the relevant requirements of that specification apply as if they were part
+   165	of the LSB itself. However, if the LSB refers to a specification without
+   166	imposing a requirement, then it is merely a reference and does not add
+   167	additional requirements. The LSB may refer to a portion of a specification (for
+   168	example, to define a specific function or group of functions); in such cases,
+   169	only the explicitly referenced portion of the specification applies.
+   170	
+   171	Table 1-1. Related Standards
+   172	
+   173	+-----------------------------------------------------------------------------+
+   174	|System V Application Binary Interface - DRAFT - |http://www.caldera.com/     |
+   175	|22 June 2000                                    |developers/gabi/2000-07-17/ |
+   176	|                                                |contents.html               |
+   177	|------------------------------------------------+----------------------------|
+   178	|DWARF Debugging Information Format, Revision    |                            |
+   179	|2.0.0 (July 27, 1993)                           |                            |
+   180	|------------------------------------------------+----------------------------|
+   181	|Filesystem Hierarchy Standard (FHS) 2.2         |http://www.pathname.com/fhs/|
+   182	|------------------------------------------------+----------------------------|
+   183	|IEEE Standard for Binary Floating-Point         |http://www.ieee.org/        |
+   184	|Arithmetic                                      |                            |
    185	|------------------------------------------------+----------------------------|
-   186	|ISO/IEC 9899: 1999, Programming Languages --C   |                            |
-   187	|------------------------------------------------+----------------------------|
-   188	|ISO/IEC 14882: 1998(E) Programming languages    |                            |
-   189	|--C++                                           |                            |
-   190	|------------------------------------------------+----------------------------|
-   191	|Linux Assigned Names And Numbers Authority      |http://www.lanana.org/      |
-   192	|------------------------------------------------+----------------------------|
-   193	|Large File Support                              |http://www.UNIX-systems.org/|
-   194	|                                                |version2/whatsnew/          |
-   195	|                                                |lfs20mar.html               |
+   186	|System V Application Binary Interface, Edition  |http://www.caldera.com/     |
+   187	|4.1                                             |developers/devspecs/        |
+   188	|                                                |gabi41.pdf                  |
+   189	|------------------------------------------------+----------------------------|
+   190	|ISO/IEC 9899: 1990, Programming Languages --C   |                            |
+   191	|------------------------------------------------+----------------------------|
+   192	|ISO/IEC 9899: 1999, Programming Languages --C   |                            |
+   193	|------------------------------------------------+----------------------------|
+   194	|ISO/IEC 14882: 1998(E) Programming languages    |                            |
+   195	|--C++                                           |                            |
    196	|------------------------------------------------+----------------------------|
-   197	|LI18NUX 2000 Globalization Specification,       |http://www.li18nux.org/docs/|
-   198	|Version 1.0 with Amendment 4                    |html/LI18NUX-2000-amd4.htm  |
-   199	|------------------------------------------------+----------------------------|
-   200	|Linux Standard Base                             |http://www.linuxbase.org/   |
-   201	|                                                |spec/                       |
+   197	|Linux Assigned Names And Numbers Authority      |http://www.lanana.org/      |
+   198	|------------------------------------------------+----------------------------|
+   199	|                                                |http://www.UNIX-systems.org/|
+   200	|Large File Support                              |version2/whatsnew/          |
+   201	|                                                |lfs20mar.html               |
    202	|------------------------------------------------+----------------------------|
-   203	|OpenGL® Application Binary Interface for Linux  |http://oss.sgi.com/projects/|
-   204	|                                                |ogl-sample/ABI/             |
+   203	|LI18NUX 2000 Globalization Specification,       |http://www.li18nux.org/docs/|
+   204	|Version 1.0 with Amendment 4                    |html/LI18NUX-2000-amd4.htm  |
    205	|------------------------------------------------+----------------------------|
-   206	|OSF-RFC 86.0                                    |http://www.opengroup.org/   |
-   207	|                                                |tech/rfc/mirror-rfc/        |
-   208	|                                                |rfc86.0.txt                 |
-   209	|------------------------------------------------+----------------------------|
-   210	|IEEE Std POSIX 1003.2-1992 (ISO/IEC 9945-2:1993)|http://www.ieee.org/        |
+   206	|Linux Standard Base                             |http://www.linuxbase.org/   |
+   207	|                                                |spec/                       |
+   208	|------------------------------------------------+----------------------------|
+   209	|OpenGL® Application Binary Interface for Linux  |http://oss.sgi.com/projects/|
+   210	|                                                |ogl-sample/ABI/             |
    211	|------------------------------------------------+----------------------------|
-   212	|POSIX 1003.1c                                   |http://www.ieee.org/        |
-   213	|------------------------------------------------+----------------------------|
-   214	|RFC 1952: GZIP file format specification version|http://www.ietf.org/rfc/    |
-   215	|4.3                                             |rfc1952.txt                 |
-   216	|------------------------------------------------+----------------------------|
-   217	|RFC 2440: OpenPGP Message Format                |                            |
-   218	|------------------------------------------------+----------------------------|
-   219	|CAE Specification, May 1996, X/Open Curses,     |http://www.opengroup.org/   |
-   220	|Issue 4, Version 2 (ISBN: 1-85912-171-3, C610), |publications/catalog/un.htm |
-   221	|plus Corrigendum U018                           |                            |
+   212	|                                                |http://www.opengroup.org/   |
+   213	|OSF-RFC 86.0                                    |tech/rfc/mirror-rfc/        |
+   214	|                                                |rfc86.0.txt                 |
+   215	|------------------------------------------------+----------------------------|
+   216	|IEEE Std POSIX 1003.2-1992 (ISO/IEC 9945-2:1993)|http://www.ieee.org/        |
+   217	|------------------------------------------------+----------------------------|
+   218	|POSIX 1003.1c                                   |http://www.ieee.org/        |
+   219	|------------------------------------------------+----------------------------|
+   220	|RFC 1952: GZIP file format specification version|http://www.ietf.org/rfc/    |
+   221	|4.3                                             |rfc1952.txt                 |
    222	|------------------------------------------------+----------------------------|
-   223	|CAE Specification, January 1997, System         |http://www.opengroup.org/   |
-   224	|Interface Definitions (XBD),Issue 5 (ISBN:      |publications/catalog/un.htm |
-   225	|1-85912-186-1, C605)                            |                            |
-   226	|------------------------------------------------+----------------------------|
-   227	|CAE Specification, January 1997, Commands and   |http://www.opengroup.org/   |
-   228	|Utilities (XCU), Issue 5 (ISBN: 1-85912-191-8,  |publications/catalog/un.htm |
-   229	|C604)                                           |                            |
-   230	|------------------------------------------------+----------------------------|
-   231	|CAE Specification, February 1997, Networking    |http://www.opengroup.org/   |
-   232	|Services (XNS), Issue 5(ISBN: 1-85912-165-9,    |                            |
-   233	|C523)                                           |                            |
-   234	|------------------------------------------------+----------------------------|
-   235	|CAE Specification, January 1997, System         |http://www.opengroup.org/   |
-   236	|Interfaces and Headers (XSH),Issue 5 (ISBN:     |publications/catalog/un.htm |
-   237	|1-85912-181-0, C606)                            |                            |
-   238	|------------------------------------------------+----------------------------|
-   239	|The Single UNIX® Specification(SUS) Version 1   |http://www.opengroup.org/   |
-   240	|(UNIX 95) System Interfaces & Headers           |publications/catalog/un.htm |
-   241	|------------------------------------------------+----------------------------|
-   242	|The Single UNIX® Specification(SUS) Version 3   |http://www.unix.org/version3|
-   243	|                                                |/                           |
+   223	|RFC 2440: OpenPGP Message Format                |                            |
+   224	|------------------------------------------------+----------------------------|
+   225	|CAE Specification, May 1996, X/Open Curses,     |http://www.opengroup.org/   |
+   226	|Issue 4, Version 2 (ISBN: 1-85912-171-3, C610), |publications/catalog/un.htm |
+   227	|plus Corrigendum U018                           |                            |
+   228	|------------------------------------------------+----------------------------|
+   229	|CAE Specification, January 1997, System         |http://www.opengroup.org/   |
+   230	|Interface Definitions (XBD),Issue 5 (ISBN:      |publications/catalog/un.htm |
+   231	|1-85912-186-1, C605)                            |                            |
+   232	|------------------------------------------------+----------------------------|
+   233	|CAE Specification, January 1997, Commands and   |http://www.opengroup.org/   |
+   234	|Utilities (XCU), Issue 5 (ISBN: 1-85912-191-8,  |publications/catalog/un.htm |
+   235	|C604)                                           |                            |
+   236	|------------------------------------------------+----------------------------|
+   237	|CAE Specification, February 1997, Networking    |                            |
+   238	|Services (XNS), Issue 5(ISBN: 1-85912-165-9,    |http://www.opengroup.org/   |
+   239	|C523)                                           |                            |
+   240	|------------------------------------------------+----------------------------|
+   241	|CAE Specification, January 1997, System         |http://www.opengroup.org/   |
+   242	|Interfaces and Headers (XSH),Issue 5 (ISBN:     |publications/catalog/un.htm |
+   243	|1-85912-181-0, C606)                            |                            |
    244	|------------------------------------------------+----------------------------|
-   245	|System V Interface Definition, Issue 3 (ISBN    |                            |
-   246	|0201566524)                                     |                            |
+   245	|The Single UNIX® Specification(SUS) Version 1   |http://www.opengroup.org/   |
+   246	|(UNIX 95) System Interfaces & Headers           |publications/catalog/un.htm |
    247	|------------------------------------------------+----------------------------|
-   248	|System V Interface Definition,Fourth Edition    |                            |
-   249	|------------------------------------------------+----------------------------|
-   250	|Double Buffer Extension Library                 |http://www.x.org/           |
-   251	|------------------------------------------------+----------------------------|
-   252	|X Display Power Management Signaling (DPMS)     |http://www.x.org/           |
-   253	|Extension, Library Specification                |                            |
-   254	|------------------------------------------------+----------------------------|
-   255	|X Record Extension Library                      |http://www.x.org/           |
-   256	|------------------------------------------------+----------------------------|
-   257	|Security Extension Specification, Version 7.1   |http://www.x.org/           |
-   258	|------------------------------------------------+----------------------------|
-   259	|X Nonrectangular Window Shape Extension Library |http://www.x.org/           |
-   260	|Version 1.0                                     |                            |
-   261	|------------------------------------------------+----------------------------|
-   262	|MIT-SHM--The MIT Shared Memory Extension        |http://www.x.org/           |
-   263	|------------------------------------------------+----------------------------|
-   264	|X Synchronization Extension Library             |http://www.x.org/           |
-   265	|------------------------------------------------+----------------------------|
-   266	|XTEST Extension Library                         |http://www.x.org/           |
+   248	|The Single UNIX® Specification(SUS) Version 3   |http://www.unix.org/version3|
+   249	|                                                |/                           |
+   250	|------------------------------------------------+----------------------------|
+   251	|System V Interface Definition, Issue 3 (ISBN    |                            |
+   252	|0201566524)                                     |                            |
+   253	|------------------------------------------------+----------------------------|
+   254	|System V Interface Definition,Fourth Edition    |                            |
+   255	|------------------------------------------------+----------------------------|
+   256	|Double Buffer Extension Library                 |http://www.x.org/           |
+   257	|------------------------------------------------+----------------------------|
+   258	|X Display Power Management Signaling (DPMS)     |http://www.x.org/           |
+   259	|Extension, Library Specification                |                            |
+   260	|------------------------------------------------+----------------------------|
+   261	|X Record Extension Library                      |http://www.x.org/           |
+   262	|------------------------------------------------+----------------------------|
+   263	|Security Extension Specification, Version 7.1   |http://www.x.org/           |
+   264	|------------------------------------------------+----------------------------|
+   265	|X Nonrectangular Window Shape Extension Library |http://www.x.org/           |
+   266	|Version 1.0                                     |                            |
    267	|------------------------------------------------+----------------------------|
-   268	|X11R6.4 X Inter-Client Exchange (ICE) Protocol  |http://www.x.org/           |
+   268	|MIT-SHM--The MIT Shared Memory Extension        |http://www.x.org/           |
    269	|------------------------------------------------+----------------------------|
-   270	|X11R6.4 X11 Input Extension Library             |http://www.x.org/           |
+   270	|X Synchronization Extension Library             |http://www.x.org/           |
    271	|------------------------------------------------+----------------------------|
-   272	|X11R6.4 Xlib - C library                        |http://www.x.org/           |
+   272	|XTEST Extension Library                         |http://www.x.org/           |
    273	|------------------------------------------------+----------------------------|
-   274	|X/Open Portability Guide, Issue 4               |http://www.opengroup.org/   |
+   274	|X11R6.4 X Inter-Client Exchange (ICE) Protocol  |http://www.x.org/           |
    275	|------------------------------------------------+----------------------------|
-   276	|X11R6.4 X Session Management Library            |http://www.x.org/           |
+   276	|X11R6.4 X11 Input Extension Library             |http://www.x.org/           |
    277	|------------------------------------------------+----------------------------|
-   278	|X11R6.4 X Toolkit Intrinsics                    |http://www.x.org/           |
+   278	|X11R6.4 Xlib - C library                        |http://www.x.org/           |
    279	|------------------------------------------------+----------------------------|
-   280	|zlib 1.1.3 Manual                               |http://www.gzip.org/zlib/   |
-   281	+-----------------------------------------------------------------------------+
-   282	-------------------------------------------------------------------------------
-   283	
-   284	Relevant Libraries
-   285	
-   286	The libraries listed here shall be available on a Linux Standard Base system.
-   287	This list may be supplemented or amended by the architecture-specific
-   288	specifications.
+   280	|X/Open Portability Guide, Issue 4               |http://www.opengroup.org/   |
+   281	|------------------------------------------------+----------------------------|
+   282	|X11R6.4 X Session Management Library            |http://www.x.org/           |
+   283	|------------------------------------------------+----------------------------|
+   284	|X11R6.4 X Toolkit Intrinsics                    |http://www.x.org/           |
+   285	|------------------------------------------------+----------------------------|
+   286	|zlib 1.1.3 Manual                               |http://www.gzip.org/zlib/   |
+   287	+-----------------------------------------------------------------------------+
+   288	-------------------------------------------------------------------------------
    289	
-   290	Table 1-2. Standard Libraries Names
+   290	Relevant Libraries
    291	
-   292	+---------------------------+
-   293	|Library   |Runtime Name    |
-   294	|----------+----------------|
-   295	|libX11    |libX11.so.6     |
-   296	|----------+----------------|
-   297	|libXt     |libXt.so.6      |
-   298	|----------+----------------|
-   299	|libGL     |libGL.so.1      |
+   292	The libraries listed here shall be available on a Linux Standard Base system.
+   293	This list may be supplemented or amended by the architecture-specific
+   294	specifications.
+   295	
+   296	Table 1-2. Standard Libraries Names
+   297	
+   298	+---------------------------+
+   299	| Library  |  Runtime Name  |
    300	|----------+----------------|
-   301	|libXext   |libXext.so.6    |
+   301	|libX11    |libX11.so.6     |
    302	|----------+----------------|
-   303	|libICE    |libICE.so.6     |
+   303	|libXt     |libXt.so.6      |
    304	|----------+----------------|
-   305	|libSM     |libSM.so.6      |
+   305	|libGL     |libGL.so.1      |
    306	|----------+----------------|
-   307	|libdl     |libdl.so.2      |
+   307	|libXext   |libXext.so.6    |
    308	|----------+----------------|
-   309	|libcrypt  |libcrypt.so.1   |
+   309	|libICE    |libICE.so.6     |
    310	|----------+----------------|
-   311	|libz      |libz.so.1       |
+   311	|libSM     |libSM.so.6      |
    312	|----------+----------------|
-   313	|libncurses|libncurses.so.5 |
+   313	|libdl     |libdl.so.2      |
    314	|----------+----------------|
-   315	|libutil   |libutil.so.1    |
+   315	|libcrypt  |libcrypt.so.1   |
    316	|----------+----------------|
-   317	|libpthread|libpthread.so.0 |
+   317	|libz      |libz.so.1       |
    318	|----------+----------------|
-   319	|libstdcxx |libstdc++.so.5  |
+   319	|libncurses|libncurses.so.5 |
    320	|----------+----------------|
-   321	|libpam    |libpam.so.0     |
+   321	|libutil   |libutil.so.1    |
    322	|----------+----------------|
-   323	|libgcc_s  |libgcc_s.so.1   |
-   324	+---------------------------+
-   325	
-   326	Table 1-3. Standard Library Names defined in the Architecture Specific
-   327	Supplement
-   328	
-   329	+------------------------+
-   330	|Library   |Runtime Name |
-   331	|----------+-------------|
-   332	|libm      |See archLSB  |
-   333	|----------+-------------|
-   334	|libc      |See archLSB  |
-   335	|----------+-------------|
-   336	|proginterp|See archLSB  |
-   337	+------------------------+
-   338	
-   339	These libraries will be in an implementation-dependent directory which the
-   340	dynamic linker will search by default.
-   341	
-   342	-------------------------------------------------------------------------------
-   343	
-   344	How to Use this Standard
-   345	
-   346	The complete LSB specification is composed of this generic LSB specification
-   347	and the supplemental processor-specific specification for a particular
-   348	processor architecture. These two documents constitute a specification that
-   349	should be used in conjunction with the publicly-available standards documents
-   350	it references. The LSB enumerates the system components it includes, but
-   351	descriptions of those components may be included entirely in the LSB, partly in
-   352	the LSB and partly in other documents, or entirely in other reference
-   353	documents.
-   354	
-   355	II. Low Level System Information
-   356	
-   357	Table of Contents
-   358	2. Machine Interface
-   359	3. Function Calling Sequence
-   360	4. Operating System Interface
-   361	5. Process Initialization
-   362	6. Coding Examples
-   363	7. C Stack Frame
-   364	8. Debug Information
-   365	
-   366	-------------------------------------------------------------------------------
-   367	
-   368	Chapter 2. Machine Interface
-   369	
-   370	Data Representation
+   323	|libpthread|libpthread.so.0 |
+   324	|----------+----------------|
+   325	|libstdcxx |libstdc++.so.5  |
+   326	|----------+----------------|
+   327	|libpam    |libpam.so.0     |
+   328	|----------+----------------|
+   329	|libgcc_s  |libgcc_s.so.1   |
+   330	+---------------------------+
+   331	
+   332	Table 1-3. Standard Library Names defined in the Architecture Specific
+   333	Supplement
+   334	
+   335	+------------------------+
+   336	| Library  |Runtime Name |
+   337	|----------+-------------|
+   338	|libm      |See archLSB  |
+   339	|----------+-------------|
+   340	|libc      |See archLSB  |
+   341	|----------+-------------|
+   342	|proginterp|See archLSB  |
+   343	+------------------------+
+   344	
+   345	These libraries will be in an implementation-dependent directory which the
+   346	dynamic linker will search by default.
+   347	
+   348	-------------------------------------------------------------------------------
+   349	
+   350	How to Use this Standard
+   351	
+   352	The complete LSB specification is composed of this generic LSB specification
+   353	and the supplemental processor-specific specification for a particular
+   354	processor architecture. These two documents constitute a specification that
+   355	should be used in conjunction with the publicly-available standards documents
+   356	it references. The LSB enumerates the system components it includes, but
+   357	descriptions of those components may be included entirely in the LSB, partly in
+   358	the LSB and partly in other documents, or entirely in other reference
+   359	documents.
+   360	
+   361	II. Low Level System Information
+   362	
+   363	Table of Contents
+   364	2. Machine Interface
+   365	3. Function Calling Sequence
+   366	4. Operating System Interface
+   367	5. Process Initialization
+   368	6. Coding Examples
+   369	7. C Stack Frame
+   370	8. Debug Information
    371	
-   372	LSB-conforming applications shall use the data representation as defined in
-   373	Chapter 3 of the System V Application Binary Interface - Intel386 Architecture
-   374	Processor Supplement.
+   372	-------------------------------------------------------------------------------
+   373	
+   374	Chapter 2. Machine Interface
    375	
-   376	-------------------------------------------------------------------------------
+   376	Data Representation
    377	
-   378	Fundamental Types
-   379	
-   380	In addition to the fundamental types specified in Chapter 3 of the System V
-   381	Application Binary Interface - Intel386 Architecture, these additional data
-   382	types are defined here.
+   378	LSB-conforming applications shall use the data representation as defined in
+   379	Chapter 3 of the System V Application Binary Interface - Intel386 Architecture
+   380	Processor Supplement.
+   381	
+   382	-------------------------------------------------------------------------------
    383	
-   384	Table 2-1. Scalar Types
+   384	Fundamental Types
    385	
-   386	+---------------------------------------------------------------------------+
-   387	|Type    |C                 |sizeof|Alignment (bytes)|IntelI386 Architecture|
-   388	|--------+------------------+------+-----------------+----------------------|
-   389	|Boolean |bool              |1     |1                |signed byte           |
-   390	|--------+------------------+------+-----------------+----------------------|
-   391	|        |long long         |      |                 |                      |
-   392	|        |------------------|8     |4                |signed double word    |
-   393	|Integral|signed long long  |      |                 |                      |
-   394	|        |------------------+------+-----------------+----------------------|
-   395	|        |unsigned long long|8     |4                |unsigned double word  |
-   396	+---------------------------------------------------------------------------+
-   397	
-   398	-------------------------------------------------------------------------------
-   399	
-   400	Aggregates and Unions
-   401	
-   402	-------------------------------------------------------------------------------
+   386	In addition to the fundamental types specified in Chapter 3 of the System V
+   387	Application Binary Interface - Intel386 Architecture, these additional data
+   388	types are defined here.
+   389	
+   390	Table 2-1. Scalar Types
+   391	
+   392	+---------------------------------------------------------------------------+
+   393	|  Type  |        C         |sizeof|Alignment (bytes)|IntelI386 Architecture|
+   394	|--------+------------------+------+-----------------+----------------------|
+   395	|Boolean |bool              |1     |1                |signed byte           |
+   396	|--------+------------------+------+-----------------+----------------------|
+   397	|        |long long         |      |                 |                      |
+   398	|        |------------------|8     |4                |signed double word    |
+   399	|Integral|signed long long  |      |                 |                      |
+   400	|        |------------------+------+-----------------+----------------------|
+   401	|        |unsigned long long|8     |4                |unsigned double word  |
+   402	+---------------------------------------------------------------------------+
    403	
-   404	Bit Fields
+   404	-------------------------------------------------------------------------------
    405	
-   406	-------------------------------------------------------------------------------
+   406	Aggregates and Unions
    407	
-   408	Member Pointers
+   408	-------------------------------------------------------------------------------
    409	
-   410	A pointer to data member is an offset from the base address of the class object
-   411	containing it, represented as a ptrdiff_t. It has the size and alignment
-   412	attributes of a ptrdiff_t. A NULL pointer is represented as -1.
+   410	Bit Fields
+   411	
+   412	-------------------------------------------------------------------------------
    413	
-   414	-------------------------------------------------------------------------------
+   414	Member Pointers
    415	
-   416	Class Representation
-   417	
-   418	A C++ Class is represented by several closely related data objects.
+   416	A pointer to data member is an offset from the base address of the class object
+   417	containing it, represented as a ptrdiff_t. It has the size and alignment
+   418	attributes of a ptrdiff_t. A NULL pointer is represented as -1.
    419	
-   420	Table 2-2. Class Components
+   420	-------------------------------------------------------------------------------
    421	
-   422	+-----------------------------------------------------------------------------+
-   423	|Object        |Contains                                                      |
-   424	|--------------+--------------------------------------------------------------|
-   425	|Class Data    |All non-static Class members                                  |
-   426	|--------------+--------------------------------------------------------------|
-   427	|Virtual Table |Information needed to dispatch virtual functions, access      |
-   428	|              |virtual base class subobjects and to access the RTTI          |
-   429	|              |information                                                   |
+   422	Class Representation
+   423	
+   424	A C++ Class is represented by several closely related data objects.
+   425	
+   426	Table 2-2. Class Components
+   427	
+   428	+-----------------------------------------------------------------------------+
+   429	|    Object    |                           Contains                           |
    430	|--------------+--------------------------------------------------------------|
-   431	|RTTI          |Run-Time Type Information used by the typeid and dynamic_cast |
-   432	|              |operators, and exception handlers                             |
-   433	|--------------+--------------------------------------------------------------|
-   434	|Typeinfo Name |String representaion of Class name                            |
-   435	|--------------+--------------------------------------------------------------|
-   436	|Construction  |Information needed during construction and destruction of     |
-   437	|Virtual Table |Classes with non-trivial inheritance relationships.           |
-   438	|--------------+--------------------------------------------------------------|
-   439	|VTT           |A table of virtual table pointers which holds the addresses of|
-   440	|              |construction and non-contruction virtual tables.              |
-   441	+-----------------------------------------------------------------------------+
-   442	
-   443	-------------------------------------------------------------------------------
-   444	
-   445	Class Ordering
-   446	
-   447	Derived classes
+   431	|Class Data    |All non-static Class members                                  |
+   432	|--------------+--------------------------------------------------------------|
+   433	|              |Information needed to dispatch virtual functions, access      |
+   434	|Virtual Table |virtual base class subobjects and to access the RTTI          |
+   435	|              |information                                                   |
+   436	|--------------+--------------------------------------------------------------|
+   437	|RTTI          |Run-Time Type Information used by the typeid and dynamic_cast |
+   438	|              |operators, and exception handlers                             |
+   439	|--------------+--------------------------------------------------------------|
+   440	|Typeinfo Name |String representaion of Class name                            |
+   441	|--------------+--------------------------------------------------------------|
+   442	|Construction  |Information needed during construction and destruction of     |
+   443	|Virtual Table |Classes with non-trivial inheritance relationships.           |
+   444	|--------------+--------------------------------------------------------------|
+   445	|VTT           |A table of virtual table pointers which holds the addresses of|
+   446	|              |construction and non-contruction virtual tables.              |
+   447	+-----------------------------------------------------------------------------+
    448	
    449	-------------------------------------------------------------------------------
    450	
-   451	Chapter 3. Function Calling Sequence
+   451	Class Ordering
    452	
-   453	LSB-conforming applications shall use the function calling sequence as defined
-   454	in Chapter 3 of the System V Application Binary Interface - Intel386
-   455	Architecture Processor Supplement.
+   453	Derived classes have a unique linear ordering of all base classes. This
+   454	ordering is determined from the application ofthe folowing rules to the class
+   455	definition.
    456	
-   457	-------------------------------------------------------------------------------
-   458	
-   459	CPU Registers
+   457	    Note: Fill in algorithm from Itanium C++ ABI document
+   458	   
+   459	-------------------------------------------------------------------------------
    460	
-   461	-------------------------------------------------------------------------------
+   461	Class Data
    462	
-   463	Floating Point Registers
-   464	
-   465	-------------------------------------------------------------------------------
-   466	
-   467	Stack Frame
-   468	
-   469	-------------------------------------------------------------------------------
-   470	
-   471	Arguments
-   472	
-   473	-------------------------------------------------------------------------------
-   474	
-   475	Integral/Pointer
-   476	
-   477	-------------------------------------------------------------------------------
-   478	
-   479	Floating Point
-   480	
-   481	-------------------------------------------------------------------------------
-   482	
-   483	Struct and Union Point
-   484	
-   485	-------------------------------------------------------------------------------
-   486	
-   487	Variable Arguments
-   488	
-   489	-------------------------------------------------------------------------------
-   490	
-   491	Return Values
-   492	
-   493	-------------------------------------------------------------------------------
-   494	
-   495	Void
-   496	
-   497	-------------------------------------------------------------------------------
-   498	
-   499	Integral/Pointer
-   500	
-   501	-------------------------------------------------------------------------------
-   502	
-   503	Floating Point
-   504	
-   505	-------------------------------------------------------------------------------
-   506	
-   507	Struct and Union Point
-   508	
-   509	-------------------------------------------------------------------------------
-   510	
-   511	Chapter 4. Operating System Interface
-   512	
-   513	LSB-conforming applications shall use the Operating System Interfaces as
-   514	defined in Chapter 3 of the System V Application Binary Interface - Intel386
-   515	Architecture Processor Supplement.
-   516	
-   517	-------------------------------------------------------------------------------
-   518	
-   519	Virtual Address Space
-   520	
-   521	-------------------------------------------------------------------------------
-   522	
-   523	Page Size
-   524	
-   525	-------------------------------------------------------------------------------
-   526	
-   527	Virtual Address Assignments
-   528	
-   529	-------------------------------------------------------------------------------
-   530	
-   531	Managing the PRocess Stack
-   532	
-   533	-------------------------------------------------------------------------------
-   534	
-   535	Coding Guidlines
-   536	
-   537	-------------------------------------------------------------------------------
-   538	
-   539	Processor Execution Mode
-   540	
-   541	-------------------------------------------------------------------------------
-   542	
-   543	Exception Interface
-   544	
-   545	-------------------------------------------------------------------------------
-   546	
-   547	Hardware Exception Types
-   548	
-   549	-------------------------------------------------------------------------------
-   550	
-   551	Software Trap Types
-   552	
-   553	-------------------------------------------------------------------------------
-   554	
-   555	Signal Delivery
-   556	
-   557	-------------------------------------------------------------------------------
-   558	
-   559	Signal Handler Interface
-   560	
-   561	-------------------------------------------------------------------------------
-   562	
-   563	Chapter 5. Process Initialization
-   564	
-   565	LSB-conforming applications shall use the Process Initialization as defined in
-   566	Chapter 3 of the System V Application Binary Interface - Intel386 Architecture
-   567	Processor Supplement.
-   568	
-   569	-------------------------------------------------------------------------------
-   570	
-   571	Special Registers
-   572	
-   573	-------------------------------------------------------------------------------
-   574	
-   575	Process Stack (on entry)
-   576	
-   577	-------------------------------------------------------------------------------
-   578	
-   579	Auxilliary Vectors
-   580	
-   581	-------------------------------------------------------------------------------
-   582	
-   583	Environment
-   584	
-   585	-------------------------------------------------------------------------------
-   586	
-   587	Chapter 6. Coding Examples
-   588	
-   589	LSB-conforming applications may implement fundamental operations using the
-   590	Coding Examples as defined in Chapter 3 of the System V Application Binary
-   591	Interface - Intel386 Architecture Processor Supplement.
-   592	
-   593	-------------------------------------------------------------------------------
-   594	
-   595	Code Model Overview/Architecture Constraints
-   596	
-   597	-------------------------------------------------------------------------------
-   598	
-   599	Position-Independent Fucntion Prologue
-   600	
-   601	-------------------------------------------------------------------------------
-   602	
-   603	Data Objects
-   604	
-   605	-------------------------------------------------------------------------------
-   606	
-   607	Absolute Load & Store
-   608	
-   609	-------------------------------------------------------------------------------
-   610	
-   611	Position Relative Load & Store
-   612	
-   613	-------------------------------------------------------------------------------
-   614	
-   615	Function Calls
-   616	
-   617	-------------------------------------------------------------------------------
-   618	
-   619	Absolute Direct Function Call
-   620	
-   621	-------------------------------------------------------------------------------
-   622	
-   623	Absolute Indirect Function Call
-   624	
-   625	-------------------------------------------------------------------------------
-   626	
-   627	Position-Independent Direct Function Call
-   628	
-   629	-------------------------------------------------------------------------------
-   630	
-   631	Position-Independent Indirect Function Call
-   632	
-   633	-------------------------------------------------------------------------------
-   634	
-   635	Branching
-   636	
-   637	-------------------------------------------------------------------------------
-   638	
-   639	Branch Instruction
-   640	
-   641	-------------------------------------------------------------------------------
-   642	
-   643	Absolute switch() code
-   644	
-   645	-------------------------------------------------------------------------------
-   646	
-   647	Position-Independent switch() code
-   648	
-   649	-------------------------------------------------------------------------------
-   650	
-   651	Chapter 7. C Stack Frame
-   652	
-   653	Variable Argument List
-   654	
-   655	-------------------------------------------------------------------------------
-   656	
-   657	Dynamic Allocation of Stack Space
-   658	
-   659	-------------------------------------------------------------------------------
-   660	
-   661	Chapter 8. Debug Information
-   662	
-   663	The LSB does not currently specify the format of Debug information.
-   664	
+   463	Non-static class members are arranged as if in a C structure according to the
+   464	following rules.
+   465	
+   466	    Note: Fill in algorithm from Itanium C++ ABI document
+   467	   
+   468	-------------------------------------------------------------------------------
+   469	
+   470	Virtual Table
+   471	
+   472	Figure 2-1. Vitual Table Prefix
+   473	
+   474	struct {
+   475	       ptrdiff_t  baseobject;
+   476	       const void *typeinfo;
+   477	       const void *virtfuncs[0];
+   478	       };
+   479	
+   480	-------------------------------------------------------------------------------
+   481	
+   482	Run-Time Type Information
+   483	
+   484	Figure 2-2. Run-Time Type Information Prefix
+   485	
+   486	struct {
+   487	       void      *basevtable;
+   488	       char      *__name;
+   489	       void      *basetypeinfo[0];
+   490	       };
+   491	
+   492	-------------------------------------------------------------------------------
+   493	
+   494	Typeinfo Name
+   495	
+   496	-------------------------------------------------------------------------------
+   497	
+   498	Construction Virtual Table
+   499	
+   500	Figure 2-3. Construction Cirtual Table Prefix
+   501	
+   502	struct {
+   503	       ????
+   504	       };
+   505	
+   506	-------------------------------------------------------------------------------
+   507	
+   508	Virtual Type Tables
+   509	
+   510	Figure 2-4. Virtual Type Table Prefix
+   511	
+   512	struct {
+   513	       ???
+   514	       };
+   515	
+   516	-------------------------------------------------------------------------------
+   517	
+   518	Chapter 3. Function Calling Sequence
+   519	
+   520	LSB-conforming applications shall use the function calling sequence as defined
+   521	in Chapter 3 of the System V Application Binary Interface - Intel386
+   522	Architecture Processor Supplement.
+   523	
+   524	-------------------------------------------------------------------------------
+   525	
+   526	CPU Registers
+   527	
+   528	-------------------------------------------------------------------------------
+   529	
+   530	Floating Point Registers
+   531	
+   532	-------------------------------------------------------------------------------
+   533	
+   534	Stack Frame
+   535	
+   536	-------------------------------------------------------------------------------
+   537	
+   538	Arguments
+   539	
+   540	-------------------------------------------------------------------------------
+   541	
+   542	Integral/Pointer
+   543	
+   544	-------------------------------------------------------------------------------
+   545	
+   546	Floating Point
+   547	
+   548	-------------------------------------------------------------------------------
+   549	
+   550	Struct and Union Point
+   551	
+   552	-------------------------------------------------------------------------------
+   553	
+   554	Variable Arguments
+   555	
+   556	-------------------------------------------------------------------------------
+   557	
+   558	Return Values
+   559	
+   560	-------------------------------------------------------------------------------
+   561	
+   562	Void
+   563	
+   564	-------------------------------------------------------------------------------
+   565	
+   566	Integral/Pointer
+   567	
+   568	-------------------------------------------------------------------------------
+   569	
+   570	Floating Point
+   571	
+   572	-------------------------------------------------------------------------------
+   573	
+   574	Struct and Union Point
+   575	
+   576	-------------------------------------------------------------------------------
+   577	
+   578	Chapter 4. Operating System Interface
+   579	
+   580	LSB-conforming applications shall use the Operating System Interfaces as
+   581	defined in Chapter 3 of the System V Application Binary Interface - Intel386
+   582	Architecture Processor Supplement.
+   583	
+   584	-------------------------------------------------------------------------------
+   585	
+   586	Virtual Address Space
+   587	
+   588	-------------------------------------------------------------------------------
+   589	
+   590	Page Size
+   591	
+   592	-------------------------------------------------------------------------------
+   593	
+   594	Virtual Address Assignments
+   595	
+   596	-------------------------------------------------------------------------------
+   597	
+   598	Managing the PRocess Stack
+   599	
+   600	-------------------------------------------------------------------------------
+   601	
+   602	Coding Guidlines
+   603	
+   604	-------------------------------------------------------------------------------
+   605	
+   606	Processor Execution Mode
+   607	
+   608	-------------------------------------------------------------------------------
+   609	
+   610	Exception Interface
+   611	
+   612	-------------------------------------------------------------------------------
+   613	
+   614	Hardware Exception Types
+   615	
+   616	-------------------------------------------------------------------------------
+   617	
+   618	Software Trap Types
+   619	
+   620	-------------------------------------------------------------------------------
+   621	
+   622	Signal Delivery
+   623	
+   624	-------------------------------------------------------------------------------
+   625	
+   626	Signal Handler Interface
+   627	
+   628	-------------------------------------------------------------------------------
+   629	
+   630	Chapter 5. Process Initialization
+   631	
+   632	LSB-conforming applications shall use the Process Initialization as defined in
+   633	Chapter 3 of the System V Application Binary Interface - Intel386 Architecture
+   634	Processor Supplement.
+   635	
+   636	-------------------------------------------------------------------------------
+   637	
+   638	Special Registers
+   639	
+   640	-------------------------------------------------------------------------------
+   641	
+   642	Process Stack (on entry)
+   643	
+   644	-------------------------------------------------------------------------------
+   645	
+   646	Auxilliary Vectors
+   647	
+   648	-------------------------------------------------------------------------------
+   649	
+   650	Environment
+   651	
+   652	-------------------------------------------------------------------------------
+   653	
+   654	Chapter 6. Coding Examples
+   655	
+   656	LSB-conforming applications may implement fundamental operations using the
+   657	Coding Examples as defined in Chapter 3 of the System V Application Binary
+   658	Interface - Intel386 Architecture Processor Supplement.
+   659	
+   660	-------------------------------------------------------------------------------
+   661	
+   662	Code Model Overview/Architecture Constraints
+   663	
+   664	-------------------------------------------------------------------------------
+   665	
+   666	Position-Independent Fucntion Prologue
+   667	
+   668	-------------------------------------------------------------------------------
+   669	
+   670	Data Objects
+   671	
+   672	-------------------------------------------------------------------------------
+   673	
+   674	Absolute Load & Store
+   675	
+   676	-------------------------------------------------------------------------------
+   677	
+   678	Position Relative Load & Store
+   679	
+   680	-------------------------------------------------------------------------------
+   681	
+   682	Function Calls
+   683	
+   684	-------------------------------------------------------------------------------
+   685	
+   686	Absolute Direct Function Call
+   687	
+   688	-------------------------------------------------------------------------------
+   689	
+   690	Absolute Indirect Function Call
+   691	
+   692	-------------------------------------------------------------------------------
+   693	
+   694	Position-Independent Direct Function Call
+   695	
+   696	-------------------------------------------------------------------------------
+   697	
+   698	Position-Independent Indirect Function Call
+   699	
+   700	-------------------------------------------------------------------------------
+   701	
+   702	Branching
+   703	
+   704	-------------------------------------------------------------------------------
+   705	
+   706	Branch Instruction
+   707	
+   708	-------------------------------------------------------------------------------
+   709	
+   710	Absolute switch() code
+   711	
+   712	-------------------------------------------------------------------------------
+   713	
+   714	Position-Independent switch() code
+   715	
+   716	-------------------------------------------------------------------------------
+   717	
+   718	Chapter 7. C Stack Frame
+   719	
+   720	Variable Argument List
+   721	
+   722	-------------------------------------------------------------------------------
+   723	
+   724	Dynamic Allocation of Stack Space
+   725	
+   726	-------------------------------------------------------------------------------
+   727	
+   728	Chapter 8. Debug Information
+   729	
+   730	The LSB does not currently specify the format of Debug information.
+   731	
