@@ -771,7 +771,7 @@ Low Address</screen>
 					save area as are required to hold its value.</para>
 					<itemizedlist>
 						<listitem><para>Single precision floating point values are mapped to the 
-						first word in a single doubleword.
+						second word in a single doubleword.
 						</para>
 						</listitem>
 						<listitem><para>Double precision floating point values are mapped to a 
@@ -821,25 +821,30 @@ Low Address</screen>
 
 					<listitem><para>
 					Floating point registers f1 through f13 are used
-					consecutively to pass up to 13 single, double and extended
-					precision floating point values, aggregates
-containing a single floating point number, and to pass the
-					corresponding complex floating point values.  The
-					first 13 of all doublewords in the parameter save area that map
-					floating point arguments, except for arguments corresponding to the
-					variable argument part of a callee with a prototype containing an
-					ellipsis, will be passed in floating point registers.  A single
-					precision value occupies one register as does a double
-					precision value.  Extended precision values occupy two
-					consecutively numbered registers.  The corresponding complex
-					values occupy twice as many registers.
+					consecutively to pass up to 13 floating point values, one
+					member aggregates passed by value containing a floating
+					point value, and to pass complex floating point values.  The
+					first 13 of all doublewords in the parameter save area that
+					map floating point arguments, except for arguments
+					corresponding to the variable argument part of a callee with
+					a prototype containing an ellipsis, will be passed in
+					floating point registers.  A single precision value occupies
+					one register as does a double precision value.  Extended
+					precision values occupy two consecutively numbered
+					registers.  The corresponding complex values occupy twice as
+					many registers.  Note that for one member aggregates,
+					"containing" extends to aggregates within aggregates ad
+					infinitum.
 					</para></listitem>
 
 					<listitem><para>
 					Vector registers v2 through v13 are used to consecutively
 					pass up to 12 vector values, except for arguments
 					corresponding to the variable argument part of a callee with
-					a prototype containing an ellipsis.
+					a prototype containing an ellipsis.  As for floating point
+					arguments, an aggregate passed by value containing one
+					vector value is treated as if the value were not wrapped in
+					an aggregate.
 					</para></listitem>
 
 					<listitem><para>
@@ -1275,7 +1280,7 @@ vec_present    One-bit field.  This field is set to 1 if VMX
 			</para>
 <programlisting>typedef struct
 {
-  int     a_type;
+  long    a_type;
   union
     {
       long  a_val;
@@ -1756,7 +1761,7 @@ instructions or by calling system provided routines as shown below.</para>
     (reload CR if necessary)
     ...
     (reload caller's SP into r1)
-    b     _restgpr_&lt;32-M&gt;       # Restore registers and return
+    b     _restfpr_&lt;32-M&gt;       # Restore registers and return
 </programlisting>
 			</sect2>
 			<sect2 id="SAVE-RESTORE"><title>Save and Restore Services</title>
@@ -1924,7 +1929,6 @@ floating point register save area.
   _restfpr_26:  lfd  f26,-48(r1)
   _restfpr_27:  lfd  f27,-40(r1)
   _restfpr_28:  lfd  f28,-32(r1)
-  _restfpr_29:  lfd  f29,-24(r1)
   _restfpr_29:  ld   r0, 16(r1)
                 lfd  f29,-24(r1)
                 mtlr r0
@@ -1940,12 +1944,12 @@ floating point register save area.
 <para>
 Each _savevr_M routine saves the vector registers from vM to v31,
 inclusive.  When the routine is called, r0 must point to the word just
-beyound the end of the vector register save area.  On return the value
+beyond the end of the vector register save area.  On return the value
 of r0 is unchanged while r12 may be modified.
 </para>
 <para>
 The _restvr_M routines restore the vector registers from vM to v31.
-When the routine is called, r0 must point to the word just beyound the
+When the routine is called, r0 must point to the word just beyond the
 end of the vector register save area.  On return the value of r0 is
 unchanged while r12 may be modified.
 </para>
