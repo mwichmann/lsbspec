@@ -255,7 +255,7 @@ are needed.
 
 <PARA>
 LSB applications which need to execute script(s) at bootup and/or
-shutdown may provide one or more init.d files.  These files are
+shutdown may provide one or more <filename>init.d</filename> files.  These files are
 installed by the install_initd program described below, which copies
 it into a standard directory and makes whatever other adjustments
 (creation of symlinks, creation of entries in a database, etc.) are
@@ -269,7 +269,7 @@ necessary.
 </PARA>
 
 <PARA> 
-In the init.d file, information about the shell script shall be
+In the <filename>init.d</filename> file, information about the shell script shall be
 delimited by the lines "### BEGIN INIT INFO" and "### END INIT INFO".
 These delimiter lines may containg trailing whitespace, which shall be
 ignored.  Inside this block there shall be lines of the form "#
@@ -303,7 +303,7 @@ Distributions may define local extensions by using the prefix
 </PARA>
 
 <PARA>
-An init.d shell script may declare using the "Required-Start: " header
+An <filename>init.d</filename> shell script may declare using the "Required-Start: " header
 that it shall not be run until certain boot facilities are provided.
 This information is used by the installation tool or the boot-time
 boot-script execution facility to assure that init scripts are run in
@@ -377,7 +377,8 @@ required to use the scheme outlined here.
 <TITLE>Installation and Removal of init.d Files</TITLE>
 
 <PARA>
-An init.d file is installed in /etc/init.d (which may
+An init.d file is installed in 
+<filename>/etc/init.d</filename> (which may
 be a symlink to another location).  This can be done by the package
 installer.  See <xref linkend="scrptnames" />.
 During the package's postinstall script, the program
@@ -387,7 +388,8 @@ time.
 <note>
 <para>For example, <command>install_initd</command> might create
 symbolic links in /etc/rc2.d and other such directories which point to
-the files in /etc/init.d (or it might update a database, or some other
+the files in <filename>/etc/init.d</filename>
+(or it might update a database, or some other
 mechanism).  The init.d files themselves should already be in
 /etc/init.d before running <command>install_initd</command>.</para>
 </note>
@@ -546,72 +548,80 @@ assigned  to the init.d script.
 <TITLE>Script Names</TITLE>
 
 <PARA>
-Since the init.d scripts shall live in a single directory, they shall 
-come from a single namespace.  Three means of assigning names from
-this namespace are available:
+Since init scripts live in a single directory, they must
+share a single namespace. To avoid conflicts, four means of
+assigning names from this namespace are provided:
 </PARA>
 
 <ITEMIZEDLIST MARK="bullet">
 <LISTITEM><PARA>
-Assigned namespace.  This namespace consists of names which
-only use the character set [a-z0-9].  This space is
+Assigned names.  Such names must be chosen from 
+characters in the set <literal>[a-z0-9]</literal>. This category is
 desirable for scripts which system administrators may
-often wish to run manually: e.g., "/etc/init.d/named restart"
-In order to avoid conflicts these init.d names shall be reserved
+need to run manually: e.g., <command>/etc/init.d/named restart</command>.
+In order to avoid conflicts these names shall be reserved
 through the Linux Assigned Names and Numbers Authority (LANANA).  
 Information about the LANANA may be found at
 <ULINK URL="http://www.lanana.org">www.lanana.org</ULINK>.
 </PARA>
+</LISTITEM>
+<LISTITEM>
 <PARA>
-Commonly used names shall be reserved in advance; 
-developers for projects should be encouraged to reserve names
+Commonly used names. Such names shall be reserved in advance; 
+developers for projects are encouraged to reserve names
 from LANANA, so that each distribution can use the same
-name, and to avoid conflicts with other projects.
+name for the project's init script and avoid conflicts with
+other projects.
 </PARA></LISTITEM>
 
 <LISTITEM><PARA>
-Hierarchical namespace.  This namespace consists of scripts
-names which look like this: [hier1]-[hier2]-...-[name],
-where name is again taken the character set [a-z0-9], 
-and where there may be one or more [hier-n] components.  
-[hier1] may either be an LSB provider name assigned
-by the LANANA, or it may be owners' DNS name in lower case, with at
-least one '.' (e.g., "debian.org", "staroffice.sun.com").
+Hierarchical names.  Script names in this category take
+the form <literal>&lt;hier1&gt;-&lt;hier2&gt;-...-&lt;name&gt;
+</literal>, where name is 
+chosen from characters in the set <literal>[a-z0-9]</literal>, 
+and where there may be one or more <literal>&lt;hier-n&gt;</literal>
+components.  
+<literal>&lt;hier1&gt;</literal> may either be an LSB provider name assigned
+by the LANANA, or it may be the owners' DNS name in lower case, with at
+least one <literal>'.'</literal> (e.g., <literal>"debian.org"</literal>, 
+or <literal>"staroffice.sun.com"</literal>).
 The LSB provider name assigned by LANANA 
-shall only consist of the ASCII characters [a-z0-9].
+shall consist only of characters chosen from the set 
+<literal>[a-z0-9]</literal>.
 </PARA></LISTITEM>
 
 <LISTITEM><PARA>
-Reserved namespace.  This namespace consists of script names
-which begin with the character '_', and is reserved for
+Reserved names.  Names in this category 
+begin with the character <literal>'_'</literal>, and are reserved for
 distribution use only.  This namespace should be used
-for core packages only, and in general use of this
+for essential system packages only, and in general use of this
 namespace is highly discouraged.  
 
 </PARA></LISTITEM>
 </ITEMIZEDLIST>
 
 
+<NOTE>
 <PARA>
 In general, if a package or some system function is likely to be used
-on multiple systems, the package developers or the distribution SHOULD
+on multiple systems, the package developers or the distribution should
 get a registered name through LANANA, and distributions should strive to
 use the same name whenever possible.  For applications which may not
-be "core" or may not be commonly installed, the hierarchical namespace
+be essential or may not be commonly installed, the hierarchical namespace
 may be more appropriate.  An advantage to the hierarchical namespace
 is that there is no need to consult with the LANANA before obtaining an
 assigned name.
 </PARA>
 
 <PARA>
-Short names are highly desirable, since many system
-administrators like to use them to manually start and stop services.
+Short names are highly desirable, since system
+administrators may need to manually start and stop services.
 Given this, they should be standardized on a per-package basis.  This
-is the rationale behind having a LANANA organization to assign these
+is the rationale behind having the LANANA organization assign these
 names.  The LANANA may be called upon to handle other namespace issues,
-such as package/prerequisites naming (which is essential to making 
-prerequisites to work correctly).
+such as package/prerequisites naming.
 </PARA>
+</NOTE>
 
 </SECT1>
 
@@ -623,21 +633,55 @@ prerequisites to work correctly).
 <PARA>
 Each LSB-compliant init.d script shall source the file
 <filename>/lib/lsb/init-functions</filename>. This file shall cause the
-following shell script commands to be defined.  This can be done either by
-adding a directory to the PATH variable which defines these commands, or by
-defining sh aliases.  While the distribution-provided aliases may
-choose to use shell extensions (at the distribution's option), the LSB
-init.d files themselves should only depend in shell features as
-defined by the LSB.
+following shell script commands to be defined in an unspecified manner.  
+<note>
+<para>
+This can be done either by
+adding a directory to the 
+<envar>PATH</envar> variable which defines these commands, or by
+defining shell aliases.  
+</para>
+<para>
+Although the commands made available via this mechanism need not
+be LSB conforming applications in their own right, applications that
+use them should only depend on features described in the LSB.
+</para>
+</note>
+Conforming scripts
+shall not specify the "exit on error" option (i.e. 
+<command>set -e</command>) when sourcing this file, or calling any of the
+commands thus made available. 
 </PARA>
 
 <PARA>
 The <command>start_daemon</command>, <command>killproc</command> and
-<command>pidofproc</command> functions shall use this algorithm for determining
-the status and the pid(s) of the specified program. They shall read the pidfile
-specified or otherwise
-<filename>/var/run/<replaceable>basename</replaceable>.pid</filename> and use
-the pid(s) herein when determining whether a program is running. The method used
+<command>pidofproc</command> functions shall use 
+the following algorithm for determining
+the status and the process identifiers of the specified program. 
+<orderedlist numeration=arabic>
+<listitem><para>If the <parameter>-p pidfile</parameter> option is specified,
+and the named <filename>pidfile</filename> exists,
+a single line at the start of the <filename>pidfile</filename> shall be read. 
+If this line contains one or more numeric values, separated by spaces,
+these values shall be used.
+</para></listitem>
+<listitem><para>
+Otherwise, 
+<filename>/var/run/<replaceable>basename</replaceable>.pid</filename> 
+shall be read in a similar fashion.
+If this contains one or more numeric values on the first line, these values
+shall be used.
+</para>
+</listitem>
+<listitem>
+<para>
+Optionally, if neither of the above methods has determined the
+process identifiers required, implementations may use unspecified additional
+methods to locate the process identifiers required.
+</para>
+</listitem>
+</orderedlist>
+The method used
 to determine the status is implementation defined, but should allow for
 non-binary programs.
 <note>
@@ -645,94 +689,178 @@ non-binary programs.
 Commonly used methods check either for the
 existence of the <filename>/proc/pid</filename> directory or use
 <filename>/proc/pid/exe</filename> and <filename>/proc/pid/cmdline</filename>.
-Relying only on <filename>/proc/pid/exe</filename> is discouraged since this
-results in a not-running status for daemons that are written in a script
+Relying only on <filename>/proc/pid/exe</filename> is discouraged since the
+LSB does not specify the existence of, or semantics
+for, <filename>/proc</filename>. Additionally, using
+<filename>/proc/pid/exe</filename>
+may result in a not-running status for daemons that are written in a script
 language.
 </para>
 </note>
-Compliant implementations may use other mechanisms besides those based on
-pidfiles, unless the -p pidfile option has been used. Compliant applications
+Conforming implementations may use other mechanisms besides those based on
+pidfiles, unless the <parameter>-p pidfile</parameter>
+option has been used. Conforming applications
 should not rely on such mechanisms and should
-always use a pidfile. When a program is stopped, it should delete its
-pidfile. Multiple pid(s) shall be separated by a single space in the pidfile
+always use a <filename>pidfile</filename>.
+When a program is stopped, it should delete its
+<filename>pidfile</filename>. Multiple process identifiers
+shall be separated by a single space in the <filename>pidfile</filename>
 and in the output of <command>pidofproc</command>.
 </PARA>
 
-<SIMPLELIST type=horiz columns=2>
-<MEMBER>start_daemon [-f] [-n nicelevel] [-p pidfile] pathname [args]</MEMBER>
-
-<MEMBER>
+<VARIABLELIST>
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>
+start_daemon
+</command>
+<arg>-f</arg>
+<arg>-n nicelevel</arg>
+<arg>-p pidfile</arg>
+<arg choice=plain>pathname</arg>
+<arg rep=repeat>args</arg>
+</cmdsynopsis></term>
+<listitem>
+<para>
 This runs the specified program as a daemon.
-start_daemon shall check if the program is already running
+The <command>start_daemon</command> function
+shall check if the program is already running
 using the algorithm given above. If so, it shall not
 start another copy of the daemon unless the <parameter>-f</parameter>
 option is given. The <parameter>-n</parameter> option specifies a nice
-level. See nice(1).
-start_daemon should return the LSB defined exit status codes. It
+level. See <command>nice</command>.
+<command>start_daemon</command> shall
+return the LSB defined exit status codes. It
 shall return 0 if the program has been successfully started or
 is running and not 0 otherwise.
-</MEMBER>
-
-<MEMBER>killproc [-p pidfile] pathname [signal]</MEMBER>
-
-<MEMBER>
-This stops the specified program. The program is 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>killproc</command>
+<arg>-p pidfile</arg>
+<arg choice=plain>pathname</arg>
+<arg>signal</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+The <command>killproc</command> function
+shall stop the specified program. The program is 
 found using the algorithm given above. If a
 signal is specified, using the
 <parameter>-<replaceable>signal_name</replaceable></parameter> or
 <parameter>-<replaceable>signal_number</replaceable></parameter> syntaxes
 as specified by the <command>kill</command> command,
 the program is sent that signal.
-Otherwise, a SIGTERM followed by a SIGKILL
-after some number of seconds shall be sent.
-If a program has been terminated, the pidfile should be removed if the
+Otherwise, a <constant>SIGTERM</constant> followed by a 
+<constant>SIGKILL</constant>
+after an unspecified number of seconds shall be sent.
+If a program has been terminated, the <filename>pidfile</filename>
+should be removed if the
 terminated process has not already done so.
-Compliant applications may use the basename instead of the 
-pathname.
-killproc should return the LSB defined exit status codes. If called
+The <command>killproc</command> function
+shall return the LSB defined exit status codes. If called
 without a signal, it shall return 0 if the program has been stopped or
 is not running and not 0 otherwise. If a signal is given, it shall return 0
 only if the program is running. 
-</MEMBER>
-
-<MEMBER>pidofproc [-p pidfile] pathname</MEMBER>
-
-<MEMBER>
-This function returns one or more pid(s) for a particular
-daemon using the algorithm given above. Only pids of running processes
-should be returned.
-Compliant applications may use the basename instead of the pathname.
-pidofproc should return the LSB defined exit status
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>pidofproc</command>
+<arg>-p pidfile</arg>
+<arg choice=plain>pathname</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+The <command>pidofproc</command> function shall return
+one or more process identifiers for a particular
+daemon using the algorithm given above. Only process identifiers
+of running processes should be returned.
+Multiple process identifiers shall be separated by a single space.
+<note><para>
+A process may exit between <command>pidofproc</command> discovering its identity
+and the caller of <command>pidofproc</command> being able to act on that identity.
+As a result, no test assertion can be made that the process identifiers
+returned by <command>pidofproc</command> <emphasis>shall</emphasis> be
+running processes.
+</para>
+</note>
+The <command>pidofproc</command> function
+shall return the LSB defined exit status
 codes for "status". It shall return 0 if the program is
 running and not 0 otherwise.
-</MEMBER>
-
-<MEMBER>log_success_msg "message"</MEMBER>
-
-<MEMBER>
-This requests the distribution to print a success
-message.  The message should be relatively short; no
-more than 60 characters is highly desirable.
-</MEMBER>
-
-<MEMBER>log_failure_msg "message"</MEMBER>
-
-<MEMBER>
-This requests the distribution to print a failure
-message.  The message should be relatively short; no
-more than 60 characters is highly desirable.
-</MEMBER>
-
-<MEMBER>log_warning_msg "message"</MEMBER>
-
-<MEMBER>
-This requests the distribution to print a warning
-message.  The message should be relatively short; no
-more than 60 characters is highly desirable.
-</MEMBER>
-
-</SIMPLELIST>
-
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>
+log_success_msg
+</command>
+<arg choice=plain>message
+</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+The <command>log_success_msg</command> function
+shall cause the system to print a success
+message.  
+<note><para>The message should be relatively short; no
+more than 60 characters is highly desirable.</para></note>
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>
+log_failure_msg
+</command>
+<arg choice=plain>message
+</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+The <command>log_failure_msg</command> function
+shall cause the system to print a failure
+message.  
+<note><para>The message should be relatively short; no
+more than 60 characters is highly desirable.</para></note>
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>
+log_warning_msg
+</command>
+<arg choice=plain>message
+</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+The <command>log_warning_msg</command> function
+shall cause the system to print a warning
+message.  
+<note><para>The message should be relatively short; no
+more than 60 characters is highly desirable.</para></note>
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
 </SECT1>
 
 
