@@ -132,6 +132,8 @@ file.
 </SECT1>
 </CHAPTER>
 
+include(dwarfext.sgml)
+
 include(ehframehdr.sgml)
 
 include(symversion.sgml)
