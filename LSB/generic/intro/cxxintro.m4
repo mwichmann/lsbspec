@@ -31,12 +31,8 @@ include(`cxxstandards.sgml')
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
 The libraries listed in <XREF LINKEND=tbl-glsb-stdlib> shall
-be available on all Linux Standard Base systems, with the specified
-runtime names. These names override or supplement the names specified
-in the generic LSB specification. The specified program interpreter,
-referred to as proginterp in this table,
-shall be used to load the shared libraries specified by
-<CONSTANT>DT_NEEDED</CONSTANT> entries at run time.
+be available on a Linux Standard Base system, with the specified
+runtime names. 
 </PARA>
 <TABLE ID=tbl-glsb-stdlib>
 <TITLE>Standard Library Names</TITLE>
