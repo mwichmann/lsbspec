@@ -23,7 +23,7 @@ architecture-specific LSB specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Wed Jan  5 17:23:50 2005 -->
+<!--    at Sat Jan 15 14:04:22 2005 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -5256,15 +5256,24 @@ accessor function for __ctype_b_tolower array for ctype tolower() function
 </TITLE>
 <PARA>
 The <FUNCTION>__ctype_tolower_loc</FUNCTION>
-function shall return a pointer into an array
+function shall return a pointer into an array of
 characters in the current locale that contains lower case equivalents for each
-character in the current character set. The array shall contain a total of 384
+character in the current character set. The array shall contain a total of 
+<CONSTANT>384</CONSTANT>
 characters, and can be indexed with any signed or unsigned char (i.e. with an
-index value between -128 and 255). If the application is multithreaded, the 
+index value between <CONSTANT>-128</CONSTANT> and 
+<CONSTANT>255</CONSTANT>). If the application is multithreaded, the 
 array shall be local to the current thread. 
 </PARA>
 <PARA>
 This interface is not in the source standard; it is only in the binary standard.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>The <FUNCTION>__ctype_tolower_loc</FUNCTION> function shall return a pointer
+to the array of characters to be used for the <FUNCTION>ctype</FUNCTION>
+family of functions (see <FILENAME>&lt;ctype.h&gt;</FILENAME>).
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5278,7 +5287,7 @@ This interface is not in the source standard; it is only in the binary standard.
 </REFNAME>
 <REFPURPOSE>
 accessor function for <function>__ctype_b_toupper</function>
-array for ctype <function>toupper()</function> function
+array for ctype <function>toupper</function> function
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -5304,15 +5313,24 @@ array for ctype <function>toupper()</function> function
 </TITLE>
 <PARA>
 The <FUNCTION>__ctype_toupper_loc</FUNCTION>
-function shall return a pointer into an array
+function shall return a pointer into an array of
 characters in the current locale that contains upper case equivalents for each
-character in the current character set. The array shall contain a total of 384
+character in the current character set. The array shall contain a total of 
+<CONSTANT>384</CONSTANT>
 characters, and can be indexed with any signed or unsigned char (i.e. with an
-index value between -128 and 255). If the application is multithreaded, the 
+index value between <CONSTANT>-128</CONSTANT> and 
+<CONSTANT>255</CONSTANT>). If the application is multithreaded, the 
 array shall be local to the current thread. 
 </PARA>
 <PARA>
 This interface is not in the source standard; it is only in the binary standard.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>The <FUNCTION>__ctype_toupper_loc</FUNCTION> function shall return a pointer
+to the array of characters to be used for the <FUNCTION>ctype</FUNCTION>
+family of functions (see <FILENAME>&lt;ctype.h&gt;</FILENAME>).
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -5644,8 +5662,7 @@ it is only in the binary standard.
 <PARA>
 <FUNCTION>__h_errno_location</FUNCTION> returns the address of the 
 <VARNAME>h_errno</VARNAME> variable, where <VARNAME>h_errno</VARNAME> 
-is as specified in the <CITETITLE PUBWORK="BOOK">Single Unix 
-Specification</CITETITLE>.
+is as specified in <XREF LINKEND="STD.SUSv3">.
 </PARA>
 <PARA>
 <FUNCTION>__h_errno_location</FUNCTION> is not in the source standard; 
@@ -5680,8 +5697,8 @@ test for infinity
 </TITLE>
 <PARA>
 <FUNCTION>__isinf</FUNCTION> has the same specification as 
-<FUNCTION>isinf</FUNCTION> in the <CITETITLE PUBWORK="BOOK">Single
-UNIX Specification, Version 3</CITETITLE>, except that the argument 
+<FUNCTION>isinf</FUNCTION> in <XREF LINKEND="STD.SUSV3">,
+except that the argument 
 type for <FUNCTION>__isinf</FUNCTION> is known to be double.
 </PARA>
 <PARA>
@@ -5716,8 +5733,8 @@ test for infinity
 </TITLE>
 <PARA>
 <FUNCTION>__isinff</FUNCTION> has the same specification as 
-<FUNCTION>isinf</FUNCTION> in the <CITETITLE PUBWORK="BOOK">Single
-UNIX Specification, Version 3</CITETITLE>, except that the argument 
+<FUNCTION>isinf</FUNCTION> in <XREF LINKEND="STD.SUSv3">
+except that the argument 
 type for <FUNCTION>__isinff</FUNCTION> is known to be float.
 </PARA>
 <PARA>
@@ -9250,8 +9267,8 @@ but with differences as listed below.
 <TITLE>Implementation may set <CONSTANT>O_LARGEFILE</CONSTANT>
 </TITLE>
 <PARA>
-According to the <CITETITLE PUBWORK="BOOK">Single UNIX 
-Specification</CITETITLE>, only an application sets
+According to <XREF LINKEND="STD.SUSv3">,
+only an application sets
 <FUNCTION>fcntl</FUNCTION> flags, for example 
 <EMPHASIS>O_LARGEFILE</EMPHASIS>. However, this specification
 also allows an implementation to set <EMPHASIS>O_LARGEFILE</EMPHASIS> 
@@ -13625,25 +13642,30 @@ reentrant version of strerror
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>strerror_r</FUNCTION> is a reentrant version of 
-<FUNCTION>strerror</FUNCTION>. <FUNCTION>strerror_r</FUNCTION> 
-returns a pointer to an error message corresponding to error number 
-<PARAMETER>errnum</PARAMETER>. The returned pointer may point within 
+The <function>strerror_r</function> shall behave as specified in
+<xref linkend="std.susv3">, except as described below.
+</para>
+<refsect2>
+<title>Returns String, not Error Value</title>
+<para>
+The <function>strerror_r</function> function shall return a pointer to
+the string corresponding to <parameter>errno</parameter>. 
+The returned pointer may point within 
 the buffer <PARAMETER>buf</PARAMETER> (at most 
 <PARAMETER>buflen</PARAMETER> bytes).
-<NOTE>
-<PARA>
-Note the optional use of the buffer, unlike the 
-<FUNCTION>strerror_r</FUNCTION> found in 
-<XREF LINKEND=STD.SUSv3>,
-in which the message is always copied into the supplied buffer. 
-The return types also differ.
 </PARA>
-</NOTE>
-
-</PARA>
-
+</refsect2>
 </REFSECT1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>strerror_r</function> shall return a pointer
+to the generated message string (determined by the setting of the
+<envar>LC_MESSAGES</envar> category in the current locale).
+Otherwise, <function>strerror_r</function> shall return the string
+corresponding to <returnvalue>"Unknown error"</returnvalue>.
+</para>
+</refsect1>
 </REFENTRY>
 
 
@@ -16395,7 +16417,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Wed Jan  5 17:23:55 2005 -->
+<!--    at Sat Jan 15 14:04:24 2005 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -17079,7 +17101,7 @@ it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Wed Jan  5 17:23:56 2005 -->
+<!--    at Sat Jan 15 14:04:25 2005 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -17535,7 +17557,7 @@ source standard; it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Wed Jan  5 17:23:59 2005 -->
+<!--    at Sat Jan 15 14:04:27 2005 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -17633,7 +17655,7 @@ struct _Unwind_Exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Wed Jan  5 17:23:57 2005 -->
+<!--    at Sat Jan 15 14:04:25 2005 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -17996,7 +18018,7 @@ with the behavior as described in <XREF LINKEND="std.SUSv3">.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Wed Jan  5 17:23:58 2005 -->
+<!--    at Sat Jan 15 14:04:26 2005 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -18067,7 +18089,7 @@ underlying specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.63 2004/11/02 20:00:05 nick Exp 0 -->
-<!--    at Wed Jan  5 17:23:59 2005 -->
+<!--    at Sat Jan 15 14:04:26 2005 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
