@@ -10,7 +10,7 @@ TABLES=standards.sgml
 .m4.sgml:
 	m4 -Uindex -Uformat $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkstandardsgmltable -a All -s "'RFC1952','RFC2440'" >standards.sgml

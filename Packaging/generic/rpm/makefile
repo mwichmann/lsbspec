@@ -10,7 +10,7 @@ TABLES=privtags.sgml sigtags.sgml hdrtags.sgml pkgtags.sgml insttags.sgml \
 .m4.sgml:
 	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all source: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mkrpmtagtable -g Private -t "Header Private Tag Values" >privtags.sgml
