@@ -37,5 +37,4 @@
 </BOOKINFO>
 
 &intro.sgm;
-&lowlevel.sgm;
 </BOOK>
