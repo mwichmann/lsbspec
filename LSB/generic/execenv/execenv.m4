@@ -411,8 +411,7 @@ optional.</para>
 <para>This affects at least the following utilities: 
 <COMMAND>cpio</COMMAND>
 (<xref linkend="cpio" >), 
-<COMMAND>find</COMMAND> (<xref linkend="find" >),
-<COMMAND>ls</COMMAND> (<xref linkend="ls" >) and 
+<COMMAND>find</COMMAND> (<xref linkend="find" >) and
 <COMMAND>tar</COMMAND> (<xref linkend="tar" >).</para>
 
 </section>
