@@ -7,6 +7,7 @@
 <!entity archspec "PPC32">
 <!entity canonicalarch "PPC32">
 <!entity specarchitecture "PPC32&trade;">
+<!entity spectitle "Linux Standard Base Specification for the PPC32 Architecture">
 
 %entities;
 
@@ -14,7 +15,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the PPC32 Architecture &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2000</YEAR>
 <YEAR>2001</YEAR>

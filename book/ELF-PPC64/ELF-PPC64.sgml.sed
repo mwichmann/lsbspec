@@ -18,6 +18,7 @@
 &legal;
 </BOOKINFO>
 
+&elf-ppc64-intro
 &contents;
 
 </BOOK>

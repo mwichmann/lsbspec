@@ -17,6 +17,7 @@
 &legal;
 </BOOKINFO>
 
+&elf-s390x-intro
 &contents;
 
 </BOOK>

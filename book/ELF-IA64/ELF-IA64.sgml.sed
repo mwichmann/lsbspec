@@ -17,6 +17,7 @@
 &legal;
 </BOOKINFO>
 
+&elf-ia64-intro;
 &contents;
 
 </BOOK>

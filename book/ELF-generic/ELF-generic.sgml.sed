@@ -19,6 +19,7 @@
 &legal;
 </BOOKINFO>
 
+&elf-generic-intro;
 &contents;
 
 </BOOK>

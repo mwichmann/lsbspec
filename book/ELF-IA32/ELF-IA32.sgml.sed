@@ -17,6 +17,7 @@
 &legal;
 </BOOKINFO>
 
+&elf-ia32-intro;
 &contents;
 
 </BOOK>

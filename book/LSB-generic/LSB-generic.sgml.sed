@@ -4,6 +4,7 @@
 <!entity contents SYSTEM "contents">
 
 <!entity specversion "LSBVERSION">
+<!entity spectitle "Linux Standard Base Specification">
 
 %entities;
 
@@ -11,12 +12,13 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2000</YEAR>
 <YEAR>2001</YEAR>
 <YEAR>2002</YEAR>
 <YEAR>2003</YEAR>
+<YEAR>2004</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;

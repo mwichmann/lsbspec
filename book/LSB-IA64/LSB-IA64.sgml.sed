@@ -7,6 +7,7 @@
 <!entity archspec "IA64">
 <!entity canonicalarch "IA64">
 <!entity specarchitecture "Itanium&trade;">
+<!entity spectitle "Linux Standard Base Specification for the IA64 Architecture">
 
 %entities;
 
@@ -14,7 +15,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the IA64 Architecture &specversion</TITLE>
+<TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2000</YEAR>
 <YEAR>2001</YEAR>
