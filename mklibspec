@@ -132,7 +132,8 @@ for(1..$lgh->numrows) {
 # 7) Foreach group, make a table of the interfaces
 #
 	$select = "SELECT * FROM Interface,LGInt ";
-	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype='Function' ORDER BY Iname";
+	$select.= "WHERE Iid=LGIint AND LGIlibg=$LGid AND Itype='Function' ";
+	$select.= "ORDER BY Iname";
 	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	print STDERR $select,"\n" if $trace;
 	for(1..$inh->numrows) {
@@ -365,36 +366,36 @@ print "</SECT1>\n";
 #
 # List the data definitions by including the related headers here
 #
-#$select = "SELECT * FROM Headers WHERE Hlibrary=$Lid ORDER BY Hname";
-#$hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-#if( $hdh->numrows ) {
-#	print "<SECT1>\n";
-#	print "<TITLE> Data Definitions for ", $Lname, "</TITLE>\n";
-#	print "<PARA>\n";
-#	print "</PARA>\n";
 #
 # Now, get a list of all headers associate with this library
 #
-#	$select = "SELECT * FROM Headers WHERE Hlibrary=$Lid ORDER BY Hname";
-#	$hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-#	for(1..$hdh->numrows) {
-#		local(*entry);
-#		%entry=$hdh->fetchhash;
-#		$Hname=$entry{'Hname'};
-#		$headname="../../src/include/".$Hname;
-#		print "<SECT2>\n";
-#		print "<TITLE>";
-#		print $entry{'Hname'};
-#		print "</TITLE>\n";
-#		print "<PARA>\n";
-#		print "</PARA>\n";
-#		print "<SCREEN>\n";
-#		open(HEADER,"<".$headname) || die "Can't open $headname";
-#		while(<HEADER>) {
-#			print $_;
-#			}
-#		print "</SCREEN>\n";
-#		print "</SECT2>\n";
-#	}
-#	print "</SECT1>\n";
-#}
+$select = "SELECT DISTINCT Hname,Hid FROM Header,LibGroup,LGInt,Interface ";
+$select.= "WHERE Hid=Iheader AND Iid=LGIint AND LGIlibg=LGid ";
+$select.= "AND LGlib=$Lid ORDER BY Hname";
+$hdh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+if( $hdh->numrows ) {
+	print "<SECT1>\n";
+	print "<TITLE> Data Definitions for ", $Lname, "</TITLE>\n";
+	print "<PARA>\n";
+	print "</PARA>\n";
+	for(1..$hdh->numrows) {
+		local(*entry);
+		%entry=$hdh->fetchhash;
+		$Hname=$entry{'Hname'};
+		$headname="../../src/include/".$Hname;
+		print "<SECT2>\n";
+		print "<TITLE>";
+		print $entry{'Hname'};
+		print "</TITLE>\n";
+		print "<PARA>\n";
+		print "</PARA>\n";
+		print "<SCREEN>\n";
+		open(HEADER,"<".$headname); #|| die "Can't open $headname";
+		while(<HEADER>) {
+			print $_;
+			}
+		print "</SCREEN>\n";
+		print "</SECT2>\n";
+	}
+	print "</SECT1>\n";
+}
