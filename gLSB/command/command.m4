@@ -13,15 +13,9 @@ Specification (SUS).  When an interface is not defined in the SUS,
 then the next prevailing standard is referenced (ie., POSIX, SVID).
 
 </PARA>
-<NOTE>
-<PARA>
 
-This list needs to be reviewed and the specifications referenced
-compared to the actual implementations.
-
-</PARA>
-</NOTE>
 include(cmdsutils.sgml)
+
 </SECT1>
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
