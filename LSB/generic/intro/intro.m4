@@ -147,7 +147,7 @@ run on any LSB-conforming implementation should refer to the appendix
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-LSB
+gLSB
 </TERM>
 <LISTITEM>
 <PARA>
