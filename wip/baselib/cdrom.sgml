@@ -192,7 +192,7 @@ struct cdrom_ti
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM><STRUCTFIELD>cdti_trk0</STRUCTFIELD></TERM>
+<TERM><STRUCTFIELD>cdti_trk1</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>Ending track of the location of the audio location.
 </PARA>
@@ -200,17 +200,9 @@ struct cdrom_ti
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM><STRUCTFIELD>cdmsf_sec1</STRUCTFIELD></TERM>
+<TERM><STRUCTFIELD>cdti_trk1</STRUCTFIELD></TERM>
 <LISTITEM>
-<PARA>Ending second of the location of the audio location.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM><STRUCTFIELD>cdmsf_frame1</STRUCTFIELD></TERM>
-<LISTITEM>
-<PARA>Ending frame of the location of the audio location.
+<PARA>Ending index of the location of the audio location.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -225,8 +217,35 @@ struct cdrom_ti
 </TERM>
 <LISTITEM>
 <PARA>
-comment
+Retreives the Table of Contents Header.  <parameter>argp</parameter> shall point ot a cdrom_tochdr structure, whch is filled in upon successful completion of the the ioctl() call. Each track referenced in the <structname>cdrom_tochdr</structname> structure contains a table of contents entry that can be retreived using a <symbol>CDROMREADTOCENTRY</symbol> request.
 </PARA>
+
+<SCREEN>
+struct cdrom_tochdr 
+{
+	__u8	cdth_trk0;
+	__u8	cdth_trk1;
+};
+</SCREEN>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>cdth_trk0</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>Starting track of the table of contents.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>cdth_trk1</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>Ending track of the table of contents.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
 </LISTITEM>
 </VARLISTENTRY>
 
@@ -236,8 +255,72 @@ comment
 </TERM>
 <LISTITEM>
 <PARA>
-comment
+Retreives an individual Table of Contents enrry from the CDROM associated with <parameter>fd</parameter>. <parameter>argp</parameter> shall contain a valid pointer to a <structname>cdrom_tocentry</structname> structure.
 </PARA>
+
+<SCREEN>
+struct cdrom_tocentry
+{
+	__u8	cdte_track;
+	__u8	cdte_adr	:4;
+	__u8	cdte_ctrl	:4;
+	__u8	cdte_format;
+	union	cdrom_addr	cdte_addr;
+	__u8	cdte_datamode;
+};
+</SCREEN>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>cdte_track</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>This field is supplied by the caller.  It should be in the range of tracks that are table of contents entries.  See <symbol>CDROMREADTOCHDR</symbol> documentatin for details regarding which tracks have table of content entries.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>cdte_adr</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>In some drivers represents a secondary address<???>
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>cdte_ctrl</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>Indicates whether the track identified by <structfield>cdte_track</structfield> contains audio or data.  If the track contains data, then <structfield>cdte_ctrl</structfield> will be set to <symbol>CDROM_DATA_TRACK</symbol>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>cdte_format</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>Indicates whether the entry employs a <symbol>CDROM_LBA</symbol> or <symbol>CDROM_MSF</symbol> address format.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>union <STRUCTFIELD>cdrom_addr</STRUCTFIELD> <STRUCTFIELD>cdte_addr</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>Comment
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>cdte_datamode</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>Comment
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+
+</VARIABLELIST>
 </LISTITEM>
 </VARLISTENTRY>
 
