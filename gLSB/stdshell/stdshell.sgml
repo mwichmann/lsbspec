@@ -4,35 +4,7 @@
 <TITLE>Standard Shell</TITLE>
 <SECT1 ID="stdshellintro">
 <TITLE>Introduction</TITLE>
-<PARA>
-The process of identifying a single GNU/Linux shell as a standard requires 
-that features intrinsic to the shell be analyzed alongside attributes 
-relating to its usability and availability.  Among the many shells existing 
-at the time of the evaluation, two in particular possessed a favorable array 
-of features -- Bash and Pdksh.
-</PARA>
-<PARA>
-After careful research and testing, Bash shell was adopted as the standard 
-for GNU/Linux.  At the time of evaluation, Bash was found mostly compliant 
-with the POSIX-1003.2 standard, and its maintainer demonstrated interest in 
-bringing the shell to full compliance.  Bash already enjoys wide use among 
-shell users, and is even included in many distributions as the default shell.  
-Further, the abundance of documentation found both on the Internet and in 
-the bookstore makes Bash an easy shell to use.
-</PARA>
-<PARA>
-It should be noted that Bash supports many extensions -- features of a 
-supplemental nature -- to those explicitly specified in POSIX-1003.2.  
-Such extensions to POSIX are not beneficial to the portability 
-of a shell script.  The use of extensions must be avoided in order for a 
-shell implementation or shell script to be considered LSB-compliant.
-</PARA>
-<PARA>
-Provisions of the shell command language standard as documented in Section 3 
-of POSIX-1003.2 are applicable as specified.  GNU exceptions to certain 
-standards exist, and in such instances, the GNU method is preferred.  Either 
-variation, however, may be used to achieve LSB-compliance.  The exceptions follow.
-</PARA>
+<PARA>The shell is POSIX-1003.2 with the following exceptions.</PARA>
 </SECT1>
 <SECT1 ID="stdshellexceptions">
 <TITLE>Standard Shell Exceptions</TITLE>
@@ -44,7 +16,7 @@ variation, however, may be used to achieve LSB-compliance.  The exceptions follo
 <TITLE>Pathname of $0</TITLE>
 
 <PARA>
-POSIX Standard, section 3.9.1.1, line 779-784:
+POSIX Standard, section 3.9.1.1, line 779-784.
 <ITEMIZEDLIST>
 <LISTITEM>
 <PARA>
@@ -87,34 +59,14 @@ fi
 <TITLE>Sourcing non-executable files</TITLE>
 
 <PARA>
-POSIX Standard, section 3.14.4, line 1493-1498:
 <ITEMIZEDLIST>
 <LISTITEM>
 <PARA>
-When PATH is used to locate a file for the dot utility<FOOTNOTE ID="stdshell-1">
-<PARA>
-dot is a special built-in utility</PARA>
-</FOOTNOTE>
- , the file's readable 
-bit has to be set.  The executable bit is not important.  The POSIX shell
-ignores non-readable files.
-</PARA>
-</LISTITEM>
-</ITEMIZEDLIST>
-</PARA>
-
-<PARA>
-GNU Exception:
-<ITEMIZEDLIST>
-<LISTITEM>
-<PARA>
-When PATH is used to locate a file for the dot utility, the file's readable 
-bit has to be set.  The executable bit is not important.
-</PARA>
-<PARA>
-If file is executable and not readable, then the interactive shell
-displays a diagnostic message to standard error, and the non-interactive shell 
-aborts.
+When PATH is used to locate a file for the dot utility, and a matching
+file is on the PATH but is not readable, the behavior is undefined
+(unlike POSIX which apparently requires the shell to continue searching
+through the rest of the PATH, POSIX Standard, section 3.14.4, line
+1493-1498).
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -122,6 +74,33 @@ aborts.
 
 </SECT2>
 
+</SECT1>
+<SECT1 ID="stdshellrat">
+<TITLE>Standard Shell Rationale</TITLE>
+<PARA>
+Among the many shells existing at the time of evaluation, the two
+most compliant were Bash and Pdksh.
+</PARA>
+<PARA>
+At the time of evaluation, Bash was found mostly compliant 
+with the POSIX-1003.2 standard, and its maintainer demonstrated interest in 
+bringing the shell to full compliance.  Bash already enjoys wide use among 
+shell users, and is even included in many distributions as the default shell.
+Further, the abundance of documentation found both on the Internet and in 
+the bookstore makes Bash an easy shell to use.
+</PARA>
+<PARA>
+Of course, shell scripts must avoid using bash extensions if they want
+to run on any LSB system.
+</PARA>
+<PARA>
+The two exceptions to POSIX (concerning . and non-readable files, and
+argv[0]) in this section are to accommodate bash.  The need for
+exceptions should be reviewed if bash changes or POSIX changes to
+remove the conflict.  Future versions of this standard may also
+consider exceptions for pdksh or other almost-compliant shells, if
+they seem to be warranted.
+</PARA>
 </SECT1>
 </CHAPTER>
 </PART>
