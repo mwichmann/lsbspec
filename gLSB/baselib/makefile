@@ -22,7 +22,8 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	optind.sgml optopt.sgml \
 	psignal.sgml putwchar.sgml pwrite64.sgml sem_timedwait.sgml \
 	setbuffer.sgml setegid.sgml seteuid.sgml setgroups.sgml \
-	sethostid.sgml sethostname.sgml setmntent.sgml setutent.sgml \
+	sethostid.sgml sethostname.sgml setmntent.sgml setsockopt.sgml \
+	setutent.sgml \
 	sigandset.sgml sigblock.sgml siggetmask.sgml sigisemptyset.sgml sigorset.sgml \
 	sigreturn.sgml sigsetmask.sgml sigvec.sgml statfs.sgml stime.sgml stpcpy.sgml \
 	stpncpy.sgml strcasestr.sgml strerror_r.sgml strfry.sgml strndup.sgml \
