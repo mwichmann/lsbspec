@@ -89,6 +89,12 @@ The following pthread functions were omitted and should be included:
 <FUNCTION>pthread_atfork</FUNCTION>,
 </PARA>
 
+<PARA>
+On several architectures, the type <VARNAME>bool</VARNAME> was incorrectly
+specified as <VARNAME>int</VARNAME>. It should have been <VARNAME>
+unsigned char</VARNAME>.
+</PARA>
+
 </CHAPTER>
 
 </PART>
