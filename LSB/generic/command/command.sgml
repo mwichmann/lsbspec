@@ -542,7 +542,7 @@ process, they have no effect when executed as a file.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Wed Mar 30 15:18:25 2005 -->
+<!--    at Mon Apr  4 10:18:30 2005 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -3340,7 +3340,10 @@ installation tool for various types of data
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <CMDSYNOPSIS>
-<COMMAND>/usr/lib/lsb/lsbinstall</COMMAND> <ARG rep=repeat>OPTION</ARG>
+<COMMAND>/usr/lib/lsb/lsbinstall</COMMAND> 
+<GROUP><ARG>-c</ARG><ARG>--check</ARG><ARG>-r</ARG><ARG>--remove</ARG></GROUP>
+<GROUP choice=plain><ARG>-t type</ARG><ARG>--type=type</ARG></GROUP>
+<ARG rep=repeat choice=plain>operand</ARG>
 </CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -3352,12 +3355,29 @@ package post installation script to add package specific data to system wide
 repositories.
 A user may need appropriate privilege to invoke <command>lsbinstall</command>.
 </PARA>
+<PARA>
+If the <parameter>-c</parameter> or <parameter>--check</parameter>
+option is specified, <command>lsbinstall</command> shall test to
+see if there is an existing object of the type specified already installed.
+If there is, <command>lsbinstall</command> shall immediately exit with
+a status of zero. If there is no object of the type and name specified
+already installed, <command>lsbinstall</command> shall exit with a
+non-zero status and take no further action.
+</PARA>
+<PARA>
+If the <parameter>-r</parameter> or <parameter>--remove</parameter>
+is specified, the named object of the specified type shall be removed from
+the system.
+</PARA>
 </REFSECT1>
 <REFSECT1>
-<TITLE>Options</TITLE>
+<TITLE>Object Types</TITLE>
+<PARA>
+The <parameter>-t type</parameter> or <parameter>--type=type</parameter>
+option shall support at least the following types:
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM>-f, --font</TERM>
+<TERM>font</TERM>
 <LISTITEM>
 <PARA>
 install a font file into the systemwide font repository.
@@ -3366,16 +3386,22 @@ There shall be one operand, that names a font file.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>-i, --init</TERM>
+<TERM>init</TERM>
 <LISTITEM>
 <PARA>
 install an init script into the system specific location.
 There shall be one operand, that names an init script file.
+This operation shall be equivalent to 
+<command>install_initd name</command> (or 
+<command>remove_initd name</command> if the <parameter>-r</parameter> or
+<parameter>--remove</parameter> option is specified), 
+where <command>name</command>
+is the first operand.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>-p, --profile</TERM>
+<TERM>profile</TERM>
 <LISTITEM>
 <PARA>
 install a profile script into the system specific location.
@@ -3386,23 +3412,26 @@ The behavior is unspecified if this name does not have the suffix
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>-s, --service</TERM>
+<TERM>service</TERM>
 <LISTITEM>
 <PARA>
 ensure a service name and number pair is know to the system service database.
-There must be at least two operands.
+When installing, there must be at least two operands.
 The first operand shall have the format <literal>%d/%s</literal> with the port
 number and protocol values (e.g. <literal>22/tcp</literal>), and the second
 operand shall be the name of the service. Any subsequent operands 
 provide aliases for this service.
+If the <parameter>-r</parameter> or <parameter>--remove</parameter> option
+is specified, there shall be a single operand identifiying the 
+port and protocol values (with the same format as above).
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>-I, --inet</TERM>
+<TERM>inet</TERM>
 <LISTITEM>
 <PARA>
-add an entry to the systems inet super daemon configuration.
+add an entry to the systems network super daemon configuration.
 There shall be one operand, that names a file with the following format:
 <programlisting>
 service &lt;service_name&gt;
@@ -3416,7 +3445,7 @@ must be at least =, but others may be supported.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>-c, --crontab</TERM>
+<TERM>crontab</TERM>
 <LISTITEM>
 <PARA>
 Install a crontab into the system specific location.
@@ -3426,7 +3455,18 @@ There shall be one operand, that names a crontab file. See
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>-m, --menu</TERM>
+<TERM>package</TERM>
+<LISTITEM>
+<PARA>
+Invoke the system specific package installation utility (or package removal
+utility if the <parameter>-r</parameter> or <parameter>--remove</parameter>
+option was specified).
+There shall be one operand, that names a package file. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>menu</TERM>
 <LISTITEM>
 <PARA>
 install a desktop menu entry into the system menu database.
@@ -3435,24 +3475,56 @@ There shall be one operand, that names a menu file.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>-l, --ldconfig</TERM>
+<TERM>ldconfig</TERM>
 <LISTITEM>
 <PARA>
 Register a directory that contains shared libraries with the system.
 There shall be one operand, that names a directory.
+<note><para>
+If the <parameter>-r</parameter> or <parameter>--remove</parameter>
+option is specified, the named path will be removed from the system
+configuration, even if other packages depend on it. Shared
+library entries should only be removed from the system configuration
+when the calling application can guarantee no other package or utility
+depends on this library path, 
+</para></note>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
+</PARA>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Examples</TITLE>
+<PROGRAMLISTING>
+lsbinstall --type=profile myco.com-prod.sh
+</PROGRAMLISTING>
 <PARA>
+Install the profile shell script for <literal>myco.com-prod.sh</literal>.
 </PARA>
 <PROGRAMLISTING>
-add something here!
+lsbinstall --check --type=profile myco.com-prod.sh
 </PROGRAMLISTING>
+<PARA>
+Test to see if the profile shell script for <literal>myco.com-prod.sh</literal>
+is installed correctly.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Exit Status</TITLE>
+<PARA>
+If the <parameter>-c</parameter> or <parameter>--check</parameter>
+option is specified, <command>lsbinstall</command> shall exit with a zero
+status if an object of the specified type and name is already installed,
+or non-zero otherwise.
+Otherwise, <command>lsbinstall</command> shall exit with a zero status
+if the object with the specified type and name was successfully installed
+(or removed if the <parameter>-r</parameter> or <parameter>--remove</parameter>
+option was specified), and non-zero if the installation (or removal)
+failed. On failure, a diagnostic message shall be printed to the
+standard error file descriptor.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
