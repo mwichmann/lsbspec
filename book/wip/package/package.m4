@@ -498,10 +498,15 @@ file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 <PARA>
 The CPIO Header uses the following header structure (sometimes referred to
 as "new ASCII" or "SVR4 cpio"). All numbers are stored as ASCII
-representations of their hexidecimal value. Only the
-<STRUCTFIELD>c_namesize</STRUCTFIELD> and the corresponding name string are
-used from the CPIO Header. All other fields are superceeded by the information
-contained in the Header Section.
+representations of their hexidecimal value.
+With the exception of
+<STRUCTFIELD>c_inode</STRUCTFIELD>, <STRUCTFIELD>c_namesize</STRUCTFIELD>
+and the corresponding name string, <STRUCTFIELD>c_devmajor</STRUCTFIELD>,
+<STRUCTFIELD>c_devminor</STRUCTFIELD> <STRUCTFIELD>c_devminor</STRUCTFIELD>
+and <STRUCTFIELD>c_checksum</STRUCTFIELD>, all information contained in the
+CPIO Header is also represented in the Header Section.
+The values in in the CPIO Header must match the values contained in the
+Header Section.
 </PARA>
 <SCREEN>
 struct {
@@ -549,8 +554,8 @@ Permission bits of the file. This is an ascii representation of the hexidecimal
 number representing the bit as defined for the
 <STRUCTFIELD>st_mode</STRUCTFIELD> field of the <STRUCTNAME>stat</STRUCTNAME>
 structure defined for the <VARNAME>stat</VARNAME> function.
-This field is superceeded by the <CONSTANT>RPMTAG_FILEMODES</CONSTANT> index
-in the Header section.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEMODES</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -559,8 +564,8 @@ in the Header section.
 <LISTITEM>
 <PARA>
 Value identifying this owner of this file.
-This field is superceeded by the <CONSTANT>RPMTAG_FILEUIDS</CONSTANT> index
-in the Header section.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEUIDS</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -569,8 +574,8 @@ in the Header section.
 <LISTITEM>
 <PARA>
 Value identifying this group of this file.
-This field is superceeded by the <CONSTANT>RPMTAG_FILEGIDS</CONSTANT> index
-in the Header section.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEGIDS</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -582,8 +587,8 @@ Value identifying the number of links associated with this file. If the value
 is greater than 1, then this filename will be linked to 1 or more files in this
 archive that has a matching value for the c_ino, c_devmajor and c_devminor
 fields.
-This field is superceeded by the <CONSTANT>RPMTAG_FILELINKTOS</CONSTANT> index
-in the Header section.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_FILELINKTOS</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -592,8 +597,8 @@ in the Header section.
 <LISTITEM>
 <PARA>
 Value identifying the modification time of the file when it was read.
-This field is superceeded by the <CONSTANT>RPMTAG_FILEMTIMES</CONSTANT> index
-in the Header section.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEMTIMES</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -602,8 +607,8 @@ in the Header section.
 <LISTITEM>
 <PARA>
 Value identifying the size of the file.
-This field is superceeded by the <CONSTANT>RPMTAG_FILESIZES</CONSTANT> index
-in the Header section.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_FILESIZES</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -637,8 +642,8 @@ This field is ignored when installing a package.
 <PARA>
 The major number of the raw device containing the file system from which the
 file was read.
-This field is superceeded by the <CONSTANT>RPMTAG_RDEVS</CONSTANT> index
-in the Header section.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_RDEVS</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -648,8 +653,8 @@ in the Header section.
 <PARA>
 The minor number of the raw device containing the file system from which the
 file was read.
-This field is superceeded by the <CONSTANT>RPMTAG_RDEVS</CONSTANT> index
-in the Header section.
+This field  must match the corresponding value in the
+<CONSTANT>RPMTAG_RDEVS</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
