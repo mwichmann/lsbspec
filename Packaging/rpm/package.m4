@@ -803,7 +803,7 @@ by LANANA shall only consist of the ASCII characters [a-z0-9].
 <SECT1 ID=pkgdepend>
 <TITLE>Package Dependencies</TITLE>
 <PARA>
-Packages shall have a dependency that indicates which LSB profile is
+Packages shall have a dependency that indicates which LSB module is
 required. The following dependencies may be used.
 <VARIABLELIST>
 <VARLISTENTRY>
@@ -811,26 +811,16 @@ required. The following dependencies may be used.
 <LISTITEM>
 <PARA>
 This dependency is used to indicate that the application is only dependent
-on features contained in the LSB-Core specification, which is common to all 
-LSB Profiles.
+on features contained in the LSB-Core specification.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM>lsb-server</TERM>
+<TERM>lsb-graphics</TERM>
 <LISTITEM>
 <PARA>
 This dependency is used to indicate that the application is dependent
-on features contained in the LSB-Server specification.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>lsb-workstation</TERM>
-<LISTITEM>
-<PARA>
-This dependency is used to indicate that the application is dependent
-on features contained in the LSB-Workstation specification.
+on features contained in the LSB-Graphics module.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
