@@ -433,6 +433,101 @@ The files at.allow and at.deny reside in /etc rather than
 
 </REFENTRY>
 
+<REFENTRY id="batch">
+<REFMETA><REFENTRYTITLE>
+batch
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>batch</REFNAME>
+<REFPURPOSE>
+execute commands when the system load permits
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<SYNOPSIS>
+batch [-V] [-q queue] [-f file] [-mv] [TIME]
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+batch read commands from standard input or a specified file which are
+to be executed at a later time, using /bin/sh
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-f file</TERM>
+<LISTITEM>
+<PARA>
+Reads the job from file rather than standard input.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-m</TERM>
+<LISTITEM>
+<PARA>
+Send mail to the user when the job has completed even if there was no
+output.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-q queue</TERM>
+<LISTITEM>
+<PARA>
+uses the specified queue.  A queue designation consists of a single
+letter; valid queue designations range from a to z.  and A to Z.
+The a queue is the default for at and the b queue for batch.  Queues
+with higher letters run with increased niceness.  The special queue
+"=" is reserved for jobs which are currently running.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-V</TERM>
+<LISTITEM>
+<PARA>
+Prints the version number to standard error.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-v</TERM>
+<LISTITEM>
+<PARA>
+Shows the time the job will be executed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FILES</TERM>
+<LISTITEM>
+<PARA>
+The files at.allow and at.deny reside in /etc rather than
+/usr/lib/cron.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+
+</REFENTRY>
+
 <REFENTRY id="bc">
 <REFMETA><REFENTRYTITLE>
 bc
@@ -5299,45 +5394,1159 @@ summary
 
 </REFENTRY>
 
-<REFENTRY id="link">
-<REFMETA><REFENTRYTITLE>
-link
-</REFENTRYTITLE></REFMETA>
+<REFENTRY id="killall">
+<REFMETA><REFENTRYTITLE>killall</REFENTRYTITLE></REFMETA>
+
 <REFNAMEDIV>
-<REFNAME>link</REFNAME>
+<REFNAME>killall</REFNAME>
+
 <REFPURPOSE>
-make a new name for a file
+kill processes by name
 </REFPURPOSE>
+
 </REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<SYNOPSIS>
+killall [-egiqvw] [-signal] name ...
+killall -l
+killall -V
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+
 <REFSECT1>
-<TITLE>Note</TITLE>
+<TITLE>Description</TITLE>
 <PARA>
-While GNU fileutils doesn't provide "link", it does provide the "ln" command,
-both of which create hard links to files.
+killall sends a signal to all processes running any of the specified
+commands.  If no signal name is specified, SIGTERM is sent.
 </PARA>
+
+<PARA>
+Signals can be specified either by name (e.g. -HUP) or by number
+(e.g. -1). Signal 0 (check if a process exists) can only be specified
+by number.
+</PARA>
+
+<PARA>
+If the command name contains a slash (/), processes executing that
+particular file will be selected for killing, independent of their
+name.
+</PARA>
+
+<PARA>
+killall returns a non-zero return code if no process has been killed
+for any of the listed commands.  If at least one process has been
+killed for each command, killall returns zero.
+</PARA>
+
+<PARA>
+A killall process never kills itself (but may kill other killall
+processes).
+</PARA>
+
 </REFSECT1>
+
+<REFSECT1>
+<title>Standard Options</title>
+<variablelist>
+
+<varlistentry>
+<term>-e</term>
+<listitem>
+<para>
+Require an exact match for very long names. If a command name is
+longer than 15 characters, the full name may be unavailable (i.e. it
+is swapped out).  In this case, killall will kill everything that
+matches within the first 15 characters. With -e, such entries are
+skipped.  killall prints a message for each skipped entry if -v is
+specified in addition to -e.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-g</term>
+<listitem>
+<para>
+Kill the process group to which the process belongs.  The kill signal
+is only sent once per group, even if multiple processes belonging to
+the same process group were found.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-i</term>
+<listitem>
+<para>
+Interactively ask for confirmation before killing.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-l</term>
+<listitem>
+<para>
+List all known signal names.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-q</term>
+<listitem>
+<para>
+Do not complain if no processes were killed.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-v</term>
+<listitem>
+<para>
+Report if the signal was successfully sent.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-V</term>
+<listitem>
+<para>
+Display version information.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
 </REFENTRY>
 
-<REFENTRY id="lint">
+<REFENTRY id="ln">
+<REFMETA><REFENTRYTITLE>ln</REFENTRYTITLE></REFMETA>
+
+<REFNAMEDIV>
+<REFNAME>ln</REFNAME>
+
+<REFPURPOSE>
+make links between files
+</REFPURPOSE>
+
+</REFNAMEDIV>
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "ln" is as specified in the SUS but with the
+following differences as listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<title>Differences</title>
+<variablelist>
+
+<varlistentry>
+<term>-b, --backup[=CONTROL]</term>
+<listitem>
+<para>
+make a backup of each existing destination file
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-n, --no-derefence</term>
+<listitem>
+<para>
+treat destination that is a symlink to a directory as if it were a
+normal file
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-i, --interactive</term>
+<listitem>
+<para>
+prompt whether to remove destinations
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-s, --symbolic</term>
+<listitem>
+<para>
+make symbolic links instead of hard links
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-S, --suffix=SUFFIX</term>
+<listitem>
+<para>
+override the usual backup suffix
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>--target-directory=DIR</term>
+<listitem>
+<para>
+move all SOURCE arguments into directory DIR
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-v, --verbose</term>
+<listitem>
+<para>
+print name of each file before linking
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>--version</term>
+<listitem>
+<para>
+output version information and exit
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Notes</TITLE>
+<PARA>
+The backup suffix is ~, unless set with --suffix or
+SIMPLE_BACKUP_SUFFIX.  The version control method may be selected via
+the --backup option or through the VERSION_CONTROL environment
+variable.  Here are the values:
+</PARA>
+
+<variablelist>
+
+<varlistentry>
+<term>none, off</term>
+<listitem>
+<para>
+never make backups (even if --backup is given)
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>numbered, t</term>
+<listitem>
+<para>
+make numbered backups
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>existing, nil</term>
+<listitem>
+<para>
+numbered if numbered backups exist, simple otherwise
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>simple, never</term>
+<listitem>
+<para>
+always make simple backups
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</REFSECT1>
+
+
+
+</REFENTRY>
+
+<REFENTRY id="localedef">
 <REFMETA><REFENTRYTITLE>
-lint
+localedef
 </REFENTRYTITLE></REFMETA>
 <REFNAMEDIV>
-<REFNAME>lint</REFNAME>
+<REFNAME>localedef</REFNAME>
 <REFPURPOSE>
-synopsis goes here
+split a file into sections determined by context lines
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "localedef" is as specified in the SUS but with the
+following differences as listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>--charmap=charmapfile</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -f option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--inputfile=intputfile</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -i option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--force</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -c option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-v, --verbose</TERM>
+<LISTITEM>
+<PARA>
+Generate extra warnings about errors that are normally ignored.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--quiet</TERM>
+<LISTITEM>
+<PARA>
+Suppress all notifications and warnings, and report only fatal errors.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+
+</REFENTRY>
+
+<REFENTRY id="lsbrelease">
+<REFMETA>
+<REFENTRYTITLE>
+lsb_release
+</REFENTRYTITLE>
+<MANVOLUME>1</MANVOLUME>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>lsb_release</REFNAME>
+<REFPURPOSE>
+print distribution specific information
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<SYNOPSIS>
+lsb_release [OPTION]...
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+GNU  lsb_release  1.0	print certain LSB (Linux Standard
+Base) and Distribution information.
+</PARA>
+<PARA>
+With no OPTION, same as -v.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Options</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>-v</TERM>, <TERM>--version</TERM>
+<LISTITEM>
+<PARA>
+Display version of LSB against  which  distribution
+is compliant.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>-i</TERM>, <TERM>--id</TERM>
+<LISTITEM>
+<PARA>
+Display string id of distributor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>-d</TERM>, <TERM>--description</TERM>
+<LISTITEM>
+<PARA>
+Display  single  line text description of distribu tion.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>-r</TERM>, <TERM>--release</TERM>
+<LISTITEM>
+<PARA>
+Display release number of distribution.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>-c</TERM>, <TERM>--codename</TERM>
+<LISTITEM>
+<PARA>
+Display codename according to distribution release.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>-a</TERM>, <TERM>--all</TERM>
+<LISTITEM>
+<PARA>
+Display all of the above information.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>-s</TERM>, <TERM>--short</TERM>
+<LISTITEM>
+<PARA>
+Display  all of the above information in short out­ put .
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>-h</TERM>, <TERM>--help</TERM>
+<LISTITEM>
+<PARA>
+Display this message.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
+</REFSECT1>
+<REFSECT1>
+<TITLE>Examples</TITLE>
+<PARA>
+The /etc/lsb-release file contains:
+</PARA>
+<PARA>
+LSB_VERSION="1.0"
+DISTRIB_DESCRIPTION="I enjoy using my distrib"
+</PARA>
+<PARA>
+And the /etc/foobar-release file contains:
+</PARA>
+       My Linux Distrib release 1.0RC4 (TryIt)
+</PARA>
+<INFORMALEXAMPLE>
+<PROGRAMLISTING>
+       $ ./lsb_release --all
+       LSB Version:    1.0
+       Distributor ID: MyDistrib
+       Description:    I enjoy using my distrib
+       Release:	       1.0RC4
+       Codename:       TryIt
+</PROGRAMLISTING>
+</INFORMALEXAMPLE>
+<INFORMALEXAMPLE>
+<PROGRAMLISTING>
+       $ ./lsb_release -a -s
+       1.0 MyDistrib "I enjoy using my distrib" 1.0RC4 TryIt
+</PROGRAMLISTING>
+</INFORMALEXAMPLE>
+<PARA>
+Then simply  without  the  "/etc/lsb-release"  file,  that
+means result on a non-LSB compliant distrib:
+</PARA>
+<INFORMALEXAMPLE>
+<PROGRAMLISTING>
+       $ ./lsb_release -a
+       LSB Version:    n/a
+       Distributor ID: MyDistrib
+       Description:    My Linux Distrib release 1.0RC4 (TryIt)
+       Release:	       1.0RC4
+       Codename:       TryIt
+</PROGRAMLISTING>
+</INFORMALEXAMPLE>
+
+</REFSECT1>
+<REFSECT1>
+<TITLE>Files</TITLE>
+<PARA>
+The  "/etc/lsb-release"	file should contain the following
+fields:
+</PARA>
+<PARA>
+LSB_VERSION="1.0" (REQUIRED)
+</PARA>
+<PARA>
+And some optional fields like DISTRIB_ID, DISTRIB_RELEASE,
+DISTRIB_CODENAME, DISTRIB_DESCRIPTION to overwrite content
+parsed from next file.
+</PARA>
+<PARA>
+The "/etc/[distrib]-release" file contains  a  description
+line parsed to get information (especially on non-LSB com­
+pliant system).
+</PARA>
+<PARA>
+The required line style is:
+"Distributor release x.x (Codename)"
+</PARA>
+<PARA>
+Distributor can be a couple of words, but then  con­
+catenated (i.e. Linux Foo BarLinux Linux -> FooBarLinux),
+x.x  starts with a digit followed by any non-blank charac­
+ters, Codename will also be concatenated	 (blanks  cleanup
+only).
+</PARA>
+</PARA>
+And   release  is  a  keyword  not  to  be  used	 in  
+DIS TRIB_DESCRIPTION	 if   you   don't   want   to	overwrite
+"/etc/[distrib]-release" data.
+<PARA>
+Notice: To support the Debian distributions' lak of infor­
+mation (see "/etc/debian_version"  file)	 some  have  been
+directly added into the lsb_release script.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Author</TITLE>
+<PARA>
+Written by Dominique MASSONIE.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Reporting Bugs</TITLE>
+<PARA>
+Report  bugs  to <EMAIL>mdomi@users.sourceforge.net</EMAIL>.	Include a
+complete, selfcontained example that will allow the bug to
+be  reproduced,	and  say which version of lsb_release you
+are using.
+<PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Copyright</TITLE>
+<PARA>
+Copyright © 2000 Free Software Foundation, Inc.
+</PARA>
+<PARA>
+This is free software; see the source for  copying  conditions.  
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR 
+A PARTICULAR PURPOSE.
+</PARA>
+</REFSECT1>
+
+<REFENTRY id="m4">
+<REFMETA><REFENTRYTITLE>
+m4
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>m4</REFNAME>
+<REFPURPOSE>
+macro processor
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSECT1>
-<TITLE>Note</TITLE>
+<TITLE>Description</TITLE>
 <PARA>
-The "lint" command from 4.4 BSD-Lite has opposite meanings for the "-a",
-"-b", "-h", and "-x" options than specified in SUS.  The "-c" option has
-a different meaning in the 4.4 BSD-Lite verion.  The "-o" option is not
-supported by the 4.4 BSD-Lite version.  It is unclear whether or not the
-"-p" option is implemented as specified by SUS without further investigation.
+The specification for "m4" is as specified in the SUS but with the
+following differences as listed below.
 </PARA>
 </REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>--version</TERM>
+<LISTITEM>
+<PARA>
+output version information and exit
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-e, --interactive</TERM>
+<LISTITEM>
+<PARA>
+unbuffer output, ignore interrupts
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-E, --fatal-warnings</TERM>
+<LISTITEM>
+<PARA>
+stop execution after first warning
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-Q, --quiet, --silent</TERM>
+<LISTITEM>
+<PARA>
+suppress some warnings for builtins
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-P, --prefix-builtins</TERM>
+<LISTITEM>
+<PARA>
+force a m4_ prefix to all builtins
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-I, --include=DIRECTORY</TERM>
+<LISTITEM>
+<PARA>
+search this directory second for includes
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--define=NAME[=VALUE]</TERM>
+<LISTITEM>
+<PARA>
+equivalent to the -D option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--undefine=NAME</TERM>
+<LISTITEM>
+<PARA>
+delete builtin NAME
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--synclines</TERM>
+<LISTITEM>
+<PARA>
+equivalent to -s option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-G, --traditional </TERM>
+<LISTITEM>
+<PARA>
+suppress all GNU extensions
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-H, --hashsize=PRIME</TERM>
+<LISTITEM>
+<PARA>
+set symbol lookup hash table size
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-L, --nesting-limit=NUMBER</TERM>
+<LISTITEM>
+<PARA>
+change artificial nesting limit
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-F, --freeze-state=FILE</TERM>
+<LISTITEM>
+<PARA>
+produce a frozen state on FILE at end
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-R, --reload-state=FILE</TERM>
+<LISTITEM>
+<PARA>
+reload a frozen state from FILE at start
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-d, --debug=[FLAGS]</TERM>
+<LISTITEM>
+<PARA>
+set debug level (no FLAGS implies 'aeq'). FLAGS is any of:
+</PARA>
+
+<variablelist>
+
+<varlistentry>
+<term>t</term>
+<listitem>
+<para>
+trace for all macro calls, not only 'ed
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>a</term>
+<listitem>
+<para>
+show actual arguments
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>e</term>
+<listitem>
+<para>
+show expansion
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>q</term>
+<listitem>
+<para>
+quote values as necessary, with a or e flag
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>c</term>
+<listitem>
+<para>
+show before collect, after collect and after call
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>x</term>
+<listitem>
+<para>
+add a unique macro call id, useful with c flag
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>f</term>
+<listitem>
+<para>
+say current input file name
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>l</term>
+<listitem>
+<para>
+say current input line number
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>p</term>
+<listitem>
+<para>
+show results of path searches
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>i</term>
+<listitem>
+<para>
+show changes in input files
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>V</term>
+<listitem>
+<para>
+shorthand for all of the above flags
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-t, --trace=NAME</TERM>
+<LISTITEM>
+<PARA>
+trace NAME when it will be defined
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-l, --arglength=NUM</TERM>
+<LISTITEM>
+<PARA>
+restrict macro tracing size
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-o, --error-output=FILE</TERM>
+<LISTITEM>
+<PARA>
+redirect debug and trace output
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="make">
+<REFMETA><REFENTRYTITLE>
+make
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>make</REFNAME>
+<REFPURPOSE>
+maintain, update and regenerate groups of programs
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "make" is as specified in the SUS but with the
+following differences as listed below. GNU make which contains syntax
+extensions from what is specified in the SUS. [FIXME: Do we need
+to specify these?]
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-C dir</TERM>
+<LISTITEM>
+<PARA>
+Change to directory dir before reading the makefiles or doing anything
+else.  If multiple -C options are specified, each is interpreted
+relative to the previous one: -C / -C etc is equivalent to -C /etc.
+This is typically used with recursive invocations of make.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-d</TERM>
+<LISTITEM>
+<PARA>
+Print debugging information in addition to normal processing.  The
+debugging information says which files are being considered for
+remaking, which filetimes are being compared and with what results,
+which files actually need to be remade, which implicit rules are
+considered and which are applied---everything interesting about how
+make decides what to do.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-I dir</TERM>
+<LISTITEM>
+<PARA>
+Specifies a directory dir to search for included makefiles.  If
+several -I options are used to specify several directories, the
+directories are searched in the order specified.  Unlike the arguments
+to other flags of make, directories given with -I flags may come
+directly after the flag: -Idir is allowed, as well as -I dir.  This
+syntax is allowed for compatibility with the C preprocessor's -I flag.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-j jobs</TERM>
+<LISTITEM>
+<PARA>
+Specifies the number of jobs (commands) to run simultaneously.  If
+there is more than one -j option, the last one is effective.  If the
+-j option is given without an argument, make will not limit the number
+of jobs that can run simultaneously.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-l [load]</TERM>
+<LISTITEM>
+<PARA>
+Specifies that no new jobs (commands) should be started if there are
+others jobs running and the load average is at least load (a
+floating-point number).  With no argument, removes a previous load
+limit.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-o file</TERM>
+<LISTITEM>
+<PARA>
+Do not remake the file file even if it is older than its dependencies,
+and do not remake anything on account of changes in file.  Essentially
+the file is treated as very old and its rules are ignored.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-v</TERM>
+<LISTITEM>
+<PARA>
+Print the version of the make program plus a copyright, a list of
+authors and a notice that there is no warranty.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-w</TERM>
+<LISTITEM>
+<PARA>
+Print a message containing the working directory before and after
+other processing.  This may be use­ ful for tracking down errors from
+complicated nests of recursive make commands.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-W file</TERM>
+<LISTITEM>
+<PARA>
+Pretend that the target file has just been modified.  When used with
+the -n flag, this shows you what would happen if you were to modify
+that file.  Without -n, it is almost the same as running a touch
+command on the given file before running make, except that the
+modification time is changed only in the imagination of make.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="md5sum">
+<REFMETA><REFENTRYTITLE>md5sum</REFENTRYTITLE></REFMETA>
+
+<REFNAMEDIV>
+<REFNAME>md5sum</REFNAME>
+
+<REFPURPOSE>
+generates or checks MD5 message digests
+</REFPURPOSE>
+
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<SYNOPSIS>
+md5sum [-b] [-c [file]] | [file...]
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<title>Options</title>
+<variablelist>
+
+<varlistentry>
+<term>-b</term>
+<listitem>
+<para>
+Use binary mode. 
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-c [file]</term>
+<listitem>
+<para>
+Check md5sum of all files listed in file against the checksum listed
+in the same file. The actual  of that file is the same as output
+of md5sum.  That is, each line in the file describes a file.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="mkdir">
+<REFMETA><REFENTRYTITLE>
+mkdir
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>mkdir</REFNAME>
+<REFPURPOSE>
+make directories
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "mkdir" is as specified in the SUS but with the
+following differences as listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>--verbose</TERM>
+<LISTITEM>
+<PARA>
+print a message for each created directory
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--version</TERM>
+<LISTITEM>
+<PARA>
+output version information and exit
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="mktemp">
+<REFMETA><REFENTRYTITLE>mktemp</REFENTRYTITLE></REFMETA>
+
+<REFNAMEDIV>
+<REFNAME>mktemp</REFNAME>
+
+<REFPURPOSE>
+make temporary file name (unique)
+</REFPURPOSE>
+
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<SYNOPSIS>
+mktemp [-q] [-u] template
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The mktemp utility takes the given file name template and overwrites a
+portion of it to create a file name.  This file name is unique and
+suitable for use by the application.
+</PARA>
+</REFSECT1>
+
+
+<REFSECT1>
+<title>Options</title>
+<variablelist>
+
+<varlistentry>
+<term>-q</term>
+<listitem>
+<para>
+Fail silently if an error occurs.  This is useful if a script does not
+want error output to go to standard error.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-u</term>
+<listitem>
+<para>
+Operate in `unsafe' mode.  The temp file will be unlinked before
+mktemp exits.  This is slightly better than mktemp(3) but still
+introduces a race condition.  Use of this option is not encouraged.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
 </REFENTRY>
 
 <REFENTRY id="more">
@@ -5361,23 +6570,502 @@ hte util-linux version by specifying the option "-num".
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY id="newgrp">
-<REFMETA><REFENTRYTITLE>
-newgrp
-</REFENTRYTITLE></REFMETA>
+<REFENTRY id="mount">
+<REFMETA><REFENTRYTITLE>mount</REFENTRYTITLE></REFMETA>
+
 <REFNAMEDIV>
-<REFNAME>newgrp</REFNAME>
+<REFNAME>mount</REFNAME>
+
 <REFPURPOSE>
-log in to a new group
+Create a new user or update default new user information
 </REFPURPOSE>
+
 </REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<SYNOPSIS>
+mount [-hV]
+mount -a [-fFnrsvw] [-t vfstype]
+mount [-fnrsvw] [-o options [,...]] device | dir
+mount [-fnrsvw] [-t vfstype] [-o options] device dir
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+
 <REFSECT1>
-<TITLE>Note</TITLE>
+<TITLE>Description</TITLE>
 <PARA>
-The 'newgrp" command provided by util-linux doesn't suppor the options
-"-l" or "-".
+All files accessible in a Unix system are arranged in one big tree,
+the file hierarchy, rooted at /.  These files can be spread out over
+several devices. The mount command serves to attach the file system
+found on some device to the big file tree. Conversely, the umount(8)
+command will detach it again.
+</PARA>
+
+</REFSECT1>
+
+<REFSECT1>
+<title>Standard Options</title>
+<variablelist>
+
+<varlistentry>
+<term>-V</term>
+<listitem>
+<para>
+Output version.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-v</term>
+<listitem>
+<para>
+Verbose mode.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-a</term>
+<listitem>
+<para>
+Mount all filesystems (of the given types) mentioned in fstab.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-F</term>
+<listitem>
+<para>
+(Used in conjunction with -a.)  Fork off a new incarnation of mount
+for each device.  This will do the mounts on different devices or
+different NFS servers in parallel.  
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-f</term>
+<listitem>
+<para>
+Causes everything to be done except for the actual system call; if
+it's not obvious, this `fakes' mounting the file system.  
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-n</term>
+<listitem>
+<para>
+Mount without writing in /etc/mtab.  This is necessary for example
+when /etc is on a read-only file system.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-s</term>
+<listitem>
+<para>
+Tolerate sloppy mount options rather than failing.  This will ignore
+mount options not supported by a filesystem type.  Not all filesystems
+support this option. 
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-r</term>
+<listitem>
+<para>
+Mount the file system read-only. A synonym is -o ro.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-w</term>
+<listitem>
+<para>
+Mount the file system read/write.  This is the default. A synonym is
+-o rw.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-L label</term>
+<listitem>
+<para>
+Mount the partition that has the specified label.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-U uuid</term>
+<listitem>
+<para>
+Mount the partition that has the specified uuid.  These two options
+require the file /proc/partitions to exist.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-t vfstype</term>
+<listitem>
+<para>
+The argument following the -t is used to indicate the file system
+type. 
+</para>
+
+<para>
+More than one type may be specified in a comma separated list.  The
+list of file system types can be prefixed with no to specify the file
+system types on which no action should be taken.
+</para>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-o</term>
+<listitem>
+<para>
+Options are specified with a -o flag followed by a comma separated
+string of options.  Some of these options are only useful when they
+appear in the /etc/fstab file.  The following options apply to any
+file system that is being mounted:
+</para>
+
+<variablelist>
+
+<varlistentry>
+<term>async</term>
+<listitem>
+<para>
+All I/O to the file system should be done asynchronously.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>atime</term>
+<listitem>
+<para>
+Update inode access time for each access.  This is the default.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>auto</term>
+<listitem>
+<para>
+Can be mounted with the -a option.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>defaults</term>
+<listitem>
+<para>
+Use default options: rw, suid, dev, exec, auto, nouser, and async.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>dev</term>
+<listitem>
+<para>
+Interpret character or block special devices on the file system.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>exec</term>
+<listitem>
+<para>
+Permit execution of binaries
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>noatime</term>
+<listitem>
+<para>
+Do not update inode access times on this file system.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>noauto</term>
+<listitem>
+<para>
+Can only be mounted explicitly.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>nodev</term>
+<listitem>
+<para>
+Do not interpret character or block special devices on the file
+system.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>noexec</term>
+<listitem>
+<para>
+Do not allow execution of any binaries on the mounted file system.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>nosuid</term>
+<listitem>
+<para>
+Do not allow set-user-identifier or set-group-identifier bits to take
+effect.
+</para>
+</listitem>
+
+<varlistentry>
+<term>nouser</term>
+<listitem>
+<para>
+Forbid an ordinary (i.e., non-root) user to mount the file system.
+This is the default.
+</para>
+</listitem>
+
+<varlistentry>
+<term>remount</term>
+<listitem>
+<para>
+Attempt to remount an already-mounted file system.  This is commonly
+used to change the mount flags for a file system, especially to make a
+readonly file system writeable.
+</para>
+</listitem>
+
+<varlistentry>
+<term>ro</term>
+<listitem>
+<para>
+Mount the file system read-only
+</para>
+</listitem>
+
+<varlistentry>
+<term>rw</term>
+<listitem>
+<para>
+Mount the file system read-write
+</para>
+</listitem>
+
+<varlistentry>
+<term>suid</term>
+<listitem>
+<para>
+Allow set-user-identifier or set-group-iden­tifier bits to take
+effect.
+</para>
+</listitem>
+
+<varlistentry>
+<term>sync</term>
+<listitem>
+<para>
+All I/O to the file system should be done synchronously.
+</para>
+</listitem>
+
+<varlistentry>
+<term>user</term>
+<listitem>
+<para>
+Allow an ordinary user to mount the file system.  This option implies
+the options noexec, nosuid, and nodev (unless overridden by subsequent
+options, as in the option line user,exec,dev,suid).
+</para>
+</listitem>
+
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="mv">
+<REFMETA><REFENTRYTITLE>mv</REFENTRYTITLE></REFMETA>
+
+<REFNAMEDIV>
+<REFNAME>mv</REFNAME>
+
+<REFPURPOSE>
+move (rename) files
+</REFPURPOSE>
+
+</REFNAMEDIV>
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "mv" is as specified in the SUS but with the
+following differences as listed below.
 </PARA>
 </REFSECT1>
+
+<REFSECT1>
+<title>Differences</title>
+<variablelist>
+
+<varlistentry>
+<term>-b, --backup[=CONTROL]</term>
+<listitem>
+<para>
+make backup before removal
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-S, --suffix=SUFFIX</term>
+<listitem>
+<para>
+override the usual backup suffix
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>--strip-trailing-slashes</term>
+<listitem>
+<para>
+remove any trailing slashes from each SOURCE argument
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-S, --suffix=SUFFIX</term>
+<listitem>
+<para>
+override the usual backup suffix
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>--target-directory=DIRECTORY</term>
+<listitem>
+<para>
+move all SOURCE arguments into DIRECTORY
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-u, --update</term>
+<listitem>
+<para>
+move only older or brand new non-directories
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-v, --verbose</term>
+<listitem>
+<para>
+explain what is being done
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>--version</term>
+<listitem>
+<para>
+output version information and exit
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Notes</TITLE>
+<PARA>
+The backup suffix is ~, unless set with --suffix or
+SIMPLE_BACKUP_SUFFIX.  The version control method may be selected via
+the --backup option or through the VERSION_CONTROL environment
+variable.  Here are the values:
+</PARA>
+
+<variablelist>
+
+<varlistentry>
+<term>none, off</term>
+<listitem>
+<para>
+never make backups (even if --backup is given)
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>numbered, t</term>
+<listitem>
+<para>
+make numbered backups
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>existing, nil</term>
+<listitem>
+<para>
+numbered if numbered backups exist, simple otherwise
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>simple, never</term>
+<listitem>
+<para>
+always make simple backups
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</REFSECT1>
+
 </REFENTRY>
 
 
@@ -6800,23 +8488,157 @@ option specified in SUS.
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY id="unlink">
+<REFENTRY id="sum">
 <REFMETA><REFENTRYTITLE>
-unlink
+sum
 </REFENTRYTITLE></REFMETA>
 <REFNAMEDIV>
-<REFNAME>unlink</REFNAME>
+<REFNAME>sum</REFNAME>
 <REFPURPOSE>
-delete a name and possibly the file it refers to
+print checksum and block count of a file
 </REFPURPOSE>
 </REFNAMEDIV>
+
 <REFSECT1>
-<TITLE>Note</TITLE>
+<TITLE>Description</TITLE>
 <PARA>
-While GNU fileutils doesn't provide an "unlink" command, it does provide "rm",
-both of which remove a link to a file.
+The specification for "sum" is as specified in the SUS but with the
+following differences as listed below.
 </PARA>
 </REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-s, --sysv</TERM>
+<LISTITEM>
+<PARA>
+use System V sum algorithm, use 512 bytes blocks
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--version</TERM>
+<LISTITEM>
+<PARA>
+output version information and exit
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="umount">
+<REFMETA><REFENTRYTITLE>umount</REFENTRYTITLE></REFMETA>
+
+<REFNAMEDIV>
+<REFNAME>umount</REFNAME>
+
+<REFPURPOSE>
+unmount file systems
+</REFPURPOSE>
+
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<SYNOPSIS>
+umount [-hV]
+umount -a [-nrv] [-t vfstype]
+umount [-nrv] device | dir [...]
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The umount command detaches the file system(s) mentioned from the file
+hierarchy.  A file system is specified by giving the directory where
+it has been mounted.
+</PARA>
+
+</REFSECT1>
+
+<REFSECT1>
+<title>Standard Options</title>
+<variablelist>
+
+<varlistentry>
+<term>-V</term>
+<listitem>
+<para>
+Print version and exit.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-v</term>
+<listitem>
+<para>
+Verbose mode.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-n</term>
+<listitem>
+<para>
+Unmount without writing in /etc/mtab.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-r</term>
+<listitem>
+<para>
+In case unmounting fails, try to remount read-only.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-a</term>
+<listitem>
+<para>
+All of the file systems described in /etc/mtab are unmounted except
+for the proc filesystem.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-t vfstype</term>
+<listitem>
+<para>
+Indicate that the actions should only be taken on file systems of the
+specified type.  More than one type may be specified in a comma
+separated list.  The list of file system types can be prefixed with no
+to specify the file system types on which no action should be taken.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-f</term>
+<listitem>
+<para>
+Force unmount (in case of an unreachable NFS system).
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
 </REFENTRY>
 
 <REFENTRY id="useradd">
