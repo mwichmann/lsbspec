@@ -36,5 +36,4 @@
 
 &intro.sgm;
 &baselib.sgm;
-&package.sgm;
 </BOOK>
