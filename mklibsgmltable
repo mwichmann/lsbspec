@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mklibsgmltable -a <archname>\n";
+print STDERR "mklibsgmltable -a <archname> [-f] [-m modname ] [[-l incllibs] | [-x excllibs ]]\n";
 die;
 }
 
@@ -20,9 +20,13 @@ die;
 $numcols=1;
 $dodesc=0;
 GetOptions("a=s" => \$archname,
-	   "f" => \$future);
+	   "f" => \$future,
+	   "l=s" => \$inclib,
+	   "m=s" => \$module,
+	   "x=s" => \$excllib);
 
 if( !$archname ) { usage(); }
+if( $inclib && $excllib ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -32,8 +36,8 @@ $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::d
 #
 # 3) get & print the architecture info
 #
-$select = "SELECT * FROM Architecture WHERE ";
-$select.= "Architecture.Aname=".$Dbh->quote($archname);
+$select = "SELECT * FROM Architecture ";
+$select.= "WHERE Architecture.Aname=".$Dbh->quote($archname);
 print STDERR $select,"\n" if $trace;
 $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 
@@ -48,20 +52,33 @@ $Aname=$entry{'Aname'};
 # 4) Get the data
 #
 $select = "SELECT * FROM Library ";
+if( $module ) {
+	$select.= "LEFT JOIN ModLib ON MLlid=Lid ";
+	$select.= "LEFT JOIN Module ON MLmid=Mid ";
+}
 $select.= "LEFT JOIN ArchLib ON Lid=ALlid ";
 if( $future ) {
 	$select.= "WHERE ( Lstd='Yes' OR Lstd='Future' ) ";
 } else {
 	$select.= "WHERE Lstd='Yes' ";
 }
+if( $module ) {
+	$select.= "AND Mname='".$module."' ";
+}
+if( $inclib ) {
+	$select.= "AND Lname IN (".$inclib.") ";
+}
+if( $excllib ) {
+	$select.= "AND Lname NOT IN (".$excllib.") ";
+}
 $select.= "AND ALaid=$Aid";
 #$select .=" ORDER BY Lname ";
-#printf $select,"\n";
+#printf STDERR $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.9 2002-09-20 14:25:27 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.10 2004-08-16 20:09:13 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -81,7 +98,7 @@ for(1..$sth->numrows) {
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.9 2002-09-20 14:25:27 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.10 2004-08-16 20:09:13 anderson Exp $- -->\n");
 
 sub makeid {
 	my ($name) = @_;
