@@ -3,7 +3,8 @@
 
 MANPAGES=
 
-FILES=package.sgml
+SOURCES=package.m4 cxxpackage.sgml
+FILES=package.sgml 
 TABLES=privtags.sgml sigtags.sgml hdrtags.sgml pkgtags.sgml insttags.sgml \
        filetags.sgml deptags.sgml othtags.sgml
 
