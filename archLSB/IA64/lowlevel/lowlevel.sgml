@@ -7,28 +7,46 @@
 <SECT1 ID="processorarch">
 <TITLE>Processor Architecture</TITLE>
 <PARA>
-The IA32 Architecture is specified by the following documents
+The IA64 Architecture is specified by the following documents
 <ITEMIZEDLIST MARK=bullet>
-<LISTITEM><PARA>Intel Architecture Software Developer's Manual, Volume 1:
-Basic Architecture</PARA></LISTITEM>
-<LISTITEM><PARA>Intel Architecture Software Developer's Manual, Volume 2:
-Instruction Set Reference Manual</PARA></LISTITEM>
-<LISTITEM><PARA>Intel Architecture Software Developer's Manual, Volume 3:
-System Programming Guide</PARA></LISTITEM>
+<LISTITEM><PARA>
+Itanium Architecture Software Developer's Manual Volume 1: 
+Application Architecture
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+Itanium Architecture Software Developer's Manual Volume 2: 
+System Architecture
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+Itanium Architecture Software Developer's Manual Volume 3: 
+Instruction Set Reference
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+Itanium Architecture Software Developer's Manual Volume 4: 
+Itanium Processor Programmer's Guide
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+Intel Itanium Processor-specific Application Binary Interface
+</PARA></LISTITEM>
 </ITEMIZEDLIST>
 </PARA>
 <PARA>
-Only the features of the Intel486 processor instruction set may be assumed
+Only the features of the Itanium processor instruction set may be assumed
 to be present. An application must check <FILENAME>/proc/cpuinfo</FILENAME>
 to detemine if any additional instruction set features are available before
 using those additional features. If a feature is not present, then the
 application may not use it.
 </PARA>
 <PARA>
+There are some features of the Itanium processor architecture that need not
+be supported by a conforming implementation. These are described in this
+chapter. A conforming application shall not rely on these features.
+</PARA>
+<PARA>
 Applications conforming to this specification must provide feedback to the
 user if a feature that is required for correct execution of the application
 is not present. Applications conforming to this specification should attempt
-to execute in a diminished capacity if a required instruction set feature is
+to execute in a diminished capacity if a required feature is
 not present.
 </PARA>
 <PARA>
@@ -36,36 +54,343 @@ This specfication does not provide any performance guarantees of a conforming
 system. A system conforming to this specification may be implemented in either
 hardware or software.
 </PARA>
+<PARA>
+This specification describes only LP64 (i.e. 32-bit integers, 64-bit longs and pointers)
+based implementations. Implementations may also provide ILP32 (32-bit integers, 
+longs, and pointers), but conforming applications shall not rely on support
+for ILP32. See section 1.2 of the Intel Itanium Processor-specific ABI for further
+information.
+</PARA>
 </SECT1>
 
 <SECT1 ID="datarepresentation">
 <TITLE>Data Representation</TITLE>
 <PARA>
-LSB-conforming applications shall use the data representation as defined in 
-Chapter 3 of the System V Application Binary Interface - Intel386 Architecture
-Processor Supplement.
+Within this specification, the term <literal>byte</literal> refers to
+an 8-bit object, the term <literal>halfword</literal> refers to a
+16-bit object, the term <literal>word</literal> refers to a 32-bit
+object, the term <literal>doubleword</literal> refers to a 64-bit
+object, and the term <literal>quadword</literal> refers to a 
+128-bit object. Although the IA64 architecture also supports 120-bit 
+addressable objects, this specification does not require LSB-conforming
+implementations to provide support for these objects.
 </PARA>
 <PARA>
 </PARA>
 <SECT2 ID="byteordering">
 <TITLE>Byte Ordering</TITLE>
 <PARA>
+LSB-conforming applications shall use little-endian byte ordering.
+LSB-conforming implementations may support big-endian applications.
 </PARA>
 </SECT2>
 <SECT2 ID="fundamentaltyes">
 <TITLE>Fundamental Types</TITLE>
 <PARA>
-Need to define "long long" here.
+Table 2-1 describes how fundemental C language data types shall be represented:
+<TABLE FRAME='All'>
+<TITLE>Scalar Types</TITLE>
+<TGROUP COLS=5>
+<THEAD>
+<ROW>
+  <ENTRY>Type</ENTRY>
+  <ENTRY>C</ENTRY>
+  <ENTRY>sizeof</ENTRY>
+  <ENTRY>Alignment (bytes)</ENTRY>
+  <ENTRY>Notes</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+  <ROW>
+    <ENTRY morerows=14 valign=middle>Integral</ENTRY>
+    <ENTRY>char</ENTRY>
+    <ENTRY morerows=2 valign=middle>1</ENTRY>
+    <ENTRY morerows=2 valign=middle>1</ENTRY>
+    <ENTRY morerows=2 valign=middle></ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>signed char</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>unsigned char</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>short</ENTRY>
+    <ENTRY morerows=2 valign=middle>2</ENTRY>
+    <ENTRY morerows=2 valign=middle>2</ENTRY>
+    <ENTRY morerows=2 valign=middle></ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>signed short</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>unsigned short</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>int</ENTRY>
+    <ENTRY morerows=2 valign=middle>4</ENTRY>
+    <ENTRY morerows=2 valign=middle>4</ENTRY>
+    <ENTRY morerows=2 valign=middle></ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>signed int</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>unsigned int</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>long</ENTRY>
+    <ENTRY morerows=2 valign=middle>8</ENTRY>
+    <ENTRY morerows=2 valign=middle>8</ENTRY>
+    <ENTRY morerows=2 valign=middle></ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>signed long</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>unsigned long</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>long long</ENTRY>
+    <ENTRY morerows=2 valign=middle>8</ENTRY>
+    <ENTRY morerows=2 valign=middle>8</ENTRY>
+    <ENTRY morerows=2 valign=middle>See Note Below</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>signed long long</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>unsigned long long</ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY morerows=1>Pointer</ENTRY>
+    <ENTRY><replaceable>any-type</replaceable> *</ENTRY>
+    <ENTRY morerows=1 valign=middle>8</ENTRY>
+    <ENTRY morerows=1 valign=middle>8</ENTRY>
+    <ENTRY morerows=1 valign=middle></ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY><replaceable>any-type (*)()</replaceable></ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY morerows=2 valign=middle>Floating-Point</ENTRY>
+    <ENTRY>float</ENTRY>
+    <ENTRY>4</ENTRY>
+    <ENTRY>4</ENTRY>
+    <ENTRY></ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>double</ENTRY>
+    <ENTRY>8</ENTRY>
+    <ENTRY>8</ENTRY>
+    <ENTRY></ENTRY>
+  </ROW>
+  <ROW>
+    <ENTRY>long double</ENTRY>
+    <ENTRY>16</ENTRY>
+    <ENTRY>16</ENTRY>
+    <ENTRY></ENTRY>
+  </ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</PARA>
+<NOTE>
+<PARA>
+Support for the <literal>long long</literal> 
+data type is dependent on
+support for ISO9899:1999 C language. This standard is not required
+for LSB-conformance, but this data type is important when developing
+applications for the IA64 architecture.  The GNU Compiler Collection
+(gcc) includes support for <literal>long long</literal> of ISO9899:1999.
+</PARA>
+</NOTE>
+<PARA>
+A null pointer (for all types) shall have the value zero.
 </PARA>
 </SECT2>
 <SECT2 ID="aggregatesandunions">
 <TITLE>Aggregates and Unions</TITLE>
 <PARA>
+Aggregates (structures and arrays) and unions assume the alignment of their
+most strictly aligned component. The size of any object, including aggregates
+and unions, shall always be a multiple of the object's alignment.
+An array uses the same alignment as its elements. Structure and union objects
+may require padding to meet size and element constraints. The contents of such padding is
+undefined.
+<ITEMIZEDLIST mark='bullet'>
+  <LISTITEM><PARA>
+  An entire structure or union object shall be aligned on the same boundary as its
+  most strictly aligned member.
+  </PARA></LISTITEM>
+  <LISTITEM><PARA>
+  Each member shall be assigned to the lowest available offset with the appropriate
+  alignment. This may require <emphasis>internal padding</emphasis>, depending
+  on the previous member.
+  </PARA></LISTITEM>
+  <LISTITEM><PARA>
+  A structure's size shall be increased, if necessary, to make it a multiple of the
+  alignment.  This may require <emphasis>tail padding</emphasis>, depending on the last
+  member.
+  </PARA></LISTITEM>
+</ITEMIZEDLIST>
+</PARA>
+<PARA>
+A conforming application shall not read padding.
+</PARA>
+<PARA>
+<FIGURE pgwide=1>
+<TITLE>Structure Smaller Than A Word</TITLE>
+<INFORMALTABLE FRAME='none'>
+ <TGROUP COLS=2>
+  <TBODY>
+  <ROW valign='middle'>
+   <ENTRY morerows=1><PROGRAMLISTING>
+   	struct {
+	    char c;
+	}
+   </PROGRAMLISTING></ENTRY>
+   <ENTRY valign='bottom'> Byte aligned, <literal>sizeof</literal> is 1 </ENTRY>
+  </ROW>
+  <ROW>
+   <ENTRYTBL TGROUPSTYLE='border' COLS=1>
+    <COLSPEC COLWIDTH=1in>
+     <TBODY>
+      <ROW>
+       <ENTRY align='right'>c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       <superscript>&nbsp;&nbsp;0</superscript></ENTRY>
+      </ROW>
+     </TBODY>
+   </ENTRYTBL>
+  </ROW>
+  </TBODY>
+ </TGROUP>
+</INFORMALTABLE>
+</FIGURE>
+<FIGURE PGWIDE=1>
+<TITLE>No Padding</TITLE>
+<INFORMALTABLE FRAME='none'>
+ <TGROUP COLS=2>
+  <TBODY>
+  <ROW valign='middle'>
+   <ENTRY morerows=1><PROGRAMLISTING>
+   	struct {
+	    char  c;
+	    char  d;
+	    short s;
+	    int   i;
+	    long  l;
+	}
+   </PROGRAMLISTING></ENTRY>
+   <ENTRY>Word Aligned, <literal>sizeof</literal> is 16</ENTRY>
+  </ROW>
+  <ROW>
+   <ENTRYTBL TGROUPSTYLE='border' COLS=5>
+    <COLSPEC COLWIDTH=1in colname=Offset align='right'>
+    <COLSPEC COLWIDTH=1in colname=b1 align='center'>
+    <COLSPEC COLWIDTH=1in colname=b2 align='center'>
+    <COLSPEC COLWIDTH=1in colname=b3 align='center'>
+    <COLSPEC COLWIDTH=1in colname=b4 align='center'>
+    <SPANSPEC spanname=halfwordleft namest=b1 nameend=b2>
+    <SPANSPEC spanname=halfwordright namest=b3 nameend=b4>
+    <SPANSPEC spanname=word namest=b1 nameend=b4>
+    <THEAD>
+     <ROW>
+      <ENTRY>Offset</ENTRY>
+      <ENTRY>Byte 3</ENTRY>
+      <ENTRY>Byte 2</ENTRY>
+      <ENTRY>Byte 1</ENTRY>
+      <ENTRY>Byte 0</ENTRY>
+     </ROW>
+    </THEAD>
+    <TBODY>
+     <ROW>
+      <ENTRY>0</ENTRY>
+      <ENTRY spanname=halfwordleft>s<superscript>2</superscript></ENTRY>
+      <ENTRY>d<superscript>1</superscript></ENTRY>
+      <ENTRY>c<superscript>0</superscript></ENTRY>
+     </ROW>
+     <ROW>
+      <ENTRY>4</ENTRY>
+      <ENTRY spanname=word>i<superscript>0</superscript></ENTRY>
+     </ROW>
+     <ROW>
+      <ENTRY>8</ENTRY>
+      <ENTRY morerows=1 spanname=word valign='middle'>l<superscript>0</superscript></ENTRY>
+     </ROW>
+     <ROW>
+      <ENTRY>12</ENTRY>
+     </ROW>
+    </TBODY>
+   </ENTRYTBL>
+  </ROW>
+ </TBODY>
+ </TGROUP>
+</INFORMALTABLE>
+</FIGURE>
+<FIGURE>
+<TITLE>Internal and Tail Padding</TITLE>
+<INFORMALTABLE FRAME='none'>
+ <TGROUP COLS=2>
+  <TBODY>
+  <ROW valign='middle'>
+   <ENTRY morerows=1><PROGRAMLISTING>
+   	struct {
+	    char  c;
+	    int   i;
+	    short s;
+	}
+   </PROGRAMLISTING></ENTRY>
+   <ENTRY>Word Aligned, <literal>sizeof</literal> is 12</ENTRY>
+  </ROW>
+  <ROW>
+   <ENTRYTBL TGROUPSTYLE='border' COLS=5>
+    <COLSPEC COLWIDTH=1in colname=Offset align='right'>
+    <COLSPEC COLWIDTH=1in colname=b1 align='center'>
+    <COLSPEC COLWIDTH=1in colname=b2 align='center'>
+    <COLSPEC COLWIDTH=1in colname=b3 align='center'>
+    <COLSPEC COLWIDTH=1in colname=b4 align='center'>
+    <SPANSPEC spanname=halfwordleft namest=b1 nameend=b2>
+    <SPANSPEC spanname=halfwordright namest=b3 nameend=b4>
+    <SPANSPEC spanname=threebytes namest=b1 nameend=b3>
+    <SPANSPEC spanname=word namest=b1 nameend=b4>
+    <THEAD>
+     <ROW>
+      <ENTRY>Offset</ENTRY>
+      <ENTRY>Byte 3</ENTRY>
+      <ENTRY>Byte 2</ENTRY>
+      <ENTRY>Byte 1</ENTRY>
+      <ENTRY>Byte 0</ENTRY>
+     </ROW>
+    </THEAD>
+    <TBODY>
+     <ROW>
+      <ENTRY>0</ENTRY>
+      <ENTRY spanname=threebytes>pad<superscript>1</superscript></ENTRY>
+      <ENTRY>c<superscript>0</superscript></ENTRY>
+     </ROW>
+     <ROW>
+      <ENTRY>4</ENTRY>
+      <ENTRY spanname=word>i<superscript>0</superscript></ENTRY>
+     </ROW>
+     <ROW>
+      <ENTRY>8</ENTRY>
+      <ENTRY spanname=halfwordleft valign='middle'>pad<superscript>2</superscript></ENTRY>
+      <ENTRY spanname=halfwordright valign='middle'>s<superscript>0</superscript></ENTRY>
+     </ROW>
+    </TBODY>
+   </ENTRYTBL>
+  </ROW>
+ </TBODY>
+ </TGROUP>
+</INFORMALTABLE>
+</FIGURE>
 </PARA>
 </SECT2>
 <SECT2 ID="bitfields">
 <TITLE>Bit Fields</TITLE>
 <PARA>
+<emphasis>Insert some examples here from the IA32 ABI</emphasis>
 </PARA>
 </SECT2>
 </SECT1>
@@ -76,7 +401,8 @@ Need to define "long long" here.
 <TITLE>Function Calling Sequence</TITLE>
 <PARA>
 LSB-conforming applications shall use the function calling sequence as defined
-in Chapter 3 of the System V Application Binary Interface - Intel386
+in ???
+Chapter 3 of the System V Application Binary Interface - Intel386
 Architecture Processor Supplement.
 </PARA>
 
@@ -156,32 +482,43 @@ Architecture Processor Supplement.
 <TITLE>Operating System Interface</TITLE>
 <PARA>
 LSB-conforming applications shall use the Operating System Interfaces as
-defined in Chapter 3 of the System V Application Binary Interface - Intel386
-Architecture Processor Supplement.
+defined in Chapter 3 of the 
+System V Application Binary Interface - Intel
+Itanium Processor-specific Application Binary Interface (ABI).
 </PARA>
 
-<SECT1 ID="virtualaddressspace">
-<TITLE>Virtual Address Space</TITLE>
+<SECT1 ID="exceptioninterface">
+<TITLE>Exception Interface</TITLE>
 <PARA>
+See System V Application Binary Interface - Intel
+Itanium Processor-specific Application Binary Interface (ABI).
 </PARA>
-<SECT2 ID="pagesize">
-<TITLE>Page Size</TITLE>
+<SECT2 ID="signaldelivery">
+<TITLE>Signal Delivery</TITLE>
 <PARA>
-</PARA>
-</SECT2>
-<SECT2 ID="virtualaddressassignments">
-<TITLE>Virtual Address Assignments</TITLE>
-<PARA>
-</PARA>
-</SECT2>
-<SECT2 ID="managinprocesstack">
-<TITLE>Managing the PRocess Stack</TITLE>
-<PARA>
+See System V Application Binary Interface - Intel
+Itanium Processor-specific Application Binary Interface (ABI).
 </PARA>
 </SECT2>
-<SECT2 ID="codingguidlines">
-<TITLE>Coding Guidlines</TITLE>
+<SECT2 ID="signalhandlerif">
+<TITLE>Signal Handler Interface</TITLE>
 <PARA>
+See System V Application Binary Interface - Intel
+Itanium Processor-specific Application Binary Interface (ABI).
+</PARA>
+</SECT2>
+<SECT2 ID="debuggingsupport">
+<TITLE>Debugging Support</TITLE>
+<PARA>
+See System V Application Binary Interface - Intel
+Itanium Processor-specific Application Binary Interface (ABI).
+</PARA>
+</SECT2>
+<SECT2 ID="processstartup">
+<TITLE>Process Startup</TITLE>
+<PARA>
+See System V Application Binary Interface - Intel
+Itanium Processor-specific Application Binary Interface (ABI).
 </PARA>
 </SECT2>
 </SECT1>
@@ -233,21 +570,25 @@ Architecture Processor Supplement.
 <TITLE>Special Registers</TITLE>
 <PARA>
 </PARA>
+</SECT1>
 
 <SECT1 ID="processstack">
 <TITLE>Process Stack (on entry)</TITLE>
 <PARA>
 </PARA>
+</SECT1>
 
 <SECT1 ID="auxilliaryvectors">
 <TITLE>Auxilliary Vectors</TITLE>
 <PARA>
 </PARA>
+</SECT1>
 
 <SECT1 ID="environment">
 <TITLE>Environment</TITLE>
 <PARA>
 </PARA>
+</SECT1>
 
 </CHAPTER>
 
