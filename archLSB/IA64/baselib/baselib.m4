@@ -19,11 +19,16 @@ the Linux Standard Base Specification.
 
 <PARA>
 An LSB conforming implementation need not define an Unwind library interface
-as required by
-the Intel &reg; Itanium &trade; Processor-specific Application Binary
-Interface. If such an interface is provided, it shall conform to the specification
-in the Intel &reg; Itanium &trade; Processor-specific Application Binary
-Interface. A conforming application shall not depend on this interface.
+as required by the
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>.
+If such an interface is provided, it shall conform to the specification
+in the 
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>.
+A conforming application shall not depend on this interface.
 <!-- since there are no current implementations I can find for the unwind
 library, we decided to omit it at this release -->
 </PARA>

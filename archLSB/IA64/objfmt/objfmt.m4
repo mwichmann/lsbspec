@@ -3,11 +3,13 @@
 <PARTINTRO>
 <PARA>
 LSB-conforming implementations shall support an object file format, called
-Executable and Linking Format (ELF) as defined by the System V Application
-Binary Interface, Edition 4.1, the System V Application Binary Interface -
-DRAFT - April 29, 1998, 
-Intel &reg; Itanium &trade;
-Processor-specific Application Binary Interface - May 2001
+Executable and Linking Format (ELF) as defined by the 
+<LINK LINKEND="std.gABI.41">
+<XREF LINKEND="std.gABI.41">
+</LINK>
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>,
 and as supplemented by the Linux Standard
 Base Specification and this document.
 </PARA>
@@ -19,7 +21,9 @@ Base Specification and this document.
 <TITLE>Machine Information</TITLE>
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
-Chapter 4 of the Intel Itanium Processor-specific ABI. 
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>, Chapter 4.
 Implementations shall support the LP64 model. It is unspecified whether or
 not the ILP32 model shall also be supported.
 </PARA>
@@ -49,11 +53,17 @@ The OS Identification field shall contain the value
 <SECT2 ID="miprocessorident">
 <TITLE>Processor Identification</TITLE>
 <PARA>
+The processor identification value held in <literal>e_machine</literal>
+shall contain the value <literal>EM_IA_64</literal>.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorspecialflags">
 <TITLE>Processor Specific Flags</TITLE>
 <PARA>
+See
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>, Chapter 4.1.1.6.
 </PARA>
 </SECT2>
 </SECT1>
@@ -62,15 +72,19 @@ The OS Identification field shall contain the value
 <CHAPTER ID=sections>
 <TITLE>Sections</TITLE>
 <PARA>
-The Itanium architecture defines two processor-specific
+The &itanium; architecture defines two processor-specific
 section types, as described in
-Chapter 4 of the Intel Itanium Processor-specific ABI. 
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>, Chapter 4.
 </PARA>
 <SECT1 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
 The following sections are defined in the 
-Intel Itanium Processor-specific ABI.
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>.
 include(elfsect.sgml)
 </PARA>
 </SECT1>
@@ -85,8 +99,11 @@ include(linuxsect.sgml)
 <SECT1 ID="sectiontypes">
 <TITLE>Section Types</TITLE>
 <PARA>
-Section Types are described in the Intel &reg; Itanium &trade;
-Processor specific ABI. LSB conforming implementations are not
+Section Types are described in the 
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>, Chapter 4.2.
+LSB conforming implementations are not
 required to use any sections in the range from
 <SystemItem class="Constant">SHT_IA_64_LOPSREG</SystemItem> to
 <SystemItem class="Constant">SHT_IA_64_HIPSREG</SystemItem>.
@@ -102,12 +119,20 @@ in the object file created by the static linker.
 <SECT1 ID="sectionattribflags">
 <TITLE>Section Attribute Flags</TITLE>
 <PARA>
+See
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>, Chapter 4.2.2.
 </PARA>
 </SECT1>
 
 <SECT1 ID="specialsectiontypes">
 <TITLE>Special Section Types</TITLE>
 <PARA>
+See
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>, Chapter 4.2.3.
 </PARA>
 </SECT1>
 
@@ -146,13 +171,18 @@ Need to add something here about st_info and st_other ...
 
 <PARA>
 LSB-conforming applications shall use Relocations as defined in
-Chapter 4 of the Intel &reg; Itanium &trade; Processor specific
-Application Binary Interface.
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>, Chapter 4.3.
 </PARA>
 
 <SECT1 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
+See
+<LINK LINKEND="std.IA64.ABI">
+<XREF LINKEND="std.IA64.ABI">
+</LINK>, Chapter 4.3.
 </PARA>
 </SECT1>
 

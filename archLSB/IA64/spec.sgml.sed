@@ -10,6 +10,7 @@
 <!entity execenv.sgm system "execenv/execenv.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
 <!ENTITY w "<emphasis>w</emphasis>">
+<!entity itanium "Itanium&trade;">
 ]>
 
 <BOOK>
