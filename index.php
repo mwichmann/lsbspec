@@ -262,7 +262,7 @@ echo(date("r", filemtime("archLSB/S390X/spec/book1.html")))
 </TD>
 </TR>
 <TR>
-<TD>LSB X86-64</TD>
+<TD>LSB AMD64</TD>
 <TD ALIGN=center><B>
 <?
 include("lsbversion.X86-64")
