@@ -61,12 +61,22 @@ The LSB specifies the Program Interpreter to be
 </SECT1>
 
 <SECT1 ID=dynsection>
-<TITLE>Dynamic Section</TITLE>
+<TITLE>Dynamic Entries</TITLE>
+<SECT2>
+<TITLE>ELF Dynamic Entries</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
 <XREF LINKEND="std.IA64.ABI">, Chapter 5.3.2.
 include(dyntag.sgml)
 </PARA>
+</SECT2>
+<SECT2>
+<TITLE>Additional Dynamic Entries</TITLE>
+<PARA>
+The following dynamic entries are defined here.
+include(linuxtag.sgml)
+</PARA>
+</SECT2>
 </SECT1>
 
 <SECT1 ID=globaloffsettable>
