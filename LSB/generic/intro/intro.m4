@@ -7,8 +7,8 @@
 <TITLE>Introduction</TITLE>
 <PARA>
 This is version &specversion of the Linux Standard Base Specification. This 
-version contains all of the material that will apear in the final 1.0
-Specfication and should be reviewed thoroughly.
+version contains all of the material that will appear in the final 1.0
+Specification and should be reviewed thoroughly.
 </PARA>
 <PARA>
 Those wishing to implement this standard should use this specification with
@@ -110,7 +110,7 @@ include(refimpls.sgml)
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
 The Libraries listed here are available on a Linux Standard Base conforming
-system. This list may be supplemented or ameneded by the architecture specific 
+system. This list may be supplemented or amended by the architecture specific 
 specifications.
 </PARA>
 <TABLE>

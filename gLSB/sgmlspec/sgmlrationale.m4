@@ -240,7 +240,7 @@ one of their major problems: find the files.
 
 
 <sect1 id="overR006">
-<title>R006--Iso-entities</title>
+<title>R006--ISO-entities</title>
 <para>
 So far, the most confusion has been with the file names holding these
 very basic character entities. We have seen the following naming schemes:

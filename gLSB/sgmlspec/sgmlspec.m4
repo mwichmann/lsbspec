@@ -7,7 +7,7 @@
 <para>
 Enclosed is a proposal, submitted by Eric Bischoff,  for the LSB regarding
 SGML & XML. A more general proposal has been submitted to the Filesystem
-Heirarchy Specification workgroup to be adopted. It is proposed that the
+Hierarchy Specification workgroup to be adopted. It is proposed that the
 enclosed detailed draft be adopted as an addendum to the LSB written
 specification.  A new Sourceforge CVS module would be created so this
 document would be initially maintained separately from the ongoing API/ABI
@@ -19,7 +19,7 @@ written specification.
 <title>Introduction</title>
 
 <para>
-In a normalisation effort, about thirty people, including packagers
+In a normalization effort, about thirty people, including packagers
 of some Linux distributions, and developers of SGML related tools such
 as the SGML-Tools and DocBook Tools project, discussed informally and
 agreed on a series of recommendations that will be submitted as a draft
@@ -48,7 +48,7 @@ Following a list of definitions, you will find a set of recommendations:
 
 <para>
 We'd like to thank the following people who have participated intensively
-in this normalisation effort:
+in this normalization effort:
 <itemizedlist>
   <listitem>
   <para>Camille Begnis (MandrakeSoft) <email>camille@mandrakesoft.com</email></para>
@@ -409,8 +409,8 @@ work of mapping the <acronym>FPI</acronym>s to file names (among other tasks).
 <sect1 id="sgmlR004">
 <title>R004--Open Catalog usage for DocBook</title>
 <para>
-This recomendation is merely a consequence of the preceeding
-recomendations.
+This recommendation is merely a consequence of the preceding
+recommendations.
 </para>
 <para>
 For a distribution of DocBook based on Jade or OpenJade, we suggest the
@@ -472,7 +472,7 @@ Their syntax and purpose is not defined in this document.
 </sect1>
 
 <sect1 id="sgmlR006">
-<title>R006--Iso-entities</title>
+<title>R006--ISO-entities</title>
 <para>
 
 The file names should be fixed to:
