@@ -59,13 +59,13 @@ source:
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
-Packaging.sgml: Packaging.sgml.sed ../../lsbversion
-	echo `cat ../../lsbversion` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../lsbversion`#" <Packaging.sgml.sed >Packaging.sgml
+Packaging.sgml: Packaging.sgml.sed version
+	echo `cat version` >buildversion
+	sed -e "s#VERSION#`cat version`#" <Packaging.sgml.sed >Packaging.sgml
 
 autobuild: gensrc source
-	echo `cat ../../lsbversion`-`date +"%Y%m%d"` >buildversion
-	sed -e "s#LSBVERSION#`cat ../../lsbversion`-`date +"%Y%m%d"`#" <Packaging.sgml.sed >Packaging.sgml
+	echo `cat version`-`date +"%Y%m%d"` >buildversion
+	sed -e "s#VERSION#`cat version`-`date +"%Y%m%d"`#" <Packaging.sgml.sed >Packaging.sgml
 	make buildspecs
 	
 clean::
