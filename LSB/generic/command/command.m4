@@ -18,7 +18,7 @@ all files (that is, "." is an operand and -a is an option).  In POSIX,
 "." and -a are both operands, and the command means to list the
 current directory, and also the file named <filename>-a</filename>.
 Suggesting that applications rely on the setting of the
-_POSIXLY_CORRECT environment variable, or try to set it, seems worse
+POSIXLY_CORRECT environment variable, or try to set it, seems worse
 than just asking the applictions to invoke commands in ways which work
 with either the POSIX or GNU behaviors.</para></footnote>
 
