@@ -16,9 +16,9 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the x86-64 Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the AMD64 Architecture &specversion</TITLE>
 <COPYRIGHT>
-<YEAR>2002</YEAR>
+<YEAR>2003</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal.sgm;

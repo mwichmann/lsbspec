@@ -11,7 +11,7 @@ hardware in the system.
 </PARA>
 
 <PARA>
-Interfaces that are unique to the x86-64 platform are defined here. This
+Interfaces that are unique to the AMD64 platform are defined here. This
 section should be used in conjunction with the corresponding section in
 the Linux Standard Base Specification.
 </PARA>
