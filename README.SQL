@@ -2,11 +2,24 @@ How to hack on the LSB spec
 ---------------------------
 
 We'll start with the apologies.  This is all going to seem like a
-complicated way to maintain a specification document.  However, all
-this database stuff does make it easier to do things like "show me
-which interfaces are in POSIX.2 but not the Linux Standard Base" or
-"show me the interfaces which are in the Linux Standard Base but not
-the Single Unix Specification".
+complicated way to maintain a specification document.  However,
+maintaining the specification in a database stuff makes it easy to do
+cool things like:
+
+* Queries such as "show me which interfaces are in POSIX.2 but not the
+Linux Standard Base" or "show me the interfaces which are in the Linux
+Standard Base but not the Single Unix Specification".
+
+* Automatically generate lists of functions for a program which tests
+that an application only makes calls to specified functions.
+
+* Use the function prototype information to automatically generate
+tables which a run-time checking program can use to verify an
+application's behavior (for example, that a pointer points within the
+application's address space, that a enumerated value is one of the
+legal values, &c).
+
+Anyway, here is how you build/modify the specification:
 
 1.  Get a copy of mysql.  I used mysql from Red Hat Powertools 6.1,
 but any copy of mysql should do (http://www.tcx.se/ being the master
