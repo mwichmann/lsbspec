@@ -7,7 +7,7 @@
 <para>
 Enclosed is a proposal, submitted by Eric Bischoff,  for the LSB regarding
 SGML & XML. A more general proposal has been submitted to the Filesystem
-Heiarchy Specification workgroup to be adopted. It is proposed that the
+Heirarchy Specification workgroup to be adopted. It is proposed that the
 enclosed detailed draft be adopted as an addendum to the LSB written
 specification.  A new Sourceforge CVS module would be created so this
 document would be initially maintained separately from the ongoing API/ABI
