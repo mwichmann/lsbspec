@@ -134,19 +134,43 @@ These libraries will be in a default location found by the dynamic linker.
 <SECT1 ID="howto">
 <TITLE>How to Use this Standard</TITLE>
 <PARA>
-The complete LSB specification is composed of this generic LSB specification and the supplemental processor-specific specification for a particular processor architecture. These two documents constitute a specification that should be used in conjunction with the publicly-available standards documents it references. The LSB enumerates the system components it includes, but descriptions of those components may be included entirely in the LSB, partly in the LSB and partly in other documents, or entirely in other reference documents.
+The complete LSB specification is composed of this generic LSB specification 
+and the supplemental processor-specific specification for a particular 
+processor architecture. These two documents constitute a specification that 
+should be used in conjunction with the publicly-available standards documents 
+it references. The LSB enumerates the system components it includes, but 
+descriptions of those components may be included entirely in the LSB, partly 
+in the LSB and partly in other documents, or entirely in other reference 
+documents.
 </PARA>
 <PARA>
-Application programmers who wish to produce binary packages that will install and run on any LSB-conforming implementation should follow this procedure:
+Programmers who wish to produce binary applications that will
+run on any LSB-conforming implementation should follow this procedure:
 </PARA>
+<ORDEREDLIST NUMERATION="arabic">
+<LISTITEM>
 <PARA>
-1. Write programs using the referenced programming interfaces defined in Reference Standards, or as modified by the LSB specification. Routines guaranteed to be present on all LSB-conforming implementations as dynamically-linkable resources are listed below. 
+Link your binary application with the LSB's filter libraries found in
+<FILENAME class=directory>/usr/lsb/lib</FILENAME>
+to determine at compile time if your application is using
+only LSB defined APIs.
 </PARA>
-<NOTE>
+</LISTITEM>
+<LISTITEM>
 <PARA>
-Need to enumerate the rest of the procedure.
+Link your binary application with the LSB 
+<FILENAME class=library path=/lib>ld-lsb.so.1</FILENAME>
+dynamic linker/loader. 
 </PARA>
-</NOTE>
+</LISTITEM>
+<LISTITEM>
+<PARA>
+Verify your binary application with the LSB's 
+<FILENAME class=executable path=/usr/bin>lsbappchk</FILENAME>
+tool to determine at runtime if your application is using only LSB defined APIs.
+</PARA>
+</LISTITEM>
+</orderedlist>
 </SECT1>
 
 <SECT1 ID="defns">
