@@ -11,36 +11,49 @@ mount a file system
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-mount [-hV]
-mount -a [-fFnrsvw] [-t vfstype]
-mount [-fnrsvw] [-o options [,...]] device | dir
-mount [-fnrsvw] [-t vfstype] [-o options] device dir
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>mount</COMMAND>
+<ARG>-hV</ARG>
+<SBR>
+<COMMAND>mount</COMMAND> 
+<ARG>-a</ARG><ARG>-fFnrsvw</ARG><ARG>-t <replaceable>vfstype</replaceable></ARG>
+<SBR>
+<COMMAND>mount</COMMAND> 
+<ARG>-fnrsvw</ARG> <ARG>-o <replaceable>options</replaceable><ARG rep=repeat>,</ARG></ARG>
+<GROUP><ARG choice=plain>device</ARG<ARG choice=plain>dir</ARG></GROUP>
+<SBR>
+<COMMAND>mount</COMMAND>
+<ARG>-fnrsvw</ARG> <ARG>-t <replaceable>vfstype</replaceable></ARG> <ARG>-o options</ARG> 
+<ARG choice=plain>device</ARG>
+<ARG choice=plain>dir</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-Files are named in a big tree, the file hierarchy, rooted at /.
+As described in <XREF LINKEND=STD.SUSv3>, all files in the system
+are organized in a directed graph, known as the file hierarchy,
+rooted at <filename>/</>.
 These files can be spread out over
-several devices. <COMMAND>mount</COMMAND> serves to attach the file system
-found on some device to the big file tree. Conversely, umount(8)
-will detach it again.
+several underlying devices.
+The <COMMAND>mount</COMMAND> command shall attach the file system
+found on some underlying device to the file hierarchy. 
 </PARA>
 
 </REFSECT1>
 
 <REFSECT1>
-<title>Standard Options</title>
+<title>Options</title>
 <variablelist>
 
 <varlistentry>
 <term>-v</term>
 <listitem>
 <para>
-invokes verbose mode.
+invoke verbose mode. The <command>mount</command> command shall provide diagnostic
+messages on <varname>stdout</varname>.
 </para>
 </listitem>
 </varlistentry>
@@ -49,7 +62,7 @@ invokes verbose mode.
 <term>-a</term>
 <listitem>
 <para>
-mounts all filesystems (of the given types) mentioned in fstab.
+mount all filesystems (of the given types) mentioned in <filename>/etc/fstab</filename>.
 </para>
 </listitem>
 </varlistentry>
@@ -58,8 +71,9 @@ mounts all filesystems (of the given types) mentioned in fstab.
 <term>-F</term>
 <listitem>
 <para>
-combines with -a. to fork off a new incarnation of <COMMAND>mount</COMMAND>
-for each device.  This will do the mounts on different devices or
+If the <parameter>-a</parameter> option is also present,
+fork a new incarnation of <COMMAND>mount</COMMAND>
+for each device to be mounted.  This will do the mounts on different devices or
 different NFS servers in parallel.  
 </para>
 </listitem>
@@ -69,7 +83,7 @@ different NFS servers in parallel.
 <term>-f</term>
 <listitem>
 <para>
-causes everything to be done except for the actual system call; if
+cause everything to be done except for the actual system call; if
 it's not obvious, this ``fakes'' mounting the file system.  
 </para>
 </listitem>
@@ -79,8 +93,8 @@ it's not obvious, this ``fakes'' mounting the file system.
 <term>-n</term>
 <listitem>
 <para>
-mounts without writing in /etc/mtab.  This is necessary for example
-when /etc is on a read-only file system.
+mount without writing in <filename>/etc/mtab</filename>.  This is necessary for example
+when <filename>/etc</filename> is on a read-only file system.
 </para>
 </listitem>
 </varlistentry>
@@ -89,8 +103,7 @@ when /etc is on a read-only file system.
 <term>-s</term>
 <listitem>
 <para>
-tolerates sloppy <COMMAND>mount</COMMAND> options rather than failing. 
-This will ignore <COMMAND>mount</COMMAND> options not supported by a 
+ignore <COMMAND>mount</COMMAND> options not supported by a 
 filesystem type.  Not all filesystems support this option. 
 </para>
 </listitem>
@@ -100,7 +113,7 @@ filesystem type.  Not all filesystems support this option.
 <term>-r</term>
 <listitem>
 <para>
-mounts the file system read-only. A synonym is -o ro.
+mount the file system read-only. A synonym is <parameter>-o ro</parameter>.
 </para>
 </listitem>
 </varlistentry>
@@ -109,8 +122,8 @@ mounts the file system read-only. A synonym is -o ro.
 <term>-w</term>
 <listitem>
 <para>
-mounts the file system read/write. (default) A synonym is
--o rw.
+mount the file system read/write. (default) A synonym is
+<parameter>-o rw</parameter>.
 </para>
 </listitem>
 </varlistentry>
@@ -119,7 +132,8 @@ mounts the file system read/write. (default) A synonym is
 <term>-L label</term>
 <listitem>
 <para>
-mounts the partition that has the specified label.
+If the file <filename>/proc/partitions</filename> is supported,
+mount the partition that has the specified label.
 </para>
 </listitem>
 </varlistentry>
@@ -128,8 +142,8 @@ mounts the partition that has the specified label.
 <term>-U uuid</term>
 <listitem>
 <para>
-mounts the partition that has the specified uuid.  These two options
-require the file /proc/partitions to exist.
+If the file <filename>/proc/partitions</filename> is supported,
+mount the partition that has the specified uuid.  
 </para>
 </listitem>
 </varlistentry>
@@ -138,12 +152,12 @@ require the file /proc/partitions to exist.
 <term>-t vfstype</term>
 <listitem>
 <para>
-indicates a file system type of vfstype. 
+indicate a file system type of <parameter>vfstype</parameter>. 
 </para>
 
 <para>
 More than one type may be specified in a comma separated list.  The
-list of file system types can be prefixed with no to specify the file
+list of file system types can be prefixed with <literal>no</> to specify the file
 system types on which no action should be taken.
 </para>
 
@@ -154,9 +168,9 @@ system types on which no action should be taken.
 <term>-o</term>
 <listitem>
 <para>
-options are specified with a -o flag followed by a comma-separated
+options are specified with a <parameter>-o</parameter> flag followed by a comma-separated
 string of options.  Some of these options are only useful when they
-appear in the /etc/fstab file.  The following options apply to any
+appear in the <filename>/etc/fstab</filename> file.  The following options apply to any
 file system that is being mounted:
 </para>
 
@@ -166,7 +180,7 @@ file system that is being mounted:
 <term>async</term>
 <listitem>
 <para>
-does all I/O to the file system asynchronously.
+perform all I/O to the file system asynchronously.
 </para>
 </listitem>
 </varlistentry>
@@ -175,7 +189,7 @@ does all I/O to the file system asynchronously.
 <term>atime</term>
 <listitem>
 <para>
-updates inode access time for each access. (default)
+update inode access time for each access. (default)
 </para>
 </listitem>
 </varlistentry>
@@ -184,7 +198,8 @@ updates inode access time for each access. (default)
 <term>auto</term>
 <listitem>
 <para>
-is mountable with -a.
+in <filename>/etc/fstab</filename>,
+indicate the device is mountable with <parameter>-a</parameter>.
 </para>
 </listitem>
 </varlistentry>
@@ -193,7 +208,16 @@ is mountable with -a.
 <term>defaults</term>
 <listitem>
 <para>
-uses default options: rw, suid, dev, exec, auto, nouser, and async.
+use default options:
+<simplelist type=inline>
+<member><literal>rw</literal></member>
+<member><literal>suid</literal></member>
+<member><literal>dev</literal></member>
+<member><literal>exec</literal></member>
+<member><literal>auto</literal></member>
+<member><literal>nouser</literal></member>
+<member><literal>async</literal></member>
+</simplelist>.
 </para>
 </listitem>
 </varlistentry>
@@ -202,7 +226,7 @@ uses default options: rw, suid, dev, exec, auto, nouser, and async.
 <term>dev</term>
 <listitem>
 <para>
-interprets character or block special devices on the file system.
+interpret character or block special devices on the file system.
 </para>
 </listitem>
 </varlistentry>
@@ -211,7 +235,7 @@ interprets character or block special devices on the file system.
 <term>exec</term>
 <listitem>
 <para>
-permits execution of binaries.
+permit execution of binaries.
 </para>
 </listitem>
 </varlistentry>
@@ -220,7 +244,7 @@ permits execution of binaries.
 <term>noatime</term>
 <listitem>
 <para>
-does not update inode access times on this file system.
+do not update file access times on this file system.
 </para>
 </listitem>
 </varlistentry>
@@ -229,7 +253,8 @@ does not update inode access times on this file system.
 <term>noauto</term>
 <listitem>
 <para>
-is only explicitly mountable.
+in <filename>/etc/fstab</filename>,
+indicates the device is only explicitly mountable.
 </para>
 </listitem>
 </varlistentry>
@@ -238,7 +263,7 @@ is only explicitly mountable.
 <term>nodev</term>
 <listitem>
 <para>
-does not interpret character or block special devices on the file
+do not interpret character or block special devices on the file
 system.
 </para>
 </listitem>
@@ -248,7 +273,7 @@ system.
 <term>noexec</term>
 <listitem>
 <para>
-does not allow execution of any binaries on the mounted file system.
+do not allow execution of any binaries on the mounted file system.
 </para>
 </listitem>
 </varlistentry>
@@ -257,7 +282,7 @@ does not allow execution of any binaries on the mounted file system.
 <term>nosuid</term>
 <listitem>
 <para>
-does not allow set-user-identifier or set-group-identifier bits to take
+do not allow set-user-identifier or set-group-identifier bits to take
 effect.
 </para>
 </listitem>
@@ -267,7 +292,7 @@ effect.
 <term>nouser</term>
 <listitem>
 <para>
-forbids an ordinary (i.e., non-root) user to mount the file system.
+forbid an unprivileged user to mount the file system.
 (default)
 </para>
 </listitem>
@@ -277,8 +302,8 @@ forbids an ordinary (i.e., non-root) user to mount the file system.
 <term>remount</term>
 <listitem>
 <para>
-attempts to remount an already-mounted file system.  This is commonly
-used to change the mount flags for a file system, especially to make a
+remount an already-mounted file system.  This is commonly
+used to change the mount options for a file system, especially to make a
 read-only file system writable.
 </para>
 </listitem>
@@ -288,7 +313,7 @@ read-only file system writable.
 <term>ro</term>
 <listitem>
 <para>
-mounts the file system read-only.
+mount the file system read-only.
 </para>
 </listitem>
 </varlistentry>
@@ -297,7 +322,7 @@ mounts the file system read-only.
 <term>rw</term>
 <listitem>
 <para>
-mounts the file system read-write.
+mount the file system read-write.
 </para>
 </listitem>
 </varlistentry>
@@ -306,7 +331,7 @@ mounts the file system read-write.
 <term>suid</term>
 <listitem>
 <para>
-allows set-user-identifier or set-group-identifier bits to take effect.
+allow set-user-identifier or set-group-identifier bits to take effect.
 </para>
 </listitem>
 </varlistentry>
@@ -315,7 +340,7 @@ allows set-user-identifier or set-group-identifier bits to take effect.
 <term>sync</term>
 <listitem>
 <para>
-does all I/O to the file system synchronously.
+do all I/O to the file system synchronously.
 </para>
 </listitem>
 </varlistentry>
@@ -324,9 +349,14 @@ does all I/O to the file system synchronously.
 <term>user</term>
 <listitem>
 <para>
-allows an ordinary user to mount the file system.  This option implies
-the options noexec, nosuid, and nodev (unless overridden by subsequent
-options, as in the option line user,exec,dev,suid).
+allow an unprivilieged user to mount the file system.  This option implies
+the options 
+<SIMPLELIST type=inline>
+<member><literal>noexec</literal></member>
+<member><literal>nosuid</literal></member>
+<member><literal>nodev</literal></member>
+</simplelist>
+unless overridden by subsequent options.
 </para>
 </listitem>
 </varlistentry>
@@ -352,7 +382,7 @@ use the non-LSB-deprecated behaviors.</para>
 <term>-V</term>
 <listitem>
 <para>
-outputs version.
+output version and exit.
 </para>
 </listitem>
 </varlistentry>
