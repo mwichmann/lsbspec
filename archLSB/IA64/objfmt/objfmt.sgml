@@ -5,8 +5,10 @@
 LSB-conforming implementations shall support an object file , called
 Executable and Linking Format (ELF) as defined by the System V Application
 Binary Interface, Edition 4.1, the System V Application Binary Interface -
-DRAFT - April 29, 1998, System V Application Binary Interface - Intel386
-Architecture Processor Supplement and as supplemented by the Linux Standard
+DRAFT - April 29, 1998, 
+Intel &reg; Itanium &trade;
+Processor-specific Application Binary Interface - May 2001
+and as supplemented by the Linux Standard
 Base Specification and this document.
 </PARA>
 </PARTINTRO>
@@ -17,22 +19,31 @@ Base Specification and this document.
 <TITLE>Machine Information</TITLE>
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
-Chapter 4 of the System V Application Binary Interface - Intel386 Architecture
-Processor Supplement.
+Chapter 4 of the Intel Itanium Processor-specific ABI. 
+Implementations shall support the LP64 model. It is unspecified whether or
+not the ILP32 model shall also be supported.
 </PARA>
 <SECT2 ID="mifileclass">
 <TITLE>File Class</TITLE>
 <PARA>
+For LP64 relocatable objects, the file class value may be either
+<SystemItem class="Constant">ELFCLASS32</SystemItem> or 
+<SystemItem class="Constant">ELFCLASS64</SystemItem>,
+ and a conforming linker must be able to process
+either or both classes.
 </PARA>
 </SECT2>
 <SECT2 ID="midataencoding">
 <TITLE>Data Encoding</TITLE>
 <PARA>
+Implementations shall support 2's complement, little endian data encoding.
 </PARA>
 </SECT2>
 <SECT2 ID="miosidentification">
 <TITLE>OS Identification</TITLE>
 <PARA>
+The OS Identification field shall contain the value 
+<SystemItem class="Constant">ELFOSABI_LINUX</SystemItem>.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorident">
@@ -51,16 +62,51 @@ Processor Supplement.
 <CHAPTER ID=sections>
 <TITLE>Sections</TITLE>
 <PARA>
+The Itanium architecture defines two processor-specific
+section types, as described in
+Chapter 4 of the Intel Itanium Processor-specific ABI. 
 </PARA>
 <SECT1 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
-The following sections are defined in the System V Application Binary
-Interface - Intel386 Architecture Processor Supplement.
+The following sections are defined in the 
+Intel Itanium Processor-specific ABI.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mksectiontable,v 1.8 2001/12/24 16:25:54 anderson Exp 0 -->
-<!--    at Tue Jan 15 16:35:57 2002 -->
+<!--    at Wed Jan 23 11:40:19 2002 -->
+<TABLE>
+<TITLE></TITLE>
+<TGROUP COLS=3>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Attributes</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>.got</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_WRITE+SHF_IA_64_SHORT</ENTRY></ROW>
+<ROW><ENTRY>.IA_64.archext</ENTRY><ENTRY>SHT_IA_64_EXT</ENTRY><ENTRY>0</ENTRY></ROW>
+<ROW><ENTRY>.IA_64.pltoff</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_WRITE+SHF_IA_64_SHORT</ENTRY></ROW>
+<ROW><ENTRY>.IA_64.unwind</ENTRY><ENTRY>SHT_IA_64_UNWIND</ENTRY><ENTRY>SHF_ALLOC+SHF_LINK_ORDER</ENTRY></ROW>
+<ROW><ENTRY>.IA_64.unwind_info</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
+<ROW><ENTRY>.plt</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_EXECINSTR</ENTRY></ROW>
+<ROW><ENTRY>.sbss</ENTRY><ENTRY>SHT_NOBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_WRITE+SHF_IA_64_SHORT</ENTRY></ROW>
+<ROW><ENTRY>.sdata</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_WRITE+SHF_IA_64_SHORT</ENTRY></ROW>
+<ROW><ENTRY>.sdata1</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_WRITE+SHF_IA_64_SHORT</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<VARIABLELIST>
+<VARLISTENTRY><TERM>.got</TERM><LISTITEM><PARA>This section holds the Global Offset Table.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.IA_64.archext</TERM><LISTITEM><PARA>This section holds product-specific extension bits. The link editor will perform a logical "or" of the extension bits of each object when creating an executable so that it creates only a single .IA_64.archext section in the
+executable.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.IA_64.pltoff</TERM><LISTITEM><PARA>This section holds local function descriptor entries.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.IA_64.unwind</TERM><LISTITEM><PARA>This section holds the unwind function table. The contents are described in the Intel (r) Itanium (tm) Processor Specific ABI.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.IA_64.unwind_info</TERM><LISTITEM><PARA>This section holds stack unwind and and exception handling information. The exception handling information is programming language specific, and is unspecified.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.plt</TERM><LISTITEM><PARA>This section holds the Procedure Linkage Table.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.sbss</TERM><LISTITEM><PARA>This section holds uninitialized data that contribute to the program''s memory image. Data objects contained in this section are recommended to be eight bytes or less in size. The system initializes the data with zeroes when the program begins to run. The section occupies no file space, as indicated by the section type SHT_NOBITS. The .sbss section is placed so it may be accessed using short direct addressing (22 bit offset from gp).</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.sdata</TERM><LISTITEM><PARA>This section and the .sdata1 section hold initialized data that contribute to the program''s memory image. Data objects contained in this section are recommended to be eight bytes or less in size. The .sdata and .sdata1 sections are placed so they may be accessed using short direct addressing (22 bit offset from gp).</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.sdata1</TERM><LISTITEM><PARA>See .sdata.</PARA></LISTITEM></VARLISTENTRY>
+</VARIABLELIST>
 <!-- End of text generated from database -->
 <!--    by $Header: /cvsroot/lsb/spec/mksectiontable,v 1.8 2001/12/24 16:25:54 anderson Exp 0 -->
 
@@ -69,11 +115,28 @@ Interface - Intel386 Architecture Processor Supplement.
 <SECT1 ID="linuxspecial">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
-The following Linux IA-32 specific sections are defined here.
+The following Linux IA-64 specific sections are defined here.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mksectiontable,v 1.8 2001/12/24 16:25:54 anderson Exp 0 -->
-<!--    at Tue Jan 15 16:35:57 2002 -->
+<!--    at Wed Jan 23 11:40:19 2002 -->
+<TABLE>
+<TITLE></TITLE>
+<TGROUP COLS=3>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Attributes</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>.stab</ENTRY><ENTRY>SHT_NULL</ENTRY><ENTRY>0</ENTRY></ROW>
+<ROW><ENTRY>.stabstr</ENTRY><ENTRY>SHT_SYMTAB</ENTRY><ENTRY>0</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<VARIABLELIST>
+<VARLISTENTRY><TERM>.stab</TERM><LISTITEM><PARA>This section contains debugging information. The contents are not specified as part of the LSB.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.stabstr</TERM><LISTITEM><PARA>This section contains strings associated with the debugging infomation contained in the .stab section.</PARA></LISTITEM></VARLISTENTRY>
+</VARIABLELIST>
 <!-- End of text generated from database -->
 <!--    by $Header: /cvsroot/lsb/spec/mksectiontable,v 1.8 2001/12/24 16:25:54 anderson Exp 0 -->
 
@@ -83,6 +146,17 @@ The following Linux IA-32 specific sections are defined here.
 <SECT1 ID="sectiontypes">
 <TITLE>Section Types</TITLE>
 <PARA>
+Section Types are described in the Intel &reg; Itanium &trade;
+Processor specific ABI. LSB conforming implementations are not
+required to use any sections in the range from
+<SystemItem class="Constant">SHT_IA_64_LOPSREG</SystemItem> to
+<SystemItem class="Constant">SHT_IA_64_HIPSREG</SystemItem>.
+Additionally, LSB conforming implementations are not required
+to support the
+<SystemItem class="Constant">SHT_IA_64_PRIORITY_INIT</SystemItem>
+section, beyond the gABI requirements for the handling of
+unrecognized section types, linking them into a contiguous section
+in the object file created by the static linker.
 </PARA>
 </SECT1>
 
@@ -104,9 +178,26 @@ The following Linux IA-32 specific sections are defined here.
 <TITLE>Symbol Table</TITLE>
 
 <PARA>
-LSB-conforming applications shall use the Symbol Table as defined in
-Chapter 4 of the System V Application Binary Interface - Intel386 Architecture
-Processor Supplement.
+If an executable file contains a reference to a function defined in
+one of its associated shared objects, the symbol table section for
+that file shall contain an entry for that symbol.  The 
+<SystemItem class="Constant">st_shndx</SystemItem> member of that
+symbol table
+entry contains <SystemItem class="Constant">SHN_UNDEF</SystemItem>.
+This signals to the dynamic linker that the symbol definition for that
+function is not contained in the executable file itself.  If that symbol
+has been allocated a procedure linkage table entry in the executable file,
+and the <SystemItem class="Constant">st_value</SystemItem> member for
+that symbol table entry is non-zero, the value shall contain the virtual
+address of the first instruction of that procedure linkage table entry.
+Otherwise, the <SystemItem class="Constant"> st_value</SystemItem> member
+contains zero.  This procedure linkage table entry address is used by
+the dynamic linker in resolving references to the address of the function.
+<NOTE>
+<PARA>
+Need to add something here about st_info and st_other ...
+</PARA>
+</NOTE>
 </PARA>
 
 </CHAPTER>
@@ -116,8 +207,8 @@ Processor Supplement.
 
 <PARA>
 LSB-conforming applications shall use Relocations as defined in
-Chapter 4 of the System V Application Binary Interface - Intel386 Architecture
-Processor Supplement.
+Chapter 4 of the Intel &reg; Itanium &trade; Processor specific
+Application Binary Interface.
 </PARA>
 
 <SECT1 ID="relocationtypes">
