@@ -16,6 +16,8 @@ gensrc:
 	../../../mkstandardsgmltable -a x86-64 >standards.sgml
 	../../../mklibsgmltable -a x86-64 >libraries.sgml
 
+intro.m4: ../../generic/intro/intro.m4
+	cp ../../generic/intro/$@ .
 clean:
 	rm -f $(FILES)
 

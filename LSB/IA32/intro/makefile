@@ -22,5 +22,7 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
+intro.m4: ../../generic/intro/intro.m4
+	cp ../../generic/intro/$@ .
 
 intro.sgml: standards.sgml libraries.sgml
