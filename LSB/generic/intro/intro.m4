@@ -104,7 +104,8 @@ the Linux Standard Base.  In this specification, where only a particular section
 of one of these references is identified, then the normative reference is to
 that section alone, and the rest of the referenced document is informative.
 </PARA>
-<TABLE>
+<!-- the ID below is a placeholder for any standards that have Istandard=0 in the database -->
+<TABLE ID='STD.'>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
 include(standards.sgml)
