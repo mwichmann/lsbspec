@@ -1,4 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!ENTITY % funcprototype.element "IGNORE">
+<!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
+
 
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "contents">

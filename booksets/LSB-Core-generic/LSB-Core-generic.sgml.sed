@@ -1,13 +1,15 @@
 <!DOCTYPE SET PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!ENTITY % funcprototype.element "IGNORE">
+<!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
 
-<!entity % entities SYSTEM "../../entities">
-<!entity elf-contents SYSTEM "../../book/ELF-generic/contents">
-<!entity lsb-contents SYSTEM "../../book/LSB-generic/contents">
-<!entity packaging-contents SYSTEM "../../book/Packaging-generic/contents">
-<!entity desktop-contents SYSTEM "../../book/Desktop/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY elf-contents SYSTEM "../../book/ELF-generic/contents">
+<!ENTITY lsb-contents SYSTEM "../../book/LSB-generic/contents">
+<!ENTITY packaging-contents SYSTEM "../../book/Packaging-generic/contents">
+<!ENTITY desktop-contents SYSTEM "../../book/Desktop/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity spectitle "Linux Standard Base Core Specification">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY spectitle "Linux Standard Base Core Specification">
 
 %entities;
 
