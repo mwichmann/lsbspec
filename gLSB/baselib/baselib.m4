@@ -27,8 +27,6 @@ include(libdl.sgml)
 
 include(libcrypt.sgml)
 
-include(librt.sgml)
-
 </CHAPTER>
 
 </PART>

@@ -51,7 +51,7 @@ gensrc:
 	../../mklibspec -a All -l libpthread >libpthread.sgml
 	#../../mklibspec -a All -l libdb >libdb.sgml
 	../../mklibspec -a All -l libdl >libdl.sgml
-	../../mklibspec -a All -l librt >librt.sgml
+	#../../mklibspec -a All -l librt >librt.sgml
 	../../mklibspec -a All -l libcrypt >libcrypt.sgml
 
 clean:

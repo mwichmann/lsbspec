@@ -20,6 +20,12 @@ include(libc.sgml)
 
 include(libm.sgml)
 
+include(libpthread.sgml)
+
+include(libdl.sgml)
+
+include(libcrypt.sgml)
+
 </CHAPTER>
 
 </PART>
