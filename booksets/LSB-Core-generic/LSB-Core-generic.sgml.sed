@@ -24,26 +24,26 @@
 </SETINFO>
 
 
-<BOOK ID="Core-Intro">
+<BOOK ID="generic-intro">
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
 &lsb-generic-intro;
 </BOOK>
-<BOOK ID="Core-ELF">
+<BOOK ID="generic-elf">
 <BOOKINFO>
 <TITLE>ELF Specification</TITLE>
 </BOOKINFO>
 &elf-contents;
 </BOOK>
-<BOOK ID="Core-LSB">
+<BOOK ID="generic-lsb">
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification</TITLE>
 </BOOKINFO>
 &lsb-contents;
 &lsb-generic-appA;
 </BOOK>
-<BOOK ID="Core-Packaging">
+<BOOK ID="generic-packaging">
 <BOOKINFO>
 <TITLE>Linux Packaging Specification</TITLE>
 </BOOKINFO>
