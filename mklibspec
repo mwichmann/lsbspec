@@ -52,6 +52,12 @@ $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
 
+printf("<!-- Start of text generated from database -->\n");
+printf("<!-- generated from the LSB specification database -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.18 2001-04-25 01:54:18 anderson Exp $ -->\n");
+my $now_string = localtime;
+printf("<!--    at %s -->\n", $now_string );
+
 print "<SECT1 ID=", $libname, ">\n";
 print "<TITLE>", $Lname, "</TITLE>\n";
 print "<PARA>\n";
@@ -317,84 +323,6 @@ for(1..$lgh->numrows) {
 }
 }
 
-
-# This goes away completely because interfaces don't belong to libraries anymore. They
-# belong only to libgroups.
-
-#
-# Seventh, make a table of the interfaces not in a group
-#
-#{
-#	local(*lftovr);
-#	$select = "SELECT DISTINCT * FROM Interface,LibInt ".
-#		  "WHERE LibInt.LIlib=".$Lid." AND ".
-#		  "LibInt.LIint=Interface.Iid AND ".
-#		  "Itype!='D' AND Ilibgroup is NULL ".
-#		  "ORDER BY Iname";
-#	print STDERR $select,"\n" if $trace;
-#	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-#	if ($sth->numrows > 0 ) {
-#		print "<SECT2>\n";
-#		print "<TITLE>Leftovers (This need to be eliminated)</TITLE>\n";
-#		print "<PARA>\n";
-#		print "</PARA>\n";
-#		for(1..$sth->numrows) {
-#			%lftovr=$sth->fetchhash;
-#			$lftovr[$_]=$lftovr{'Iname'};
-#		}
-#		print "<TABLE>\n";
-#		print "<TITLE></TITLE>\n";
-#		print "<TGROUP COLS=5>\n";
-#		print "<TBODY>\n";
-#		$inc=($sth->numrows+4)/5;
-#		for(1..$inc) {
-#			print "<ROW>";
-#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_];
-#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+$inc];
-#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(2*$inc)];
-#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(3*$inc)];
-#			printf "<ENTRY>%s</ENTRY>",$lftovr[$_+(4*$inc)];
-#			print "</ROW>\n";
-#		}
-#		print "</TBODY>\n";
-#		print "</TGROUP>\n";
-#		print "</TABLE>\n";
-#		print "</SECT2>\n";
-#	}
-#}
-
-#
-# Eigth, make a table of the dangling mangled interfaces 
-#
-#{
-#	local(*mangle);
-#	$select = "SELECT DISTINCT * FROM Mangle ".
-#		  "WHERE Mlib=$Lid AND Mlibgroup=0 ".
-#		  "ORDER BY Mname";
-#	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-#	if ($sth->numrows > 0 ) {
-#		print "<SECT2>\n";
-#		print "<TITLE>Leftover Mangled Symbols (This need to be eliminated)</TITLE>\n";
-#		print "<PARA>\n";
-#		print "</PARA>\n";
-#		print "<TABLE>\n";
-#		print "<TITLE></TITLE>\n";
-#		print "<TGROUP COLS=5>\n";
-#		print "<TBODY>\n";
-#		for(1..$sth->numrows) {
-#			%mangle=$sth->fetchhash;
-#			print "<ROW>";
-#			printf "<ENTRY>%s</ENTRY>",$mangle{'Mname'};
-#			printf "<ENTRY>%s</ENTRY>",$mangle{'Mprototype'};
-#			print "</ROW>\n";
-#		}
-#		print "</TBODY>\n";
-#		print "</TGROUP>\n";
-#		print "</TABLE>\n";
-#		print "</SECT2>\n";
-#	}
-#}
-
 print "</SECT1>\n";
 
 #
@@ -433,3 +361,5 @@ if( $hdh->numrows ) {
 	}
 	print "</SECT1>\n";
 }
+printf("<!-- End of text generated from database -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.18 2001-04-25 01:54:18 anderson Exp $ -->\n");
