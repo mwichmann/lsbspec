@@ -1,0 +1,58 @@
+#!/usr/local/bin/perl
+
+use CGI;
+use Carp;
+use Mysql;
+
+$query = new CGI(%ARGV);
+
+$Dbh = Mysql->connect(localhost) || die $Mysql::db_errstr;
+$Dbh->selectdb("Linux") || die $Dbh->errmsg();
+
+$select  ="SELECT DISTINCT Interface.Iname ";
+$select .="FROM Standard,Interface,LibInt,Library ";
+
+if ( $query->param('Sname') ) {
+	push(@where,"Standard.Sname=".$Dbh->quote($query->param('Sname')));
+	push(@where,"Interface.Istandard=Standard.Sid");
+}
+if ( $query->param('nSname') ) {
+	push(@where,"Standard.Sname=".$Dbh->quote($query->param('nSname')));
+	push(@where,"Interface.Istandard!=Standard.Sid");
+}
+if ( $query->param('Lname') ) {
+	push(@where,"Library.Lname=".$Dbh->quote($query->param('Lname')));
+	push(@where,"LibInt.LIlib=Library.Lid");
+	push(@where,"LibInt.LIint=Interface.Iid");
+}
+
+push(@where,"Interface.Iname NOT LIKE '\\_\\_%'");
+
+if( scalar(@where) > 0 ) {
+	$select .= " WHERE ".join(" AND ",@where);
+	}
+$select .=" ORDER BY Interface.Iname ";
+#printf $select,"\n";
+$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+
+for(1..$sth->numrows) {
+	%entry=$sth->fetchhash;
+	$entry[$_]=$entry{'Iname'};
+}
+
+print "<HTML>\n";
+print "<BODY>\n";
+print "<TABLE>\n";
+$inc=($sth->numrows+4)/5;
+for(1..$inc) {
+	print "<TR>";
+	printf "<TD>%s</TD>",$entry[$_];
+	printf "<TD>%s</TD>",$entry[$_+$inc];
+	printf "<TD>%s</TD>",$entry[$_+(2*$inc)];
+	printf "<TD>%s</TD>",$entry[$_+(3*$inc)];
+	printf "<TD>%s</TD>",$entry[$_+(4*$inc)];
+	print "</TR>\n";
+}
+print "</TABLE>\n";
+print "</BODY>\n";
+print "</HTML>\n";
