@@ -3,6 +3,7 @@
 <!entity specversion "LSBVERSION">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
+<!entity lowlevel.sgm system "lowlevel/lowlevel.sgml">
 <!entity objfmt.sgm system "objfmt/objfmt.sgml">
 <!entity dynlnk.sgm system "dynlnk/dynlnk.sgml">
 <!entity baselib.sgm system "baselib/baselib.sgml">
@@ -37,6 +38,7 @@ with the respective license of those documents.
 </BOOKINFO>
 
 &intro.sgm;
+&lowlevel.sgm;
 &objfmt.sgm;
 &dynlnk.sgm;
 &baselib.sgm;
