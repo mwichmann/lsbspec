@@ -215,6 +215,13 @@ into a single place.
 It is the long term plan of the LSB to converge with ISO/IEC 9945 POSIX.
 </PARA>
 </NOTE>
+<PARA>
+The LSB Specification Authority is responsible for deciding the meaning
+of conformance to normative referenced standards in the LSB context.
+Problem Reports regarding underlying or referenced standards in any
+other context will be referred to the relevant maintenance body for 
+that standard.
+</PARA>
 </CHAPTER>
 ')
 </PART>

@@ -530,7 +530,7 @@ process, they have no effect when executed as a file.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Mon Mar 14 15:59:46 2005 -->
+<!--    at Thu Mar 17 20:37:50 2005 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -626,6 +626,8 @@ differences as listed below.
 
 <REFSECT1>
 <TITLE>Differences</TITLE>
+<REFSECT2>
+<TITLE>Options</TITLE>
 <VARIABLELIST>
 
 <VARLISTENTRY>
@@ -657,16 +659,21 @@ need not be supported.
 </VARLISTENTRY>
 
 </VARIABLELIST>
-</REFSECT1>
+</REFSECT2>
 
-<REFSECT1>
-<TITLE>Files</TITLE>
+<REFSECT2>
+<TITLE>Optional Control Files</TITLE>
 <PARA>
-The files at.allow and at.deny reside in /etc rather than
-/usr/lib/cron.
+The implementation shall support the XSI optional behavior 
+for access control; however the files 
+<filename>at.allow</filename> and 
+<filename>at.deny</filename> may reside in 
+<filename>/etc</filename> rather than 
+<filename>/usr/lib/cron</filename>.
 </PARA>
-</REFSECT1>
+</REFSECT2>
 
+</REFSECT1>
 </REFENTRY>
 
 <REFENTRY id="awk">
@@ -725,10 +732,13 @@ is below an implementation-defined limit.
 </REFSECT2>
 -->
 <REFSECT2>
-<TITLE>Files</TITLE>
+<TITLE>Optional Control Files</TITLE>
 <PARA>
-The files <filename>at.allow</filename> and 
-<filename>at.deny</filename> reside in <filename>/etc</filename> rather than
+The implementation shall support the XSI optional behavior 
+for access control; however the files 
+<filename>at.allow</filename> and 
+<filename>at.deny</filename> may reside in 
+<filename>/etc</filename> rather than 
 <filename>/usr/lib/cron</filename>.
 </PARA>
 </REFSECT2>
@@ -750,12 +760,12 @@ An arbitrary precision calculator language
 <TITLE>Description</TITLE>
 <PARA>
 <COMMAND>bc</COMMAND> is as specified in <XREF LINKEND=STD.SUSv3> but with
-differences as listed below.
+extensions as listed below.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Differences</TITLE>
+<TITLE>Extensions</TITLE>
 <PARA>
 The bc language may be extended in an implementation defined manner. If an
 implementation supports extensions, it shall also support the additional
@@ -766,7 +776,7 @@ options:
 <TERM>-s|--standard</TERM>
 <LISTITEM>
 <PARA>
-processes exactly the POSIX bc language.
+processes exactly the POSIX <command>bc</command> language.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -1126,11 +1136,14 @@ differences as listed below.
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Files</TITLE>
+<TITLE>Optional Control Files</TITLE>
 <PARA>
-The files <filename>cron.allow</filename> and 
-<filename>cron.deny</filename> reside in <filename>/etc</filename>
-rather than <filename>/usr/lib/cron</filename>.
+The implementation shall support the XSI optional behavior 
+for access control; however the files 
+<filename>cron.allow</filename> and 
+<filename>cron.deny</filename> may reside in 
+<filename>/etc</filename> rather than 
+<filename>/usr/lib/cron</filename>.
 </PARA>
 </REFSECT1>
 
@@ -1188,7 +1201,7 @@ report filesystem disk space usage
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>df</COMMAND> is as specified in 
+The <COMMAND>df</COMMAND> command shall behave as specified in 
 <XREF LINKEND=STD.SUSv3>, but with
 differences as listed below.
 </PARA>
@@ -1196,18 +1209,49 @@ differences as listed below.
 
 <REFSECT1>
 <TITLE>Differences</TITLE>
+<REFSECT2>
+<TITLE>Options</TITLE>
 <PARA>
-If the <PARAMETER>-k</PARAMETER> option is not specified, disk space is shown in unspecified
-units.  Applications should specify <PARAMETER>-k</PARAMETER>.
+If the <PARAMETER>-k</PARAMETER> option is not specified, 
+disk space is shown in unspecified
+units.  If the <PARAMETER>-P</PARAMETER> option is specified,
+the size of the unit shall be printed on the header line in the format 
+<literal>"%4s-blocks"</literal>.
+Applications should specify <PARAMETER>-k</PARAMETER>.
 </PARA>
 <PARA>
-If  an argument is the absolute file name of a disk device
-node containing a mounted filesystem, <COMMAND>df</COMMAND>
-shows  the  space
+The XSI option <parameter>-t</parameter> has unspecified behavior.
+Applications should not specify <parameter>-t</parameter>.
+<note>
+<title>Rationale</title>
+<para>
+The most common implementation of <command>df</command> uses
+the <parameter>-t</parameter> option for a different purpose
+(restricting output to a particular filesystem type), and
+use of <parameter>-t</parameter> is therefore non-portable.
+</para>
+</note>
+</PARA>
+</REFSECT2>
+<REFSECT2>
+<TITLE>Operand May Identify Special File</TITLE>
+<PARA>
+If  an argument is the absolute file name of a special file
+containing a mounted filesystem, <COMMAND>df</COMMAND>
+shall show  the  space
 available on that filesystem rather than on the filesystem
-containing the device  node  (which  is  typically  the  root
+containing the special file (which  is  typically  the  root
 filesystem).
+<NOTE>
+<PARA>
+In <XREF LINKEND="STD.SUSv3"> the XSI optional behavior permits
+an operand to name a special file, but appears to require the
+operation be performed on the filesystem containing the special file.
+A defect report has been submitted for this case.
 </PARA>
+</NOTE>
+</PARA>
+</REFSECT2>
 </REFSECT1>
 
 </REFENTRY>
@@ -2676,7 +2720,18 @@ provide information on ipc facilities
 <TITLE>Description</TITLE>
 <PARA>
 <COMMAND>ipcs</COMMAND> provides information on the ipc facilities 
-for which the calling process has read access.
+for which the calling process has read access. 
+<note>
+<para>Although this command
+has many similarities with the optional <command>ipcs</command> 
+utility described in
+<xref linkend="std.susv3">, it has substantial differences and is
+therefore described separately. The options specified here have similar
+meaning to those in <xref linkend="std.susv3">; other options specified
+there have unspecified behavior on an LSB conforming implementation. See
+<xref linkend="ipcs.app.usage"> below. The output format is not specified.
+</para>
+</note>
 </PARA>
 </REFSECT1>
 
@@ -2748,20 +2803,30 @@ creator.
 </variablelist>
 </REFSECT1>
 
-<REFSECT1>
+<REFSECT1 id="ipcs.app.usage" xreflabel="Application Usage">
 <TITLE>Application Usage</TITLE>
 <PARA>
-In some implementations of ipcs the -a option will print all
-information available.  In other implementations the -a option will
-print all resource types.  Therefore, applications shall not use the -a
-option.
+In some implementations of ipcs the <parameter>-a</parameter>
+option will print all
+information available.  In other implementations the 
+<parameter>-a</parameter> option will
+print all resource types.  Therefore, applications shall not use the 
+<parameter>-a</parameter> option.
 </PARA>
 <PARA>
-Some implements of ipcs implement more output formats than are
+Some implementations of <command>ipcs</command>
+implement more output formats than are
 specified here.  These options are not consistent between differing
-implementations of ipcs.  Therefore, only the -t -c and -p option
-flags may be used.  At least one of the -t -c and -p options shall be
-specified.
+implementations of <command>ipcs</command>.
+Therefore, only the 
+<parameter>-t</parameter>,
+<parameter>-c</parameter> and 
+<parameter>-p</parameter> option
+flags may be used.  At least one of the 
+<parameter>-t</parameter>,
+<parameter>-c</parameter> and 
+<parameter>-p</parameter> options
+shall be specified.
 </PARA>
 </REFSECT1>
 
@@ -3051,14 +3116,14 @@ list directory contents
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>ls</COMMAND> is as specified in 
+<COMMAND>ls</COMMAND> shall behave as specified in 
 <XREF LINKEND=STD.SUSv3>, but with
-differences listed below.
+extensions listed below.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Differences</TITLE>
+<TITLE>Extensions</TITLE>
 <VARIABLELIST>
 
 <VARLISTENTRY>
@@ -3081,7 +3146,7 @@ devices numbers.
 <TERM>-p</TERM>
 <LISTITEM>
 <PARA>
-in addition to <XREF LINKEND=STD.SUSv3> behavior of printing a
+in addition to <XREF LINKEND=STD.SUSv3> XSI optional behavior of printing a
 slash for a directory,
 <command>ls -p</command> may display other characters for other file types.
 </PARA>
@@ -3090,10 +3155,6 @@ slash for a directory,
 
 </VARIABLELIST>
 
-<para>
-Certain aspects of the pattern matching notation are optional;
-see <xref linkend="localization-glob">.
-</para>
 </REFSECT1>
 
 </REFENTRY>
@@ -4870,14 +4931,29 @@ dump files in octal and other formats
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>od</COMMAND> is as specified in <XREF LINKEND=STD.SUSv3>, but with
-differences as listed below.
+The <COMMAND>od</COMMAND> command shall
+provide all of the madatory functionality specified in 
+<XREF LINKEND=STD.SUSv3>, but with extensions and 
+differences to the XSI optional behavior as listed below.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Differences</TITLE>
+<TITLE>Extensions and Differences</TITLE>
 <VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-s</TERM>
+<LISTITEM>
+<PARA>
+unspecified behavior.
+<note><para>Applications wishing to achieve the <xref linkend=STD.SUSv3>
+behavior for <parameter>-s</parameter> should instead use 
+<parameter>-t d2</parameter>.
+</para></note>
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>-w<parameter>width</parameter>, --width[=<parameter>width</parameter>]</TERM>
@@ -4892,9 +4968,11 @@ each output line is limited to <parameter>width</parameter> bytes from the input
 <TERM>--traditional</TERM>
 <LISTITEM>
 <PARA>
-accepts arguments in traditional form.
+accepts arguments in traditional form, see <xref linkend="od.trad.usage">
+below.
 <NOTE><PARA>
-The XSI optional behavior described in <XREF LINKEND=STD.SUSv3> is not supported
+The XSI optional behavior 
+for offset handling described in <XREF LINKEND=STD.SUSv3> is not supported
 unless the <parameter>--traditional</parameter> option is also specified.
 </PARA></NOTE>
 </PARA>
@@ -4902,13 +4980,13 @@ unless the <parameter>--traditional</parameter> option is also specified.
 </VARLISTENTRY>
 
 </VARIABLELIST>
-</REFSECT1>
 
-<REFSECT1>
+<REFSECT2>
 <TITLE>Pre-POSIX and XSI Specifications</TITLE>
 <PARA>
-The LSB supports option intermixtures with the following pre-POSIX and XSI
-options:
+The LSB supports mixing options between the mandatory
+and XSI optional synopsis forms in <xref linkend="STD.SUSv3">.
+The LSB shall support the following options:
 </PARA>
 <VARIABLELIST>
 
@@ -5001,16 +5079,16 @@ is equivalent to <parameter>-t x2</parameter>, selects hexadecimal two byte unit
 <PARA>
 Note that the XSI option <parameter>-s</parameter> need not be supported.
 </PARA>
-</REFSECT1>
+</REFSECT2>
 
-<REFSECT1>
+<REFSECT2 id="od.trad.usage" xreflabel="Traditional Usage">
 <TITLE>Traditional Usage</TITLE>
 <PARA>
-If the <parameter>--traditional</parameter> is specified,
+If the <parameter>--traditional</parameter> option is specified,
 there may be between zero and three operands specified.
 </PARA>
 <PARA>
-If no operands are specified, then od shall read the standard input.
+If no operands are specified, then <command>od</command> shall read the standard input.
 </PARA>
 <PARA>
 If there is exactly one operand, and it is an offset of the form 
@@ -5031,7 +5109,17 @@ the same manner as the offset.
 <PARA>
 If there are three operands, then the first shall be the file to dump, the
 second the offset, and the third the label.
+<note>
+<para>
+Recent versions of <command>coreutils</command> contain an
+<command>od</command> utility that conforms to
+<xref linkend="STD.SUSv3">. However, in April 2005, this version
+was not in widespread use. A future version of this specification
+may remove the differences.
+</para>
+</note>
 </PARA>
+</REFSECT2>
 </REFSECT1>
 </REFENTRY>
 
@@ -5366,7 +5454,7 @@ see <xref linkend="localization-regex">.
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <CMDSYNOPSIS>
-<command>sendmail</COMMAND> 
+<command>/usr/sbin/sendmail</COMMAND> 
 <ARG>options</ARG> <ARG rep=repeat>address</ARG>
 </CMDSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -5378,7 +5466,7 @@ see <xref linkend="localization-regex">.
 </TITLE>
 <PARA>
 To deliver electronic mail (email), applications shall support
-the interface provided by /usr/sbin/sendmail (described here).
+the interface provided by <command>sendmail</command> (described here).
 This interface shall be the default delivery method for applications.
 </PARA>
 <PARA>
@@ -5394,15 +5482,13 @@ It determines the network(s) to use based on the syntax and
 contents of the addresses.
 </PARA>
 <PARA>
-It is recommended that applications use as few options as
-necessary, none if possible.
+If an address is preceded by a backslash, <literal>'\'</literal>,
+it is unspecified if the
+address is subject to local alias expansion.
 </PARA>
 <PARA>
-Some agents allow aliasing on the local system to be prevented
-by preceding the address with a backslash.
-</PARA>
-<PARA>
-The format of messages shall be as defined in RFC 2822.
+The format of messages shall be as defined in 
+<XREF LINKEND="STD.RFC2822">.
 </PARA>
 </REFSECT1>
 <REFSECT1>
@@ -5412,7 +5498,7 @@ The format of messages shall be as defined in RFC 2822.
 <term>-bm</term>
 <listitem>
 <para>
-reads mail from standard input and delivers to the recipient addresses.
+read mail from standard input and deliver it to the recipient addresses.
 This is the default mode of operation.
 </para>
 </listitem>
@@ -5421,7 +5507,8 @@ This is the default mode of operation.
 <term>-bp</term>
 <listitem>
 <para>
-lists information about messages currently in the input mail queue.
+If the user has sufficient privilege,
+list information about messages currently in the input mail queue.
 </para>
 </listitem>
 </varlistentry>
@@ -5429,14 +5516,15 @@ lists information about messages currently in the input mail queue.
 <term>-bs</term>
 <listitem>
 <para>
-uses the SMTP protocol as described in RFC 2821; reads SMTP commands on
-standard input and writes SMTP responses on standard output.
+use the SMTP protocol as described in 
+<xref linkend="std.rfc2821">; read SMTP commands on
+standard input and write SMTP responses on standard output.
 </para>
 <para>
-Note that RFC 2821 specifies \r\n (CR-LF) be used at the end of each
-line, but pipes almost always use \n (LF) instead.  To deal with
-this, agents will accept both \r\n and \n at the end of each line.
-When accepting \r\n, the \r before the \n is silently discarded.
+In this mode, <command>sendmail</command> shall accept
+<literal>\r\n</literal> (CR-LF), as required by
+<xref linkend="std.rfc2821">, and <literal>\n</literal>
+(LF) line terminators.
 </para>
 </listitem>
 </varlistentry>
@@ -5444,14 +5532,15 @@ When accepting \r\n, the \r before the \n is silently discarded.
 <term>-F fullname</term>
 <listitem>
 <para>
-explicitly sets the full name of the sender for incoming
-mail unless the message already contains a From: message
+explicitly set the full name of the sender for incoming
+mail unless the message already contains a 
+<literal>From:</literal> message
 header.
 </para>
 <para>
 If the user running <COMMAND>sendmail</COMMAND> is not sufficiently trusted,
 then the actual sender may be indicated in the message,
-depending on the behavior of the agent.
+depending on the configuration of the agent.
 </para>
 </listitem>
 </varlistentry>
@@ -5459,13 +5548,15 @@ depending on the behavior of the agent.
 <term>-f name</term>
 <listitem>
 <para>
-explicitly sets the envelope sender address for incoming
-mail.   If there is no From: header, the address specified
-in the From: header will also be set.
+explicitly set the envelope sender address for incoming
+mail.   If there is no 
+<literal>From:</literal> header, the address specified
+in the 
+<literal>From:</literal> header will also be set.
 </para>
 <para>
 If the user running <COMMAND>sendmail</COMMAND> is not sufficiently trusted,
-then the actual sender will be indicated in the message.
+then the actual sender shall be indicated in the message.
 </para>
 </listitem>
 </varlistentry>
@@ -5473,8 +5564,10 @@ then the actual sender will be indicated in the message.
 <term>-i</term>
 <listitem>
 <para>
-ignores dots alone on lines by themselves in incoming
-messages.  If -bs is also used, the behavior is unspecified.
+ignore dots alone on lines by themselves in incoming
+messages.  If this options is not specified,
+a line consisting of a single dot shall terminate the input.
+If -bs is also used, the behavior is unspecified.
 </para>
 </listitem>
 </varlistentry>
@@ -5482,7 +5575,7 @@ messages.  If -bs is also used, the behavior is unspecified.
 <term>-odb</term>
 <listitem>
 <para>
-delivers any mail in background, if supported; otherwise ignored.
+deliver any mail in background, if supported; otherwise ignored.
 </para>
 </listitem>
 </varlistentry>
@@ -5490,7 +5583,7 @@ delivers any mail in background, if supported; otherwise ignored.
 <term>-odf</term>
 <listitem>
 <para>
-delivers any mail in foreground, if supported; otherwise ignored.
+deliver any mail in foreground, if supported; otherwise ignored.
 </para>
 </listitem>
 </varlistentry>
@@ -5498,7 +5591,7 @@ delivers any mail in foreground, if supported; otherwise ignored.
 <term>-oem or -em</term>
 <listitem>
 <para>
-mails errors back to the sender. (default)
+mail errors back to the sender. (default)
 </para>
 </listitem>
 </varlistentry>
@@ -5506,7 +5599,7 @@ mails errors back to the sender. (default)
 <term>-oep or -ep</term>
 <listitem>
 <para>
-writes errors to the standard error output.
+write errors to the standard error output.
 </para>
 </listitem>
 </varlistentry>
@@ -5514,7 +5607,7 @@ writes errors to the standard error output.
 <term>-oeq or -eq</term>
 <listitem>
 <para>
-does not send notification of errors to the sender.  This
+do not send notification of errors to the sender.  This
 only works for mail delivered locally.
 </para>
 </listitem>
@@ -5532,7 +5625,7 @@ is equivalent to -i.
 <term>-om</term>
 <listitem>
 <para>
-indicates that the sender of
+indicate that the sender of
 a message should receive a copy of the message if the
 sender appears in an alias expansion.  Ignored if aliases
 are not supported.
@@ -5543,30 +5636,32 @@ are not supported.
 <term>-t</term>
 <listitem>
 <para>
-reads the message to obtain recipients from the To:, Cc:,
-and Bcc: headers in the message instead of from the
-command arguments.  If a Bcc: header is present, it is
-removed from the message unless there is no To: or Cc:
-header, in which case a Bcc: header with no data is
-created, in accordance with RFC 2822.
+read the message to obtain recipients from the <literal>To:</literal>, 
+<literal>Cc:</literal>,
+and <literal>Bcc:</literal> headers in the message instead of from the
+command arguments.  If a 
+<literal>Bcc:</literal> header is present, it is
+removed from the message unless there is no <literal>To:</literal>
+or <literal>Cc:</literal>
+header, in which case a <literal>Bcc:</literal> header with no data is
+created, in accordance with <xref linkend="std.rfc2822">.
 </para>
 <para>
-If there are any arguments, they specify addresses to
-which the message is not to be delivered.  That is, the
-argument addresses are removed from the recipients list
-obtained from the headers.  Note: some agents implement
-this behavior in reverse, adding addresses instead of
-removing them.  Others may disallow addresses in
-argument list.  Therefore, applications should not put
-addresses in the argument list if -t is used.
+If there are any operands, the recipients list is unspecified.
 </para>
 <para>
-This option is sometimes ignored when not in -bm mode
+This option may be ignored when not in <parameter>-bm</parameter> mode
 (the default).
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
+<NOTE>
+<PARA>
+It is recommended that applications use as few options as
+necessary, none if possible.
+</PARA>
+</NOTE>
 </REFSECT1>
 
 <REFSECT1>
@@ -5596,7 +5691,9 @@ there was an error.
 <TITLE>Notes/Rationale
 </TITLE>
 <para>
-This page is believed to reflect functionality provided by smail, exim
+This page is intended to reflect functionality provided by 
+<command>smail</command>, 
+<command>exim</command>
 and other implementations, not just the <COMMAND>sendmail</COMMAND> 
 implementation.
 </para>
@@ -5611,7 +5708,7 @@ implementation.
 <REFNAME>shutdown</REFNAME>
 
 <REFPURPOSE>
-bring the system down
+shut the system down
 </REFPURPOSE>
 
 </REFNAMEDIV>
@@ -5619,25 +5716,46 @@ bring the system down
 <REFSYNOPSISDIV>
 <CMDSYNOPSIS>
 <COMMAND>/sbin/shutdown</COMMAND>
-<ARG>-t sec</ARG> <ARG>-arkhcfF</ARG> <ARG choice=plain>time</ARG>
+<ARG>-t sec</ARG> 
+<GROUP><ARG>-h</ARG><ARG>-r</ARG></GROUP>
+<ARG>-akfF</ARG> <ARG choice=plain>time</ARG>
 <ARG>warning-message</ARG>
+<SBR>
+<COMMAND>/sbin/shutdown</COMMAND>
+<ARG choice=plain>-c</ARG> <ARG>warning-message</ARG>
 </CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>shutdown</COMMAND> brings the system down in a secure way. 
-All logged-in users
-are notified that the system is going down, and login(1) is blocked.
-It is possible to shut the system down immediately or after a
-specified delay.  All processes are first notified that the system is
-going down by the signal SIGTERM.  
-If neither the -h or the -r argument is used, then the default behavior
-is to take the system to runlevel one where administrative tasks can
+The <COMMAND>shutdown</COMMAND> command
+shall shut the system down in a secure way (first synopsis), or cancel
+a pending shutdown (second synopsis).  
+When the shutdown is initiated, all logged-in users
+shall be notified immediately that the system is going down, and users shall be
+prevented from logging in to the system.
+The <parameter>time</parameter> specifies when the actual
+shutdown shall commence. See below for details. At the specified time
+all processes are first notified that the system is
+going down by the signal <constant>SIGTERM</constant>. After an interval
+(see <parameter>-t</parameter>) all processes shall be sent the signal
+<constant>SIGKILL</constant>.
+If neither the <parameter>-h</parameter> or the 
+<parameter>-r</parameter> argument is specified, then the default behavior
+shall be to take the system to a runlevel where administrative tasks can
 be run.
+<note>
+<para>This is sometimes referred to as "single user mode".
+</para>
+</note>
 </PARA>
-
+<PARA>
+The <parameter>-h</parameter> and <parameter>-r</parameter> options
+are mutually exclusive.
+If either the <parameter>-h</parameter> or <parameter>-r</parameter> options
+are specified, the system shall be halted or rebooted respectively.
+</PARA>
 </REFSECT1>
 
 <REFSECT1>
@@ -5648,7 +5766,7 @@ be run.
 <term>-a </term>
 <listitem>
 <para>
-uses /etc/shutdown.allow.
+use access control. See below.
 </para>
 </listitem>
 </varlistentry>
@@ -5657,8 +5775,10 @@ uses /etc/shutdown.allow.
 <term>-t sec</term>
 <listitem>
 <para>
-tells init(8) to wait sec seconds between sending processes the warning
-and the kill signal, before changing to another runlevel.
+tell the system to wait <parameter>sec</parameter> seconds between 
+sending processes the warning
+and the kill signal, before changing to another runlevel. The default
+period is three seconds.
 </para>
 </listitem>
 </varlistentry>
@@ -5667,7 +5787,7 @@ and the kill signal, before changing to another runlevel.
 <term>-k </term>
 <listitem>
 <para>
-doesn't really shutdown; only sends the warning messages to everybody.
+do not really shutdown; only send the warning messages to everybody.
 </para>
 </listitem>
 </varlistentry>
@@ -5676,7 +5796,7 @@ doesn't really shutdown; only sends the warning messages to everybody.
 <term>-r</term>
 <listitem>
 <para>
-reboots after shutdown.
+reboot after shutdown.
 </para>
 </listitem>
 </varlistentry>
@@ -5685,7 +5805,7 @@ reboots after shutdown.
 <term>-h</term>
 <listitem>
 <para>
-halts after shutdown.  Powering off after halting is unspecified.
+halt after shutdown.  Actions after halting are unspecified (e.g. power off).
 </para>
 </listitem>
 </varlistentry>
@@ -5694,7 +5814,7 @@ halts after shutdown.  Powering off after halting is unspecified.
 <term>-f</term>
 <listitem>
 <para>
-skips fsck on reboot.
+advise the system to skip file system consistency checks on reboot.
 </para>
 </listitem>
 </varlistentry>
@@ -5703,7 +5823,7 @@ skips fsck on reboot.
 <term>-F</term>
 <listitem>
 <para>
-forces fsck on reboot.
+advise the system to force file system consistency checks on reboot.
 </para>
 </listitem>
 </varlistentry>
@@ -5712,11 +5832,7 @@ forces fsck on reboot.
 <term>-c</term>
 <listitem>
 <para>
-cancels an already running <COMMAND>shutdown</COMMAND>. With this option, 
-it is of course
-not possible to give the time argument, but you can enter a
-explanatory message on the command line that will be sent to all
-users.
+cancel an already running <COMMAND>shutdown</COMMAND>. 
 </para>
 </listitem>
 </varlistentry>
@@ -5725,25 +5841,27 @@ users.
 <term>time</term>
 <listitem>
 <para>
-specifies when to shut down.
+specify when to shut down.
 </para>
 
 <para>
-The time argument can have different formats.  First, it can be an
-absolute time in the format hh:mm, in which hh is the hour (1 or 2
-digits) and mm is the minute of the hour (in two digits).  Second, it
-can be in the format +m, in which m is the number of minutes to wait.
-The word now is an alias for +0.
-</para>
-
-<para>
-If <COMMAND>shutdown</COMMAND> is called with a delay, it creates the 
-advisory file /etc/nologin which causes programs such as login(1) to 
-not allow new user logins.  <COMMAND>shutdown</COMMAND> only removes 
-this file if it is stopped before it can signal init (i.e. it is 
-cancelled or something goes wrong). Otherwise it is the responsibility 
-of the system shutdown or startup scripts to remove this file so that 
-users can login.
+The time argument shall have the following format:
+<CMDSYNOPSIS>
+<GROUP>
+<ARG>now</ARG>
+<ARG><ARG>+</ARG>mins</ARG>
+<ARG>hh:mm</ARG>
+</GROUP>
+</CMDSYNOPSIS>
+If the format is <literal>hh:mm</literal>, <literal>hh</literal>
+shall specify the hour (1 or 2
+digits) and <literal>mm</literal> is the minute of the hour 
+(exactly two digits), and the shutdown shall commence at the next
+occurence of the specified time.  
+If the format is <literal>mins</literal> (or <literal>+mins</literal>),
+where <literal>mins</literal> is a decimal number,
+shutdown shall commence in the specified number of minutes.
+The word <literal>now</literal> is an alias for <literal>+0</literal>.
 </para>
 
 </listitem>
@@ -5753,7 +5871,7 @@ users can login.
 <term>warning-message</term>
 <listitem>
 <para>
-specifies message to send all users.
+specify a message to send to all users.
 </para>
 </listitem>
 </varlistentry>
@@ -6481,6 +6599,7 @@ differences as listed below.
 <refsect1>
 <title>Differences</title>
 
+<para>
 <variablelist>
 
 <varlistentry>
@@ -6511,6 +6630,15 @@ has unspecified behavior.
 </varlistentry>
 
 </variablelist>
+<note>
+<para>
+These options have been implemented in <command>findutils-4.2.9</command>,
+but this version of the utilities is not in widespread use as of
+April 2005. However, future versions of this specification will require
+support for these arguments.
+</para>
+</note>
+</para>
 </refsect1>
 
 </REFENTRY>
