@@ -13,7 +13,9 @@ DB2RTF=sgmltools -b rtf
 
 DB2PS=sgmltools -b ps
 
-all:: htmlspec rtfspec
+DB2PDF=sgmltools -b pdf
+
+all:: htmlspec rtfspec 
 
 htmlspec: source
 	rm -rf spec.junk
@@ -26,6 +28,9 @@ htmlspec: source
 
 rtfspec: source
 	$(DB2RTF) spec.sgml
+
+pdfspec: source
+	$(DB2PDF) spec.sgml
 
 psspec: source
 	$(DB2PS) spec.sgml
