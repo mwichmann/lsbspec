@@ -9,7 +9,6 @@
 <!entity objfmt.sgm system "objfmt/objfmt.sgml">
 <!entity dynlnk.sgm system "dynlnk/dynlnk.sgml">
 <!entity baselib.sgm system "baselib/baselib.sgml">
-<!entity execenv.sgm system "execenv/execenv.sgml">
 <!entity legal.sgm system "../../gLSB/legal.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
 <!entity appB.sgm system "../../gLSB/appendix/fdl.sgml">
@@ -32,7 +31,6 @@
 &objfmt.sgm;
 &dynlnk.sgm;
 &baselib.sgm;
-&execenv.sgm;
 &appA.sgm;
 &appB.sgm;
 &buildenv.sgm;
