@@ -19,9 +19,9 @@ DB2PDF=docbook2pdf
 DB2ONEHTML=docbook2html -u
 
 #DB2TXT=sgmltools -b txt
-DB2TXT=docbook2text
+DB2TXT=docbook2txt
 
-all:: htmlspec onehtmlspec rtfspec pdfspec psspec 
+all:: htmlspec onehtmlspec rtfspec pdfspec psspec txtspec
 
 htmlspec:  spec/book1.html 
 
@@ -32,6 +32,11 @@ onehtmlspec: PPC-elf64abi.html
 
 PPC-elf64abi.html:
 	$(DB2ONEHTML) $(basename $@).sgml
+
+txtspec: PPC-elf64abi.txt
+
+PPC-elf64abi.txt: $(SRC)
+	$(DB2TXT) $(basename $@).sgml
 
 rtfspec:  PPC-elf64abi.rtf
 

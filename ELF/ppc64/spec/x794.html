@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>TOC</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.7"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Object Files"
+HREF="c773.html"><LINK
+REL="PREVIOUS"
+TITLE="Special Sections"
+HREF="x782.html"><LINK
+REL="NEXT"
+TITLE="Symbol Table"
+HREF="x806.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>64-bit PowerPC ELF Application Binary Interface Supplement 1.7</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x782.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Object Files</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x806.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TOC"
+>4.3. TOC</A
+></H1
+><P
+>The Table of Contents, or TOC, is part of the data segment of an
+executable program.
+		</P
+><P
+>This sections describes a typical layout of the TOC in an executable
+file or shared object.  Particular tools need not follow this layout
+as specified here.
+		</P
+><P
+>The TOC typically contains data items within the .got, .toc and
+.tocbss sections, which can be addressed with 16-bit signed offsets
+from the TOC base.  The TOC base is typically the first address in the
+TOC plus 0x8000, thus permitting a full 64 Kbyte TOC.  The .got
+section is typically created by the link editor based on @got
+relocations.  The .toc and .tocbss sections are typically included
+from relocatable object files referenced during the link.
+		</P
+><P
+>The TOC may straddle the boundary between initialized and
+uninitialized data in the data segment.  The usual order of sections
+in the data segment, some of which may be empty, is:
+		</P
+><PRE
+CLASS="SCREEN"
+>    .data
+    .got
+    .toc
+    .tocbss
+    .plt</PRE
+><P
+>The link editor may create multiple TOC sections, as specified in <A
+HREF="x566.html#TOC-SEC"
+>Section 3.5.2</A
+>.  In such a case, the .got and .toc sections
+will be repeated as necessary, possibly renamed to preserve unique
+section names.  Any occurrence of .tocbss in a TOC section other than
+the last one will be converted into a .toc section initialized to
+contain zero bytes.
+		</P
+><P
+>Compilers may generate "short-form," one-instruction references for
+all data items that are in the TOC section for the object file being
+compiled.  Such references are relative to the TOC pointer register,
+r2, which always holds the base of the TOC section for the object
+file.
+		</P
+><P
+>In a shared object, only data items with local (non-global) scope may
+be addressed via the TOC pointer.  Global data items must be addressed
+via the GOT, even if they appear in a .toc or .tocbss section.
+		</P
+><P
+>A compiler which places some data items in the TOC must provide an
+option to avoid doing so in a particular compilation.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x782.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x806.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Special Sections</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c773.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Symbol Table</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

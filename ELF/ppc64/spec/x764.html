@@ -2,22 +2,22 @@
 <HTML
 ><HEAD
 ><TITLE
->TOC</TITLE
+>DWARF Definition</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
-TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.6"
+TITLE="64-bit PowerPC ELF Application Binary Interface Supplement 1.7"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Object Files"
-HREF="c743.html"><LINK
+TITLE="Low Level System Information"
+HREF="c123.html"><LINK
 REL="PREVIOUS"
-TITLE="Special Sections"
-HREF="x752.html"><LINK
+TITLE="Coding Examples"
+HREF="x570.html"><LINK
 REL="NEXT"
-TITLE="Symbol Table"
-HREF="x776.html"></HEAD
+TITLE="Object Files"
+HREF="c781.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -37,7 +37,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->64-bit PowerPC ELF Application Binary Interface Supplement 1.6</TH
+>64-bit PowerPC ELF Application Binary Interface Supplement 1.7</TH
 ></TR
 ><TR
 ><TD
@@ -45,7 +45,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="x752.html"
+HREF="x570.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -53,13 +53,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 4. Object Files</TD
+>Chapter 3. Low Level System Information</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="x776.html"
+HREF="c781.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -73,64 +73,203 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="TOC"
->4.3. TOC</A
+NAME="DW-DEF"
+>3.6. DWARF Definition</A
 ></H1
 ><P
->The Table of Contents, or TOC, is part of the data segment of an
-executable program.
-		</P
+></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN767"
+>3.6.1. DWARF Release Number</A
+></H2
 ><P
->This sections describes a typical layout of the TOC in an executable
-file or shared object.  Particular tools need not follow this layout
-as specified here.
-		</P
+>This section defines the Debug With Arbitrary Record Format (DWARF)
+debugging format for the 64-bit PowerPC processor family.  The 64-bit
+PowerPC ABI does not define a debug format.  However, all systems that
+do implement DWARF shall use the following definitions.
+			</P
 ><P
->The TOC typically contains data items within the .got, .toc and
-.tocbss sections, which can be addressed with 16-bit signed offsets
-from the TOC base.  The TOC base is typically the first address in the
-TOC plus 0x8000, thus permitting a full 64 Kbyte TOC.  The .got
-section is typically created by the link editor based on @got
-relocations.  The .toc and .tocbss sections are typically included
-from relocatable object files referenced during the link.
-		</P
+>DWARF is a specification developed for symbolic, source-level
+debugging.  The debugging information format does not favor the design
+of any compiler or debugger.  For more information on DWARF, see the
+documents cited in <A
+HREF="c76.html"
+>Chapter 1</A
+>.
+			</P
 ><P
->The TOC may straddle the boundary between initialized and
-uninitialized data in the data segment.  The usual order of sections
-in the data segment, some of which may be empty, is:
-		</P
+>The DWARF definition requires some machine-specific definitions.  The
+register number mapping needs to be specified for the 64-bit PowerPC
+registers.  In addition, the DWARF Version 2 specification requires
+processor-specific address class codes to be defined.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DW-REG"
+>3.6.2. DWARF Register Number Mapping</A
+></H2
+><P
+>This table outlines the register number mapping for the 64-bit PowerPC
+processor family.  Note that for all special purpose registers, the
+number is simply 100 plus the SPR register number, as defined in the
+64-bit PowerPC Architecture.  Registers with an asterisk before their
+name are MPC601 chip-specific and are not part of the generic 64-bit
+PowerPC chip architecture.
+			</P
 ><PRE
 CLASS="SCREEN"
->    .data
-    .got
-    .toc
-    .tocbss
-    .plt</PRE
+>Register Name              Number        Abbreviation
+
+General Register 0-31      0-31          r0-r31
+
+Floating Register 0-31     32-63         f0-f31
+
+Condition Register         64            CR
+
+Floating-Point Status and  65            FPSCR
+Control Register
+
+* MQ Register              100           MQ or SPR0
+
+Fixed-Point Exception      101           XER or SPR1
+Register
+
+* Real Time Clock          104           RTCU or SPR4
+Upper Register
+
+* Real Time Clock          105           RTCL or SPR5
+Lower Register
+
+Link Register              108           LR or SPR8
+
+Count Register             109           CTR or SPR9</PRE
 ><P
->The link editor may create multiple TOC sections, as specified in <A
-HREF="x536.html#TOC-SEC"
->Section 3.5.2</A
->.  In such a case, the .got and .toc sections
-will be repeated as necessary, possibly renamed to preserve unique
-section names.  Any occurrence of .tocbss in a TOC section other than
-the last one will be converted into a .toc section initialized to
-contain zero bytes.
-		</P
+>For kernel debuggers, the mapping for all privileged registers is also
+defined in this table.
+			</P
+><PRE
+CLASS="SCREEN"
+>Register Name              Number        Abbreviation
+
+Machine State Register     66            MSR
+
+Segment Register 0-15      70-85         SR0-SR15
+
+Data Storage Interrupt     118           DSISR or SPR18
+Status Register
+
+Data Address Register      119           DAR or SPR19
+
+Decrementer                122           DEC or SPR22
+
+Storage Description        125           SDR1 or SPR25
+Register 1
+
+Machine Status             126           SRR0 or SPR26
+Save/Restore Register 0
+
+Machine Status             127           SRR1 or  SPR27
+Save/Restore Register 1
+
+Vector Save/Restore        356           VRSAVE or SPR256
+Register
+
+Software-use Special       372           SPRG0 or SPR272
+Purpose Register 0
+
+Software-use Special       373           SPRG1 or SPR273
+Purpose Register 1
+
+Software-use Special       374           SPRG2 or SPR274
+Purpose Register 2
+
+Software-use Special       375           SPRG3 or SPR275
+Purpose Register 3
+
+Address Space Register     380           ASR or SPR280
+
+External Access Register   382           EAR or SPR282
+
+Time Base                  384           TB or SPR284
+
+Time Base Upper            385           TBU or SPR285
+
+Processor Version Register 387           PVR or SPR287
+
+Instruction BAT Register   628           IBAT0U or SPR528
+0 Upper
+
+Instruction BAT Register   629           IBAT0L or SPR529
+0 Lower
+
+Instruction BAT Register   630           IBAT1U or SPR530
+1 Upper
+
+Instruction BAT Register   631           IBAT1L or SPR531
+1 Lower
+
+Instruction BAT Register   632           IBAT2U or SPR532
+2 Upper
+
+Instruction BAT Register   633           IBAT2L or SPR533
+2 Lower
+
+Instruction BAT Register   634           IBAT3U or SPR534
+3 Upper
+
+Instruction BAT Register   635           IBAT3L or SPR535
+3 Lower
+
+Data BAT Register 0 Upper  636           DBAT0U or SPR536
+
+Data BAT Register 0 Lower  637           DBAT0L or SPR537
+
+Data BAT Register 1 Upper  638           DBAT1U or SPR538
+
+Data BAT Register 1 Lower  639           DBAT1L or SPR539
+
+Data BAT Register 2 Upper  640           DBAT2U or SPR540
+
+Data BAT Register 2 Lower  641           DBAT2L or SPR541
+
+Data BAT Register 3 Upper  642           DBAT3U or SPR542
+
+Data BAT Register 3 Lower  643           DBAT3L or SPR543
+
+* Hardware Implementation  1108          HID0 or SPR1008
+Register 0
+
+* Hardware Implementation  1109          HID1 or SPR1009
+Register 1
+
+* Hardware Implementation  1110          HID2 or IABR or SPR1010
+Register 2
+
+* Hardware Implementation  1113          HID5 or DABR or SPR1013
+Register 5
+
+* Hardware Implementation  1123          HID15 or PIR or SPR1023
+Register 15
+
+Vector Registers 0-31      1124-1155     vr0-vr31</PRE
 ><P
->Compilers may generate "short-form," one-instruction references for
-all data items that are in the TOC section for the object file being
-compiled.  Such references are relative to the TOC pointer register,
-r2, which always holds the base of the TOC section for the object
-file.
-		</P
-><P
->In a shared object, only data items with local (non-global) scope may
-be addressed via the TOC pointer.  Global data items must be addressed
-via the GOT, even if they appear in a .toc or .tocbss section.
-		</P
-><P
->A compiler which places some data items in the TOC must provide an
-option to avoid doing so in a particular compilation.</P
+>The 64-bit PowerPC processor family defines the address class codes
+described in the following table:
+			</P
+><PRE
+CLASS="SCREEN"
+>Code                       Value         Meaning
+
+ADDR_none                  0             No class specified</PRE
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -148,7 +287,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="x752.html"
+HREF="x570.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -166,7 +305,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="x776.html"
+HREF="c781.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -176,13 +315,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Special Sections</TD
+>Coding Examples</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="c743.html"
+HREF="c123.html"
 ACCESSKEY="U"
 >Up</A
 ></TD
@@ -190,7 +329,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Symbol Table</TD
+>Object Files</TD
 ></TR
 ></TABLE
 ></DIV

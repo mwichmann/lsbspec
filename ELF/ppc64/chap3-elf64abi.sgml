@@ -98,22 +98,15 @@
 			<sect2 id="FUND-TYPE"><title>Fundamental Types</title>
 			<para>The following table shows how ANSI C scalar types correspond to those of the 64-bit PowerPC 
 			processor. For all types, a NULL pointer has the value zero.  The alignment column specifies the required 
-			alignment of a field of the given type within a struct.  The required alignment of a double or long double 
-			field is word, not doubleword or quadword as might be expected from the size of the field.  Variables may 
+			alignment of a field of the given type within a struct. Variables may 
 			be more strictly aligned than is shown in the table, but fields in a struct must follow the alignment 
 			specified in order to ensure consistent struct mapping.
 			</para>
-			<para>"Extended precision" is the IBM <trademark class="REGISTERED">AIX</trademark> 128-bit long double 
-			format composed of two  double-precision numbers with different magnitudes that do not overlap.  The 
-			high-order double-precision value (the one that comes first in storage) must have the larger magnitude. The  			 value of the extended-precision number is the sum of the two double-precision values.  For a value of 
-			NaN or infinity, you must encode one of these values within the high-order double-precision value. The 
-			low-order value is not significant.  Extended precision provides the same range of double precision (about 
-			10<superscript>(-308)</superscript> to 10<superscript>308</superscript>) but more precision (a variable amount, about 31 decimal digits or more).  The 
-			software support is restricted to round-to-nearest mode. Programs that use extended precision must ensure 
-			that this rounding mode is in effect when extended-precision calculations are performed.
-			</para>		
+
 				
 <screen>Type         ANSI C          sizeof    Alignment    PowerPC
+-------------------------------------------------------------------------
+boolean      _bool           1         byte         unsigned byte
 -------------------------------------------------------------------------
 Character    char            1         byte         unsigned byte
              unsigned char
@@ -137,22 +130,107 @@ Integral     int             4         word         signed word
              ------------------------------------------------------------
              unsigned long   8         doubleword   unsigned doubleword
              unsigned long long
+             ------------------------------------------------------------
+             __int128_t     16         quadword     signed quadword
+             ------------------------------------------------------------
+             __uint128_t    16         quadword     unsigned quadword
 -------------------------------------------------------------------------
 Pointer      any *           8         doubleword   unsigned doubleword
              any (*) ()
 -------------------------------------------------------------------------
 Floating     float           4         word         single precision
              ------------------------------------------------------------
-             double          8         word         double precision
+             double          8         doubleword   double precision
              ------------------------------------------------------------
-             long double     16        word         extended precision
+             long double     16        quadword     extended precision
+-------------------------------------------------------------------------
+vector       16*char         16        quadword     vector of signed bytes
+             ------------------------------------------------------------
+             16*unsigned     16        quadword     vector of unsigned
+             char                                   bytes
+             ------------------------------------------------------------
+             8*short         16        quadword     vector of signed
+                                                    halfwords
+             ------------------------------------------------------------
+             8*unsigned      16        quadword     vector of unsigned
+             short                                  halfwords
+             ------------------------------------------------------------
+             4*int           16        quadword     vector of signed
+                                                    words
+             ------------------------------------------------------------
+             4*unsigned int  16        quadword     vector of unsigned
+                                                    words
+             ------------------------------------------------------------
+             4*float         16        quadword     vector of floats
+
+
 				</screen>
-			<note><title>Note</title>
-				<para>When compared to the 32-bit PowerPC Processor Supplement, the size and alignment of 
-				long has changed, and the alignment of double and long double has changed.  A compiler may 
-				provide options to use different sizes and alignments; however, any object compiled with those 
-				options will not conform to the 64-bit PowerPC Processor Supplement.</para>
-			</note>
+			</sect2>
+
+							<sect2 id="PREC"><title>Extended Precision</title>
+
+			<para>"Extended precision" is the IBM <trademark class="REGISTERED">AIX</trademark> 128-bit long double 
+			format composed of two  double-precision numbers with different magnitudes that do not overlap.  The 
+			high-order double-precision value (the one that comes first in storage) must have the larger magnitude. The value of the extended-precision number is the sum of the two double-precision values.  
+
+			<itemizedlist>
+			<listitem><para>
+				 Extended precision provides the same range of double
+				 precision (about 10**(-308) to 10**308) but more precision (a
+				 variable amount, about 31 decimal digits or more).
+		  </para></listitem>
+
+			<listitem> <para>
+			  As the absolute value of the magnitude decreases (near the
+				denormal range), the precision available in the low-order
+				double also decreases.
+			 </para></listitem>
+
+			 <listitem><para>
+         When the value represented is in the denormal range, this
+				 representation provides no more precision than 64-bit
+				 (double) floating point.
+			 </para></listitem>
+
+			 <listitem><para>
+				 The actual number of bits of percision can vary.  If the
+				 low-order part is much less then 1 ULP of the high-order
+				 part, significant bits (either all 0's or all 1's) are
+				 implied between the significands of high-order and low-order
+				 numbers.  Some algorithms that rely on having a fixed number
+				 of bits in the significand can fail when using "Extended
+				 precision".
+			 </para></listitem>
+
+			</itemizedlist>
+
+			<para>
+			This "Extended precision" differs from the IEEE 754 Standard in
+			the following ways:
+			</para>
+
+			<itemizedlist>
+			
+			<listitem><para>
+			The software support is restricted to round-to-nearest mode.
+			Programs that use extended precision must ensure that this
+			rounding mode is in effect when extended-precision calculations
+			are performed.
+			</para></listitem>
+
+			<listitem><para>
+			Does not fully support the IEEE special numbers NaN and INF.
+			These values are encoded in the high-order double value only.
+			The low-order value is not significant.
+			</para></listitem>
+
+			<listitem><para>
+			Does not support the IEEE status flags for overflow, underflow,
+      and other conditions.  These flag have no meaning in this format.
+			</para></listitem>
+
+			</itemizedlist>
+
 			</sect2>
 			<sect2 id="AGG-UNION"><title>Aggregates and Unions</title>
 			<para>Aggregates (structures and arrays) and unions assume the alignment of their most strictly aligned 
@@ -266,7 +344,7 @@ struct {
 						
 </programlisting>
 				
-				<synopsis>word aligned, sizeof is 16</synopsis>
+				<synopsis>doubleword aligned, sizeof is 24</synopsis>
 						
 <screen>little endian:
 
@@ -275,13 +353,19 @@ struct {
 |          pad          |   c   |
 +-------+-------+-------+-------+
 |                              4|
-|               d               |
+|              pad              |
 +-------+-------+-------+-------+
 |                              8|
 |               d               |
 +-------+-------+-------+-------+
-|             14|             12|
+|                             12|
+|               d               |
++-------+-------+-------+-------+
+|             18|             16|
 |      pad      |       s       |
++-------+-------+-------+-------+
+|                             20|
+|              pad              |
 +-------+-------+-------+-------+
 
 big endian:
@@ -291,13 +375,19 @@ big endian:
 |   c   |          pad          |
 +-------+-------+-------+-------+
 |4                              |
-|               d               |
+|              pad              |
 +-------+-------+-------+-------+
 |8                              |
 |               d               |
 +-------+-------+-------+-------+
-|12             |14             |
+|12                             |
+|               d               |
++-------+-------+-------+-------+
+|16             |18             |
 |       s       |      pad      |
++-------+-------+-------+-------+
+|20                             |
+|             pad               |
 +-------+-------+-------+-------+
 						</screen>	
 					</figure>					
@@ -659,6 +749,22 @@ FPSCR     Floating point status and control register (volatile)
 CR0-CR1   Volatile condition code register fields
 CR2-CR4   Nonvolatile condition code register fields
 CR5-CR7   Volatile condition code register fields</screen>
+
+<para>On processors with the VMS feature.</para>
+
+<screen>
+v0-v1     Volatile scratch registers
+v2-v13    Volatile vector parameters registers
+v14-v19   Volatile scratch registers
+v20-v31   Non-volatile registers
+vrsave    Non-volatile 32-bit register
+</screen>
+
+<para>
+The existence of the VMX feature will be indicated in the AT_HWCAP
+auxiliary vector entry.
+</para>
+
 			<para>Registers r1, r14 through r31, and f14 through f31 are nonvolatile, which means that they preserve 
 			their values across function calls.  Functions which use those registers must save the value before 
 			changing it, restoring it before the function returns.  Register r2 is technically nonvolatile, but it is handled 
@@ -730,6 +836,9 @@ CR5-CR7   Volatile condition code register fields</screen>
           +-> Back chain
           |   Floating point register save area
           |   General register save area
+          |   VRSAVE save word (32-bits)
+          |   Alignment padding (4 or 12 bytes)
+          |   Vector register save area (quadword aligned)
           |   Local variable space
           |   Parameter save area    (SP + 48)
           |   TOC save area          (SP + 40)
@@ -781,9 +890,37 @@ Low Address</screen>
 					register save area depends upon the number of general registers which must be saved.
 					  It ranges from 0 bytes to a maximum of 144 bytes (18 * 8).</para>
 					</listitem>
-					<listitem><para>The local variable space contains any local variable storage required 
-					by the function.</para>
-					</listitem>
+
+					<listitem><para>
+					Functions must ensure that the appropriate bits in the
+					vrsave register are set for any vector registers they use.
+					A function that changes the value of the vrsave register
+					shall save the original value of vrsave into the word below
+					the low address end of the general register save area.
+					Below the vrsave save area will be 4 or 12 bytes of
+					alignment padding as needed to ensure that the vector
+					register save area is quadword aligned.
+					</para></listitem>
+
+					<listitem><para>
+					Before a function changes the value in any nonvolatile vector
+					register, vrn, it shall save the value in vrn in the word in the
+					vector register save area 16*(32-n) bytes before the low addressed
+					end of the vrsave save area plus alignment padding.  The vector
+					register save area is always quadword aligned.  The size of the
+					vector register save area depends upon the number of vector registers
+					which must be saved; it ranges from 0 bytes to a maximum of 192
+					bytes (12 * 16).
+					</para></listitem>
+
+					<listitem><para>
+					The local variable space contains any local variable storage
+					required by the function.  If vector registers are saved the local
+					variable space area will be padded so that the vector register
+					save area is quadword aligned.
+					</para></listitem>
+
+
 					<listitem><para>The parameter save area shall be allocated by the caller.  It shall be 
 					doubleword aligned, and shall be at least 8 doublewords in length.  If a function needs 
 					to pass more than 8 doublewords of arguments, the parameter save area shall be large 
@@ -808,14 +945,15 @@ Low Address</screen>
 					condition register, it shall save the values in all the nonvolatile fields of the condition 
 					register at the time of entry to the function in the CR save area.</para>
 					</listitem>
-					<listitem><para>A function which does not call any other function and which needs no 
-					local variables does not need to have a stack frame.  It may use non-volatile registers, 
-					saving their old values on the stack.  Thus, the lowest possible valid stack address is 
-					288 bytes (144 + 144) less than the current value of the stack pointer.  Functions may 
-					use this stack space as volatile storage which is not preserved across function calls.  
-					Interrupt handlers and any other code which can not be seen by compiled code must 
-					avoid using this area.</para>
-					</listitem>
+					<listitem><para>
+					The 288 bytes below the stack pointer is available as
+					volatile storage which is not preserved across function
+					calls.  Interrupt handlers and any other functions that
+					might run without an explicit call must take care to
+					preserve this region.  If a function does not need more
+					stack space than is available in this area, it does not need
+					to have a stack frame.
+					</para></listitem>
 				</itemizedlist>				
 			<para>The stack frame header consists of the back chain word, the CR save area, the LR save area, the 
 			compiler and link editor doublewords, and the TOC save area, for a total of 48 bytes.  The back chain word 
@@ -828,7 +966,7 @@ Low Address</screen>
 			not call any other functions and does not require any of the other parts of the stack frame, it need not 
 			establish a stack frame.  Any padding of the frame as a whole shall be within the local variable area; the 
 			parameter save area shall immediately follow the stack frame header, and the register save areas shall 
-			contain no padding.
+			contain no padding except as noted for VRSAVE.
 			</para>
 			</sect2>
 			<sect2 id="PARAM-PASS"><title>Parameter Passing</title>
@@ -840,10 +978,15 @@ Low Address</screen>
 			 the same registers.  The number of registers implemented in a processor architecture naturally limits the 
 			number of arguments that can be passed in this manner.
 			</para>
-			<para>For the 64-bit PowerPC, up to eight doublewords are passed in general purpose registers, loaded 
-			sequentially into general purpose registers r3 through r10.  In addition, up to thirteen floating-point 
-			arguments can be passed in floating-point registers f1 through f13.  If fewer (or no) arguments are passed, 
-			the unneeded registers are not loaded and will contain undefined values on entry to the called function. 
+			<para>
+			For the 64-bit PowerPC, up to eight doublewords are passed in
+			general purpose registers, loaded sequentially into general
+			purpose registers r3 through r10.  Up to thirteen floating-point
+			arguments can be passed in floating-point registers f1 through
+			f13.  If VMX is supported, up to twelve vector parameters can
+			be passed in v2 through v13.  If fewer (or no) arguments are
+			passed, the unneeded registers are not loaded and will contain
+			undefined values on entry to the called function.
 			</para>
 			<para>The parameter save area, which is located at a fixed offset of 48 bytes from the stack pointer, is 
 			reserved in each stack frame for use as an argument list.  A minimum of 8 doublewords is always reserved.
@@ -855,6 +998,20 @@ Low Address</screen>
 			the parameter save area.  The values passed on the stack are identical to those that have been placed in 
 			registers; thus, the stack contains register images.
 			</para>
+
+			<para>
+			 For variable argument lists, this ABI uses a va_list type which
+			 is a pointer to the memory location of the next parameter.
+			 Using a simple va_list type means that variable arguments must
+			 always be in the same location regardless of type, so that they
+			 can be found at runtime.  This ABI defines the location to be
+			 general registers r3 through r10 for the first eight
+			 doublewords and the stack parameter save area thereafter.
+			 Alignment requirements such as those for vector types may
+			 require the va_list pointer to first be aligned before
+			 accessing a value.
+			</para>
+
 			<para>The rules for parameter passing are as follows:
 			</para>
 				<itemizedlist>
@@ -878,9 +1035,19 @@ Low Address</screen>
 						<listitem><para>Pointers are mapped to a single doubleword.</para>
 						</listitem>
 						<listitem><para>
+						Vectors are mapped to a single quadword, quadword aligned.
+						This may result in skipped doublewords in the parameter
+						save area.
+						</para></listitem>
+						<listitem><para>
 						Fixed size aggregates and unions passed by value are mapped to as
 						many doublewords of the parameter save area as the value uses in
-						memory.  An aggregate or union smaller than one doubleword in size
+						memory.  Aggregrates and unions are aligned according to their
+						alignment requirements.  This may result in doublewords being
+						skipped for alignment.
+						</para></listitem>
+						<listitem><para>
+						An aggregate or union smaller than one doubleword in size
 						is padded so that it appears in the least significant bits of the
 						doubleword.  All others are padded, if necessary, at their tail.
 						Variable size aggregates or unions are passed by reference.
@@ -896,62 +1063,72 @@ Low Address</screen>
 					value is converted to double-precision and mapped to a doubleword in the parameter 
 					save area.</para>
 					</listitem>
-					<listitem><para>The first eight doublewords mapped to the parameter save area are 
-					never stored in the parameter save area by the calling function.  Instead, these 							doublewords are passed in registers as described below.</para>
-					</listitem>
-					<listitem><para>Argument values beyond the first eight doublewords must be stored in 
-					the parameter save area following the first eight doublewords, even though these 
-					arguments may also be passed in the floating point registers as described below.  The 
-					first eight doublewords in the parameter save area are reserved for the initial 
-					arguments, even though they are passed in registers.</para>
-					</listitem>
-					<listitem><para>General registers are used to pass some values.  The first eight 
-					doublewords mapped to the parameter save area correspond to the register r3 through 
-					r10.  If the arguments are mapped to fewer than eight doublewords of the parameter 
-					save area, registers corresponding to those unused doublewords are not used.</para>
-						<itemizedlist>
-							<listitem><para>If there is no known function prototype for a 
-							callee, or the known prototype contains an ellipsis, the first eight 
-							doublewords mapped to the parameter save area are passed in 
-							their corresponding general registers.</para>
-						</listitem>
-						<listitem><para>If the callee has a prototype with no ellipsis, values other 
-						than single and double precision floating point values are passed in their 
-						corresponding general registers.  General registers corresponding to single 
-						and double precision floating-point arguments are not used.  The floating 
-						point  values are placed in floating-point registers instead.</para></listitem>
-						</itemizedlist>
-					</listitem>
-					<listitem><para>Floating point registers are used consecutively to pass up to 13 
-					single and double precision floating point values.  Each floating point register holds at 
-					most a single value, whether the argument is single or double precision.</para>							<itemizedlist>
-							<listitem><para>If there is no known prototype for a callee, or 
-							the known prototype contains an ellipsis, up to 13 floating point 
-							values are passed in f1 through f13.  In this case, floating point 
-							values mapped to the  first eight doublewords of the parameter 
-							save area are also passed in general registers.</para>
-							</listitem>
-							<listitem><para>If there is a known prototype for the callee, and it 
-							doesn't contain an ellipsis, up to 13 floating point values are 
-							passed in f1 through f13.  In this case, floating point values 
-							mapped to the first eight doublewords of the parameter save 
-							argument area are <emphasis>not</emphasis> also passed in the 
-							general registers.</para>
-							</listitem>
-						</itemizedlist>
-					</listitem>
-					<listitem><para>If the callee takes the address of any of its parameters, then r3 
-					through r10 must be stored by the callee into the parameter save area, except when 
-					any of these general registers correspond to single or double precision floating point 
-					parameters, in which case the floating point registers are stored rather than the general 
-					registers.  This is because the caller may have had a function prototype for the callee, 
-					and therefore put floating point parameters in floating point registers only.</para>
-					</listitem>
+
+					<listitem><para>
+					Floating point registers f1 through f13 are used
+					consecutively to pass up to 13 single, double and extended
+					precision floating point values, and to pass the
+					corresponding complex floating point values.  A single
+					precision value occupies one register as does a double
+					precision value.  Extended precision values occupy two
+					consecutively numbered registers.  The corresponding complex
+					values occupy twice as many registers.  If the number of
+					floating point values passed is such that an argument cannot
+					be passed fully in floating point registers, that argument
+					and all following floating point arguments are passed in the
+					parameter save area.  Also, arguments corresponding to the
+					variable argument part of a callee with a prototype
+					containing an ellipsis are passed in the parameter save
+					area.
+					</para></listitem>
+
+					<listitem><para>
+					Vector registers v2 through v13 are used to consecutively
+					pass up to 12 vector values, except for arguments
+					corresponding to the variable argument part of a callee with
+					a prototype containing an ellipsis.
+					</para></listitem>
+
+					<listitem><para>
+					If there is no known function prototype for a callee, or if
+					the function prototype for a callee contains an ellipsis and
+					the argument value is not part of the fixed arguments
+					described by the prototype, then floating point and vector
+					values are passed according to the following rules for
+					non-floating, non-vector types.  In the case of no known
+					prototype this may result in two copies of floating and
+					vector argument values being passed.
+					</para></listitem>
+
+					<listitem><para>
+					General registers are used to pass some values.  The first
+					eight doublewords are mapped to the parameter save area
+					correspond to the registers r3 through r10.  An argument
+					other than floating point and vector values fully described
+					by a prototype, that maps to this area either fully or
+					partially, is passed in the corresponding general registers.
+					</para></listitem>
+
+					<listitem><para>
+					All other arguments (or parts thereof) not already covered
+					must be stored in the parameter save area following the
+					first eight doublewords.  The first eight doublewords mapped
+					to the parameter save area are never stored in the parameter
+					save area by the calling function.
+					</para></listitem>
+
+					<listitem><para> 
+					If the callee takes the address of any of
+					its parameters, then values passed in registers are stored
+					into the parameter save area by the callee.  If the
+					compilation unit for the caller contains a function
+					prototype, but the callee has a mismatching definition, this
+					may result in the wrong values being stored.
+					</para></listitem>
+
 				</itemizedlist>
-			<para>If the compilation unit for the caller contains a function prototype, but the callee has a mismatching 
-			definition, and if the callee takes the address of any of its parameters, the wrong values may be stored in 
-			the first eight doublewords of the parameter save area.
-			</para>
+
+
 				<figure><title>Parameter Passing</title>
 <programlisting>typedef struct {
   int    a;
@@ -968,22 +1145,34 @@ x = func(c, ff, d, ld, s, gg, t, e, hh);</programlisting>
 c             r3           0-7    (not stored in parameter save area)
 ff            f1           8-15   (not stored)
 d             r5           16-23  (not stored)
-ld            r6,r7        24-39  (not stored)
+ld            f2,f3        24-39  (not stored)
 s             r8,r9        40-55  (not stored)
-gg            f2           56-63  (not stored)
+gg            f4           56-63  (not stored)
 t             (none)       64-79  (stored in parameter save area)
 e             (none)       80-87  (stored)
-hh            f3           88-95  (stored)</screen>
+hh            f5           88-95  (stored)</screen>
 				</figure>
 			<note><title>Note</title><para>  
-			The floating point argument hh is passed in two places: the value is stored both in f3 and on the stack.  If a 
-			prototype is not in scope, or if the prototype contains an ellipsis, then the floating point arguments ff and gg 
-			are also passed in two places, in both a general register and a floating point register.
+			Note: If a prototype is not in scope, then the floating point
+			argument ff is also passed in r4, the long double argument ld is
+			also passed in r6 and r7, the floating point argument gg is also
+			passing in r10, and the floating point argument gg is also
+			stored into the parameter save area.  If a prototype containing
+			an ellipsis describes any of these floating point arguments as
+			being part of the variable argument part, then the general
+			registers and parameter save area are used as when no prototype
+			is in scope, and the floating point register(s) are not used.
 			</para></note>
 			</sect2>
 			<sect2 id="RETURN-VAL"><title>Return Values</title>
 			<para>Functions shall return float or double values in f1, with float values rounded to single precision.
 			</para>
+
+			<para>
+			When the VMX facility is supported, functions shall return
+			vector data type values in v2.
+			</para>
+
 			<para>Functions shall return values of type int, long, enum, short, and char, or a pointer to any type, as 
 			unsigned or signed integers as appropriate, zero- or sign-extended to 64 bits if necessary, in r3.  Character 
 			 arrays of length 8 bytes or less, or bit strings of length 64 bits or less, will be returned right justified in r3.  
@@ -1062,7 +1251,9 @@ lang           Eight-bit field.  This defines the source language for
                   RPG           10
                   PL.8,PLIX     11
                   Assembly      12
-               The codes 0xd to 0xfa are reserved.  The codes 0xfb to
+                  Java          13
+                  Objective C   14
+               The codes 0xf to 0xfa are reserved.  The codes 0xfb to
                0xff are reserved for IBM.
 
 globalink      One-bit field.  This field is set to 1 if this routine
@@ -1134,7 +1325,13 @@ fp_saved       Six-bit field.  This field is set to the number of
                example, a value of 2 in this field indicates that f30
                and f31 are saved.
 
-spare3         Two-bit field.  Reserved.
+has_vec_info   One-bit field.  This field is set to 1 if the procedure
+               saves non-volatile vector registers in the vector
+               register save area, saves vrsave in the VRSAVE word,
+               specifies the number of vector parameters, or uses VMX
+               instructions.
+
+spare4         One-bit field.  Reserved.
 
 gpr_saved      Six-bit field.  This field is set to the number of
                non-volatile general registers that the function
@@ -1219,7 +1416,29 @@ name           char[*].  This field is only present if the
 
 alloca_reg     Char.  This field is only present if the uses_alloca
                bit is set to 1.  It holds the register number that is
-               used as the base for variable accesses.</screen>			</sect2>
+               used as the base for variable accesses.
+
+vr_saved       Six-bit field.  This field is set to the number of
+               non-volatile floating point registers that the function
+               saves.  The last register saved is always vr31, so, for
+               example, a value of 2 in this field indicates that vr30
+               and vr31 are saved.
+
+saves_vrsave   One-bit field.  This field is set to 1 if the VRSAVE
+               word in the register save area must be used to restore
+               the prior value before returning from this procedure.
+
+has_varargs    One-bit field.  This field is set to 1 if this function
+               has a variable argument list.
+
+vectorparms    Seven-bit field.  This field records the number of vector
+               parameters.  This field must be non-zero for a procedure
+               with vector parameters that does not have a variable
+               argument list.  Otherwise parmsonstk must be set.
+
+vec_present    One-bit field.  This field is set to 1 if VMX
+               instructions are performed within the procedure.
+</screen>			</sect2>
 		</sect1>
 		<sect1 id="PROC-INIT"><title>Process Initialization</title>
 		<para>This section describes the machine state that exec creates for "infant" processes, including argument passing, 
@@ -1323,9 +1542,11 @@ AT_PAGESZ           6           a_val
 AT_BASE             7           a_ptr
 AT_FLAGS            8           a_val
 AT_ENTRY            9           a_ptr
-AT_DCACHEBSIZE      10          a_val
-AT_ICACHEBSIZE      11          a_val
-AT_UCACHEBSIZE      12          a_val</screen>
+AT_HWCAP            16          a_val
+AT_DCACHEBSIZE      19          a_val
+AT_ICACHEBSIZE      20          a_val
+AT_UCACHEBSIZE      21          a_val
+</screen>
 			
 			<variablelist>
 				<varlistentry><term>AT_NULL</term>
@@ -1401,6 +1622,20 @@ same as AT_UCACHEBSIZE.</para></listitem>
 processors on the system on which this program is running do not have
 a unified instruction and data cache.  Otherwise, it gives the cache
 block size.</para></listitem>
+				</varlistentry>
+				<varlistentry><term>AT_HWCAP</term>
+				<listitem><para>
+				The a_val member of this entry is bit map of hardware
+				capabilities. Some bit mask values include:
+<screen>
+PPC_FEATURE_32               0x80000000 /* Always set for powerpc64 */
+PPC_FEATURE_64               0x40000000 /* Always set for powerpc64 */
+PPC_FEATURE_HAS_ALTIVEC      0x10000000
+PPC_FEATURE_HAS_FPU          0x08000000
+PPC_FEATURE_HAS_MMU          0x04000000
+PPC_FEATURE_UNIFIED_CACHE    0x01000000
+</screen>
+				</para></listitem>
 				</varlistentry>
 			</variablelist>
 			<para>Other auxiliary vector types are reserved.  No flags are currently
@@ -1949,6 +2184,80 @@ floating point register save area.
                 mtlr r0
                 blr
 </programlisting>
+<para>
+Each _savevr_M routine saves the vector registers from vM to v31,
+inclusive.  When the routine is called, r0 must point to the word just
+beyound the end of the vector register save area.  On return the value
+of r0 is unchanged while r12 may be modified.
+</para>
+<para>
+The _restvr_M routines restore the vector registers from vM to v31.
+When the routine is called, r0 must point to the word just beyound the
+end of the vector register save area.  On return the value of r0 is
+unchanged while r12 may be modified.
+</para>
+
+<para>
+Here is a sample implementation of _savevr_M and _restvr_M.
+</para>
+
+<programlisting>
+  _savevr_20:   addi r12,r0,-192
+                stvx v20,r12,r0
+  _savevr_21:   addi r12,r0,-176
+                stvx v21,r12,r0
+  _savevr_22:   addi r12,r0,-160
+                stvx v22,r12,r0
+  _savevr_23:   addi r12,r0,-144
+                stvx v23,r12,r0
+  _savevr_24:   addi r12,r0,-128
+                stvx v24,r12,r0
+  _savevr_25:   addi r12,r0,-112
+                stvx v25,r12,r0
+  _savevr_26:   addi r12,r0,-96
+                stvx v26,r12,r0
+  _savevr_27:   addi r12,r0,-80
+                stvx v27,r12,r0
+  _savevr_28:   addi r12,r0,-64
+                stvx v28,r12,r0
+  _savevr_29:   addi r12,r0,-48
+                stvx v29,r12,r0
+  _savevr_30:   addi r12,r0,-32
+                stvx v30,r12,r0
+  _savevr_31:   addi r12,r0,-16
+                stvx v31,r12,r0
+                blr
+
+
+  _restvr_20:   addi r12,r0,-192
+                lvx  v20,r12,r0
+  _restvr_21:   addi r12,r0,-176
+                lvx  v21,r12,r0
+  _restvr_22:   addi r12,r0,-160
+                lvx  v22,r12,r0
+  _restvr_23:   addi r12,r0,-144
+                lvx  v23,r12,r0
+  _restvr_24:   addi r12,r0,-128
+                lvx  v24,r12,r0
+  _restvr_25:   addi r12,r0,-112
+                lvx  v25,r12,r0
+  _restvr_26:   addi r12,r0,-96
+                lvx  v26,r12,r0
+  _restvr_27:   addi r12,r0,-80
+                lvx  v27,r12,r0
+  _restvr_28:   addi r12,r0,-64
+                lvx  v28,r12,r0
+  _restvr_29:   addi r12,r0,-48
+                lvx  v29,r12,r0
+  _restvr_30:   addi r12,r0,-32
+                lvx  v30,r12,r0
+  _restvr_31:   addi r12,r0,-16
+                lvx  v31,r12,r0
+                blr
+</programlisting>
+
+
+
 			</sect2>
 			<sect2 id="DATA-OBJ"><title>Data Objects</title>
 			<para>This section describes only objects with static storage duration. It
@@ -2211,6 +2520,9 @@ need dynamic stack frame sizes can call C functions, and vice versa.
           +-&gt; Back chain
           |   Floating point register save area
           |   General register save area
+          |   VRSAVE save word (32-bits)
+          |   Alignment padding (4 or 12 bytes)
+          |   Vector register save area (quadword aligned)
           |   Local variable space
           |   Parameter save area    (SP + 48)
           |   TOC save area          (SP + 40)  --+
@@ -2229,6 +2541,9 @@ Low address
           +-&gt; Back chain
           |   Floating point register save area
           |   General register save area
+          |   VRSAVE save word (32-bits)
+          |   Alignment padding (4 or 12 bytes)
+          |   Vector register save area (quadword aligned)
           |   Local variable space
           |   -- Old parameter save area, now allocated space
           |   -- Old stack frame header, now allocated space
@@ -2401,6 +2716,9 @@ Save/Restore Register 0
 Machine Status             127           SRR1 or  SPR27
 Save/Restore Register 1
 
+Vector Save/Restore        356           VRSAVE or SPR256
+Register
+
 Software-use Special       372           SPRG0 or SPR272
 Purpose Register 0
 
@@ -2476,7 +2794,10 @@ Register 2
 Register 5
 
 * Hardware Implementation  1123          HID15 or PIR or SPR1023
-Register 15</screen>
+Register 15
+
+Vector Registers 0-31      1124-1155     vr0-vr31
+</screen>
 			<para>The 64-bit PowerPC processor family defines the address class codes
 described in the following table:
 			</para>
