@@ -13,7 +13,7 @@ hardware in the system.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.53 2003/06/03 20:38:14 anderson Exp 0 -->
-<!--    at Sat Aug  2 12:09:14 2003 -->
+<!--    at Thu Aug 21 10:52:55 2003 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -771,7 +771,7 @@ System V Interface Definition,Fourth Edition</PARA>
 <ENTRY><indexterm><primary>bindresvport</primary></indexterm>bindresvport<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY><indexterm><primary>getpeername</primary></indexterm>getpeername<FOOTNOTEREF LINKEND="std-131-67"></ENTRY>
 <ENTRY><indexterm><primary>recvfrom</primary></indexterm>recvfrom<FOOTNOTEREF LINKEND="std-131-67"></ENTRY>
-<ENTRY><indexterm><primary>setsockopt</primary></indexterm>setsockopt<FOOTNOTEREF LINKEND="std-131-67"></ENTRY>
+<ENTRY><indexterm><primary>setsockopt</primary></indexterm>setsockopt<FOOTNOTEREF LINKEND="std-131-10"></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 <ROW>
@@ -12669,6 +12669,157 @@ The <STRUCTNAME>mntent</STRUCTNAME> structure is defined in
 <!--        Version 1a, November 1998   -->
 </REFENTRY>
 
+<REFENTRY ID="baselib-setsockopt-2"> <REFMETA>
+<REFENTRYTITLE>setsockopt</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>setsockopt
+</REFNAME>
+<REFPURPOSE>
+set options on sockets
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>21 August 2003</DATE>
+</REFSYNOPSISDIVINFO>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>setsocopt</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>sockfd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>level</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>optname</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>void 
+  <PARAMETER><REPLACEABLE>*optval</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>socklen_t 
+  <PARAMETER><REPLACEABLE>optlen</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>21 August 2003</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+In addition to 
+Socket <EMPHASIS>ioctl</EMPHASIS> commands are a subset of thvior as
+specificified in  SUSv3, <FUNCTION>setsockopt</FUNCTION> also supports
+the following options.
+</PARA>
+<PARA>
+The following <FUNCTION>setsockopt</FUNCTION> operations are provided for
+<VARNAME>level</VARNAME> IPPROTO_IP:
+</PARA>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+IP_MULTICAST_TTL
+</TERM>
+<LISTITEM>
+<PARA>
+Set or reads the time-to-live value of outgoing multicast packets for this
+socket.
+<PARAMETER>optval</PARAMETER> is a pointer to an integer which contains
+the new TTL value.
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IP_MULTICAST_LOOP  
+</TERM>
+<LISTITEM>
+<PARA>
+Sets a boolean flag indicating wether multicast packets originating locally
+should be looped back to the local sockets.
+<PARAMETER>optval</PARAMETER> is a pointer to an integer which contains
+the new flag value. 
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IP_ADD_MEMBERSHIP  
+</TERM>
+<LISTITEM>
+<PARA>
+Join a multicast group.
+<PARAMETER>optval</PARAMETER> is a pointer to a
+<STRUCTNAME>ip_mreq</STRUCTNAME> structure. Before calling, the 
+caller should fill in the <STRUCTFIELD>imr_multiaddr</STRUCTFIELD> 
+field with multicast group address and the
+<STRUCTFIELD>imr_address</STRUCTFIELD> field with the address of the local
+interface. If <STRUCTFIELD>imr_address</STRUCTFIELD> is set to INADDR_ANY,
+then an appropriate interface is choosen by the system.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IP_DROP_MEMBERSHIP  
+</TERM>
+<LISTITEM>
+<PARA>
+Leave a multicast group.
+<PARAMETER>optval</PARAMETER> is a pointer to a
+<STRUCTNAME>ip_mreq</STRUCTNAME> structure containing the same values as were
+used to with IP_ADD_MEMBERSHIP.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IP_MULTICAST_IF  
+</TERM>
+<LISTITEM>
+<PARA>
+Set the local device for a multicast socket.
+<PARAMETER>optval</PARAMETER> is a pointer to a
+<STRUCTNAME>ip_mreq</STRUCTNAME> structure initialized in the same manner as
+with IP_ADD_MEMBERSHIP.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+<PARA>
+The <STRUCTNAME>ip_mreq</STRUCTNAME> structure contains two
+<STRUCTNAME>struct in_addr</STRUCTNAME> fields:
+<STRUCTFIELD>imr_multiaddr</STRUCTFIELD> and
+<STRUCTFIELD>imr_address</STRUCTFIELD>.
+</PARA>
+
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
+On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
+the global variable <VARNAME>errno</VARNAME> is set appropriately.
+</PARA>
+</REFSECT1>
+
+</REFENTRY>
+
 <REFENTRY ID="baselib-setutent-3"> <REFMETA>
 <REFENTRYTITLE>setutent</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -16170,7 +16321,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.53 2003/06/03 20:38:14 anderson Exp 0 -->
-<!--    at Sat Aug  2 12:09:53 2003 -->
+<!--    at Thu Aug 21 10:53:28 2003 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -16696,7 +16847,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.53 2003/06/03 20:38:14 anderson Exp 0 -->
-<!--    at Sat Aug  2 12:10:08 2003 -->
+<!--    at Thu Aug 21 10:53:44 2003 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -17234,7 +17385,7 @@ Macro <FUNCTION>pthread_cleanup_push</FUNCTION> defines the ABI
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.53 2003/06/03 20:38:14 anderson Exp 0 -->
-<!--    at Sat Aug  2 12:10:51 2003 -->
+<!--    at Thu Aug 21 10:54:26 2003 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -18054,7 +18205,7 @@ routine identified by the unwind <PARAMETER>context</PARAMETER>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.53 2003/06/03 20:38:14 anderson Exp 0 -->
-<!--    at Sat Aug  2 12:10:20 2003 -->
+<!--    at Thu Aug 21 10:53:56 2003 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -18300,7 +18451,7 @@ directory search-path for object files
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.53 2003/06/03 20:38:14 anderson Exp 0 -->
-<!--    at Sat Aug  2 12:10:31 2003 -->
+<!--    at Thu Aug 21 10:54:06 2003 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -18371,7 +18522,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.53 2003/06/03 20:38:14 anderson Exp 0 -->
-<!--    at Sat Aug  2 12:10:41 2003 -->
+<!--    at Thu Aug 21 10:54:16 2003 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
@@ -18391,13 +18542,14 @@ ISO C serves as the LSB reference programming language, and data definitions are
 </TBODY>
 </TGROUP>
 </TABLE>
+
 <PARA>
 A single service name, <VARNAME>other</VARNAME>, shall always be present.
 The behavior of this service shall be determined by the system administrator.
 Additional service names may also exist.
 <FOOTNOTE>
 <PARA>
-Future versions of this specification will likely define additional
+Future versions of this specification might define additional
 service names.
 </PARA>
 </FOOTNOTE>
@@ -20532,7 +20684,7 @@ DAMAGE.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.53 2003/06/03 20:38:14 anderson Exp 0 -->
-<!--    at Sat Aug  2 12:11:02 2003 -->
+<!--    at Thu Aug 21 10:54:36 2003 -->
 <SECT1 ID=libstdcxx>
 <TITLE>Interfaces for libstdcxx</TITLE>
 <PARA>
@@ -21039,7 +21191,7 @@ Linux Standard Base</PARA>
 <ENTRY><indexterm><primary>basic_ostream&lt;char, char_traits&lt;char> >& operator&lt;&lt; &lt;char, char_traits&lt;char>, allocator&lt;char> >(basic_ostream&lt;char, char_traits&lt;char> >&, basic_string&lt;char, char_traits&lt;char>, allocator&lt;char> > const&)</primary></indexterm>basic_ostream&lt;char, char_traits&lt;char> >& operator&lt;&lt; &lt;char, char_traits&lt;char>, allocator&lt;char> >(basic_ostream&lt;char, char_traits&lt;char> >&, basic_string&lt;char, char_traits&lt;char>, allocator&lt;char> > const&)<FOOTNOTEREF LINKEND="std-231-65"></ENTRY>
 <!--entry end-->
 <!--entry start-->
-<ENTRY><indexterm><primary>__dynamic_cast</primary></indexterm>__dynamic_cast<FOOTNOTEREF LINKEND="std-231-10"></ENTRY>
+<ENTRY><indexterm><primary>__cxa_pure_virtual</primary></indexterm>__cxa_pure_virtual<FOOTNOTEREF LINKEND="std-231-10"></ENTRY>
 <!--entry end-->
 </ROW>
 <ROW>
@@ -21047,7 +21199,7 @@ Linux Standard Base</PARA>
 <ENTRY><indexterm><primary>basic_ostream&lt;char, char_traits&lt;char> >& operator&lt;&lt; &lt;double, char, char_traits&lt;char> >(basic_ostream&lt;char, char_traits&lt;char> >&, complex&lt;double> const&)</primary></indexterm>basic_ostream&lt;char, char_traits&lt;char> >& operator&lt;&lt; &lt;double, char, char_traits&lt;char> >(basic_ostream&lt;char, char_traits&lt;char> >&, complex&lt;double> const&)<FOOTNOTEREF LINKEND="std-231-65"></ENTRY>
 <!--entry end-->
 <!--entry start-->
-<ENTRY></ENTRY>
+<ENTRY><indexterm><primary>__dynamic_cast</primary></indexterm>__dynamic_cast<FOOTNOTEREF LINKEND="std-231-10"></ENTRY>
 <!--entry end-->
 </ROW>
 </TBODY>
