@@ -47,8 +47,9 @@ $Aname=$entry{'Aname'};
 #
 # 4) Get the data
 #
-$select = "SELECT ESname,ESdescription ";
+$select = "SELECT * ";
 $select.= "FROM ElfSections,Standard ";
+$select.= "LEFT JOIN SectionTypes ON STid=ESSecType ";
 $select.= "WHERE ESstandard=Sid and Sname=".$Dbh->quote($stdname);
 $select.= " AND ESarch=$Aid";
 $select.= " ORDER BY ElfSections.ESname ";
@@ -57,29 +58,51 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.5 2001-04-25 17:39:25 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.6 2001-10-26 15:30:30 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
+print "<TABLE>\n";
+print "<TITLE></TITLE>\n";
+print "<TGROUP COLS=3>\n";
+print "<THEAD>\n";
+print "<ROW>\n";
+print "<ENTRY>Name</ENTRY>";
+print "<ENTRY>Type</ENTRY>";
+print "<ENTRY>Attributes</ENTRY>";
+print "</ROW>\n";
+print "</THEAD>\n";
 print "<TBODY>\n";
-print "<ROW>";
-$curcol=1;
 for(1..$sth->numrows) {
+	print "<ROW>";
 	%entry=$sth->fetchhash;
 	printf "<ENTRY>%s</ENTRY>",$entry{'ESname'};
-	if ( $dodesc ) {
-		printf "<ENTRY>%s</ENTRY>",$entry{'ESdescription'};
-	}
-	if( $curcol%$numcols == 0 && $_ != $sth->numrows) {
-		print "</ROW>\n";
-		print "<ROW>";
-		$curcol=1;
-	} else {
-		$curcol++;
-	}
+	printf "<ENTRY>%s</ENTRY>",$entry{'STname'};
+	printf "<ENTRY>%s</ENTRY>",$entry{'ESattributes'};
+	print "</ROW>\n";
 }
-print "</ROW>\n";
 print "</TBODY>\n";
+print "</TGROUP>\n";
+print "</TABLE>\n";
+
+$select = "SELECT * ";
+$select.= "FROM ElfSections,Standard ";
+$select.= "WHERE ESstandard=Sid and Sname=".$Dbh->quote($stdname);
+$select.= " AND ESarch=$Aid";
+$select.= " ORDER BY ElfSections.ESname ";
+#print $select,"\n";
+$sth = $Dbh->query($select) || die $Dbh->errmsg();
+
+print "<VARIABLELIST>\n";
+for(1..$sth->numrows) {
+	print "<VARLISTENTRY>";
+	%entry=$sth->fetchhash;
+	printf "<TERM>%s</TERM>",$entry{'ESname'};
+	printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry{'ESdescription'};
+	print "</VARLISTENTRY>\n";
+}
+print "</VARIABLELIST>\n";
+
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.5 2001-04-25 17:39:25 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.6 2001-10-26 15:30:30 anderson Exp $- -->\n");
 
