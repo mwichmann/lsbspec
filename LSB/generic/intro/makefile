@@ -11,7 +11,7 @@ EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape',
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 -Uindex -Uformat -DARCH=All $*.m4 >$@
+	m4 -Uindex -Uformat -DARCH=All -DCORE=1 $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 
