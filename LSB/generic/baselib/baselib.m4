@@ -20,6 +20,8 @@ include(libdl.sgml)
 
 include(libcrypt.sgml)
 
+include(libpam.sgml)
+
 </CHAPTER>
 
 </PART>

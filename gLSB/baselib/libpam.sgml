@@ -1,0 +1,196 @@
+<!-- Start of text generated from database -->
+<!-- generated from the LSB specification database -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
+<!--    at Wed Oct 16 21:17:58 2002 -->
+<SECT1 ID=libpam>
+<TITLE>Interfaces for libpam</TITLE>
+<PARA>
+</PARA>
+<TABLE>
+<TITLE>libpam Definition</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Library:</ENTRY>
+<ENTRY>libpam</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>SONAME:</ENTRY>
+<ENTRY>libpam.so.0</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+A single service name, <VARNAME>other</VARNAME>, must always be present.
+The behavior of this service shall be determined by the system administrator.
+Additional service names may also exist.
+<FOOTNOTE>
+<PARA>
+Future versions of this specification will likely define additional
+service names.
+</PARA>
+</FOOTNOTE>
+</PARA>
+<PARA>
+The behavior of the interfaces in this library is specified by the following standards.<SIMPLELIST COLUMNS=1>
+<MEMBER>
+Linux Standard Base<FOOTNOTE ID="std-233-10">
+<PARA>
+Linux Standard Base</PARA>
+</FOOTNOTE>
+</MEMBER>
+</SIMPLELIST>
+</PARA>
+<SECT2>
+<!--libgroup-->
+<TITLE>Pluggable Authentication API</TITLE>
+<PARA>
+</PARA>
+<TABLE>
+<TITLE>libpam - Pluggable Authentication API Function Interfaces</TITLE>
+<TGROUP COLS=5>
+<TBODY>
+<ROW>
+<ENTRY>pam_acct_mgmt<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_close_session<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_get_item<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_set_item<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_strerror<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>pam_authenticate<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_end<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_getenvlist<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_setcred<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+<ROW>
+<ENTRY>pam_chauthtok<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_fail_delay<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_open_session<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_start<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</SECT2>
+</SECT1>
+<SECT1 ID=libpam-ddefs>
+<TITLE>Data Definitions for libpam</TITLE>
+<PARA>
+This section contains standard data definitions that describe system data. These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+<PARA>
+ISO C serves as the LSB reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
+<SECT2>
+<TITLE>security/pam_appl.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef struct pam_handle pam_handle_t;
+struct pam_message
+{
+  int msg_style;
+  const char *msg;
+}
+ ;
+struct pam_response
+{
+  char *resp;
+  int resp_retcode;
+}
+ ;
+
+
+struct pam_conv
+{
+  int (*conv) (int num_msg, const struct pam_message * *msg,
+	       struct pam_response * *resp, void *appdata_ptr);
+  void *appdata_ptr;
+}
+ ;
+#define PAM_PROMPT_ECHO_OFF	1
+#define PAM_PROMPT_ECHO_ON	2
+#define PAM_ERROR_MSG	3
+#define PAM_TEXT_INFO	4
+
+
+
+#define PAM_SERVICE	1
+#define PAM_USER	2
+#define PAM_TTY	3
+#define PAM_RHOST	4
+#define PAM_CONV	5
+#define PAM_RUSER	8
+#define PAM_USER_PROMPT	9
+
+
+
+#define PAM_SUCCESS	0
+#define PAM_OPEN_ERR	1
+#define PAM_USER_UNKNOWN	10
+#define PAM_MAXTRIES	11
+#define PAM_NEW_AUTHTOK_REQD	12
+#define PAM_ACCT_EXPIRED	13
+#define PAM_SESSION_ERR	14
+#define PAM_CRED_UNAVAIL	15
+#define PAM_CRED_EXPIRED	16
+#define PAM_CRED_ERR	17
+#define PAM_CONV_ERR	19
+#define PAM_SYMBOL_ERR	2
+#define PAM_AUTHTOK_ERR	20
+#define PAM_AUTHTOK_RECOVER_ERR	21
+#define PAM_AUTHTOK_LOCK_BUSY	22
+#define PAM_AUTHTOK_DISABLE_AGING	23
+#define PAM_TRY_AGAIN	24
+#define PAM_ABORT	26
+#define PAM_AUTHTOKEN_REQD	27
+#define PAM_AUTHTOK_EXPIRED	27
+#define PAM_BAD_ITEM	29
+#define PAM_SERVICE_ERR	3
+#define PAM_SYSTEM_ERR	4
+#define PAM_BUF_ERR	5
+#define PAM_PERM_DENIED	6
+#define PAM_AUTH_ERR	7
+#define PAM_CRED_INSUFFICIENT	8
+#define PAM_AUTHINFO_UNAVAIL	9
+
+
+
+#define PAM_DISALLOW_NULL_AUTHTOK	0x0001U
+#define PAM_ESTABLISH_CRED	0x0002U
+#define PAM_DELETE_CRED	0x0004U
+#define PAM_REINITIALIZE_CRED	0x0008U
+#define PAM_REFRESH_CRED	0x0010U
+#define PAM_CHANGE_EXPIRED_AUTHTOK	0x0020U
+#define PAM_SILENT	0x8000U
+</SCREEN>
+</SECT2>
+</SECT1>
+<SECT1 ID=libpamman>
+<TITLE>Interfaces Definitions for libpam</TITLE>
+<PARA>
+</PARA>
+include(pam_acct_mgmt.sgml)
+include(pam_authenticate.sgml)
+include(pam_chauthtok.sgml)
+include(pam_close_session.sgml)
+include(pam_end.sgml)
+include(pam_fail_delay.sgml)
+include(pam_get_item.sgml)
+include(pam_getenvlist.sgml)
+include(pam_open_session.sgml)
+include(pam_set_item.sgml)
+include(pam_setcred.sgml)
+include(pam_start.sgml)
+include(pam_strerror.sgml)
+</SECT1>
+<!-- End of text generated from database -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->

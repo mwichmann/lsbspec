@@ -36,13 +36,11 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	dcgettext.sgml dcngettext.sgml bind_textdomain_codeset.sgml
 
 FILES=baselib.sgml 
-GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml
-
-.cpp.sgml:
-	cpp -I../../../src/include $*.cpp | grep -v '^# ' >$@
+GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
+	libpam.sgml
 
 .m4.sgml:
-	m4 -Uindex -Uformat $*.m4 >$@
+	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
 
 all: $(FILES) $(GENFILES)
 
@@ -50,10 +48,9 @@ gensrc:
 	../../mklibspec -a All -l libc >libc.sgml
 	../../mklibspec -a All -l libm >libm.sgml
 	../../mklibspec -a All -l libpthread >libpthread.sgml
-	#../../mklibspec -a All -l libdb >libdb.sgml
 	../../mklibspec -a All -l libdl >libdl.sgml
-	#../../mklibspec -a All -l librt >librt.sgml
 	../../mklibspec -a All -l libcrypt >libcrypt.sgml
+	../../mklibspec -a All -l libpam >libpam.sgml
 
 clean:
 	rm -f $(FILES)
@@ -61,5 +58,6 @@ clean:
 spotless: clean
 	rm -f $(GENFILES) $(FILES)
 
-baselib.sgml: libc.sgml datadefs.sgml libm.sgml libpthread.sgml
+baselib.sgml: baselib.m4 libc.sgml datadefs.sgml libm.sgml libpthread.sgml
 baselib.sgml: libdb.sgml libdl.sgml libcrypt.sgml $(MANPAGES)
+baselib.sgml: libpam.sgml
