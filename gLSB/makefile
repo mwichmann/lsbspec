@@ -1,7 +1,7 @@
 
 SUBDIRS=intro objfmt baselib utillib graphlib execenv \
 	sysinit usersgroups command \
-	dynlnk sgmlspec appendix
+	dynlnk package sgmlspec appendix
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
@@ -17,7 +17,7 @@ DB2ONEHTML=sgmltools -b onehtml
 
 DB2TXT=sgmltools -b txt
 
-all:: htmlspec rtfspec txtspec onehtmlspec
+all:: htmlspec rtfspec txtspec onehtmlspec linespec
 
 htmlspec: source
 	rm -rf gLSB.junk
@@ -31,6 +31,10 @@ onehtmlspec: source
 
 txtspec: source
 	$(DB2TXT) gLSB.sgml
+
+linespec: gLSB_lines.txt
+
+gLSB_lines.txt: gLSB.txt
 	nl -ba gLSB.txt > gLSB_lines.txt
 
 rtfspec: source

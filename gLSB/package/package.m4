@@ -62,7 +62,7 @@ The header section contains all available information about the package. Entries
 such as the package's name, version, and file list, are contained in the header.
 </PARA>
 <PARA>
-The payload section holds the actual files that comprise the package.
+The payload section holds the files to be install.
 </PARA>
 <SECT2>
 <TITLE>Lead Section</TITLE>
@@ -391,10 +391,22 @@ store is located immediately following the Index structures.
 <TITLE>Signature Section</TITLE>
 <PARA>
 The Signature section is implemented using the Header structure. The signature
-section defines 3 additional tag values which may be used in the Index
-structures.
+section defines the following additional tag values which may be used in
+the Index structures.
+</PARA>
+<PARA>
+These values exist to provide additional information about the rest of the
+package.
 </PARA>
 include(sigtags.sgml)
+<PARA>
+These values exist to ensure the integrity of the rest of the package.
+</PARA>
+include(sigdigtags.sgml)
+<PARA>
+These values exist to provide authentication of the package.
+</PARA>
+include(sigsigntags.sgml)
 </SECT2>
 
 

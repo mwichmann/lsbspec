@@ -15,6 +15,8 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../../mkrpmtagtable -g Private -t "Header Private Tag Values" >privtags.sgml
 	../../mkrpmtagtable -g Signature -t "Signature Tag Values" >sigtags.sgml
+	../../mkrpmtagtable -g SigDigest -t "Signature Digest Tag Values" >sigdigtags.sgml
+	../../mkrpmtagtable -g SigSigning -t "Signature Signing Tag Values" >sigsigntags.sgml
 	../../mkrpmtagtable -g Header -t "Header Tag Values" >hdrtags.sgml
 	../../mkrpmtagtable -g PackageInfo -t "Package Info Tag Values" >pkgtags.sgml
 	../../mkrpmtagtable -g InstallInfo -t "Installation Tag Values" >insttags.sgml

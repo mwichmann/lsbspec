@@ -62,7 +62,7 @@ The header section contains all available information about the package. Entries
 such as the package's name, version, and file list, are contained in the header.
 </PARA>
 <PARA>
-The payload section holds the actual files that comprise the package.
+The payload section holds the files to be install.
 </PARA>
 <SECT2>
 <TITLE>Lead Section</TITLE>
@@ -403,7 +403,7 @@ sections.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Fri Nov 22 09:26:26 2002 -->
+<!--    at Mon Nov 25 21:36:24 2002 -->
 <TABLE>
 <TITLE>Header Private Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -413,14 +413,14 @@ sections.
 </THEAD>
 <TBODY>
 <ROW><ENTRY>RPMTAG_HEADERSIGNATURES</ENTRY><ENTRY>62</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Optional</ENTRY></ROW>
-<ROW><ENTRY>RPMTAG_HEADERIMMUTABLE</ENTRY><ENTRY>63</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Reserved</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_HEADERIMMUTABLE</ENTRY><ENTRY>63</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_HEADERI18NTABLE</ENTRY><ENTRY>100</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
 <VARIABLELIST>
-<VARLISTENTRY><TERM>RPMTAG_HEADERSIGNATURES</TERM><LISTITEM><PARA>Contains an index record that specifies the location of the Signature data, reletive to the start of index record.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_HEADERIMMUTABLE</TERM><LISTITEM><PARA></PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_HEADERSIGNATURES</TERM><LISTITEM><PARA>This tag contains an index record which specifies the portion of the Signature Record which was used for the calculation of a signature. This data must be preserved or the signature will be invalidated.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_HEADERIMMUTABLE</TERM><LISTITEM><PARA>This tag contains an index record which specifies the portion of the Header Record which was used for the calculation of a signature. This data must be preserved or the signature will be invalidated.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_HEADERI18NTABLE</TERM><LISTITEM><PARA>Contains a list of locales for which strings are provided in other parts of the package.</PARA></LISTITEM></VARLISTENTRY>
 </VARIABLELIST>
 <!-- End of text generated from database -->
@@ -491,13 +491,17 @@ store is located immediately following the Index structures.
 <TITLE>Signature Section</TITLE>
 <PARA>
 The Signature section is implemented using the Header structure. The signature
-section defines 3 additional tag values which may be used in the Index
-structures.
+section defines the following additional tag values which may be used in
+the Index structures.
+</PARA>
+<PARA>
+These values exist to provide additional information about the rest of the
+package.
 </PARA>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Fri Nov 22 09:26:26 2002 -->
+<!--    at Mon Nov 25 21:36:24 2002 -->
 <TABLE>
 <TITLE>Signature Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -506,24 +510,72 @@ structures.
 <ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Tag Value</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Count</ENTRY><ENTRY ALIGN=center>Status</ENTRY></ROW>
 </THEAD>
 <TBODY>
-<ROW><ENTRY>SIGTAG_PGP</ENTRY><ENTRY>259</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
-<ROW><ENTRY>SIGTAG_GPG</ENTRY><ENTRY>262</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
-<ROW><ENTRY>SIGTAG_SHA1HEADER</ENTRY><ENTRY>265</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Reserved</ENTRY></ROW>
-<ROW><ENTRY>SIGTAG_DSAHEADER</ENTRY><ENTRY>267</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
-<ROW><ENTRY>SIGTAG_RSAHEADER</ENTRY><ENTRY>268</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>SIGTAG_SIGSIZE</ENTRY><ENTRY>1000</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>SIGTAG_MD5</ENTRY><ENTRY>1004</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>SIGTAG_PAYLOADSIZE</ENTRY><ENTRY>1007</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
 <VARIABLELIST>
-<VARLISTENTRY><TERM>SIGTAG_PGP</TERM><LISTITEM><PARA>This tag specifies the 1216-bit PGP signature block of the combined Header and Archive sections. The signature must be the v3 OpenPGP format.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>SIGTAG_GPG</TERM><LISTITEM><PARA>The tag contains the DSA signature of the Header and Payload sections.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>SIGTAG_SHA1HEADER</TERM><LISTITEM><PARA>This index contains the SHA1 checksum of the entire Header Section, including the Header Record, Index Records and Header store.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>SIGTAG_DSAHEADER</TERM><LISTITEM><PARA>The tag contains the DSA signature of the Header section. IF this tag is present,then the SIGTAG_GPG tag must also be present.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>SIGTAG_RSAHEADER</TERM><LISTITEM><PARA>The tag contains the RSA signature of the Header section. If this tag is present, then the SIGTAG_PGP must also be present.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>SIGTAG_SIGSIZE</TERM><LISTITEM><PARA>This tag specifies the combined size of the Header and Archive sections.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>SIGTAG_SIGSIZE</TERM><LISTITEM><PARA>This tag specifies the combined size of the Header and Payload sections.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>SIGTAG_PAYLOADSIZE</TERM><LISTITEM><PARA>This tag specifies the uncompressed size of the Payload archive, including the cpio headers.</PARA></LISTITEM></VARLISTENTRY>
+</VARIABLELIST>
+<!-- End of text generated from database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+
+<PARA>
+These values exist to ensure the integrity of the rest of the package.
+</PARA>
+<!-- Start of text generated from database -->
+<!-- generated from the LSB specification database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+<!--    at Mon Nov 25 21:36:24 2002 -->
+<TABLE>
+<TITLE>Signature Digest Tag Values</TITLE>
+<TGROUP COLS=5>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Tag Value</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Count</ENTRY><ENTRY ALIGN=center>Status</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>SIGTAG_MD5</ENTRY><ENTRY>1004</ENTRY><ENTRY>BIN</ENTRY><ENTRY>16</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>SIGTAG_SHA1HEADER</ENTRY><ENTRY>1010</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<VARIABLELIST>
 <VARLISTENTRY><TERM>SIGTAG_MD5</TERM><LISTITEM><PARA>This tag specifies the 128-bit MD5 checksum of the combined Header and Archive sections.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>SIGTAG_SHA1HEADER</TERM><LISTITEM><PARA>This index contains the SHA1 checksum of the entire Header Section, including the Header Record, Index Records and Header store.</PARA></LISTITEM></VARLISTENTRY>
+</VARIABLELIST>
+<!-- End of text generated from database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+
+<PARA>
+These values exist to provide authentication of the package.
+</PARA>
+<!-- Start of text generated from database -->
+<!-- generated from the LSB specification database -->
+<!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
+<!--    at Mon Nov 25 21:36:25 2002 -->
+<TABLE>
+<TITLE>Signature Signing Tag Values</TITLE>
+<TGROUP COLS=5>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Tag Value</ENTRY><ENTRY ALIGN=center>Type</ENTRY><ENTRY ALIGN=center>Count</ENTRY><ENTRY ALIGN=center>Status</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>SIGTAG_PGP</ENTRY><ENTRY>1002</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>SIGTAG_GPG</ENTRY><ENTRY>1005</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>SIGTAG_DSAHEADER</ENTRY><ENTRY>1011</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>SIGTAG_RSAHEADER</ENTRY><ENTRY>1012</ENTRY><ENTRY>BIN</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<VARIABLELIST>
+<VARLISTENTRY><TERM>SIGTAG_PGP</TERM><LISTITEM><PARA>This tag specifies the RSA signature of the combined Header and Payload sections. The data is formatted as a Version 3 Signature Packet as specified in <XREF LINKEND="std.RFC2440">.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>SIGTAG_GPG</TERM><LISTITEM><PARA>The tag contains the DSA signature of the combined Header and Payload sections. The data is formatted as a Version 3 Signature Packet as specified in <XREF LINKEND="std.RFC2440">.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>SIGTAG_DSAHEADER</TERM><LISTITEM><PARA>The tag contains the DSA signature of the Header section. The data is formatted as a Version 3 Signature Packet as specified in <XREF LINKEND="std.RFC2440">. If this tag is present,then the SIGTAG_GPG tag must also be present.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>SIGTAG_RSAHEADER</TERM><LISTITEM><PARA>The tag contains the RSA signature of the Header section.The data is formatted as a Version 3 Signature Packet as specified in <XREF LINKEND="std.RFC2440">. If this tag is present, then the SIGTAG_PGP must also be present.</PARA></LISTITEM></VARLISTENTRY>
 </VARIABLELIST>
 <!-- End of text generated from database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
@@ -547,7 +599,7 @@ package as a whole.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Fri Nov 22 09:26:27 2002 -->
+<!--    at Mon Nov 25 21:36:25 2002 -->
 <TABLE>
 <TITLE>Package Info Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -569,7 +621,7 @@ package as a whole.
 <ROW><ENTRY>RPMTAG_SOURCERPM</ENTRY><ENTRY>1044</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_ARCHIVESIZE</ENTRY><ENTRY>1046</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_RPMVERSION</ENTRY><ENTRY>1064</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
-<ROW><ENTRY>RPMTAG_COOKIE</ENTRY><ENTRY>1094</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_COOKIE</ENTRY><ENTRY>1094</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_PAYLOADFORMAT</ENTRY><ENTRY>1124</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_PAYLOADCOMPRESSOR</ENTRY><ENTRY>1125</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_PAYLOADFLAGS</ENTRY><ENTRY>1126</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Required</ENTRY></ROW>
@@ -590,7 +642,7 @@ package as a whole.
 <VARLISTENTRY><TERM>RPMTAG_SOURCERPM</TERM><LISTITEM><PARA>This tag specifies the name of the source RPM</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_ARCHIVESIZE</TERM><LISTITEM><PARA>This tag specifies the uncompressed size of the Payload archive, including the cpio headers.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_RPMVERSION</TERM><LISTITEM><PARA>This tag indicates the version of RPM tool used to build this package. The value is unused.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_COOKIE</TERM><LISTITEM><PARA>This tag contains an opaque string which contains the name of the system on which the package was built and the ASCII representation of the time value of when the package was built.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_COOKIE</TERM><LISTITEM><PARA>This tag contains an opaque string whose contents are undefined.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_PAYLOADFORMAT</TERM><LISTITEM><PARA>This tag specifies the format of the Archive section. The format value pointed to by this index record must be </PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_PAYLOADCOMPRESSOR</TERM><LISTITEM><PARA>This tag specifies the compression used on the Archive section. The compression value pointed to by this index record must be </PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_PAYLOADFLAGS</TERM><LISTITEM><PARA>This tag indicates the compression level used for the Payload. This value must always be '9'.</PARA></LISTITEM></VARLISTENTRY>
@@ -608,7 +660,7 @@ installation of the package.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Fri Nov 22 09:26:27 2002 -->
+<!--    at Mon Nov 25 21:36:26 2002 -->
 <TABLE>
 <TITLE>Installation Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -644,7 +696,7 @@ efficient access of the information.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Fri Nov 22 09:26:27 2002 -->
+<!--    at Mon Nov 25 21:36:26 2002 -->
 <TABLE>
 <TITLE>File Info Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -708,7 +760,7 @@ interdependencies between packages.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Fri Nov 22 09:26:28 2002 -->
+<!--    at Mon Nov 25 21:36:26 2002 -->
 <TABLE>
 <TITLE>Package Dependency Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -721,10 +773,14 @@ interdependencies between packages.
 <ROW><ENTRY>RPMTAG_REQUIREFLAGS</ENTRY><ENTRY>1048</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_REQUIRENAME</ENTRY><ENTRY>1049</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_REQUIREVERSION</ENTRY><ENTRY>1050</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>RPMTAG_PREREQ</ENTRY><ENTRY>1084</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>RPMTAG_OBSOLETENAME</ENTRY><ENTRY>1090</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CONFLICTFLAGS</ENTRY><ENTRY>1053</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CONFLICTNAME</ENTRY><ENTRY>1054</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CONFLICTVERSION</ENTRY><ENTRY>1055</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_OBSOLETENAME</ENTRY><ENTRY>1090</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_PROVIDEFLAGS</ENTRY><ENTRY>1112</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_PROVIDEVERSION</ENTRY><ENTRY>1113</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_OBSOLETEFLAGS</ENTRY><ENTRY>1114</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_OBSOLETEVERSION</ENTRY><ENTRY>1115</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
@@ -733,10 +789,14 @@ interdependencies between packages.
 <VARLISTENTRY><TERM>RPMTAG_REQUIREFLAGS</TERM><LISTITEM><PARA>Bits(s) to specify the dependency range and context.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_REQUIRENAME</TERM><LISTITEM><PARA>This tag indicates the dependencies for this package.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_REQUIREVERSION</TERM><LISTITEM><PARA>This tag indicates the versions associated with the values found in the RPMTAG_REQUIRENAME Index.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_PREREQ</TERM><LISTITEM><PARA>This tag ????</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_OBSOLETENAME</TERM><LISTITEM><PARA>This tag ????</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_PROVIDEFLAGS</TERM><LISTITEM><PARA>This tag ??????</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_PROVIDEVERSION</TERM><LISTITEM><PARA>This tag ????</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_CONFLICTFLAGS</TERM><LISTITEM><PARA>Bits(s) to specify the conflict range and context.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_CONFLICTNAME</TERM><LISTITEM><PARA>This tag indicates the conflictind dependencies for this package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_CONFLICTVERSION</TERM><LISTITEM><PARA>This tag indicates the versions associated with the values found in the RPMTAG_CONFLICTNAME Index.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_OBSOLETENAME</TERM><LISTITEM><PARA>This tag indicates the obsoleted dependencies for this package.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PROVIDEFLAGS</TERM><LISTITEM><PARA>Bits(s) to specify the conflict range and context.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PROVIDEVERSION</TERM><LISTITEM><PARA>This tag indicates the versions associated with the values found in the RPMTAG_PROVIDENAME Index.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_OBSOLETEFLAGS</TERM><LISTITEM><PARA>Bits(s) to specify the conflict range and context.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_OBSOLETEVERSION</TERM><LISTITEM><PARA>This tag indicates the versions associated with the values found in the RPMTAG_OBSOLETENAME Index.</PARA></LISTITEM></VARLISTENTRY>
 </VARIABLELIST>
 <!-- End of text generated from database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
@@ -883,7 +943,7 @@ The following tag values are also found in the Header section.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->
-<!--    at Fri Nov 22 09:26:28 2002 -->
+<!--    at Mon Nov 25 21:36:27 2002 -->
 <TABLE>
 <TITLE>Other Tag Values</TITLE>
 <TGROUP COLS=5>
@@ -895,9 +955,9 @@ The following tag values are also found in the Header section.
 <ROW><ENTRY>RPMTAG_BUILDTIME</ENTRY><ENTRY>1006</ENTRY><ENTRY>INT32</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_BUILDHOST</ENTRY><ENTRY>1007</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_FILEVERIFYFLAGS</ENTRY><ENTRY>1045</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
-<ROW><ENTRY>RPMTAG_CHANGELOGTIME</ENTRY><ENTRY>1080</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>RPMTAG_CHANGELOGNAME</ENTRY><ENTRY>1081</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
-<ROW><ENTRY>RPMTAG_CHANGELOGTEXT</ENTRY><ENTRY>1082</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Required</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CHANGELOGTIME</ENTRY><ENTRY>1080</ENTRY><ENTRY>INT32</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CHANGELOGNAME</ENTRY><ENTRY>1081</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
+<ROW><ENTRY>RPMTAG_CHANGELOGTEXT</ENTRY><ENTRY>1082</ENTRY><ENTRY>STRING_ARRAY</ENTRY><ENTRY></ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_OPTFLAGS</ENTRY><ENTRY>1122</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_RHNPLATFORM</ENTRY><ENTRY>1131</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Deprecated</ENTRY></ROW>
 <ROW><ENTRY>RPMTAG_PLATFORM</ENTRY><ENTRY>1132</ENTRY><ENTRY>STRING</ENTRY><ENTRY>1</ENTRY><ENTRY>Optional</ENTRY></ROW>
@@ -912,8 +972,8 @@ The following tag values are also found in the Header section.
 <VARLISTENTRY><TERM>RPMTAG_CHANGELOGNAME</TERM><LISTITEM><PARA>This tag specifies the name of who made a change to this package</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_CHANGELOGTEXT</TERM><LISTITEM><PARA>This tag specifies the changes asssociated with a changelog entry.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>RPMTAG_OPTFLAGS</TERM><LISTITEM><PARA>This tag indicates additional flags which may have been passed to the compiler when building this package.</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_RHNPLATFORM</TERM><LISTITEM><PARA>This tag ????</PARA></LISTITEM></VARLISTENTRY>
-<VARLISTENTRY><TERM>RPMTAG_PLATFORM</TERM><LISTITEM><PARA>This tag ???</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_RHNPLATFORM</TERM><LISTITEM><PARA>This tag contains an opaque string whose contents are undefined.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>RPMTAG_PLATFORM</TERM><LISTITEM><PARA>This tag contains an opaque string whose contents are undefined.</PARA></LISTITEM></VARLISTENTRY>
 </VARIABLELIST>
 <!-- End of text generated from database -->
 <!--    by $Header: /cvsroot/lsb/spec/mkrpmtagtable,v 1.1 2002/09/29 14:13:42 anderson Exp 0 -->

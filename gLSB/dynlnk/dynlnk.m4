@@ -18,6 +18,43 @@ satisfy the symbols on the shared library.
 </PARA>
 </CHAPTER>
 
+<CHAPTER ID=progheader>
+<TITLE>Program Header</TITLE>
+
+<PARA>
+In addition to the Segment Types defined in the System V Application Binary
+Interface, Edition 4.1 and the System V Application Binary Interface - DRAFT
+- April 29, 1998 the following Segment Types shall also be supported.
+</PARA>
+
+<TABLE>
+<TITLE>Linux Segment Types</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY ALIGN=center>Name</ENTRY><ENTRY ALIGN=center>Value</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>PT_GNU_EH_FRAME</ENTRY><ENTRY>0x6474e550</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>PT_GNU_EH_FRAME</TERM>
+<LISTITEM>
+<PARA>
+The array element specifies the location and size of the exception handling
+information as defined by the .eh_frame_hdr section.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
+</CHAPTER>
+
 <CHAPTER ID=DynamicSection>
 <TITLE>Dynamic Entries</TITLE>
 <PARA>
