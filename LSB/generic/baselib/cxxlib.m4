@@ -10,15 +10,6 @@ provide interfaces for accessing the operating system, processor and other
 hardware in the system.
 </PARA>
 
-<SECT1 ID=proginterp>
-<TITLE>Program Interpreter</TITLE>
-<PARA>
-The Program Interpreter is specified in the appropriate
-architecture-specific LSB specification.
-</PARA>
-</SECT1>
-
-
 include(libstdcxx.sgml)
 
 </CHAPTER>
