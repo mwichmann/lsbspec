@@ -125,7 +125,7 @@ class Document {
 		$this->txtlink = ereg_replace($removeroot, $addroot, $dir)."/".$file."/".$file.".txt";
 		$this->txt1link = ereg_replace($removeroot, $addroot, $dir)."/".$file."/".$file."_lines.txt";
 		$this->html1link = ereg_replace($removeroot, $addroot, $dir)."/".$file."/".$file.".html";
-		$this->lastmod = date("r", filemtime($dir."/buildversion"));
+		$this->lastmod = date("r", filemtime($dir."/$file"."/buildversion"));
 	}
 
 	function toString()
