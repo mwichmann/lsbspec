@@ -118,7 +118,7 @@ include(pslibs.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
-These libraries will be in an implementation-dependent directory which
+These libraries will be in an unspecified directory which
 the dynamic linker will search by default.
 </PARA>
 </SECT1>
