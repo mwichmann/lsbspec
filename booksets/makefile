@@ -1,7 +1,8 @@
 
-SUBDIRS= LSB-Core LSB-Embedded LSB-PDA LSB-Graphics \
+SUBDIRS= LSB-Core-generic \
 	LSB-Core-AMD64 LSB-Core-IA32 LSB-Core-IA64 LSB-Core-PPC32 \
-	LSB-Core-PPC64 LSB-Core-S390 LSB-Core-S390X
+	LSB-Core-PPC64 LSB-Core-S390 LSB-Core-S390X \
+	LSB-Embedded LSB-PDA LSB-Graphics
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
