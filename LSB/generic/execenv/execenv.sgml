@@ -116,8 +116,9 @@ mentioned in the LSB document and included standards.
 
 <PARA>
 The application should not depend on having directory write 
-permission outside /tmp, /var/tmp, invoking user's home directory and
-/var/opt/<replaceable>package</replaceable>,
+permission outside <filename>/tmp</filename>, 
+<filename>/var/tmp</filename>, invoking user's home directory and
+<filename>/var/opt/<replaceable>package</replaceable></filename>,
 (where <replaceable>package</replaceable> is the name of the 
 application package). 
 </PARA>
@@ -130,10 +131,8 @@ The application should not depend on owning these directories.
 
 <PARA>
 For these directories the application should be able to work 
-with directory write permissions restricted by the "sticky bit". 
-(Which prevents the application from removing files owned by another 
-user. This is classically done with /tmp, to prevent accidental
-deletion of "foreign" files.)
+with directory write permissions restricted by the 
+<CONSTANT>S_ISVTXT</CONSTANT> bit (otherwise known as the "sticky bit").
 </PARA>
  
 </SECT2>
@@ -144,7 +143,7 @@ deletion of "foreign" files.)
 <PARA>
 The application should not depend on file write permission on
 files not owned by the user it runs under with the exception 
-of its personal inbox /var/mail/<replaceable>username</replaceable>
+of its personal inbox <filename>/var/mail/<replaceable>username</replaceable></filename>.
 </PARA>
 </SECT2>
          
@@ -162,38 +161,44 @@ every file and directory.
 <TITLE>Suid and Sgid Permissions </TITLE>
  
 <PARA>
-The application should not depend on the suid/sgid permissions of a 
+The application should not depend on the set user ID or set group ID
+(the <CONSTANT>S_ISUID</CONSTANT> or <CONSTANT>S_ISGID</CONSTANT>
+permissions of a 
 file not packaged with the application. Instead, the distribution is 
 responsible for assuming that all system commands have the required 
 permissions and work correctly.
 </PARA>
 
+<NOTE><TITLE>Rationale</TITLE>
 <PARA>
-Rationale:
-Let us make security officers happy. Let's give them the freedom
-to take sgid/suid perms away, as long as they do not break 
-the system's functionality.
+In order to implement common security policies it is strongly advisable
+for applications to use the minimum set of security attributes necessary for
+correct operation. Applications that require substantial appropriate privilege
+are likely to cause problems with such security policies.
 </PARA>
+</NOTE>
 </SECT2>
  
 <SECT2 id=priviledged-users>
 <TITLE>Privileged users</TITLE>
 
 <PARA>
-"Normal" applications should not depend on running as a privileged user.
+In general, applications should not depend on running as a privileged user.
+This specification uses the term "appropriate privilege" throughout to identify
+operations that cannot be achieved without some special granting of additional
+privilege.
 </PARA>
 
 <PARA>
-Special applications that have a reason to run under a privileged user,
-should outline these reasons clearly in their documentation, if they
-are not obvious as in the case of a backup/restore program.
+Applications that have a reason to run with appropriate privilege
+should outline this reason clearly in their documentation.
 Users of the application should be informed, that "this application 
 demands security privileges, which could interfere with system security".
 </PARA>
 
 <PARA>
 The application should not contain binary-only software that 
-requires being run as root, as this makes security auditing 
+requires being run with appropriate privilege, as this makes security auditing 
 harder or even impossible. 
 </PARA>
 
@@ -203,9 +208,12 @@ harder or even impossible.
 <TITLE>Changing permissions</TITLE>
 
 <PARA>
-The application should not change permissions of files and 
-directories that do not belong to its own package. To do so without
-a warning notice in the documentation is regarded as unfriendly act.
+The application shall not change permissions of files and 
+directories that do not belong to its own package. 
+Should an application require that certain files and directories
+not directly belonging to the package have a particular ownership,
+the application shall document this requirement, and may fail during
+installation if the permissions on these files is inappropriate.
 </PARA>
 
 </SECT2>
@@ -220,15 +228,15 @@ and should be prepared to deal with a restrictive
 environment.  Examples of such restrictions could be
 default mount options that disable set-user/group-ID
 attributes, disabling block or character-special files on
-the medium, or remapping the user/group IDs of files away
-from 0.
-<footnote>
+the medium, or remapping the user and group IDs of files away
+from any privileged value.
+<note><title>Rationale</title>
 <para>
-Rationale: System vendors and local system administrators
+System vendors and local system administrators
 want to run applications from removable media, but want the
 possibility to control what the application can do.
 </para>
-</footnote>
+</note>
 </para>
 
 </SECT2>
@@ -266,11 +274,11 @@ particularly with respect to its security.
 <para>This section specifies behaviors in which there is optional
 behavior in one of the standards on which the LSB relies, and where
 the LSB requires a specific behavior.
-<footnote><para>
+<note><para>
 The LSB does not require the kernel to be Linux; the set of mandated 
 options reflects current existing practice, but may be modified in
 future releases.
-</para></footnote>
+</para></note>
 </para>
 
 <para>
@@ -305,7 +313,9 @@ fashion as <FUNCTION>open</FUNCTION>, and therefore may fail with
 <CONSTANT>EMFILE</CONSTANT> or <CONSTANT>ENFILE</CONSTANT>.
 </para>
 
-<para>The START and STOP termios characters shall be changeable, as
+<para>The <CONSTANT>START</CONSTANT> and 
+<CONSTANT>STOP</CONSTANT> <structname>termios</structname>
+characters shall be changeable, as
 described as optional behavior in the "General Terminal Interface"
 section of the 
 <CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>.
@@ -333,52 +343,60 @@ XRefLabel="Additional behaviors: unlink/link on directory"
 >Calling <FUNCTION>unlink()</FUNCTION> on a directory shall fail.
 Calling <FUNCTION>link()</FUNCTION> specifying a directory as the first
 argument shall fail.  See also <xref linkend="baselib-unlink-3">.
-<footnote>
+<note>
 <para>
 Linux allows <FUNCTION>rename()</FUNCTION> on a directory without
 having write access, but the LSB does not require this.</para>
-</footnote>
+</note>
 </para>
 <SECT2 id=addl-behaviors-test>
 <TITLE>Special Requirements</TITLE>
 <PARA>
 LSB conforming systems shall enforce certain special additional restrictions
 above and beyond those required by <XREF LINKEND="STD.SUSv3">.
-<FOOTNOTE>
+<NOTE>
 <PARA>These additional restrictions are required in order to support the testing
 and certification programs associated with the LSB. In each case, these are values
 that defined macros must not have; conforming applications that use these values
 shall trigger a failure in the interface that is otherwise described as a "may fail".
 </PARA>
-</FOOTNOTE>
+</NOTE>
 </PARA>
 <para>The fcntl() function shall treat the "cmd" value -1 as
 invalid.</para>
 
-<para>The "whence" value -1 shall be an invalid value for the
-lseek(), fseek() and fcntl() functions.</para>
+<para>The <parameter>whence</parameter> value <constant>-1</constant>
+shall be an invalid value for the
+<function>lseek()</function>, <function>fseek()</function> and 
+<function>fcntl()</function> functions.</para>
 
-<para>The value "-5" shall be an invalid signal number.</para>
+<para>The value <constant>-5</constant> shall be an invalid signal number.</para>
 
-<para>If the sigaddset() or sigdelset() functions are passed an
-invalid signal number, they shall return with EINVAL.  Implementations
+<para>If the <function>sigaddset()</function> or 
+<function>sigdelset()</function> functions are passed an
+invalid signal number, they shall return with <ErrorName>EINVAL</ErrorName>.
+Implementations
 are only required to enforce this requirement for signal numbers which
-are specified to be invalid by this specification (such as the -5
+are specified to be invalid by this specification (such as the <constant>-5</>
 mentioned above).</para>
-<para>The mode value "-1" to the access() function shall be treated as
+<para>The mode value <constant>-1</constant> to the <function>access()</function>
+function shall be treated as
 invalid.</para>
 
-<para>A value of -1 shall be an invalid "_PC_..." value for
-pathconf().</para>
+<para>A value of <constant>-1</constant> shall be an invalid "_PC_..." value for
+<function>pathconf()</function>.</para>
 
-<para>A value of -1 shall be an invalid "_SC..." value for
-sysconf().</para>
+<para>A value of <constant>-1</constant> shall be an invalid "_SC..." value for
+<function>sysconf()</function>.</para>
 
-<para>The nl_item value "-1" shall be invalid for nl_langinfo.</para>
+<para>The <parameter>nl_item</parameter> value <constant>-1</constant>
+shall be invalid for <function>nl_langinfo</function>.</para>
 
-<para>The value -1 shall be an invalid "_CS_..." value for confstr().</para>
+<para>The value <constant>-1</constant> shall be an invalid "_CS_..." value for 
+<function>confstr()</function>.</para>
 
-<para>The value "z" shall be an invalid mode argument to popen().</para>
+<para>The value <constant>"z"</constant> shall be an invalid <parameter>mode</parameter>
+argument to <function>popen()</function>.</para>
 
 </SECT2>
 </SECT1>
@@ -410,7 +428,7 @@ location.
 
 <para>
 Implementations shall support the POSIX and C locales as specified in
-the Single UNIX Specification.
+the <XREF LINKEND=STD.SUSv3>.
 </para>
 
 <section id="localization-regex"
@@ -418,21 +436,22 @@ the Single UNIX Specification.
 <title>Regular Expressions</title>
 <para>
 Utilities that process regular expressions shall support Basic
-Regular Expressions and Extended Regular Expressions as specified in the
-Single UNIX Specification, with the following exceptions:</para>
+Regular Expressions and Extended Regular Expressions as specified in 
+<XREF LINKEND=STD.SUSv3>, with the following exceptions:</para>
 
-<para>Range expression (such as [a-z]) can be based on code point
+<para>Range expression (such as <literal>[a-z]</literal>) can be based on code point
 order instead of collating element order.</para>
 
-<para>Equivalence class expression (such as [=a=]) and multi-character
-collating element expression (such as [.ch.]) are optional.</para>
+<para>Equivalence class expression (such as <literal>[=a=]</literal>) and multi-character
+collating element expression (such as <literal>[.ch.]</literal>) are optional.</para>
 
 <para>Handling of a multi-character collating element is
 optional.</para>
 
-<para>This affects at least the following utilities: grep (<xref
-linkend="grep" >) (including egrep), sed (<xref linkend="sed">),
-and awk (<xref linkend="awk">).  </para>
+<para>This affects at least the following utilities: <command>grep</command> (<xref
+linkend="grep" >) (including <command>egrep</command>), <command>sed</command>
+(<xref linkend="sed">),
+and <command>awk</command> (<xref linkend="awk">).  </para>
 
 </section>
 
@@ -446,11 +465,11 @@ Globbing) shall do it as specified in
 with the following exceptions:</para>
 
 <para>Pattern bracket expressions (such as 
-<replaceable>[a-z]</replaceable>) can be based on code point
+<literal>[a-z]</literal>) can be based on code point
 order instead of collating element order.</para>
 
-<para>Equivalence class expression (such as <replaceable>[=a=]</replaceable>) and multi-character
-collating element expression (such as <replaceable>[.ch.]</replaceable>) are optional.</para>
+<para>Equivalence class expression (such as <literal>[=a=]</literal>) and multi-character
+collating element expression (such as <literal>[.ch.]</literal>) are optional.</para>
 
 <para>Handling of a multi-character collating element is
 optional.</para>
