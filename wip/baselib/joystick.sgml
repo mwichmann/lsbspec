@@ -1,0 +1,167 @@
+<REFENTRY ID="baselib-joystickio-2"> <REFMETA>
+<REFENTRYTITLE>joystickio</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>joystickio
+</REFNAME>
+<REFPURPOSE>
+joystick ioctl commands
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>23 March 2005</DATE>
+</REFSYNOPSISDIVINFO>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;linux/joystick.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>ioctl</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>fd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>request</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>char *
+  <PARAMETER><REPLACEABLE>argp</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>23 March 2005</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Joystick <function>ioctl</function> commands are a subset of the 
+<FUNCTION>ioctl</FUNCTION> calls, which can perform a variety of 
+functions on sockets. <PARAMETER>fd</PARAMETER> shall contain 
+the value of a file descriptor that was created with the 
+<FUNCTION>open</FUNCTION>.
+</PARA>
+<PARA>
+The following values for <parameter>request</parameter>
+are accepted:
+</PARA>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+JSIOCGVERSION
+</TERM>
+<LISTITEM>
+<PARA>
+Gets the version of the underlying driver.
+<PARAMETER>argp</PARAMETER> shall point to a
+32 bit integer.  The return value has the major, minor and revision values
+encoded in the 32 bit integer as described by the following example.  A return value of 0x01020f coresponds to driver version 1.2.15.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+
+<VARLISTENTRY>
+<TERM>
+JSIOCGAXES
+</TERM>
+<LISTITEM>
+<PARA>
+Gets the number of axes supported by the underlying driver.
+<PARAMETER>argp</PARAMETER> shall point to a 8 bit integer. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+
+<VARLISTENTRY>
+<TERM>
+JSIOCGBUTTONS
+</TERM>
+<LISTITEM>
+<PARA>
+Gets the number of buttons supported by the underlying driver.
+<PARAMETER>argp</PARAMETER> shall point to a
+8 bit integer.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+
+<VARLISTENTRY>
+<TERM>
+JSIOCGNAME(len)
+</TERM>
+<LISTITEM>
+<PARA>
+Gets the identifying string of the underlying driver.
+<PARAMETER>argp</PARAMETER> shall point to a
+character array at least <PARAMETER>len</PARAMETER> octets in length.
+</PARA>
+<PARA>
+If the identifying string of the driver is longer than <PARAMETER>len</PARAMETER>, <SYMBOL>JSIOCGNAME</SYMBOL> shall return EFAULT.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, if <parameter>request</parameter> is
+<TOKEN>JSIOCGNAME</TOKEN>, a non-negative integer shall be returned.
+If request is not <TOKEN>JSIOCGNAME</TOKEN>, on success 
+<RETURNVALUE>0</RETURNVALUE> is returned. 
+On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
+the global variable <VARNAME>errno</VARNAME> is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EBADF  
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>fd</PARAMETER> is not a valid descriptor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT 
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>argp</PARAMETER> references an inaccessible memory area.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL 
+</TERM>
+<LISTITEM>
+<PARA>
+Either <PARAMETER>request</PARAMETER> or <PARAMETER>argp</PARAMETER>
+is invalid.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
