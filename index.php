@@ -10,34 +10,43 @@
 <?
 virtual("/themes/LSB/header.inc");
 ?>
-<hr>
-<P>
-The LSB specification is composed of a set of specifications:
+
+<table width="97%" align="center" cellspacing="5" style="background: white; color: black">
+<tr><td>
+<blockquote style="background-color: #ffffdd">
+<p>The LSB specification is composed of a set of specifications:
 a single common specification, and architecture specific specifications. The
 complete specification for a platform consists of the common specification plus
-one of the architecture specifications.
+one of the architecture specifications.</p>
+</blockquote>
 
-<H1>The LSB 1.3 is Complete!</H1>
-The 1.3 version of the LSB can be found <A HREF=oldspecs.shtml>Here</A>.
+<H1>LSB 1.3 is the Current Specification</H1>
+<p>
+The 1.3 version of the LSB can be found <A HREF=oldspecs.shtml>Here</A>.</p>
 
 <H1><A NAME="DRAFT">The Current Draft</A></H1>
-The current draft of the LSB Specification is available <A HREF="specs.php">HERE</A>.
-We welcome and appreciate comments and bug reports at any time .
-You don't need to wait for a public review period.
+<p>
+The current draft of the LSB Specification is available
+<A HREF="specs.php">HERE</A>. This draft will become LSB 2.0.
+We welcome and appreciate comments and bug reports at any time.
+You don't need to wait for a public review period.</p>
 
 <H1>Older version</H1>
-<P>
-Past version of the specification can be found <A HREF=oldspecs.shtml>Here</A>.
+<p>
+Previous versions of the specification can be found <A HREF=oldspecs.shtml>Here</A>.</p>
 
 <H1>About the Specification</H1>
+<p>
 The LSB Specification is written in OASIS V4.1 Docbook SGML.&nbsp; You
 can&nbsp; <a href="http://gforge.freestandards.org/scm/?group_id=5">checkout
 a copy</a> of the Docbook source from the LSB project on SourceForge.Net.
 Portions of the document are produced from a <a href="db.shtml">database</a>
 that was designed and is maintained by the LSB. In the spec tree there
 is a <i>build.html </i>file which describes <a href="build.html">how to
-build the specification</a> from the CVS Docbook source.
+build the specification</a> from the CVS Docbook source.</p>
+
 <H1><a NAME="contribute"></a>How to Contribute</H1>
+<p>
 The LSB Specification is a community effort.&nbsp; There are several ways
 for you to contribute.&nbsp;&nbsp; The first way for you to contribute
 is to read and review the specification, then email your questions and
@@ -48,11 +57,15 @@ to <a href="http://gforge.freestandards.org.net/project/memberlist.php?group_id=
 an LSB developer</a>, then send him/her your corrections.&nbsp; The final
 way to contribute to the LSB written specification is to become an LSB
 developer to make CVS changes directly to the tree with your and other's
-submitted changes. Here is a list of <a href="http://sourceforge.net/pm/task.php?group_id=1107&set=custom&group_project_id=3049&_assigned_to=100&_status=1&SUBMIT=Browse">things
-to do</a> for the LSB Specification.
+submitted changes. Here is a list of <a href="http://sourceforge.net/pm/task.php?group_id=1107&amp;set=custom&amp;group_project_id=3049&amp;_assigned_to=100&amp;_status=1&amp;SUBMIT=Browse">things
+to do</a> for the LSB Specification.</p>
+
 <H1><a NAME="faq"></a>Frequently Asked Questions</H1>
+<p>
 An FAQ associated with the written specification is available
-<a href="http://www.linuxbase.org/modules.php?name=FAQ&myfaq=yes&id_cat=3&categories=LSB+Written+Specification">here</a>.
-<hr WIDTH="100%">
+<a href="http://www.linuxbase.org/modules.php?name=FAQ&amp;myfaq=yes&amp;id_cat=3&amp;categories=LSB+Written+Specification">here</a>.</p>
+
+</td></tr>
+</table>
 </body>
 </html>
