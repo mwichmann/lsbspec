@@ -31,7 +31,7 @@ gensrc:
 	../../../mklibspec -a IA32 -l libpthread >libpthread.sgml
 	../../../mklibspec -a IA32 -l libdl >libdl.sgml
 	../../../mklibspec -a IA32 -l libcrypt >libcrypt.sgml
-	../../../mklibspec -a IA32 -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/ >libgcc_s.sgml
+	../../../mklibspec -a IA32 -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
 	../../../mklibspec -a IA32 -c 2 -l libstdcxx | c++filt | ../../../fixc++spec >libstdcxx.sgml
 
 _Unwind_%.sgml: 
