@@ -18,7 +18,9 @@ all::
 	find . -name '*.sed' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
-all::
+all:: intlists
+
+intlists:
 	./mkintlist -A All >intlist.All.txt
 	./mkintlist -A IA32 >intlist.IA32.txt
 	./mkintlist -A IA64 >intlist.IA64.txt
@@ -40,7 +42,7 @@ autobuild:
 	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
 	tar czf LSBrtfs.tar.gz `find book booksets -name '*.rtf' -o -name '*.eps'`
 
-relbuild:
+relbuild: intlists
 	find . -name '*.m4' | xargs touch
 	find . -name '*.sed' | xargs touch
 	for dir in $(DOCDIRS);do (cd $$dir && make gensrc source);done

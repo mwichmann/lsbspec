@@ -63,7 +63,7 @@ and the
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksecttypestable,v 1.9 2004/09/16 00:14:03 nick Exp 0 -->
-<!--    at Thu Feb 24 14:23:40 2005 -->
+<!--    at Wed Mar  2 19:56:30 2005 -->
 <TABLE ID=tbl.ABIUpdate>
 <TITLE>ELF Section Types</TITLE>
 <TGROUP COLS=3>
@@ -115,7 +115,7 @@ The following additional section types are defined here.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksecttypestable,v 1.9 2004/09/16 00:14:03 nick Exp 0 -->
-<!--    at Thu Feb 24 14:23:40 2005 -->
+<!--    at Wed Mar  2 19:56:30 2005 -->
 <TABLE ID=tbl.LSB>
 <TITLE>Additional Section Types</TITLE>
 <TGROUP COLS=3>
@@ -155,7 +155,7 @@ and the
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksectiontable,v 1.10 2002/06/20 20:35:42 anderson Exp 0 -->
-<!--    at Thu Feb 24 14:23:40 2005 -->
+<!--    at Wed Mar  2 19:56:30 2005 -->
 <TABLE>
 <TITLE>ELF Special Sections</TITLE>
 <TGROUP COLS=3>
@@ -231,7 +231,7 @@ the additional special sections described below.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksectiontable,v 1.10 2002/06/20 20:35:42 anderson Exp 0 -->
-<!--    at Thu Feb 24 14:23:40 2005 -->
+<!--    at Wed Mar  2 19:56:30 2005 -->
 <TABLE>
 <TITLE>Additional Special Sections</TITLE>
 <TGROUP COLS=3>
@@ -614,11 +614,15 @@ as defined by <XREF LINKEND="std.DWARF2">.
 <PARA>
 This chapter describes the Symbol Versioning mechanism. All ELF objects may
 provide or depend on versioned symbols. Symbol Versioning is implemented by 3
-section types: SHT_GNU_versym, SHT_GNU_verdef, and SHT_GNU_verneed.
+section types: 
+<SIMPLELIST TYPE="inline">
+<MEMBER><SYMBOL>SHT_GNU_versym</SYMBOL></MEMBER> 
+<MEMBER><SYMBOL>SHT_GNU_verdef</SYMBOL></MEMBER>
+<MEMBER>and <SYMBOL>SHT_GNU_verneed</SYMBOL></MEMBER></SIMPLELIST>.
 </PARA>
 <PARA>
-The prefix Elfxx in the following descriptions and code fragments stands for 
-either "Elf32" or "Elf64", depending on the architecture.
+The prefix <SYMBOL>Elfxx</SYMBOL> in the following descriptions and code fragments stands for 
+either "<SYMBOL>Elf32</SYMBOL>" or "<SYMBOL>Elf64</SYMBOL>", depending on the architecture.
 </PARA>
 <PARA>
 Versions are described by strings. The structures that are used for symbol
@@ -629,23 +633,24 @@ strings. This allows for more efficient processing.
 <SECT1 ID="symvertbl">
 <TITLE>Symbol Version Table</TITLE>
 <PARA>
-The Symbol Version Table is contained in the special section <COMPUTEROUTPUT>
-.gnu.version</COMPUTEROUTPUT> which has a section type of <COMPUTEROUTPUT>
-SHT_GNU_versym</COMPUTEROUTPUT>. This section has the same number of entries
-as the Dynamic Symbol Table.
+The special section <SYMBOL>.gnu.version</SYMBOL>
+which has a section type of <SYMBOL>SHT_GNU_versym</SYMBOL>
+shall contain the Symbol Version Table. This section shall have the same number 
+of entries as the Dynamic Symbol Table in the <SYMBOL>.dynsym</SYMBOL> section.
 </PARA>
 <PARA>
-This section contains an array of elements of type Elfxx_Half. Each entry
-specifies the version defined for or required by the corresponding symbol in
-the Dynamic Symbol Table.
+The <SYMBOL>.gnu.version</SYMBOL> section shall contain an array of elements of type 
+<SYMBOL>Elfxx_Half</SYMBOL>.
+Each entry specifies the version defined for or required by the corresponding 
+symbol in the Dynamic Symbol Table.
 </PARA>
 <PARA>
-The values in the Symbol Version Table are unique to the object in which
-they are located. These values are identifiers that are provided by the
-the <COMPUTEROUTPUT>vna_other</COMPUTEROUTPUT> member of the
-<COMPUTEROUTPUT>Elfxx_Vernaux</COMPUTEROUTPUT> structure or the
-<COMPUTEROUTPUT>vd_ndx</COMPUTEROUTPUT> member of the
-<COMPUTEROUTPUT>Elfxx_Verdef</COMPUTEROUTPUT> structure.
+The values in the Symbol Version Table are specific to the object in which they 
+are located. These values are identifiers that are provided by the the 
+<STRUCTFIELD>vna_other</STRUCTFIELD> member of the 
+<STRUCTNAME>Elfxx_Vernaux</STRUCTNAME> structure or the 
+<STRUCTFIELD>vd_ndx</STRUCTFIELD> member of the 
+<STRUCTNAME>Elfxx_Verdef</STRUCTNAME> structure.
 </PARA>
 <PARA>
 The values 0 and 1 are reserved.
@@ -678,15 +683,30 @@ the symbol.
 <SECT1 ID="symverdefs">
 <TITLE>Version Definitions</TITLE>
 <PARA>
-Symbol definitions are contained in the special section <COMPUTEROUTPUT>
-.gnu.version_d</COMPUTEROUTPUT> which has a section type of <COMPUTEROUTPUT>
-SHT_GNU_verdef</COMPUTEROUTPUT>. The number of entries in this section
-is contained in the <COMPUTEROUTPUT>DT_VERDEFNUM</COMPUTEROUTPUT> entry
-of the Dynamic Section.  The <COMPUTEROUTPUT>sh_link</COMPUTEROUTPUT>
+Symbol definitions are contained in the special section <SYMBOL>
+.gnu.version_d</SYMBOL> which has a section type of <SYMBOL>
+SHT_GNU_verdef</SYMBOL>. The number of entries in this section
+is contained in the <SYMBOL>DT_VERDEFNUM</SYMBOL> entry
+of the Dynamic Section.  The <SYMBOL>sh_link</SYMBOL>
 member of the section header points to the section that contains the strings
 referenced by this section.
 </PARA>
-<FIGURE>
+<PARA>
+The special section <SYMBOL>.gnu.version_d</SYMBOL> which has a section type of 
+<SYMBOL>SHT_GNU_verdef </SYMBOL>
+shall contain symbol version definitions. The number of entries in this section 
+shall be contained in the <SYMBOL>DT_VERDEFNUM</SYMBOL> entry of the Dynamic Section 
+<SYMBOL>.dynamic</SYMBOL>. 
+The <SYMBOL>sh_link</SYMBOL> member of the section header (see figure 4-8 in the 
+<XREF LINKEND="STD.gABI41">) 
+shall point to the section that contains the strings referenced by this section.
+</PARA>
+<PARA>
+The section shall contain an array of <SYMBOL>Elfxx_Verdef</SYMBOL> structures, as described in 
+<XREF LINKEND="VerDefEntries">, optionally followed by an array of <SYMBOL>Elfxx_Verdaux</SYMBOL> structures, as 
+defined in <XREF LINKEND="VerDefExts">.
+</PARA>
+<FIGURE ID="VerDefEntries">
 <TITLE>Version Definition Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
@@ -702,15 +722,15 @@ typedef struct {
 </FIGURE>
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_version</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_version</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Version revision. This value is currently set to 1, and will be reset if the versioning implementation is incompatibly altered.
+Version revision. This field shall be set to <literal>1</literal>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_flags</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_flags</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version information flag bitmask.
@@ -718,7 +738,7 @@ Version information flag bitmask.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_ndx</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_ndx</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version index numeric value referencing the SHT_GNU_versym section.
@@ -726,7 +746,7 @@ Version index numeric value referencing the SHT_GNU_versym section.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_cnt</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_cnt</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Number of associated verdaux array entries.
@@ -734,7 +754,7 @@ Number of associated verdaux array entries.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_hash</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_hash</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version name hash value (ELF hash function).
@@ -742,15 +762,17 @@ Version name hash value (ELF hash function).
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_aux</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_aux</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Offset to a corresponding entry in the verdaux array, in bytes.
+Offset in bytes to a corresponding entry in an array
+of <SYMBOL>Elfxx_Verdaux</SYMBOL> structures as defined in
+<XREF LINKEND="VerDefExts">
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vd_next</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vd_next</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the next verdef entry, in bytes.
@@ -758,7 +780,7 @@ Offset to the next verdef entry, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
-<FIGURE>
+<FIGURE ID="VerDefExts">
 <TITLE>Version Definition Auxiliary Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
@@ -769,7 +791,7 @@ typedef struct {
 </FIGURE>
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vda_name</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vda_name</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the version or dependency name string in the section header, in bytes.
@@ -777,7 +799,7 @@ Offset to the version or dependency name string in the section header, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vda_next</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vda_next</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the next verdaux entry, in bytes.
@@ -789,14 +811,21 @@ Offset to the next verdaux entry, in bytes.
 <SECT1 ID="symverrqmts">
 <TITLE>Version Requirements</TITLE>
 <PARA>
-Symbol definitions are contained in the special section <COMPUTEROUTPUT>
-.gnu.version_r</COMPUTEROUTPUT> which has a section type of <COMPUTEROUTPUT>
-SHT_GNU_verneed</COMPUTEROUTPUT>. The number of entries in this section
-is contained in the <COMPUTEROUTPUT>DT_VERNEEDNUM</COMPUTEROUTPUT> entry
-of the Dynamic Section.  The <COMPUTEROUTPUT>sh_link</COMPUTEROUTPUT>
-member of the section header points to the section that contains the strings
-referenced by this section.
-</PARA><FIGURE>
+The special section <SYMBOL>.gnu.version_r</SYMBOL> which has a section type of 
+<SYMBOL>SHT_GNU_verneed</SYMBOL>
+shall contain required symbol version definitions. The number of entries in 
+this section shall be contained in the <SYMBOL>DT_VERNEEDNUM</SYMBOL> entry of the Dynamic 
+Section <SYMBOL>.dynamic</SYMBOL>. 
+The <STRUCTFIELD>sh_link</STRUCTFIELD> member of the section header (see figure 4-8 in 
+<XREF LINKEND="STD.gABI41">)
+shall point to the section that contains the strings referenced by this section.
+</PARA>
+<PARA>
+The section shall contain an array of <SYMBOL>Elfxx_Verneed</SYMBOL> structures, as described in 
+<XREF LINKEND="VerNeedFig">, optionally followed by an array of 
+<SYMBOL>Elfxx_Vernaux</SYMBOL> structures, as 
+defined in <XREF LINKEND="VerNeedExtFig">.
+</PARA><FIGURE ID="VerNeedFig">
 <TITLE>Version Needed Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
@@ -810,7 +839,7 @@ typedef struct {
 </FIGURE>
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_version</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_version</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Version of structure. This value is currently set to 1, and will be reset if the versioning implementation is incompatibly altered.
@@ -818,7 +847,7 @@ Version of structure. This value is currently set to 1, and will be reset if the
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_cnt</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_cnt</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Number of associated verneed array entries.
@@ -826,7 +855,7 @@ Number of associated verneed array entries.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_file</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_file</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the file name string in the section header, in bytes.
@@ -834,7 +863,7 @@ Offset to the file name string in the section header, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_aux</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_aux</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to a corresponding entry in the vernaux array, in bytes.
@@ -842,7 +871,7 @@ Offset to a corresponding entry in the vernaux array, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vn_next</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vn_next</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the next verneed entry, in bytes.
@@ -850,7 +879,7 @@ Offset to the next verneed entry, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
-<FIGURE>
+<FIGURE ID="VerNeedExtFig">
 <TITLE>Version Needed Auxiliary Entries</TITLE>
 <PROGRAMLISTING>
 typedef struct {
@@ -864,7 +893,7 @@ typedef struct {
 </FIGURE>
 <VARIABLELIST>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_hash</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_hash</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Dependency name hash value (ELF hash function).
@@ -872,7 +901,7 @@ Dependency name hash value (ELF hash function).
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_flags</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_flags</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Dependency information flag bitmask.
@@ -880,7 +909,7 @@ Dependency information flag bitmask.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_other</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_other</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Object file version identifier used in the .gnu.version symbol version array. Bit number 15 controls whether or not the object is hidden; if this bit is set, the object cannot be used and the static linker will ignore the symbol's presence in the object.
@@ -888,7 +917,7 @@ Object file version identifier used in the .gnu.version symbol version array. Bi
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_name</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_name</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the dependency name string in the section header, in bytes.
@@ -896,7 +925,7 @@ Offset to the dependency name string in the section header, in bytes.
 </LISTITEM>
 </VARLISTENTRY>
 <VARLISTENTRY>
-<TERM><COMPUTEROUTPUT>vna_next</COMPUTEROUTPUT></TERM>
+<TERM><STRUCTFIELD>vna_next</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Offset to the next vernaux entry, in bytes.
@@ -908,44 +937,84 @@ Offset to the next vernaux entry, in bytes.
 <SECT1 ID="symstartseq">
 <TITLE>Startup Sequence</TITLE>
 <PARA>
-When loading a sharable object, version definition data from the loaded object is analyzed to assure that it meets the version requirements of the calling object. The dynamic loader retrieves the entries in the caller's Elfxx_Verneed array and attempts to find matching definition information in the loaded Elfxx_Verdef table.
+When loading a sharable object the system shall analyze version definition data 
+from the loaded object to assure that it meets the version requirements of the 
+calling object. This step is referred to as definition testing. The dynamic 
+loader shall retrieve the entries in the caller's <SYMBOL>Elfxx_Verneed</SYMBOL> array and 
+attempt to find matching definition information in the loaded <SYMBOL>Elfxx_Verdef</SYMBOL>
+table.
 </PARA>
 <PARA>
-Each object and dependency is tested in turn. If a symbol definition is missing, the loader returns an error. A warning is issued instead of a hard error when the vna_flags bit for VER_FLG_WEAK is set in the Elfxx_Vernaux entry.
+Each object and dependency shall be tested in turn. If a symbol definition is 
+missing and the <SYMBOL>vna_flags</SYMBOL> bit for <SYMBOL>VER_FLG_WEAK</SYMBOL> is not set, the loader shall 
+return an error and exit. If the <SYMBOL>vna_flags</SYMBOL> bit for <SYMBOL>VER_FLG_WEAK</SYMBOL> is set in the 
+<SYMBOL>Elfxx_Vernaux</SYMBOL> entry, and the loader shall issue a warning and continue 
+operation.
 </PARA>
 <PARA>
-When the versions referenced by undefined symbols in the loaded object are found, version availability is certified. The test completes without error and the object is made available.
+When the versions referenced by undefined symbols in the loaded object are 
+found, version availability is certified. The test completes without error and 
+the object shall be made available.
 </PARA>
 </SECT1>
 <SECT1 ID="symresolution">
 <TITLE>Symbol Resolution</TITLE>
 <PARA>
-When symbol versioning is used in an object, relocations extend the performance of definition testing beyond the simple match of symbol name strings: the version of the reference shall also equal the name of the definition. The same index that is used in the symbol table can be referenced in the SHT_GNU_versym section, and the value of this index is then used to acquire name data. The corresponding requirement string is retrieved from the Elfxx_Verneed array, and likewise, the corresponding definition string from the Elfxx_Verdef table.
+When symbol versioning is used in an object, relocations extend 
+definition testing beyond the simple match of symbol
+name strings: the version of the reference shall also equal the name of
+the definition. 
 </PARA>
 <PARA>
-Bit number 15 of the version symbol controls whether or not the object is hidden; if this bit is set, the object cannot be used and the static linker will ignore the symbol's presence in the object.
+The same index that is used in the symbol table can be
+referenced in the <SYMBOL>SHT_GNU_versym</SYMBOL> section, and the value of this index is
+then used to acquire name data. The corresponding requirement string is
+retrieved from the <SYMBOL>Elfxx_Verneed</SYMBOL> array, and likewise, the corresponding
+definition string from the <SYMBOL>Elfxx_Verdef</SYMBOL> table.
 </PARA>
 <PARA>
-Results differ in the interaction of objects that variously use symbol versioning.
+If the high order bit (bit number 15)
+of the version symbolis set, the object cannot be used
+and the static linker shall ignore the symbol's presence in the object.
+</PARA>
+<PARA>
+When an object with a reference and an object with the definition are being 
+linked, the following rules shall govern the result:
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-The object with the reference and the object with the definitions may both use versioning. All described matching is processed in this case. A fatal error is triggered when no matching definition can be found in the object whose name is the one referenced by the vn_name element in the Elfxx_Verneed entry.
+The object with the reference and the object with the definitions both use 
+versioning. All described matching is processed in this case. A fatal error 
+shall be triggered when no matching definition can be found in the object whose 
+name is the one referenced by the <STRUCTFIELD>vn_name</STRUCTFIELD> element in the 
+<STRUCTNAME>Elfxx_Verneed</STRUCTNAME> entry.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-The object with the reference may not use versioning, while the object with the definitions does. In this instance, only the definition with index numbers 1 and 2 will be used in the reference match, the same identified by the static linker as the base definition. In infrequent cases where the static linker was not used, as in calls to dlopen(), a version that does not have the base definition index is acceptable as long as it is the only version for which the symbol is defined.
+The object with the reference does not use versioning, while the object with 
+the definitions does. In this instance, only the definitions with index numbers 
+1 and 2 will be used in the reference match, the same identified by the static 
+linker as the base definition. In cases where the static linker was not used, 
+such as in calls to <FUNCTION>dlopen</FUNCTION>, a version that does not have the base definition 
+index shall be acceptable if it is the only version for which the symbol is 
+defined.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-The object with the reference may use versioning, but the object with the definitions specifies none. A matching symbol is accepted in this case. A fatal error is triggered in the unlikely event that a corruption in the required symbols list obscured an outdated object file and caused a match on the object filename in the Elfxx_Verneed entry.
+The object with the reference uses versioning, but the object with the 
+definitions specifies none. A matching symbol shall be accepted in this case. A 
+fatal error shall be triggered if a corruption in the required symbols list 
+obscures an outdated object file and causes a match on the object filename in 
+the <SYMBOL>Elfxx_Verneed</SYMBOL> entry.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-Finally, both the object with the reference and the object with the definitions may not use versioning. The behavior in this instance defaults to pre-existing symbol rules.
+Neither the object with the reference nor the object with the definitions use 
+versioning. The behavior in this instance shall default to pre-existing symbol 
+rules.
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
