@@ -18,6 +18,7 @@ gensrc:
 
 intro.m4: ../../generic/intro/intro.m4
 	cp ../../generic/intro/$@ .
+
 clean:
 	rm -f $(FILES)
 

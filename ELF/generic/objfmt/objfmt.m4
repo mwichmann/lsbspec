@@ -8,7 +8,7 @@ LSB-conforming implementations shall support the object file Executable and Link
 <ITEMIZEDLIST MARK=BULLET>
 <LISTITEM>
 <PARA>
-<XREF LINKEND="std.gABI_41">
+<XREF LINKEND="std.gABI41">
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -70,7 +70,7 @@ Various sections hold program and control information. Sections in the lists bel
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in the
-<XREF LINKEND="std.gABI_41">
+<XREF LINKEND="std.gABI41">
 include(elfsect.sgml)
 </PARA>
 </SECT2>

@@ -245,8 +245,8 @@ document in order to be installed or to execute successfully.
 </SECT1>
 </CHAPTER>
 
-include(definitions.sgml)
+include(../../../matters/definitions.sgml)
 
-include(terms.sgml)
+include(../../generic/intro/terms.sgml)
 
 </PART>

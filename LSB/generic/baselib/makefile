@@ -13,7 +13,7 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	bindtextdomain.sgml cfmakeraw.sgml \
 	cfsetspeed.sgml daemon.sgml dcgettext.sgml dladdr.sgml endutent.sgml \
 	err.sgml error.sgml errx.sgml flock.sgml \
-	gethostbyname.sgml getloadavg.sgml getopt_long.sgml \
+	gethostbyname_r.sgml getloadavg.sgml getopt_long.sgml \
 	getopt_long_only.sgml getservbyname.sgml getservent.sgml \
 	gettext.sgml getutent.sgml htons.sgml inet_aton.sgml inet_ntoa.sgml \
 	initgroups.sgml iswctype.sgml kill.sgml llabs.sgml \

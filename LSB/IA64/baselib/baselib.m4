@@ -11,22 +11,10 @@ hardware in the system.
 </PARA>
 
 <PARA>
-Only those interfaces that are unique to the &itanium;
+Only those interfaces that are unique to the &specarchitecture;
 platform are defined here. This
 section should be used in conjunction with the corresponding section in
 the Linux Standard Base Specification.
-</PARA>
-
-<PARA>
-An LSB conforming implementation need not define an Unwind library interface
-as required by the
-<XREF LINKEND="std.IA64.ABI">.
-If such an interface is provided, it shall conform to the specification
-in the 
-<XREF LINKEND="std.IA64.ABI">.
-A conforming application shall not depend on this interface.
-<!-- since there are no current implementations I can find for the unwind
-library, we decided to omit it at this release -->
 </PARA>
 
 include(libc.sgml)

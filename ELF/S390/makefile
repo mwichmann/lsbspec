@@ -1,5 +1,5 @@
 
-SUBDIRS= intro dynlnk lowlevel objfmt
+SUBDIRS= intro 
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done

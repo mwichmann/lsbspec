@@ -4,7 +4,7 @@
 <PARA>
 LSB-conforming implementations shall support an object file format, called
 Executable and Linking Format (ELF) as defined by the
-<XREF LINKEND="std.gABI.41"> , <XREF LINKEND="std.ABIUpdate"> ,
+<XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
 <XREF LINKEND="std.IA32.ABI.4"> and as supplemented by the
 <XREF LINKEND="std.LSB"> and this document.
 </PARA>

@@ -4,7 +4,7 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
-<XREF LINKEND="std.gABI.41">,
+<XREF LINKEND="std.gABI41">,
 <XREF LINKEND="std.IA64.ABI">
 and as supplemented by the Linux
 Standard Base Specification and this document.

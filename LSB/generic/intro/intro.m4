@@ -1,7 +1,7 @@
 <PREFACE id="OVERVIEW">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the Linux Standard Base Specification.
+This is version &specversion; of the &spectitle;.
 This version is a preliminary version for review only. Conclusion of work on
 this version will result in version 2.0 of the Linx Standard Base
 Specification.
@@ -55,23 +55,26 @@ high-volume applications conforming to the LSB.
 </PARA>
 
 <PARA>
-The LSB is composed of two basic parts: A common specification
-("generic LSB" or "gLSB") describing those parts of the interface that
+These specifications are composed of two basic parts: A common specification
+("LSB-generic") describing those parts of the interface that
 remain constant across all implementations of the LSB, and an
-architecture-specific specification ("archLSB") describing the
+architecture-specific specification ("LSB-arch") describing the
 parts of the interface that vary by processor architecture.
-Together, the generic LSB and the
+Together, the LSB-generic and the
 architecture-specific supplement for a single hardware architecture provide a
 complete interface specification for compiled application programs on systems
 that share a common hardware architecture.
 </PARA>
 
 <PARA>
-This document is the generic LSB. It shall be used in conjunction with an
-architecture-specific supplement. Whenever a section of this specification
-shall be supplemented by architecture-specific information, this document
+The LSB-generic document shall be used in conjunction with an
+architecture-specific supplement. Whenever a section of the LSB-generic
+specification
+shall be supplemented by architecture-specific information, the LSB-generic
+document
 includes a reference to the architecture supplement. Architecture supplements
-may also contain additional information that is not referenced here.
+may also contain additional information that is not referenced in the
+LSB-generic document.
 </PARA>
 </CHAPTER>
 
@@ -105,7 +108,7 @@ system. This list may be supplemented or amended by the architecture-specific
 specifications.
 </PARA>
 <TABLE>
-<TITLE>Standard Libraries Names</TITLE>
+<TITLE>Standard Library Names</TITLE>
 <TGROUP COLS=2>
 <THEAD>
 <ROW>
@@ -114,18 +117,6 @@ specifications.
 </ROW>
 </THEAD>
 include(libraries.sgml)
-</TGROUP>
-</TABLE>
-<TABLE>
-<TITLE>Standard Library Names defined in the Architecture Specific Supplement</TITLE>
-<TGROUP COLS=2>
-<THEAD>
-<ROW>
-<ENTRY>Library</ENTRY>
-<ENTRY>Runtime Name</ENTRY>
-</ROW>
-</THEAD>
-include(pslibs.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
@@ -251,8 +242,8 @@ A strictly conforming application does not require or use any interface, facilit
 </SECT1>
 </CHAPTER>
 
-include(definitions.sgml)
+include(../../../matters/definitions.sgml)
 
-include(terms.sgml)
+include(../../generic/intro/terms.sgml)
 
 </PART>
