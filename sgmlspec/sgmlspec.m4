@@ -91,14 +91,6 @@ and all the other many people that helped with their own contribution.
 In the scope of this document, we will use the following terms:
 </para>
 
-  <glossentry><glossterm>backend</glossterm>
-  <glossdef>
-  <para>
-       A part of a SGML converter used to analyse the output format
-  </para>
-  </glossdef>
-  </glossentry>
-
   <glossentry><glossterm>Centralized catalog</glossterm>
   <glossdef>
   <para>
@@ -109,19 +101,13 @@ In the scope of this document, we will use the following terms:
   </glossdef>
   </glossentry>
 
-  <glossentry><glossterm>frontend</glossterm>
+  <glossentry><glossterm>DTD</glossterm>
   <glossdef>
   <para>
-       A part of a SGML converter used to analyse the input format
-  </para>
-  </glossdef>
-  </glossentry>
-
-  <glossentry><glossterm>helper</glossterm>
-  <glossdef>
-  <para>
-       A stand-alone application used by a SGML converter to accomplish
-       the conversion itself.
+        A Document Type Definition. It specifies the syntax used in
+        documents. Examples of well-known DTDs include: HTML, XHTML,
+        DocBook, TEI, MathML, MusicML, etc. SGML and XML give a
+        framework for writing DTDs.
   </para>
   </glossdef>
   </glossentry>
@@ -145,10 +131,10 @@ In the scope of this document, we will use the following terms:
   </glossdef>
   </glossentry>
 
-  <glossentry><glossterm>SGML application</glossterm>
+  <glossentry><glossterm>SGML/XML computer program</glossterm>
   <glossdef>
   <para>
-       Any program used to view, edit, convert, process or apply any
+       Any program used to view, edit, convert, use or apply any
        kind of treatment to a document written using a SGML or XML DTD
        (Document Type Definition). This includes command-line utilities
        as well as GUI-based applications.
@@ -156,22 +142,13 @@ In the scope of this document, we will use the following terms:
   </glossdef>
   </glossentry>
 
-  <glossentry><glossterm>SGML converter</glossterm>
-  <glossdef>
-  <para>
-       A SGML application, or a part of a bigger SGML application,
-       used to convert from a given SGML-based input format to a given
-       output format.
-  </para>
-  </glossdef>
-  </glossentry>
-
   <glossentry><glossterm>Style sheets</glossterm>
   <glossdef>
   <para>
-       Declarations or scripts that define formatting during the
-       conversion process.  They can be written in any style sheets
-       language: DSSSL, FOSIs, XSL, ...
+       Declarations or scripts that define formatting during some
+       conversion or edition process of a SGML or XML document.
+       They can be written in any style sheets language: CSS,
+       DSSSL, FOSIs, XSL, ...
   </para>
   </glossdef>
   </glossentry>
@@ -213,8 +190,8 @@ In the scope of this document, we will use the following terms:
 <term><filename class="directory">/usr/share/sgml/</filename></term>
 <listitem>
 <para>
-     Architecture-independent files used by SGML applications: Open
-     Catalogs (not the centralized ones), DTDs, entities, style sheets,
+     Architecture-independent files used by SGML/XML computer programs:
+     Open Catalogs (not the centralized ones), DTDs, entities, style sheets,
      and other declarative files, if any.
 </para>
 
@@ -226,6 +203,11 @@ In the scope of this document, we will use the following terms:
   <member><filename class="directory">html/</filename></member>
   <member>...</member>
 </simplelist>
+</para>
+<para>
+Data that are not DTD-specific go directly into
+<filename class="directory">/usr/share/sgml</filename>,
+preferably under their own directory.
 </para>
 </listitem>
 </varlistentry>
@@ -242,16 +224,10 @@ documents, so it seems unnecessary to create
 <sect1 id="sgmlR002">
 <title>R002--DocBook Directory layout</title>
 <para>
-This is the layout for a Jade-based or an Openjade-based system. DocBook
-applications based on other parsers, or even any other SGML application,
-can be based on this layout as well.
+This is the layout for a Jade-based or an Openjade-based system.
+Systems based on other SGML/XML computer programs can use this
+layout as well.
 </para>
-<para>
-In <filename class="directory">/usr/share/sgml</filename>, the upper level directories identify the DTD that
-is concerned. Things that are not DTD-specific go directly into
-<filename class="directory">/usr/share/sgml</filename> under their own directory.
-</para>
-<para>
 
 The lower level directories are package-related. They are
 also version-numbered.
@@ -395,12 +371,12 @@ their own super catalog in their home directories:
 
 </para>
 <para>
-The SGML applications are not supposed to use centralized catalogs,
-although their use is strongly encouraged: if other mechanisms allow
-one to locate the real catalogs, they can be used as well. However
-distribution packagers should always take care of feeding the right
-entries into the super catalog and the centralized catalogs. The interface
-for a script named <command>install-catalog</command>
+The SGML/XML computer programs are not supposed to use centralized
+catalogs, although their use is strongly encouraged: if other
+mechanisms allow one to locate the real catalogs, they can be used as
+well. However distribution packagers should always take care of feeding
+the right entries into the super catalog and the centralized catalogs. The
+interface for a script named <command>install-catalog</command>
 that does these maintenance tasks is described here:
 
 <cmdsynopsis>
@@ -436,8 +412,8 @@ recomendations.
 </para>
 <para>
 For a distribution of DocBook based on Jade or OpenJade, we suggest the
-following names. Again, other SGML or XML DTDs can be based on this
-structure.
+following names. Again, other SGML or XML DTDs and other computer
+programs can use a similar structure.
 
 <variablelist>
   <varlistentry>
@@ -483,7 +459,7 @@ structure.
 <para>
 
 Other configuration files may also reside in <filename class="directory">/etc/sgml</filename>, either
-DTD-specific or application-specific. Their name should end in <quote>.conf</quote> and
+DTD-specific or program-specific. Their name should end in <literal>.conf</literal> and
 they should follow ordinary rules for files residing in <filename class="directory">/etc</filename> as defined by
 LSB. The user should be able to redefine them in his/her home directory.
 
