@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.45 2002/09/20 00:03:45 anderson Exp 0 -->
-<!--    at Tue Sep 24 09:07:41 2002 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.48 2002/09/25 13:01:53 anderson Exp 0 -->
+<!--    at Fri Sep 27 19:20:04 2002 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
@@ -24,6 +24,12 @@
 <PARA>
 The behavior of the interfaces in this library is specified by the following standards.<SIMPLELIST COLUMNS=1>
 <MEMBER>
+Linux Standard Base<FOOTNOTE ID="std-233-10">
+<PARA>
+Linux Standard Base</PARA>
+</FOOTNOTE>
+</MEMBER>
+<MEMBER>
 OSF-RFC 86.0<FOOTNOTE ID="std-233-66">
 <PARA>
 OSF-RFC 86.0</PARA>
@@ -41,23 +47,23 @@ OSF-RFC 86.0</PARA>
 <TGROUP COLS=5>
 <TBODY>
 <ROW>
-<ENTRY>pam_acct_mgmt<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
-<ENTRY>pam_end<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
-<ENTRY>pam_set_data<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
-<ENTRY>pam_start<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
+<ENTRY>pam_acct_mgmt<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_close_session<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_open_session<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_start<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 <ROW>
-<ENTRY>pam_authenticate<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
-<ENTRY>pam_get_item<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
-<ENTRY>pam_set_item<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
-<ENTRY>pam_strerror<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
+<ENTRY>pam_authenticate<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_end<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_set_item<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_strerror<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 <ROW>
-<ENTRY>pam_close_session<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
-<ENTRY>pam_open_session<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
-<ENTRY>pam_setcred<FOOTNOTEREF LINKEND="std-233-66"></ENTRY>
+<ENTRY>pam_chauthtok<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_get_item<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
+<ENTRY>pam_setcred<FOOTNOTEREF LINKEND="std-233-10"></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -83,6 +89,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 
 
+typedef struct pam_handle pam_handle_t;
 struct pam_message
 {
   int msg_style;
@@ -104,13 +111,73 @@ struct pam_conv
   void *appdata_ptr;
 }
  ;
+#define PAM_PROMPT_ECHO_OFF	1
+#define PAM_PROMPT_ECHO_ON	2
+#define PAM_ERROR_MSG	3
+#define PAM_TEXT_INFO	4
+
+
+
 #define PAM_SERVICE	1
 #define PAM_USER	2
 #define PAM_TTY	3
 #define PAM_RHOST	4
 #define PAM_CONV	5
+#define PAM_RUSER	8
+#define PAM_USER_PROMPT	9
+
+
+
+#define PAM_SUCCESS	0
+#define PAM_USER_UNKNOWN	10
+#define PAM_MAXTRIES	11
+#define PAM_ACCT_EXPIRED	13
+#define PAM_SESSION_ERR	14
+#define PAM_CRED_UNAVAIL	15
+#define PAM_CRED_EXPIRED	16
+#define PAM_CRED_ERR	17
+#define PAM_CONV_ERR	19
+#define PAM_AUTHTOK_ERR	20
+#define PAM_AUTHTOK_RECOVER_ERR	21
+#define PAM_AUTHTOK_LOCK_BUSY	22
+#define PAM_AUTHTOK_DISABLE_AGING	23
+#define PAM_TRY_AGAIN	24
+#define PAM_ABORT	26
+#define PAM_AUTHTOKEN_REQD	27
+#define PAM_AUTHTOK_EXPIRED	27
+#define PAM_BAD_ITEM	29
+#define PAM_BUF_ERR	5
+#define PAM_PERM_DENIED	6
+#define PAM_AUTH_ERR	7
+#define PAM_CRED_INSUFFICIENT	8
+
+
+
+#define PAM_DISALLOW_NULL_AUTHTOK	0x0001U
+#define PAM_ESTABLISH_CRED	0x0002U
+#define PAM_DELETE_CRED	0x0004U
+#define PAM_REINITIALIZE_CRED	0x0008U
+#define PAM_REFRESH_CRED	0x0010U
+#define PAM_CHANGE_EXPIRED_AUTHTOK	0x0020U
+#define PAM_SILENT	0x8000U
 </SCREEN>
 </SECT2>
 </SECT1>
+<SECT1 ID=libpamman>
+<TITLE>Interfaces Definitions for libpam</TITLE>
+<PARA>
+</PARA>
+include(pam_acct_mgmt.sgml)
+include(pam_authenticate.sgml)
+include(pam_chauthtok.sgml)
+include(pam_close_session.sgml)
+include(pam_end.sgml)
+include(pam_get_item.sgml)
+include(pam_open_session.sgml)
+include(pam_set_item.sgml)
+include(pam_setcred.sgml)
+include(pam_start.sgml)
+include(pam_strerror.sgml)
+</SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.45 2002/09/20 00:03:45 anderson Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.48 2002/09/25 13:01:53 anderson Exp 0 -->
