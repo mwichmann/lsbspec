@@ -1,0 +1,81 @@
+<refentry id="zlib-gzclose-1">
+
+<refmeta>
+<refentrytitle>gzclose</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzclose</refname>
+<refpurpose>close a compressed file stream</refpurpose>
+<indexterm id="ix-utillib-gzclose-1">
+  <primary>gzclose</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzclose</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter> </paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzclose</function> function shall close the compressed file stream
+<parameter>file</parameter>.
+If <parameter>file</parameter> was open for writing, <function>gzclose</function>
+shall first flush any pending output. Any state information allocated shall
+be freed.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzclose</function> shall return 
+<returnvalue>Z_OK</returnvalue>.
+Otherwise, <function>gzclose</function> shall return an error value as described below.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzclose</function> may set
+the global variable <varname>errno</varname>
+to indicate the error.
+The <function>gzclose</function> shall return a value other than <constant>Z_OK</constant>
+on error.
+<variablelist>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem>
+<para>
+<parameter>file</parameter> was <constant>NULL</constant> (or <constant>Z_NULL</constant>),
+or did not refer to an open compressed file stream.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An error occurred in the underlying base libraries, and the application should check
+<varname>errno</varname> for further information.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+no compression progress is possible during buffer flush (see <function>deflate</function>).
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>

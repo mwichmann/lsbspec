@@ -1,0 +1,125 @@
+<refentry id="zlib-gzopen-1">
+
+<refmeta>
+<refentrytitle>gzopen</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzopen</refname>
+<refpurpose>open a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzopen-1">
+  <primary>gzopen</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   gzFile <function>gzopen</function>
+  </funcdef>
+  <paramdef>const char *<parameter>path</parameter> </paramdef>
+  <paramdef>const char *<parameter>mode</parameter> </paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzopen</function> function shall open the compressed file
+named by <parameter>path</parameter>.
+The <parameter>mode</parameter> argument is based on that of 
+<function>fopen</function>, but the 
+<parameter>mode</parameter> parameter may also contain the following characters:
+<variablelist>
+<varlistentry>
+<term><replaceable>digit</replaceable></term>
+<listitem>
+<para>
+set the compression level to <replaceable>digit</replaceable>.
+A low value (e.g. 1) means high speed, while a high value (e.g. 9) means 
+high compression. A compression level of 0 (zero) means no compression.
+See <function>defaultInit2_</function> for further details.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><replaceable>[fhR]</replaceable></term>
+<listitem>
+<para>
+set the compression strategy to <replaceable>[fhR]</replaceable>.
+The letter <literal>f</literal> corresponds to filtered data, 
+the letter <literal>h</literal>
+corresponds to Huffman only compression, and 
+the letter <literal>R</literal>
+corresponds to Run Length Encoding.
+See <function>defaultInit2_</function> for further details.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+</para>
+
+<para>
+If <parameter>path</parameter> refers to an uncompressed file, and 
+<parameter>mode</parameter> refers to a read mode, 
+<function>gzopen</function> shall attempt to open the file and return
+a <type>gzFile</type> object suitable for reading directly from the file
+without any decompression.
+</para>
+<para>
+If <parameter>path</parameter> or <parameter>mode</parameter>
+is <literal>NULL</literal>, or if <parameter>mode</parameter> does not contain
+one of <simplelist type=inline>
+<member><literal>r</literal></member>
+<member><literal>w</literal></member>
+<member>or <literal>a</literal></member>
+</simplelist>,
+<function>gzopen</function> shall return <constant>Z_NULL</constant>,
+and need not set any other error condition.
+</para>
+<para>
+The <type>gzFile</type> object is also referred to as a compressed file stream.
+</para>
+</refsect1>
+<refsect1>
+<title>Example</title>
+<para>
+<programlisting>
+gzopen("file.gz", "w6h");
+</programlisting>
+Attempt to create a new compressed file, <filename>file.gz</filename>,
+at compression level 6 using Huffman only compression.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzopen</function> shall return a 
+<type>gzFile</type> object (also known as a <emphasis>compressed
+file stream</emphasis>). On failure, 
+<function>gzopen</function> shall return <constant>Z_NULL</constant> and
+may set <varname>errno</varname> accordingly.
+<NOTE><para>
+At version 1.2.2, <varname>zlib</varname>
+does not set <varname>errno</varname> for several
+error conditions. Applications may not be able to
+determine the cause of an error.
+</para></NOTE>
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzopen</function> may set
+the global variable <varname>errno</varname>
+to indicate the error.
+</para>
+</refsect1>
+</refentry>

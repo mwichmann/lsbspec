@@ -2,6 +2,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=utillib.sgml libz.sgml libcurses.sgml libutil.sgml
+
 TABLES=
 
 .cpp.sgml:
@@ -27,4 +28,10 @@ spotless: clean
 utillib.sgml:  libz.sgml libcurses.sgml libutil.sgml \
 	forkpty.sgml \
 	login.sgml login_tty.sgml logout.sgml openpty.sgml \
-	mkfifo.sgml mknod.sgml logwtmp.sgml
+	mkfifo.sgml mknod.sgml logwtmp.sgml \
+	gzopen.sgml gzdopen.sgml gzread.sgml gzerror.sgml \
+	gzwrite.sgml gzsetparams.sgml gzprintf.sgml \
+	gzputc.sgml gzputs.sgml gzgets.sgml gzgetc.sgml \
+	gzeof.sgml gztell.sgml compress.sgml compress2.sgml \
+	deflateInit2_.sgml inflateInit2_.sgml zlibVersion.sgml
+

@@ -1,0 +1,119 @@
+<refentry id="zlib-gzread-1">
+
+<refmeta>
+<refentrytitle>gzread</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzread</refname>
+<refpurpose>read from a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzread-1">
+  <primary>gzread</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzread</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>voidp <parameter>buf</parameter></paramdef>
+  <paramdef>unsigned int <parameter>len</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzread</function> function shall read data from
+the compressed file
+referenced by <parameter>file</parameter>, which shall have been opened
+in a read mode (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+The <function>gzread</function> function shall read data from
+<parameter>file</parameter>, and uncompress it into 
+<parameter>buf</parameter>. At most, <parameter>len</parameter>
+bytes of uncompressed data shall be copied to <parameter>buf</parameter>.
+If the file is not compressed, <function>gzread</function> shall simply
+copy data from <parameter>file</parameter> to <parameter>buf</parameter>
+without alteration.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzread</function> shall return the number of bytes
+decompressed into <parameter>buf</parameter>.
+If <function>gzread</function> returns <constant>0</constant>,
+either the end-of-file has been reached
+or an underlying read error has occurred. Applications
+should use <function>gzerror</function> or <function>gzeof</function>
+to determine which occurred.
+On other errors, 
+<function>gzread</function> shall return a value less than 
+<constant>0</constant> and
+and applications may examine the cause using <function>gzerror</function>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzread</function> shall set
+the error number associated with the stream identified by 
+<parameter>file</parameter>
+to indicate the error. Applications should use <function>gzerror</function>
+to access this error value.
+</para>
+<para>
+<variablelist>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An underlying base library function has indicated an error.
+The global variable <varname>errno</varname> may be examined 
+for further information.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_END</constant></term>
+<listitem><para>
+End of file has been reached on input.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_DATA_ERROR</constant></term>
+<listitem><para>
+A CRC error occurred when reading data; the file is corrupt.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The stream is invalid, or is in an invalid state.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_NEED_DICT</constant></term>
+<listitem><para>
+A dictionary is needed (see <function>inflateSetDictionary</function>).
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available to decompress.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+

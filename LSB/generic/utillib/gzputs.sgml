@@ -1,0 +1,99 @@
+<refentry id="zlib-gzputs-1">
+
+<refmeta>
+<refentrytitle>gzputs</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzputs</refname>
+<refpurpose>string write to a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzputs-1">
+  <primary>gzputs</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzputs</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>const char * <parameter>s</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzputs</function> function shall write the null terminated
+string <parameter>s</parameter> to
+the compressed file
+referenced by <parameter>file</parameter>, which shall have been opened
+in a write mode (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+The terminating null character shall not be written.
+The <function>gzputs</function> function shall return the number of 
+uncompressed bytes actually written.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzputs</function> shall return the number of uncompressed
+bytes actually written to <parameter>file</parameter>.
+On error <function>gzputs</function> shall return a value
+less than or equal to <constant>0</constant>.
+Applications may examine the cause using <function>gzerror</function>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzputs</function> shall set
+the error number associated with the stream identified by 
+<parameter>file</parameter>
+to indicate the error. Applications should use <function>gzerror</function>
+to access this error value.
+If <parameter>file</parameter> is <constant>NULL</constant>, 
+<function>gzputs</function> shall return <constant>Z_STREAM_ERR</constant>.
+</para>
+<para>
+<variablelist>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An underlying base library function has indicated an error.
+The global variable <varname>errno</varname> may be examined 
+for further information.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The stream is invalid, is not open for writing, or is in an invalid state.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+no compression progress is possible (see <function>deflate</function>).
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available to compress.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+

@@ -1,0 +1,101 @@
+<refentry id="zlib-gzwrite-1">
+
+<refmeta>
+<refentrytitle>gzwrite</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gzwrite</refname>
+<refpurpose>write to a compressed file</refpurpose>
+<indexterm id="ix-utillib-gzwrite-1">
+  <primary>gzwrite</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo>
+ <funcprototype>
+  <funcdef>
+   int <function>gzwrite</function>
+  </funcdef>
+  <paramdef>gzFile <parameter>file</parameter></paramdef>
+  <paramdef>voidpc <parameter>buf</parameter></paramdef>
+  <paramdef>unsigned int <parameter>len</parameter></paramdef>
+ </funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>gzwrite</function> function shall write data to
+the compressed file
+referenced by <parameter>file</parameter>, which shall have been opened
+in a write mode (see <function>gzopen</function> and 
+<function>gzdopen</function>).
+On entry, <parameter>buf</parameter> shall point to a buffer containing
+<parameter>len</parameter>bytes of uncompressed data.
+The <function>gzwrite</function> function shall compress this data and
+write it to
+<parameter>file</parameter>.
+The <function>gzwrite</function> function shall return the number of 
+uncompressed bytes actually written.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>gzwrite</function> shall return the number of 
+uncompressed bytes actually written to <parameter>file</parameter>.
+On error <function>gzwrite</function> shall return a value
+less than or equal to <constant>0</constant>.
+Applications may examine the cause using <function>gzerror</function>.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>gzwrite</function> shall set
+the error number associated with the stream identified by 
+<parameter>file</parameter>
+to indicate the error. Applications should use <function>gzerror</function>
+to access this error value.
+</para>
+<para>
+<variablelist>
+<varlistentry>
+<term><constant>Z_ERRNO</constant></term>
+<listitem><para>
+An underlying base library function has indicated an error.
+The global variable <varname>errno</varname> may be examined 
+for further information.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_STREAM_ERROR</constant></term>
+<listitem><para>
+The stream is invalid, is not open for writing, or is in an invalid state.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+no compression progress is possible (see <function>deflate</function>).
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory available to compress.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</refsect1>
+</refentry>
+

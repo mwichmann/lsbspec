@@ -1,0 +1,104 @@
+<refentry id="zlib-compress-1">
+
+<refmeta>
+<refentrytitle>compress</refentrytitle>
+<refmiscinfo>Utility Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>compress</refname>
+<refpurpose>compress data</refpurpose>
+<indexterm id="ix-utillib-compress-1">
+  <primary>compress</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;zlib.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>compress</function>
+</funcdef>
+<paramdef>Bytef *
+<parameter>dest</parameter>
+</paramdef>
+<paramdef>uLongf *
+<parameter>destLen</parameter>
+</paramdef>
+<paramdef>const Bytef *
+<parameter>source</parameter>
+</paramdef>
+<paramdef>uLong
+<parameter>sourceLen</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>compress</function> function shall attempt to compress
+<parameter>sourceLen</parameter> bytes of data in the buffer 
+<parameter>source</parameter>, placing the result in the buffer
+<parameter>dest</parameter>. 
+</para>
+<para>
+On entry, <parameter>destLen</parameter> should point to a value describing
+the size of the <parameter>dest</parameter> buffer. 
+The application should ensure that this value
+be at least 
+<inlineequation>
+  <alt>(sourceLen &times; 1.001) &plus; 12</alt>
+  <graphic>
+</inlineequation>.
+<!-- NB, above equation needs special stylesheet considerations ...
+     it does not actually contain a graphic (well, the graphic element
+     does not contain a fileref), and only the ALT element has anything
+     of interest-->
+On successful exit, the variable referenced by <parameter>destLen</parameter>
+shall be updated to hold the length of compressed data in
+<parameter>dest</parameter>.
+</para>
+<para>
+The <function>compress</function> function is equivalent to 
+<function>compress2</function> with a <parameter>level</parameter> of
+<constant>Z_DEFAULT_LEVEL</constant>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>compress</function> shall return  
+<returnvalue>Z_OK</returnvalue>.
+Otherwise, <function>compress</function> shall return a value to indicate
+the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>compress</function> shall return a value as described 
+below:
+<variablelist>
+<varlistentry>
+<term><constant>Z_BUF_ERROR</constant></term>
+<listitem><para>
+The buffer <parameter>dest</parameter> was not large enough to hold the
+compressed data.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>Z_MEM_ERROR</constant></term>
+<listitem><para>
+Insufficient memory.
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+</refentry>
