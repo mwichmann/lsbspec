@@ -17,6 +17,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mklibspec -a IA32 -l libc >libc.sgml
+	../../../mkdatadef -a IA32 -l libc >libc.defs.sgml
 	../../../mklibspec -a IA32 -l libm >libm.sgml
 
 clean:

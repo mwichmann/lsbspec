@@ -1,4 +1,4 @@
-<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity specversion "LSBVERSION">
 <!entity changes.sgm system "changes.sgml">
