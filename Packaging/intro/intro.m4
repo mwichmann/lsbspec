@@ -74,7 +74,7 @@ This section needs to be written.
 <TITLE>Normative References</TITLE>
 <PARA>
 The specifications listed below are referenced in whole or in part by
-the Linux Package Standard.  Such references may be normative or
+the Linux Package Specification (LPS).  Such references may be normative or
 informative; a reference to specification shall only be considered
 normative if it is explicitly cited as such.  The LPS
 may make normative references to a portion of these
