@@ -3,8 +3,8 @@
 
 MANPAGES=
 
-FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
-	libdb.sgml libdl.sgml libcrypt.sgml
+FILES=baselib.sgml datadefs.sgml libc.sgml libm.sgml 
+
 TABLES=
 
 .cpp.sgml:
@@ -18,10 +18,6 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../../../mklibspec -a IA32 -l libc >libc.sgml
 	../../../mklibspec -a IA32 -l libm >libm.sgml
-	../../../mklibspec -a IA32 -l libpthread >libpthread.sgml
-	../../../mklibspec -a IA32 -l libdb >libdb.sgml
-	../../../mklibspec -a IA32 -l libdl >libdl.sgml
-	../../../mklibspec -a IA32 -l libcrypt >libcrypt.sgml
 
 clean:
 	rm -f $(FILES)
@@ -29,6 +25,5 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-baselib.sgml: libc.sgml libcman.sgml datadefs.sgml libm.sgml libpthread.sgml
-baselib.sgml: libdb.sgml libdl.sgml libcrypt.sgml $(MANPAGES)
-# datadefs.sgml: ../../src/include/datadefs.sgml
+baselib.sgml: libc.sgml libcman.sgml libm.sgml
+baselib.sgml: $(MANPAGES)
