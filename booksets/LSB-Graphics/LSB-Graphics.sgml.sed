@@ -26,7 +26,7 @@
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
-&lsb-generic-intro;
+&graphics-intro;
 </BOOK>
 <BOOK ID="generic-graphics">
 <BOOKINFO>
