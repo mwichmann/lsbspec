@@ -8141,25 +8141,6 @@ output version information and exit
 
 </REFENTRY>
 
-<REFENTRY id="ps">
-<REFMETA><REFENTRYTITLE>
-ps
-</REFENTRYTITLE></REFMETA>
-<REFNAMEDIV>
-<REFNAME>ps</REFNAME>
-<REFPURPOSE>
-report process status
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSECT1>
-<TITLE>Note</TITLE>
-<PARA>
-The "ps" command from psmisc doesn't suppor the options "-A", "-d", "-g",
-"-G", "-o", "-p", "-t", or "-U". However, the option "-p pids" may be
-replicated by merely listing "pids" after all other options on the command line.
-</PARA>
-</REFSECT1>
-</REFENTRY>
 
 <REFENTRY id="pwd">
 <REFMETA><REFENTRYTITLE>
@@ -8219,12 +8200,29 @@ alter priority of running processes
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSECT1>
-<TITLE>Note</TITLE>
+<TITLE>Description</TITLE>
 <PARA>
-The "renice" command in util-linux doesn't support the "-n" option specified
-by SUS.
+The specification for "renice" is as specified in the SUS but with the
+following differences as listed below.
 </PARA>
 </REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-n increment</TERM>
+<LISTITEM>
+<PARA>
+This option is not supported
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
 </REFENTRY>
 
 
@@ -9040,6 +9038,111 @@ Show the version number for strip and exit.
 
 </REFENTRY>
 
+<REFENTRY id="su">
+<REFMETA><REFENTRYTITLE>su</REFENTRYTITLE></REFMETA>
+
+<REFNAMEDIV>
+<REFNAME>su</REFNAME>
+
+<REFPURPOSE>
+Change user ID or become super-user
+</REFPURPOSE>
+
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<SYNOPSIS>
+su [OPTS] [-] [username [ARGS]]
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+su is used to become another user during a login session.  Invoked
+without a username, su defaults to becoming the super user.  The
+optional argument - may be used to provide an environment similiar to
+what the user would expect had the user logged in directly.
+</PARA>
+
+<PARA>
+The user will be prompted for a password, if appropriate.  Invalid
+passwords will produce an error message.  All attempts, both valid and
+invalid, are logged to detect abuses of the system.
+</PARA>
+
+<PARA>
+An optional command can be executed. This is done by the shell
+specified in /etc/passwd for the target user unless the -s or -m
+options are used.  Any arguments supplied after the username will be
+passed to the invoked shell (shell must support the -c command line
+option in order for a command to be passed to it).
+</PARA>
+
+<PARA>
+The current environment is passed to the new shell.  The value of
+$PATH is reset to /bin:/usr/bin for normal users, or
+/sbin:/bin:/usr/sbin:/usr/bin for the super user.  This may be changed
+with the ENV_PATH and ENV_SUPATH definitions in /etc/login.defs. When
+using the -m or -p options, the users environment is not changed.
+</PARA>
+
+<PARA>
+A subsystem login is indicated by the presense of a "*" as the first
+character of the login shell. The given home directory will be used as
+the root of a new filesystem which the user is actually logged into.
+</PARA>
+
+</REFSECT1>
+
+<REFSECT1>
+<title>Standard Options</title>
+<variablelist>
+
+<varlistentry>
+<term>-</term>
+<listitem>
+<para>
+make this a login shell
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-c, --comand=command</term>
+<listitem>
+<para>
+pass command to the invoked shell using its -c option
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-m, -p, --preserve-environment</term>
+<listitem>
+<para>
+do not reset environment variables, and keep the same shell if
+it is present in /etc/shells
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-s, --shell=shell</term>
+<listitem>
+<para>
+use shell instead of the default in /etc/passwd. The shell specified
+must be present in /etc/shells.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
+</REFENTRY>
+
 <REFENTRY id="sum">
 <REFMETA><REFENTRYTITLE>
 sum
@@ -9277,6 +9380,522 @@ The suffixes b, k, m are supported instead which refer to multipliers
 
 </REFENTRY>
 
+<REFENTRY id="tar">
+<REFMETA><REFENTRYTITLE>
+tar
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>tar</REFNAME>
+<REFPURPOSE>
+file archiver
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "tar" is as specified in the SUS but with the
+following differences as listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-A, --catenate, --concatenate</TERM>
+<LISTITEM>
+<PARA>
+append tar files to an archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--create</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -c option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-d, --diff, --compare</TERM>
+<LISTITEM>
+<PARA>
+find differences between archive and file system
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--delete</TERM>
+<LISTITEM>
+<PARA>
+delete from the archive (not for use on mag tapes!)
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--apend</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -r option.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--list</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the the -t option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--update</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -u option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--extract, --get</TERM>
+<LISTITEM>
+<PARA>
+extract files from an archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--atime-preserve</TERM>
+<LISTITEM>
+<PARA>
+don't change access times on dumped files
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--block-size N</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -b option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-B, --read-full-blocks</TERM>
+<LISTITEM>
+<PARA>
+reblock as we read (for reading 4.2BSD pipes)
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-C, --directory DIR</TERM>
+<LISTITEM>
+<PARA>
+change to directory DIR
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--checkpoint</TERM>
+<LISTITEM>
+<PARA>
+print directory names while reading the archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-f, --file [HOSTNAME:]F</TERM>
+<LISTITEM>
+<PARA>
+use archive file or device F (default "-", meaning stdin/stdout).
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--force-local</TERM>
+<LISTITEM>
+<PARA>
+archive file is local even if has a colon
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-F, --info-script F, --new-volume-script F</TERM>
+<LISTITEM>
+<PARA>
+run script at end of each tape (implies -M)
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-G, --incremental</TERM>
+<LISTITEM>
+<PARA>
+create/list/extract old GNU- incremental backup
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-g, --listed-incremental F</TERM>
+<LISTITEM>
+<PARA>
+create/list/extract new GNU- incremental backup
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-h, --dereference</TERM>
+<LISTITEM>
+<PARA>
+don't dump symlinks; dump the files they point to
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-i, --ignore-zeros</TERM>
+<LISTITEM>
+<PARA>
+ignore blocks of zeros in archive (normally mean EOF)
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--bzip2</TERM>
+<LISTITEM>
+<PARA>
+filter archive through bzip2, use to decompress .bz2 files
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--ignore-failed-read</TERM>
+<LISTITEM>
+<PARA>
+don't exit with non-zero status on unreadable files
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-k, --keep-old-files</TERM>
+<LISTITEM>
+<PARA>
+keep existing files; don't overwrite them from archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-K, --starting-file F</TERM>
+<LISTITEM>
+<PARA>
+begin at file F in the archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-l, --one-file-system</TERM>
+<LISTITEM>
+<PARA>
+stay in local file system when creating an archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-L, --tape-length N</TERM>
+<LISTITEM>
+<PARA>
+change tapes after writing N*1024 bytes
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--modification-time</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -m option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-M, --multi-volume</TERM>
+<LISTITEM>
+<PARA>
+create/list/extract multi-volume archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-N, --after-date DATE, --newer DATE</TERM>
+<LISTITEM>
+<PARA>
+only store files newer than DATE
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-o, --old-archive, --portability</TERM>
+<LISTITEM>
+<PARA>
+write a V7  archive, rather than ANSI . Note
+that for the -o option the behaviour is different than what
+is specified in the SUSv2
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-O, --to-stdout</TERM>
+<LISTITEM>
+<PARA>
+extract files to standard output
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-p, --same-permissions, --preserve-permissions</TERM>
+<LISTITEM>
+<PARA>
+extract all protection information
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-P, --absolute-paths</TERM>
+<LISTITEM>
+<PARA>
+don't strip leading /s from file names
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--preserve</TERM>
+<LISTITEM>
+<PARA>
+Equvilent to -p -s
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-R, --record-number</TERM>
+<LISTITEM>
+<PARA>
+show record number within archive with each message
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--remove-files</TERM>
+<LISTITEM>
+<PARA>
+remove files after adding them to the archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-s, --same-order, --preserve-order</TERM>
+<LISTITEM>
+<PARA>
+list of names to extract is sorted to match archive
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--same-owner</TERM>
+<LISTITEM>
+<PARA>
+create extracted files with the same ownership
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-S, --sparse</TERM>
+<LISTITEM>
+<PARA>
+handle sparse files efficiently
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-T, --files-from F</TERM>
+<LISTITEM>
+<PARA>
+get names to extract or create from file F
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--null</TERM>
+<LISTITEM>
+<PARA>
+ -T reads null-terminated names, disable -C
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--totals</TERM>
+<LISTITEM>
+<PARA>
+print total bytes written with --create
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--verbose</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -v option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-V, --label NAME</TERM>
+<LISTITEM>
+<PARA>
+create archive with volume name NAME
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--version</TERM>
+<LISTITEM>
+<PARA>
+print tar program version number
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-w, --interactive, --confirmation</TERM>
+<LISTITEM>
+<PARA>
+ask for confirmation for every action
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-W, --verify</TERM>
+<LISTITEM>
+<PARA>
+attempt to verify the archive after writing it
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--exclude FILE</TERM>
+<LISTITEM>
+<PARA>
+exclude file FILE
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-X, --exclude-from FILE</TERM>
+<LISTITEM>
+<PARA>
+exclude files listed in FILE
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-Z, --compress, --uncompress</TERM>
+<LISTITEM>
+<PARA>
+filter the archive through compress
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-z, --gzip, --ungzip</TERM>
+<LISTITEM>
+<PARA>
+filter the archive through gzip
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--use-compress-program PROG</TERM>
+<LISTITEM>
+<PARA>
+filter the archive through PROG (which must accept -d)
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--block-compress</TERM>
+<LISTITEM>
+<PARA>
+block the output of compression program for tapes
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-[0-7][lmh]</TERM>
+<LISTITEM>
+<PARA>
+specify drive and density
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+
+</REFENTRY>
+
 <REFENTRY id="tee">
 <REFMETA><REFENTRYTITLE>
 tee
@@ -9399,6 +10018,393 @@ FILE exists and is a socket
 </VARLISTENTRY>
 
 </VARIABLELIST>
+</REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="time">
+<REFMETA><REFENTRYTITLE>
+time
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>time</REFNAME>
+<REFPURPOSE>
+run programs and summarize system resource usage
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "time" is as specified in the SUS but with the
+following differences as listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>-o FILE, --output=FILE</TERM>
+<LISTITEM>
+<PARA>
+Write the resource use statistics to FILE instead of to the standard
+error stream.  By default, this overwrites the file, destroying the
+file's previous contents.  
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-a, --append</TERM>
+<LISTITEM>
+<PARA>
+Append the resource use information to the output file instead of
+overwriting it.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-f FORMAT, --=FORMAT</TERM>
+<LISTITEM>
+<PARA>
+Use FORMAT as the  string that controls the output of time.  See
+the below more information.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--portability</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -p option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-v, --verbose</TERM>
+<LISTITEM>
+<PARA>
+Use the built-in verbose , which displays each available piece
+of information on the program's resource use on its own line, with an
+English description of its meaning.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-V, --version</TERM>
+<LISTITEM>
+<PARA>
+Print the version number of time and exit.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Formatting the Output</TITLE>
+<PARA>
+The  string FORMAT controls the contents of the time output.
+The  string can be set using the -f or --format, -v or
+--verbose, or -p or --portabili­ ty options.  If they are not
+given, but the TIME environ­ ment variable is set, its value is used
+as the  string.  Otherwise, a built-in default  is used.
+</PARA>
+
+<PARA>
+The default  is:
+  %Uuser %Ssystem %Eelapsed %PCPU (%Xtext+%Ddata %Mmax)k
+  %Iinputs+%Ooutputs (%Fmajor+%Rminor)pagefaults %Wswaps
+</PARA>
+
+<PARA>
+The  string usually consists of resource specifiers
+interspersed with plain text.  A percent sign (%) in the 
+string causes the following character to be interpreted as a resource
+specifier, which is similar to the formatting characters in the
+printf(3) function.
+</PARA>
+
+<PARA>
+A backslash (\) introduces a backslash escape, which is translated
+into a single printing character upon output.  \t outputs a tab
+character, \n outputs a newline, and \\ outputs a backslash.  A
+backslash followed by any other character outputs a question mark
+(?) followed by a backslash, to indicate that an invalid backslash
+escape was given.
+</PARA>
+
+<PARA>
+Other text in the  string is copied verbatim to the output.
+time always prints a newline after printing the resource use
+information, so normally  strings do not end with a newline
+character (or 0).
+</PARA>
+
+<PARA>
+There are many resource specifications.  Not all resources are
+measured by all versions of Unix, so some of the values might be
+reported as zero.  Any character following a percent sign that is not
+listed in the table below causes a question mark (`?') to be output,
+followed by that character, to indicate that an invalid resource
+listed in the table below causes a question mark (`?')  to be output,
+followed by that character, to indicate that an invalid resource
+specifier was given.
+</PARA>
+
+<PARA>
+The resource specifiers, which are  a  superset  of  those
+recognized by the tcsh(1) builtin `time' command, are:
+</PARA>
+
+<variablelist>
+
+<VARLISTENTRY>
+<TERM>%</TERM>
+<LISTITEM>
+<PARA>
+A literal `%'.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>C</TERM>
+<LISTITEM>
+<PARA>
+Name and command line arguments of the command being timed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>D</TERM>
+<LISTITEM>
+<PARA>
+Average size of the processs unshared data area, in Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>E</TERM>
+<LISTITEM>
+<PARA>
+Elapsed real (wall clock) time used by the process, in
+[hours:]minutes:seconds.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>F</TERM>
+<LISTITEM>
+<PARA>
+Number of major, or I/O-requiring, page faults that occurred while the
+process was running.  These are faults where the page has actually
+migrated out of primary memory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>I</TERM>
+<LISTITEM>
+<PARA>
+Number of file system inputs by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>K</TERM>
+<LISTITEM>
+<PARA>
+Average total (data+stack+text) memory use of the process, in
+Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>M</TERM>
+<LISTITEM>
+<PARA>
+Maximum resident set size of the process during its lifetime, in
+Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>O</TERM>
+<LISTITEM>
+<PARA>
+Number of file system outputs by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>P</TERM>
+<LISTITEM>
+<PARA>
+Percentage of the CPU that this job got.  This is just user + system
+times divided by the total running time.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>R</TERM>
+<LISTITEM>
+<PARA>
+Number of minor, or recoverable, page faults.  These are pages that
+are not valid (so they fault) but which have not yet been claimed by
+other virtual pages.  Thus the data in the page is still valid but the
+system tables must be updated.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>S</TERM>
+<LISTITEM>
+<PARA>
+Total number of CPU-seconds used by the system on behalf of the
+process (in kernel mode), in seconds.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>U</TERM>
+<LISTITEM>
+<PARA>
+Total number of CPU-seconds that the process used directly (in user
+mode), in seconds.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>W</TERM>
+<LISTITEM>
+<PARA>
+Number of times the process was swapped out of main memory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>X</TERM>
+<LISTITEM>
+<PARA>
+Average amount of shared text in the process, in Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>Z</TERM>
+<LISTITEM>
+<PARA>
+System's page size, in bytes.  This is a per-system constant, but
+varies between systems.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>c</TERM>
+<LISTITEM>
+<PARA>
+Number of times the process was context-switched involuntarily
+(because the time slice expired).
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>e</TERM>
+<LISTITEM>
+<PARA>
+Elapsed real (wall clock) time used by the process, in seconds.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>k</TERM>
+<LISTITEM>
+<PARA>
+Number of signals delivered to the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>p</TERM>
+<LISTITEM>
+<PARA>
+Average unshared stack size of the process, in Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>r</TERM>
+<LISTITEM>
+<PARA>
+Number of socket messages received by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>s</TERM>
+<LISTITEM>
+<PARA>
+Number of socket messages sent by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>t</TERM>
+<LISTITEM>
+<PARA>
+Average resident set size of the process, in Kilobytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>w</TERM>
+<LISTITEM>
+<PARA>
+Number of times that the program was context-switched voluntarily, for
+instance while waiting for an I/O operation to complete.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>x</TERM>
+<LISTITEM>
+<PARA>
+Exit status of the command.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
 </REFSECT1>
 
 </REFENTRY>
@@ -10466,6 +11472,179 @@ output version information and exit
 
 </VARIABLELIST>
 </REFSECT1>
+
+</REFENTRY>
+
+<REFENTRY id="xargs">
+<REFMETA><REFENTRYTITLE>
+xargs
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>xargs</REFNAME>
+<REFPURPOSE>
+build and execute command lines from standard input
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The specification for "xargs" is as specified in the SUS but with the
+following differences as listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Differences</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>--null, -0</TERM>
+<LISTITEM>
+<PARA>
+Input filenames are terminated by a null character instead of by
+whitespace, and the quotes and backslash are not special (every
+character is taken literally).  Disables the end of file string, which
+is treated like any other argument.  Useful when arguments might
+contain white space, quote marks, or backslashes.  The GNU find
+-print0 option produces input suitable for this mode.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--eof[=eof-str]</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -e option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-E</TERM>
+<LISTITEM>
+<PARA>
+This option is not supported
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--replace[=replace-str]</TERM>
+<LISTITEM>
+<PARA>
+Use FORMAT as the  string that controls the output of time.  See
+the below more information.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-I</TERM>
+<LISTITEM>
+<PARA>
+This option is not supported
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--max-lines[=max-lines]</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the the -l option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-L</TERM>
+<LISTITEM>
+<PARA>
+This option is not supported
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--max-args=max-args</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -n option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--interactive</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -p option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--no-run-if-empty, -r</TERM>
+<LISTITEM>
+<PARA>
+If the standard input does not contain any nonblanks, do not run the
+command.  Normally, the command is run once even if there is no input.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--max-chars</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -s option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--verbose</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -t option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--version</TERM>
+<LISTITEM>
+<PARA>
+Print the version number of xargs and exit.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--exit</TERM>
+<LISTITEM>
+<PARA>
+Equivalent to the -x option
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>--max-procs=max-procs, -P max-procs</TERM>
+<LISTITEM>
+<PARA>
+Run up to max-procs processes at a time; the default is 1.  If
+max-procs is 0, xargs will run as many processes as possible at a
+time.  Use the -n option with -P; otherwise chances are that only one
+exec will be done.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
 
 </REFENTRY>
 

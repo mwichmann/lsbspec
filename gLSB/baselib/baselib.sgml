@@ -1570,140 +1570,6 @@ This function is part of the ABI, and not the API.
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib-clone-1"> <REFMETA>
-<REFENTRYTITLE>__clone</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__clone
-</REFNAME>
-<REFPURPOSE>create a thread
-</REFPURPOSE>
-<INDEXTERM ID="ix-baselib-clone-2"><PRIMARY>__clone</PRIMARY></INDEXTERM>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>27 February 2000</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int __clone (int (* <replaceable class="parameter" >fn</replaceable>) (void *<replaceable class="parameter" >arg</replaceable>),
-             void *<replaceable class="parameter" >child_stack</replaceable>,
-             int <replaceable class="parameter" >flags</replaceable>,
-             void *<replaceable class="parameter" >arg</replaceable>)
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>27 February 2000</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__clone creates a new process like fork does.  Unlike fork, __clone
-allows the child process to share parts of its execution context with
-its parent process, such as the memory space, the table of file
-descriptors, and the table of signal handlers.  The main use of
-__clone is to implement threads: multiple threads of control in a
-program that run concurrently in a shared memory space.
-</PARA>
-<PARA>
-When the child process is created, it executes the function
-application fn(arg).  The fn argument is a pointer to a function that
-is called by the child process at the beginning of its execution.  The
-arg argument is passed back to the fn function.
-</PARA>
-<PARA>
-When the fn(arg) function application returns,  the  child
-process  terminates.   The  integer  returned by fn is the
-exit code for the child process.  The  child  process  may
-also  terminate  explicitely  by  calling exit() or after
-receiving a fatal signal.
-</PARA>
-<PARA>
-The child_stack argument specifies the location of the stack used by
-the child process.  Since the child and parent processes share memory,
-it is not possible in general for the child process to execute in the
-same stack as the parent process.  The parent process must therefore
-set up memory space for the child stack and pass a pointer to this
-space to __clone.  Stacks grow downwards on all processors that run
-Linux (except the HP PA processors), so child_stack usually points to
-the topmost address of the memory space set up for the child stack.
-</PARA>
-<PARA>
-The low byte of flags contains the number of the signal sent to the
-parent when the child dies.  flags must also be bitwise-or'ed with
-exactly the following constants (FIXME: are these in our constant
-database?): CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND.
-No other combination of flags is supported by this standard.
-The parent and child share memory space, mappings and unmappings
-performed with mmap, root of the file system, the current working
-directory, umask, file descriptor table, and signal handlers.  If the
-parent or child changes these resources, the other process is also
-affected.
-</PARA>
-<PARA>
-For a variety of reasons, it is unlikely that __clone will be included
-in the final version of the Linux Standard Base.  Issues include (1)
-POSIX threads are standardized, (2) feedback from ISV's so far
-indicates little interest in a Linux-specific API, (3) a good short
-term solution is documenting differences between our pthreads and full
-POSIX threads, (4) a good long term solution is working to modify
-deficient aspects of the POSIX thread standard.
-</PARA>
-<PARA>
-In addition, there are technical issues with mixing application calls
-to __clone along with system libraries which may use threads
-internally (e.g. some implementations of asynchronous I/O).  Signals
-may go to the wrong thread and that kind of thing.
-</PARA>
-<PARA>
-(Assuming we are ready to remove __clone, we want to put the above two
-paragraphs into a rationale section or something, if we have such - it
-is still here largely because there isn't such a section yet).
-</PARA>
-</REFSECT1>
-<refsect1>
-<title>
-Return value
-</title>
-<para>
-On success, the PID of the child process  is  returned  in
-the  parent's  thread of execution.  On failure, a -1 will
-be returned in the parent's context, no child process will
-be created, and errno will be set appropriately.
-</para>
-</refsect1>
-<refsect1>
-<title>
-Errors
-</title>
-<para>
-EAGAIN Too many processes are already running.
-</para>
-<para>
-ENOMEM __clone cannot allocate sufficient memory to allocate a task
-structure for the child, or to copy those parts of the parent's
-context that need to be copied.
-</para>
-</refsect1>
-<REFSECT1>
-<TITLE>Notes/rationale
-</TITLE>
-<PARA>
-This subset of clone is sufficient to implement the LinuxThreads
-package (as of this writing).  FIXME: someone should check pth.
-</PARA>
-<PARA>
-Although portability to non-Linux systems is a secondary goal for the
-Linux Standard Base, it is believed that this subset of clone can be
-implemented on top of a variety of threads API's.
-</PARA>
-<PARA>
-FIXME: What about __WCLONE flag to waitpid()?
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
 <REFENTRY ID="baselib-errno-location-1"> <REFMETA>
 <REFENTRYTITLE>__errno_location</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -1736,327 +1602,14 @@ the source standard, not the binary standard.
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib-h-errno-location-1"> <REFMETA>
-<REFENTRYTITLE>__h_errno_location</REFENTRYTITLE>
+<REFENTRY ID="baselib---getpgid-1"> <REFMETA>
+<REFENTRYTITLE>__getpgid</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>__h_errno_location
-</REFNAME>
-<REFPURPOSE>address of h_errno variable
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>15 February 2000</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int *__h_errno_location (void);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>15 February 2000</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-Return the address of the h_errno variable, where h_errno is as
-specified in the Single Unix Specification.  Only in the binary
-standard, not the source standard.  Note that h_errno itself
-is only in the source standard, not the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib-strtod-internal-1"> <REFMETA>
-<REFENTRYTITLE>__strtod_internal</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strtod_internal
-</REFNAME>
-<REFPURPOSE>mangle of strtod
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>15 February 2000</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-double __strtod_internal (const char *<REPLACEABLE CLASS="PARAMETER">__nptr</REPLACEABLE>,
-                          char **<REPLACEABLE CLASS="PARAMETER">__endptr</REPLACEABLE>,
-                          int <REPLACEABLE CLASS="PARAMETER">__group</REPLACEABLE>);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>15 February 2000</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-The __GROUP argument must be 0 or the behavior is undefined.
-Otherwise the same as
-
-<BLOCKQUOTE>
-<PARA>
-strtod (__nptr, __endptr).
-</PARA>
-</BLOCKQUOTE>
-
-Only in the binary standard, not the source standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib-strtof-internal-1"> <REFMETA>
-<REFENTRYTITLE>__strtof_internal</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strtof_internal
-</REFNAME>
-<REFPURPOSE>mangle of strtof
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>15 February 2000</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-float __strtof_internal (const char *__nptr,
-                         char **__endptr, int __group);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>15 February 2000</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__GROUP must be 0 or the behavior is undefined.  Otherwise the same as
-strtof (__nptr, __endptr).  Only in the binary standard, not the
-source standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib-strtol-internal-1"> <REFMETA>
-<REFENTRYTITLE>__strtol_internal</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strtol_internal
-</REFNAME>
-<REFPURPOSE>mangle of strtol
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>15 February 2000</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-long int __strtol_internal (const char *__nptr, char **__endptr,
-                            int __base, int __group);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>15 February 2000</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__GROUP must be 0 or the behavior is undefined.  Otherwise the same as
-strtol (__nptr, __endptr, __base).  Only in the binary standard, not the
-source standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib-strtoul-internal-1"> <REFMETA>
-<REFENTRYTITLE>__strtoul_internal</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strtoul_internal
-</REFNAME>
-<REFPURPOSE>mangle of strtoul
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>15 February 2000</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-unsigned long int __strtoul_internal (const char *__nptr,
-                                      char **__endptr, int __base,
-                                      int __group));
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>15 February 2000</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__GROUP must be 0 or the behavior is undefined.  Otherwise the same as
-strtoul (__nptr, __endptr, __base).  Only in the binary standard, not the
-source standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib-xstat-1"> <REFMETA>
-<REFENTRYTITLE>__xstat</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__xstat
-</REFNAME>
-<REFPURPOSE>provide inode information
-</REFPURPOSE>
-<INDEXTERM ID="ix-baselib-xstat-1"><PRIMARY>stat</PRIMARY></INDEXTERM>
-<INDEXTERM ID="ix-baselib-xstat-2"><PRIMARY>xstat</PRIMARY></INDEXTERM>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>4 March 1996</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-#include &lt;sys/stat.h>
-#include &lt;unistd.h>
-
-int __xstat (int <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>,
-             const char *<REPLACEABLE CLASS="PARAMETER">__filename</REPLACEABLE>,
-             struct stat *<REPLACEABLE CLASS="PARAMETER">__stat_buf</REPLACEABLE>)
-
-int __lxstat (int <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>,
-              const char *<REPLACEABLE CLASS="PARAMETER">__filename</REPLACEABLE>,
-              struct stat *<REPLACEABLE CLASS="PARAMETER">__stat_buf</REPLACEABLE>)
-
-int __fxstat (int <REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>,
-              int <REPLACEABLE CLASS="PARAMETER">__filedesc</REPLACEABLE>,
-              struct stat *<REPLACEABLE CLASS="PARAMETER">__stat_buf</REPLACEABLE>)
-</SYNOPSIS>
-<REFSECT2>
-<TITLE>Inputs
-</TITLE>
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM><REPLACEABLE CLASS="PARAMETER">__ver</REPLACEABLE>
-</TERM>
-<LISTITEM>
-<PARA>Must be 3 or the behavior is undefined.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM><REPLACEABLE CLASS="PARAMETER">__filename</REPLACEABLE>
-</TERM>
-<LISTITEM>
-<PARA>As in POSIX.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM><REPLACEABLE CLASS="PARAMETER">__filedesc</REPLACEABLE>
-</TERM>
-<LISTITEM>
-<PARA>As in POSIX.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM><REPLACEABLE CLASS="PARAMETER">__stat_buf</REPLACEABLE>
-</TERM>
-<LISTITEM>
-<PARA>As in POSIX.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-</VARIABLELIST>
-</REFSECT2></REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>5 March 1996</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA><FUNCTION>__xstat()</FUNCTION> has the same behavior as stat
-(__filename, __stat_buf) as specified by POSIX.
-</PARA>
-<PARA><FUNCTION>__lxstat()</FUNCTION> has the same behavior as lstat
-(__filename, __stat_buf) as specified by POSIX.
-</PARA>
-<PARA><FUNCTION>__fxstat()</FUNCTION> has the same behavior as fstat
-(__filedesc, __stat_buf) as specified by POSIX.
-</PARA>
-<PARA>FIXME: are we clear on specifying the correct struct stat,
-rather than the kernel one?
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Usage
-</TITLE>
-<PARA>
-<FUNCTION>__xstat</FUNCTION>, <FUNCTION>__lxstat</FUNCTION>, and
-<FUNCTION>__fxstat</FUNCTION> are not in the source standard;
-<FUNCTION>stat</FUNCTION>, <FUNCTION>lstat</FUNCTION>, and
-<FUNCTION>fstat</FUNCTION> are not in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib-select-1"> <REFMETA>
-<REFENTRYTITLE>select</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>select
-</REFNAME>
-<REFPURPOSE>synchronous I/O multiplexing
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>26 January 2000</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-Specified as in the Single Unix Specification.  But note the text "On
-successful completion, the object pointed to by the timeout argument
-may be modified."
-</PARA>
-
-<PARA>
-Linux systems currently modify the timeval structure to reflect the
-amount of time not slept; most other implementations do not do this.
-This causes problems both when Linux code which reads the timeval
-structure is ported to other operating systems, and when code is
-ported to Linux that reuses the timeval structure for multiple selects
-in a loop without reinitializing it.  Consider timeout to be undefined
-after select returns and reinitialize it before each call to select.
-</PARA>
-
-<PARA>
-This behavior may be deprecated in the future.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---sigsetjmp-1"> <REFMETA>
-<REFENTRYTITLE>__sigsetjmp</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__sigsetjmp</REFNAME>
+<REFNAME>__getpgid</REFNAME>
 <REFPURPOSE>
-save stack context for non-local goto
+get the process group id
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -2064,7 +1617,7 @@ save stack context for non-local goto
 <DATE>16 February 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-int __sigsetjmp(jmp_buf env, int savemask);
+pid_t __getpgid(pid_t pid);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -2074,10 +1627,10 @@ int __sigsetjmp(jmp_buf env, int savemask);
 <TITLE>Description
 </TITLE>
 <PARA>
-__sigsetjmp(env, savemask) has the same behavior as sigsetjmp(env, savemask) as specified by POSIX.
+__getpgid(pid) has the same specification as getpgid(pid).
 </PARA>
 <PARA>
-__sigsetjmp is not in the source standard; it is only in the binary standard.
+__getpgid is not in the source standard; it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -2264,627 +1817,76 @@ __sigsetjmp is not in the source standard; it is only in the binary standard.
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib---bzero-1"> <REFMETA>
-<REFENTRYTITLE>__bzero</REFENTRYTITLE>
+<REFENTRY ID="baselib-strtod-internal-1"> <REFMETA>
+<REFENTRYTITLE>__strtod_internal</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>__bzero</REFNAME>
-<REFPURPOSE>
-mangle of bzero
+<REFNAME>__strtod_internal
+</REFNAME>
+<REFPURPOSE>mangle of strtod
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
+<DATE>15 February 2000</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-void __bzero(void *<REPLACEABLE CLASS="PARAMETER" >s</REPLACEABLE>, size_t n);
+double __strtod_internal (const char *<REPLACEABLE CLASS="PARAMETER">__nptr</REPLACEABLE>,
+                          char **<REPLACEABLE CLASS="PARAMETER">__endptr</REPLACEABLE>,
+                          int <REPLACEABLE CLASS="PARAMETER">__group</REPLACEABLE>);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
-<DATE>16 February 2001</DATE>
+<DATE>15 February 2000</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
-__bzero(s, n) has the same specification as bzero(s, n).
-</PARA>
+The __GROUP argument must be 0 or the behavior is undefined.
+Otherwise the same as
+
+<BLOCKQUOTE>
 <PARA>
-__bzero is not in the source standard; it is only in the binary standard.
+strtod (__nptr, __endptr).
+</PARA>
+</BLOCKQUOTE>
+
+Only in the binary standard, not the source standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
 
-<REFENTRY ID="baselib---ctype-get-mb-cur-max-1"> <REFMETA>
-<REFENTRYTITLE>__ctype_get_mb_cur_max</REFENTRYTITLE>
+<REFENTRY ID="baselib-strtol-internal-1"> <REFMETA>
+<REFENTRYTITLE>__strtol_internal</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>__ctype_get_mb_cur_max</REFNAME>
-<REFPURPOSE>
-maximum length of a multibyte character in the current locale
+<REFNAME>__strtol_internal
+</REFNAME>
+<REFPURPOSE>mangle of strtol
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
+<DATE>15 February 2000</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-size_t __ctype_get_mb_cur_max(void);
+long int __strtol_internal (const char *__nptr, char **__endptr,
+                            int __base, int __group);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
-<DATE>16 February 2001</DATE>
+<DATE>15 February 2000</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
-__ctype_get_mb_cur_max() returns the maximum length of a multibyte character in the current locale.
-</PARA>
-<PARA>
-__ctype_get_mb_cur_max is not in the source standard; it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---getpgid-1"> <REFMETA>
-<REFENTRYTITLE>__getpgid</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__getpgid</REFNAME>
-<REFPURPOSE>
-get the process group id
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-pid_t __getpgid(pid_t pid);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__getpgid(pid) has the same specification as getpgid(pid).
-</PARA>
-<PARA>
-__getpgid is not in the source standard; it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---libc-current-sigrtmax-1"> <REFMETA>
-<REFENTRYTITLE>__libc_current_sigrtmax</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__libc_current_sigrtmax</REFNAME>
-<REFPURPOSE>return number of available real-time signal with lowest priority
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int __libc_current_sigrtmax(void);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__libc_current_sigrtmax() returns the number of an available real-time signal with the lowest priority.
-</PARA>
-<PARA>
-__libc_current_sigrtmax is not in the source standard; it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---libc-current-sigrtmin-1"> <REFMETA>
-<REFENTRYTITLE>__libc_current_sigrtmin</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__libc_current_sigrtmin</REFNAME>
-<REFPURPOSE>
-return number of available real-time signal with highest priority
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int __libc_current_sigrtmin(void);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__libc_current_sigrtmin() returns the number of an available real-time signal with the highest priority
-</PARA>
-<PARA>
-__libc_current_sigrtmin is not in the source standard; it is only in the binary standard
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---mbrlen-1"> <REFMETA>
-<REFENTRYTITLE>__mbrlen</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__mbrlen</REFNAME>
-<REFPURPOSE>
-mangle of mbrlen
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-size_t __mbrlen(const char *__restrict s,
-               size_t n,
-               mbstate_t *__restrict ps);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__mbrlen(s, n, ps) has the same specification as mbrlen(s, n, ps).
-</PARA>
-<PARA>
-__mbrlen is not in the source standard; it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---secure-getenv-1"> <REFMETA>
-<REFENTRYTITLE>__secure_getenv</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__secure_getenv</REFNAME>
-<REFPURPOSE>
-get an environment variable
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-char *__secure_getenv(__const char *<REPLACEABLE CLASS="PARAMETER" >name</REPLACEABLE>);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__secure_getenv(name) has the same specification as getenv(name) with the exception that if the program is running SUID or SGID enabled, the result is always NULL.
-</PARA>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---sigpause-1"> <REFMETA>
-<REFENTRYTITLE>__sigpause</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__sigpause</REFNAME>
-<REFPURPOSE>
-atomically release blocked signals and wait for interrupt
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-int __sigpause(int sig_or_mask, int is_sig);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__sigpause(sig_or_mask, is_sig) has the same behavior as sigpause(sig_or_mask, is_sig) as specified by X/Open.
-</PARA>
-<PARA>
-__sigpause is not in the source standard; it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---strdup-1"> <REFMETA>
-<REFENTRYTITLE>__strdup</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strdup</REFNAME>
-<REFPURPOSE>
-mangle of strdup
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-char *__strdup(__const char *<REPLACEABLE CLASS="PARAMETER" >string</REPLACEABLE>);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__strdup(string) has the same specification as strdup(string).
-</PARA>
-<PARA>
-__strdup is not in the source standard; it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---strtok-r-1"> <REFMETA>
-<REFENTRYTITLE>__strtok_r</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strtok_r</REFNAME>
-<REFPURPOSE>
-mangle of strtok_r
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-char *__strtok_r(char *__restrict s,
-                __const char *__restrict delim,
-                char **__restrict save_ptr);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__strtok_r(s, delim, save_ptr) has the same specification as strtok_r(s, delim, save_ptr).
-</PARA>
-<PARA>
-__strtok_r is not in the source standard; it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---strtold-internal-1"> <REFMETA>
-<REFENTRYTITLE>__strtold_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strtold_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __strtold_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---strtoll-internal-1"> <REFMETA>
-<REFENTRYTITLE>__strtoll_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strtoll_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __strtoll_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---strtoull-internal-1"> <REFMETA>
-<REFENTRYTITLE>__strtoull_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__strtoull_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __strtoull_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---sysv-signal-1"> <REFMETA>
-<REFENTRYTITLE>__sysv_signal</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__sysv_signal</REFNAME>
-<REFPURPOSE>
-signal handling
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>16 February 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>
-__sighandler_t __sysv_signal(int sig, __sighandler_t handler);
-</SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>16 February 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-__sysv_signal(sig, handler) has the same behavior as signal(sig, handler) as specified by X/Open.
-</PARA>
-<PARA>
-__sysv_signal is not in the source standard; it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---wcstod-internal-1"> <REFMETA>
-<REFENTRYTITLE>__wcstod_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__wcstod_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __wcstod_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---wcstof-internal-1"> <REFMETA>
-<REFENTRYTITLE>__wcstof_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__wcstof_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __wcstof_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---wcstol-internal-1"> <REFMETA>
-<REFENTRYTITLE>__wcstol_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__wcstol_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __wcstol_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---wcstold-internal-1"> <REFMETA>
-<REFENTRYTITLE>__wcstold_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__wcstold_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __wcstold_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---wcstoll-internal-1"> <REFMETA>
-<REFENTRYTITLE>__wcstoll_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__wcstoll_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __wcstoll_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---wcstoul-internal-1"> <REFMETA>
-<REFENTRYTITLE>__wcstoul_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__wcstoul_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __wcstoul_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-</PARA>
-</REFSECT1>
-</REFENTRY>
-
-<REFENTRY ID="baselib---wcstoull-internal-1"> <REFMETA>
-<REFENTRYTITLE>__wcstoull_internal</REFENTRYTITLE>
-<REFMISCINFO>What Section??</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__wcstoull_internal</REFNAME>
-<REFPURPOSE>What is this?
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<SYNOPSIS>return_type __wcstoull_internal(parameters) </SYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE> 8 Feb 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
+__GROUP must be 0 or the behavior is undefined.  Otherwise the same as
+strtol (__nptr, __endptr, __base).  Only in the binary standard, not the
+source standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
@@ -2929,6 +1931,5209 @@ Note that the  of dev_t is not the same as the argument that the kernel syscall 
 __xmknod is not in the source standard; it is only in the binary standard.
 </PARA>
 </REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-acct-3"> <REFMETA>
+<REFENTRYTITLE>acct</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>acct</REFNAME>
+<REFPURPOSE>
+switch process accounting on or off
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;dirent.h>
+
+int alphasort(const struct dirent **a, const struct dirent **b);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+When called with the name of an existing file as argument,
+accounting is turned on, records for each terminating pro-
+cess  are appended to filename as it terminates.  An argu-
+ment of NULL causes accounting to be turned off.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+On success, zero is returned.  On error, -1  is  returned,
+and errno is set appropriately.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+ENOSYS 
+</TERM>
+<LISTITEM>
+<PARA>
+BSD  process  accounting  has not been enabled when
+              the operating system kernel was compiled.  The ker-
+              nel  configuration  parameter controlling this fea-
+              ture is CONFIG_BSD_PROCESS_ACCT.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOMEM 
+</TERM>
+<LISTITEM>
+<PARA>
+Out of memory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPERM  
+</TERM>
+<LISTITEM>
+<PARA>
+The calling process has  no  permission  to  enable
+       process accounting.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EACCES 
+</TERM>
+<LISTITEM>
+<PARA>
+The argument filename is not a regular file.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EIO    
+</TERM>
+<LISTITEM>
+<PARA>
+Error writing to the file filename.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EUSERS 
+</TERM>
+<LISTITEM>
+<PARA>
+There  are  no  more free file structures or we run
+              out of memory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-adjtimex-3"> <REFMETA>
+<REFENTRYTITLE>adjtimex</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>adjtimex</REFNAME>
+<REFPURPOSE>
+tune kernel clock
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;sys/timex.h>
+
+int adjtimex(struct timex *buf);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Linux uses David L. Mills' clock adjustment algorithm (see
+RFC 1305).  The system call adjtimex reads and  optionally
+sets adjustment parameters for this algorithm.  It takes a
+pointer to a timex structure,  updates  kernel  parameters
+from  field  values,  and  returns the same structure with
+current kernel values.  This structure is declared as follows:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct timex {
+</TERM>
+<LISTITEM>
+<PARA>
+                  int modes;           /* mode selector */
+</PARA><PARA>
+                  long offset;         /* time offset (usec) */
+</PARA><PARA>
+                  long freq;           /* frequency offset (scaled ppm) */
+</PARA><PARA>
+                  long maxerror;       /* maximum error (usec) */
+</PARA><PARA>
+                  long esterror;       /* estimated error (usec) */
+</PARA><PARA>
+                  int status;          /* clock command/status */
+</PARA><PARA>
+                  long constant;       /* pll time constant */
+</PARA><PARA>
+                  long precision;      /* clock precision (usec) (read only) */
+</PARA><PARA>
+                  long tolerance;      /* clock frequency tolerance (ppm)
+                                          (read only) */
+</PARA><PARA>
+                  struct timeval time; /* current time (read only) */
+</PARA><PARA>
+                  long tick;           /* usecs between clock ticks */
+</PARA><PARA>
+              };
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+The  modes  field  determines which parameters, if any, to
+set.  It may contain a bitwise-or combination of  zero  or
+more of the following bits:
+</PARA><PARA>
+              #define ADJ_OFFSET            0x0001 /* time offset */
+</PARA><PARA>
+              #define ADJ_FREQUENCY         0x0002 /* frequency offset */
+</PARA><PARA>
+              #define ADJ_MAXERROR          0x0004 /* maximum time error */
+</PARA><PARA>
+              #define ADJ_ESTERROR          0x0008 /* estimated time error */
+</PARA><PARA>
+              #define ADJ_STATUS            0x0010 /* clock status */
+</PARA><PARA>
+              #define ADJ_TIMECONST         0x0020 /* pll time constant */
+</PARA><PARA>
+              #define ADJ_TICK              0x4000 /* tick value */
+</PARA><PARA>
+              #define ADJ_OFFSET_SINGLESHOT 0x8001 /* old-fashioned adjtime */
+</PARA><PARA>
+Ordinary  users  are  restricted to a zero value for mode.
+Only the superuser may set any parameters.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+On success, adjtimex returns the clock state:
+</PARA><PARA>
+
+              #define TIME_OK   0 /* clock synchronized */
+</PARA><PARA>
+              #define TIME_INS  1 /* insert leap second */
+</PARA><PARA>
+              #define TIME_DEL  2 /* delete leap second */
+</PARA><PARA>
+              #define TIME_OOP  3 /* leap second in progress */
+</PARA><PARA>
+              #define TIME_WAIT 4 /* leap second has occurred */
+</PARA><PARA>
+              #define TIME_BAD  5 /* clock not synchronized */
+</PARA><PARA>
+
+On failure, adjtimex returns -1 and sets errno.
+</PARA>
+
+</REFSECT1><REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EFAULT 
+</TERM>
+<LISTITEM>
+<PARA>
+buf does not point to writable memory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPERM  
+</TERM>
+<LISTITEM>
+<PARA>
+buf.mode is non-zero and the  user  is  not  super-
+       user.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL 
+</TERM>
+<LISTITEM>
+<PARA>
+An attempt is made to set buf.offset to a value
+       outside the range -131071 to  +131071,  or  to  set
+       buf.status  to  a  value  other  than  those listed
+       above, or to set buf.tick to a  value  outside  the
+       range 900000/HZ to 1100000/HZ, where HZ is the sys-
+       tem timer interrupt frequency.
+
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-alphasort-3"> <REFMETA>
+<REFENTRYTITLE>alphasort</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>alphasort</REFNAME>
+<REFPURPOSE>
+Scan a directory for matching entries
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;dirent.h>
+
+int alphasort(const struct dirent **a, const struct dirent **b);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The alphasort() function can be  used  as  the  comparison
+function  for the scandir() function to sort the directory
+entries into alphabetical order.  Its parameters  are  the
+two directory entries, a and b, to compare.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The alphasort() function returns  an  integer  less  than,
+equal  to,  or  greater than zero if the first argument is
+considered to be respectively  less  than,  equal  to,  or
+greater than the second.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+<PARA>
+ENOMEM Insufficient memory to complete the operation.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-cfmakeraw-3"> <REFMETA>
+<REFENTRYTITLE>cfmakeraw</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>cfmakeraw</REFNAME>
+<REFPURPOSE>
+get and set  terminal attributes
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;termios.h>
+
+int cfmakeraw ( struct termios *termios_p );
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+cfmakeraw sets the terminal attributes as follows:
+</TERM>
+<LISTITEM>
+<PARA>
+ termios_p->c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP
+                          |INLCR|IGNCR|ICRNL|IXON);
+</PARA><PARA>
+ termios_p->c_oflag &= ~OPOST;
+</PARA><PARA>
+ termios_p->c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
+</PARA><PARA>
+ termios_p->c_cflag &= ~(CSIZE|PARENB);
+</PARA><PARA>
+ termios_p->c_cflag |= CS8;
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+termios_p  is a pointer to a termios structure.  This
+structure contains the following members:
+</PARA><PARA>
+              tcflag_t c_iflag;      /* input modes */
+</PARA><PARA>
+              tcflag_t c_oflag;      /* output modes */
+</PARA><PARA>
+              tcflag_t c_cflag;      /* control modes */
+</PARA><PARA>
+              tcflag_t c_lflag;      /* local modes */
+</PARA><PARA>
+              cc_t c_cc[NCCS];       /* control chars */
+
+</PARA>
+</REFSECT1><REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+0      
+</TERM>
+<LISTITEM>
+<PARA>
+on success.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY><VARLISTENTRY>
+<TERM>
+-1     
+</TERM>
+<LISTITEM>
+<PARA>
+on failure and set errno to indicate the error.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY></VARIABLELIST>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-daemon-3"> <REFMETA>
+<REFENTRYTITLE>daemon</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>daemon</REFNAME>
+<REFPURPOSE>
+Run in the background
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;unistd.h>
+
+int daemon (int nochdir, int noclose);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  daemon()  function  is for programs wishing to detach
+themselves from the controlling terminal and  run  in  the
+background as system daemons.
+
+Unless  the argument nochdir is non-zero, daemon() changes
+the current working directory to the root (`/').
+
+Unless the argument noclose  is  non-zero,  daemon()  will
+redirect  standard  input,  standard  output  and standard
+error to /dev/null.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+<PARA>
+If an error occurs,  daemon()  returns  -1  and  sets  the
+global  variable  errno to any of the errors specified for
+the library functions fork(2) and setsid(2).
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-endutent-3"> <REFMETA>
+<REFENTRYTITLE>endutent</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>endutent</REFNAME>
+<REFPURPOSE>
+access utmp file entries
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;utmp.h>
+
+void endutent(void);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+endutent() closes the utmp file.  It should be called when
+the user code is done accessing the file  with  the  other
+functions
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-fgetwc-3"> <REFMETA>
+<REFENTRYTITLE>fgetwc</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fgetwc
+</REFNAME>
+<REFPURPOSE>read a wide character from a FILE stream
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+wint_t fgetwc (FILE* stream);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>30 March 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "fgetwc" is as specified in the SUSv2 standard.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-fgetws-3"> <REFMETA>
+<REFENTRYTITLE>fgetws</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fgetws</REFNAME>
+<REFPURPOSE>
+read a wide character string from a FILE stream
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE> 29 March 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+wchar_t *fgetws(wchar_t *ws, int n, FILE *stream);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE> 29 March 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "fgetws()" is as specified in the SUSv2 standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-flock-2"> <REFMETA>
+<REFENTRYTITLE>flock</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>flock</REFNAME>
+<REFPURPOSE>
+apply or remove an advisory lock on an open file.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int flock(int fd, int operation)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+Apply or  remove  an  advisory lock on an open file.  The file is specified  by  fd.   Valid  operations  are  given below:
+</PARA>
+<PARA>
+              LOCK_SH   Shared  lock.   More than one process may
+                        hold a shared lock for a given file at  a
+                        given time.
+</PARA>
+<PARA>
+              LOCK_EX   Exclusive  lock.   Only  one  process may
+                        hold an exclusive lock for a  given  file
+                        at a given time.
+</PARA>
+<PARA>
+             LOCK_UN   Unlock.
+</PARA>
+<PARA>
+              LOCK_NB   Don't  block when locking.  May be speci-
+                        fied (by or'ing) along with  one  of  the
+                        other operations.
+</PARA>
+<PARA>
+       A  single file may not simultaneously have both shared and
+       exclusive locks.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+      On success, zero is returned.  On error, -1  is  returned,
+       and errno is set appropriately.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+<PARA>
+EWOULDBLOCK
+              The  file  is  locked  and  the  LOCK_NB  flag  was
+              selected.
+
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-fputwc-3"> <REFMETA>
+<REFENTRYTITLE>fputwc</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fputwc
+</REFNAME>
+<REFPURPOSE>write a wide character to a FILE stream
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+wint_t fputwc (wchar_t wc, FILE* stream);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>30 March 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "fputwc" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-fputws-3"> <REFMETA>
+<REFENTRYTITLE>fputws</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fputws
+</REFNAME>
+<REFPURPOSE>
+write a wide character string to a FILE stream
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+ int fputws (const wchar_t *ws, FILE *stream);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>30 March 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "fputws" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-fstatfs-2"> <REFMETA>
+<REFENTRYTITLE>fstatfs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fstatfs
+</REFNAME>
+<REFPURPOSE>get file system statistics
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;sys/vfs.h>
+
+int fstatfs(int fd, struct statfs *buf);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>
+Description
+</TITLE>
+<PARA>
+fstatfs  returns  information  about a mounted file system.  fd is the open file descriptor of any file within the mounted filesystem.   buf  is  a  pointer  to  a  statfs structure defined as follows:
+
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+struct statfs {
+</TERM>
+<LISTITEM>
+<PARA>
+                 long    f_type;     /* type of filesystem (see below) */
+</PARA><PARA>
+                 long    f_bsize;    /* optimal transfer block size */
+</PARA><PARA>
+                 long    f_blocks;   /* total data blocks in file system */
+</PARA><PARA>
+                 long    f_bfree;    /* free blocks in fs */
+</PARA><PARA>
+                 long    f_bavail;   /* free blocks avail to non-superuser */
+</PARA><PARA>
+                 long    f_files;    /* total file nodes in file system */
+</PARA><PARA>
+                 long    f_ffree;    /* free file nodes in fs */
+</PARA><PARA>
+                 fsid_t  f_fsid;     /* file system id */
+</PARA><PARA>
+                 long    f_namelen;  /* maximum length of filenames */
+</PARA><PARA>
+                 long    f_spare[6]; /* spare for later */
+</PARA><PARA>
+              };
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+Fields that are undefined for a particular file system are set to 0.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+On success, zero is returned.  On error, -1  is  returned, and errno is set appropriately.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EBADF
+</TERM>
+<LISTITEM>
+<PARA>
+fd is not a valid open file descriptor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT
+</TERM>
+<LISTITEM>
+<PARA>
+ buf points to an invalid address.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EIO
+</TERM>
+<LISTITEM>
+<PARA>
+An I/O error occurred while reading from or writing to the file system.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOSYS
+</TERM>
+<LISTITEM>
+<PARA>
+The  filesystem  fd  is  open  on  does not support statfs.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-fwide-3"> <REFMETA>
+<REFENTRYTITLE>fwide</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fwide</REFNAME>
+<REFPURPOSE>
+set and determine the orientation of a FILE stream
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int fwide (FILE* stream, int mode);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>20 March 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "fwide" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-fwprintf-3"> <REFMETA>
+<REFENTRYTITLE>fwprintf</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fwprintf
+</REFNAME>
+<REFPURPOSE>
+formatted wide character output conversion
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>3 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int fwprintf (FILE* stream, const wchar_t* , ...);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "fwprintf" is as specified in the SUSv2 but with 
+the following differences as listed below.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>
+Wide-character Conversion:
+</TITLE>
+<PARA>
+The following wide-character are not specificed in GNU:
+</PARA><PARA>
+d,i
+</PARA><PARA>
+o
+</PARA><PARA>
+u
+</PARA><PARA>
+x
+</PARA><PARA>
+X
+</PARA><PARA>
+f
+</PARA><PARA>
+e,E
+</PARA><PARA>
+g,G
+</PARA><PARA>
+c
+</PARA><PARA>
+s
+</PARA><PARA>
+p
+</PARA><PARA>
+n
+</PARA><PARA>
+C
+</PARA><PARA>
+S
+</PARA><PARA>
+%
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<PARA>
+The following error types are not specified in GNU:
+</PARA><PARA>
+EILSEQ
+</PARA><PARA>
+EINVAL
+</PARA><PARA>
+ENOMEM
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-fwscanf-3"> <REFMETA>
+<REFENTRYTITLE>fwscanf</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fwscanf
+</REFNAME>
+<REFPURPOSE>formatted  wide character input conversion
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int fwscanf(FILE* stream, const wchar_t* , ...);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "fwscanf" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-gethostbyname-3"> <REFMETA>
+<REFENTRYTITLE>gethostbyname</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>gethostbyname</REFNAME>
+<REFPURPOSE>
+get network host entry
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;netdb.h>
+extern int h_errno;
+
+struct hostent *gethostbyname(const char *name);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The gethostbyname() function returns a structure  of  type
+hostent  for  the  given host name.  Here name is either a
+host name, or an IPv4 address in standard dot notation, or
+an IPv6 address in colon (and possibly dot) notation. (See
+RFC 1884 for the description of IPv6 addresses.)  If  name
+is  an  IPv4  or  IPv6 address, no lookup is performed and
+gethostbyname() simply copies name into the  h_name  field
+and  its struct in_addr equivalent into the h_addr_list[0]
+field of the returned hostent structure.  If name  doesn't
+end  in  a dot and the environment variable HOSTALIASES is
+set, the alias file pointed to by HOSTALIASES  will  first
+be  searched  for  name (see hostname(7) for the file for-
+mat).  The current domain and  its  parents  are  searched
+unless name ends in a dot.
+</PARA><PARA>
+
+The domain name queries carried out by gethostbyname()
+use  a  combination  of any or all of the name server
+named(8), a broken out line  from  /etc/hosts, and the 
+Network Information Service (NIS or YP), depending upon
+the contents of the  order  line  in  /etc/host.conf.
+(See   resolv+(8)).    The  default  action  is  to  query
+named(8), followed by /etc/hosts.
+</PARA><PARA>
+The hostent structure is defined in &lt;netdb.h> as follows:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+struct hostent {
+</TERM>
+<LISTITEM>
+<PARA>
+       char    *h_name;        /* official name of host */
+</PARA><PARA>
+       char    **h_aliases;    /* alias list */
+</PARA><PARA>
+       int     h_addrtype;     /* host address type */
+</PARA><PARA>
+       int     h_length;       /* length of address */
+</PARA><PARA>
+       char    **h_addr_list;  /* list of addresses */
+</PARA><PARA>
+              }
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+#define h_addr  h_addr_list[0]  /* for backward compatibility */
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The  gethostbyname()) functions return the hostent
+structure  or  a  NULL  pointer  if  an  error occurs.  
+On  error,  the  h_errno variable holds an error
+number
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+<PARA>
+ENOMEM Insufficient memory to complete the operation. 
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-getopt-long-3"> <REFMETA>
+<REFENTRYTITLE>getopt_long</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getopt_long</REFNAME>
+<REFPURPOSE>
+Parse command line options
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#define _GNU_SOURCE
+#include &lt;getopt.h>
+
+int getopt_long(int argc, char * const argv[],
+           const char *optstring,
+           const struct option *longopts, int *longindex);
+
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The getopt_long() function works like getopt() except that
+it  also  accepts long options, started out by two dashes.
+Long option names may be abbreviated if  the  abbreviation
+is unique or is an exact match for some defined option.  A
+long option may take a parameter, of the form  --arg=param
+or --arg param.
+</PARA><PARA>
+
+longopts  is a pointer to the first element of an array of
+       struct option declared in &lt;getopt.h> as
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+          struct option {
+</TERM>
+<LISTITEM>
+<PARA>
+              const char *name;
+</PARA><PARA>
+              int *flag;
+</PARA><PARA>
+              int has_arg;
+</PARA><PARA>
+              int val;
+</PARA><PARA>
+          };
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The getopt_long() function returns the option character if the
+option  was found successfully, : if there was a missing
+parameter for one of  the  options,  ?  for  an  unknow
+option character, or -1 for the end of the option list.
+
+</PARA><PARA>
+getopt_long() also  returns  the option character when a
+short option is recognized.  For a long option, 
+they return val if flag is NULL, and 0 otherwise.
+Error and -1 returns are the same as for  getopt(),
+plus ? for an ambiguous match or an extraneous parameter.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-getopt-long-only-3"> <REFMETA>
+<REFENTRYTITLE>getopt_long_only</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getopt_long_only</REFNAME>
+<REFPURPOSE>
+Parse command line options
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#define _GNU_SOURCE
+#include &lt;getopt.h>
+
+int getopt_long_only(int argc, char * const argv[],
+           const char *optstring,
+           const struct option *longopts, int *longindex);
+
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+getopt_long_only() is like getopt_long(), but - as  well
+as  --  can  indicate  a long option.  If an option that
+starts with - (not --) doesn't match  a  long  option,
+but  does  match  a  short option, it is parsed as a short
+option instead.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The function getopt_long_only() returns the option character 
+if the option  was found successfully, : if there was a 
+missing parameter for one of  the  options,  ?  for  an 
+unknown option character, or -1 for the end of the option list.
+getopt_long_only() also returns the option character when a
+short option is recognized.  For a long option, 
+they return val if flag is NULL, and 0 otherwise.
+Error and -1 returns are the same as for getopt(),
+plus ? for an ambiguous match or an extraneous parameter.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-getprotobyname-3"> <REFMETA>
+<REFENTRYTITLE>getprotobyname</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getprotobyname
+</REFNAME>
+<REFPURPOSE>
+get protocol entry
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 Arpil 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+struct protoent *getprotobynumber(int proto);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>4 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The getprotobyname() function returns a protoent structure
+       for the line from /etc/protocols that matches the protocol
+       name name.
+</PARA>
+<PARA>
+The protoent structure is defined in &lt;netdb.h&gt; as follows:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct protoent {
+</TERM>
+<LISTITEM>
+<PARA>
+                      char    *p_name;        /* official protocol name */
+</PARA><PARA>
+                      char    **p_aliases;    /* alias list */
+</PARA><PARA>
+                      int     p_proto;        /* protocol number */
+</PARA><PARA>
+              }
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+The getprotobyname() function returns the protoent structure, or a NULL pointer if an 
+error occurs or the end of the file is reached.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+/etc/protocols
+              protocol database file
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-getprotoent-3"> <REFMETA>
+<REFENTRYTITLE>getprotoent</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getprotoent
+</REFNAME>
+<REFPURPOSE>
+get protocol entry
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 Arpil 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+struct protoent *getprotoent(void);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>4 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+ The getprotoent() function reads the next  line  from  the
+       file  /etc/protocols and returns a structure protoent con-
+       taining  the  broken  out  fields  from  the  line.    The
+       /etc/protocols file is opened if necessary.
+</PARA><PARA>
+The protoent structure is defined in &lt;netdb.h&gt; as follows:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct protoent {
+</TERM>
+<LISTITEM>
+<PARA>
+                      char    *p_name;        /* official protocol name */
+</PARA><PARA>
+                      char    **p_aliases;    /* alias list */
+</PARA><PARA>
+                      int     p_proto;        /* protocol number */
+</PARA><PARA>
+              }
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+The getprotoent() function returns the protoent structure, or a NULL pointer if an 
+error occurs or the end of the file is reached.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+/etc/protocols
+              protocol database file
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-getpwnam-3"> <REFMETA>
+<REFENTRYTITLE>getpwnam</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getpwnam</REFNAME>
+<REFPURPOSE>
+get password file entry -  name
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+struct passwd *getpwnam(const char * name);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "getpwnam" is as specified in the SUSv2.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-getservbyname-3"> <REFMETA>
+<REFENTRYTITLE>getservbyname</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getservbyname
+</REFNAME>
+<REFPURPOSE>
+ get service entry
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;netdb.h>
+
+       struct servent *getservbyname(const char *name, const char *proto);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  getservbyname()  function returns a servent structure
+       for the line from /etc/services that matches  the  service
+       name using protocol proto.
+</PARA><PARA>
+The servent structure is defined in &lt;netdb.h> as follows:
+</PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct servent {
+</TERM>
+<LISTITEM>
+<PARA>
+                      char    *s_name;        /* official service name */
+</PARA><PARA>
+                      char    **s_aliases;    /* alias list */
+</PARA><PARA>
+                      int     s_port;         /* port number */
+</PARA><PARA>
+                      char    *s_proto;       /* protocol to use */
+</PARA><PARA>
+              }
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       getservbyname() returns the servent structure, or a NULL  pointer
+       if an error occurs or the end of the file is reached.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+       /etc/services
+              services database file
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-getservent-3"> <REFMETA>
+<REFENTRYTITLE>getservent</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getservent
+</REFNAME>
+<REFPURPOSE>
+ get service entry
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+ #include &lt;netdb.h>
+
+       struct servent *getservent(void);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The getservent() function reads the  next  line  from  the
+       file  /etc/services  and  returns a structure servent con-
+       taining  the  broken  out  fields  from  the  line.    The
+       /etc/services file is opened if necessary.
+</PARA><PARA>
+The servent structure is defined in &lt;netdb.h> as follows:
+</PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct servent {
+</TERM>
+<LISTITEM>
+<PARA>
+                      char    *s_name;        /* official service name */
+</PARA><PARA>
+                      char    **s_aliases;    /* alias list */
+</PARA><PARA>
+                      int     s_port;         /* port number */
+</PARA><PARA>
+                      char    *s_proto;       /* protocol to use */
+</PARA><PARA>
+              }
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       getservent() returns the servent structure, or a NULL  pointer
+       if an error occurs or the end of the file is reached.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+       /etc/services
+              services database file
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-getutent-3"> <REFMETA>
+<REFENTRYTITLE>getutent</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getutent
+</REFNAME>
+<REFPURPOSE>
+ access utmp file entries	
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;utmp.h>
+
+       struct utmp *getutent(void);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+getutent()  reads a line from the current file position in
+       the utmp file.  It returns a pointer to a  structure  con-
+       taining the fields of the line.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ETURN VALUE
+</TITLE>
+<PARA>
+       getutent() returns a pointer to a static struct utmp.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<PARA>
+       On error, (struct utmp*)0 will be returned.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+       /var/run/utmp  database of currently logged-in users
+</PARA><PARA>
+       /var/log/wtmp  database of past user logins
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-getwc-3"> <REFMETA>
+<REFENTRYTITLE>getwc</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getwc</REFNAME>
+<REFPURPOSE>Read a wide character from a FILE stream
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;stdio.h>     
+#include &lt;wchar.h>
+
+wint_t getwc (FILE* stream);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+See fgetwc
+</PARA>
+
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-htons-3"> <REFMETA>
+<REFENTRYTITLE>htons</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>htons</REFNAME>
+<REFPURPOSE>Converts host byte order to network byte order.
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;netinet/in.h>
+
+unsigned short int htons(unsigned short int hostshort);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The htons() function converts the short integer hostshort
+from host byte order to network byte order
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-inet-aton-3"> <REFMETA>
+<REFENTRYTITLE>inet_aton</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>inet_aton
+</REFNAME>
+<REFPURPOSE>
+Internet  address manipulation routine
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;sys/socket.h>
+        #include &lt;netinet/in.h>
+        #include &lt;arpa/inet.h>
+
+       int inet_aton(const char *cp, struct in_addr *inp);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+inet_aton() converts the Internet host address cp from the
+       standard numbers-and-dots notation into  binary  data  and
+       stores  it  in the structure that inp points to. inet_aton
+       returns nonzero if the address is valid, zero if not.
+</PARA><PARA>
+ The   structure   in_addr is defined in netinet/in.h as:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct in_addr {
+</TERM>
+<LISTITEM>
+<PARA>
+                      unsigned long int s_addr;
+</PARA><PARA>
+              }
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+Note that on the i80x86 the host byte order is Least  Significant  Byte  first,  whereas the network byte order, as used on the Internet, is Most Significant Byte first.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-inet-ntoa-3"> <REFMETA>
+<REFENTRYTITLE>inet_ntoa</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>inet_ntoa
+</REFNAME>
+<REFPURPOSE>
+Internet  address manipulation routine
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;sys/socket.h>
+        #include &lt;netinet/in.h>
+        #include &lt;arpa/inet.h>
+
+ char *inet_ntoa(struct in_addr in);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The   inet_ntoa()  function  converts  the  Internet  host
+       address in given in network byte  order  to  a  string  in
+       standard   numbers-and-dots   notation.    The  string  is
+       returned in a statically allocated  buffer,  which  subse-
+       quent calls will overwrite.
+</PARA><PARA>
+ The   structure   in_addr is defined in netinet/in.h as:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct in_addr {
+</TERM>
+<LISTITEM>
+<PARA>
+                      unsigned long int s_addr;
+</PARA><PARA>
+              }
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+Note that on the i80x86 the host byte order is Least  Significant  Byte  first,  whereas the network byte order, as used on the Internet, is Most Significant Byte first.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-initgroups-3"> <REFMETA>
+<REFENTRYTITLE>initgroups</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>initgroups
+</REFNAME>
+<REFPURPOSE>
+nitialize  the  supplementary group access list
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;grp.h>
+        #include &lt;sys/types.h>
+
+       int initgroups(const char *user, gid_t group);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The initgroups() function  initializes  the  group  access
+       list  by  reading  the group database /etc/group and using
+       all groups of which user  is  a  member.   The  additional
+       group group is also added to the list.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       The  initgroups()  function returns 0 on success, or -1 if
+       an error occurs.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EPERM  
+</TERM>
+<LISTITEM>
+<PARA>
+The calling process does not have sufficient privileges.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOMEM 
+</TERM>
+<LISTITEM>
+<PARA>
+Insufficient  memory  to allocate group information
+              structure.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+       /etc/group          group database file
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-ioperm-2"> <REFMETA>
+<REFENTRYTITLE>ioperm</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>ioperm
+</REFNAME>
+<REFPURPOSE>
+set port input/output permissions
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;unistd.h> /* for libc5 */
+        #include &lt;sys/io.h> /* for glibc */
+
+       int  ioperm(unsigned  long  from,  unsigned  long num, int turn_on);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+
+Ioperm sets the port access permission bits for  the  pro-
+       cess  for num bytes starting from port address from to the
+       value turn_on.  The use of  ioperm  requires  root  privi-
+       leges.
+
+</PARA><PARA>
+       Only  the  first  0x3ff I/O ports can be specified in this
+       manner.  For more ports, the iopl function must  be  used.
+       Permissions  are  not  inherited on fork, but on exec they
+       are. This is useful for giving port access permissions  to
+       non-privileged tasks.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       On  success,  zero is returned.  On error, -1 is returned,
+       and errno is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       Libc5  treats  it  as a system call and has a prototype in
+       &lt;unistd.h>.  Glibc1 does not have a prototype. Glibc2  has
+       a prototype both in &lt;sys/io.h> and in &lt;sys/perm.h>.  Avoid
+       the latter, it is available on i386 only.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-iopl-2"> <REFMETA>
+<REFENTRYTITLE>iopl</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>iopl
+</REFNAME>
+<REFPURPOSE>
+change I/O privilege level
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;unistd.h> /* for libc5 */
+        #include &lt;sys/io.h> /* for glibc */
+
+       int iopl(int level);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+ iopl  changes  the I/O privilege level of the current pro-
+       cess, as specified in level.
+
+</PARA><PARA>
+       This call is necessary to allow 8514-compatible X  servers
+       to  run under Linux.  Since these X servers require access
+       to all 65536 I/O ports, the ioperm call is not sufficient.
+
+</PARA><PARA>
+       In addition to granting unrestricted I/O port access, run-
+       ning at a higher I/O privilege level also allows the  pro-
+       cess  to disable interrupts.  This will probably crash the
+       system, and is not recommended.
+</PARA><PARA>
+       rmissions are inherited by fork and exec.
+
+</PARA><PARA>
+       The I/O privilege level for a normal process is 0.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       On success, zero is returned.  On error, -1  is  returned,
+       and errno is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+       EINVAL 
+</TERM>
+<LISTITEM>
+<PARA>
+level is greater than 3.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+       EPERM  
+</TERM>
+<LISTITEM>
+<PARA>
+The current user is not the super-user.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES FROM THE KERNEL SOURCE
+</TITLE>
+<PARA>
+       iopl  has to be used when you want to access the I/O ports
+       beyond the 0x3ff  range:  to  get  the  full  65536  ports
+       bitmapped  you'd  need  8kB of bitmaps/process, which is a
+       bit excessive.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       Libc5  treats  it  as a system call and has a prototype in
+       &lt;unistd.h>.  Glibc1 does not have a prototype. Glibc2  has
+       a prototype both in &lt;sys/io.h> and in &lt;sys/perm.h>.  Avoid
+       the latter, it is available on i386 only.
+</PARA>
+</REFSECT1>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+
+<REFENTRY ID="baselib-isblank-3"> <REFMETA>
+<REFENTRYTITLE>isblank</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>isblank
+</REFNAME>
+<REFPURPOSE>
+character classification routine
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+
+#include &lt;ctype.h>
+
+       int isblank (int c);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+ This functions checks whether c, which must have the value
+       of an unsigned char or EOF, falls into a certain character
+       class according to the current locale.
+</PARA><PARA>
+ isblank()
+              checks for a blank character; that is, a space or a
+              tab.  This function is a GNU extension.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       The values returned are nonzero if the character  c  falls
+       into the tested class, and a zero value if not.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTE
+</TITLE>
+<PARA>
+       The details of what characters  belong  into  which  class
+       depend on the current locale.  For example, isupper() will
+       not recognize an A - umlaut as an uppercase letter in  the
+       default C locale.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+
+<REFENTRY ID="baselib-isinf-3"> <REFMETA>
+<REFENTRYTITLE>isinf</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>isinf
+</REFNAME>
+<REFPURPOSE>
+test for infinity or not-a-number  (NaN).
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;math.h>
+
+       int isinf(double value);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+  The isinf() function returns -1 if value represents  negative  infinity,  1  if value represents positive infinity,  and 0 otherwise.
+</PARA>
+</REFSECT1>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+
+<REFENTRY ID="baselib-iswblank-3"> <REFMETA>
+<REFENTRYTITLE>iswblank</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>iswblank
+</REFNAME>
+<REFPURPOSE>
+test for whitespace wide character
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;wctype.h>
+
+       int iswblank (wint_t wc);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  iswblank function is the wide-character equivalent of
+       the isblank function. It tests whether wc is a wide  char-
+       acter belonging to the wide character class "blank".
+
+</PARA><PARA>
+       The wide character class "blank" is a subclass of the wide
+       character class "space".
+
+</PARA><PARA>
+       Being a subclass of the wide character class "space",  the
+       wide  character  class  "blank"  is disjoint from the wide
+       character class "graph" and therefore also  disjoint  from
+       its   subclasses   "alnum",   "alpha",  "upper",  "lower",
+       "digit", "xdigit", "punct".
+
+</PARA><PARA>
+       The wide character class "blank" always contains at  least
+       the space character and the control character '\t'.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ETURN VALUE
+</TITLE>
+<PARA>
+       The  iswblank  function  returns  non-zero if wc is a wide
+       character belonging to the wide character  class  "blank".
+       Otherwise it returns zero.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       The behaviour of iswblank depends on the LC_CTYPE category
+       of the current locale.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+
+<REFENTRY ID="baselib-iswctype-3"> <REFMETA>
+<REFENTRYTITLE>iswctype</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>iswctype
+</REFNAME>
+<REFPURPOSE>
+ wide character classification
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;wctype.h>
+
+       int iswctype (wint_t wc, wctype_t desc);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       If  wc  is  a wide character having the character property
+       designated by desc (or in  other  words:  belongs  to  the
+       character class designated by desc), the iswctype function
+       returns non-zero. Otherwise it  returns  zero.  If  wc  is
+       WEOF, zero is returned.
+
+</PARA><PARA>
+       desc  must  be a character property descriptor returned by
+       the wctype function.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ETURN VALUE
+</TITLE>
+<PARA>
+       The iswctype function returns non-zero if the wc  has  the
+       designated property. Otherwise it returns 0.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       The behaviour of iswctype depends on the LC_CTYPE category
+       of the current locale.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+
+<REFENTRY ID="baselib-llabs-3"> <REFMETA>
+<REFENTRYTITLE>llabs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>llabs
+</REFNAME>
+<REFPURPOSE>
+ compute the absolute value of an integer.
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;stdlib.h>
+       
+	long long int llabs(long long int j);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       llabs() computes the absolute value of the argument j  of
+       the appropriate integer type for the function.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       Returns the absolute value of the integer argument, of the
+       appropriate integer type for the function.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       Trying to take the absolute value  of  the  most  negative
+       integer is not defined.
+
+</PARA><PARA>
+       The  llabs()  function  is included in glibc since version
+       2.0, but is not in libc5 or libc4.
+
+</PARA><PARA>
+       For  llabs() to be declared, it may be necessary to define
+       _ISOC99_SOURCE or _ISOC9X_SOURCE (depending on the version
+       of glibc) before including any standard headers.
+
+</PARA><PARA>
+       GCC 3.0 also handles llabs() as builtin.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+
+<REFENTRY ID="baselib-logwtmp-3"> <REFMETA>
+<REFENTRYTITLE>logwtmp</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>logwtmp
+</REFNAME>
+<REFPURPOSE>
+ append an entry to the wtmp file
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;utmp.h>
+
+       void logwtmp(const char *line, const char *name, const char *host);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       logwtmp() constructs an utmp structure using  line,  name,
+       host,  current time and current process id.  Then it calls
+       updwtmp() to append the structure to the utmp file.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+AVAILABILITY
+</TITLE>
+<PARA>
+       Both functions are available under glibc2, but  not  under
+       libc5.  However, logwtmp occurs in the old libbsd.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+       /var/log/wtmp
+              database of past user logins
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+
+<REFENTRY ID="baselib-mbsnrtowcs-3"> <REFMETA>
+<REFENTRYTITLE>mbsnrtowcs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>mbsnrtowcs
+</REFNAME>
+<REFPURPOSE>
+convert a multibyte string to a wide character string
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;wchar.h>
+
+       size_t mbsnrtowcs (wchar_t *dest, const char **src,
+                          size_t nms, size_t len, mbstate_t *ps);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       The mbsnrtowcs function is like  the  mbsrtowcs  function,
+       except  that the number of bytes to be converted, starting
+       at *src, is limited to nms.
+
+</PARA><PARA>
+       If dest is not a NULL  pointer,  the  mbsnrtowcs  function
+       converts  at most nms bytes from the multibyte string *src
+       to a wide-character string starting at dest.  At most  len
+       wide  characters  are written to dest. The  state *ps
+       is updated. The conversion  is  effectively  performed  by
+       repeatedly calling mbrtowc(dest,*src,n,ps) where n is some
+       positive number, as long as this call succeeds,  and  then
+       incrementing  dest  by one and *src by the number of bytes
+       consumed. The conversion can stop for three reasons:
+
+</PARA><PARA>
+       1. An invalid multibyte sequence has been encountered.  In
+       this  case  *src is left pointing to the invalid multibyte
+       sequence, (size_t)(-1) is returned, and errno  is  set  to
+       EILSEQ.
+
+</PARA><PARA>
+       2.  The  nms  limit  forces  a stop, or len non-L'\0' wide
+       characters have been stored at dest. In this case *src  is
+       left  pointing  to  the next multibyte sequence to be con-
+       verted, and the number of wide characters written to  dest
+       is returned.
+
+</PARA><PARA>
+ 3.  The  multibyte  string  has been completely converted,
+       including the terminating '\0' (which has the side  effect
+       of  bringing  back *ps to the initial state). In this case
+       *src is set to NULL, and the  number  of  wide  characters
+       written  to  dest, excluding the terminating L'\0' charac-
+       ter, is returned.
+
+</PARA><PARA>
+       If dest is NULL, len is ignored, and the  conversion  pro-
+       ceeds  as above, except that the converted wide characters
+       are not written out to memory,  and  that  no  destination
+       length limit exists.
+
+</PARA><PARA>
+       In  both  of  the  above cases, if ps is a NULL pointer, a
+       static anonymous state only known to the mbsnrtowcs  func-
+       tion is used instead.
+
+</PARA><PARA>
+       The programmer must ensure that there is room for at least
+       len wide characters at dest.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       The mbsnrtowcs function returns the number of wide charac-
+       ters that make up the converted part of the wide character
+       string, not including the terminating null wide character.
+       If   an   invalid   multibyte  sequence  was  encountered,
+       (size_t)(-1) is returned, and errno set to EILSEQ.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       The behaviour of mbsnrtowcs depends on the LC_CTYPE  cate-
+       gory of the current locale.
+
+</PARA><PARA>
+       Passing NULL as ps is not multi-thread safe.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-memmem-3"> <REFMETA>
+<REFENTRYTITLE>memmem</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>memmem</REFNAME>
+<REFPURPOSE>
+locate a substring
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#define _GNU_SOURCE
+#include &lt;string.h>
+
+void *memmem(const void *haystack, size_t haystacklen,
+       const void *needle, size_t needlelen);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  memmem() function finds the start of the first occur-
+rence of the substring needle of length needlelen  in  the
+memory area haystack of length haystacklen.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The  memmem()  function returns a pointer to the beginning
+of the substring, or NULL if the substring is not found.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>NOTES
+</TITLE>
+<PARA>
+This function was broken in  Linux  libraries  up  to  and
+including  libc  5.0.9;  there the needle and haystack
+arguments were interchanged, and a pointer to the  end  of
+the  first  occurrence of needle was returned.  Since libc
+5.0.9 is still widely used, this is a  dangerous  function
+to use.
+Both  old  and  new  libc's have the bug that if needle is
+empty haystack-1 (instead of haystack) is  returned.   And
+glibc  2.0  makes  it  worse, and returns a pointer to the
+last byte of haystack. This is fixed in glibc 2.1.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-ntohs-3"> <REFMETA>
+<REFENTRYTITLE>ntohs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>ntohs</REFNAME>
+<REFPURPOSE>convert values between host and network byte order
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;netinet/in.h>
+
+unsigned short int ntohs(unsigned short int netshort);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  ntohs()  function converts the short integer netshort
+from network byte order to host byte order.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-psignal-3"> <REFMETA>
+<REFENTRYTITLE>psignal</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>psignal</REFNAME>
+<REFPURPOSE>
+print signal message
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;signal.h>
+
+void psignal(int sig, const char *s);
+
+extern const char *const sys_siglist[]
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  psignal()  function displays a message on stderr con-
+sisting of the string s, a colon, a space,  and  a  string
+describing  the signal number sig.  If sig is invalid, the
+message displayed will indicate an unknown signal.
+
+The array sys_siglist holds the signal description strings
+indexed by signal number.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The psignal() function returns no value.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-putwc-3"> <REFMETA>
+<REFENTRYTITLE>putwc</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>putwc</REFNAME>
+<REFPURPOSE>write a wide character from a FILE stream
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;stdio.h>     
+#include &lt;wchar.h>
+
+wint_t putwc (wchar_t wc, FILE* stream);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+See fputwc
+</PARA>
+
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-putwchar--3"> <REFMETA>
+<REFENTRYTITLE>putwchar</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>putwchar</REFNAME>
+<REFPURPOSE>
+write a wide character to standard output
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;wchar.h>
+
+wint_t putwchar (wchar_t wc);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  putwchar function is the wide-character equivalent of
+the putchar function. It writes the wide character  wc  to
+stdout.   If ferror(stdout) becomes true, it returns WEOF.
+If a wide character conversion error occurs, it sets errno
+to EILSEQ and returns WEOF.  Otherwise it returns wc.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The  putwchar function returns wc if no error occurred, or
+WEOF to indicate an error
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>NOTES
+</TITLE>
+<PARA>
+The behaviour of putwchar depends on the LC_CTYPE category
+of the current locale.
+
+It  is  reasonable  to  expect that putwchar will actually
+write the multibyte sequence  corresponding  to  the  wide
+character wc.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-setbuffer-3"> <REFMETA>
+<REFENTRYTITLE>setbuffer</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>setbuffer
+</REFNAME>
+<REFPURPOSE>
+ stream buffering operation
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;stdio.h>
+
+       void setbuffer(FILE *stream, char *buf, size_tsize);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       setbuffer is an  aliase for call to setvbuf.  It works the
+       same, except that  the  size
+       of  the  buffer  is  up  to  the caller, rather than being
+       determined by the default BUFSIZ.  
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-setegid-2"> <REFMETA>
+<REFENTRYTITLE>setegid</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>setegid
+</REFNAME>
+<REFPURPOSE>
+ set real and / or effective group ID
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;sys/types.h>
+       #include &lt;unistd.h>
+
+       int setegid(gid_t egid);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       setegid sets real and effective group ID's of the current
+       process.  Un-privileged users may change the real group ID
+       to the effective group ID and vice-versa.
+
+</PARA><PARA>
+       Prior  to  Linux  1.1.38, the saved ID paradigm, when used
+       with setegid was broken.  Starting at  1.1.38,
+       it is also possible to set the effective group ID from the
+       saved group ID.
+
+</PARA><PARA>
+       Only the super-user may make other changes.
+
+</PARA><PARA>
+       Supplying a value of -1 for either the real  or  effective
+       group ID forces the system to leave that ID unchanged.
+
+</PARA><PARA>
+       Currently   (libc-4.x.x),  setegid(egid)  is  functionally
+       equivalent to setregid(-1, egid).
+
+</PARA><PARA>
+       If the real group ID is changed or the effective group  ID
+       is set to a value not equal to the previous real group ID,
+       the saved group ID will be set to the new effective  group
+       ID.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       On  success,  zero is returned.  On error, -1 is returned,
+       and errno is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<PARA>
+       EPERM 
+</PARA>
+<BLOCKQUOTE>
+<PARA>
+	      The current  process  is  not  the  super-user  and
+              changes other than (i) swapping the effective group
+              ID with the real group ID or (ii)  setting  one  to
+              the  value of the other or (iii) setting the effec
+              tive group ID to the value of the  saved  group  ID
+              was specified.
+</PARA>
+</BLOCKQUOTE>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+
+<REFENTRY ID="baselib-setuid-2"> <REFMETA>
+<REFENTRYTITLE>setuid</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>setuid
+</REFNAME>
+<REFPURPOSE>
+set real and / or effective user ID
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;sys/types.h>
+       #include &lt;unistd.h>
+
+       int seteuid(uid_t euid);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       seteuid  sets real and effective user ID's of the current
+       process.  Un-privileged users may change the real user  ID
+       to the effective user ID and vice-versa.
+
+</PARA><PARA>
+       Prior  to  Linux  1.1.37, the saved ID paradigm, when used
+       with seteuid was broken.
+
+</PARA><PARA>
+       Starting at 1.1.37, it is also possible to set the  effec-
+       tive user ID from the saved user ID.
+
+</PARA><PARA>
+       Only the super-user may make other changes.
+
+</PARA><PARA>
+       Supplying  a  value of -1 for either the real or effective
+       user ID forces the system to leave that ID unchanged.
+
+</PARA><PARA>
+       Currently  seteuid(euid)  is  functionally  equivalent  to
+       setreuid(-1, euid).
+
+</PARA><PARA>
+       If the real user ID is changed or the effective user ID is
+       set to a value not equal to the previous real user ID, the
+       saved user ID will be set to the new effective user ID.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       On  success,  zero is returned.  On error, -1 is returned,
+       and errno is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<PARA>
+       EPERM  
+</PARA>
+<BLOCKQUOTE>
+<PARA>
+	      The current  process  is  not  the  super-user  and
+              changes  other than (i) swapping the effective user
+              ID with the real user ID or (ii) setting one to the
+              value  of  the other or (iii) setting the effective
+              user ID to the value of the saved user ID was specified.
+</PARA>
+</BLOCKQUOTE>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-sethostid-2"> <REFMETA>
+<REFENTRYTITLE>sethostid</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sethostid
+</REFNAME>
+<REFPURPOSE>
+set the unique identifier of the current host
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;unistd.h>
+
+       int sethostid(long int hostid);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       Set a unique  32-bit  identifier  for  the  current
+       machine.   The  32-bit identifier is intended to be unique
+       among all UNIX systems in existence. This normally  resem-
+       bles  the  Internet  address  for  the  local  machine, as
+       returned by gethostbyname(3), and thus usually never needs
+       to be set.
+
+</PARA><PARA>
+       The sethostid call is restricted to the superuser.
+
+</PARA><PARA>
+       The hostid argument is stored in the file /etc/hostid.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       gethostid  returns  the  32-bit identifier for the current
+       host as set by sethostid(2).
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+       /etc/hostid
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-sethostname-2"> <REFMETA>
+<REFENTRYTITLE>sethostname</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sethostname
+</REFNAME>
+<REFPURPOSE>
+set host name
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;unistd.h>
+
+       int sethostname(const char *name, size_t len);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       This  function  is used to change the host
+       name of the current processor.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       On success, zero is returned.  On error, -1  is  returned,
+       and errno is set appropriately.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+       EINVAL 
+</TERM>
+<LISTITEM>
+<PARA>
+	      len  is negative or len is larger than the maximum allowed size.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+       EPERM  
+</TERM>
+<LISTITEM>
+<PARA>
+ 	      the caller was not the  superuser.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+       EFAULT 
+</TERM>
+<LISTITEM>
+<PARA>
+	      name is an invalid address.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       SUSv2 guarantees that Host names are limited to 255 bytes.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-setmntent-3"> <REFMETA>
+<REFENTRYTITLE>setmntent</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>setmntent
+</REFNAME>
+<REFPURPOSE>
+get file system descriptor file entry
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;stdio.h>
+       #include &lt;mntent.h>
+
+       FILE *setmntent(const char *filename, const char *type);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       This routine is used to access the file system description  file /etc/fstab 
+	and the mounted file system description file /etc/mtab.
+
+</PARA><PARA>
+       The setmntent() function opens the file system description
+       file filep and returns a file pointer which can be used by
+       getmntent().  The argument type  is  the  type  of  access
+       required and can take the same values as the mode argument
+       of fopen(3).
+</PARA><PARA>
+ The mntent structure is defined in &lt;mntent.h> as follows:
+</PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+              struct mntent {
+</TERM>
+<LISTITEM>
+<PARA>
+                      char    *mnt_fsname;    /* name of mounted file system */
+</PARA><PARA>
+                      char    *mnt_dir;       /* file system path prefix */
+</PARA><PARA>
+                      char    *mnt_type;      /* mount type (see mntent.h) */
+</PARA><PARA>
+                      char    *mnt_opts;      /* mount options (see mntent.h) */
+</PARA><PARA>
+                      int     mnt_freq;       /* dump frequency in days */
+</PARA><PARA>
+                      int     mnt_passno;     /* pass number on parallel fsck */
+</PARA><PARA>
+              };
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+       /etc/fstab          file system description file
+       /etc/mtab           mounted file system description file
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-setutent-3"> <REFMETA>
+<REFENTRYTITLE>setutent</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>setutent
+</REFNAME>
+<REFPURPOSE>
+access utmp file entries
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;utmp.h>
+
+       void setutent(void);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       setutent()  rewinds  the  file pointer to the beginning of
+       the utmp file.  It is generally a Good  Idea  to  call  it
+       before any of the other functions.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<PARA>
+       On error, (struct utmp*)0 will be returned.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+FILES
+</TITLE>
+<PARA>
+       /var/run/utmp  database of currently logged-in users
+       /var/log/wtmp  database of past user logins
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-shm-open-1"> <REFMETA>
+<REFENTRYTITLE>shm_open</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>shm_open
+</REFNAME>
+<REFPURPOSE>
+creates a file descriptor for a shared memory object.
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;sys/mman.h>
+
+	int shm_open(const char *name, int oflag, mode_t mode);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "shm_open" is as specified in the SUSv2 standard.
+</PARA><PARA>
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-shm-unlink-1"> <REFMETA>
+<REFENTRYTITLE>shm_unlink</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>shm_unlink
+</REFNAME>
+<REFPURPOSE>
+delete a shared memory object.
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;sys/mman.h>
+
+	int shm_unlink(const char *name);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "shm_unlink" is as specified in the SUSv2 standard.
+</PARA><PARA>
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-sigblock-2"> <REFMETA>
+<REFENTRYTITLE>sigblock</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sigblock
+</REFNAME>
+<REFPURPOSE>
+manipulate the signal mask
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;signal.h>
+
+       int sigblock(int mask);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       This interface is made obsolete by sigprocmask(2).
+
+</PARA><PARA>
+       The sigblock system call adds  the  signals  specified  in
+       mask  to  the  set of signals currently being blocked from
+       delivery.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       Prototype  for  this  function  is  only  available if
+       _BSD_SOURCE is defined before the inclusion of any  system
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-siggetmask-2"> <REFMETA>
+<REFENTRYTITLE>siggetmask</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>siggetmask
+</REFNAME>
+<REFPURPOSE>
+manipulate the signal mask
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;signal.h>
+
+       int siggetmask(void);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       This interface is made obsolete by sigprocmask(2).
+</PARA><PARA>
+       siggetmask returns the current set of masked signals.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+       Prototype  for  this  function  is  only  available if
+       _BSD_SOURCE is defined before the inclusion of any  system
+       header file.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-sigreturn-2"> <REFMETA>
+<REFENTRYTITLE>sigreturn</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sigreturn
+</REFNAME>
+<REFPURPOSE>
+return from signal handler and cleanup stack frame
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int sigreturn(unsigned long __unused);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+ When the Linux kernel creates the stack frame for a signal
+       handler,  a  call  to sigreturn is inserted into the stack
+       frame so that the the signal handler will  call  sigreturn
+       upon return. This inserted call to sigreturn cleans up the
+       stack so that the process can restart from  where  it  was
+       interrupted by the signal.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+sigreturn never returns.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>WARNING
+</TITLE>
+<PARA>
+sigreturn call is used by the kernel to implement sig-
+       nal handlers. It should never be called  directly.  Better
+       yet,  the  specific  use  of  the __unused argument varies
+       depending on the architecture.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>FILES
+</TITLE>
+<PARA>
+/usr/src/linux/arch/i386/kernel/signal.c
+</PARA><PARA>
+/usr/src/linux/arch/alpha/kernel/entry.s
+</PARA>
+</REFSECT1>
+
+<!-- LDP GENERAL PUBLIC LICENSE  -->
+<!-- Version 1a, November 1998   -->
+
+</REFENTRY>
+
+<REFENTRY ID="baselib-sigsetmask-2"> <REFMETA>
+<REFENTRYTITLE>sigsetmask</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sigsetmask
+</REFNAME>
+<REFPURPOSE>manipulate the signal mask
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>11 March 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int sigsetmask(int mask);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>11 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+This interface is made obsolete by sigprocmask(2).
+</PARA><PARA>
+The sigsetmask system call replaces  the  set  of  blocked
+       signals totally with a new set specified in mask.  Signals
+       are blocked if the corresponding bit in mask is a 1.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+sigsetmask returns the previous set of  masked signals.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+NOTES
+</TITLE>
+<PARA>
+Prototype  for  this  function  is  only  available if _BSD_SOURCE is defined before the inclusion of any  system  header file.
+</PARA>
+</REFSECT1>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-sigvec-2"> <REFMETA>
+<REFENTRYTITLE>sigvec</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sigvec
+</REFNAME>
+<REFPURPOSE>BSD software signal facilities
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 March 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;bsd/signal.h>
+int sigvec(int sig, struct sigvec *vec, struct sigvec *ovec);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+
+This interface is made obsolete by sigaction(2).
+</PARA><PARA>
+Under Linux sigvec is #define'd to sigaction, and provides
+       at best a rough approximation of the BSD sigvec interface.
+</PARA>
+</REFSECT1>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-sigwaitinfo-2"> <REFMETA>
+<REFENTRYTITLE>sigwaitinfo</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sigwaitinfo
+</REFNAME>
+<REFPURPOSE>select a pending signal from a set of queued signals.
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 March 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+int sigwaitinfo(const sigset_t *set, siginfo *info);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "sigwaitinfo" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-statfs-2"> <REFMETA>
+<REFENTRYTITLE>statfs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>statfs
+</REFNAME>
+<REFPURPOSE>get file system statistics
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;sys/vfs.h>
+
+int statfs(const char *path, struct statfs *buf);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>4 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+statfs  returns  information  about a mounted file system. path is the path name of any file within the  mounted filesystem.
+</PARA><PARA>
+buf is a pointer to a statfs structure defined as follow:
+</PARA>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+truct statfs {
+</TERM>
+<LISTITEM>
+<PARA>
+                 long    f_type;     /* type of filesystem (see below) */
+</PARA><PARA>
+                 long    f_bsize;    /* optimal transfer block size */
+</PARA><PARA>
+                 long    f_blocks;   /* total data blocks in file system */
+</PARA><PARA>
+                 long    f_bfree;    /* free blocks in fs */
+</PARA><PARA>
+                 long    f_bavail;   /* free blocks avail to non-superuser */
+</PARA><PARA>
+                 long    f_files;    /* total file nodes in file system */
+</PARA><PARA>
+                 long    f_ffree;    /* free file nodes in fs */
+</PARA><PARA>
+                 long    f_ffree;    /* free file nodes in fs */
+</PARA><PARA>
+                 fsid_t  f_fsid;     /* file system id */
+</PARA><PARA>
+                 long    f_namelen;  /* maximum length of filenames */
+</PARA><PARA>
+                 long    f_spare[6]; /* spare for later */
+</PARA><PARA>
+              };
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+<PARA>
+Fields that are undefined for a particular file system are set to 0.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+ On success,zero is returned.  On error, -1  is  returned, and errno is set appropriately.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>
+ERRORS
+</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+ENOTDIR
+</TERM>
+<LISTITEM>
+<PARA>
+              A  component  of  the  path prefix of path is not a directory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENAMETOOLONG
+</TERM>
+<LISTITEM>
+<PARA>
+              path is too long.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOENT 
+</TERM>
+<LISTITEM>
+<PARA>
+The file referred to by path does not exist.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EACCES 
+</TERM>
+<LISTITEM>
+<PARA>
+Search permission is denied for a component of  the
+              path prefix of path.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ELOOP  
+</TERM>
+<LISTITEM>
+<PARA>
+Too  many symbolic links were encountered in trans-
+              lating path.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT 
+</TERM>
+<LISTITEM>
+<PARA>
+Buf or path points to an invalid address.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EIO    
+</TERM>
+<LISTITEM>
+<PARA>
+An I/O error occurred while reading from or writing
+              to the file system.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOMEM 
+</TERM>
+<LISTITEM>
+<PARA>
+Insufficient kernel memory was available.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOSYS 
+</TERM>
+<LISTITEM>
+<PARA>
+The  filesystem path is on does not support statfs.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-stime-2"> <REFMETA>
+<REFENTRYTITLE>stime</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>stime</REFNAME>
+<REFPURPOSE>
+set time
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#define _SVID_SOURCE /* glibc2 needs this */
+#include &lt;time.h>
+
+int stime(time_t *t);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+stime  sets the system's idea of the time and date.  Time,
+pointed to by t, is measured in seconds from 00:00:00  GMT
+January  1,  1970.   stime()  may  only be executed by the
+super user.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+On success, zero is returned.  On error, -1  is  returned,
+and errno is set appropriately.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>ERRORS
+</TITLE>
+<PARA>
+EPERM  The caller is not the super-user.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>NOTES
+</TITLE>
+<PARA>
+Under  glibc2,  &lt;time.h>  only  provides  a prototype when
+_SVID_SOURCE is defined.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-stpcpy-3"> <REFMETA>
+<REFENTRYTITLE>stpcpy</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>stpcpy</REFNAME>
+<REFPURPOSE>
+copy a string returning a pointer to its end
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;string.h>
+
+char *stpcpy(char *dest, const char *src);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  stpcpy()  function copies the string pointed to by src
+(including the terminating \0 character)  to  the  array
+pointed  to by dest.  The strings may not overlap, and the
+destination string dest must be large  enough  to  receive
+the copy.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+stpcpy()  returns  a pointer to the end of the string dest
+(that is, the address of the terminating  null  character)
+rather than the beginning.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>EXAMPLE
+</TITLE>
+<PARA>
+For  example,  this program uses stpcpy to concatenate foo
+and bar to produce foobar, which it then prints.
+
+                 #include &lt;string.h>
+
+                 int
+                 main (void)
+                 {
+                   char *to = buffer;
+                   to = stpcpy (to, "foo");
+                   to = stpcpy (to, "bar");
+                   printf ("%s\n", buffer);
+                 }
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-stpncpy-3"> <REFMETA>
+<REFENTRYTITLE>stpncpy</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>stpncpy</REFNAME>
+<REFPURPOSE>
+copy a fixed-size string, returning a pointer to its end
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;string.h>
+
+char *stpncpy (char *dest, const char *src, size_t n);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The stpncpy function copies at most n characters from  the
+string  pointed  to by src, including the terminating '\0'
+character, to the array pointed  to  by  dest.  Exactly  n
+characters  are written at dest. If the length strlen(src)
+is smaller than n, the remaining characters in  the  array
+pointed to by dest are filled with '\0' characters. If the
+length strlen(src) is greater or equal to  n,  the  string
+pointed to by dest will not be '\0' terminated.
+
+The strings may not overlap.
+
+The programmer must ensure that there is room for at least
+n characters at dest.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+stpncpy returns a pointer to the terminating null in dest,
+or, if dest is not null-terminated, dest + n.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-strfry-3"> <REFMETA>
+<REFENTRYTITLE>strfry</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>strfry</REFNAME>
+<REFPURPOSE>
+randomize a string
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;string.h>
+
+char *strfry(char *string);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The strfry() function randomizes the contents of string by
+using rand(3) to randomly swap characters in  the  string.
+The result is an anagram of string
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The strfry() functions returns a pointer to the randomized
+string.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-strnlen-3"> <REFMETA>
+<REFENTRYTITLE>strnlen</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>strnlen</REFNAME>
+<REFPURPOSE>
+determine the length of a fixed-size string
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;string.h>
+
+size_t strnlen (const char *s, size_t maxlen);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  strnlen  function returns the number of characters in
+the string pointed to by s, not including the  terminating
+'\0' character, but at most maxlen. In doing this, strnlen
+looks only at the first maxlen characters at s  and  never
+beyond s+maxlen.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The  strnlen  function  returns strlen(s), if that is less
+than maxlen, or maxlen if there is no '\0' character among
+the first maxlen characters pointed to by s.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-strsep-3"> <REFMETA>
+<REFENTRYTITLE>strsep</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>strsep</REFNAME>
+<REFPURPOSE>
+extract token from string
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;string.h>
+
+char *strsep(char **stringp, const char *delim);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+If  *stringp  is  NULL, the strsep() function returns NULL
+and does nothing else. Otherwise, this function finds  the
+first  token  in  the  string  *stringp,  where tokens are
+delimited by symbols in the string delim.  This  token  is
+terminated  with  a  \0  character  (by  overwriting the
+delimiter) and *stringp  is  updated  to  point  past  the
+token.  In case no delimiter was found, the token is taken
+to be the entire string *stringp,  and  *stringp  is  made
+NULL.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The strsep() function returns a pointer to the token, that
+is, it returns the original value of *stringp.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>NOTES
+</TITLE>
+<PARA>
+The strsep() function was introduced as a replacement  for
+strtok(),  since  the  latter  cannot handle empty fields.
+However, strtok() conforms to ANSI-C  and  hence  is  more
+portable.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>BUGS
+</TITLE>
+<PARA>
+This  function suffers from the same problems as strtok().
+In particular, it modifies the original string. Avoid  it.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-strsignal-3"> <REFMETA>
+<REFENTRYTITLE>strsignal</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>strsignal</REFNAME>
+<REFPURPOSE>
+return string describing signal
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#define _GNU_SOURCE
+#include &lt;string.h>
+
+char *strsignal(int sig);
+
+extern const char * const sys_siglist[];
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The  strsignal()  function returns a string describing the
+signal number passed in the argument sig.  The string  can
+only be used until the next call to strsignal().
+</PARA><PARA>
+The array sys_siglist holds the signal description strings
+indexed by signal number.  The strsignal() function should
+be used if possible instead of this array.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The  strsignal() function returns the appropriate descrip-
+tion string, or an unknown signal message  if  the  signal
+number  is invalid.  On some systems (but not on Linux), a
+NULL pointer may be returned instead for an invalid signal
+number.
+</PARA>
+
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-strtok-r-3"> <REFMETA>
+<REFENTRYTITLE>strtok_r</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>strtok_r
+</REFNAME>
+<REFPURPOSE>
+extract tokens from strings
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;string.h>
+
+       char *strtok_r(char *s, const char *delim, char **ptrptr);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       A token is a nonempty string of characters not occurring
+       in the string delim, followed by  \0  or  by  a  character
+       occurring in delim.
+</PARA><PARA>
+
+       The  strtok_r()  function  can be used to parse the string s
+       into tokens. The first call to strtok_r() should have  s  as
+       its first argument. Subsequent calls should have the first
+       argument set to NULL. Each call returns a pointer  to  the
+       next token, or NULL when no more tokens are found.
+</PARA><PARA>
+
+       If  a token ends with a delimiter, this delimiting charac-
+       ter is overwritten with a \0 and a  pointer  to  the  next
+       character  is  saved  for  the next call to strtok_r().  The
+       delimiter string delim may be different for each call.
+</PARA><PARA>
+
+       ptrptr is a user allocated char* pointer.  It must be the same while parsing the
+       same string.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+BUGS
+</TITLE>
+<PARA>
+       Never use this function. If you do, note that:
+
+</PARA><PARA>
+              It modifies its first argument.
+
+</PARA><PARA>
+              The identity of the delimiting character is lost.
+
+</PARA><PARA>
+              This function cannot be used on constant strings.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       The strtok_r() function returns a pointer to the next token,
+       or NULL if there are no more tokens.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-swscanf-3"> <REFMETA>
+<REFENTRYTITLE>swscanf</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>swscanf
+</REFNAME>
+<REFPURPOSE>
+ wide character input stream
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;stio.h>
+	#include &lt;wchar.h>
+
+	int swscanf(const wchar_t *s, const wchar_r *, ...);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "swscanf" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-system-3"> <REFMETA>
+<REFENTRYTITLE>system</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>system
+</REFNAME>
+<REFPURPOSE>
+execute a shell command
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+       #include &lt;stdlib.h>
+
+       int system (const char * string);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+       system() executes a command specified in string by calling
+       /bin/sh -c string, and returns after the command has  been
+       completed.   During execution of the command, SIGCHLD will
+       be blocked, and SIGINT and SIGQUIT will be ignored.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+RETURN VALUE
+</TITLE>
+<PARA>
+       The value returned is 127 if the execve() call for /bin/sh
+       fails,  -1  if there was another error and the return code
+       of the command otherwise.
+
+</PARA><PARA>
+       If the value of string is NULL, system()  returns  nonzero
+       if the shell is available, and zero if not.
+
+</PARA><PARA>
+       system()  does  not  affect  the  wait status of any other
+       children.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+BUGS
+</TITLE>
+<PARA>
+       It is extremely unfortunate that the libc version of  sys-
+       tem()  ignores  interrupts.  This makes programs that call
+       it from a loop uninterruptable.  This means that for  such
+       purposes one should not use system() but a private version
+       like (warning: untested code!)
+</PARA><PARA>
+       Do not use system() from a program with suid or sgid priv-
+       ileges,  because strange values for some environment vari-
+       ables might be used to subvert system integrity.  Use  the
+       exec(3)  family of functions instead, but not execlp(3) or
+       execvp(3).  system() will not, in fact, work properly from
+       programs  with suid or sgid privileges on systems on which
+       /bin/sh is bash version 2, since bash 2  drops  privileges
+       on  startup.   (Debian uses a modified bash which does not
+       do this when invoked as sh.)
+
+</PARA><PARA>
+       The check for the availability of /bin/sh is not  actually
+       performed;  it  is  always assumed to be available.  ISO C
+       specifies the check, but POSIX.2 specifies that the return
+       shall always be non-zero, since a system without the shell
+       is not conforming, and it is this that is implemented.
+
+</PARA><PARA>
+       It is possible for the shell command  to  return  127,  so
+       that  code is not a sure indication that the execve() call
+       failed; check errno to make sure.
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-timezone-3"> <REFMETA>
+<REFENTRYTITLE>timezone</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>timezone
+</REFNAME>
+<REFPURPOSE>
+hold the different, in seconds, between UTC and local standard time
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>13 April  2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+	#include &lt;time.h>
+
+	extern logn int timezone;
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>13 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "timezone" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
+
+<REFENTRY ID="baselib-wcsftime-3"> <REFMETA>
+<REFENTRYTITLE>wcsftime</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>wcsftime
+</REFNAME>
+<REFPURPOSE>transform date and time to a wide-character string
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 March 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+size_t wcsftime(wchar_t *wcs, size_t maxsize, const wchar_t *,
+		const struct tim *timptr);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "wcsftime" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-wcsncasecmp-3"> <REFMETA>
+<REFENTRYTITLE>wcsncasecmp</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>wcsncasecmp</REFNAME>
+<REFPURPOSE>
+compare  two  fixed-size  wide-character
+strings, ignoring case
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;wchar.h>
+
+int wcsncasecmp (const wchar_t *s1, const wchar_t *s2, size_t n);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The wcsncasecmp function is the wide-character  equivalent
+of  the strncasecmp function. It compares the wide-charac-
+ter string pointed to by s1 and the wide-character  string
+pointed  to by s2, but at most n wide characters from each
+string, ignoring case differences (towupper, towlower).
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The wcsncasecmp function returns zero if the  wide-charac-
+ter  strings  at s1 and s2, truncated to at most length n,
+are equal except for case distinctions. It returns a posi-
+tive integer if truncated s1 is greater than truncated s2,
+ignoring case. It returns a negative integer if  truncated
+s1 is smaller than truncated s2, ignoring case.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>NOTES
+</TITLE>
+<PARA>
+The behaviour of wcsncasecmp depends on the LC_CTYPE cate-
+gory of the current locale.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-wcsnlen-3"> <REFMETA>
+<REFENTRYTITLE>wcsnlen</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>wcsnlen</REFNAME>
+<REFPURPOSE>
+determine the length of a fixed-size wide-char-
+acter string
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;wchar.h>
+
+size_t wcsnlen (const wchar_t *s, size_t maxlen);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The wcsnlen function is the wide-character  equivalent  of
+the  strnlen function. It returns the number of wide-char-
+acters in the string pointed to by s,  not  including  the
+terminating  L'\0' character, but at most maxlen. In doing
+this, wcsnlen looks only at the first maxlen  wide-charac-
+ters at s and never beyond s+maxlen.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The  wcsnlen  function  returns wcslen(s), if that is less
+than maxlen, or maxlen if  there  is  no  L'\0'  character
+among the first maxlen wide characters pointed to by s.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>NOTES
+</TITLE>
+<PARA>
+The behaviour of wcsncasecmp depends on the LC_CTYPE cate-
+gory of the current locale.
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-wcsnrtombs-3"> <REFMETA>
+<REFENTRYTITLE>wcsnrtombs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>wcsnrtombs</REFNAME>
+<REFPURPOSE>
+onvert a wide character string to a multi-
+byte string
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>2 April 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;wchar.h>
+
+size_t wcsnrtombs (char *dest, const wchar_t **src, size_t nwc,
+                   size_t len, mbstate_t *ps);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The wcsnrtombs function is like  the  wcsrtombs  function,
+except that the number of wide characters to be converted,
+starting at *src, is limited to nwc.
+
+</PARA><PARA>
+If dest is not a NULL  pointer,  the  wcsnrtombs  function
+converts at most nwc wide characters from the wide-charac-
+ter string *src to a multibyte string starting at dest. At
+most len bytes are written to dest. The  state *ps is
+updated.  The  conversion  is  effectively  performed   by
+repeatedly  calling wcrtomb(dest,*src,ps), as long as this
+call succeeds, and then incrementing dest by the number of
+bytes written and *src by one. The conversion can stop for
+three reasons:
+
+</PARA><PARA>
+1. A wide character has been encountered that can  not  be
+represented as a multibyte sequence (according to the cur-
+rent locale). In this case *src is left  pointing  to  the
+invalid  wide  character,  (size_t)(-1)  is  returned, and
+errno is set to EILSEQ.
+
+</PARA><PARA>
+2. nwc wide characters have been converted without encoun-
+tering a L'\0', or the length limit forces a stop. In this
+case *src is left pointing to the next wide  character  to
+be  converted,  and the number of bytes written to dest is
+returned.
+
+</PARA><PARA>
+3. The wide-character  string  has  been  completely  con-
+verted,  including  the  terminating  L'\0' (which has the
+side effect of bringing back *ps to the initial state). In
+this  case  *src  is  set to NULL, and the number of bytes
+written to dest, excluding the terminating '\0'  byte,  is
+returned.
+
+</PARA><PARA>
+If  dest  is NULL, len is ignored, and the conversion pro-
+ceeds as above, except that the converted  bytes  are  not
+written  out  to  memory,  and  that no destination length
+limit exists.
+
+</PARA><PARA>
+In both of the above cases, if ps is  a  NULL  pointer,  a
+static  anonymous state only known to the wcsnrtombs func-
+tion is used instead.
+
+</PARA><PARA>
+The programmer must ensure that there is room for at least
+len bytes at dest.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>RETURN VALUE
+</TITLE>
+<PARA>
+The  wcsnrtombs  function returns the number of bytes that
+make up the converted  part  of  multibyte  sequence,  not
+including  the terminating null byte.  If a wide character
+was encountered which could not be converted, (size_t)(-1)
+is returned, and errno set to EILSEQ.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>NOTES
+</TITLE>
+<PARA>
+The  behaviour of wcsnrtombs depends on the LC_CTYPE cate-
+gory of the current locale.
+
+Passing NULL as ps is not multi-thread safe
+</PARA>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+
+</REFSECT1>
+</REFENTRY>
+
+
+
+
+
+
+
+
+
+<REFENTRY ID="baselib-wcswcs-3"> <REFMETA>
+<REFENTRYTITLE>wcswcs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>wcswcs
+</REFNAME>
+<REFPURPOSE>search for a wide substring
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 March 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;wchar.h>
+
+wchar_t *wcswcs(const wchar_t *wcs, const wchar_t *accept);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "wcswcs" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
+<REFENTRY ID="baselib-wcspbrk-3"> <REFMETA>
+<REFENTRYTITLE>wcspbrk</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>wcspbrk
+</REFNAME>
+<REFPURPOSE>
+search a wide-character string for a wide-character code
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>4 March 2001</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;wchar.h>
+
+wchar_t *wcspbrk (const wchar_t *wcs, const wchar_t *accept);
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>2 April 2001</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "wcspbrk" is as specified in the SUSv2 standard. 
+</PARA>
+</REFSECT1>
+
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
 </REFENTRY>
 
 </SECT1>
