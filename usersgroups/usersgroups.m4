@@ -83,6 +83,11 @@ According to JFH, author of shadow-utils, there are no group write APIs.
 <SECT1>
 <TITLE>Commands</TITLE>
 include(usersgroupscmds.sgml)
+<NOTE>
+<PARA>
+Commands adduser(8), groups(1), passmass(1), and rpc.rusersd(8) are also part of this specification; however, they are not currently propery catalogued in the database yet.
+</PARA>
+</NOTE>
 </SECT1>
 
 <SECT1>
