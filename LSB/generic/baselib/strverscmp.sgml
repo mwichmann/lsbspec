@@ -33,11 +33,73 @@ compare strings holding name and indices/version numbers
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>strverscmp</FUNCTION> compares <PARAMETER>s1</PARAMETER> and 
-<PARAMETER>s2</PARAMETER> as strings holding name and indices/version 
-numbers.
+The <function>strversmp</function> shall compare two strings
+in a similar manner to <function>strcmp</function>.
+If <parameter>s1</parameter> and <parameter>s2</parameter>
+contain no digits, <function>strversmp</function> shall
+behave as <function>strcmp</function>.
+</para>
+<para>
+The strings are compared by scanning from left to right.
+If a digit or sequence of digits
+is encountered in both strings at the same position,
+the digit sequence is specially compared, as described
+below. If the digit sequences compared equal, the string comparison
+resumes in both <parameter>s1</parameter> and 
+<parameter>s2</parameter> after the digit sequence.
+</para>
+<para>
+Digit sequences are classified as either "integral" or
+"fractional". A fractional digit sequence begins with
+a <literal>'0'</literal>; otherwise the digit sequence
+shall be treated as an intergral digit sequence.
+</para>
+<para>
+If two integral digit sequences are encountered, they shall be
+compared as integers for equality. A fractional digit sequence
+shall always compare less than an integral digit sequence.
+If two fractional digit sequences are being compared,
+then if the common prefix contains only leading zeroes, the longer
+part shall compare less than the shorter; otherwise the comparison
+shall be strictly numeric.
 </PARA>
 
+</REFSECT1>
+<REFSECT1>
+<TITLE>Examples</TITLE>
+<para>
+<TABLE>
+<TITLE>Examples</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW><ENTRY>Call</ENTRY><ENTRY>Return Value</ENTRY></ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"no digit", "nodigit"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>0</RETURNVALUE>
+<LITERAL>/* same behavior as strcmp */</LITERAL></ENTRY></ROW>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"item#99", "item#100"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>&lt; 0</RETURNVALUE>
+<LITERAL>/* same prefix, but 99 &lt; 100 */</LITERAL></ENTRY></ROW>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"alpha1", "alpha001"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>&gt; 0</RETURNVALUE>
+<LITERAL>/* fractional part inferior to integral */</LITERAL></ENTRY></ROW>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"part1_f012", "part1_f01"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>&gt; 0</RETURNVALUE>
+<LITERAL>/* two fractional parts */</LITERAL></ENTRY></ROW>
+<ROW><ENTRY><FUNCTION>strverscmp</FUNCTION>(
+<PARAMETER>"foo.009", "foo.0"</PARAMETER>)</ENTRY>
+<ENTRY><RETURNVALUE>&lt; 0</RETURNVALUE>
+<LITERAL>/* two fractional parts but with leading zeroes only */</LITERAL></ENTRY></ROW>
+
+</TBODY>
+</TGROUP>
+</TABLE>
+</para>
 </REFSECT1>
 </REFENTRY>
 
