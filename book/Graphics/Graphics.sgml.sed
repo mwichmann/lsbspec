@@ -19,6 +19,7 @@
 &legal;
 </BOOKINFO>
 
+&desktop-intro;
 &contents;
 
 </BOOK>
