@@ -1,5 +1,5 @@
 
-SUBDIRS= LSB-Embedded LSB-Server LSB-Workstation
+SUBDIRS= LSB-Core LSB-Embedded LSB-PDA
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
