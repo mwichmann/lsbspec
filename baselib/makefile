@@ -24,7 +24,7 @@ libc.sgml:
 libm.sgml:
 	../mklibspec Lname=libm >libm.sgml
 
-libpthread.sgml:
+libpthread.sgml: libpthread.txt
 	../mklibspec Lname=libpthread >libpthread.sgml
 
 libdb.sgml:
