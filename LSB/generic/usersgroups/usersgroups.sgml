@@ -43,12 +43,31 @@ The exception is the uid and gid for "root" which are equal to 0.
 <TGROUP COLS=3>
 <TBODY>
 <ROW><ENTRY>User</ENTRY><ENTRY>Group</ENTRY><ENTRY>Comments</ENTRY></ROW>
-<ROW><ENTRY>root</ENTRY><ENTRY>root</ENTRY><ENTRY>Administrative user with no restrictions</ENTRY></ROW>
-<ROW><ENTRY>bin</ENTRY><ENTRY>bin</ENTRY><ENTRY>Administrative user with some restrictions</ENTRY></ROW>
-<ROW><ENTRY>daemon</ENTRY><ENTRY>daemon</ENTRY><ENTRY>Subprocess special privileges</ENTRY></ROW>
+<ROW><ENTRY>root</ENTRY><ENTRY>root</ENTRY><ENTRY>Administrative user
+with no restrictions</ENTRY>
+</ROW>
+<ROW><ENTRY>bin</ENTRY><ENTRY>bin</ENTRY><ENTRY>Legacy UID/GID<FOOTNOTE>
+<PARA>
+The 'bin' UID/GID is included for compatibility with legacy applications.
+New applications should no longer use the 'bin' UID/GID.
+</PARA>
+</FOOTNOTE>
+</ENTRY></ROW>
+<ROW><ENTRY>daemon</ENTRY><ENTRY>daemon</ENTRY><ENTRY>Legacy UID/GID<FOOTNOTE>
+<PARA>
+The 'daemon' UID/GID was used as an unprivileged UID/GID for daemons to
+execute under in order to limit their access to the system.  Generally
+daemons should now run under individual UID/GIDs in order to further
+partition daemons from one another.
+</PARA>
+</FOOTNOTE>
+</ENTRY>
+</ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
+<PARA>
+</PARA>
 <PARA>
 Below is a table of optional mnemonic user and group names.   This 
 specification makes no attempt to numerically assign uid or gid numbers.
