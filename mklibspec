@@ -42,7 +42,7 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.33 2002-01-15 21:36:26 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.34 2002-04-12 20:12:28 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -54,15 +54,18 @@ print "</PARA>\n";
 #
 # 4) get & print the library info
 #
-$select = "SELECT * FROM Library WHERE ";
-$select.= "Library.Lname=".$Dbh->quote($libname);
+$select = "SELECT * FROM Library ";
+$select.= "LEFT JOIN ArchLib ON Lid=ALlid ";
+$select.= "WHERE Library.Lname=".$Dbh->quote($libname)." ";
+$select.= "AND Lstd='Yes'";
+$select.= "AND ALaid=$Aid";
 print STDERR $select,"\n" if $trace;
 $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 
 %entry=$sth->fetchhash;
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
-$Larch=$entry{'Larch'};
+$Larch=$entry{'ALaid'};
 
 if( $Larch == $Aid ) {
 	print "<TABLE>\n";
@@ -75,7 +78,11 @@ if( $Larch == $Aid ) {
 	print "</ROW>\n";
 	print "<ROW>\n";
 	print "<ENTRY>SONAME:</ENTRY>\n";
-	print "<ENTRY>", $entry{'Lrunname'}, "</ENTRY>\n";
+	if( $entry{'ALrunname'} ne "" ) {
+		print "<ENTRY>", $entry{'ALrunname'}, "</ENTRY>\n";
+	} else {
+		print "<ENTRY>See psLSB.</ENTRY>\n";
+	}
 	print "</ROW>\n";
 	print "</TBODY>\n";
 	print "</TGROUP>\n";
@@ -376,4 +383,4 @@ if($sth->numrows) {
 
 
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.33 2002-01-15 21:36:26 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.34 2002-04-12 20:12:28 anderson Exp $- -->\n");

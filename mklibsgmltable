@@ -46,31 +46,36 @@ $Aname=$entry{'Aname'};
 #
 # 4) Get the data
 #
-$select  ="SELECT * FROM Library WHERE Lstd='Yes' AND Larch=$Aid";
+$select = "SELECT * FROM Library ";
+$select.= "LEFT JOIN ArchLib ON Lid=ALlid ";
+$select.= "WHERE Lstd='Yes' AND ALaid=$Aid";
 #$select .=" ORDER BY Lname ";
 #printf $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.7 2002-03-24 16:12:25 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.8 2002-04-12 20:12:27 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
 print "<TBODY>\n";
 for(1..$sth->numrows) {
 	%entry=$sth->fetchhash;
+	if( $entry{'ALrunname'} eq "" ) {
+		next;
+		}
 	print "<ROW>";
 	printf "<ENTRY ID=\"lib.%s\" XREFLABEL=\"%s\">%s</ENTRY>",
 		makeid($entry{'Lname'}),
-		$entry{'Lrunname'},
+		$entry{'ALrunname'},
 		$entry{'Lname'};
-	printf "<ENTRY>%s</ENTRY>",$entry{'Lrunname'};
+	printf "<ENTRY>%s</ENTRY>",$entry{'ALrunname'};
 	print "</ROW>\n";
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.7 2002-03-24 16:12:25 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibsgmltable,v 1.8 2002-04-12 20:12:27 anderson Exp $- -->\n");
 
 sub makeid {
 	my ($name) = @_;
