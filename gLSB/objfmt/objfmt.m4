@@ -36,39 +36,51 @@ Conforming implementations may also support other unspecified object file format
 <PARA>
 </PARA>
 <SECT1 ID="elftypes">
+<TITLE>Sections Types</TITLE>
+<PARA>
+A section header's <COMPUTEROUTPUT>sh_type</COMPUTEROUTPUT> member specifies the sections's semantics.
+</PARA>
+<SECT2>
 <TITLE>ELF Section Types</TITLE>
 <PARA>
-The following sections types are defined in the System V Application Binary
+The following section types are defined in the System V Application Binary
 Interface, Edition 4.1.
 include(elfsecttypes.sgml)
 </PARA>
-</SECT1>
-<SECT1 ID="linuxtypes">
-<TITLE>Linux Section Types</TITLE>
+</SECT2>
+<SECT2>
+<TITLE>Additional Section Types</TITLE>
 <PARA>
-The following Linux section types are defined here.
+The following additional section types are defined here.
 
 include(linuxsecttypes.sgml)
 </PARA>
+</SECT2>
 </SECT1>
 </CHAPTER>
 
 <CHAPTER ID=SpecialSections>
 <TITLE>Special Sections</TITLE>
 <SECT1 ID="elfspecial">
-<TITLE>ELF Special Sections</TITLE>
+<TITLE>Special Sections</TITLE>
 <PARA>
-The following sections are defined in the ELF reference specification.
-
+Various sections hold program and control information. Sections in the lists below are used by the system and have the indicated types and attributes.
+</PARA>
+<SECT2>
+<TITLE>ELF Section Types</TITLE>
+<PARA>
+The following sections are defined in the System V Application Binary
+Interface, Edition 4.1.
 include(elfsect.sgml)
 </PARA>
-</SECT1>
-<SECT1 ID="linuxspecial">
-<TITLE>Linux Special Sections</TITLE>
+</SECT2>
+<SECT2>
+<TITLE>Additional Special Sections</TITLE>
 <PARA>
-The following Linux-specific sections are defined here.
+The following additional sections are defined here.
 include(linuxsect.sgml)
 </PARA>
+</SECT2>
 </SECT1>
 </CHAPTER>
 
@@ -78,13 +90,20 @@ include(linuxsect.sgml)
 This chapter defines how names are mapped from the source symbol to
 the object symbol.
 </PARA>
-<SECT1 ID="cmapping">
+<SECT1 ID="symmapping">
+<TITLE>Symbol Mapping</TITLE>
+<PARA>
+Symbols in a source program are tranlated by the compilation system into
+symbols that exist in the object file. The rules for this translation are
+defined here.
+</PARA>
+<SECT2>
 <TITLE>C Language</TITLE>
 <PARA>
 External C symbols have the same names in C and object files' symbol tables.
 </PARA>
-</SECT1>
-<SECT1 ID="cppmapping">
+</SECT2>
+<SECT2>
 <TITLE>C++ Language</TITLE>
 <PARA>
 Because of the immaturity of the C++ ABI (for name mangling, exception
@@ -109,6 +128,7 @@ In a future version of this specification, name mangling rules will be
 specified so that C++ symbols can be mapped into symbol names in the object
 file.
 </PARA>
+</SECT2>
 </SECT1>
 </CHAPTER>
 

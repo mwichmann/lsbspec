@@ -21,21 +21,28 @@ satisfy the symbols on the shared library.
 <CHAPTER ID=DynamicSection>
 <TITLE>Dynamic Entries</TITLE>
 <PARA>
+A dynamic entry's <COMPUTEROUTPUT>d_tag member</COMPUTEROUTPUT> control
+the interpretation of <COMPUTEROUTPUT>d_un</COMPUTEROUTPUT>.
 </PARA>
 <SECT1 ID=dynsectent>
+<TITLE>Dynamic Entries</TITLE>
+<PARA>
+</PARA>
+<SECT2>
 <TITLE>ELF Dynamic Entries</TITLE>
 <PARA>
 The following dynamic entries are defined in the System V 
 Application Binary Interface, Edition 4.1.
 include(dyntag.sgml)
 </PARA>
-</SECT1>
-<SECT1 ID=lindynsectent>
-<TITLE>Linux Dynamic Entries</TITLE>
+</SECT2>
+<SECT2>
+<TITLE>Additional Dynamic Entries</TITLE>
 <PARA>
 The following dynamic entries are defined here.
 include(linuxtag.sgml)
 </PARA>
+</SECT2>
 </SECT1>
 </CHAPTER>
 
