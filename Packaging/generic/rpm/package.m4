@@ -9,9 +9,9 @@ defined in this specification, or supply an installer which is LSB
 conforming (for example, calls LSB commands and utilities).
 <footnote>
 <para>
-Supplying an RPM package is encouraged because it makes systems easier
-to manage.  A future version of the LSB may require RPM, or specify a
-way for an installer to update a package database.
+Supplying an RPM format package is encouraged because it makes systems
+easier to manage.  A future version of the LSB may require RPM, or specify
+a way for an installer to update a package database.
 </para>
 <para>
 Applications are also encouraged to uninstall cleanly.
