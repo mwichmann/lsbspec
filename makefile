@@ -18,6 +18,12 @@ SUBDIRS=intro objfmt baselib utillib graphlib sysinit usersgroups command
 DB2HTML=db2html
 #DB2HTML=sgmltools -b html
 
+DB2RTF=db2rtf
+#DB2RTF=sgmlbools -b rtf
+
+DB2PS=db2ps
+#DB2PS=sgmlbools -b ps
+
 all:: htmlspec rtfspec
 
 htmlspec: source
@@ -30,10 +36,10 @@ htmlspec: source
 #	cp images/*.gif spec
 
 rtfspec: source
-	sgmltools -b rtf spec.sgml
+	$(DB2RTF) spec.sgml
 
 psspec: source
-	sgmltools -b ps spec.sgml
+	$(DB2PS) spec.sgml
 
 source:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
