@@ -17,6 +17,7 @@ use File::Temp qw(tempfile);
 use Data::Dumper;
 use strict;
 
+my $verbose = 1;
 my $dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) 
 	|| die $Mysql::db_errstr;
 
@@ -28,7 +29,9 @@ foreach my $file (@ARGV) {
 sub checksynopsis($$)
 {
 	my ($file, $dbh) = @_;
+	my $fail = 0;
 
+	print ("$file ... ") if ($verbose);
 	$file = convert_to_xml($file);
 	my $parsed = XMLin($file);
 	my $funcname = $parsed->
@@ -87,7 +90,7 @@ sub checksynopsis($$)
 	$sql .= "where ";
 	$sql .= "Iname='$funcname' and ";
 	$sql .= "Itype='function' and ";
-	$sql .= "Istatus in ('Included','SrcOnly')";
+	$sql .= "Istatus in ('Included','SrcOnly','Deprecated')";
 
 	my $sth = $dbh->query($sql) || die $dbh->errmsg();
 	if ($sth->numrows() == 0) {
@@ -96,7 +99,9 @@ sub checksynopsis($$)
 	}
 	my %entry = $sth->fetchhash();
 	my $dbtype = displaytyperef(\%entry);
+	$dbtype = "void" if ($dbtype eq "");
 	if ($dbtype ne $functype) {
+		$fail++;
 		printf("%s: doc has return type '%s', db has '%s'\n",
 			$funcname, $functype, $dbtype);
 	}
@@ -119,7 +124,9 @@ sub checksynopsis($$)
 	foreach my $arg (@$args) {
 		my $argtype = trim($arg->{'content'});
 		$dbtype = $dbtypes[$pos];
+		$dbtype = "void" if ($dbtype eq "");
 		if ($dbtype ne $argtype) {
+			$fail++;
 			printf("%s: arg %d: according to the doc type is '%s', db has '%s'\n",
 					$funcname, $pos, $argtype, $dbtype);
 		}
@@ -127,14 +134,20 @@ sub checksynopsis($$)
 	}
 	# and the other way too ...
 	$pos = 0;
+	if ($fail) {
+		goto out;
+	}
 	foreach my $dbtype (@dbtypes) {
 		my $argtype = trim($args->[$pos]->{'content'});
 		if ($dbtype ne $argtype) {
+			$fail++;
 			printf("%s: arg %d: according to the db type is '%s', doc has '%s'\n",
 					$funcname, $pos, $dbtype, $argtype);
 		}
 		$pos++;
 	}
+out:	print "NOT " if ($fail);
+	print "OK\n";
 }
 
 sub convert_to_xml($)
@@ -300,6 +313,8 @@ sub trim($)
 	my ($str) = @_;
 
 	$str =~ s/^ *(.*)$/\1/s;
-	$str =~ s/[ \n]+$//s;
+	$str =~ s/\n//gs;
+	$str =~ s/  +/ /gs;
+	$str =~ s/ *$//s;
 	return $str;
 }
