@@ -11,7 +11,7 @@ TABLES= libICE.sgml libSM.sgml libX11.sgml libXext.sgml libXt.sgml libGL.sgml
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 $*.m4 >$@
+	m4 -Uindex -Uformat $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
