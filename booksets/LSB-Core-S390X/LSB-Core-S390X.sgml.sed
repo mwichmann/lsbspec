@@ -43,7 +43,13 @@
 <TITLE>Linux Standard Base Specification</TITLE>
 </BOOKINFO>
 &lsb-contents;
-&lsb-ia32-appA;
+&lsb-s390x-appA;
+</BOOK>
+<BOOK>
+<BOOKINFO>
+<TITLE>Linux Packaging Specification</TITLE>
+</BOOKINFO>
+&packaging-contents;
 </BOOK>
 
 </SET>

@@ -45,5 +45,11 @@
 &lsb-contents;
 &lsb-ia32-appA;
 </BOOK>
+<BOOK>
+<BOOKINFO>
+<TITLE>Linux Packaging Specification</TITLE>
+</BOOKINFO>
+&packaging-contents;
+</BOOK>
 
 </SET>
