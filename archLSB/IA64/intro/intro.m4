@@ -42,7 +42,7 @@ complete interface specification for compiled application programs on systems
 that share a common hardware architecture.
 </PARA>
 <PARA>
-This document is the architecture-specific suppliment. It must be used in 
+This document is the architecture-specific supplement. It must be used in 
 conjunction with the generic LSB. This document provides architecture-specific  
 information that supplements the generic LSB as well as additional information
 that is not found in the generic LSB.
