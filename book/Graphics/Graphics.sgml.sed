@@ -2,6 +2,7 @@
 
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "contents">
+<!entity contents-gl SYSTEM "contents-gl">
 
 <!entity specversion "VERSION">
 
@@ -21,5 +22,6 @@
 
 &desktop-intro;
 &contents;
+&contents-gl;
 
 </BOOK>
