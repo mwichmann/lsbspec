@@ -13,7 +13,7 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All >standards.sgml
+	../../mkstandardsgmltable -a All -s "'Gdk','Gdk-pixbuf','Glib','Gobject','Gtk'" >standards.sgml
 
 clean:
 	rm -f $(FILES)
