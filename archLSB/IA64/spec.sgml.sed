@@ -9,6 +9,7 @@
 <!entity baselib.sgm system "baselib/baselib.sgml">
 <!entity execenv.sgm system "execenv/execenv.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
+<!ENTITY w "<emphasis>w</emphasis>">
 ]>
 
 <BOOK>
