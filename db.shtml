@@ -1,0 +1,301 @@
+<HTML>
+<TITLE>LSB Database</TITLE>
+<BODY>
+<H1>Why a database</H1>
+<P>
+The total number of interfaces and other bits of data that are needed to
+completely describe the ABI For Linux it tremendous, something on the order of
+several 10's of thousands of pieces of data. Other ABI groups have maintained
+this information manually (vie edits to the document). This seemed like a very
+inefficient process, especially considering the rate at which Linux is
+changing.
+<P>
+A database provides a structured way to manage this data, and allows portions
+of the document to be created from the database, thus avoiding a lot of
+tedious, error-prone editing.
+<P>
+An additional benefit of having the ABI represented in a database is that
+certain parts of the test suite can also be generated from the data. The
+application checker, <I>appchk</I>, which performs a static analysis of an
+application contains serveral tables, each of which is pulled from the
+database. The development environment checker, <I>devchk</I>, which is
+used to check the header files is almost entirely pulled from the database.
+<P>
+Enough information is held in the database, that a set of clean "reference"
+headers can be created.
+<H1>The Schema</H1>
+<P>
+One of the formal ways of describing a database scheme is to use an E-R
+(Entity-Relation) diagram. The E-R diagram for this database is fairly large,
+and difficult to represent in 2 dimensions. Since I'm not well practiced
+in a tool for producing this kind of diagram, I won't even try. 
+<H2>About E-R Diagrams</H2>
+<P>
+There are two kind of tables in this scheme, Entity tables, and Relation
+tables. Given an E-R diagram, the tables can be directly identified from it.
+<P>
+Entity tables are used to hold information about things in the database.
+One rule of thumb is that Entity tables should have some kind of unique index
+which can be referenced by other tables. In addition to the index, Entities 
+have attributes. An example is the Interface Table. An interface has attributes
+for it's name, it's return type. The LSB also adds attributes to indicate
+the status of the interface (included, excluded, or undecided), if it is
+properly documented, and if a test exists for the interface. Generally, each
+attributes is represented by a column in the table.
+<P>
+Relation tables are used to hold information about the relationship between
+two entities. A relation table can be as simple as having two columns, each of
+which contain the unique index from another table. Relations may also have
+attributes, which are represented by additional columns.
+<P>
+There a 3 types of relationships that can occur, 1-to-1, 1-to-N, and N-to-N.
+Each is implemented by a different technique.
+<P>
+1-to-1 relationships are implemented by just putting additional columns in
+an entities table.
+<P>
+1-to-N relationships are implemented by having a column in the entity table
+that represents the N side of the relationship which contains the unique index
+from the entity table that represents the 1 side of the relationship. This
+allows multiple rows in the N entity table to refer to the same row in the
+1 entity table.
+<P>
+N-to-N relationships are implemented by using a Relation table. Each row in
+this table contains the unique indecies from 2 (or more) Entity tables. Each
+index value can appear multiple times in the relationship table, thus allowing
+the many to many relation.
+<P>
+Getting the data organized efficiently into these tables, and defining the
+correct relationships is a large part of the process referred to as
+"Normalization".
+<H2>Definition of the tables</H2>
+<P>
+This section will contain the descriptions of the tables used in the database.
+<H3>Standard</H3>
+<P>
+The Standard Table is an Entity Table that represents a Source or Reference
+Standard which is used to provide the behavioral description of commands
+and Interfaces. The Standard Table has the following Attributes:
+<DL>
+<DT>Sname
+<DD>This Attribute is the common (or short) name for the standard.
+<DT>Sfull
+<DD>This Attribute is the official (or long) name for the standard.
+<DT>Surl
+<DD>This Attribute is the URL for an official copy fo the standard.
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Standard.sql"-->
+</PRE></CODE>
+<H3>Interface</H3>
+<P>
+The Interface Table is an Entity Table that represents symbols found in
+shared libraries. The Interface Table has the following Attributes:
+<DL>
+<DT>Iname
+<DD>This Attribute is the name of the Interface (ie function name).
+<DT>Istatus
+<DD>This Attribute is used to indicate if the Interface is included or
+excluded from the LSB.
+<DT>Itype
+<DD>This Attribute is used to indicate if the Interface is a function, or
+global data.
+<DT>Istandard
+<DD>This is a 1-to-N relationship used to indicate which Standard governs
+the behavior of this interface.
+<DT>Iheader
+<DD>This is a 1-to-N relationship used to indicate which header file contained
+the prototype and other definitions associated with this interface.
+<DT>Ilibgroup
+<DD>This is a 1-to-N relationship used to indicate to which LibGroup this
+interface belongs.
+<DT>Ireturn
+<DD>This is a 1-to-N relationship used to indicate the (return) type of an interface.
+<DT>Iversion
+<DD>This is a 1-to-N relationship used to indicate the version of the symbol.
+<DT>Idocumented
+<DD>This Attribute is used to indicate if the Interface is adequately
+documented.
+<DT>Itested
+<DD>This Attribute is used to indicate if the Interface is adequately tested
+by the test suite.
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Interface.sql"-->
+</PRE></CODE>
+<H3>Parameter</H3>
+<P>
+The Parameter Table is an Entity Table that represents the parameters to
+an Interface. This table is the N side of a 1-to-N relation with the Interface
+table. The Parameter Table has the following Attributes:
+<DL>
+<DT>Pint
+<DD>This is a 1-to-N relationship used to indicate to which Interface this
+Parameter belongs.
+<DT>Ppos
+<DD>This Attribute is used to provided an ordering to the Parameters.
+<DT>Ptype
+<DD>This is a 1-to-N relationship used to indicate the Type of this paramter.
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Parameter.sql"-->
+</PRE></CODE>
+<H3>Library</H3>
+<P>
+The Library Table is an Entity Table that represents shared libraries. The
+Library Table has the following Attributes:
+<DL>
+<DT>Lname
+<DD>This Attribute is a symbolic name given to the library. This name is
+commonly used when referring to the library.
+<DT>Lrunname
+<DD>This is the exact runtime name of the library, as is listed in a DT_NEEDED
+record of an application.
+<DT>Lstd
+<DD>This Attribute indicates wether or not the library is defined to be a part
+of the LSB specification.
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Library.sql"-->
+</PRE></CODE>
+<H3>LibGroup</H3>
+<P>
+The LibGroup Table is an Entity Table that represents organizational groups
+of interfaces that belong to a shared library. These groups are used to break
+the interfaces in a library into logical groups so that they can be presented
+in a more meaningful way.
+The LibGroup Table has the following Attributes:
+<DL>
+<DT>LGname
+<DD>This attribute is a common name for a group of functions.
+<DT>LGlib
+<DD>This is a 1-to-N relationship used to indicate to which library this group belongs.
+<DT>LGorder
+<DD>This Attribute is used to place the groups in a given order.
+<DT>LGdescription
+<DD>This Attribute contains the text that is used to describe this group. This
+text shows up in the Specification document.
+<DD>
+</DL>
+<CODE><PRE>
+<!--#include file="schema/LibGroup.sql"-->
+</PRE></CODE>
+<H3>Version</H3>
+<P>
+The Version Table is an Entity Table that contains the version that are
+associated with symbols in shared libraries.
+The Version Table has the following Attributes:
+<DL>
+<DT>Vname
+<DD>This attribute is the name of the symbol version.
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Version.sql"-->
+</PRE></CODE>
+<H3>Header</H3>
+<P>
+The Header Table is an Entity Table that represents header files.
+The Header Table has the following Attributes:
+<DL>
+<DT>Hname
+<DD>This Attribute is the name of a header, relative to the base include
+directory (ie /usr/include).
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Header.sql"-->
+</PRE></CODE>
+<H3>HeaderGroup</H3>
+<P>
+The HeaderGroup Table is an Entity Table that represents organizational groups
+of Constants, Types, and Prototypes that belong to a Header. These groups are
+used to organize this information into logical order so that they can be
+presented in a more meaningful way, and a functional header can be produced.
+The HeaderGroup Table has the following Attributes:
+<DL>
+<DT>HGname
+<DD>This Attribute provides a common name for the group.
+<DT>HGheader
+<DD>This is a 1-to-N relationship used to indicate to which Header this group belongs.
+<DT>HGorder
+<DD>This attribute is used to allow the groups to be ordered in a meaningful manner.
+<DT>HGdescription
+<DD>This Attribute provides a description of the group. This description is used
+to create a comment when producing a header file from this data.
+</DL>
+<CODE><PRE>
+<!--#include file="schema/HeaderGroup.sql"-->
+</PRE></CODE>
+<H3>Constant</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Constant.sql"-->
+</PRE></CODE>
+<H3>Type</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Type.sql"-->
+</PRE></CODE>
+<H3>TypeMember</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<CODE><PRE>
+<!--#include file="schema/TypeMember.sql"-->
+</PRE></CODE>
+<H3>Architecture</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<CODE><PRE>
+<!--#include file="schema/Architecture.sql"-->
+</PRE></CODE>
+<H3>MangledNames</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<CODE><PRE>
+<!--#include file="schema/MangmedName.sql"-->
+</PRE></CODE>
+<H3>ElfSections</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<H3>DynamicEntries</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<H3>SectionTypes</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<H3>Command</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<H3>CmdLib</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<H3>CmdInt</H3>
+<DL>
+<DT>
+<DD>
+</DL>
+<P>
+<H1>What to do with the Database</H1>
+</BODY>
+</HTML>
