@@ -20,7 +20,7 @@ corresponding section in the Linux Standard Base Specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Nov 22 10:40:04 2002 -->
+<!--    at Sun Dec  1 10:29:45 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1659,6 +1659,69 @@ typedef unsigned long uintmax_t;
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>setjmp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+
+
+
+typedef long __jmp_buf[320];
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>signal.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+union
+{
+  __sighandler_t sa_handler;
+  void (*_sa_sigaction) (int, siginfo_t *, void *);
+}
+ ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct sigaction
+{
+  union
+  {
+    __sighandler_t sa_handler;
+    void (*_sa_sigaction) (int, siginfo_t *, void *);
+  }
+  __sigaction_handler;
+  __sigset_t sa_mask;
+  int sa_flags;
+  void (*sa_restorer) (void);
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>stddef.h</TITLE>
 <PARA>
 </PARA>
@@ -1681,6 +1744,30 @@ typedef long ptrdiff_t;
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>sys/ipc.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct ipc_perm
+{
+  key_t __key;
+  uid_t uid;
+  gid_t gid;
+  uid_t cuid;
+  gid_t cgid;
+  mode_t mode;
+  unsigned int __seq;
+  unsigned int __pad1;
+  unsigned long __unused1;
+  unsigned long __unused2;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/mman.h</TITLE>
 <PARA>
 </PARA>
@@ -1691,12 +1778,54 @@ typedef long ptrdiff_t;
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>sys/sem.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct semid_ds
+{
+  struct ipc_perm sem_perm;
+  time_t sem_otime;
+  time_t sem_ctime;
+  unsigned long sem_nsems;
+  unsigned long __unused3;
+  unsigned long __unused4;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>sys/shm.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
 #define SHMLBA	(__getpagesize())
+
+
+
+
+
+typedef unsigned long shmatt_t;
+
+
+struct shmid_ds
+{
+  struct ipc_perm shm_perm;
+  time_t shm_atime;
+  time_t shm_dtime;
+  time_t shm_ctime;
+  size_t shm_segsz;
+  pid_t shm_cpid;
+  pid_t shm_lpid;
+  shmatt_t shm_nattch;
+  unsigned long __unused5;
+  unsigned long __unused6;
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1706,6 +1835,98 @@ typedef long ptrdiff_t;
 <SCREEN>
 
 #define _STAT_VER	3
+
+
+struct stat
+{
+  dev_t st_dev;
+  ino_t st_ino;
+  nlink_t st_nlink;
+  mode_t st_mode;
+  uid_t st_uid;
+  gid_t st_gid;
+  int __pad1;
+  dev_t st_rdev;
+  off_t st_size;
+  blksize_t st_blksize;
+  blkcnt_t st_blocks;
+  time_t st_atime;
+  unsigned long __unused1;
+  time_t st_mtime;
+  unsigned long __unused2;
+  time_t st_ctime;
+  unsigned long __unused3;
+  unsigned long __unused4;
+  unsigned long __unused5;
+  unsigned long __unused6;
+}
+ ;
+struct stat64
+{
+  dev_t st_dev;
+  ino64_t st_ino;
+  nlink_t st_nlink;
+  mode_t st_mode;
+  uid_t st_uid;
+  gid_t st_gid;
+  int __pad1;
+  dev_t st_rdev;
+  off64_t st_size;
+  blksize_t st_blksize;
+  blkcnt64_t st_blocks;
+  time_t st_atime;
+  unsigned long __unused1;
+  time_t st_mtime;
+  unsigned long __unused2;
+  time_t st_ctime;
+  unsigned long __unused3;
+  unsigned long __unused4;
+  unsigned long __unused5;
+  unsigned long __unused6;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>sys/statvfs.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct statvfs
+{
+  unsigned long f_bsize;
+  unsigned long f_frsize;
+  fsblkcnt_t f_blocks;
+  fsblkcnt_t f_bfree;
+  fsblkcnt_t f_bavail;
+  fsfilcnt_t f_files;
+  fsfilcnt_t f_ffree;
+  fsfilcnt_t f_favail;
+  unsigned long f_fsid;
+  unsigned long f_flag;
+  unsigned long f_namemax;
+  int __f_spare[6];
+}
+ ;
+struct statvfs64
+{
+  unsigned long f_bsize;
+  unsigned long f_frsize;
+  fsblkcnt64_t f_blocks;
+  fsblkcnt64_t f_bfree;
+  fsblkcnt64_t f_bavail;
+  fsfilcnt64_t f_files;
+  fsfilcnt64_t f_ffree;
+  fsfilcnt64_t f_favail;
+  unsigned long f_fsid;
+  unsigned long f_flag;
+  unsigned long f_namemax;
+  int __f_spare[6];
+}
+ ;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1811,7 +2032,7 @@ typedef int64_t ssize_t;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Nov 22 10:40:38 2002 -->
+<!--    at Sun Dec  1 10:30:19 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -2274,7 +2495,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Nov 22 10:40:55 2002 -->
+<!--    at Sun Dec  1 10:30:36 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -2450,7 +2671,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Nov 22 10:41:09 2002 -->
+<!--    at Sun Dec  1 10:30:50 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -2493,7 +2714,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Fri Nov 22 10:41:21 2002 -->
+<!--    at Sun Dec  1 10:31:03 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
