@@ -45,7 +45,7 @@ include(libraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
-These libraries will be found in <FILENAME>/lib</FILENAME>.
+These libraries will be in a default location found by the dynamic linker.
 </PARA>
 </SECT1>
 
