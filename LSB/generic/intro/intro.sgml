@@ -1,5 +1,5 @@
 <PREFACE id="OVERVIEW">
-<TITLE>Foreward</TITLE>
+<TITLE>Foreword</TITLE>
 <PARA>
 This is version &specversion; of the Linux Standard Base Specification.
 This version is a preliminary version for review only. Conclusion of work on
