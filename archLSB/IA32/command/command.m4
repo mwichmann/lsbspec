@@ -24,30 +24,6 @@ include(cmdsutils.sgml)
 This section contains descriptions of commands that are not documented by other
 standards, or descriptions of the difference from other standards.
 </PARA>
-include(at.sgml)
-include(c89.sgml)
-include(cflow.sgml)
-include(col.sgml)
-include(cxref.sgml)
-include(fuser.sgml)
-include(groupadd.sgml)
-include(groupmod.sgml)
-include(groups.sgml)
-include(ipcrm.sgml)
-include(ipcs.sgml)
-include(link.sgml)
-include(lint.sgml)
-include(more.sgml)
-include(newgrp.sgml)
-include(ps.sgml)
-include(renice.sgml)
-include(sendmail.sgml)
-include(spell.sgml)
-include(split.sgml)
-include(unlink.sgml)
-include(useradd.sgml)
-include(usermod.sgml)
-include(wc.sgml)
 </SECT1>
 </CHAPTER>
 </PART>
