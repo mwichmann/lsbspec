@@ -25,6 +25,12 @@
 <BOOK>
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification &specversion</TITLE>
+<COPYRIGHT>
+<YEAR>2000</YEAR>
+<YEAR>2001</YEAR>
+<YEAR>2002</YEAR>
+<HOLDER>Free Standards Group</HOLDER>
+</COPYRIGHT>
 &legal.sgm;
 &changes.sgm;
 </BOOKINFO>
