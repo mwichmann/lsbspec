@@ -1,25 +1,34 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES=__assert_fail.sgml __errno_location.sgml __getpgid.sgml \
+MANPAGES=__assert_fail.sgml __ctype_tolower.sgml __ctype_toupper.sgml \
+	 __dcgettext.sgml __errno_location.sgml __getpgid.sgml \
 	_IO_2_1_stderr_.sgml _IO_2_1_stdin_.sgml _IO_2_1_stdout_.sgml _IO_feof.sgml \
-	_IO_getc.sgml _IO_putc.sgml _IO_puts.sgml __strtod_internal.sgml \
+	_IO_getc.sgml _IO_putc.sgml _IO_puts.sgml __lxstat.sgml \
+	_nl_msg_cat_cntr.sgml __stpcpy.sgml __strtod_internal.sgml \
 	__strtol_internal.sgml __xmknod.sgml acct.sgml adjtime.sgml adjtimex.sgml \
-	alphasort.sgml cfmakeraw.sgml cfsetspeed.sgml daemon.sgml dladdr.sgml \
-	endutent.sgml error.sgml flock.sgml fstatfs.sgml fwprintf.sgml \
+	alphasort.sgml alphasort64.sgml cfmakeraw.sgml cfsetspeed.sgml daemon.sgml \
+	dcgettext.sgml dladdr.sgml \
+	endutent.sgml err.sgml error.sgml errx.sgml flock.sgml fstatfs.sgml \
+	fwprintf.sgml \
 	gethostbyname.sgml getloadavg.sgml getopt_long.sgml getopt_long_only.sgml \
 	getprotobyname.sgml getprotoent.sgml getservbyname.sgml getservent.sgml \
 	gettext.sgml getutent.sgml  htons.sgml inet_aton.sgml inet_ntoa.sgml \
 	initgroups.sgml ioperm.sgml iopl.sgml isblank.sgml isinf.sgml \
 	iswblank.sgml iswctype.sgml llabs.sgml logwtmp.sgml mbsnrtowcs.sgml \
-	memmem.sgml ntohs.sgml psignal.sgml putwchar.sgml setbuffer.sgml \
+	memmem.sgml ntohs.sgml psignal.sgml putwchar.sgml \
+	opterr.sgml optind.sgml optopt.sgml setbuffer.sgml \
 	setegid.sgml seteuid.sgml sethostid.sgml sethostname.sgml  setmntent.sgml \
-	setutent.sgml sigblock.sgml siggetmask.sgml sigreturn.sgml sigsetmask.sgml \
-	sigvec.sgml statfs.sgml stime.sgml stpcpy.sgml stpncpy.sgml strfry.sgml \
+	setutent.sgml sigandset.sgml sigblock.sgml siggetmask.sgml \
+	sigisemptyset.sgml sigorset.sgml sigreturn.sgml sigsetmask.sgml \
+	sigvec.sgml statfs.sgml stime.sgml stpcpy.sgml stpncpy.sgml \
+	strcasestr.sgml strerror_r.sgml strfry.sgml strndup.sgml \
 	strnlen.sgml strsep.sgml strsignal.sgml strtok_r.sgml strtoq.sgml \
-	strtouq.sgml system.sgml wait4.sgml warn.sgml warnx.sgml wcpcpy.sgml \
+	strtouq.sgml strverscmp.sgml system.sgml textdomain.sgml vasprintf.sgml \
+	vdprintf.sgml verrx.sgml wait4.sgml warn.sgml warnx.sgml \
+	wcpcpy.sgml \
 	wcpncpy.sgml wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml \
-	wcsnrtombs.sgml
+	wcsnrtombs.sgml wcstoq.sgml wcstouq.sgml
 
 FILES=baselib.sgml libpthread.sgml datadefs.sgml libc.sgml libm.sgml \
 	libdl.sgml libcrypt.sgml librt.sgml
