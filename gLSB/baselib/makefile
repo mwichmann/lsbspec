@@ -43,4 +43,4 @@ spotless: clean
 
 baselib.sgml: libc.sgml libcman.sgml datadefs.sgml libm.sgml libpthread.sgml
 baselib.sgml: libdb.sgml libdl.sgml libcrypt.sgml $(MANPAGES)
-# datadefs.sgml: ../../src/include/datadefs.sgml
+datadefs.sgml: ../../../src/include/datadefs.sgml

@@ -1,1 +1,1 @@
-include(../../src/include/datadefs.sgml)
+include(../../../src/include/datadefs.sgml)
