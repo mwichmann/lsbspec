@@ -40,6 +40,17 @@ $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 $Aid=$entry{'Aid'};
 $Aname=$entry{'Aname'};
 
+printf("<!-- Start of text generated from database -->\n");
+printf("<!-- generated from the LSB specification database -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.24 2001-05-28 20:27:58 anderson Exp $- -->\n");
+my $now_string = localtime;
+printf("<!--    at %s -->\n", $now_string );
+
+print "<SECT1 ID=", $libname, ">\n";
+print "<TITLE>", $Lname, "</TITLE>\n";
+print "<PARA>\n";
+print "</PARA>\n";
+
 #
 # 4) get & print the library info
 #
@@ -51,32 +62,25 @@ $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 %entry=$sth->fetchhash;
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
+$Larch=$entry{'Larch'};
 
-printf("<!-- Start of text generated from database -->\n");
-printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.23 2001-05-07 17:04:59 anderson Exp $- -->\n");
-my $now_string = localtime;
-printf("<!--    at %s -->\n", $now_string );
-
-print "<SECT1 ID=", $libname, ">\n";
-print "<TITLE>", $Lname, "</TITLE>\n";
-print "<PARA>\n";
-print "</PARA>\n";
-print "<TABLE>\n";
-print "<TITLE></TITLE>\n";
-print "<TGROUP COLS=2>\n";
-print "<TBODY>\n";
-print "<ROW>\n";
-print "<ENTRY>Library:</ENTRY>\n";
-print "<ENTRY>", $entry{'Lname'}, "</ENTRY>\n";
-print "</ROW>\n";
-print "<ROW>\n";
-print "<ENTRY>Runtime Path:</ENTRY>\n";
-print "<ENTRY>", $entry{'Lrunname'}, "</ENTRY>\n";
-print "</ROW>\n";
-print "</TBODY>\n";
-print "</TGROUP>\n";
-print "</TABLE>\n";
+if( $Larch == $Aid ) {
+	print "<TABLE>\n";
+	print "<TITLE></TITLE>\n";
+	print "<TGROUP COLS=2>\n";
+	print "<TBODY>\n";
+	print "<ROW>\n";
+	print "<ENTRY>Library:</ENTRY>\n";
+	print "<ENTRY>", $entry{'Lname'}, "</ENTRY>\n";
+	print "</ROW>\n";
+	print "<ROW>\n";
+	print "<ENTRY>Runtime Path:</ENTRY>\n";
+	print "<ENTRY>", $entry{'Lrunname'}, "</ENTRY>\n";
+	print "</ROW>\n";
+	print "</TBODY>\n";
+	print "</TGROUP>\n";
+	print "</TABLE>\n";
+}
 
 #
 # 5) Check for additional description text for the library
@@ -343,4 +347,4 @@ if( $hdh->numrows ) {
 	print "</SECT1>\n";
 }
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.23 2001-05-07 17:04:59 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.24 2001-05-28 20:27:58 anderson Exp $- -->\n");
