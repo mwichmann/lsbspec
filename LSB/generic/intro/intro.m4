@@ -1,93 +1,10 @@
-<PREFACE id="OVERVIEW">
-<TITLE>Foreword</TITLE>
-<PARA>
-This is version &specversion; of the &spectitle;.
-</PARA>
-<PARA>
-An implementation of this version of the specification may not claim
-to be an implementation of the Linux Standard Base unless it has successfully
-completed the compliance process as defined by the Free Standards Group.
-</PARA>
-</PREFACE>
-
-<PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
-<PARA>
-The LSB defines a binary interface for application programs that are compiled
-and packaged for LSB-conforming implementations on many different hardware
-architectures. Since a binary specification shall include information specific
-to the computer processor architecture for which it is intended, it is not
-possible for a single document to specify the interface for all possible
-LSB-conforming implementations. Therefore, the LSB is a family of
-specifications, rather than a single one.
-</PARA>
-
-<PARA>
-This document should be used in conjunction with the documents it references.
-This document enumerates the system components it includes, but descriptions of
-those components may be included entirely or partly in this document, partly in
-other documents, or entirely in other reference documents. For example, the
-section that describes system service routines includes a list of the system
-routines supported in this interface, formal declarations of the data
-structures they use that are visible to applications, and a pointer to the
-underlying referenced specification for information about the syntax and
-semantics of each call. Only those routines not described in standards
-referenced by this document, or extensions to those standards, are described in
-the detail. Information referenced in this way is as much a part of this
-document as is the information explicitly included here.
-</PARA>
-</PREFACE>
-
+include(`../../generic/intro/preface.sgml')
 <PART ID="TOCINTRO">
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
-<PARA>
-The Linux Standard Base (LSB) defines a system interface for compiled
-applications and a minimal environment for support of installation scripts.
-Its purpose is to enable a uniform industry standard environment for
-high-volume applications conforming to the LSB.
-</PARA>
-
-<PARA>
-These specifications are composed of two basic parts: A common specification
-("LSB-generic") describing those parts of the interface that
-remain constant across all implementations of the LSB, and an
-architecture-specific specification ("LSB-arch") describing the
-parts of the interface that vary by processor architecture.
-Together, the LSB-generic and the
-architecture-specific supplement for a single hardware architecture provide a
-complete interface specification for compiled application programs on systems
-that share a common hardware architecture.
-</PARA>
-
-<PARA>
-The LSB-generic document shall be used in conjunction with an
-architecture-specific supplement. Whenever a section of the LSB-generic
-specification
-shall be supplemented by architecture-specific information, the LSB-generic
-document
-includes a reference to the architecture supplement. Architecture supplements
-may also contain additional information that is not referenced in the
-LSB-generic document.
-</PARA>
-
-<PARA>
-The LSB contains both a set of Application Program Interfaces (APIs)
-and Application Binary Interfaces (ABIs). APIs may appear in the
-source code of portable applications, while the compiled binary of that
-application may use the larger set of ABIs. A conforming implementation
-shall provide all of the ABIs listed here. The compilation system may
-replace (e.g. by macro definition) certain APIs with calls to one or
-more of the underlying binary interfaces, and may insert calls to binary
-interfaces as needed.
-</PARA>
-
-<PARA>
-The LSB is primarily a binary interface
-definition. Not all of the source level APIs available to applications
-may be contained in this specification.
-</PARA>
-
+include(`../../generic/intro/genscope.sgml')
+include(`modscope.sgml')
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
@@ -102,7 +19,7 @@ that section alone, and the rest of the referenced document is informative.
 <TABLE ID='STD.'>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
-include(standards.sgml)
+include(`standards.sgml')
 </TGROUP>
 </TABLE>
 </CHAPTER>
