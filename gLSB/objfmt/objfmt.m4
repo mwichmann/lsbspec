@@ -132,8 +132,7 @@ provide or depend on versioned symbols. Symbol Versioning is implemented by 3
 section types: SHT_GNU_VERSYM, SHT_GNU_VERDEF, and SHT_GNU_VERNEED.
 </PARA>
 <PARA>
-The term "elfxx" means "elf32", "elf64" or another value based on the
-architecture.
+The term "Elfxx" means "Elf32" or "Elf64" depending on the architecture.
 </PARA>
 <PARA>
 Versions are described by strings. The structures that are used for symbol
@@ -197,7 +196,7 @@ Symbol definitions are contained in the special section <COMPUTEROUTPUT>
 SHT_GNU_VERDEF</COMPUTEROUTPUT>. The number of entries in this section
 is contained in the <COMPUTEROUTPUT>DT_VERDEFNUM</COMPUTEROUTPUT> entry
 of the Dynamic Section.  The <COMPUTEROUTPUT>sh_link</COMPUTEROUTPUT>
-member of the section header points to the section that contain the strings
+member of the section header points to the section that contains the strings
 referenced by this section.
 </PARA>
 <FIGURE>
@@ -254,7 +253,7 @@ auxiliary entries contain the actual version definition.
 <TERM><COMPUTEROUTPUT>vd_hash</COMPUTEROUTPUT></TERM>
 <LISTITEM>
 <PARA>
-Hash value of the name (computed using the ELF hash function)
+Hash value of the name (computed using the ELF hash function).
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -314,7 +313,7 @@ Symbol definitions are contained in the special section <COMPUTEROUTPUT>
 SHT_GNU_VERNEED</COMPUTEROUTPUT>. The number of entries in this section
 is contained in the <COMPUTEROUTPUT>DT_VERNEEDNUM</COMPUTEROUTPUT> entry
 of the Dynamic Section.  The <COMPUTEROUTPUT>sh_link</COMPUTEROUTPUT>
-member of the section header points to the section that contain the strings
+member of the section header points to the section that contains the strings
 referenced by this section.
 </PARA>
 <FIGURE>
@@ -409,7 +408,7 @@ Bitmask of flags.
 <LISTITEM>
 <PARA>
 Contains version identifier which is unique for the object file. This is
-the identifier which is used in the Symbol Version Table containd in the
+the identifier which is used in the Symbol Version Table contained in the
 .gnu.version section. If the highest bit (bit 15) is set this is a hidden
 symbol which cannot be referenced from outside the object.
 </PARA>
@@ -429,7 +428,7 @@ to the point where the name string can be found.
 <LISTITEM>
 <PARA>
 Byte offset to the next Elfxx_Verdaux entry.  The first entry (pointed to
-by the Elfxx_Verdef entry, contains the actual defined name.  The second
+by the Elfxx_Verdef entry) contains the actual defined name.  The second
 and all later entries name predecessor versions.
 </PARA>
 </LISTITEM>
@@ -450,12 +449,6 @@ Elfxx_Verdef array contains an appropriate version definition.
 These tests have to be recursively performed for all objects and their
 dependencies.
 </PARA>
-<NOTE>
-<PARA>
-Is this recursion depth first or breadth first? Does it follow the same rules
-as regular symbol resolution & initialization?
-</PARA>
-</NOTE>
 <PARA>
 There is one situation where a missing symbol definition is not an
 error.  This is when the vna_flags in the Elfxx_Vernaux entry has the
@@ -476,11 +469,11 @@ During the relocations in an object using symbol versioning we have to
 extend the test for a matching definition.  Not only is it now
 required that the strings with the symbol names are matching, it is
 now also required that the version name of the reference is the same
-as the name of the definition.  To retrieve the names uses the same
-index as for the symbol table (both requirement and definition) and
-retrieves a value from the SHT_GNU_versym section.  This section then
-can be used to get a string from the Elfxx_Verneed entries (for the
-requirement) and the Elfxx_Verdef entries (for the definition).
+as the name of the definition.  To obtain the names, use the same
+index as for the symbol table (both requirement and definition) but
+retrieve the value from the SHT_GNU_versym section instead. This entry
+can then can be used to get the corresponding string from the Elfxx_Verneed
+entries (for the requirement) and the Elfxx_Verdef entries (for the definition).
 </PARA>
 <PARA>
 If the highest bit (no. 15) of the version symbol value is set, the
@@ -502,7 +495,7 @@ versioning but the object with the definition does, then the reference
 only matches the base definition.  The base definition is the one with
 index numbers 1 and 2 (1 is the unspecified name, 2 is the name given
 later to the baseline of symbols once the library started using symbol
-versioning).  The static linker is guaranteed to use this indeces for
+versioning).  The static linker is guaranteed to use this index for
 the base definition.  If there is no symbol definition with such an
 version index and there is exactly one version for which this symbol
 is defined, then this version is accepted (this was mostly implemented
