@@ -1,11 +1,11 @@
-<REFENTRY ID="baselib-bindtextdomain"> <REFMETA>
-<REFENTRYTITLE>bindtextdomain</REFENTRYTITLE>
+<REFENTRY ID="baselib-dgettext"> <REFMETA>
+<REFENTRYTITLE>dgettext</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
 </REFMETA>
 <REFNAMEDIV>
-<REFNAME>bindtextdomain</REFNAME>
+<REFNAME>dgettext</REFNAME>
 <REFPURPOSE>
-specify that the DOMAINNAME message catalog will be found in DIRNAME rather than in the system locale data base
+look up MSGID in the current default message catalog for the current LC_MESSAGES locale
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -13,10 +13,9 @@ specify that the DOMAINNAME message catalog will be found in DIRNAME rather than
 <DATE>16 September 2002</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
-#include &lt;unistd.h>
+#include &lt;libintl.h>
 
-extern char *bindtextdomain(const char *domainname,
-                            const char *dirname);
+extern char *dgettext(const char * domainname, const char *msgid);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
@@ -26,14 +25,12 @@ extern char *bindtextdomain(const char *domainname,
 <TITLE>Description
 </TITLE>
 <PARA>
-Specify that the <emphasis>domainname</emphasis> message catalog will 
-be found in <emphasis>dirname</emphasis> rather than in the system 
-locale data base.
+The <emphasis>dgettext</emphasis> function is a domain specified version 
+of <emphasis>gettext</emphasis>.
 </PARA>
 </REFSECT1>
-
-
 <REFSECT1>
+
 <TITLE>Parameters</TITLE>
 <VARIABLELIST>
 
@@ -55,23 +52,33 @@ the call.
 
 <VARLISTENTRY>
 <TERM>
-dirname
+msgid
 </TERM>
 <LISTITEM>
 <PARA>
-Can be an absolute or relative pathname.
+The <emphasis>msgid</emphasis> is a null-terminated string to be matched 
+in the catalogue with respect to a specific domain and the current locale.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
-</VARIABLELIST>
 
+</VARIABLELIST>
 </REFSECT1>
 
 <REFSECT1>
 <TITLE>Return</TITLE>
 <PARA>
-Returns the directory pathname currenlty bound to the domain.  If it fails,
-a null pointer will be returned.
+If the function query above succeeds with <emphasis>msgid1</emphasis>, then a 
+translated null-terminated string is returned.  If the search fails,
+then the original <emphasis>msgid1</emphasis> 
+or <emphasis>msgid2</emphasis> is returned according to <emphasis>n</emphasis>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+The function will not modify the external <emphasis>errno</emphasis> variable.
 </PARA>
 </REFSECT1>
 

@@ -32,7 +32,8 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	vasprintf.sgml vdprintf.sgml \
 	verrx.sgml wait4.sgml warn.sgml warnx.sgml wcpcpy.sgml wcpncpy.sgml \
 	wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
-	wcstoq.sgml wcstouq.sgml
+	wcstoq.sgml wcstouq.sgml ngettext.sgml dgettext.sgml dngettext.sgml \
+	dcgettext.sgml dcngettext.sgml bind_textdomain_codeset.sgml
 
 FILES=baselib.sgml 
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml

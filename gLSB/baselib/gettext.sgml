@@ -10,24 +10,92 @@ look up MSGID in the current default message catalog for the current LC_MESSAGES
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>2 April 2001</DATE>
+<DATE>16 September 2002</DATE>
 </REFSYNOPSISDIVINFO>
 <SYNOPSIS>
 #include &lt;libintl.h>
 
-extern char *gettext((const char *msgid));
+extern char *gettext(const char *msgid);
 </SYNOPSIS>
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
-<DATE>2 April 2001</DATE>
+<DATE>16 September 2002</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
-Used to look up the MSGID in the DOMAINNAME message catalog for the current CATEGORY locale. If not found, returns MSGID itself (the default text). 
+The <emphasis>gettext</emphasis> function attempts to retrieve a target 
+string based on the specified key from the <emphasis>msgid</emphasis> 
+argument within the context of a specific domain and the current locale.  
 </PARA>
-
+<PARA>
+The LANGUAGE environment variable is examined first to determine the
+message catalogs to be used.  The value of the LANGUAGE environment variable
+is a list of locale names separated by colon (:) character.  If the
+LANGUAGE environment variable is defined, each locale name is tried
+in the specified order and if a message catalog containing the requested
+message is found, the message is returned.  If the LANGUAGE environment
+varialbe is defined but failed to locate a message catalog, 
+the <emphasis>msgid</emphasis> string will be returned.
+If the LANGUAGE environment variable is not defined, LC_ALL, LC_xxx, and
+LANG environment varialbes are examined to locate the message catalog,
+forllowing the convention used by the <emphasis>setlocale()</emphasis> function.
+</PARA>
+<PARA>
+The pathname used to locate the message catalog is 
+<emphasis>dirname/locale/category/domainname.mo</emphasis>, 
+where <emphasis>dirname</emphasis> is the directory specified 
+by <emphasis>bindtextdomain()</emphasis>, <emphasis>locale</emphasis>
+is a locale name determined by the definition of environment variables, 
+<emphasis>category</emphasis> is LC_MESSAGES.
+</PARA>
 </REFSECT1>
+<REFSECT1>
+<TITLE>Parameters</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+msgid
+</TERM>
+<LISTITEM>
+<PARA>
+The <emphasis>msgid</emphasis> is a null-terminated string to be 
+matched in the catalogue with respect to a specific domain and the 
+current locale.  
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return</TITLE>
+<PARA>
+If the function query above succeeds with <emphasis>msgid</emphasis>, then a 
+translated null-terminated string is returned.  If the search fails,
+then the original <emphasis>msgid</emphasis> is returned.
+The length of the string returned is undetermined until the function is called. 
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+The function will not modify the external <emphasis>errno</emphasis> variable.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA>
+<ulink url="baselib-gettext.html">gettext</ulink>, dgettext, ngettext, 
+dngettext, dcgettext, dcngettext, textdomain,
+bindtextdomain, bind_textdomain_codeset
+</PARA>
+</REFSECT1>
+
 </REFENTRY>
 
