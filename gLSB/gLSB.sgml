@@ -15,6 +15,7 @@
 <!entity sysinit.sgm system "sysinit/sysinit.sgml">
 <!entity sgmlspec.sgm system "sgmlspec/sgmlspec.sgml">
 <!entity appA.sgm system "appendix/liblist.sgml">
+<!entity appB.sgm system "appendix/howtocompliant.sgml">
 ]>
 
 <BOOK>
@@ -36,4 +37,5 @@
 &sysinit.sgm;
 &sgmlspec.sgm;
 &appA.sgm;
+&appB.sgm;
 </BOOK>
