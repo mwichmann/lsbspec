@@ -2,7 +2,7 @@
 <TITLE>Utility Libraries</TITLE>
 
 <CHAPTER id=utillib>
-<TITLE>utility Libraries</TITLE>
+<TITLE>Utility Libraries</TITLE>
 
 <PARA>
 An LSB-conforming implementation shall also support some utility libraries which
