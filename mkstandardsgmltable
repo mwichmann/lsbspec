@@ -22,7 +22,7 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.5 2001-12-24 15:37:37 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.6 2002-02-27 01:39:58 nick_stoughton Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -32,7 +32,7 @@ for(1..$sth->numrows) {
 	print "<ROW>";
 	# Don't print the nickname. It may be confusing
 	#printf "<ENTRY>%s</ENTRY>",$entry{'Sname'};
-	printf "<ENTRY>%s</ENTRY>",$entry{'Sfull'};
+	printf "<ENTRY ID=\"std.%s\" XREFLABEL=\"%s\">%s</ENTRY>",makeid($entry{'Sname'}),$entry{'Sfull'},$entry{'Sfull'};
 	printf "<ENTRY><ULINK URL=\"%s\">%s</ULINK></ENTRY>",
 					$entry{'Surl'}, $entry{'Surl'};
 	printf "<ENTRY>%s</ENTRY>",$entry{'Scomment'};
@@ -40,4 +40,13 @@ for(1..$sth->numrows) {
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.5 2001-12-24 15:37:37 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.6 2002-02-27 01:39:58 nick_stoughton Exp $- -->\n");
+
+sub makeid {
+	my ($name) = @_;
+	$name =~ s/\s+/./g;
+	$name =~ s/[^A-Za-z0-9.]+/./g;
+	# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
+	$name =~ s/\.\.+/./g;
+	return $name;
+}
