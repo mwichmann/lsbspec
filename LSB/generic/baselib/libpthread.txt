@@ -3,8 +3,10 @@ LSB systems support POSIX threads with the following exceptions.
 This list is intended to match the behavior of historical Linux
 implementations.  Applications should be written to deal with either
 POSIX threads or the thread behaviors described here.
-</PARA>
 
+<ITEMIZEDLIST MARK=BULLET>
+
+<LISTITEM>
 <PARA>
 POSIX specifies a concept of per-process rather than per-thread
 signals.  The LSB does not require this behavior; traditional Linux
@@ -12,13 +14,17 @@ implementations have had per-thread signals only.  A related issue is
 that applications cannot rely on getpid() returning the same value
 in different threads.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 Note: one implication of per-thread signals is that a core dump (for
 example) may not stop all threads in a given process.  This may be an
 issue when designing ways to stop/start applications.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 Applications which create child processes (using fork() and the like)
 must then wait for them (using waitpid() family of functions) in the
@@ -26,7 +32,9 @@ same thread as they created them.  Note that coding applications this
 way will work both with full POSIX threads and legacy Linux thread
 implementations.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 POSIX specifies that changing the user or group id instantly affects
 the behavior of all threads.  This behavior is not specified;
@@ -34,41 +42,60 @@ applications must use their own lock if they need this behavior.
 Rationale: it seems unnecessary and it is a performance hit (an SMP
 kernel must lock the user id).
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 Although this standard doesn't have a way to list processes (/proc or
 "ps" command line isn't in, right?), it is our intention to not
 specify one way or the other whether multiple threads appear as
 separate processes or as a single process.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 Applications cannot rely on resource limits (getrusage and setrusage)
 being maintained per-process rather than per-thread.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 Applications must disconnect from the controlling tty before
 calling pthread_create.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 times() doesn't account for all threads, just the caller.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 Applications must not call pthread_cancel if they call any system
 libraries (most notably X windows), as system libraries are not
 guaranteed to be thread safe.  Likewise, for such libraries, only one
 thread per process may call them.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 Applications cannot rely on fcntl/lockf locks being visible
 per-process rather than per-thread.  Likewise for mandatory file
 locks.
 </PARA>
+</LISTITEM>
 
+<LISTITEM>
 <PARA>
 Threaded applications cannot use SIGUSR1 or SIGUSR2.
 </PARA>
+</LISTITEM>
+
+</ITEMIZEDLIST>
+</PARA>
+
