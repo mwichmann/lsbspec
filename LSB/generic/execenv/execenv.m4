@@ -3,8 +3,6 @@
 
 include(fhs.sgml)
 
-include(procfs.sgml)
-
 <CHAPTER id=execstuff>
 <TITLE>Additional Recommendations</TITLE>
 <SECT1 id=permissions-must>
