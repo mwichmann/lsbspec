@@ -125,25 +125,25 @@ a warning notice in the documentation is regarded as unfriendly act.
 
 <SECT2 id=permission-media>
 <TITLE>Removable Media (Cdrom, Floppy, etc.)</TITLE>
- 
-<PARA>
-The application should be prepared to address removable media being
-mounted with options such as "noauto", "nouser", "nosuid" or "nodev". 
-Also, the mount options "uid=X", "gid=X" should be awaited with a 
-non-zero uid/gid value X.
-</PARA>
 
-<PARA>
-Rationale: 
-System vendors and local system administrators want to run
-applications from removable media, but want the possibility
-to control what the application can do.
-</PARA>
+<para>
+Applications that expect to be runnable from removable
+media should not depend on logging in as a privileged user,
+and should be prepared to deal with a restrictive
+environment.  Examples of such restrictions could be
+default mount options that disable set-user/group-ID
+attributes, disabling block or character-special files on
+the medium, or remapping the user/group IDs of files away
+from 0.
+<footnote>
+<para>
+Rationale: System vendors and local system administrators
+want to run applications from removable media, but want the
+possibility to control what the application can do.
+</para>
+</footnote>
+</para>
 
-<PARA>
-Run-from-removable media applications should not depend on 
-logging in as a privileged user. 
-</PARA>
 </SECT2>
  
 <SECT2 id=permission-installers>
