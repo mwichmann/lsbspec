@@ -49,24 +49,21 @@ one of the architecture specifications.</p>
 </blockquote>
 
 <H1>LSB 2.0 is in Public Review</H1>
-<P>
-Public Review of the LSB 2.0 Specifications run from Jan 29, 2004 to
-Feb 28, 2004. The review documents are marked as version 1.9.5 and can be found
+<p>
+The formal Public Review of the LSB 2.0 Specifications 
+is closed. However, we welcome and appreciate comments
+and bug reports at any time.</p>
+<p>
+The review documents are marked as version 1.9.6 and can be found
 <A HREF="specs.php">HERE</A>. Please file comments using the
 <A HREF="http://bugs.linuxbase.org">LSB Project bugzilla</A>.
+These will become LSB 2.0 upon release.</p>
 
 <H1>LSB 1.3 is the Current Specification</H1>
 <p>
 The 1.3 version of the LSB can be found <A HREF=oldspecs.shtml>Here</A>.</p>
 
-<H1><A NAME="DRAFT">The Current Draft</A></H1>
-<p>
-The current draft of the LSB Specification is available
-<A HREF="specs.php">HERE</A>. This draft will become LSB 2.0.
-We welcome and appreciate comments and bug reports at any time.
-You don't need to wait for a public review period.</p>
-
-<H1>Older version</H1>
+<H1>Older versions</H1>
 <p>
 Previous versions of the specification can be found <A HREF=oldspecs.shtml>Here</A>.</p>
 
