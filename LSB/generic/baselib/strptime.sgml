@@ -1,0 +1,62 @@
+<REFENTRY ID="baselib-strptime-3"> <REFMETA>
+<REFENTRYTITLE>strptime</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>strptime
+</REFNAME>
+<REFPURPOSE>
+parse a time string
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>24 April 2002</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+(synopsis as in SUS)
+</SYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>24 April 2002</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The specification for "strptime" is as specified in the SUSv2 but with the
+following differences as listed below.
+</PARA>
+
+<REFSECT2>
+<TITLE>Number of leading zeroes limited
+</TITLE>
+<PARA>
+For all fields for which the SUSv2 specifies, "leading zeros are
+permitted but not required", applications must not expect to be able
+to supply more leading zeroes than would be implied by the range of
+the field.  Implementations may choose to either match an input with
+excess leading zeroes, or treat this as a non-matching input.  For
+example, %j has a range of 001 to 366, so 0, 00, 000, 001, or 045 are
+acceptable inputs, but inputs such as 0000, 0366 and the like are not.
+</PARA>
+<PARA>
+Rationale: Glibc developers consider forbidding excess leading zeroes
+to be the correct behavior.  When trying to parse a given input
+against several format strings, forbidding excess leading zeroes could
+be helpful.  For example, if one matches "0011-12-26" against
+"%m-%d-%Y" and then against "%Y-%m-%d", it seems useful for the first
+match to fail, as it would be perverse to parse that date as November
+12, year 26.  The second pattern parses it as December 26, year 11.
+</PARA>
+<PARA>
+More rationale: The SUS is not explicit that an unlimited number of
+leading zeroes are required, although it may imply this.  The LSB
+explicitly allows implementations to have either behavior.  Future
+versions of this standard may require implementations to forbid excess
+leading zeroes.
+</PARA>
+</REFSECT2>
+
+</REFSECT1>
+</REFENTRY>
