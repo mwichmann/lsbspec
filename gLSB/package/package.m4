@@ -554,8 +554,6 @@ Value identifying the number of links associated with this file. If the value
 is greater than 1, then this filename will be linked to 1 or more files in this
 archive that has a matching value for the c_ino, c_devmajor and c_devminor
 fields.
-This field  must match the corresponding value in the
-<CONSTANT>RPMTAG_FILELINKTOS</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>

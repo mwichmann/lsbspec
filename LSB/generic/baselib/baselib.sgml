@@ -13,7 +13,7 @@ hardware in the system.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 02:36:41 2002 -->
+<!--    at Thu Oct 17 15:22:46 2002 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2642,6 +2642,56 @@ regmatch_t;
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>rpc/auth.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+union des_block
+{
+  struct
+  {
+    u_int32_t high;
+    u_int32_t low;
+  }
+  key;
+  char c;
+}
+ ;
+struct auth_ops
+{
+  void (*ah_nextverf) (void);
+  int (*ah_marshal) (void);
+  int (*ah_validate) (void);
+  int (*ah_refresh) (void);
+  void (*ah_destroy) (void);
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>rpc/clnt.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct clnt_ops
+{
+  enum clnt_stat (*cl_call) (void);
+  void (*cl_abort) (void);
+  void (*cl_geterr) (void);
+    bool_t (*cl_freeres) (void);
+  void (*cl_destroy) (void);
+    bool_t (*cl_control) (void);
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>rpc/rpc.h</TITLE>
 <PARA>
 </PARA>
@@ -2649,13 +2699,15 @@ regmatch_t;
 
 
 
+typedef int bool_t;
 struct opaque_auth
 {
-  Unknown Type:".." oa_flavor;
+  enum_t oa_flavor;
   caddr_t oa_base;
   u_int oa_length;
 }
  ;
+typedef int enum_t;
 struct AUTH
 {
   struct opaque_auth ah_cred;
@@ -2704,6 +2756,57 @@ struct SVCXPRT
   caddr_t xp_p1;
   caddr_t xp_p2;
   char xp_pad;
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>rpc/svc.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+struct xp_ops
+{
+  bool_t (*xp_recv) (struct SVCXPRT * __xprt, struct rpc_msg * __msg);
+  enum xprt_stat (*xp_stat) (struct SVCXPRT * __xprt);
+    bool_t (*xp_getargs) (struct SVCXPRT * __xprt, xdrproc_t __xdr_args,
+			  caddr_t args_ptr);
+    bool_t (*xp_reply) (struct SVCXPRT * __xprt, struct rpc_msg * __msg);
+    bool_t (*xp_freeargs) (struct SVCXPRT * __xprt, xdrproc_t __xdr_args,
+			   caddr_t args_ptr);
+  void (*xp_destroy) (struct SVCXPRT * __xprt);
+}
+ ;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>rpc/xdr.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+
+
+enum xdr_op
+{
+  XDR_ENCODE, XDR_DECODE, XDR_FREE
+}
+ ;
+struct xdr_ops
+{
+  bool_t (*x_getlong) (struct XDR * __xdrs, long *__lp);
+  bool_t (*x_putlong) (struct XDR * __xdrs, long *__lp);
+  bool_t (*x_getbytes) (struct XDR * __xdrs, caddr_t __addr, u_int __len);
+  bool_t (*x_putbytes) (struct XDR * __xdrs, char *__addr, u_int __len);
+  u_int (*x_getpostn) (struct XDR * __xdrs);
+  bool_t (*x_setpostn) (struct XDR * __xdrs, u_int __pos);
+  int32_t *(*x_inline) (struct XDR * __xdrs, int __len);
+  void (*x_destroy) (struct XDR * __xdrs);
+    bool_t (*x_getint32) (struct XDR * __xdrs, int32_t * __ip);
+    bool_t (*x_putint32) (struct XDR * __xdrs, int32_t * __ip);
 }
  ;
 </SCREEN>
@@ -14519,7 +14622,7 @@ Convert initial portion of wide string NPTR to unsigned long long int representa
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 02:37:50 2002 -->
+<!--    at Thu Oct 17 15:23:55 2002 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -15018,7 +15121,7 @@ struct exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 02:38:18 2002 -->
+<!--    at Thu Oct 17 15:24:23 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -15306,14 +15409,13 @@ ISO C serves as the LSB reference programming language, and data definitions are
 
 typedef unsigned int pthread_key_t;
 typedef int pthread_once_t;
-typedef int __atomic_lock_t;
 
 
 typedef unsigned long pthread_t;
 struct _pthread_fastlock
 {
   long __status;
-  __atomic_lock_t __spinlock;
+  int __spinlock;
 }
  ;
 
@@ -15484,7 +15586,7 @@ is similar to <FUNCTION>sem_wait</FUNCTION> but waits only until
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 02:38:35 2002 -->
+<!--    at Thu Oct 17 15:24:40 2002 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -15724,7 +15826,7 @@ directory search-path for object files
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 02:38:47 2002 -->
+<!--    at Thu Oct 17 15:24:53 2002 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -15789,7 +15891,7 @@ ISO C serves as the LSB reference programming language, and data definitions are
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.49 2002/09/30 19:50:36 anderson Exp 0 -->
-<!--    at Thu Oct 17 02:39:00 2002 -->
+<!--    at Thu Oct 17 15:25:05 2002 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
