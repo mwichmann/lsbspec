@@ -33,7 +33,7 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
 	wcstoq.sgml wcstouq.sgml ngettext.sgml dgettext.sgml dngettext.sgml \
 	dcgettext.sgml dcngettext.sgml bind_textdomain_codeset.sgml \
-	pmap_getport.sgml
+	pmap_getport.sgml pmap_set.sgml svc_run.sgml
 
 FILES=baselib.sgml 
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
