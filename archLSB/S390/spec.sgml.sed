@@ -1,7 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity specversion "LSBVERSION">
-<!entity cononicalarch "S390">
+<!entity canonicalarch "S390">
 <!entity specarchitecture "31 bit implementation of the S390&trade;">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
@@ -17,7 +17,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the &cononicalarch; Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the &canonicalarch; Architecture &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2002</YEAR>
 <HOLDER>Free Standards Group</HOLDER>

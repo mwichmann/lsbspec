@@ -1,7 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity specversion "LSBVERSION">
-<!entity cononicalarch "AMD64">
+<!entity canonicalarch "AMD64">
 <!entity specarchitecture "64 bit implementation of the Opteron&trade;">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
@@ -18,7 +18,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the AMD64 Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the &canonicalarch; Architecture &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2003</YEAR>
 <HOLDER>Free Standards Group</HOLDER>

@@ -2,7 +2,7 @@
 
 <!entity w "<emphasis>w</emphasis>">
 <!entity specversion "LSBVERSION">
-<!entity cononicalarch "IA64">
+<!entity canonicalarch "IA64">
 <!entity specarchitecture "64 bit implementation of the PowerPC&trade;">
 <!entity changes.sgm system "changes.sgml">
 <!entity intro.sgm system "intro/intro.sgml">
@@ -20,7 +20,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Linux Standard Base Specification for the &cononicalarch; Architecture &specversion</TITLE>
+<TITLE>Linux Standard Base Specification for the &caonicalarch; Architecture &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2002</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
