@@ -44,6 +44,9 @@ include(standards.sgml)
 include(libraries.sgml)
 </TGROUP>
 </TABLE>
+<PARA>
+These libraries will be found in <FILENAME>/lib</FILENAME>.
+</PARA>
 </SECT1>
 
 <SECT1>
