@@ -1,7 +1,7 @@
 <PREFACE id="OVERVIEW">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the Linux Packaging Specification (LPS).
+This is version &specversion; of the Linux Package Specification (LPS).
 This version is a preliminary version for review only. Conclusion of work on
 this version will result in version 1.0 of the Linx Packaging Specification.
 </PARA>
@@ -9,7 +9,8 @@ this version will result in version 1.0 of the Linx Packaging Specification.
 Implmentations may not claim conformance to this version.
 <!--
 An implementation of this version of the specification may not claim
-to be an implementation of Linux Packaging unless it has successfully
+to be an implementation of the Linux Package Specification
+unless it has successfully
 completed the compliance process as defined by the Free Standards Group.
 Note: This is boilerplate. It need not be a final requirment.
 -->
