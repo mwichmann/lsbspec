@@ -5,7 +5,7 @@
 LSB-conforming implementations shall support an object file format, called
 Executable and Linking Format (ELF) as defined by the
 <XREF LINKEND="std.gABI.41"> , <XREF LINKEND="std.ABIUpdate"> ,
-<XREF LINKEND="std.x86-64.ABI"> and as supplemented by the
+<XREF LINKEND="std.x86.64.ABI"> and as supplemented by the
 <XREF LINKEND="std.LSB"> and this document.
 </PARA>
 </PARTINTRO>
@@ -17,7 +17,7 @@ Executable and Linking Format (ELF) as defined by the
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
 Chapter 4 of the 
-<XREF LINKEND="std.x86-64.ABI">.
+<XREF LINKEND="std.x86.64.ABI">.
 </PARA>
 <SECT2 ID="mifileclass">
 <TITLE>File Class</TITLE>
@@ -61,8 +61,8 @@ A section header's <COMPUTEROUTPUT>sh_type</COMPUTEROUTPUT> member specifies the
 <SECT2>
 <TITLE>ELF Section Types</TITLE>
 <PARA>
-The following section types are defined in the <XREF LINKEND="std.X86-64.ABI">.
-Xinclude(elfsecttypes.sgml)
+The following section types are defined in the <XREF LINKEND="std.x86.64.ABI">.
+include(elfsecttypes.sgml)
 </PARA>
 </SECT2>
 <SECT2>
@@ -70,7 +70,7 @@ Xinclude(elfsecttypes.sgml)
 <PARA>
 The following additional section types are defined here.
 
-Xinclude(linuxsecttypes.sgml)
+include(linuxsecttypes.sgml)
 </PARA>
 </SECT2>
 </SECT1>
@@ -87,7 +87,6 @@ Xinclude(linuxsecttypes.sgml)
 </PARA>
 </SECT1>
 </CHAPTER>
--->
 
 <CHAPTER ID=specialsections>
 <TITLE>Special Sections</TITLE>
@@ -103,7 +102,7 @@ ow are used by the system and have the indicated types and attributes.
 <SECT2>
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
-The following sections are defined in the <XREF LINKEND="std.X86-64.ABI">.
+The following sections are defined in the <XREF LINKEND="std.x86.64.ABI">.
 include(elfsect.sgml)
 </PARA>
 </SECT2>
@@ -123,7 +122,7 @@ include(linuxsect.sgml)
 
 <PARA>
 LSB-conforming applications shall use the Symbol Table as defined in
-Chapter 4 of the <XREF LINKEND="std.X86-64.ABI">.
+Chapter 4 of the <XREF LINKEND="std.x86.64.ABI">.
 </PARA>
 
 </CHAPTER>
@@ -133,7 +132,7 @@ Chapter 4 of the <XREF LINKEND="std.X86-64.ABI">.
 
 <PARA>
 LSB-conforming applications shall use Relocations as defined in
-Chapter 4 of the <XREF LINKEND="std.X86-64.ABI">.
+Chapter 4 of the <XREF LINKEND="std.x86.64.ABI">.
 </PARA>
 
 <SECT1 ID="relocationtypes">
