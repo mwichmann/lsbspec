@@ -46,9 +46,7 @@ and this document.
 <TITLE>Program Interpreter/Dynamic Linker</TITLE>
 <PARA>
 The LSB specifies the Program Interpreter to be
-<ITEMIZEDLIST>
-<LISTITEM><SCREEN>/lib/ld-lsb.so.1</SCREEN></LISTITEM>
-</ITEMIZEDLIST>
+<application><XREF LINKEND="lib.proginterp"></application>.
 </PARA>
 </SECT1>
 
