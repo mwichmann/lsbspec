@@ -43,6 +43,142 @@ print "</TGROUP>\n";
 print "</TABLE>\n";
 }
 
+sub getinterfacename($)
+{
+local($Iid)=@_;
+my($select,%entry);
+
+if( $Iid eq "" ) {return "";}
+
+#print STDERR "Looking for Iname for $Iid\n";
+
+$select = "SELECT Iname FROM Interface ";
+$select.= "WHERE Iid=$Iid";
+#print $select;
+$isth = $Dbh->query($select) || die $Dbh->errmsg();
+%entry=$isth->fetchhash;
+return $entry{'Iname'};
+}
+
+
+sub output_classinfo($)
+{
+local ($class) = @_;
+
+#print STDERR $$class{'CIname'}."\n";
+
+#
+# Display Vtable info
+#
+if( $$class{'CIvtable'} ) {
+	print "<!--classdata-->\n";
+	print "<TABLE>\n";
+	print "<TITLE>".getinterfacename($$class{'CIvtable'})."</TITLE>\n";
+	print "<TGROUP COLS=2>\n";
+	print "<TBODY>\n";
+	print "<ROW>\n";
+	print "<ENTRY>Base Offset</ENTRY>\n";
+	print "<ENTRY>";
+	print $$class{'CIbaseoffset'};
+	print "</ENTRY>\n";
+	print "</ROW>\n";
+	print "<ROW>\n";
+	print "<ENTRY>RTTI</ENTRY>\n";
+	print "<ENTRY>";
+	$func=getinterfacename($$class{'CIrtti'});
+	printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+	print "</ENTRY>\n";
+	print "</ROW>\n";
+	$select = "SELECT * FROM Vtable ";
+	$select.= "LEFT JOIN ClassInfo ON VTCid=CIid ";
+	$select.= "WHERE CIid=".$$class{'CIid'}." ";
+	$select.= "ORDER BY VTpos";
+	$vsth = $Dbh->query($select) || die $Dbh->errmsg();
+	for(1..$$class{'CInumvfunc'}) {
+		%entry=$vsth->fetchhash;
+		print "<ROW>\n";
+		print "<ENTRY>vfunc:</ENTRY>\n";
+		print "<ENTRY>";
+		$func=getinterfacename($$class{'VTviid'});
+		printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+		print "</ENTRY>\n";
+		print "</ROW>\n";
+		}
+
+	print "</TBODY>\n";
+	print "</TGROUP>\n";
+	print "</TABLE>\n";
+	}
+
+#
+# Display RTTI info
+#
+if( $$class{'CIrtti'} ) {
+	print "<!--classdata-->\n";
+	print "<TABLE>\n";
+	print "<TITLE>".getinterfacename($$class{'CIrtti'})."</TITLE>\n";
+	print "<TGROUP COLS=2>\n";
+	print "<TBODY>\n";
+	print "<ROW>\n";
+	print "<ENTRY>Base Vtable</ENTRY>\n";
+	print "<ENTRY>";
+	$func=getinterfacename($$class{'CIbasevtable'});
+	printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+	print "</ENTRY>\n";
+	print "</ROW>\n";
+	print "<ROW>\n";
+	print "<ENTRY>Name</ENTRY>\n";
+	print "<ENTRY>";
+	$func="_ZTS".substr($$class{'CIname'},2,256);
+	printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+	print "</ENTRY>\n";
+	print "</ROW>\n";
+	if( $$class{'CInumbasetype'} ) {
+		$select = "SELECT * FROM BaseTypes ";
+		$select.= "LEFT JOIN ClassInfo ON BTcid=CIid ";
+		$select.= "WHERE CIid=".$$class{'CIid'}." ";
+		$select.= "ORDER BY BTpos";
+		$vsth = $Dbh->query($select) || die $Dbh->errmsg();
+		for(1..$$class{'CInumbasetype'}) {
+			%entry=$vsth->fetchhash;
+			print "<ROW>\n";
+			print "<ENTRY>basetype:</ENTRY>\n";
+			print "<ENTRY>";
+			$func=getinterfacename($$class{'BTrttiid'});
+			printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+			print "</ENTRY>\n";
+			print "</ROW>\n";
+			}
+		}
+	if( $$class{'CInumvmitypes'} ) {
+		print "<ROW>\n";
+		print "<ENTRY>flags:</ENTRY>\n";
+		print "<ENTRY>".$$class{'CIflags'}."</ENTRY>\n";
+		print "</ROW>\n";
+		$select = "SELECT * FROM VMIBaseTypes ";
+		$select.= "LEFT JOIN ClassInfo ON VBTcid=CIid ";
+		$select.= "WHERE CIid=".$$class{'CIid'}." ";
+		$select.= "ORDER BY VBTpos";
+		$vsth = $Dbh->query($select) || die $Dbh->errmsg();
+		for(1..$$class{'CInumvmitypes'}) {
+			%entry=$vsth->fetchhash;
+			print "<ROW>\n";
+			print "<ENTRY>basetype:</ENTRY>\n";
+			print "<ENTRY>";
+			$func=getinterfacename($$class{'VBTbasetype'});
+			printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+			print "</ENTRY>\n";
+			print "<ENTRY>".$entry{'VBTflags'}."</ENTRY>\n";
+			print "</ROW>\n";
+			}
+		}
+
+	print "</TBODY>\n";
+	print "</TGROUP>\n";
+	print "</TABLE>\n";
+	}
+}
+
 # Uncomment to trace SQL statements
 #$trace=1;
 
@@ -81,7 +217,7 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.50 2003-02-12 05:24:36 gk4 Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.51 2003-04-29 12:54:25 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -198,7 +334,24 @@ for(1..$lgh->numrows) {
 	print "<PARA>\n";
 	print "</PARA>\n";
 #
-# 8) For each group, make a table of the interfaces
+# 8) For each group, make a table of the class data
+#
+{
+	local(*entry);
+	local(*symver);
+	local(*std);
+	$select = "SELECT * FROM ClassInfo ";
+	$select.= "LEFT JOIN LibGroup ON CIlibg=LGid ";
+	$select.= "WHERE LGid=$LGid ";
+	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	print STDERR $select,"\n" if $trace;
+	for(1..$inh->numrows) {
+		%entry=$inh->fetchhash;
+		output_classinfo(\%entry);
+		}
+}
+#
+# 9) For each group, make a table of the interfaces
 #
 {
 	local(*entry);
@@ -227,11 +380,12 @@ for(1..$lgh->numrows) {
 		$std[$i]=$entry{'Istandard'};
 	}
 	if( $i > 0 ) {
+		print "<!--libgroupints-->\n";
 		output_table($i,*entry,*symver,*std,"$Lname - $LGname Function Interfaces");
 		}
 }
 #
-# 9) For each group, make a table of the deprecated interfaces
+# 10) For each group, make a table of the deprecated interfaces
 #
 {
 	local(*entry);
@@ -260,12 +414,13 @@ for(1..$lgh->numrows) {
 		$std[$i]=$entry{'Istandard'};
 	}
 	if( $i > 0 ) {
+		print "<!--libgroupints-->\n";
 		output_table($i,*entry,*symver,*std,"$Lname - $LGname Deprecated Function Interfaces");
 		}
 }
 
 #
-# 10) Make a table of data interfaces
+# 11) Make a table of data interfaces
 #
 {
 	local(*sth);
@@ -301,7 +456,7 @@ for(1..$lgh->numrows) {
 		}
 }
 #
-# 11) Make a table of deprecated data interfaces
+# 12) Make a table of deprecated data interfaces
 #
 {
 	local(*sth);
@@ -426,4 +581,4 @@ if($sth->numrows) {
 
 
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.50 2003-02-12 05:24:36 gk4 Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.51 2003-04-29 12:54:25 anderson Exp $- -->\n");
