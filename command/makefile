@@ -22,7 +22,11 @@ gensrc:
 	./mkcmdtable  > cmdsutils.sgml
 
 clean:
-	rm -f $(FILES) $(TABLES)
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
 
 command.sgml: $(TABLES)
 

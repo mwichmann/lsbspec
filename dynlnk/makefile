@@ -17,6 +17,10 @@ gensrc:
 	./mkdyntagtable Sname='LSB' dodesc=Y >linuxtag.sgml
 
 clean:
-	rm -f $(FILES) $(TABLES)
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
 
 dynlnk.sgml: dyntag.sgml linuxtag.sgml

@@ -137,3 +137,8 @@ SUS.html::
 clean::
 	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
 	rm -f $(HTML)
+
+spotless::
+	for dir in $(SUBDIRS);do (cd $$dir && make spotless);done
+	rm -f $(HTML)
+

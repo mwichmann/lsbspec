@@ -19,6 +19,10 @@ gensrc:
 	../mklibspec -l libutil >libutil.sgml
 
 clean:
-	rm -f $(FILES) $(TABLES)
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
 
 utillib.sgml:  libz.sgml libcurses.sgml libresolv.sgml libutil.sgml

@@ -20,6 +20,10 @@ gensrc:
 	./mksecttypestable Sname='LSB' dodesc=Y >linuxsecttypes.sgml
 
 clean:
-	rm -f $(FILES) $(TABLES)
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
 
 objfmt.sgml: elfsect.sgml linuxsect.sgml elfsecttypes.sgml  linuxsecttypes.sgml

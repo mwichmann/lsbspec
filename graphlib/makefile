@@ -21,6 +21,10 @@ gensrc:
 	../mklibspec -l libGL >libGL.sgml
 
 clean:
-	rm -f $(FILES) $(TABLES)
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
 
 graphlib.sgml: libX11.sgml libXext.sgml libICE.sgml libSM.sgml libXt.sgml libGL.sgml

@@ -17,7 +17,11 @@ all: $(FILES) $(TABLES)
 gensrc:
 
 clean:
-	rm -f $(FILES) $(TABLES)
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
 
 sysinit.sgml: cron.sgml runlevels.sgml initactions.sgml initscripts.sgml \
 	installinit.sgml facnames.sgml scriptnames.sgml initfunctions.sgml

@@ -17,7 +17,11 @@ gensrc:
 	./mklibsgmltable >libraries.sgml
 
 clean:
-	rm -f $(TABLES) $(FILES)
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
 
 intro.sgml: standards.sgml libraries.sgml
 standards.sgml: mkstandardsgmltable
