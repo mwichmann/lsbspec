@@ -9,23 +9,47 @@ dump files in octal and other formats
 </REFPURPOSE>
 </REFNAMEDIV>
 
+<REFSYNOPSISDIV>
+<CMDSYNOPSIS>
+<COMMAND>od</COMMAND>
+<ARG>-abcdfilox</ARG>
+<GROUP>
+  <ARG>-w <replaceable>width</replaceable></ARG>
+  <ARG>--width-<replaceable>width</replaceable></ARG>
+</GROUP>
+<ARG>-v</ARG>
+<ARG>-A <replaceable>address_base</replaceable></ARG>
+<ARG>-j <replaceable>skip</replaceable></ARG>
+<ARG>-n <replaceable>count</replaceable></ARG>
+<ARG>-t <replaceable>type_string</replaceable></ARG>
+<ARG rep=repeat>file</ARG>
+<SBR>
+<COMMAND>od</COMMAND>
+<ARG choice=plain>--traditional</ARG>
+<ARG>options</ARG>
+<ARG>file</ARG>
+<ARG><ARG>+</ARG>offset<ARG>.</ARG><ARG>b</ARG></ARG>
+<ARG><ARG>+</ARG>label<ARG>.</ARG><ARG>b</ARG></ARG>
+</CMDSYNOPSIS>
+</REFSYNOPSISDIV>
+
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
 <COMMAND>od</COMMAND> is as specified in <XREF LINKEND=STD.SUSv3>, but with
-extensions as listed below.
+differences as listed below.
 </PARA>
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Extensions</TITLE>
+<TITLE>Differences</TITLE>
 <VARIABLELIST>
 
 <VARLISTENTRY>
-<TERM>-w, --width[=BYTES]</TERM>
+<TERM>-w<parameter>width</parameter>, --width[=<parameter>width</parameter>]</TERM>
 <LISTITEM>
 <PARA>
-outputs BYTES bytes per output line.
+each output line is limited to <parameter>width</parameter> bytes from the input.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -34,7 +58,11 @@ outputs BYTES bytes per output line.
 <TERM>--traditional</TERM>
 <LISTITEM>
 <PARA>
-accepts arguments in pre-POSIX form.
+accepts arguments in traditional form.
+<NOTE><PARA>
+The XSI optional behavior described in <XREF LINKEND=STD.SUSv3> is not supported
+unless the <parameter>--traditional</parameter> option is also specified.
+</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -43,10 +71,10 @@ accepts arguments in pre-POSIX form.
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Pre-POSIX Specifications</TITLE>
+<TITLE>Pre-POSIX and XSI Specifications</TITLE>
 <PARA>
-The LSB supports option intermixtures with the following pre-POSIX
-specifications:
+The LSB supports option intermixtures with the following pre-POSIX and XSI
+options:
 </PARA>
 <VARIABLELIST>
 
@@ -54,7 +82,34 @@ specifications:
 <TERM>-a</TERM>
 <LISTITEM>
 <PARA>
-is equivalent to -t a, selects named characters.
+is equivalent to <parameter>-t a</parameter>, selects named characters.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-b</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t o1</parameter>, selects octal bytes.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-c</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t c</parameter>, selects characters.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-d</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t u2</parameter>, selects unsigned decimal two byte units.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -63,25 +118,20 @@ is equivalent to -t a, selects named characters.
 <TERM>-f</TERM>
 <LISTITEM>
 <PARA>
-is equivalent to -t fF, selects floats.
+is equivalent to <parameter>-t fF</parameter>, selects floats.
 </PARA>
 </LISTITEM>
 
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>-h</TERM>
-<LISTITEM>
-<PARA>
-is equivalent to -t x2, selects hexadecimal shorts.
-</PARA>
-</LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
 <TERM>-i</TERM>
 <LISTITEM>
 <PARA>
-is equivalent to -t d2, selects decimal shorts.
+is equivalent to <parameter>-t d2</parameter>, selects decimal two byte units.
+<NOTE><PARA>This usage may change in future releases; portable applications should use
+<parameter>-t d2</parameter>.
+</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -90,12 +140,63 @@ is equivalent to -t d2, selects decimal shorts.
 <TERM>-l</TERM>
 <LISTITEM>
 <PARA>
-is equivalent to -t d4, selects decimal longs.
+is equivalent to <parameter>-t d4</parameter>, selects decimal longs.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-o</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t o2</parameter>, selects octal two byte units.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>-x</TERM>
+<LISTITEM>
+<PARA>
+is equivalent to <parameter>-t x2</parameter>, selects hexadecimal two byte units.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 </VARIABLELIST>
+<PARA>
+Note that the XSI option <parameter>-s</parameter> need not be supported.
+</PARA>
 </REFSECT1>
 
+<REFSECT1>
+<TITLE>Traditional Usage</TITLE>
+<PARA>
+If the <parameter>--traditional</parameter> is specified,
+there may be between zero and three operands specified.
+</PARA>
+<PARA>
+If no operands are specified, then od shall read the standard input.
+</PARA>
+<PARA>
+If there is exactly one operand, and it is an offset of the form 
+<literal>[+]offset[.][b]</literal>,
+then it shall be interpreted as specified in <XREF LINKEND=STD.SUSv3>. The file to
+be dumped shall be the standard input.
+</PARA>
+<PARA>
+If there are exactly two operands, and they are both of the form
+<literal>[+]offset[.][b]</literal>, then the first shall be an treated
+as an offset (as above), and
+the second shall be a label, in the same format as the offset. If a label is
+specified, then the first output line produced for each input block shall be
+preceded by the input offset, cumulative across input files, of the next byte to
+be written, followed by the label, in parentheses. The label shall increment in
+the same manner as the offset.
+</PARA>
+<PARA>
+If there are three operands, then the first shall be the file to dump, the
+second the offset, and the third the label.
+</PARA>
+</REFSECT1>
 </REFENTRY>
