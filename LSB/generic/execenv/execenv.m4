@@ -15,8 +15,8 @@ In this Chapter "System" means an "LSB conforming implementation" and
 
 <PARA>
 The system shall grant to the application read and execute              
-permissions needed to use all system interfaces (ABIs)                 
-mentioned in the LSB document and included standards.                  
+permissions on files needed to use all system interfaces (ABIs)                 
+required by the LSB specification.
 </PARA>
 
 </SECT1>
