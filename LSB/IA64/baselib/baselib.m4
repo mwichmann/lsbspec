@@ -35,6 +35,8 @@ include(libm.sgml)
 
 include(libpthread.sgml)
 
+include(libgcc_s.sgml)
+
 include(libdl.sgml)
 
 include(libcrypt.sgml)
