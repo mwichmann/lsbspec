@@ -106,8 +106,8 @@ External C symbols have the same names in C and object files' symbol tables.
 <SECT2>
 <TITLE>C++ Language</TITLE>
 <PARA>
-External C++ symbol names are mangled according to the rules in
-<XREF LINKEND="std.CXXABI">.
+External C++ symbol names are created according to the Extenal Names rules in
+<XREF LINKEND="std.CXXABI">. These rules are often referred to as name mangling.
 </PARA>
 </SECT2>
 </SECT1>
