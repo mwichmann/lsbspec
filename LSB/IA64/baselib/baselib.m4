@@ -11,7 +11,7 @@ hardware in the system.
 </PARA>
 
 <PARA>
-Only those interfaces that are unique to the IA64 Itanium &trade; 
+Only those interfaces that are unique to the &itanium;
 platform are defined here. This
 section should be used in conjunction with the corresponding section in
 the Linux Standard Base Specification.
@@ -20,14 +20,10 @@ the Linux Standard Base Specification.
 <PARA>
 An LSB conforming implementation need not define an Unwind library interface
 as required by the
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>.
+<XREF LINKEND="std.IA64.ABI">.
 If such an interface is provided, it shall conform to the specification
 in the 
-<LINK LINKEND="std.IA64.ABI">
-<XREF LINKEND="std.IA64.ABI">
-</LINK>.
+<XREF LINKEND="std.IA64.ABI">.
 A conforming application shall not depend on this interface.
 <!-- since there are no current implementations I can find for the unwind
 library, we decided to omit it at this release -->
