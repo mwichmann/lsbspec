@@ -17,11 +17,11 @@ SUBDIRS=intro objfmt baselib utillib graphlib sysinit usersgroups command
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
-DB2HTML=sgml2html -s 2
+DB2HTML=sgmltools -b html
 
-DB2RTF=sgml2rtf
+DB2RTF=sgmltools -b rtf
 
-DB2PS=sgml2ps
+DB2PS=sgmltools -b ps
 
 all:: htmlspec rtfspec
 
