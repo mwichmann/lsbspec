@@ -2,9 +2,9 @@
 <TITLE>Commands and Utilities</TITLE>
 
 <CHAPTER ID=command>
-<TITLE>Command and Utilities</TITLE>
+<TITLE>Commands and Utilities</TITLE>
 <SECT1 ID=cmdutil>
-<TITLE>Command and Utilities</TITLE>
+<TITLE>Commands and Utilities</TITLE>
 <PARA>
 
 The following table lists the Commands and Utilities. Unless otherwise
