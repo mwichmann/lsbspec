@@ -38,22 +38,84 @@ find pathnames matching a pattern  (Large File Support)
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>glob64</FUNCTION> searches for all the pathnames matching 
-<PARAMETER>pattern</PARAMETER> according to the rules used by the 
-shell. (See <FUNCTION>glob</FUNCTION>(7).) No tilde expansion or 
-parameter substitution is done; if you want these, use 
-<FUNCTION>wordexp</FUNCTION>(3).
+The <FUNCTION>glob64</FUNCTION> function is a large-file
+version of the <FUNCTION>glob</FUNCTION> defined in
+<XREF LINKEND=STD.SUSv3>.
+It shall search for pathnames matching
+<PARAMETER>pattern</PARAMETER> according to the rules used by
+the shell, <FILENAME>/bin/sh</FILENAME>.
+No tilde expansion or parameter substitution is done; see
+<FUNCTION>wordexp</FUNCTION>.
 </PARA>
 <PARA>
-The results of a <FUNCTION>glob64</FUNCTION> call are stored in the 
-structure pointed to by <PARAMETER>pglob</PARAMETER>, which is a 
-<STRUCTNAME>glob64_t</STRUCTNAME> declared in <FILENAME>glob.h</FILENAME> 
-and includes the following elements defined by <EMPHASIS>POSIX.2</EMPHASIS> 
-(more may be present as an extension):
+The results of a <FUNCTION>glob64</FUNCTION>
+call are stored in the structure pointed to by <PARAMETER>pglob</PARAMETER>,
+which is a <VARNAME>glob64_t</VARNAME> declared in 
+<FILENAME>glob.h</FILENAME> with the following members:
+
+<SYNOPSIS>
+typedef struct
+{
+  size_t <STRUCTFIELD>gl_pathc</STRUCTFIELD>;
+  char **<STRUCTFIELD>gl_pathv</STRUCTFIELD>;
+  size_t <STRUCTFIELD>gl_offs</STRUCTFIELD>;
+  int <STRUCTFIELD>gl_flags</STRUCTFIELD>;
+  void (*<STRUCTFIELD>gl_closedir</STRUCTFIELD>) (void *);
+  struct dirent64 *(*<STRUCTFIELD>gl_readdir64</STRUCTFIELD>) (void *);
+  void *(*<STRUCTFIELD>gl_opendir</STRUCTFIELD>) (const char *);
+  int (*<STRUCTFIELD>gl_lstat</STRUCTFIELD>) (const char *, struct stat *);
+  int (*<STRUCTFIELD>gl_stat</STRUCTFIELD>) (const char *, struct stat *);
+}
+glob64_t;
+</SYNOPSIS>
 </PARA>
 <PARA>
-<FUNCTION>glob64</FUNCTION> is a 64-bit version of 
-<FUNCTION>glob</FUNCTION>.
+Structure members with the same name as corresponding members of a 
+<VARNAME>glob_t</VARNAME> as
+defined in <XREF LINKEND=STD.SUSv3> shall have the same purpose.
+</PARA>
+<PARA>
+Other members are defined as follows:
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_flags</STRUCTFIELD></TERM>
+<LISTITEM><PARA>reserved for internal use
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_closedir</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of closing a directory opened by 
+<STRUCTFIELD>gl_opendir</STRUCTFIELD>
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_readdir64</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of reading entries in a large 
+directory
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_opendir</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of opening a large directory
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_stat</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of returning file status 
+for a large file
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>gl_lstat</STRUCTFIELD></TERM>
+<LISTITEM><PARA>pointer to a function capable of returning file status 
+information for a large file or symbolic link
+</PARA></LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+<PARA>
+A large file or large directory is one with a size greater than 
+<CONSTANT>4294967295</CONSTANT> bytes.
 </PARA>
 </REFSECT1>
 <REFSECT1>
