@@ -55,8 +55,8 @@ psspec: source
 
 index: source
 	collateindex.pl -N -o index.sgml
-	docbook2html -d ../docbook-utils.dsl\#html -o gLSB -p '/usr/bin/jade -V %use-id-as-filename% -V html-index' gLSB.sgml
-	collateindex.pl -o index.sgml gLSB/HTML.index
+	$(DB2HTML) -j '-V %use-id-as-filename% -V html-index' gLSB.sgml
+	collateindex.pl -o index.sgml HTML.index
 
 source:
 	sed -e "s#LSBVERSION#`cat ../lsbversion`#" <gLSB.sgml.sed >gLSB.sgml
