@@ -1,10 +1,10 @@
 #
-# Table structure for table 'Types'
+# Table structure for table 'Type'
 #
 DROP TABLE IF EXISTS Type;
 CREATE TABLE Type (
   Tid int(10) DEFAULT '0' NOT NULL auto_increment,
-  Tname varchar(60) DEFAULT '' NOT NULL,
+  Tname varchar(60) binary DEFAULT '' NOT NULL,
   Ttype char(1) DEFAULT '' NOT NULL,
   Tsize int(10) DEFAULT '0' NOT NULL,
   Tbasetype int(10),

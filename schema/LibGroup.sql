@@ -9,6 +9,7 @@ CREATE TABLE LibGroup (
   LGarch int(10) DEFAULT '0' NOT NULL,
   LGorder int(10),
   LGdescription text NOT NULL,
-  PRIMARY KEY (LGid)
+  PRIMARY KEY (LGid),
+  UNIQUE k_LG (LGname,LGlib)
 );
 
