@@ -10436,12 +10436,17 @@ control device
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
-  <FUNCTION>ioctl</FUNCTION></FUNCDEF>
+  <FUNCTION>ioctl</FUNCTION>
+ </FUNCDEF>
  <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>d</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>d</REPLACEABLE></PARAMETER>
+ </PARAMDEF>
  <PARAMDEF>int 
   <PARAMETER><REPLACEABLE>request</REPLACEABLE></PARAMETER>
-  <PARAMETER>...</PARAMETER></PARAMDEF>
+ </PARAMDEF>
+ <PARAMDEF>
+  <PARAMETER>...</PARAMETER>
+ </PARAMDEF>
 </FUNCPROTOTYPE>
 </FUNCSYNOPSIS>
 </REFSYNOPSISDIV>
@@ -10543,126 +10548,6 @@ EINVAL
 </REFSECT1>
 
 </REFENTRY>
-<REFENTRY ID="baselib-fileio-2"> <REFMETA>
-<REFENTRYTITLE>fileio</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>fileio
-</REFNAME>
-<REFPURPOSE>
-file ioctl commands
-</REFPURPOSE>
-</REFNAMEDIV>
-
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>29 June 2004</DATE>
-</REFSYNOPSISDIVINFO>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
-#include &lt;fcntl.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>int 
-  <FUNCTION>ioctl</FUNCTION></FUNCDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>fd</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>request</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>*argp</REPLACEABLE></PARAMETER></PARAMDEF>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
-
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>29 August 2002</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-File <EMPHASIS>ioctl</EMPHASIS> commands are a subset of the 
-<FUNCTION>ioctl</FUNCTION> calls, which can perform a variety of 
-functions on files. <PARAMETER>fd</PARAMETER> shall contain 
-the value of a file descriptor that was created with the 
-<FUNCTION>open</FUNCTION> or <FUNCTION>create</FUNCTION> calls.
-</PARA>
-<PARA>
-The following <FUNCTION>ioctl</FUNCTION>s are provided:
-</PARA>
-<VARIABLELIST>
-
-<VARLISTENTRY>
-<TERM>
-FIONREAD
-</TERM>
-<LISTITEM>
-<PARA>
-Gets the number of bytes which are available to be read.
-<PARAMETER>argp</PARAMETER> is a pointer to an integer where the 
-value is placed.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
-
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Return Value
-</TITLE>
-<PARA>
-On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
-On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
-the global variable <VARNAME>errno</VARNAME> is set appropriately.
-</PARA>
-</REFSECT1>
-
-<REFSECT1>
-<TITLE>Errors
-</TITLE>
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>
-EBADF  
-</TERM>
-<LISTITEM>
-<PARA>
-<PARAMETER>fd</PARAMETER> is not a valid descriptor.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-EFAULT 
-</TERM>
-<LISTITEM>
-<PARA>
-<PARAMETER>argp</PARAMETER> references an inaccessible memory area.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>
-EINVAL 
-</TERM>
-<LISTITEM>
-<PARA>
-<PARAMETER>request</PARAMETER> and <PARAMETER>argp</PARAMETER> are not valid.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-</VARIABLELIST>
-</REFSECT1>
-
-</REFENTRY>
-
 <REFENTRY ID="baselib-sockio-2"> <REFMETA>
 <REFENTRYTITLE>sockio</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -10683,6 +10568,7 @@ socket ioctl commands
 <FUNCSYNOPSISINFO>
 #include &lt;sys/socket.h&gt;
 #include &lt;net/if.h&gt;
+#include &lt;netinet/in.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
@@ -10811,6 +10697,20 @@ with the network mask.
 
 </VARIABLELIST>
 
+<VARLISTENTRY>
+<TERM>
+FIONREAD  
+</TERM>
+<LISTITEM>
+<PARA>
+Returns the amount of queued unread data in the receive buffer.
+Argument is a pointer to  an  integer where the result is to be placed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
 <PARA>
 The <STRUCTNAME>sockaddr</STRUCTNAME> structure is as specified in 
 the <CITETITLE PUBWORK="BOOK">Single UNIX Specification</CITETITLE>.
@@ -10885,6 +10785,18 @@ EINVAL
 <LISTITEM>
 <PARA>
 <PARAMETER>request</PARAMETER> and <PARAMETER>argp</PARAMETER> are not valid.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOTCONN 
+</TERM>
+<LISTITEM>
+<PARA>
+The operation is only defined on a connected socket, but the socket wasn't
+connected.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
