@@ -39,7 +39,7 @@ that field is implementation defined.
 <SECT1 ID="group">
 <TITLE>Group Database</TITLE>
 <PARA>
-The group(5) user database should only be red from the following APIs:
+The group(5) user database should only be read from the following APIs:
 getgrent(3), setgrent(3), sendgrent(3), and groups(1).
 The layout of the group(5) file is not specified by this standard, because
 it is access via an API.
