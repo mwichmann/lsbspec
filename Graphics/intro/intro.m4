@@ -9,7 +9,7 @@ Specification.
 <PARA>
 Implmentations may not claim conformance to this version.
 <!--
-No implementation of this version of the specification may not claim
+An implementation of this version of the specification may not claim
 to be an implementation of LSB-Graphics Module unless it has successfully
 completed the compliance process as defined by the Free Standards Group.
 Note: This is boilerplate. It need not be a final requirment.
