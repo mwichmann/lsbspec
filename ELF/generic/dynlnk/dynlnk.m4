@@ -92,7 +92,8 @@ include(dyntag.sgml)
 <SECT2>
 <TITLE>Additional Dynamic Entries</TITLE>
 <PARA>
-The following dynamic entries are defined here.
+An LSB conforming object may also use the following additional Dynamic Entry
+types.
 include(linuxtag.sgml)
 </PARA>
 </SECT2>
