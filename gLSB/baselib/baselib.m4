@@ -18,6 +18,7 @@ include(libm.sgml)
 include(libpthread.sgml)
 
 include(libdl.sgml)
+include(libdlman.sgml)
 
 include(libcrypt.sgml)
 

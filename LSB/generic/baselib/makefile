@@ -17,7 +17,7 @@ MANPAGES=__assert_fail.sgml __ctype_b.sgml __ctype_tolower.sgml __ctype_toupper.
 	getprotobyname.sgml getprotoent.sgml getservbyname.sgml getservent.sgml \
 	gettext.sgml getutent.sgml htons.sgml inet_aton.sgml inet_ntoa.sgml \
 	initgroups.sgml ioperm.sgml iopl.sgml isblank.sgml isinf.sgml iswblank.sgml \
-	iswctype.sgml llabs.sgml logwtmp.sgml mbsnrtowcs.sgml memmem.sgml \
+	iswctype.sgml llabs.sgml logwtmp.sgml mbsnrtowcs.sgml memmem.sgml memrchr.sgml \
 	ntohs.sgml obstack_free.sgml opterr.sgml optind.sgml optopt.sgml \
 	psignal.sgml putwchar.sgml sem_timedwait.sgml setbuffer.sgml setegid.sgml \
 	seteuid.sgml sethostid.sgml sethostname.sgml setmntent.sgml setutent.sgml \
