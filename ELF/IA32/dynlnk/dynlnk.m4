@@ -69,7 +69,7 @@ include(dyntag.sgml)
 </PARA>
 </SECT1>
 
-<SECT1 ID=proceedurelinkagetable>
+<SECT1 ID=procedurelinkagetable>
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
 </PARA>
