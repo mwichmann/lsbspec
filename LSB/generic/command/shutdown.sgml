@@ -5,7 +5,7 @@
 <REFNAME>shutdown</REFNAME>
 
 <REFPURPOSE>
-bring the system down
+shut the system down
 </REFPURPOSE>
 
 </REFNAMEDIV>
@@ -13,25 +13,46 @@ bring the system down
 <REFSYNOPSISDIV>
 <CMDSYNOPSIS>
 <COMMAND>/sbin/shutdown</COMMAND>
-<ARG>-t sec</ARG> <ARG>-arkhcfF</ARG> <ARG choice=plain>time</ARG>
+<ARG>-t sec</ARG> 
+<GROUP><ARG>-h</ARG><ARG>-r</ARG></GROUP>
+<ARG>-akfF</ARG> <ARG choice=plain>time</ARG>
 <ARG>warning-message</ARG>
+<SBR>
+<COMMAND>/sbin/shutdown</COMMAND>
+<ARG choice=plain>-c</ARG> <ARG>warning-message</ARG>
 </CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>shutdown</COMMAND> brings the system down in a secure way. 
-All logged-in users
-are notified that the system is going down, and login(1) is blocked.
-It is possible to shut the system down immediately or after a
-specified delay.  All processes are first notified that the system is
-going down by the signal SIGTERM.  
-If neither the -h or the -r argument is used, then the default behavior
-is to take the system to runlevel one where administrative tasks can
+The <COMMAND>shutdown</COMMAND> command
+shall shut the system down in a secure way (first synopsis), or cancel
+a pending shutdown (second synopsis).  
+When the shutdown is initiated, all logged-in users
+shall be notified immediately that the system is going down, and users shall be
+prevented from logging in to the system.
+The <parameter>time</parameter> specifies when the actual
+shutdown shall commence. See below for details. At the specified time
+all processes are first notified that the system is
+going down by the signal <constant>SIGTERM</constant>. After an interval
+(see <parameter>-t</parameter>) all processes shall be sent the signal
+<constant>SIGKILL</constant>.
+If neither the <parameter>-h</parameter> or the 
+<parameter>-r</parameter> argument is specified, then the default behavior
+shall be to take the system to a runlevel where administrative tasks can
 be run.
+<note>
+<para>This is sometimes referred to as "single user mode".
+</para>
+</note>
 </PARA>
-
+<PARA>
+The <parameter>-h</parameter> and <parameter>-r</parameter> options
+are mutually exclusive.
+If either the <parameter>-h</parameter> or <parameter>-r</parameter> options
+are specified, the system shall be halted or rebooted respectively.
+</PARA>
 </REFSECT1>
 
 <REFSECT1>
@@ -42,7 +63,7 @@ be run.
 <term>-a </term>
 <listitem>
 <para>
-uses /etc/shutdown.allow.
+use access control. See below.
 </para>
 </listitem>
 </varlistentry>
@@ -51,8 +72,10 @@ uses /etc/shutdown.allow.
 <term>-t sec</term>
 <listitem>
 <para>
-tells init(8) to wait sec seconds between sending processes the warning
-and the kill signal, before changing to another runlevel.
+tell the system to wait <parameter>sec</parameter> seconds between 
+sending processes the warning
+and the kill signal, before changing to another runlevel. The default
+period is three seconds.
 </para>
 </listitem>
 </varlistentry>
@@ -61,7 +84,7 @@ and the kill signal, before changing to another runlevel.
 <term>-k </term>
 <listitem>
 <para>
-doesn't really shutdown; only sends the warning messages to everybody.
+do not really shutdown; only send the warning messages to everybody.
 </para>
 </listitem>
 </varlistentry>
@@ -70,7 +93,7 @@ doesn't really shutdown; only sends the warning messages to everybody.
 <term>-r</term>
 <listitem>
 <para>
-reboots after shutdown.
+reboot after shutdown.
 </para>
 </listitem>
 </varlistentry>
@@ -79,7 +102,7 @@ reboots after shutdown.
 <term>-h</term>
 <listitem>
 <para>
-halts after shutdown.  Powering off after halting is unspecified.
+halt after shutdown.  Actions after halting are unspecified (e.g. power off).
 </para>
 </listitem>
 </varlistentry>
@@ -88,7 +111,7 @@ halts after shutdown.  Powering off after halting is unspecified.
 <term>-f</term>
 <listitem>
 <para>
-skips fsck on reboot.
+advise the system to skip file system consistency checks on reboot.
 </para>
 </listitem>
 </varlistentry>
@@ -97,7 +120,7 @@ skips fsck on reboot.
 <term>-F</term>
 <listitem>
 <para>
-forces fsck on reboot.
+advise the system to force file system consistency checks on reboot.
 </para>
 </listitem>
 </varlistentry>
@@ -106,11 +129,7 @@ forces fsck on reboot.
 <term>-c</term>
 <listitem>
 <para>
-cancels an already running <COMMAND>shutdown</COMMAND>. With this option, 
-it is of course
-not possible to give the time argument, but you can enter a
-explanatory message on the command line that will be sent to all
-users.
+cancel an already running <COMMAND>shutdown</COMMAND>. 
 </para>
 </listitem>
 </varlistentry>
@@ -119,25 +138,27 @@ users.
 <term>time</term>
 <listitem>
 <para>
-specifies when to shut down.
+specify when to shut down.
 </para>
 
 <para>
-The time argument can have different formats.  First, it can be an
-absolute time in the format hh:mm, in which hh is the hour (1 or 2
-digits) and mm is the minute of the hour (in two digits).  Second, it
-can be in the format +m, in which m is the number of minutes to wait.
-The word now is an alias for +0.
-</para>
-
-<para>
-If <COMMAND>shutdown</COMMAND> is called with a delay, it creates the 
-advisory file /etc/nologin which causes programs such as login(1) to 
-not allow new user logins.  <COMMAND>shutdown</COMMAND> only removes 
-this file if it is stopped before it can signal init (i.e. it is 
-cancelled or something goes wrong). Otherwise it is the responsibility 
-of the system shutdown or startup scripts to remove this file so that 
-users can login.
+The time argument shall have the following format:
+<CMDSYNOPSIS>
+<GROUP>
+<ARG>now</ARG>
+<ARG><ARG>+</ARG>mins</ARG>
+<ARG>hh:mm</ARG>
+</GROUP>
+</CMDSYNOPSIS>
+If the format is <literal>hh:mm</literal>, <literal>hh</literal>
+shall specify the hour (1 or 2
+digits) and <literal>mm</literal> is the minute of the hour 
+(exactly two digits), and the shutdown shall commence at the next
+occurence of the specified time.  
+If the format is <literal>mins</literal> (or <literal>+mins</literal>),
+where <literal>mins</literal> is a decimal number,
+shutdown shall commence in the specified number of minutes.
+The word <literal>now</literal> is an alias for <literal>+0</literal>.
 </para>
 
 </listitem>
@@ -147,7 +168,7 @@ users can login.
 <term>warning-message</term>
 <listitem>
 <para>
-specifies message to send all users.
+specify a message to send to all users.
 </para>
 </listitem>
 </varlistentry>
