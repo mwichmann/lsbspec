@@ -46,7 +46,7 @@ include(linuxtag.sgml)
 
 <CHAPTER id=ProgramInterpreter>
 <TITLE>
-Program Intepreter
+Program Interpreter
 </TITLE>
 <PARA>
 </PARA>
@@ -54,7 +54,7 @@ Program Intepreter
 <TITLE>
 </TITLE>
 <PARA>
-The LSB specifies that Program Intepreter to be
+The LSB specifies the Program Interpreter to be
 <ITEMIZEDLIST>
 <LISTITEM><SCREEN>/lib/ld-linux.so.2</SCREEN></LISTITEM>
 </ITEMIZEDLIST>
