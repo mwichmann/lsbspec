@@ -301,10 +301,21 @@ sysconf().</para>
 <TITLE>Localization</TITLE>
 
 <PARA>
-Applications may either install a message catalog in the MO format as
-specified by the info page in version 0.10.40 of the gettext source package,
-or the application may execute the msgfmt command during it's installation
-to compile the message catalog. In either case, the resulting output shall be
+In order to install a message catalog, the installation procedure 
+shall supply the message catalog in a format readable by the
+<COMMAND>msgfmt</COMMAND> utility, which shall be invoked to compile
+the message catalog into an appropriate binary format on the target system.
+<NOTE>
+<TITLE>Rationale</TITLE>
+<PARA>The original intent was to allow an application to contain the binary
+GNU MO format files. However, the format of these files is not
+officially stable, hence it is necessary to compile these catalogs
+on the target system. These binary catalogs
+may differ from architecture to architecture
+as well.
+</PARA>
+</NOTE>
+The resulting binary message catalog shall be
 located in the package's private area under <FILENAME>/opt</FILENAME>, and the
 application may use <FUNCTION>bindtextdomain()</FUNCTION> to specify this
 location.
@@ -333,8 +344,8 @@ collating element expression (such as [.ch.]) are optional.</para>
 optional.</para>
 
 <para>This affects at least the following utilities: grep (<xref
-linkend="grep" />) (including egrep), sed (<xref linkend="sed" />),
-and awk (<xref linkend="awk" />).  </para>
+linkend="grep" >) (including egrep), sed (<xref linkend="sed">),
+and awk (<xref linkend="awk">).  </para>
 
 </section>
 
