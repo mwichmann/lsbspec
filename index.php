@@ -261,6 +261,26 @@ echo(date("r", filemtime("archLSB/S390X/spec/book1.html")))
 ?>
 </TD>
 </TR>
+<TR>
+<TD>LSB X86-64</TD>
+<TD ALIGN=center><B>
+<?
+include("lsbversion.X86-64")
+?>
+</B></TD>
+<TD ALIGN=center><A HREF="lsbsX86-64review.html">Review it!</A></TD>
+<TD ALIGN=center><a href="archLSB/X86-64/spec/book1.html">HTML</a></TD>
+<TD ALIGN=center><a href="archLSB/X86-64/spec.rtf">RTF</a></TD>
+<TD ALIGN=center><a href="archLSB/X86-64/spec.pdf">PDF</a></TD>
+<TD ALIGN=center><a href="archLSB/X86-64/spec.html">HTML</a></TD>
+<TD ALIGN=center><a href="archLSB/X86-64/spec.txt">TXT</a></TD>
+<TD ALIGN=center><a href="archLSB/X86-64/spec_lines.txt">TXT</a></TD>
+<TD>
+<?
+echo(date("r", filemtime("archLSB/X86-64/spec/book1.html")))
+?>
+</TD>
+</TR>
 </TABLE>
 Additional formats and architectures will become available in the future.
 
