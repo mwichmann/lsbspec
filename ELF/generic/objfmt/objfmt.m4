@@ -43,8 +43,10 @@ A section header's <COMPUTEROUTPUT>sh_type</COMPUTEROUTPUT> member specifies the
 <SECT2>
 <TITLE>ELF Section Types</TITLE>
 <PARA>
-The following section types are defined in the System V Application Binary
-Interface, Edition 4.1.
+The following section types are defined in the 
+<XREF LINKEND="std.gABI41">
+and the
+<XREF LINKEND="std.ABIupdate">.
 include(elfsecttypes.sgml)
 </PARA>
 </SECT2>
@@ -71,6 +73,8 @@ Various sections hold program and control information. Sections in the lists bel
 <PARA>
 The following sections are defined in the
 <XREF LINKEND="std.gABI41">
+and the
+<XREF LINKEND="std.ABIupdate">.
 include(elfsect.sgml)
 </PARA>
 </SECT2>
