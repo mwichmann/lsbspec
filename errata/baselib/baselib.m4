@@ -86,6 +86,13 @@ The following RPC functions were omitted and should be included:
 <FUNCTION>pmap_getport</FUNCTION>.
 </PARA>
 
+<PARA>
+The following pthread functions were omitted and should be included:
+<FUNCTION>pthread_atfork</FUNCTION>,
+<FUNCTION>pthread_cleanup_pop</FUNCTION>,
+<FUNCTION>pthread_cleanup_push</FUNCTION>,
+</PARA>
+
 </CHAPTER>
 
 </PART>
