@@ -492,12 +492,10 @@ file. Each record contains a CPIO Header, Filename, Padding, and File Data.
 The CPIO Header uses the following header structure (sometimes referred to
 as "new ASCII" or "SVR4 cpio"). All numbers are stored as ASCII
 representations of their hexidecimal value.
-With the exception of
-<STRUCTFIELD>c_inode</STRUCTFIELD>, <STRUCTFIELD>c_namesize</STRUCTFIELD>
-and the corresponding name string, <STRUCTFIELD>c_devmajor</STRUCTFIELD>,
-<STRUCTFIELD>c_devminor</STRUCTFIELD> <STRUCTFIELD>c_devminor</STRUCTFIELD>
-and <STRUCTFIELD>c_checksum</STRUCTFIELD>, all information contained in the
-CPIO Header is also represented in the Header Section.
+With the exception of <STRUCTFIELD>c_namesize</STRUCTFIELD>
+and the corresponding name string, and <STRUCTFIELD>c_checksum</STRUCTFIELD>,
+all information contained in the CPIO Header is also represented in the
+Header Section.
 The values in in the CPIO Header must match the values contained in the
 Header Section.
 </PARA>
@@ -536,6 +534,8 @@ Value identifying this cpio format. This value must be "070701".
 This field contains the inode number from the filesystem from which the
 file was read.
 This field is ignored when installing a package.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEINODES</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -613,7 +613,8 @@ The major number of the device containing the file system from which the
 file was read.
 With the exception of processing files with c_nlink >1, this field is ignored
 when installing a package.
-This field is ignored when installing a package.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEDEVICES</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -625,7 +626,8 @@ The minor number of the device containing the file system from which the
 file was read.
 With the exception of processing files with c_nlink >1, this field is ignored
 when installing a package.
-This field is ignored when installing a package.
+This field must match the corresponding value in the
+<CONSTANT>RPMTAG_FILEDEVICES</CONSTANT> index in the Header section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -635,6 +637,7 @@ This field is ignored when installing a package.
 <PARA>
 The major number of the raw device containing the file system from which the
 file was read.
+This field is ignored when installing a package.
 This field  must match the corresponding value in the
 <CONSTANT>RPMTAG_RDEVS</CONSTANT> index in the Header section.
 </PARA>
@@ -646,6 +649,7 @@ This field  must match the corresponding value in the
 <PARA>
 The minor number of the raw device containing the file system from which the
 file was read.
+This field is ignored when installing a package.
 This field  must match the corresponding value in the
 <CONSTANT>RPMTAG_RDEVS</CONSTANT> index in the Header section.
 </PARA>
@@ -662,7 +666,8 @@ following the CPIO Header structure.
 <TERM><STRUCTFIELD>c_checksum</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value containing the CRC checksum of the file data.
+Value containing the CRC checksum of the file data. This field is not used,
+and must contain the value "00000000".
 This field is ignored when installing a package.
 </PARA>
 </LISTITEM>
