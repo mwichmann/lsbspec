@@ -29,6 +29,50 @@ On the IA32 platform, the functions <FUNCTION>__divdi3</FUNCTION>,
 </PARA>
 
 <PARA>
+The following curses interfaces were omitted and should be included:
+<FUNCTION>COLOR_PAIR</FUNCTION>,
+<FUNCTION>PAIR_NUMBER</FUNCTION>,
+<FUNCTION>slk_attr_off</FUNCTION>,
+<FUNCTION>slk_attr_on</FUNCTION>,
+<FUNCTION>COLORS</FUNCTION>,
+<FUNCTION>COLOR_PAIRS</FUNCTION>,
+<FUNCTION>acs_map</FUNCTION>,
+<FUNCTION>COLORS</FUNCTION>,
+</PARA>
+
+<PARA>
+The following curses data definitions were omitted and should be included:
+<SCREEN>
+#define ACS_RARROW    (acs_map['+'])
+#define ACS_LARROW    (acs_map[','])
+#define ACS_DARROW    (acs_map['.'])
+#define ACS_UARROW    (acs_map['-'])
+#define ACS_BLOCK     (acs_map['0'])
+#define ACS_CKBOARD   (acs_map['a'])
+#define ACS_DEGREE    (acs_map['f'])
+#define ACS_PLMINUS   (acs_map['g'])
+#define ACS_BOARD     (acs_map['h'])
+#define ACS_LANTERN   (acs_map['i'])
+#define ACS_LRCORNER  (acs_map['j'])
+#define ACS_URCORNER  (acs_map['k'])
+#define ACS_ULCORNER  (acs_map['l'])
+#define ACS_LLCORNER  (acs_map['m'])
+#define ACS_PLUS      (acs_map['n'])
+#define ACS_S1        (acs_map['o'])
+#define ACS_HLINE     (acs_map['q'])
+#define ACS_S9        (acs_map['s'])
+#define ACS_LTEE      (acs_map['t'])
+#define ACS_RTEE      (acs_map['u'])
+#define ACS_BTEE      (acs_map['v'])
+#define ACS_TTEE      (acs_map['w'])
+#define ACS_VLINE     (acs_map['x'])
+#define ACS_DIAMOND   (acs_map['`'])
+#define ACS_BULLET    (acs_map['~'])
+</SCREEN>
+</PARA>
+
+
+<PARA>
 The following RPC functions were omitted and should be included:
 <FUNCTION>svc_sendreply</FUNCTION>,
 <FUNCTION>svc_getargs</FUNCTION>,
