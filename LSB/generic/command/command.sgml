@@ -473,7 +473,7 @@ section is specified by the following standards.</PARA>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Tue Sep 21 04:54:40 2004 -->
+<!--    at Thu Sep 23 03:42:17 2004 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -1941,28 +1941,35 @@ compress or expand files
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-gzip [ -acdfhlLnNrtvV19 ] [-S suffix] [ name ...  ]
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>gzip</COMMAND>
+<ARG>-acdfhlLnNrtvV19</ARG>
+<ARG>-S suffix</ARG>
+<ARG Rep=repeat>name</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>gzip</COMMAND> tries to reduce the size of the named files.
+The <COMMAND>gzip</COMMAND> command shall attempt to reduce the size of 
+the named files.
 Whenever possible, each file is replaced by one with the
-extension .gz, while keeping the same ownership modes, access and
+extension <FILENAME>.gz</FILENAME>,
+while keeping the same ownership modes, access and
 modification times. If no files are specified, or if a file name is
-"-", the standard input is compressed to the standard output. 
+<FILENAME>-</FILENAME>, 
+the standard input is compressed to the standard output. 
 <COMMAND>gzip</COMMAND>
-will only attempt to compress regular files.  In particular, it will
+shall only attempt to compress regular files.  In particular, it will
 ignore symbolic links.
 </PARA>
 
 <PARA>
-When compressing, gzip uses the deflate algorithm specified in RFC1951
+When compressing, gzip uses the deflate algorithm specified in 
+<XREF LINKEND=STD.RFC1951>
 and stores the result in a file using the gzip file format specified
-in RFC1952.
+in <XREF LINKEND=STD.RFC1952>.
 </PARA>
 
 </REFSECT1>
@@ -1976,7 +1983,9 @@ in RFC1952.
 <TERM>-a, --ascii</TERM>
 <LISTITEM>
 <PARA>
-does nothing on Linux systems.
+does nothing on LSB conforming systems.
+<NOTE><PARA>This option may be deprecated in a future verion of this
+specification.</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -1985,7 +1994,7 @@ does nothing on Linux systems.
 <TERM>-c, --stdout, --to-stdout</TERM>
 <LISTITEM>
 <PARA>
-writes output on standard output; keeps original files unchanged.  If
+writes output on standard output, leaving the original files unchanged.  If
 there are several input files, the output consists of a sequence of
 independently compressed members. To obtain better compression,
 concatenate all input files before compressing them.
@@ -1997,7 +2006,8 @@ concatenate all input files before compressing them.
 <TERM>-d, --decompress, --uncompress</TERM>
 <LISTITEM>
 <PARA>
-decompresses.
+the name operands are compressed files, and <COMMAND>gzip</COMMAND>
+shall decompress them.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -2009,9 +2019,10 @@ decompresses.
 forces compression or decompression even if the file has multiple links
 or the corresponding file already exists, or if the compressed data is
 read from or written to a terminal. If the input data is not in a
-format recognized by <COMMAND>gzip</COMMAND>, and if the option --stdout 
+format recognized by <COMMAND>gzip</COMMAND>, and if the option 
+<PARAMETER>--stdout</PARAMETER>
 is also given, copy the input data without change to the standard ouput: 
-let <COMMAND>gzip</COMMAND> behave as <COMMAND>cat</COMMAND>. If -f is 
+let <COMMAND>gzip</COMMAND> behave as <COMMAND>cat</COMMAND>. If <PARAMETER>-f</PARAMETER> is 
 not given, and when not running in the background, <COMMAND>gzip</COMMAND> 
 prompts to verify whether an existing file should be overwritten.
 </PARA>
@@ -2023,26 +2034,35 @@ prompts to verify whether an existing file should be overwritten.
 <LISTITEM>
 <PARA>
 lists the compressed size, uncompressed size, ration and uncompressed 
-name for each compressed file. Gives the uncompressed size as -1 for 
+name for each compressed file. Gives the uncompressed size as 
+<CONSTANT>-1</CONSTANT> for 
 files not in <COMMAND>gzip</COMMAND> format. Additionally displays method, 
 crc and timestamp for the uncompress file when used in combination with 
---verbose.
+<PARAMETER>--verbose</PARAMETER>.
 </PARA>
 
 <PARA>
-The compression methods currently supported are deflate, compress, lzh
-(SCO compress -H) and pack.  The crc is given as ffffffff for a file
-not in gzip format.
+For decompression, <COMMAND>gzip</COMMAND> shall support at least
+the following compression methods:
+<ITEMIZEDLIST>
+<LISTITEM><PARA>deflate (<XREF LINKEND=STD.RFC1951>)</PARA></LISTITEM>
+<LISTITEM><PARA>compress (<XREF LINKEND=STD.SUSv3>)</PARA></LISTITEM>
+<LISTITEM><PARA>lzh (SCO <COMMAND>compress -H</COMMAND>)</PARA></LISTITEM>
+<LISTITEM><PARA>pack (Huffman encoding)</PARA></LISTITEM>
+</ITEMIZEDLIST>
+The crc shall be given as 
+<CONSTANT>ffffffff</CONSTANT> for a file
+not in <COMMAND>gzip</COMMAND> format.
 </PARA>
 
 <PARA>
-With --name, the uncompressed name, date and time are those stored
+With <PARAMETER>--name</PARAMETER>, the uncompressed name, date and time are those stored
 within the compress file, if present.
 </PARA>
 
 <PARA>
-With --verbose, the size totals and compression ratio for all files is
-also displayed, unless some sizes are unknown.  With --quiet, the
+With <PARAMETER>--verbose</PARAMETER>, the size totals and compression ratio for all files is
+also displayed, unless some sizes are unknown.  With <PARAMETER>--quiet</PARAMETER>, the
 title and totals lines are not displayed.
 </PARA>
 </LISTITEM>
@@ -2052,7 +2072,7 @@ title and totals lines are not displayed.
 <TERM>-L, --license</TERM>
 <LISTITEM>
 <PARA>
-displays the<COMMAND> gzip</COMMAND> license and quit.
+displays the <COMMAND>gzip</COMMAND> license and quit.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -2109,7 +2129,7 @@ will descend into the directory and compress all the files it finds there
 <TERM>-S .suf, --sufix .suf</TERM>
 <LISTITEM>
 <PARA>
-uses suffix .suf instead of .gz.
+uses suffix <FILENAME>.suf</FILENAME> instead of <FILENAME>.gz</FILENAME>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -2138,9 +2158,10 @@ compressed or decompressed.
 <LISTITEM>
 <PARA>
 regulates the speed of compression using the specified digit #, where
--1 or --fast indicates the fastest compression method (less
-compression) and -9 or --best indicates the slowest compression method
-(best compression).  The default compression level is -6 (that is,
+<PARAMETER>-1</PARAMETER> or <PARAMETER>--fast</PARAMETER> indicates the fastest compression method (less
+compression) and <PARAMETER>-9</PARAMETER> or <PARAMETER>--best</PARAMETER> indicates the slowest compression method
+(best compression).  The default compression level is <PARAMETER>-6</PARAMETER>
+(that is,
 biased towards high compression at expense of speed).
 </PARA>
 </LISTITEM>
@@ -2339,20 +2360,33 @@ copy files and set attributes
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-install [OPTION]... SOURCE DEST           (1st format)
-install [OPTION]... SOURCE... DIRECTORY   (2nd format)
-install -d [OPTION]... DIRECTORY...       (3rd format)
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>install</COMMAND>
+<ARG rep=repeat>option</ARG>
+<ARG choice=plain>SOURCE</ARG>
+<ARG choice=plain>DEST</ARG>
+<SBR>
+<COMMAND>install</COMMAND>
+<ARG rep=repeat>option</ARG>
+<ARG rep=repeat choice=plain>SOURCE</ARG>
+<ARG choice=plain>DEST</ARG>
+<SBR>
+<COMMAND>install</COMMAND>
+<GROUP><ARG choice=plain>-d</ARG><ARG choice=plain>--directory</ARG></GROUP>
+<ARG rep=repeat>option</ARG>
+<ARG rep=repeat choice=plain>DIRECTORY</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-In the first two formats, copy SOURCE to DEST or multiple SOURCE(s) to
-the existing DIRECTORY, while setting permission modes and
-owner/group.  In the third format, create all components of the given
-DIRECTORY(ies).
+In the first two formats, copy <PARAMETER>SOURCE</PARAMETER>
+to <PARAMETER>DEST</PARAMETER> or multiple <PARAMETER>SOURCE(s)</PARAMETER> to
+the existing <PARAMETER>DIRECTORY</PARAMETER>, optionally setting permission modes and
+file ownership.  In the third format, each
+<PARAMETER>DIRECTORY</PARAMETER> and any missing parent
+directories shall be created.
 </PARA>
 </REFSECT1>
 
@@ -2361,10 +2395,45 @@ DIRECTORY(ies).
 <variablelist>
 
 <varlistentry>
-<term>--backup[=CONTROL]</term>
+<term>--backup[=METHOD]</term>
 <listitem>
 <para>
 makes a backup of each existing destination file.
+<PARAMETER>METHOD</PARAMETER> may be one of the following:
+<ITEMIZEDLIST>
+<LISTITEM><PARA>
+<PARAMETER>none</PARAMETER> or <PARAMETER>off</PARAMETER>
+never make backups.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+<PARAMETER>numbered</PARAMETER> or <PARAMETER>t</PARAMETER>
+make numbered backups. A numbered backup has the form
+<LITERAL>"%s.~%d~", target_name, version_number</LITERAL>. Each backup
+shall increment the version number by 1.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+<PARAMETER>existing</PARAMETER> or <PARAMETER>nil</PARAMETER>
+numbered if numbered backups exist, or simple otherwise.
+</PARA></LISTITEM>
+<LISTITEM><PARA>
+<PARAMETER>simple</PARAMETER> or <PARAMETER>never</PARAMETER>
+append a suffix to the name. The default suffix is '<LITERAL>~</LITERAL>',
+but can be overriden by setting <ENVAR>SIMPLE_BACKUP_SUFFIX</ENVAR> in
+the environment, or via the <PARAMETER>-S</PARAMETER> or <PARAMETER>--suffix</PARAMETER>
+option.
+</PARA></LISTITEM>
+</ITEMIZEDLIST>
+</para>
+<para>
+If no <PARAMETER>METHOD</PARAMETER> is specified, the environment variable
+<ENVAR>VERSION_CONTROL</ENVAR> shall be examined for one of the above.
+Unambiguous abbreviations of <PARAMETER>METHOD</PARAMETER> shall be accepted.
+If no <PARAMETER>METHOD</PARAMETER> is specified, or if <PARAMETER>METHOD</PARAMETER>
+is empty, the backup method shall default to <CONSTANT>existing</CONSTANT>.
+</para>
+<para>
+If <PARAMETER>METHOD</PARAMETER> is invalid or ambiguous, <COMMAND>install</COMMAND>
+shall fail and issue a diagnostic message.
 </para>
 </listitem>
 </varlistentry>
@@ -2373,7 +2442,7 @@ makes a backup of each existing destination file.
 <term>-b</term>
 <listitem>
 <para>
-is like --backup, but does not accept an argument.
+is equivalent to <PARAMETER>--backup=existing</PARAMETER>.
 </para>
 </listitem>
 </varlistentry>
@@ -2399,28 +2468,33 @@ SOURCE to DEST; useful in the 1st format.
 </varlistentry>
 
 <varlistentry>
-<term>-g, --group=GROUP</term>
+<term>-g GROUP, --group=GROUP</term>
 <listitem>
 <para>
-sets group ownership, instead of process' current group.
+if the user has appropriate privilege, sets group ownership, instead of process' current group.
+<PARAMETER>GROUP</PARAMETER> is either a name in the
+user group database, or a positive integer, which shall be used as a group-id.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>-m, --mode=MODE</term>
+<term>-m MODE, --mode=MODE</term>
 <listitem>
 <para>
-sets permission mode (as in chmod), instead of rwxr-xr-x.
+sets permission mode (specified as in <COMMAND>chmod</COMMAND>), instead of the default 
+<LITERAL>rwxr-xr-x</LITERAL>.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>-o, --owner=OWNER</term>
+<term>-o OWNER, --owner=OWNER</term>
 <listitem>
 <para>
-sets ownership (super-user only).
+if the user has appropriate privilege, sets ownership.
+<PARAMETER>OWNER</PARAMETER> is either a name in the
+user login database, or a positive integer, which shall be used as a user-id.
 </para>
 </listitem>
 </varlistentry>
@@ -2429,7 +2503,8 @@ sets ownership (super-user only).
 <term>-p, --preserve-timestamps</term>
 <listitem>
 <para>
-applies access/modification times of SOURCE files to corresponding
+copies the access and modification times of 
+<PARAMETER>SOURCE</PARAMETER> files to corresponding
 destination files.
 </para>
 </listitem>
@@ -2445,10 +2520,11 @@ strips symbol tables, only for 1st and 2nd formats.
 </varlistentry>
 
 <varlistentry>
-<term>-S, --suffix=SUFFIX</term>
+<term>-S SUFFIX, --suffix=SUFFIX</term>
 <listitem>
 <para>
-overrides the usual backup suffix.
+equivalent to <PARAMETER>--backup=existing</PARAMETER>, except if
+a simple suffix is required, use <PARAMETER>SUFFIX</PARAMETER>.
 </para>
 </listitem>
 </varlistentry>
@@ -2458,6 +2534,15 @@ overrides the usual backup suffix.
 <listitem>
 <para>
 prints the name of each directory as it is created.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>-v, --verbose</term>
+<listitem>
+<para>
+print the name of each file before copying it to <varname>stdout</varname>.
 </para>
 </listitem>
 </varlistentry>
@@ -2480,19 +2565,20 @@ install an init.d file
 </REFNAMEDIV>
 
 <REFSYNOPSISDIV>
-<SYNOPSIS>
-/usr/lib/lsb/install_initd initd_file
-</SYNOPSIS>
+<CMDSYNOPSIS>
+<COMMAND>/usr/lib/lsb/install_initd</COMMAND>
+<ARG choice=plain>initd_file</ARG>
+</CMDSYNOPSIS>
 </REFSYNOPSISDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>install_initd</COMMAND> installs an init.d file that has
-been copied to the /etc/init.d location or symlink. In the postinstall
-script of a package, the program /usr/lib/lsb/install_initd configures
-a distribution's boot script system to call the init.d file of the
-package at an appropriate time.
+<COMMAND>install_initd</COMMAND> shall install a system initialization file that has
+been copied to the <FILENAME>/etc/init.d</FILENAME> location such that
+this file shall be run at the appropriate point during system initialization.
+The <COMMAND>install_initrd</COMMAND> command is typically called in the postinstall
+script of a package.
 See also <xref linkend="initsrcinstrm" >.
 </PARA>
 
@@ -2925,7 +3011,7 @@ differences listed below.
 <PARA>
 in addition to <XREF LINKEND=STD.SUSv3> behavior of printing a
 slash for a directory,
-ls -p may display other characters for other file types.
+<command>ls -p</command> may display other characters for other file types.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -2933,8 +3019,8 @@ ls -p may display other characters for other file types.
 </VARIABLELIST>
 
 <para>
-Certain aspects of internationalized filename globbing are optional;
-see <xref linkend="localization-glob" />.
+Certain aspects of the pattern matching notation are optional;
+see <xref linkend="localization-glob">.
 </para>
 </REFSECT1>
 
