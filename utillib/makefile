@@ -12,16 +12,10 @@ TABLES=
 
 all: $(FILES) $(TABLES)
 
-libz.sgml:
+gensrc:
 	../mklibspec Lname=libz >libz.sgml
-
-libcurses.sgml:
 	../mklibspec Lname=libcurses >libcurses.sgml
-
-libresolv.sgml:
 	../mklibspec Lname=libresolv >libresolv.sgml
-
-libutil.sgml:
 	../mklibspec Lname=libutil >libutil.sgml
 
 clean:

@@ -18,25 +18,13 @@ TABLES=
 
 all: $(FILES) $(TABLES)
 
-libc.sgml:
+gensrc:
 	../mklibspec Lname=libc >libc.sgml
-
-libm.sgml:
 	../mklibspec Lname=libm >libm.sgml
-
-libpthread.sgml: libpthread.txt
 	../mklibspec Lname=libpthread >libpthread.sgml
-
-libdb.sgml:
 	../mklibspec Lname=libdb >libdb.sgml
-
-libdl.sgml:
 	../mklibspec Lname=libdl >libdl.sgml
-
-libcrypt.sgml:
 	../mklibspec Lname=libcrypt >libcrypt.sgml
-
-unknown.sgml:
 	../mkinterfacesgmltable Sname=Unknown >unknown.sgml
 
 clean:

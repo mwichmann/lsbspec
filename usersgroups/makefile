@@ -12,10 +12,8 @@ TABLES = usersgroupscmds.sgml usersgroupsints.sgml
 
 all: $(FILES) $(TABLES)
 
-usersgroupscmds.sgml:
+gensrc:
 	./mkusergrpcmds > usersgroupscmds.sgml
-
-usersgroupsints.sgml:
 	./mkusergrpint > usersgroupsints.sgml
 
 clean:

@@ -18,7 +18,7 @@ TABLES= cmdsutils.sgml
 
 all: $(FILES) $(TABLES)
 
-cmdsutils.sgml:
+gensrc:
 	./mkcmdtable  > cmdsutils.sgml
 
 clean:

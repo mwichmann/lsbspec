@@ -12,10 +12,8 @@ TABLES=
 
 all: $(FILES) $(TABLES)
 
-dyntag.sgml: mkdyntagtable
+gensrc:
 	./mkdyntagtable Sname='ELF Specification' numcols=4 >dyntag.sgml
-
-linuxtag.sgml: mkdyntagtable
 	./mkdyntagtable Sname='LSB' dodesc=Y >linuxtag.sgml
 
 clean:

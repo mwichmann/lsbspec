@@ -14,6 +14,8 @@ TABLES=
 
 all: $(FILES) $(TABLES)
 
+gensrc:
+
 clean:
 	rm -f $(FILES) $(TABLES)
 

@@ -12,22 +12,12 @@ TABLES= libICE.sgml libSM.sgml libX11.sgml libXext.sgml libXt.sgml libGL.sgml
 
 all: $(FILES) $(TABLES)
 
-libX11.sgml:
+gensrc:
 	../mklibspec Lname=libX11 >libX11.sgml
-
-libXext.sgml:
 	../mklibspec Lname=libXext >libXext.sgml
-
-libICE.sgml:
 	../mklibspec Lname=libICE >libICE.sgml
-
-libSM.sgml:
 	../mklibspec Lname=libSM >libSM.sgml
-
-libXt.sgml:
 	../mklibspec Lname=libXt >libXt.sgml
-
-libGL.sgml:
 	../mklibspec Lname=libGL >libGL.sgml
 
 clean:

@@ -43,7 +43,8 @@ psspec: source
 source:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
-all:: $(HTML)
+gensrc:
+	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
 html: $(HTML)
 

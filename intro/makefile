@@ -12,10 +12,8 @@ TABLES=standards.sgml libraries.sgml
 
 all: $(FILES) $(TABLES)
 
-standards.sgml:
+gensrc:
 	./mkstandardsgmltable >standards.sgml
-
-libraries.sgml:
 	./mklibsgmltable >libraries.sgml
 
 clean:
