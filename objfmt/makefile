@@ -28,4 +28,4 @@ linuxsecttypes.sgml: mksecttypestable
 clean:
 	rm -f $(FILES) $(TABLES)
 
-objfmt.sgml: elfsect.sgml linuxsect.sgml
+objfmt.sgml: elfsect.sgml linuxsect.sgml elfsecttypes.sgml  linuxsecttypes.sgml
