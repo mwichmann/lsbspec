@@ -239,14 +239,14 @@ in the hardware manual for the target processor architecture.
 </PARA>
 <PARA>
 2. The implementation shall be capable of executing compiled applications 
-having the format described in this document. 
+having the format and using the system interfaces described in this document.
 </PARA>
 <PARA>
 3. The implementation shall provide libraries containing the interfaces 
-specified by this document, and shall provide a dynamic 
-linking mechanism that allows these interfaces to be attached to 
-applications at runtime. All the interfaces shall behave as specified 
-in the normative references and requirements of this document 
+specified by this document, and shall provide a dynamic linking mechanism
+that allows these interfaces to be attached to applications at runtime. All
+the interfaces shall behave as specified in the normative references and
+requirements of this document 
 </PARA>
 <PARA>
 4. The map of virtual memory provided by the implementation shall conform 
@@ -268,16 +268,16 @@ in their entirety.
 <PARA>
 8. The implementation may provide one or more of the optional 
 interfaces. Each optional interface that is provided shall be provided 
-in its entirety. The product documentation 
-shall state which optional interfaces are provided. 
+in its entirety. The product documentation shall state which optional
+interfaces are provided. 
 </PARA>
 <PARA>
 9. The implementation shall provide all files and utilities specified 
-as part of this document in the format defined here and in 
-other referenced documents. All commands and utilities shall behave as 
-required by this document. The implementation 
-shall also provide all mandatory components of an application's runtime 
-environment that are included or referenced in this document. 
+as part of this document in the format defined here and in other referenced
+documents. All commands and utilities shall behave as required by this
+document. The implementation shall also provide all mandatory components
+of an application's runtime environment that are included or referenced
+in this document. 
 </PARA>
 <PARA>
 10. The implementation, when provided with standard data formats 
