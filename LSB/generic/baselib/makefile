@@ -12,6 +12,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	__timezone.sgml __tzname.sgml __xstat.sgml __xstat64.sgml \
 	_sys_siglist.sgml __xmknod.sgml acct.sgml adjtime.sgml adjtimex.sgml \
 	bindtextdomain.sgml cfmakeraw.sgml \
+	creat.sgml fopen.sgml freopen.sgml \
 	cfsetspeed.sgml daemon.sgml dcgettext.sgml dladdr.sgml endutent.sgml \
 	err.sgml error.sgml errx.sgml flock.sgml getdomainname.sgml \
 	gethostbyname_r.sgml getloadavg.sgml getopt.sgml getopt_long.sgml \
@@ -39,7 +40,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	dcgettext.sgml dcngettext.sgml bind_textdomain_codeset.sgml \
 	pmap_getport.sgml pmap_set.sgml svc_run.sgml __register_atfork.sgml \
 	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml dladdr.sgml \
-	dlopen.sgml dlsym.sgml wait3.sgml 
+	dlopen.sgml dlsym.sgml wait3.sgml utmpname.sgml
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
