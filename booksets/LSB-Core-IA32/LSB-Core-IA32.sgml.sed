@@ -26,26 +26,26 @@
 </SETINFO>
 
 
-<BOOK>
+<BOOK ID="ia32-intro">
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
 &lsb-ia32-intro;
 </BOOK>
-<BOOK>
+<BOOK ID="ia32-elf">
 <BOOKINFO>
 <TITLE>ELF Specification</TITLE>
 </BOOKINFO>
 &elf-contents;
 </BOOK>
-<BOOK>
+<BOOK ID="ia32-lsb">
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification</TITLE>
 </BOOKINFO>
 &lsb-contents;
 &lsb-ia32-appA;
 </BOOK>
-<BOOK>
+<BOOK ID="ia32-packaging">
 <BOOKINFO>
 <TITLE>Linux Packaging Specification</TITLE>
 </BOOKINFO>

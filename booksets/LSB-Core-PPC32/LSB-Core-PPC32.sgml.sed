@@ -26,26 +26,26 @@
 </SETINFO>
 
 
-<BOOK>
+<BOOK ID="ppc32-intro">
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
 &lsb-ppc32-intro;
 </BOOK>
-<BOOK>
+<BOOK ID="ppc32-elf">
 <BOOKINFO>
 <TITLE>ELF Specification</TITLE>
 </BOOKINFO>
 &elf-contents;
 </BOOK>
-<BOOK>
+<BOOK ID="ppc32-lsb">
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification</TITLE>
 </BOOKINFO>
 &lsb-contents;
 &lsb-ppc32-appA;
 </BOOK>
-<BOOK>
+<BOOK ID="ppc32-packaging">
 <BOOKINFO>
 <TITLE>Linux Packaging Specification</TITLE>
 </BOOKINFO>

@@ -27,19 +27,19 @@
 </SETINFO>
 
 
-<BOOK>
+<BOOK ID="generic-intro">
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
 &lsb-generic-intro;
 </BOOK>
-<BOOK>
+<BOOK ID="generic-elf">
 <BOOKINFO>
 <TITLE>ELF Specification</TITLE>
 </BOOKINFO>
 &elf-contents;
 </BOOK>
-<BOOK>
+<BOOK ID="generic-lsb">
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification</TITLE>
 </BOOKINFO>

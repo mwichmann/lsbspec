@@ -22,13 +22,13 @@
 </SETINFO>
 
 
-<BOOK>
+<BOOK ID="generic-intro">
 <BOOKINFO>
 <TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
 &lsb-generic-intro;
 </BOOK>
-<BOOK>
+<BOOK ID="generic-graphics">
 <BOOKINFO>
 <TITLE>Graphics Specification</TITLE>
 </BOOKINFO>
