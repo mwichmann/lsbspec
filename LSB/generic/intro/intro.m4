@@ -76,19 +76,33 @@ includes a reference to the architecture supplement. Architecture supplements
 may also contain additional information that is not referenced in the
 LSB-generic document.
 </PARA>
+
+<PARA>
+The LSB contains both a set of Application Program Interfaces (APIs)
+and Application Binary Interfaces (ABIs). APIs may appear in the
+source code of portable applications, while the compiled binary of that
+application may use the larger set of ABIs. A conforming implementation
+shall provide all of the ABIs listed here. The compilation system may
+replace (e.g. by macro definition) certain APIs with calls to one or
+more of the underlying binary interfaces, and may insert calls to binary
+interfaces as needed.
+</PARA>
+
+<PARA>
+The LSB is primarily a binary interface
+definition. Not all of the source level APIs available to applications
+may be contained in this specification.
+</PARA>
+
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
 <TITLE>Normative References</TITLE>
 <PARA>
 The specifications listed below are referenced in whole or in part by
-the Linux Standard Base.  Such references may be normative or
-informative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The LSB
-may make normative references to a portion of these
-specifications (that is, to define a specific function or group of
-functions); in such cases, only the explicitly referenced portion of
-the specification is to be considered normative.
+the Linux Standard Base.  In this specification, where only a particular section
+of one of these references is identified, then the normative reference is to
+that section alone, and the rest of the referenced document is informative.
 </PARA>
 <TABLE>
 <TITLE>Normative References</TITLE>
@@ -103,11 +117,14 @@ include(standards.sgml)
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed here shall be available on a Linux Standard Base 
-system. This list may be supplemented or amended by the architecture-specific 
-specifications.
+The libraries listed in <XREF LINKEND='tbl-lsbgeneric-stdlib'> shall
+be available on a Linux Standard Base system, with the secified
+runtime names. The libraries listed in <XREF LINKEND='tbl-lsbgeneric-archlib'>
+are architecture specific, but shall be available on all LSB
+conforming systems. This list may be supplemented or amended by the
+architecture-specific specification.
 </PARA>
-<TABLE>
+<TABLE ID='tbl-lsbgeneric-stdlib'>
 <TITLE>Standard Library Names</TITLE>
 <TGROUP COLS=2>
 <THEAD>
@@ -120,8 +137,8 @@ include(libraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
-These libraries will be in an implementation-dependent directory which
-the dynamic linker will search by default.
+These libraries will be in an implementation-defined directory which
+the dynamic linker shall search by default.
 </PARA>
 </SECT1>
 <SECT1 ID="Implementation"><TITLE>LSB Implementation Conformance </TITLE>
