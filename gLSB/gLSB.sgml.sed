@@ -19,45 +19,13 @@
 <!entity appA.sgm system "appendix/liblist.sgml">
 <!entity appB.sgm system "appendix/fdl.sgml">
 <!entity appZ.sgm system "appendix/howtocompliant.sgml">
+<!entity legal.sgm system "legal.sgml">
 ]>
 
 <BOOK>
 <BOOKINFO>
 <TITLE>Linux Standard Base Specification &specversion</TITLE>
-<COPYRIGHT>
-<YEAR>2000</YEAR>
-<YEAR>2001</YEAR>
-<YEAR>2002</YEAR>
-<HOLDER>Free Standards Group</HOLDER>
-</COPYRIGHT>
-<LEGALNOTICE>
-<PARA>
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.1;
-with no Invariant Sections, with no Front-Cover Texts, and with no 
-Back-Cover Texts.  A copy of the license is included in the section 
-entitled "GNU Free Documentation License".
-</PARA>
-</LEGALNOTICE>
-<LEGALNOTICE>
-<PARA>
-Portions of the text were taken from other copyrighted documents in accordance
-with the respective license of those documents.
-</PARA>
-<PARA>
-Linux is a trademark of Linus Torvalds.
-</PARA>
-<PARA>
-UNIX is a registered trademark of the Open Group in the United States and
-other countries.
-</PARA>
-<PARA>
-Intel386 and Itanium trademarks of Intel Corporation.
-</PARA>
-<PARA>
-OpenGL is a registered trademark of Silicon Graphics, Inc.
-</PARA>
-</LEGALNOTICE>
+&legal.sgm;
 &changes.sgm;
 </BOOKINFO>
 
