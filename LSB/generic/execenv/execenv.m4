@@ -220,7 +220,7 @@ within the <CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>:
 </SIMPLELIST>
 </PARA>
 
-<para>The <FUNCTION>opendir()</FUNCTION>
+<para>The <FUNCTION>opendir</FUNCTION>
 function shall consume a file descriptor in the same
 fashion as <FUNCTION>open</FUNCTION>, and therefore may fail with 
 <CONSTANT>EMFILE</CONSTANT> or <CONSTANT>ENFILE</CONSTANT>.
@@ -234,7 +234,7 @@ section of the
 <CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>.
 </para>
 
-<para>The <function>access()</function> function
+<para>The <function>access</function> function
 function shall fail with <VARNAME>errno</VARNAME>
 set to <CONSTANT>EINVAL</CONSTANT> if the 
 <parameter>amode</parameter> argument contains bits other than 
@@ -245,7 +245,7 @@ those set by the bitwise inclusive OR of
 <CONSTANT>F_OK</CONSTANT>.
 </para>
 
-<para>The <FUNCTION>link()</FUNCTION> function shall require access
+<para>The <FUNCTION>link</FUNCTION> function shall require access
 to the existing file in
 order to succeed, as described as optional behavior in the 
 <CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>.
@@ -253,12 +253,12 @@ order to succeed, as described as optional behavior in the
 
 <para id="exec-link-unlink"
 XRefLabel="Additional behaviors: unlink/link on directory"
->Calling <FUNCTION>unlink()</FUNCTION> on a directory shall fail.
-Calling <FUNCTION>link()</FUNCTION> specifying a directory as the first
+>Calling <FUNCTION>unlink</FUNCTION> on a directory shall fail.
+Calling <FUNCTION>link</FUNCTION> specifying a directory as the first
 argument shall fail.  See also <xref linkend="baselib-unlink-3">.
 <note>
 <para>
-Linux allows <FUNCTION>rename()</FUNCTION> on a directory without
+Linux allows <FUNCTION>rename</FUNCTION> on a directory without
 having write access, but the LSB does not require this.</para>
 </note>
 </para>
@@ -275,41 +275,41 @@ shall trigger a failure in the interface that is otherwise described as a "may f
 </PARA>
 </NOTE>
 </PARA>
-<para>The fcntl() function shall treat the "cmd" value -1 as
+<para>The <FUNCTION>fcntl</FUNCTION> function shall treat the "cmd" value -1 as
 invalid.</para>
 
 <para>The <parameter>whence</parameter> value <constant>-1</constant>
 shall be an invalid value for the
-<function>lseek()</function>, <function>fseek()</function> and 
-<function>fcntl()</function> functions.</para>
+<function>lseek</function>, <function>fseek</function> and 
+<function>fcntl</function> functions.</para>
 
 <para>The value <constant>-5</constant> shall be an invalid signal number.</para>
 
-<para>If the <function>sigaddset()</function> or 
-<function>sigdelset()</function> functions are passed an
+<para>If the <function>sigaddset</function> or 
+<function>sigdelset</function> functions are passed an
 invalid signal number, they shall return with <ErrorName>EINVAL</ErrorName>.
 Implementations
 are only required to enforce this requirement for signal numbers which
 are specified to be invalid by this specification (such as the <constant>-5</>
 mentioned above).</para>
-<para>The mode value <constant>-1</constant> to the <function>access()</function>
+<para>The mode value <constant>-1</constant> to the <function>access</function>
 function shall be treated as
 invalid.</para>
 
 <para>A value of <constant>-1</constant> shall be an invalid "_PC_..." value for
-<function>pathconf()</function>.</para>
+<function>pathconf</function>.</para>
 
 <para>A value of <constant>-1</constant> shall be an invalid "_SC..." value for
-<function>sysconf()</function>.</para>
+<function>sysconf</function>.</para>
 
 <para>The <parameter>nl_item</parameter> value <constant>-1</constant>
 shall be invalid for <function>nl_langinfo</function>.</para>
 
 <para>The value <constant>-1</constant> shall be an invalid "_CS_..." value for 
-<function>confstr()</function>.</para>
+<function>confstr</function>.</para>
 
 <para>The value <constant>"a"</constant> shall be an invalid <parameter>mode</parameter>
-argument to <function>popen()</function>.</para>
+argument to <function>popen</function>.</para>
 
 </SECT2>
 </SECT1>
@@ -335,7 +335,7 @@ as well.
 </NOTE>
 The resulting binary message catalog shall be
 located in the package's private area under <FILENAME>/opt</FILENAME>, and the
-application may use <FUNCTION>bindtextdomain()</FUNCTION> to specify this
+application may use <FUNCTION>bindtextdomain</FUNCTION> to specify this
 location.
 </PARA>
 
