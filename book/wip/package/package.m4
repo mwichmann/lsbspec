@@ -557,8 +557,10 @@ This field must match the corresponding value in the
 <LISTITEM>
 <PARA>
 Value identifying this owner of this file.
-This field must match the corresponding value in the
-<CONSTANT>RPMTAG_FILEUIDS</CONSTANT> index in the Header section.
+This value matches the uid value of the corresponding user in the
+RPMTAG_FILEUSERNAME as found on the system where this package was built. The
+username specified in RPMTAG_FILEUSERNAME should take precedence when
+installing the package.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -567,8 +569,10 @@ This field must match the corresponding value in the
 <LISTITEM>
 <PARA>
 Value identifying this group of this file.
-This field  must match the corresponding value in the
-<CONSTANT>RPMTAG_FILEGIDS</CONSTANT> index in the Header section.
+This value matches the gid value of the corresponding user in the
+RPMTAG_FILEGROUPNAME as found on the system where this package was built. The
+groupname specified in RPMTAG_FILEGROUPNAME should take precedence when
+installing the package.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
