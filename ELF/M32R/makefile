@@ -1,17 +1,14 @@
 
-SUBDIRS= generic AMD64 IA32 IA64 M32R PPC32 PPC64 S390 S390X
+SUBDIRS= intro lowlevel objfmt dynlnk
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
-
-autobuild:
-	for dir in $(SUBDIRS);do (cd $$dir && make gensrc all);done
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
 source:
-	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+	for dir in $(SUBDIRS);do (cd $$dir && make source);done
 
 clean:
 	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
