@@ -164,11 +164,12 @@ If the status command is given, the init script will return the following
 exit status codes.  
 
 <SIMPLELIST type=horiz columns=2>
-<MEMBER>0</MEMBER><MEMBER>program is running</MEMBER>
+<MEMBER>0</MEMBER><MEMBER>program is running or service is OK</MEMBER>
 <MEMBER>1</MEMBER><MEMBER>program is dead and /var/run pid file exists</MEMBER>
 <MEMBER>2</MEMBER><MEMBER>program is dead and /var/lock lock file exists</MEMBER>
 <MEMBER>3</MEMBER><MEMBER>program is stopped</MEMBER>
-<MEMBER>4-99</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
+<MEMBER>4</MEMBER><MEMBER>program or service status is unknown</MEMBER>
+<MEMBER>5-99</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
 <MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
 <MEMBER>150-199</MEMBER><MEMBER>reserved for application use</MEMBER>
 <MEMBER>200-254</MEMBER><MEMBER>reserved</MEMBER>
@@ -269,6 +270,7 @@ defined in this specification:
 	# Required-Stop: boot_facility_1 [ boot_facility_2 ...]
 	# Default-Start: run_level_1 [ run_level_2 ...]
 	# Default-Stop: run_level_1 [ run_level_2 ...]
+	# Short-Description: short_description
 	# Description: multiline_description
 </SCREEN>
 
@@ -284,21 +286,39 @@ An init.d shell script may declare using the "Required-Start: " header
 that it must not be run until certain boot facilities are provided.
 This information is used by the installation tool or the boot-time
 boot-script execution facility to assure that init scripts are run in
-the correct order.
+the correct order.   When an init script is run with a "start" argument, the 
+boot facility or facilities specified in the "Provides" header shall be
+considered present, and hence init scripts which require those boot facilities
+would then be eligble to be run.   When an init script is run with a "stop" 
+argument, the boot facilities specified in the "Provides" header are 
+considered  no longer  present.  Details about how
+the naming conventions used by boot facilities, and system facilties
+defined by this specification can be found in a following section.
 </PARA>
 
 <PARA>
 Similarly, the "Required-Stop:" header defines which facilities must
 still be available during the shutdown of that service.  Hence, the
-initscript system should avoid stopping shell scripts which provide
+init script system should avoid stopping shell scripts which provide
 those facilities until this shell script is stopped.
 </PARA>
 
 <PARA>
-In a multiline description, each continuation line must begin with a
-'#' followed by tab character or a '#' followed by at least two space
-characters.  The multiline description is terminated by the first line
-that does not match this criteria.
+The "Default-Start" and "Default-Stop" headers define which run levels
+should by default run the script with a start or stop argument,
+respectively, to start or stop the services controlled by the init script.
+</PARA>
+
+<PARA>
+The "Short-Description" and "Description" header fields are used to
+provide text which describes the actions of the init script.  The
+"short_description" shall be a relatively short, pithy description of the
+init script, where as the "multiline_description" can be a much longer
+piece of text that may span mulitple lines.  In a multiline description,
+each continuation line must begin with a '#' followed by tab character
+or a '#' followed by at least two space characters.  The multiline
+description is terminated by the first line that does not match this
+criteria.
 </PARA>
 
 </SECT1>
@@ -360,10 +380,12 @@ however.
 <TITLE>Facility names</TITLE>
 
 <PARA>
-Facility names that begin with a dollar sign ('$') are system facility
-names, defined by the LSB, and MUST be provided by distributions.  LSB
-applications should not provide system facilities.  This document
-defines the following system facility names:
+Boot facilities are used to indicate dependencies in init scripts, as
+defined in a previous section.  Facility names that begin with a
+dollar sign ('$') are system facility names, defined by the LSB, and
+MUST be provided by distributions.  LSB applications must not provide
+system facilities.  This document defines the following system
+facility names:
 </PARA>
 
 <SIMPLELIST type=horiz columns=2>
@@ -392,14 +414,11 @@ both $local_fs and $remote_fs)</MEMBER>
 </SIMPLELIST>
 
 <PARA>
-Other system facilities may be defined by other LSB applications.
-</PARA>
-
-<PARA>
-Facility names may also be init.d script names, although LSB
-applications SHOULD NOT use script names, especially script names which
-are provided by distributions, as these may not necessarily be the same
-across different distributions.
+Other (non-system) facilities may be defined by other LSB applications.
+These facilities shall be named using the same conventions defined for
+naming init.d script names.  Commonly, the facility provided by
+an LSB application init.d script will have the same name as the name 
+assigned  to the init.d script.
 </PARA>
 
 </SECT1>
