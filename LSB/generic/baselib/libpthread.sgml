@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/spec/mklibspec,v 1.41 2002/07/11 18:46:56 anderson Exp 0 -->
-<!--    at Sun Jul 14 21:04:27 2002 -->
+<!--    at Thu Aug  1 15:57:44 2002 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -416,10 +416,8 @@ sem_t;
 
 #define SIGRTMAX	(__libc_current_sigrtmax ())
 #define SIGRTMIN	(__libc_current_sigrtmin ())
-#define SIGEV_SIGNAL	0
 #define SIG_BLOCK	0
 #define SIG_UNBLOCK	1
-#define SIGEV_THREAD	2
 #define SIG_SETMASK	2
 #define NSIG	64
 
@@ -467,7 +465,9 @@ typedef union sigval
   void *sival_ptr;
 }
 sigval_t;
+#define SIGEV_SIGNAL	0
 #define SIGEV_NONE	1
+#define SIGEV_THREAD	2
 
 
 typedef struct sigevent
@@ -477,7 +477,7 @@ typedef struct sigevent
   int sigev_notify;
   union
   {
-    int _pad[SI_PAD_SIZE];
+    int _pad[SIGEV_PAD_SIZE];
     struct
     {
       void (*sigev_thread_func) (void);
@@ -505,6 +505,7 @@ sigevent_t;
 #define si_band	_sifields._sigpoll._band
 #define si_fd	_sifields._sigpoll._fd
 #define si_timer1	_sifields._timer._timer1
+#define si_timer2	_sifields._timer._timer2
 
 
 typedef struct siginfo
