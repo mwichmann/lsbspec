@@ -705,7 +705,18 @@ contains the character 'z'.
 <TERM><STRUCTFIELD>Augmentation Data</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-A block of data ....
+A block of data whose contents are defined by the contents of the
+Augmentation String as described below. This field is only present if the
+Augmentation String contains the character 'z'.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Padding</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Extra bytes to align the CIE structure to an addressing unit size boundary.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -717,13 +728,14 @@ A block of data ....
 <TITLE>Augmentation String Format</TITLE>
 <PARA>
 The Agumentation String indicates the presence of some optional fields, and
-how those fileds should be intepreted.
+how those fileds should be intepreted. Each character in the augmentation
+string in the CIE can be interpreted as below:
 </PARA>
 
 <VARIABLELIST>
 
 <VARLISTENTRY>
-<TERM>z</TERM>
+<TERM>'z'</TERM>
 <LISTITEM>
 <PARA>
 A 'z' may be present as the first character of the string. If present, the
@@ -734,7 +746,7 @@ shall be intepreted according to other characters in the Augmentation String.
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM>eh</TERM>
+<TERM>"eh"</TERM>
 <LISTITEM>
 <PARA>
 If the Augmentation string has the value "eh", then the EH Data field shall
@@ -744,31 +756,39 @@ be present.
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM>L</TERM>
+<TERM>'L'</TERM>
 <LISTITEM>
 <PARA>
-A 'L' may be present after the first character of the string. If present, the
-next byte of the Augmentation Data field shall ...
+A 'L' may be present after the first character of the string. If present, it
+indicates the presence of two arguments in the Augmentation Data of the CIE.
+The first argument is 1-byte and represents the pointer encoding used for the
+second argument, which is the address of a language-specific data area (LSDA).
+The size of the LSDA pointer is specified by the pointer encoding used.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM>P</TERM>
+<TERM>'P'</TERM>
 <LISTITEM>
 <PARA>
-A 'P' may be present after the first character of the string. If present, the
-next byte of the Augmentation Data field shall ...
+A 'P' may be present after the first character of the string. If present, it
+indicates the presence of two arguments in the Augmentation Data of the CIE.
+The first argument is 1-byte and represents the pointer encoding used for the
+second argument, which is the address of a personality routine handler. The
+size of the personality routine pointer is specified by the pointer encoding
+used.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM>R</TERM>
+<TERM>'R'</TERM>
 <LISTITEM>
 <PARA>
-A 'R' may be present after the first character of the string. If present, the
-next byte of the Augmentation Data field shall ...
+A 'R' may be present after the first character of the string. If present, The
+Augmentation Data shall include a 1 byte argument that represents the pointer
+encoding for the address pointers used in the FDE.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -797,27 +817,11 @@ next byte of the Augmentation Data field shall ...
 <ENTRY>Required</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>Version</ENTRY>
-<ENTRY>Required</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>Augmentation String</ENTRY>
-<ENTRY>Required</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>EH Data</ENTRY>
-<ENTRY>Optional</ENTRY>
-</ROW>
-<ROW>
 <ENTRY>PC Begin</ENTRY>
 <ENTRY>Required</ENTRY>
 </ROW>
 <ROW>
 <ENTRY>PC Range</ENTRY>
-<ENTRY>Required</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>Return Address Register</ENTRY>
 <ENTRY>Required</ENTRY>
 </ROW>
 <ROW>
@@ -829,7 +833,7 @@ next byte of the Augmentation Data field shall ...
 <ENTRY>Optional</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>Initial Instructions</ENTRY>
+<ENTRY>Call Frame Instructions</ENTRY>
 <ENTRY>Required</ENTRY>
 </ROW>
 <ROW>
@@ -866,7 +870,7 @@ not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself.
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM><STRUCTFIELD>CIE ID</STRUCTFIELD></TERM>
+<TERM><STRUCTFIELD>CIE Pointer</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 A 4 byte unsigned value that when subtracted from the offset of the current FDE
@@ -877,10 +881,61 @@ This value shall never be 0, which indicates this record is a FDE.
 </VARLISTENTRY>
 
 <VARLISTENTRY>
-<TERM><STRUCTFIELD>Version</STRUCTFIELD></TERM>
+<TERM><STRUCTFIELD>PC Begin</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Version assigned to the call frame information structure. This value shall be 1.
+An encoded constant that indicates the address of the initial location
+associated with this FDE.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>PC Range</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+An encoded constant that indicates the number of bytes of instructions 
+associated with this FDE.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Augmentation Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+An unsigned LEB128 encoded value indicating the length in bytes of the
+Augmentation Data. This field is only present if the Augmentation String
+contains the character 'z'.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Augmentation Data</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A block of data whose contents are defined by the contents of the
+Augmentation String as described below. This field is only present if the
+Augmentation String contains the character 'z'.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Call Frame Instructions</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A set of Call Frame Instructions.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Padding</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Extra bytes to align the FDE structure to an addressing unit size boundary.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
