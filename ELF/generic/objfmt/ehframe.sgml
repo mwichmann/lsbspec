@@ -1,8 +1,379 @@
-<chapter id="ehframe">
-<TITLE>EH Frame</TITLE>
-<para>
-This chapter will contain a formal description of the contents of the
-<COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> section.
-</para>
+<SECT1 id="ehframe">
+<TITLE>
+The <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section
+</TITLE>
+<PARA>
+The <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section shall contain 1 or more
+Call Frame Information (CFI) records. The number of records present shall be
+determined by size of the section as contained int he section header.
+Each CFI record contains a Common Information Entry (CIE) record followed by
+1 or more Frame Description Entry (FDE) records.
+</PARA>
 
-</chapter>
+<TABLE>
+<TITLE>Call Frame Information Format</TITLE>
+<TGROUP COLS=1>
+<TBODY>
+<ROW>
+<ENTRY>Common Information Entry Record</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Frame Description Entry Record(s)</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+<SECT2>
+<TITLE>The Common Information Entry Format</TITLE>
+<TABLE>
+<TITLE>Common Information Entry Format</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Length</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Extended Length</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>CIE ID</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Version</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation String</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>EH Data</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Code Alignment Factor</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Data Alignment Factor</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Return Address Register</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation Data Length</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation Data</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Initial Instructions</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Padding</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 4 byte unsigned value indicating the length in bytes of the CIE structure,
+not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. If
+<STRUCTFIELD>Length</STRUCTFIELD> contains the value 0xffffffff, then the
+length is contained the <STRUCTFIELD>Extended Length</STRUCTFIELD> field.
+If <STRUCTFIELD>Length</STRUCTFIELD> contains the value 0, then this CIE shall
+be considered a terminator and processing shall end.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Extended Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 8 byte unsigned value indicating the length in bytes of the CIE structure,
+not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>CIE ID</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 4 byte unsigned value that is used to distinguish CIE records from FDE
+records.  This value shall always be 0, which indicates this record is a CIE.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Version</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Version assigned to the call frame information structure. This value shall be 1.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Augmentation String</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+This value is a NUL terminated string that identifies the augmentation to
+the CIE or to the FDEs associated with this CIE. A zero length string
+indicates that no augmentation data is present.  The augmentation string
+shall be interpreted as described below.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>EH Data</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+On 32 bit architectures, this is a 4 byte value that...
+On 64 bit architectures, this is a 8 byte value that...
+This field is only present if the Augmentation String
+contains the string "eh".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Code Alignment Factor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+An unsigned LEB128 encoded value that is factored out of all advance location
+instructions that are associated with this CIE or its FDEs. This value shall be
+multiplied by the delta argument of an adavance location instruction to obtain
+the new location value.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Data Alignment Factor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A signed LEB128 encoded value that is factored out of all offset instructions
+that are associated with this CIE or its FDEs. This value shall be multiplied
+by the register offset argument of an offset instruction to obtain
+the new offset value.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Augmentation Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+An unsigned LEB128 encoded value indicating the length in bytes of the
+Augmentation Data. This field is only present if the Augmentation String
+contains the character 'z'.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Augmentation Data</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A block of data ....
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+
+<SECT3>
+<TITLE>Augmentation String Format</TITLE>
+<PARA>
+The Agumentation String indicates the presence of some optional fields, and
+how those fileds should be intepreted.
+</PARA>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>z</TERM>
+<LISTITEM>
+<PARA>
+A 'z' may be present as the first character of the string. If present, the
+Augmentation Data field shall be present. The contents of the Augmentation Data
+shall be intepreted according to other characters in the Augmentation String.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>eh</TERM>
+<LISTITEM>
+<PARA>
+If the Augmentation string has the value "eh", then the EH Data field shall
+be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>L</TERM>
+<LISTITEM>
+<PARA>
+A 'L' may be present after the first character of the string. If present, the
+next byte of the Augmentation Data field shall ...
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>P</TERM>
+<LISTITEM>
+<PARA>
+A 'P' may be present after the first character of the string. If present, the
+next byte of the Augmentation Data field shall ...
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>R</TERM>
+<LISTITEM>
+<PARA>
+A 'R' may be present after the first character of the string. If present, the
+next byte of the Augmentation Data field shall ...
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</SECT3>
+
+</SECT2>
+
+<SECT2>
+<TITLE>The Frame Description Entry Format</TITLE>
+<TABLE>
+<TITLE>Frame Description Entry Format</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Length</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Extended Length</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>CIE Pointer</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Version</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation String</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>EH Data</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>PC Begin</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>PC Range</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Return Address Register</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation Data Length</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation Data</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Initial Instructions</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Padding</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 4 byte unsigned value indicating the length in bytes of the CIE structure,
+not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. If
+<STRUCTFIELD>Length</STRUCTFIELD> contains the value 0xffffffff, then the
+length is contained the <STRUCTFIELD>Extended Length</STRUCTFIELD> field.
+If <STRUCTFIELD>Length</STRUCTFIELD> contains the value 0, then this CIE shall
+be considered a terminator and processing shall end.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Extended Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 8 byte unsigned value indicating the length in bytes of the CIE structure,
+not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>CIE ID</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 4 byte unsigned value that when subtracted from the offset of the current FDE
+yields the offset of the start of the associated CIE.
+This value shall never be 0, which indicates this record is a FDE.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Version</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Version assigned to the call frame information structure. This value shall be 1.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+</SECT2>
+</SECT1>
