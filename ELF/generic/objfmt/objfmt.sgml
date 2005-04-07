@@ -307,6 +307,132 @@ External C symbols have the same names in C and object files' symbol tables.
 
 <CHAPTER ID="dwarfext">
 <TITLE>DWARF Extensions</TITLE>
+
+<SECT1 ID="dwarfehencoding">
+<TITLE>DWARF Exception Header Encoding</TITLE>
+<PARA>
+The DWARF Exception Header Encoding is used to describe the type of data used
+in the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT>  and
+<COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> section. The upper 4
+bits indicate how the value is to be applied. The lower 4 bits indicate the
+format of the data.
+</PARA>
+<TABLE>
+<TITLE>DWARF Exception Header value format</TITLE>
+<TGROUP COLS=3>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY>
+<ENTRY>Value</ENTRY>
+<ENTRY>Meaning</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>DW_EH_PE_absptr</ENTRY>
+<ENTRY>0x00</ENTRY>
+<ENTRY>The Value is a literal pointer whose size is determined by the architecture.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_uleb128</ENTRY>
+<ENTRY>0x01</ENTRY>
+<ENTRY>
+Unsigned value is encoded using the Little Endian Base 128 (LEB128)
+as defined by <XREF LINKEND="std.DWARF2">.
+</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_udata2</ENTRY>
+<ENTRY>0x02</ENTRY>
+<ENTRY>A 2 bytes unsigned value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_udata4</ENTRY>
+<ENTRY>0x03</ENTRY>
+<ENTRY>A 4 bytes unsigned value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_udata8</ENTRY>
+<ENTRY>0x04</ENTRY>
+<ENTRY>An 8 bytes unsigned value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_sleb128</ENTRY>
+<ENTRY>0x09</ENTRY>
+<ENTRY>
+Signed value is encoded using the Little Endian Base 128 (LEB128)
+as defined by <XREF LINKEND="std.DWARF2">.
+</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_sdata2</ENTRY>
+<ENTRY>0x0A</ENTRY>
+<ENTRY>A 2 bytes signed value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_sdata4</ENTRY>
+<ENTRY>0x0B</ENTRY>
+<ENTRY>A 4 bytes signed value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_sdata8</ENTRY>
+<ENTRY>0x0C</ENTRY>
+<ENTRY>An 8 bytes signed value.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_omit</ENTRY>
+<ENTRY>0xff</ENTRY>
+<ENTRY>No value is present.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<TABLE>
+<TITLE>DWARF Exception Header application</TITLE>
+<TGROUP COLS=3>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY>
+<ENTRY>Value</ENTRY>
+<ENTRY>Meaning</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW>
+<ENTRY>DW_EH_PE_pcrel</ENTRY>
+<ENTRY>0x10</ENTRY>
+<ENTRY>Value is reletive to the current program counter.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_textrel</ENTRY>
+<ENTRY>0x20</ENTRY>
+<ENTRY>Value is reletive to the beginning of the .text section.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_datarel</ENTRY>
+<ENTRY>0x30</ENTRY>
+<ENTRY>Value is reletive to the beginning of the data section.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_funcrel</ENTRY>
+<ENTRY>0x40</ENTRY>
+<ENTRY>Value is reletive to the beginning of the function.</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>DW_EH_PE_aligned</ENTRY>
+<ENTRY>0x30</ENTRY>
+<ENTRY>Value is aligned.</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+</SECT1>
+
+
+
+<SECT1 ID="dwarfcfiext">
+<TITLE>DWARF CFI Extensions</TITLE>
 <PARA>
 In addition to the Call Frame Instructions defined in section 6.4.2 of <XREF LINKEND="std.DWARF2">,
 the following Call Frame Instructions may also be used.
@@ -381,32 +507,404 @@ instructions is obsoleted by DW_CFA_offset_extended_sf.
 </TGROUP>
 </TABLE>
 
-</CHAPTER>
+</SECT1>
 
 
-<chapter id="ehframe">
-<TITLE>EH Frame</TITLE>
-<para>
-This chapter will contain a formal description of the contents of the
-<COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> section.
-</para>
+<SECT1 id="ehframe">
+<TITLE>
+The <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section
+</TITLE>
+<PARA>
+The <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section shall contain 1 or more
+Call Frame Information (CFI) records. The number of records present shall be
+determined by size of the section as contained int he section header.
+Each CFI record contains a Common Information Entry (CIE) record followed by
+1 or more Frame Description Entry (FDE) records.
+</PARA>
 
-</chapter>
+<TABLE>
+<TITLE>Call Frame Information Format</TITLE>
+<TGROUP COLS=1>
+<TBODY>
+<ROW>
+<ENTRY>Common Information Entry Record</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Frame Description Entry Record(s)</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+<SECT2>
+<TITLE>The Common Information Entry Format</TITLE>
+<TABLE>
+<TITLE>Common Information Entry Format</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Length</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Extended Length</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>CIE ID</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Version</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation String</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>EH Data</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Code Alignment Factor</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Data Alignment Factor</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Return Address Register</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation Data Length</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation Data</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Initial Instructions</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Padding</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 4 byte unsigned value indicating the length in bytes of the CIE structure,
+not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. If
+<STRUCTFIELD>Length</STRUCTFIELD> contains the value 0xffffffff, then the
+length is contained the <STRUCTFIELD>Extended Length</STRUCTFIELD> field.
+If <STRUCTFIELD>Length</STRUCTFIELD> contains the value 0, then this CIE shall
+be considered a terminator and processing shall end.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Extended Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 8 byte unsigned value indicating the length in bytes of the CIE structure,
+not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>CIE ID</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 4 byte unsigned value that is used to distinguish CIE records from FDE
+records.  This value shall always be 0, which indicates this record is a CIE.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Version</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Version assigned to the call frame information structure. This value shall be 1.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Augmentation String</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+This value is a NUL terminated string that identifies the augmentation to
+the CIE or to the FDEs associated with this CIE. A zero length string
+indicates that no augmentation data is present.  The augmentation string
+shall be interpreted as described below.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>EH Data</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+On 32 bit architectures, this is a 4 byte value that...
+On 64 bit architectures, this is a 8 byte value that...
+This field is only present if the Augmentation String
+contains the string "eh".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Code Alignment Factor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+An unsigned LEB128 encoded value that is factored out of all advance location
+instructions that are associated with this CIE or its FDEs. This value shall be
+multiplied by the delta argument of an adavance location instruction to obtain
+the new location value.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Data Alignment Factor</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A signed LEB128 encoded value that is factored out of all offset instructions
+that are associated with this CIE or its FDEs. This value shall be multiplied
+by the register offset argument of an offset instruction to obtain
+the new offset value.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Augmentation Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+An unsigned LEB128 encoded value indicating the length in bytes of the
+Augmentation Data. This field is only present if the Augmentation String
+contains the character 'z'.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Augmentation Data</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A block of data ....
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
 
 
-<CHAPTER ID="ehframehdr">
-<TITLE>EH Frame Header</TITLE>
-<SECT1><TITLE>Introduction</TITLE>
+<SECT3>
+<TITLE>Augmentation String Format</TITLE>
+<PARA>
+The Agumentation String indicates the presence of some optional fields, and
+how those fileds should be intepreted.
+</PARA>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>z</TERM>
+<LISTITEM>
+<PARA>
+A 'z' may be present as the first character of the string. If present, the
+Augmentation Data field shall be present. The contents of the Augmentation Data
+shall be intepreted according to other characters in the Augmentation String.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>eh</TERM>
+<LISTITEM>
+<PARA>
+If the Augmentation string has the value "eh", then the EH Data field shall
+be present.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>L</TERM>
+<LISTITEM>
+<PARA>
+A 'L' may be present after the first character of the string. If present, the
+next byte of the Augmentation Data field shall ...
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>P</TERM>
+<LISTITEM>
+<PARA>
+A 'P' may be present after the first character of the string. If present, the
+next byte of the Augmentation Data field shall ...
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>R</TERM>
+<LISTITEM>
+<PARA>
+A 'R' may be present after the first character of the string. If present, the
+next byte of the Augmentation Data field shall ...
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</SECT3>
+
+</SECT2>
+
+<SECT2>
+<TITLE>The Frame Description Entry Format</TITLE>
+<TABLE>
+<TITLE>Frame Description Entry Format</TITLE>
+<TGROUP COLS=2>
+<TBODY>
+<ROW>
+<ENTRY>Length</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Extended Length</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>CIE Pointer</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Version</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation String</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>EH Data</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>PC Begin</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>PC Range</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Return Address Register</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation Data Length</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Augmentation Data</ENTRY>
+<ENTRY>Optional</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Initial Instructions</ENTRY>
+<ENTRY>Required</ENTRY>
+</ROW>
+<ROW>
+<ENTRY>Padding</ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 4 byte unsigned value indicating the length in bytes of the CIE structure,
+not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. If
+<STRUCTFIELD>Length</STRUCTFIELD> contains the value 0xffffffff, then the
+length is contained the <STRUCTFIELD>Extended Length</STRUCTFIELD> field.
+If <STRUCTFIELD>Length</STRUCTFIELD> contains the value 0, then this CIE shall
+be considered a terminator and processing shall end.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Extended Length</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 8 byte unsigned value indicating the length in bytes of the CIE structure,
+not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>CIE ID</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+A 4 byte unsigned value that when subtracted from the offset of the current FDE
+yields the offset of the start of the associated CIE.
+This value shall never be 0, which indicates this record is a FDE.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM><STRUCTFIELD>Version</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Version assigned to the call frame information structure. This value shall be 1.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+</SECT2>
+</SECT1>
+
+
+<SECT1 ID="ehframehdr">
+<TITLE>
+The <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section
+</TITLE>
 <PARA>
 The <COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> section contains additional
 information about the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section.
 A pointer to the start of the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> data,
-and optionally, a binary search table of pointers to the .eh_frame records
-are found in this section.
+and optionally, a binary search table of pointers to the
+<COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> records are found in this section.
 </PARA>
 <PARA>
 Data in this section is encoded according to the DWARF Exception Header
-Encoding described below.
+Encoding.
 </PARA>
 <TABLE>
 <TITLE><COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> Section Format</TITLE>
@@ -508,119 +1006,8 @@ The entries are sorted in an increasing order by the initial location value.
 </VARIABLELIST>
 </SECT1>
 
-<SECT1 ID="dwarfehencoding">
-<TITLE>DWARF Exception Header Encoding</TITLE>
-<PARA>
-The DWARF Exception Header Encoding is used to describe the type of data used
-in the <COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> section. The upper 4
-bits indicate how the value is to be applied. The lower 4 bits indicate the
-format of the data.
-</PARA>
-<TABLE>
-<TITLE>DWARF Exception Header value format</TITLE>
-<TGROUP COLS=3>
-<THEAD>
-<ROW>
-<ENTRY>Name</ENTRY>
-<ENTRY>Value</ENTRY>
-<ENTRY>Meaning</ENTRY>
-</ROW>
-</THEAD>
-<TBODY>
-<ROW>
-<ENTRY>DW_EH_PE_omit</ENTRY>
-<ENTRY>0xff</ENTRY>
-<ENTRY>No value is present.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_uleb128</ENTRY>
-<ENTRY>0x01</ENTRY>
-<ENTRY>
-Unsigned value is encoded using the Little Endian Base 128 (LEB128)
-as defined by <XREF LINKEND="std.DWARF2">.
-</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_udata2</ENTRY>
-<ENTRY>0x02</ENTRY>
-<ENTRY>A 2 bytes unsigned value.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_udata4</ENTRY>
-<ENTRY>0x03</ENTRY>
-<ENTRY>A 4 bytes unsigned value.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_udata8</ENTRY>
-<ENTRY>0x04</ENTRY>
-<ENTRY>An 8 bytes unsigned value.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_sleb128</ENTRY>
-<ENTRY>0x09</ENTRY>
-<ENTRY>
-Signed value is encoded using the Little Endian Base 128 (LEB128)
-as defined by <XREF LINKEND="std.DWARF2">.
-</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_sdata2</ENTRY>
-<ENTRY>0x0A</ENTRY>
-<ENTRY>A 2 bytes signed value.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_sdata4</ENTRY>
-<ENTRY>0x0B</ENTRY>
-<ENTRY>A 4 bytes signed value.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_sdata8</ENTRY>
-<ENTRY>0x0C</ENTRY>
-<ENTRY>An 8 bytes signed value.</ENTRY>
-</ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
-<TABLE>
-<TITLE>DWARF Exception Header application</TITLE>
-<TGROUP COLS=3>
-<THEAD>
-<ROW>
-<ENTRY>Name</ENTRY>
-<ENTRY>Value</ENTRY>
-<ENTRY>Meaning</ENTRY>
-</ROW>
-</THEAD>
-<TBODY>
-<ROW>
-<ENTRY>DW_EH_PE_absptr</ENTRY>
-<ENTRY>0x00</ENTRY>
-<ENTRY>Value is used with no modification.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_pcrel</ENTRY>
-<ENTRY>0x10</ENTRY>
-<ENTRY>Value is reletive to the current program counter.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_datarel</ENTRY>
-<ENTRY>0x30</ENTRY>
-<ENTRY>Value is reletive to the beginning of the .eh_frame_hdr section.</ENTRY>
-</ROW>
-<ROW>
-<ENTRY>DW_EH_PE_omit</ENTRY>
-<ENTRY>0xff</ENTRY>
-<ENTRY>No value is present.</ENTRY>
-</ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
-
-</SECT1>
-
 
 </CHAPTER>
-
 
 <CHAPTER ID=SymVersion>
 <TITLE>Symbol Versioning</TITLE>

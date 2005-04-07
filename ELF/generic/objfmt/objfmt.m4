@@ -126,11 +126,18 @@ External C symbols have the same names in C and object files' symbol tables.
 </SECT1>
 </CHAPTER>
 
+<CHAPTER ID="dwarfext">
+<TITLE>DWARF Extensions</TITLE>
+
+include(dwarfenc.sgml)
+
 include(dwarfext.sgml)
 
 include(ehframe.sgml)
 
 include(ehframehdr.sgml)
+
+</CHAPTER>
 
 include(symversion.sgml)
 
