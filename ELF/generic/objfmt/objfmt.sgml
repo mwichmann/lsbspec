@@ -517,9 +517,10 @@ The <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section
 <PARA>
 The <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section shall contain 1 or more
 Call Frame Information (CFI) records. The number of records present shall be
-determined by size of the section as contained int he section header.
+determined by size of the section as contained in the section header.
 Each CFI record contains a Common Information Entry (CIE) record followed by
-1 or more Frame Description Entry (FDE) records.
+1 or more Frame Description Entry (FDE) records. Both CIEs and FDEs shall
+be aligned to an addressing unit sized boundary.
 </PARA>
 
 <TABLE>
@@ -618,7 +619,8 @@ be considered a terminator and processing shall end.
 <LISTITEM>
 <PARA>
 A 8 byte unsigned value indicating the length in bytes of the CIE structure,
-not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. 
+not including the <STRUCTFIELD>Length</STRUCTFIELD> and
+<STRUCTFIELD>Extended Length</STRUCTFIELD> fields. 
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -713,6 +715,15 @@ Augmentation String contains the character 'z'.
 </VARLISTENTRY>
 
 <VARLISTENTRY>
+<TERM><STRUCTFIELD>Initial Instructions</STRUCTFIELD></TERM>
+<LISTITEM>
+<PARA>
+Initial set of Call Frame Instructions.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
 <TERM><STRUCTFIELD>Padding</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
@@ -759,10 +770,13 @@ be present.
 <TERM>'L'</TERM>
 <LISTITEM>
 <PARA>
-A 'L' may be present after the first character of the string. If present, it
-indicates the presence of two arguments in the Augmentation Data of the CIE.
-The first argument is 1-byte and represents the pointer encoding used for the
-second argument, which is the address of a language-specific data area (LSDA).
+A 'L' may be present at any position after the first character of the string.
+If present, it
+indicates the presence of one argument in the Augmentation Data of the CIE,
+and a corresponding argument in the Augmentation Data of the FDE.
+The argument in the Augmentation Data of the CIE is 1-byte and represents the
+pointer encoding used for the argument in the Augmentation Data of the FDE,
+which is the address of a language-specific data area (LSDA).
 The size of the LSDA pointer is specified by the pointer encoding used.
 </PARA>
 </LISTITEM>
@@ -772,7 +786,8 @@ The size of the LSDA pointer is specified by the pointer encoding used.
 <TERM>'P'</TERM>
 <LISTITEM>
 <PARA>
-A 'P' may be present after the first character of the string. If present, it
+A 'P' may be present at any position after the first character of the string.
+If present, it
 indicates the presence of two arguments in the Augmentation Data of the CIE.
 The first argument is 1-byte and represents the pointer encoding used for the
 second argument, which is the address of a personality routine handler. The
@@ -786,7 +801,8 @@ used.
 <TERM>'R'</TERM>
 <LISTITEM>
 <PARA>
-A 'R' may be present after the first character of the string. If present, The
+A 'R' may be present at any position after the first character of the string.
+If present, The
 Augmentation Data shall include a 1 byte argument that represents the pointer
 encoding for the address pointers used in the FDE.
 </PARA>
@@ -906,7 +922,7 @@ associated with this FDE.
 <PARA>
 An unsigned LEB128 encoded value indicating the length in bytes of the
 Augmentation Data. This field is only present if the Augmentation String
-contains the character 'z'.
+in the associated CIE contains the character 'z'.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -916,8 +932,9 @@ contains the character 'z'.
 <LISTITEM>
 <PARA>
 A block of data whose contents are defined by the contents of the
-Augmentation String as described below. This field is only present if the
-Augmentation String contains the character 'z'.
+Augmentation String in the associated CIE as described above.
+This field is only present if the Augmentation String in the associated CIE
+contains the character 'z'.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
