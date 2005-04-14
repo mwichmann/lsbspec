@@ -1,5 +1,6 @@
-<SECT1 ID=cronjobs>
+<SECT1 ID=cronjobs XRefLabel="Cron Jobs">
 <TITLE ID=cronjobs.title>Cron Jobs</TITLE>
+
 <PARA>
 In addition to the individual user <filename>crontab</filename> files specified
 by <xref linkend=std.susv3> stored under <filename>/var/spool/cron</filename>,
@@ -15,39 +16,49 @@ the configuration file <FILENAME>/etc/crontab</FILENAME>.
 </PARA>
 <PARA>
 If a package wishes to install a job that has to be executed periodically,
-it shall place an executable file in one of the
+it shall place an executable <FirstTerm>cron script</FirstTerm> in one of the
 following directories:
 </PARA>
 <SIMPLELIST>
+<MEMBER><FILENAME>/etc/cron.hourly</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.daily</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.weekly</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.monthly</FILENAME></MEMBER>
 </SIMPLELIST>
 <PARA>
 As these directory names suggest, the files within them are executed on a
-daily, weekly, or monthly basis, respectively, under the control of an
+hourly, daily, weekly, or monthly basis, respectively, under the control of an
 entry in one of the system <filename>crontab</filename> files, at an
 unspecified time of day.
-See below for the rules concerning the names of files in these directories.
+See below for the rules concerning the names of cron scripts.
 </PARA>
 
 <NOTE>
 <PARA>
-It is recommended that files installed in any of these directories be
-scripts (e.g. shell scripts, Perl scripts, etc.) so that they may be
-modified by the local system administrator. 
+It is recommended that cron scripts installed in any of these directories be
+script files rather than compiled binaries so that they may be
+modified by the local system administrator. Conforming applications
+may only install cron scripts which use an interpreter required by
+this specification or provided by this or another conforming application.
 </PARA>
 <PARA>
-The scripts in these directories should check if all necessary
-programs are installed before they try to execute them. Otherwise,
-problems will arise if a package is removed (but not purged), since
-the configuration files are kept on the system in this situation.
+This specification does not define the concept of a package
+<FirstTerm>upgrade</FirstTerm>. Implementations may do different
+things when packages are upgraded, including not replacing a
+cron script if it marked as a configuration file,
+particularly if the cron script appears to have been modified since
+installation.  In some circumstances, the cron script may
+not be removed when the package is uninstalled. 
+Applications should design their installation
+procedure and cron scripts to be robust in the face of such
+behavior.  In particular, cron scripts should not fail obscurely
+if run in unexpected circumstances. Testing for the existence
+of application binaries before executing them is suggested.
 </PARA>
 </NOTE>
 <PARA>
-If a certain task has to be executed at a different frequency (e.g. more
-frequently than daily), the
-package shall install a file
+If a certain task has to be executed at other than the predefined
+frequencies, the package shall install a file
 <FILENAME>/etc/cron.d/<replaceable>cron-name</replaceable></FILENAME>.
 The file shall have  the same format as that described for the 
 <command>crontab</command> command in <xref linkend="std.susv3">, except that 
@@ -69,9 +80,10 @@ command being run at the specified time, as the specified username.
 </PARA>
 
 <PARA>
-To avoid namespace conflicts in the <filename>/etc/cron.*</filename> directories, the filenames
-used by LSB-compliant packages in 
+To avoid namespace conflicts in the <filename>/etc/cron.*</filename>
+directories, filenames installed by conforming packages in
 <SIMPLELIST type=inline>
+<MEMBER><FILENAME>/etc/cron.hourly</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.daily</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.weekly</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.monthly</FILENAME></MEMBER>
@@ -97,7 +109,7 @@ These filenames may be assigned using one of the following methods:
 <NOTE>
 	<PARA>
 		Commonly used names should be reserved in advance; 
-		developers for projects should be encouraged reserve names
+		developers for projects are encouraged to reserve names
 		from LANANA, so that each distribution can use the same
 		name, and to avoid conflicts with other projects.
 </PARA></NOTE></LISTITEM>

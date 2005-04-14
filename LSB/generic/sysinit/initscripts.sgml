@@ -1,121 +1,256 @@
-<SECT1 ID=initscrcomconv>
+<SECT1 ID=initscrcomconv XRefLabel="Comment Conventions for Init Scripts">
 <TITLE>Comment Conventions for Init Scripts</TITLE>
-<TITLEABBREV ID="initscriptsShort">Comment Conventions for Init Scripts</TITLEABBREV>
 
 <PARA>
-LSB applications which need to execute script(s) at bootup and/or
-shutdown may provide one or more <filename>init.d</filename> files.  These files are
-installed by the install_initd program described below, which copies
-it into a standard directory and makes whatever other adjustments
-(creation of symlinks, creation of entries in a database, etc.) are
-necessary so that the script can be run at boot-time.
+Conforming applications may install one or more init scripts.
+These init scripts must be activated by invoking the
+<command>install_initd</command> command.
+Prior to package removal, the changes applied by
+<command>install_initd</command> must be undone by
+invoking <command>remove_initd</command>.
+See <xref linkend="initsrcinstrm"> for more details.
+</PARA>
+
+<PARA> 
+<command>install_initd</command> and <command>remove_initd</command>
+determine actions to take by decoding a specially formatted
+block of lines in the script. This block shall be delimited
+by the lines 
+<screen>
+### BEGIN INIT INFO
+### END INIT INFO
+</screen>
+The delimiter lines may contain trailing whitespace, which shall be
+ignored.  All lines inside the block shall begin with a hash
+character <literal>'#'</literal> in the first column, so the shell
+interprets them as comment lines which do not affect operation of
+the script. The lines shall be of the form:
+<SCREEN>
+<!-- tried to do this as a <cmdsynopsis> but the ':' defeats me -->
+# {keyword}: arg1 [arg2...]
+</SCREEN>
+with exactly one space character between the <literal>'#'</literal>
+and the keyword, with a single exception.  In lines following a
+line containing the <command>Description</command> keyword, and until the
+next keyword or block ending delimiter is seen,
+a line where the <literal>'#'</literal>
+is followed by more than one space or a tab character
+shall be treated as a continuation of the previous line.
+</para>
+<para>
+The information extracted from the block is used by the
+installation tool or the init-script system to assure
+that init scripts are run in the correct order.   
+It is unspecified whether the information is evaluated
+only when <command>install_initd</command> runs, when
+the init scripts are executed, or both. The information
+extracted includes run levels, defined in <xref linkend="runlevels">,
+and boot facilities, defined in <xref linkend="facilname">.
+</para>
+
+<para>
+The following keywords, with their arguments, are defined:
+</PARA>
+
+<variablelist>
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Provides:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+boot facilities provided by this init script.
+When an init script is run with a <command>start</command> argument,
+the boot facility or facilities specified by the 
+<command>Provides</command> keyword shall be deemed present
+and hence init scripts which require those boot facilities
+should be started later.  When an init script is run with a 
+<command>stop</command> argument, the boot facilities specified by
+the <command>Provides</command> keyword are deemed  no longer present.  
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Required-Start:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+facilities which must be available during startup of this service.
+The init-script system should insure init scripts which
+provide the <command>Required-Start</command> facilities
+are started before starting this script.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Required-Stop:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+facilities which must
+be available during the shutdown of this service.  The
+init-script system should avoid stopping init scripts which provide
+the <command>Required-Stop</command>
+facilities until this script is stopped.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Should-Start:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+facilities which, if present, should
+be available during startup of this service. This allows for weak dependencies
+which do not cause the service to fail if a facility is not available.
+The service may provide reduced functionality in this situation.
+Conforming applications should not rely on the existence of this feature.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Should-Stop:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+facilities which should be available during shutdown of this service.
+<!-- XXX seems like more should be said here -->
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Default-Start:</command>
+<arg choice=plain>run_level_1</arg>
+<arg choice=opt rep=repeat>run_level_2</arg>
+</cmdsynopsis>
+</term>
+<term>
+<cmdsynopsis>
+<command>Default-Stop:</command>
+<arg choice=plain>run_level_1</arg>
+<arg choice=opt rep=repeat>run_level_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+which run levels should by default run the init script with a 
+<command>start</command> (<command>stop</command>) argument
+to start (stop) the services controlled by the init script.
+<informalexample>
+<para>
+For example, if a service should run in runlevels 3, 4, and 5 only,
+specify "Default-Start: 3 4 5" and "Default-Stop: 0 1 2 6".
+</para>
+</informalexample>
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Short-Description:</command>
+<arg choice=plain>short_description</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+provide a brief description of the actions of the init script.
+Limited to a single line of text.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Description:</command>
+<arg choice=plain>multiline_description</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+provide a more complete description of the actions of the init script.
+May span mulitple lines.  In a multiline description,
+each continuation line shall begin with a '#' followed by tab character
+or a '#' followed by at least two space characters.  The multiline
+description is terminated by the first line that does not match this
+criteria.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<PARA>
+Additional keywords may be defined in future versions of
+this specification. Also, implementations 
+may define local extensions by using the prefix
+<command>X-<replaceable>implementor</replaceable></command>.
+For example, <command>X-RedHat-foobardecl</command>, or 
+<command>X-Debian-xyzzydecl</command>.  
+</PARA>
+
+<para>
+Example:
+<informalexample>
+<screen>
+	### BEGIN INIT INFO
+	# Provides: lsb-ourdb
+	# Required-Start: $local_fs $network $remote_fs
+	# Required-Stop: $local_fs $network $remote_fs
+	# Default-Start:  2 3 4 5
+	# Default-Stop: 0 1 6
+	# Short-Description: start and stop OurDB
+	# Description: OurDB is a very fast and reliable database
+	#	 engine used for illustrating init scripts
+	### END INIT INFO
+</screen>
+</informalexample>
+</para>
+
+<PARA>
+The comment conventions described in this section are only required for
+init scripts installed by conforming applications. Conforming
+runtime implementations are not required to use this scheme in their system
+provided init scripts.
+</PARA>
+
 <NOTE><PARA>
 This specification does not require, but is designed to allow, the
 development of a system which runs boot scripts in parallel.  Hence,
 enforced-serialization of scripts is avoided unless it is explicitly
 necessary. 
 </PARA></NOTE>
-</PARA>
-
-<PARA> 
-In the <filename>init.d</filename> file, information about the shell script shall be
-delimited by the lines "### BEGIN INIT INFO" and "### END INIT INFO".
-These delimiter lines may containg trailing whitespace, which shall be
-ignored.  Inside this block there shall be lines of the form "#
-{keyword}: [arg1] [arg2] ...".  (All lines inside this block start
-with a hash ('#') character in the first column, so that shell treats
-them as comments.)
-There shall be exactly one space character between "#" and the
-keyword.<note><para>More than one space, or a tab character,
-indicates the continuation line.</para></note>
-The following keywords, with their arguments are
-defined in this specification:
-</PARA>
-
-<SCREEN>
-	# Provides: boot_facility_1 [ boot_facility_2 ...]
-	# Required-Start: boot_facility_1 [ boot_facility_2 ...]
-	# Required-Stop: boot_facility_1 [ boot_facility_2 ...]
-	# Should-Start: boot_facility_1 [ boot_facility_2 ...]
-	# Should-Stop: boot_facility_1 [ boot_facility_2 ...]
-	# Default-Start: run_level_1 [ run_level_2 ...]
-	# Default-Stop: run_level_1 [ run_level_2 ...]
-	# Short-Description: short_description
-	# Description: multiline_description
-</SCREEN>
-
-<PARA>
-Additional keywords may be defined in future LSB specifications.
-Distributions may define local extensions by using the prefix
-"X-[distribution name]" --- for example, "X-RedHat-foobardecl", or
-"X-Debian-xyzzydecl".  
-</PARA>
-
-<PARA>
-An <filename>init.d</filename> shell script may declare using the "Required-Start: " header
-that it shall not be run until certain boot facilities are provided.
-This information is used by the installation tool or the boot-time
-boot-script execution facility to assure that init scripts are run in
-the correct order.   When an init script is run with a "start" argument, the 
-boot facility or facilities specified in the "Provides" header shall be
-considered present, and hence init scripts which require those boot facilities
-would then be eligble to be run.   When an init script is run with a "stop" 
-argument, the boot facilities specified in the "Provides" header are 
-considered  no longer  present.  
-There are naming conventions for boot facilities and system
-facilities, as described in a following section.
-</PARA>
-
-<PARA>
-Similarly, the "Required-Stop:" header defines which facilities shall
-still be available during the shutdown of that service.  Hence, the
-init script system should avoid stopping shell scripts which provide
-those facilities until this shell script is stopped.
-</PARA>
-
-<PARA>
-The "Should-Start:" header defines which facilities if present should
-be started before this service. This allows for weak dependencies which
-do not cause the service to fail if a facility is not available.
-But may cause reduced functionality of the service.
-Compliant applications should not rely on the existence of this feature.
-</PARA>
-
-<PARA>
-The "Should-Stop:" header defines which facilities should be still
-available during the shutdown of that service.
-</PARA>
-
-<PARA>
-The "Default-Start" and "Default-Stop" headers define which run levels
-should by default run the script with a start or stop argument,
-respectively, to start or stop the services controlled by the init script.
-<note>
-<para>
-For example, if you want a service to run in runlevels 3, 4, and 5 (only),
-specify "Default-Start: 3 4 5" and "Default-Stop: 0 1 2 6".
-</para>
-</note>
-</PARA>
-
-<PARA>
-The "Short-Description" and "Description" header fields are used to
-provide text which describes the actions of the init script.  The
-"short_description" shall be a relatively short, pithy description of the
-init script, where as the "multiline_description" can be a much longer
-piece of text that may span mulitple lines.  In a multiline description,
-each continuation line shall begin with a '#' followed by tab character
-or a '#' followed by at least two space characters.  The multiline
-description is terminated by the first line that does not match this
-criteria.
-</PARA>
-
-<PARA>
-The comment conventions described in this session are only required for
-use by LSB-compliant applications; system init scripts as provided by
-LSB-compliant run-time environments are <emphasis>not</emphasis> 
-required to use the scheme outlined here.
-</PARA>
 
 </SECT1>
-

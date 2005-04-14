@@ -1,81 +1,104 @@
-<SECT1 ID=initsrcinstrm>
-
-<TITLE>Installation and Removal of init.d Files</TITLE>
-
-<PARA>
-An init.d file is installed in 
-<filename>/etc/init.d</filename> (which may
-be a symlink to another location).  This can be done by the package
-installer.  See <xref linkend="scrptnames">.
-During the package's postinstall script, the program
-<command>/usr/lib/lsb/install_initd</command>
-configures the distribution's boot
-script system to call the package's init.d file at the appropriate
-time.
-<note>
-<para>For example, <command>install_initd</command> might create
-symbolic links in 
-<filename>/etc/rc2.d</filename> and other such directories which point to
-the files in <filename>/etc/init.d</filename>
-(or it might update a database, or some other
-mechanism).  The init.d files themselves should already be in
-<filename>/etc/init.d</filename>
-before running <command>install_initd</command>.</para>
-</note>
-</PARA>
+<SECT1 ID=initsrcinstrm XRefLabel="Installation and Removal of Init Scripts">
+<TITLE>Installation and Removal of Init Scripts</TITLE>
 
 <PARA>
-The install_initd program takes a single argument, the pathname to the
-<filename>/etc/init.d</filename> file.  For example:
-</PARA>
+Conforming applications may install one or more init scripts.
+An init script shall be installed in <filename>/etc/init.d</filename>
+(which may be a symbolic link to another location).
+This should be done by the package installer.
+<!--  XXX More details, maybe xref to packaging book? -->
+</para>
+<para>
+During the installer's post-install processing phase the program
+<command>/usr/lib/lsb/install_initd</command> must be called to
+activate the init script. Activation consists of arranging for
+the init script to be called in the correct order on system
+run-level changes (including boot and shutdown), based on
+dependencies supplied in the init script (see <XRef linkend="initscrcomconv">).
+<command>install_initd</command> should be thought of as
+a wrapper which hides the implementation details;
+how any given implementation arranges for the init
+script to be called at the appropriate time is not specified.
+</para>
+<informalexample>
+<blockquote>
+<para>
+Example: if an init script specified 
+"Default-Start: 3 4 5" and "Default-Stop: 0 1 2 6",
+<command>install_initd</command> might create
+"start" symbolic links with names starting with 'S' in 
+<filename>/etc/rc3.d</filename>,
+<filename>/etc/rc4.d</filename> and
+<filename>/etc/rc5.d</filename>
+and "stop" symbolic links with names starting with 'K' in
+<filename>/etc/rc0.d</filename>,
+<filename>/etc/rc1.d</filename>,
+<filename>/etc/rc2.d</filename> and
+<filename>/etc/rc6.d</filename>. Such
+a scheme would be similar to the System V Init
+mechanism, but is by no means the only way
+this specification could be implemented.
+</para>
+</blockquote>
+</informalexample>
 
-<SCREEN>
+<PARA>
+<command>install_initd</command> takes a single argument, the full pathname
+of the installed init script. The init script must already be
+installed in <filename>/etc/init.d</filename>, 
+<command>install_initd</command> will not copy it there.
+Example:
+<informalexample>
+<screen>
 	/usr/lib/lsb/install_initd /etc/init.d/example.com-coffeed
-</SCREEN>
+</screen>
+</informalexample>
+</para>
 
 <PARA>
-The <command>install_initd</command>
-program shall return an exit status of zero if the
-init.d file has been successfully installed or if the the init.d file
-was already installed. If the required boot facilities cannot be fulfilled
-an exit status of one shall be returned and the init.d file shall not be
-installed.
+<command>install_initd</command>
+shall return an exit status of zero if the
+init-script activation was successful or if the init script was
+already activated. If the dependencies in the init script 
+(see <XRef linkend="initscrcomconv">)  cannot be met, 
+an exit status of one shall be returned and the init script shall not be
+activated.
 </PARA>
 
 <PARA> 
-When a software package is removed, the package's preuninstall script
-shall call <command>/usr/lib/lsb/remove_initd</command>
-and pass the pathname to the
-<filename>/etc/init.d</filename> file.  
-The package manager is still responsible for removing 
-the <filename>/etc/init.d</filename> file; the 
-<command>remove_initd</command> program is provided in case the
-distribution needs to clean up any other modifications in the distribution's
-boot script system that might have been made by the 
-<command>install_initd</command> program.
-For example:
+When a software package is removed, <command>/usr/lib/lsb/remove_initd</command>
+must be called to deactivate the init script. This must occur
+before the init script itself is removed, as the dependency
+information in the script may be required for successful completion.
+Thus the installer's pre-remove processing phase must call
+<command>remove_initd</command>, and pass the full pathname of
+the installed init script.
+The package installer is still responsible for removing 
+the init script.
+Example:
+<informalexample>
+<screen>
+	/usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
+</screen>
+</informalexample>
 </PARA>
 
-<SCREEN>
-	/usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
-</SCREEN>
-
 <PARA>
-The remove_initd program shall return an exit status of zero if the
-init.d file has been successfully removed or if the the init.d file
-is not installed. If another init.d file which depends on a boot facility
-provided by this init.d file is installed, an exit status of one shall be
-returned and the init.d file shall remained installed.
+The <command>remove_initd</command> program shall return an exit status
+of zero if the init script has been successfully deactivated or if the
+init script is not activated. If another init script which depends
+on a boot facility provided by this init script is activated,
+an exit status of one shall be returned and the init script shall
+remain activated. The installer must fail on such an exit code
+so it does not subsequently remove the init script.
 </PARA>
 
 <NOTE>
 <PARA>
-There should be a tool available to the user (e.g., RedHat's 
-<command>chkconfig</command>)
-which can be used by the system administrator to easily manipulate at
-which init levels a particular init.d script is started or stopped.
-This specification currently does not specify such an interface,
-however.
+This specification does not describe a mechanism for the system
+administrator to manipulate the run levels at which an init script
+is started or stopped. There is no assurance that modifying the
+comment block for this purpose will have the desired effect.
 </PARA>
 </NOTE>
 
