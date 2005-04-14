@@ -4,8 +4,9 @@
 <CHAPTER ID=sysinit>
 <TITLE>System Initialization</TITLE>
 
-<SECT1 ID=cronjobs>
+<SECT1 ID=cronjobs XRefLabel="Cron Jobs">
 <TITLE ID=cronjobs.title>Cron Jobs</TITLE>
+
 <PARA>
 In addition to the individual user <filename>crontab</filename> files specified
 by <xref linkend=std.susv3> stored under <filename>/var/spool/cron</filename>,
@@ -21,39 +22,49 @@ the configuration file <FILENAME>/etc/crontab</FILENAME>.
 </PARA>
 <PARA>
 If a package wishes to install a job that has to be executed periodically,
-it shall place an executable file in one of the
+it shall place an executable <FirstTerm>cron script</FirstTerm> in one of the
 following directories:
 </PARA>
 <SIMPLELIST>
+<MEMBER><FILENAME>/etc/cron.hourly</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.daily</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.weekly</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.monthly</FILENAME></MEMBER>
 </SIMPLELIST>
 <PARA>
 As these directory names suggest, the files within them are executed on a
-daily, weekly, or monthly basis, respectively, under the control of an
+hourly, daily, weekly, or monthly basis, respectively, under the control of an
 entry in one of the system <filename>crontab</filename> files, at an
 unspecified time of day.
-See below for the rules concerning the names of files in these directories.
+See below for the rules concerning the names of cron scripts.
 </PARA>
 
 <NOTE>
 <PARA>
-It is recommended that files installed in any of these directories be
-scripts (e.g. shell scripts, Perl scripts, etc.) so that they may be
-modified by the local system administrator. 
+It is recommended that cron scripts installed in any of these directories be
+script files rather than compiled binaries so that they may be
+modified by the local system administrator. Conforming applications
+may only install cron scripts which use an interpreter required by
+this specification or provided by this or another conforming application.
 </PARA>
 <PARA>
-The scripts in these directories should check if all necessary
-programs are installed before they try to execute them. Otherwise,
-problems will arise if a package is removed (but not purged), since
-the configuration files are kept on the system in this situation.
+This specification does not define the concept of a package
+<FirstTerm>upgrade</FirstTerm>. Implementations may do different
+things when packages are upgraded, including not replacing a
+cron script if it marked as a configuration file,
+particularly if the cron script appears to have been modified since
+installation.  In some circumstances, the cron script may
+not be removed when the package is uninstalled. 
+Applications should design their installation
+procedure and cron scripts to be robust in the face of such
+behavior.  In particular, cron scripts should not fail obscurely
+if run in unexpected circumstances. Testing for the existence
+of application binaries before executing them is suggested.
 </PARA>
 </NOTE>
 <PARA>
-If a certain task has to be executed at a different frequency (e.g. more
-frequently than daily), the
-package shall install a file
+If a certain task has to be executed at other than the predefined
+frequencies, the package shall install a file
 <FILENAME>/etc/cron.d/<replaceable>cron-name</replaceable></FILENAME>.
 The file shall have  the same format as that described for the 
 <command>crontab</command> command in <xref linkend="std.susv3">, except that 
@@ -75,9 +86,10 @@ command being run at the specified time, as the specified username.
 </PARA>
 
 <PARA>
-To avoid namespace conflicts in the <filename>/etc/cron.*</filename> directories, the filenames
-used by LSB-compliant packages in 
+To avoid namespace conflicts in the <filename>/etc/cron.*</filename>
+directories, filenames installed by conforming packages in
 <SIMPLELIST type=inline>
+<MEMBER><FILENAME>/etc/cron.hourly</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.daily</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.weekly</FILENAME></MEMBER>
 <MEMBER><FILENAME>/etc/cron.monthly</FILENAME></MEMBER>
@@ -103,7 +115,7 @@ These filenames may be assigned using one of the following methods:
 <NOTE>
 	<PARA>
 		Commonly used names should be reserved in advance; 
-		developers for projects should be encouraged reserve names
+		developers for projects are encouraged to reserve names
 		from LANANA, so that each distribution can use the same
 		name, and to avoid conflicts with other projects.
 </PARA></NOTE></LISTITEM>
@@ -136,134 +148,162 @@ These filenames may be assigned using one of the following methods:
 </SECT1>
 
 
-<SECT1 ID=iniscrptact>
+<SECT1 ID="iniscrptact" XRefLabel="Init Script Actions">
 <TITLE>Init Script Actions</TITLE>
+
 <PARA>
-Init files provided by LSB applications shall accept one argument,
-saying what to do:
+Conforming applications which need to execute commands on changes
+to the system run level (including boot and shutdown),
+may install one or more <FirstTerm>init scripts</FirstTerm>.
+Init scripts provided by conforming applications shall accept a single
+argument which selects the action:
 </PARA>
 <SIMPLELIST type=horiz columns=2>
-<MEMBER>start</MEMBER><MEMBER>start the service</MEMBER>
-<MEMBER>stop</MEMBER><MEMBER>stop the service</MEMBER>
-<MEMBER>restart</MEMBER><MEMBER>stop and restart the service if the service
+<MEMBER><command>start</command></MEMBER>
+<MEMBER>start the service</MEMBER>
+
+<MEMBER><command>stop</command></MEMBER>
+<MEMBER>stop the service</MEMBER>
+
+<MEMBER><command>restart</command></MEMBER>
+<MEMBER>stop and restart the service if the service
 is already running, otherwise start the service</MEMBER>
-<MEMBER>try-restart</MEMBER><MEMBER>restart the service if the service
+
+<MEMBER><command>try-restart</command></MEMBER>
+<MEMBER>restart the service if the service
 is already running</MEMBER>
-<MEMBER>reload</MEMBER><MEMBER>cause the configuration of the service to be
+
+<MEMBER><command>reload</command></MEMBER>
+<MEMBER>cause the configuration of the service to be
 reloaded without actually stopping and restarting the service</MEMBER>
-<MEMBER>force-reload</MEMBER><MEMBER>cause the configuration to be reloaded
+
+<MEMBER><command>force-reload</command></MEMBER>
+<MEMBER>cause the configuration to be reloaded
 if the service supports this, otherwise restart the service if it is
 running</MEMBER>
-<MEMBER>status</MEMBER><MEMBER>print the current status of the service</MEMBER>
+
+<MEMBER><command>status</command></MEMBER>
+<MEMBER>print the current status of the service</MEMBER>
 </SIMPLELIST>
 <PARA>
-The start, stop, restart, force-reload, and status commands shall be supported
-by all init files; the reload and the try-restart options are optional. Other
-init script actions may be defined by the init script.
+The <command>start</command>, <command>stop</command>, <command>restart</command>, <command>force-reload</command>, and <command>status</command> actions shall be supported
+by all init scripts; the <command>reload</command> and the <command>try-restart</command> actions are optional. Other
+init-script actions may be defined by the init script.
 </PARA>
 <PARA>
-Init files shall ensure that they will behave sensibly if invoked
-with start when the service is already running, or with stop when it
-isn't, and that they don't kill unfortunately-named user processes. 
+Init scripts shall ensure that they will behave sensibly if invoked
+with <command>start</command> when the service is already running, or with <command>stop</command> when
+not running, and that they do not kill similarly-named user processes. 
 The best way to achieve this is to use the init-script functions provided by
-<FILENAME>/lib/lsb/init-functions</FILENAME>.
+<FILENAME>/lib/lsb/init-functions</FILENAME> (see 
+<xref linkend="iniscrptfunc">)
 </PARA>
 <PARA>
 If a service reloads its configuration automatically (as in the case
-of cron, for example), the reload option of the init file shall
-behave as if the configuration has been reloaded successfully. The restart,
-try-restart, reload and force-reload action may be atomic; i.e. if a service
-is known not be operational after a restart or reload, the script may return
+of cron, for example), the <command>reload</command> action of the init
+script shall behave as if the configuration was reloaded successfully.
+The <command>restart</command>,
+<command>try-restart</command>, <command>reload</command> and 
+<command>force-reload</command> actions may be atomic; that is if a service
+is known not to be operational after a restart or reload, the script may return
 an error without any further action.
 </PARA>
+<note>
 <PARA>
-These executable files shall not fail obscurely when the configuration
-files remain but the package has been removed, as the default in [the
-packaging system] is to leave configuration files on the system after
-the package has been removed.  Only when it is executed with the
-[purge] option will [the packaging system] remove configuration files.
-Therefore, you should include a test statement at the top of the file,
-like this:
-<SCREEN>
-<USERINPUT>test -f program-executed-later-in-file || exit 5</USERINPUT>
-</SCREEN>
-or take the equivalent action if the init file is not a shell script.
+This specification does not define the concept of a package
+<FirstTerm>upgrade</FirstTerm>. Implementations may do different
+things when packages are upgraded, including not replacing an
+init script if it is marked as a configuration file,
+particularly if the file appears to have been modified since
+installation.  In some circumstances, the init script may
+not be removed when the package is uninstalled. 
+Applications should design their installation
+procedure and init scripts to be robust in the face of such
+behavior.  In particular, init scripts should not fail obscurely
+if run in unexpected circumstances. Testing for the existence
+of application binaries before executing them is suggested.
 </PARA>
+</note>
 <PARA>
-If the status command is given, the init script will return the following 
+If the <command>status</command> action is requested,
+the init script will return the following 
 exit status codes.  
 
 <SIMPLELIST type=horiz columns=2>
-<MEMBER>0</MEMBER><MEMBER>program is running or service is OK</MEMBER>
-<MEMBER>1</MEMBER><MEMBER>program is dead and /var/run pid file exists</MEMBER>
-<MEMBER>2</MEMBER><MEMBER>program is dead and /var/lock lock file exists</MEMBER>
-<MEMBER>3</MEMBER><MEMBER>program is not running</MEMBER>
-<MEMBER>4</MEMBER><MEMBER>program or service status is unknown</MEMBER>
-<MEMBER>5-99</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
-<MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
-<MEMBER>150-199</MEMBER><MEMBER>reserved for application use</MEMBER>
-<MEMBER>200-254</MEMBER><MEMBER>reserved</MEMBER>
+<MEMBER><errorcode>0</errorcode></MEMBER><MEMBER>program is running or service is OK</MEMBER>
+<MEMBER><errorcode>1</errorcode></MEMBER><MEMBER>program is dead and /var/run pid file exists</MEMBER>
+<MEMBER><errorcode>2</errorcode></MEMBER><MEMBER>program is dead and /var/lock lock file exists</MEMBER>
+<MEMBER><errorcode>3</errorcode></MEMBER><MEMBER>program is not running</MEMBER>
+<MEMBER><errorcode>4</errorcode></MEMBER><MEMBER>program or service status is unknown</MEMBER>
+<MEMBER><errorcode>5-99</errorcode></MEMBER><MEMBER>reserved for future LSB use</MEMBER>
+<MEMBER><errorcode>100-149</errorcode></MEMBER><MEMBER>reserved for distribution use</MEMBER>
+<MEMBER><errorcode>150-199</errorcode></MEMBER><MEMBER>reserved for application use</MEMBER>
+<MEMBER><errorcode>200-254</errorcode></MEMBER><MEMBER>reserved</MEMBER>
 </SIMPLELIST>
 </PARA>
 
 <PARA>
-In the case of init script commands other than "status" (i.e.,
-"start", "stop", "restart", "try-restart", "reload", and "force-reload"), the init
-script shall return an exit status of zero if the action described by
-the argument has been successful.  Otherwise, the exit status shall
+For all other init-script actions, the init
+script shall return an exit status of zero if the action 
+was successful.  Otherwise, the exit status shall
 be non-zero, as defined below.  In addition to straightforward
 success, the following situations are also to be considered
 successful:
 
 <ITEMIZEDLIST MARK="bullet">
 <LISTITEM><PARA>
-restarting a service (instead of reloading it) with the "force-reload" argument
+restarting a service (instead of reloading it) with the <command>force-reload</command> argument
 </PARA></LISTITEM>
 <LISTITEM><PARA>
-running "start" on a service already running
+running <command>start</command> on a service already running
 </PARA></LISTITEM>
 <LISTITEM><PARA>
-running "stop" on a service already stopped or not running
+running <command>stop</command> on a service already stopped or not running
 </PARA></LISTITEM>
 <LISTITEM><PARA>
-running "restart" on a service already stopped or not running
+running <command>restart</command> on a service already stopped or not running
 </PARA></LISTITEM>
 <LISTITEM><PARA>
-running "try-restart" on a service already stopped or not running
+running <command>try-restart</command> on a service already stopped or not running
 </PARA></LISTITEM>
 </ITEMIZEDLIST>
 
 </PARA>
 <PARA>
-In case of an error, while processing any init script action except
-for "status", the init script shall print an error message and return
-one of the following non-zero exit status codes.
+In case of an error while processing any init-script action except
+for <command>status</command>, the init script shall print an error
+message and exit with a non-zero status code:
 
 <SIMPLELIST type=horiz columns=2>
-<MEMBER>1</MEMBER><MEMBER>generic or unspecified error (current practice)</MEMBER>
-<MEMBER>2</MEMBER><MEMBER>invalid or excess argument(s)</MEMBER>
-<MEMBER>3</MEMBER><MEMBER>unimplemented feature (for example, "reload")</MEMBER>
-<MEMBER>4</MEMBER><MEMBER>user had insufficient privilege</MEMBER>
-<MEMBER>5</MEMBER><MEMBER>program is not installed</MEMBER>
-<MEMBER>6</MEMBER><MEMBER>program is not configured</MEMBER>
-<MEMBER>7</MEMBER><MEMBER>program is not running</MEMBER>
-<MEMBER>8-99</MEMBER><MEMBER>reserved for future LSB use</MEMBER>
-<MEMBER>100-149</MEMBER><MEMBER>reserved for distribution use</MEMBER>
-<MEMBER>150-199</MEMBER><MEMBER>reserved for application use</MEMBER>
-<MEMBER>200-254</MEMBER><MEMBER>reserved</MEMBER>
+<MEMBER><errorcode>1</errorcode></MEMBER><MEMBER>generic or unspecified error (current practice)</MEMBER>
+<MEMBER><errorcode>2</errorcode></MEMBER><MEMBER>invalid or excess argument(s)</MEMBER>
+<MEMBER><errorcode>3</errorcode></MEMBER><MEMBER>unimplemented feature (for example, "reload")</MEMBER>
+<MEMBER><errorcode>4</errorcode></MEMBER><MEMBER>user had insufficient privilege</MEMBER>
+<MEMBER><errorcode>5</errorcode></MEMBER><MEMBER>program is not installed</MEMBER>
+<MEMBER><errorcode>6</errorcode></MEMBER><MEMBER>program is not configured</MEMBER>
+<MEMBER><errorcode>7</errorcode></MEMBER><MEMBER>program is not running</MEMBER>
+<MEMBER><errorcode>8-99</errorcode></MEMBER><MEMBER>reserved for future LSB use</MEMBER>
+<MEMBER><errorcode>100-149</errorcode></MEMBER><MEMBER>reserved for distribution use</MEMBER>
+<MEMBER><errorcode>150-199</errorcode></MEMBER><MEMBER>reserved for application use</MEMBER>
+<MEMBER><errorcode>200-254</errorcode></MEMBER><MEMBER>reserved</MEMBER>
 </SIMPLELIST>
 </PARA>
 <PARA>
 Error and status messages should be printed with the logging
-functions such as log_failure_msg and so on.  Scripts may write to
+functions (see <xref linkend="iniscrptfunc">) 
+<function>log_success_msg</function>,
+<function>log_failure_msg</function> and 
+<function>log_warning_msg</function>.
+Scripts may write to
 standard error or standard output, but implementations need not
 present text written to standard error/output to the user or do
 anything else with it.
 </PARA>
 <PARA>
-Since init files may be run manually by a system administrator with
-non-standard environment variable values for PATH, USER, LOGNAME,
-etc. init files shall not depend on the values of these environment
+Since init scripts may be run manually by a system administrator with
+non-standard environment variable values for <EnVar>PATH</EnVar>, 
+<EnVar>USER</EnVar>, <EnVar>LOGNAME</EnVar>, etc., 
+init scripts shall not depend on the values of these environment
 variables.  They should set them to some known/default values if they
 are needed.
 
@@ -271,207 +311,365 @@ are needed.
 </SECT1>
 
 
-<SECT1 ID=initscrcomconv>
+<SECT1 ID=initscrcomconv XRefLabel="Comment Conventions for Init Scripts">
 <TITLE>Comment Conventions for Init Scripts</TITLE>
-<TITLEABBREV ID="initscriptsShort">Comment Conventions for Init Scripts</TITLEABBREV>
 
 <PARA>
-LSB applications which need to execute script(s) at bootup and/or
-shutdown may provide one or more <filename>init.d</filename> files.  These files are
-installed by the install_initd program described below, which copies
-it into a standard directory and makes whatever other adjustments
-(creation of symlinks, creation of entries in a database, etc.) are
-necessary so that the script can be run at boot-time.
+Conforming applications may install one or more init scripts.
+These init scripts must be activated by invoking the
+<command>install_initd</command> command.
+Prior to package removal, the changes applied by
+<command>install_initd</command> must be undone by
+invoking <command>remove_initd</command>.
+See <xref linkend="initsrcinstrm"> for more details.
+</PARA>
+
+<PARA> 
+<command>install_initd</command> and <command>remove_initd</command>
+determine actions to take by decoding a specially formatted
+block of lines in the script. This block shall be delimited
+by the lines 
+<screen>
+### BEGIN INIT INFO
+### END INIT INFO
+</screen>
+The delimiter lines may contain trailing whitespace, which shall be
+ignored.  All lines inside the block shall begin with a hash
+character <literal>'#'</literal> in the first column, so the shell
+interprets them as comment lines which do not affect operation of
+the script. The lines shall be of the form:
+<SCREEN>
+<!-- tried to do this as a <cmdsynopsis> but the ':' defeats me -->
+# {keyword}: arg1 [arg2...]
+</SCREEN>
+with exactly one space character between the <literal>'#'</literal>
+and the keyword, with a single exception.  In lines following a
+line containing the <command>Description</command> keyword, and until the
+next keyword or block ending delimiter is seen,
+a line where the <literal>'#'</literal>
+is followed by more than one space or a tab character
+shall be treated as a continuation of the previous line.
+</para>
+<para>
+The information extracted from the block is used by the
+installation tool or the init-script system to assure
+that init scripts are run in the correct order.   
+It is unspecified whether the information is evaluated
+only when <command>install_initd</command> runs, when
+the init scripts are executed, or both. The information
+extracted includes run levels, defined in <xref linkend="runlevels">,
+and boot facilities, defined in <xref linkend="facilname">.
+</para>
+
+<para>
+The following keywords, with their arguments, are defined:
+</PARA>
+
+<variablelist>
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Provides:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+boot facilities provided by this init script.
+When an init script is run with a <command>start</command> argument,
+the boot facility or facilities specified by the 
+<command>Provides</command> keyword shall be deemed present
+and hence init scripts which require those boot facilities
+should be started later.  When an init script is run with a 
+<command>stop</command> argument, the boot facilities specified by
+the <command>Provides</command> keyword are deemed  no longer present.  
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Required-Start:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+facilities which must be available during startup of this service.
+The init-script system should insure init scripts which
+provide the <command>Required-Start</command> facilities
+are started before starting this script.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Required-Stop:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+facilities which must
+be available during the shutdown of this service.  The
+init-script system should avoid stopping init scripts which provide
+the <command>Required-Stop</command>
+facilities until this script is stopped.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Should-Start:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+facilities which, if present, should
+be available during startup of this service. This allows for weak dependencies
+which do not cause the service to fail if a facility is not available.
+The service may provide reduced functionality in this situation.
+Conforming applications should not rely on the existence of this feature.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Should-Stop:</command>
+<arg choice=plain>boot_facility_1</arg>
+<arg choice=opt rep=repeat>boot_facility_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+facilities which should be available during shutdown of this service.
+<!-- XXX seems like more should be said here -->
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Default-Start:</command>
+<arg choice=plain>run_level_1</arg>
+<arg choice=opt rep=repeat>run_level_2</arg>
+</cmdsynopsis>
+</term>
+<term>
+<cmdsynopsis>
+<command>Default-Stop:</command>
+<arg choice=plain>run_level_1</arg>
+<arg choice=opt rep=repeat>run_level_2</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+which run levels should by default run the init script with a 
+<command>start</command> (<command>stop</command>) argument
+to start (stop) the services controlled by the init script.
+<informalexample>
+<para>
+For example, if a service should run in runlevels 3, 4, and 5 only,
+specify "Default-Start: 3 4 5" and "Default-Stop: 0 1 2 6".
+</para>
+</informalexample>
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Short-Description:</command>
+<arg choice=plain>short_description</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+provide a brief description of the actions of the init script.
+Limited to a single line of text.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<cmdsynopsis>
+<command>Description:</command>
+<arg choice=plain>multiline_description</arg>
+</cmdsynopsis>
+</term>
+<listitem>
+<para>
+provide a more complete description of the actions of the init script.
+May span mulitple lines.  In a multiline description,
+each continuation line shall begin with a '#' followed by tab character
+or a '#' followed by at least two space characters.  The multiline
+description is terminated by the first line that does not match this
+criteria.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<PARA>
+Additional keywords may be defined in future versions of
+this specification. Also, implementations 
+may define local extensions by using the prefix
+<command>X-<replaceable>implementor</replaceable></command>.
+For example, <command>X-RedHat-foobardecl</command>, or 
+<command>X-Debian-xyzzydecl</command>.  
+</PARA>
+
+<para>
+Example:
+<informalexample>
+<screen>
+	### BEGIN INIT INFO
+	# Provides: lsb-ourdb
+	# Required-Start: $local_fs $network $remote_fs
+	# Required-Stop: $local_fs $network $remote_fs
+	# Default-Start:  2 3 4 5
+	# Default-Stop: 0 1 6
+	# Short-Description: start and stop OurDB
+	# Description: OurDB is a very fast and reliable database
+	#	 engine used for illustrating init scripts
+	### END INIT INFO
+</screen>
+</informalexample>
+</para>
+
+<PARA>
+The comment conventions described in this section are only required for
+init scripts installed by conforming applications. Conforming
+runtime implementations are not required to use this scheme in their system
+provided init scripts.
+</PARA>
+
 <NOTE><PARA>
 This specification does not require, but is designed to allow, the
 development of a system which runs boot scripts in parallel.  Hence,
 enforced-serialization of scripts is avoided unless it is explicitly
 necessary. 
 </PARA></NOTE>
-</PARA>
-
-<PARA> 
-In the <filename>init.d</filename> file, information about the shell script shall be
-delimited by the lines "### BEGIN INIT INFO" and "### END INIT INFO".
-These delimiter lines may containg trailing whitespace, which shall be
-ignored.  Inside this block there shall be lines of the form "#
-{keyword}: [arg1] [arg2] ...".  (All lines inside this block start
-with a hash ('#') character in the first column, so that shell treats
-them as comments.)
-There shall be exactly one space character between "#" and the
-keyword.<note><para>More than one space, or a tab character,
-indicates the continuation line.</para></note>
-The following keywords, with their arguments are
-defined in this specification:
-</PARA>
-
-<SCREEN>
-	# Provides: boot_facility_1 [ boot_facility_2 ...]
-	# Required-Start: boot_facility_1 [ boot_facility_2 ...]
-	# Required-Stop: boot_facility_1 [ boot_facility_2 ...]
-	# Should-Start: boot_facility_1 [ boot_facility_2 ...]
-	# Should-Stop: boot_facility_1 [ boot_facility_2 ...]
-	# Default-Start: run_level_1 [ run_level_2 ...]
-	# Default-Stop: run_level_1 [ run_level_2 ...]
-	# Short-Description: short_description
-	# Description: multiline_description
-</SCREEN>
-
-<PARA>
-Additional keywords may be defined in future LSB specifications.
-Distributions may define local extensions by using the prefix
-"X-[distribution name]" --- for example, "X-RedHat-foobardecl", or
-"X-Debian-xyzzydecl".  
-</PARA>
-
-<PARA>
-An <filename>init.d</filename> shell script may declare using the "Required-Start: " header
-that it shall not be run until certain boot facilities are provided.
-This information is used by the installation tool or the boot-time
-boot-script execution facility to assure that init scripts are run in
-the correct order.   When an init script is run with a "start" argument, the 
-boot facility or facilities specified in the "Provides" header shall be
-considered present, and hence init scripts which require those boot facilities
-would then be eligble to be run.   When an init script is run with a "stop" 
-argument, the boot facilities specified in the "Provides" header are 
-considered  no longer  present.  
-There are naming conventions for boot facilities and system
-facilities, as described in a following section.
-</PARA>
-
-<PARA>
-Similarly, the "Required-Stop:" header defines which facilities shall
-still be available during the shutdown of that service.  Hence, the
-init script system should avoid stopping shell scripts which provide
-those facilities until this shell script is stopped.
-</PARA>
-
-<PARA>
-The "Should-Start:" header defines which facilities if present should
-be started before this service. This allows for weak dependencies which
-do not cause the service to fail if a facility is not available.
-But may cause reduced functionality of the service.
-Compliant applications should not rely on the existence of this feature.
-</PARA>
-
-<PARA>
-The "Should-Stop:" header defines which facilities should be still
-available during the shutdown of that service.
-</PARA>
-
-<PARA>
-The "Default-Start" and "Default-Stop" headers define which run levels
-should by default run the script with a start or stop argument,
-respectively, to start or stop the services controlled by the init script.
-<note>
-<para>
-For example, if you want a service to run in runlevels 3, 4, and 5 (only),
-specify "Default-Start: 3 4 5" and "Default-Stop: 0 1 2 6".
-</para>
-</note>
-</PARA>
-
-<PARA>
-The "Short-Description" and "Description" header fields are used to
-provide text which describes the actions of the init script.  The
-"short_description" shall be a relatively short, pithy description of the
-init script, where as the "multiline_description" can be a much longer
-piece of text that may span mulitple lines.  In a multiline description,
-each continuation line shall begin with a '#' followed by tab character
-or a '#' followed by at least two space characters.  The multiline
-description is terminated by the first line that does not match this
-criteria.
-</PARA>
-
-<PARA>
-The comment conventions described in this session are only required for
-use by LSB-compliant applications; system init scripts as provided by
-LSB-compliant run-time environments are <emphasis>not</emphasis> 
-required to use the scheme outlined here.
-</PARA>
 
 </SECT1>
 
 
-
-<SECT1 ID=initsrcinstrm>
-
-<TITLE>Installation and Removal of init.d Files</TITLE>
+<SECT1 ID=initsrcinstrm XRefLabel="Installation and Removal of Init Scripts">
+<TITLE>Installation and Removal of Init Scripts</TITLE>
 
 <PARA>
-An init.d file is installed in 
-<filename>/etc/init.d</filename> (which may
-be a symlink to another location).  This can be done by the package
-installer.  See <xref linkend="scrptnames">.
-During the package's postinstall script, the program
-<command>/usr/lib/lsb/install_initd</command>
-configures the distribution's boot
-script system to call the package's init.d file at the appropriate
-time.
-<note>
-<para>For example, <command>install_initd</command> might create
-symbolic links in 
-<filename>/etc/rc2.d</filename> and other such directories which point to
-the files in <filename>/etc/init.d</filename>
-(or it might update a database, or some other
-mechanism).  The init.d files themselves should already be in
-<filename>/etc/init.d</filename>
-before running <command>install_initd</command>.</para>
-</note>
-</PARA>
+Conforming applications may install one or more init scripts.
+An init script shall be installed in <filename>/etc/init.d</filename>
+(which may be a symbolic link to another location).
+This should be done by the package installer.
+<!--  XXX More details, maybe xref to packaging book? -->
+</para>
+<para>
+During the installer's post-install processing phase the program
+<command>/usr/lib/lsb/install_initd</command> must be called to
+activate the init script. Activation consists of arranging for
+the init script to be called in the correct order on system
+run-level changes (including boot and shutdown), based on
+dependencies supplied in the init script (see <XRef linkend="initscrcomconv">).
+<command>install_initd</command> should be thought of as
+a wrapper which hides the implementation details;
+how any given implementation arranges for the init
+script to be called at the appropriate time is not specified.
+</para>
+<informalexample>
+<blockquote>
+<para>
+Example: if an init script specified 
+"Default-Start: 3 4 5" and "Default-Stop: 0 1 2 6",
+<command>install_initd</command> might create
+"start" symbolic links with names starting with 'S' in 
+<filename>/etc/rc3.d</filename>,
+<filename>/etc/rc4.d</filename> and
+<filename>/etc/rc5.d</filename>
+and "stop" symbolic links with names starting with 'K' in
+<filename>/etc/rc0.d</filename>,
+<filename>/etc/rc1.d</filename>,
+<filename>/etc/rc2.d</filename> and
+<filename>/etc/rc6.d</filename>. Such
+a scheme would be similar to the System V Init
+mechanism, but is by no means the only way
+this specification could be implemented.
+</para>
+</blockquote>
+</informalexample>
 
 <PARA>
-The install_initd program takes a single argument, the pathname to the
-<filename>/etc/init.d</filename> file.  For example:
-</PARA>
-
-<SCREEN>
+<command>install_initd</command> takes a single argument, the full pathname
+of the installed init script. The init script must already be
+installed in <filename>/etc/init.d</filename>, 
+<command>install_initd</command> will not copy it there.
+Example:
+<informalexample>
+<screen>
 	/usr/lib/lsb/install_initd /etc/init.d/example.com-coffeed
-</SCREEN>
+</screen>
+</informalexample>
+</para>
 
 <PARA>
-The <command>install_initd</command>
-program shall return an exit status of zero if the
-init.d file has been successfully installed or if the the init.d file
-was already installed. If the required boot facilities cannot be fulfilled
-an exit status of one shall be returned and the init.d file shall not be
-installed.
+<command>install_initd</command>
+shall return an exit status of zero if the
+init-script activation was successful or if the init script was
+already activated. If the dependencies in the init script 
+(see <XRef linkend="initscrcomconv">)  cannot be met, 
+an exit status of one shall be returned and the init script shall not be
+activated.
 </PARA>
 
 <PARA> 
-When a software package is removed, the package's preuninstall script
-shall call <command>/usr/lib/lsb/remove_initd</command>
-and pass the pathname to the
-<filename>/etc/init.d</filename> file.  
-The package manager is still responsible for removing 
-the <filename>/etc/init.d</filename> file; the 
-<command>remove_initd</command> program is provided in case the
-distribution needs to clean up any other modifications in the distribution's
-boot script system that might have been made by the 
-<command>install_initd</command> program.
-For example:
+When a software package is removed, <command>/usr/lib/lsb/remove_initd</command>
+must be called to deactivate the init script. This must occur
+before the init script itself is removed, as the dependency
+information in the script may be required for successful completion.
+Thus the installer's pre-remove processing phase must call
+<command>remove_initd</command>, and pass the full pathname of
+the installed init script.
+The package installer is still responsible for removing 
+the init script.
+Example:
+<informalexample>
+<screen>
+	/usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
+</screen>
+</informalexample>
 </PARA>
 
-<SCREEN>
-	/usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
-</SCREEN>
-
 <PARA>
-The remove_initd program shall return an exit status of zero if the
-init.d file has been successfully removed or if the the init.d file
-is not installed. If another init.d file which depends on a boot facility
-provided by this init.d file is installed, an exit status of one shall be
-returned and the init.d file shall remained installed.
+The <command>remove_initd</command> program shall return an exit status
+of zero if the init script has been successfully deactivated or if the
+init script is not activated. If another init script which depends
+on a boot facility provided by this init script is activated,
+an exit status of one shall be returned and the init script shall
+remain activated. The installer must fail on such an exit code
+so it does not subsequently remove the init script.
 </PARA>
 
 <NOTE>
 <PARA>
-There should be a tool available to the user (e.g., RedHat's 
-<command>chkconfig</command>)
-which can be used by the system administrator to easily manipulate at
-which init levels a particular init.d script is started or stopped.
-This specification currently does not specify such an interface,
-however.
+This specification does not describe a mechanism for the system
+administrator to manipulate the run levels at which an init script
+is started or stopped. There is no assurance that modifying the
+comment block for this purpose will have the desired effect.
 </PARA>
 </NOTE>
 
@@ -480,83 +678,91 @@ however.
 
 <SECT1 ID=runlevels xreflabel="Run Levels">
 <TITLE>Run Levels</TITLE>
+
 <PARA>
-
-The following run levels are specified for use by the "Default-Start:"
-and "Default-Stop:" specifiers as defined by the section <xref
-linkend="initscrcomconv" endterm="initscriptsShort">.  Many LSB
-run-time environments commonly use these run level definitions, and in
-the absence of other considerations, providers of run-time
-environments are strongly encouraged to follow this convention to
-provide consistency for system administrators who need to work with
-multiple distributions.  However, it is not required that
-LSB-compliant run-time environments use these run levels; the
-distribution-provided <command>install_initd</command>
-script may map the run levels
-specified below to whatever distribution-specified run levels are most
-appropriate.
-
+The following <FirstTerm>run levels</FirstTerm> are specified for use by the 
+<command>Default-Start</command> and <command>Default-Stop</command> 
+actions defined in <xref linkend="initscrcomconv"> as hints
+to the <command>install_initd</command> command.
+Conforming implementations are not required to provide these exact
+run levels or give them the meanings described here,
+and may map any level described here to a different level which
+provides the equivalent functionality. Applications may not depend
+on specific run-level numbers.
 </PARA>
+
 <SIMPLELIST type=horiz columns=2>
 <MEMBER>0</MEMBER><MEMBER>halt</MEMBER>
 <MEMBER>1</MEMBER><MEMBER>single user mode</MEMBER>
 <MEMBER>2</MEMBER><MEMBER>multiuser with no network services exported</MEMBER>
 <MEMBER>3</MEMBER><MEMBER>normal/full multiuser</MEMBER>
 <MEMBER>4</MEMBER><MEMBER>reserved for local use, default is normal/full multiuser</MEMBER>
-<MEMBER>5</MEMBER><MEMBER>multiuser with xdm or equivalent</MEMBER>
+<MEMBER>5</MEMBER><MEMBER>multiuser with a display manager or equivalent</MEMBER>
 <MEMBER>6</MEMBER><MEMBER>reboot</MEMBER>
 </SIMPLELIST>
+
+<note>
+<para>
+These run levels were chosen as reflecting the most frequent existing
+practice, and in the absence of other considerations, implementors are
+strongly encouraged to follow this convention to provide consistency
+for system administrators who need to work with multiple distributions.  
+</para>
+</note>
 </SECT1>
 
 
-<SECT1 ID=facilname>
-
+<SECT1 ID="facilname" XRefLabel="Facility Names">
 <TITLE>Facility Names</TITLE>
 
 <PARA>
-Boot facilities are used to indicate dependencies in init scripts, as
-defined in a previous section.  Facility names that begin with a
-dollar sign ('$') are system facility names, defined by the LSB, and
-SHALL be provided by distributions.
-<note><para>The dollar sign does not indicate variable expansion
-as in many Linux utilities.  Starting a facility name with a dollar
-sign is merely a way of dividing the namespace between the system and
-applications.
+Boot <FirstTerm>facilities</FirstTerm> are used to indicate dependencies
+in init scripts, as defined in <xref linkend="initscrcomconv">.
+Facility names that begin with a
+dollar sign ('$') are reserved system facility names which
+shall be provided by the runtime implementation.
+<note><para>Facility names are only recognized in the context of the
+init script comment block and are not available in the body of
+the init script. In particular, the use of the leading '$' character
+does not imply system facility names are subject to shell variable
+expansion, since they appear inside comments.
 </para></note>
-LSB applications shall not provide facilities that begin with a dollar
-sign.  This document defines the following facility names:
+Conforming applications shall not provide facilities that begin with a dollar
+sign.  This specification defines the following facility names:
 </PARA>
 
 <SIMPLELIST type=horiz columns=2>
-<MEMBER>$local_fs</MEMBER>	
+<MEMBER><command>$local_fs</command></MEMBER>	
 <MEMBER>all local filesystems are mounted</MEMBER>
 
-<MEMBER>$network</MEMBER>  	
-<MEMBER>low level networking (ethernet card; may
-imply PCMCIA running)</MEMBER>
+<MEMBER><command>$network</command></MEMBER>  	
+<MEMBER>basic networking support is available. Example:
+a server program could listen on a socket.</MEMBER>
 
-<MEMBER>$named</MEMBER>  	
-<MEMBER>daemons which may provide hostname resolution (if present) are
-running. For example, daemons to query DNS, NIS+, or
-LDAP.</MEMBER>
+<MEMBER><command>$named</command></MEMBER>  	
+<MEMBER>IP name-to-address translation, using the interfaces
+described in this specification, are available to the level
+the system normally provides them. Example: if a DNS
+query daemon normally provides this facility, then that
+daemon has been started. </MEMBER>
 
-<MEMBER>$portmap</MEMBER>
+<MEMBER><command>$portmap</command></MEMBER>
 <MEMBER>daemons providing SunRPC/ONCRPC portmapping 
 service as defined in RFC 1833
 (if present) are running
 </MEMBER>
 
-<MEMBER>$remote_fs</MEMBER>	
-<MEMBER>all remote filesystems are mounted. In some
-LSB run-time environments, filesystems such as <filename>/usr</filename>
+<MEMBER><command>$remote_fs</command></MEMBER>	
+<MEMBER>all remote filesystems are available. In some
+configurations, filesystems such as <filename>/usr</filename>
 may be remote.  Many
-applications that require $local_fs will probably require
+applications that require $local_fs will probably
 also require $remote_fs.</MEMBER>
 
-<MEMBER>$syslog</MEMBER>
+<MEMBER><command>$syslog</command></MEMBER>
 <MEMBER>system logger is operational</MEMBER>
 
-<MEMBER>$time</MEMBER>  	
+<MEMBER><command>$time</command></MEMBER>  	
 <MEMBER>the system time has been set,
 for example by using a network-based time program such as 
 <command>ntp</command> or 
@@ -567,11 +773,11 @@ via the hardware Real Time Clock.
 </SIMPLELIST>
 
 <PARA>
-Other (non-system) facilities may be defined by other LSB applications.
+Other (non-system) facilities may be defined by other conforming applications.
 These facilities shall be named using the same conventions defined for
-naming init.d script names.  Commonly, the facility provided by
-an LSB application init.d script will have the same name as the name 
-assigned  to the init.d script.
+naming init scripts (see <XRef linkend="scrptnames">).
+Commonly, the facility provided by a conforming init script will have
+the same name as the name assigned to the init script.
 </PARA>
 
 </SECT1>
@@ -659,12 +865,11 @@ such as package/prerequisites naming.
 </SECT1>
 
 
-<SECT1 ID=iniscrptfunc>
-
+<SECT1 ID=iniscrptfunc XRefLabel="Init Script Functions">
 <TITLE>Init Script Functions</TITLE>
 
 <PARA>
-Each LSB-compliant init.d script shall source the file
+Each conforming init script shall source the file
 <filename>/lib/lsb/init-functions</filename>. This file shall cause the
 following shell script commands to be defined in an unspecified manner.  
 <note>
@@ -676,8 +881,8 @@ defining shell aliases.
 </para>
 <para>
 Although the commands made available via this mechanism need not
-be LSB conforming applications in their own right, applications that
-use them should only depend on features described in the LSB.
+be conforming applications in their own right, applications that
+use them should only depend on features described in this specification.
 </para>
 </note>
 Conforming scripts
@@ -722,8 +927,8 @@ non-binary programs.
 Commonly used methods check either for the
 existence of the <filename>/proc/pid</filename> directory or use
 <filename>/proc/pid/exe</filename> and <filename>/proc/pid/cmdline</filename>.
-Relying only on <filename>/proc/pid/exe</filename> is discouraged since the
-LSB does not specify the existence of, or semantics
+Relying only on <filename>/proc/pid/exe</filename> is discouraged since this
+specification does not specify the existence of, or semantics
 for, <filename>/proc</filename>. Additionally, using
 <filename>/proc/pid/exe</filename>
 may result in a not-running status for daemons that are written in a script
@@ -741,7 +946,7 @@ shall be separated by a single space in the <filename>pidfile</filename>
 and in the output of <command>pidofproc</command>.
 </PARA>
 
-<VARIABLELIST>
+<variablelist>
 <varlistentry>
 <term>
 <cmdsynopsis>
@@ -756,7 +961,7 @@ start_daemon
 </cmdsynopsis></term>
 <listitem>
 <para>
-This runs the specified program as a daemon.
+runs the specified program as a daemon.
 The <command>start_daemon</command> function
 shall check if the program is already running
 using the algorithm given above. If so, it shall not
