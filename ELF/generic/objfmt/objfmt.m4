@@ -106,21 +106,13 @@ include(linuxsect.sgml)
 <TITLE>Symbol Mapping</TITLE>
 <SECT1><TITLE>Introduction</TITLE>
 <PARA>
-This chapter defines how names are mapped from the source symbol to
-the object symbol.
-</PARA>
-</SECT1>
-<SECT1 ID="symmapping">
-<TITLE>Symbol Mapping</TITLE>
-<PARA>
 Symbols in a source program are translated by the compilation system into
-symbols that exist in the object file. The rules for this translation are
-defined here.
+symbols that exist in the object file. 
 </PARA>
 <SECT2>
 <TITLE>C Language</TITLE>
 <PARA>
-External C symbols have the same names in C and object files' symbol tables.
+External C symbols shall be unchanged in an object file's symbol table.
 </PARA>
 </SECT2>
 </SECT1>
