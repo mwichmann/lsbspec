@@ -450,7 +450,7 @@ commands in ways which work with either the POSIX or GNU behaviors.</para>
 <LINK LINKEND="std-cmd-10"> [2]</LINK>
 </ENTRY>
 <ENTRY>sh
-<LINK LINKEND="std-cmd-67"> [1]</LINK>
+<LINK LINKEND="std-cmd-10"> [2]</LINK>
 </ENTRY>
 <ENTRY>xargs
 <LINK LINKEND="std-cmd-10"> [2]</LINK>
@@ -542,7 +542,7 @@ process, they have no effect when executed as a file.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Sat Apr 16 10:35:50 2005 -->
+<!--    at Thu Apr 21 18:56:46 2005 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -3380,7 +3380,8 @@ option shall support at least the following types:
 <TERM>font</TERM>
 <LISTITEM>
 <PARA>
-install a font file into the systemwide font repository.
+install a font file into the systemwide font repository,
+if the system supports one.
 There shall be one operand, that names a font file.
 </PARA>
 </LISTITEM>
@@ -3404,10 +3405,15 @@ is the first operand.
 <TERM>profile</TERM>
 <LISTITEM>
 <PARA>
-install a profile script into the system specific location.
+install a profile script into a system specific location.
 There shall be one operand, that names a profile shell script.
 The behavior is unspecified if this name does not have the suffix
 <literal>.sh</literal>.
+The <command>sh</command> utility
+shall read and execute commands from all such profile shell scripts 
+when invoked as an interactive login shell,
+or if the <parameter>-l</parameter> (the letter <emphasis>ell</emphasis>)
+is specified (see <xref linkend="cmd-sh-invoke">).
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3415,14 +3421,15 @@ The behavior is unspecified if this name does not have the suffix
 <TERM>service</TERM>
 <LISTITEM>
 <PARA>
-ensure a service name and number pair is know to the system service database.
+ensure a service name and number pair is known to the system service database.
 When installing, there must be at least two operands.
 The first operand shall have the format <literal>%d/%s</literal> with the port
 number and protocol values (e.g. <literal>22/tcp</literal>), and the second
 operand shall be the name of the service. Any subsequent operands 
 provide aliases for this service.
-If the <parameter>-r</parameter> or <parameter>--remove</parameter> option
-is specified, there shall be a single operand identifiying the 
+If any of the <parameter>-r</parameter>, <parameter>--remove</parameter>, 
+<parameter>-c</parameter> or <parameter>--check</parameter> options
+are specified, there shall be a single operand identifiying the 
 port and protocol values (with the same format as above).
 </PARA>
 </LISTITEM>
@@ -3439,8 +3446,84 @@ service &lt;service_name&gt;
 	&lt;attribute&gt; &lt;assign-op&gt; &lt;value ...&gt;
 }
 </programlisting>
-Add a list here of supported attributes. Explain that assign-opt
-must be at least =, but others may be supported.
+The system shall support the <literal>assign-op</literal> operator 
+<literal>'='</literal>. 
+The following values for <literal>attribute</literal> shall be supported:
+<variablelist>
+<varlistentry>
+<term><literal>socket_type</literal></term>
+<listitem><para>
+One of the following values:
+<variablelist>
+<varlistentry>
+<term><literal>stream</literal></term>
+<listitem><para>
+the service will use a stream type socket.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>dgram</literal></term>
+<listitem><para>
+the service will use a datagram type socket.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>seqpacket</literal></term>
+<listitem><para>
+the service will use a sequenced packet type socket.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>protocol</literal></term>
+<listitem><para>
+The name of a protocol. The name shall be one of those
+listed in <filename>/etc/protocols</filename>.
+If this attribute is not specified, the system shall
+use an implementation defined default protocol.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>wait</literal></term>
+<listitem><para>
+If the value of this attribute is <literal>yes</literal>,
+once the service is started, no further requests for that
+service will be handled until the service exits. If the
+value is <literal>no</literal>, the network super daemon
+shall continue to handle further requests for the given
+service while that service is running.
+<NOTE><PARA>
+If the service has the <literal>socket_type</literal> attribute set
+to <literal>dgram</literal>, the <literal>wait</literal> attribute 
+should be set to <literal>yes</literal>, since such services
+do not have any distinction between the socket used for
+listening and that used for accepting.
+</PARA></NOTE>
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>user</literal></term>
+<listitem><para>
+The name of a user from the user login database. The service
+started to handle this request shall run with the privileges of 
+the specified user. 
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>server</literal></term>
+<listitem><para>
+The name of a program to run to handle the request.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>server_args</literal></term>
+<listitem><para>
+The arguments to pass to the program.
+</para></listitem>
+</varlistentry>
+</variablelist>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3469,7 +3552,8 @@ There shall be one operand, that names a package file.
 <TERM>menu</TERM>
 <LISTITEM>
 <PARA>
-install a desktop menu entry into the system menu database.
+install a desktop menu entry into the system menu database,
+if the system supports one.
 There shall be one operand, that names a menu file.
 </PARA>
 </LISTITEM>
@@ -5940,6 +6024,47 @@ implementation.
 </REFSECT1>
 
 </REFENTRY> <!-- end of sendmail manpage -->
+
+<REFENTRY id="sh">
+<REFMETA><REFENTRYTITLE>
+sh
+</REFENTRYTITLE></REFMETA>
+<REFNAMEDIV>
+<REFNAME>sh</REFNAME>
+<REFPURPOSE>
+shell, the standard command language interpreter
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The <COMMAND>sh</COMMAND> utility shall behave as specified in 
+<XREF LINKEND=STD.SUSv3>, but with
+extensions listed below.
+</PARA>
+</REFSECT1>
+
+<REFSECT1 id="cmd-sh-invoke" xreflabel="Shell Invokation">
+<TITLE>Shell Invocation</TITLE>
+<PARA>
+The shell shall support an additional option, <parameter>-l</parameter> 
+(the letter <emphasis>ell</emphasis>).
+If the <parameter>-l</parameter> option is specified, or if the first character
+of argument zero (the command name) is a <literal>'-'</literal>, this invokation
+of the shell is a <emphasis>login shell</emphasis>.
+</PARA>
+<PARA>
+An interactive shell, as specified in <xref linkend="std.susv3">,
+that is also a login shell, or any shell if invoked with the <parameter>-l</parameter>
+option, shall, prior to reading from the standard input,
+first read and execute commands from the file
+<filename>/etc/profile</filename>,
+if that file exists, and then from a file called <filename>~/.profile</filename>,
+if such a file exists.
+</PARA>
+</REFSECT1>
+
+</REFENTRY>
 
 <REFENTRY id="shutdown">
 <REFMETA><REFENTRYTITLE>shutdown</REFENTRYTITLE></REFMETA>

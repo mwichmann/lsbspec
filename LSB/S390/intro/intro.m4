@@ -223,5 +223,15 @@ other context will be referred to the relevant maintenance body for
 that standard.
 </PARA>
 </CHAPTER>
+<CHAPTER>
+<TITLE>Relationship To Other Free Standards Group Specifications</TITLE>
+<PARA>
+The LSB is the base for several other specification projects under the umbrella
+of the Free Standards Group (FSG). This specification is the foundation, and other
+specifications build on the interfaces defined here. However, beyond those
+specifications listed as Normative References, this specification has no
+dependencies on other FSG projects.
+</PARA>
+</CHAPTER>
 ')
 </PART>
