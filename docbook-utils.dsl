@@ -865,7 +865,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 ;;the termlength above then the variablelist
 ;;will be formatted as a table.
 (define %may-format-variablelist-as-table%
-#f)
+#t)
 
 ;;This overrides the tgroup definition
 ;;(copied from 1.20, dbtable.dsl).
@@ -941,6 +941,36 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 ;;be used for that admonition.
 (define ($admon-graphic-width$ #!optional (nd (current-node)))
   "25")
+
+;;
+;; special version of $admonpara$, the function that prints
+;; a paragraph in an admonition. Based on docbook-utils-1.79.
+;; adds color to the paragraph.
+;;
+(define ($admonpara$)
+  (let* ((title     (select-elements 
+		     (children (parent (current-node))) (normalize "title")))
+	 (has-title (not (node-list-empty? title)))
+	 (adm-title (if has-title 
+			(make sequence
+			  (with-mode title-sosofo-mode
+			    (process-node-list (node-list-first title)))
+			  (literal (gentext-label-title-sep 
+				    (gi (parent (current-node))))))
+			(literal
+			 (gentext-element-name 
+			  (gi (parent (current-node))))
+			 (gentext-label-title-sep 
+			  (gi (parent (current-node))))))))
+    (make element gi: "P"
+	  attributes: (list 
+	  		(list "STYLE" "color: #006600; background-color: #FFFFCC")
+		      )
+	  (if (and (not %admon-graphics%) (= (child-number) 1))
+	      (make element gi: "B"
+		    adm-title)
+	      (empty-sosofo))
+	  (process-children))))
 
 ;;=========================
 ;;Labels
