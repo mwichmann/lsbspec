@@ -20,7 +20,7 @@ specification makes no attempt to numerically assign user or group identity numb
 with the exception that both the User ID and Group ID for the user <literal>root</literal>
 shall be equal to 0.
 </PARA>
-<TABLE>
+<TABLE ID="tbl-requiredusers">
 <TITLE>Required User & Group Names</TITLE>
 <TGROUP COLS=3>
 <THEAD>
@@ -53,13 +53,13 @@ partition daemons from one another.
 <PARA>
 </PARA>
 <PARA>
-Below is a table of optional mnemonic user and group names.   This 
+<xref linkend="tbl-optusers"> is a table of optional mnemonic user and group names.   This 
 specification makes no attempt to numerically assign uid or gid numbers.
 If the username exists on a system, then they should be in the suggested
 corresponding group.
 These user and group names are for use by distributions, not by applications.
 </PARA>
-<TABLE>
+<TABLE ID="tbl-optusers">
 <TITLE>Optional User & Group Names</TITLE>
 <TGROUP COLS=3>
 <THEAD>
