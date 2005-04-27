@@ -297,8 +297,22 @@ External C symbols shall be unchanged in an object file's symbol table.
 </SECT1>
 </CHAPTER>
 
-<CHAPTER ID="dwarfext">
+<CHAPTER ID="dwarfextchtp">
 <TITLE>DWARF Extensions</TITLE>
+<PARA>
+The LSB does not specify debugging information, however, some additional
+sections contain information which is encoded using the the encoding as
+specified by <XREF LINKEND="std.DWARF2"> with extensions defined here.
+<NOTE>
+<PARA>
+The extensions specified here also exist in <XREF LINKEND="std.DWARF3">.
+It is expected that future versions of the LSB will reference the final
+version of that document, and that the definitions here will be taken
+from that document instead of being specified here.
+</PARA>
+</NOTE>
+
+</PARA>
 
 <SECT1 ID="dwarfehencoding">
 <TITLE>DWARF Exception Header Encoding</TITLE>
@@ -371,11 +385,6 @@ as defined by <XREF LINKEND="std.DWARF2">.
 <ENTRY>0x0C</ENTRY>
 <ENTRY>An 8 bytes signed value.</ENTRY>
 </ROW>
-<ROW>
-<ENTRY>DW_EH_PE_omit</ENTRY>
-<ENTRY>0xff</ENTRY>
-<ENTRY>No value is present.</ENTRY>
-</ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
@@ -412,12 +421,15 @@ as defined by <XREF LINKEND="std.DWARF2">.
 </ROW>
 <ROW>
 <ENTRY>DW_EH_PE_aligned</ENTRY>
-<ENTRY>0x30</ENTRY>
-<ENTRY>Value is aligned.</ENTRY>
+<ENTRY>0x50</ENTRY>
+<ENTRY>Value is aligned to an address unit sized boundary.</ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
+<PARA>
+One special encoding, 0xff (DW_EH_PE_omit), shall be used to indicate that no value ispresent.
+</PARA>
 
 </SECT1>
 
@@ -427,7 +439,7 @@ as defined by <XREF LINKEND="std.DWARF2">.
 <TITLE>DWARF CFI Extensions</TITLE>
 <PARA>
 In addition to the Call Frame Instructions defined in section 6.4.2 of <XREF LINKEND="std.DWARF2">,
-the following Call Frame Instructions may also be used.
+the following additional Call Frame Instructions may also be used.
 </PARA>
 
 <TABLE>
@@ -502,6 +514,27 @@ instructions is obsoleted by DW_CFA_offset_extended_sf.
 </SECT1>
 
 
+</CHAPTER>
+
+<CHAPTER ID="ehframechpt">
+<TITLE>Exception Frames</TITLE>
+<PARA>
+When using languages that support exceptions, such as C++, additional
+information must be provided to the runtime environment that describes
+the call frames that much be unwound during the processing of an exception.
+This information is contained in the special sections
+<COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> and
+<COMPUTEROUTPUT>.eh_framehdr</COMPUTEROUTPUT>.
+<NOTE>
+<PARA>
+The format of the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section is similar
+in format and purpose to the <COMPUTEROUTPUT>.debug_frame</COMPUTEROUTPUT>
+section which is specified in <XREF LINKEND="std.DWARF3">.
+Readers are advised that there are some subtle difference,
+and care should be taken when comparing the two sections.
+</PARA>
+</NOTE>
+</PARA>
 <SECT1 id="ehframe">
 <TITLE>
 The <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section
@@ -599,7 +632,7 @@ be aligned to an addressing unit sized boundary.
 A 4 byte unsigned value indicating the length in bytes of the CIE structure,
 not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. If
 <STRUCTFIELD>Length</STRUCTFIELD> contains the value 0xffffffff, then the
-length is contained the <STRUCTFIELD>Extended Length</STRUCTFIELD> field.
+length is contained in the <STRUCTFIELD>Extended Length</STRUCTFIELD> field.
 If <STRUCTFIELD>Length</STRUCTFIELD> contains the value 0, then this CIE shall
 be considered a terminator and processing shall end.
 </PARA>
@@ -643,7 +676,7 @@ Version assigned to the call frame information structure. This value shall be 1.
 This value is a NUL terminated string that identifies the augmentation to
 the CIE or to the FDEs associated with this CIE. A zero length string
 indicates that no augmentation data is present.  The augmentation string
-shall be interpreted as described below.
+is case sensitive and shall be interpreted as described below.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -731,8 +764,8 @@ Extra bytes to align the CIE structure to an addressing unit size boundary.
 <TITLE>Augmentation String Format</TITLE>
 <PARA>
 The Agumentation String indicates the presence of some optional fields, and
-how those fields should be intepreted. Each character in the augmentation
-string in the CIE can be interpreted as below:
+how those fields should be intepreted. This string is case sensitive.  Each
+character in the augmentation string in the CIE can be interpreted as below:
 </PARA>
 
 <VARIABLELIST>
@@ -763,6 +796,7 @@ be present.
 <LISTITEM>
 <PARA>
 A 'L' may be present at any position after the first character of the string.
+This character may only be present if 'z' is the first character of the string.
 If present, it
 indicates the presence of one argument in the Augmentation Data of the CIE,
 and a corresponding argument in the Augmentation Data of the FDE.
@@ -779,6 +813,7 @@ The size of the LSDA pointer is specified by the pointer encoding used.
 <LISTITEM>
 <PARA>
 A 'P' may be present at any position after the first character of the string.
+This character may only be present if 'z' is the first character of the string.
 If present, it
 indicates the presence of two arguments in the Augmentation Data of the CIE.
 The first argument is 1-byte and represents the pointer encoding used for the
@@ -794,6 +829,7 @@ used.
 <LISTITEM>
 <PARA>
 A 'R' may be present at any position after the first character of the string.
+This character may only be present if 'z' is the first character of the string.
 If present, The
 Augmentation Data shall include a 1 byte argument that represents the pointer
 encoding for the address pointers used in the FDE.
@@ -882,8 +918,7 @@ not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself.
 <LISTITEM>
 <PARA>
 A 4 byte unsigned value that when subtracted from the offset of the current FDE
-yields the offset of the start of the associated CIE.
-This value shall never be 0, which indicates this record is a FDE.
+yields the offset of the start of the associated CIE.  This value shall never be 0.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -967,8 +1002,7 @@ and optionally, a binary search table of pointers to the
 <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> records are found in this section.
 </PARA>
 <PARA>
-Data in this section is encoded according to the DWARF Exception Header
-Encoding.
+Data in this section is encoded according to <XREF LINKEND="dwarfehencoding">.
 </PARA>
 <TABLE>
 <TITLE><COMPUTEROUTPUT>.eh_frame_hdr</COMPUTEROUTPUT> Section Format</TITLE>

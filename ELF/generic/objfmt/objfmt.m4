@@ -118,13 +118,48 @@ External C symbols shall be unchanged in an object file's symbol table.
 </SECT1>
 </CHAPTER>
 
-<CHAPTER ID="dwarfext">
+<CHAPTER ID="dwarfextchtp">
 <TITLE>DWARF Extensions</TITLE>
+<PARA>
+The LSB does not specify debugging information, however, some additional
+sections contain information which is encoded using the the encoding as
+specified by <XREF LINKEND="std.DWARF2"> with extensions defined here.
+<NOTE>
+<PARA>
+The extensions specified here also exist in <XREF LINKEND="std.DWARF3">.
+It is expected that future versions of the LSB will reference the final
+version of that document, and that the definitions here will be taken
+from that document instead of being specified here.
+</PARA>
+</NOTE>
+
+</PARA>
 
 include(dwarfenc.sgml)
 
 include(dwarfext.sgml)
 
+</CHAPTER>
+
+<CHAPTER ID="ehframechpt">
+<TITLE>Exception Frames</TITLE>
+<PARA>
+When using languages that support exceptions, such as C++, additional
+information must be provided to the runtime environment that describes
+the call frames that much be unwound during the processing of an exception.
+This information is contained in the special sections
+<COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> and
+<COMPUTEROUTPUT>.eh_framehdr</COMPUTEROUTPUT>.
+<NOTE>
+<PARA>
+The format of the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section is similar
+in format and purpose to the <COMPUTEROUTPUT>.debug_frame</COMPUTEROUTPUT>
+section which is specified in <XREF LINKEND="std.DWARF3">.
+Readers are advised that there are some subtle difference,
+and care should be taken when comparing the two sections.
+</PARA>
+</NOTE>
+</PARA>
 include(ehframe.sgml)
 
 include(ehframehdr.sgml)

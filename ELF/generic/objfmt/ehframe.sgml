@@ -95,7 +95,7 @@ be aligned to an addressing unit sized boundary.
 A 4 byte unsigned value indicating the length in bytes of the CIE structure,
 not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself. If
 <STRUCTFIELD>Length</STRUCTFIELD> contains the value 0xffffffff, then the
-length is contained the <STRUCTFIELD>Extended Length</STRUCTFIELD> field.
+length is contained in the <STRUCTFIELD>Extended Length</STRUCTFIELD> field.
 If <STRUCTFIELD>Length</STRUCTFIELD> contains the value 0, then this CIE shall
 be considered a terminator and processing shall end.
 </PARA>
@@ -139,7 +139,7 @@ Version assigned to the call frame information structure. This value shall be 1.
 This value is a NUL terminated string that identifies the augmentation to
 the CIE or to the FDEs associated with this CIE. A zero length string
 indicates that no augmentation data is present.  The augmentation string
-shall be interpreted as described below.
+is case sensitive and shall be interpreted as described below.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -227,8 +227,8 @@ Extra bytes to align the CIE structure to an addressing unit size boundary.
 <TITLE>Augmentation String Format</TITLE>
 <PARA>
 The Agumentation String indicates the presence of some optional fields, and
-how those fields should be intepreted. Each character in the augmentation
-string in the CIE can be interpreted as below:
+how those fields should be intepreted. This string is case sensitive.  Each
+character in the augmentation string in the CIE can be interpreted as below:
 </PARA>
 
 <VARIABLELIST>
@@ -259,6 +259,7 @@ be present.
 <LISTITEM>
 <PARA>
 A 'L' may be present at any position after the first character of the string.
+This character may only be present if 'z' is the first character of the string.
 If present, it
 indicates the presence of one argument in the Augmentation Data of the CIE,
 and a corresponding argument in the Augmentation Data of the FDE.
@@ -275,6 +276,7 @@ The size of the LSDA pointer is specified by the pointer encoding used.
 <LISTITEM>
 <PARA>
 A 'P' may be present at any position after the first character of the string.
+This character may only be present if 'z' is the first character of the string.
 If present, it
 indicates the presence of two arguments in the Augmentation Data of the CIE.
 The first argument is 1-byte and represents the pointer encoding used for the
@@ -290,6 +292,7 @@ used.
 <LISTITEM>
 <PARA>
 A 'R' may be present at any position after the first character of the string.
+This character may only be present if 'z' is the first character of the string.
 If present, The
 Augmentation Data shall include a 1 byte argument that represents the pointer
 encoding for the address pointers used in the FDE.
@@ -378,8 +381,7 @@ not including the <STRUCTFIELD>Length</STRUCTFIELD> field itself.
 <LISTITEM>
 <PARA>
 A 4 byte unsigned value that when subtracted from the offset of the current FDE
-yields the offset of the start of the associated CIE.
-This value shall never be 0, which indicates this record is a FDE.
+yields the offset of the start of the associated CIE.  This value shall never be 0.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
