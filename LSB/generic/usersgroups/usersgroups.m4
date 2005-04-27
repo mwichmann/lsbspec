@@ -94,7 +94,7 @@ Applications cannot assume any policy for the default file creation mask
 directory permissions a user may have. Applications should enforce user
 only file permissions on private files such as mailboxes.  The location of
 the users home directory is also not defined by policy other than the
-recommendations of <xref linkend="std.fhs"> and should be obtained by 
+recommendations of the <xref linkend="std.fhs"> and should be obtained by 
 the <simplelist type=inline>
 <member><function>getpwnam</function></member>
 <member><function>getpwnam_r</function></member>
