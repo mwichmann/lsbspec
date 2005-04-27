@@ -964,7 +964,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 			  (gi (parent (current-node))))))))
     (make element gi: "P"
 	  attributes: (list 
-	  		(list "STYLE" "color: #006600; background-color: #FFFFCC")
+	  		(list "STYLE" "color: #006600; background-color: #FFFFCC;")
 		      )
 	  (if (and (not %admon-graphics%) (= (child-number) 1))
 	      (make element gi: "B"
