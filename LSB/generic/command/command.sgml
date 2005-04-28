@@ -542,7 +542,7 @@ process, they have no effect when executed as a file.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Tue Apr 26 21:03:37 2005 -->
+<!--    at Wed Apr 27 21:27:24 2005 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -2630,7 +2630,7 @@ print the name of each file before copying it to <varname>stdout</varname>.
 <REFNAME>install_initd</REFNAME>
 
 <REFPURPOSE>
-install an init.d file
+activate an init script
 </REFPURPOSE>
 
 </REFNAMEDIV>
@@ -2645,11 +2645,12 @@ install an init.d file
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>install_initd</COMMAND> shall install a system initialization file that has
-been copied to the <FILENAME>/etc/init.d</FILENAME> location such that
+<COMMAND>install_initd</COMMAND> shall activate a system initialization file that has
+been copied to an implementation defined location such that
 this file shall be run at the appropriate point during system initialization.
 The <COMMAND>install_initd</COMMAND> command is typically called in the postinstall
-script of a package.
+script of a package. The package is typically copied to the appropriate locate
+by means of the <command>lsbinstall</command> utility.
 See also <xref linkend="initsrcinstrm" >.
 </PARA>
 
@@ -3359,10 +3360,17 @@ A user may need appropriate privilege to invoke <command>lsbinstall</command>.
 If the <parameter>-c</parameter> or <parameter>--check</parameter>
 option is specified, <command>lsbinstall</command> shall test to
 see if there is an existing object of the type specified already installed.
-If there is, <command>lsbinstall</command> shall immediately exit with
+If there is, <command>lsbinstall</command> shall print a message to its
+standard output and immediately exit with
 a status of zero. If there is no object of the type and name specified
 already installed, <command>lsbinstall</command> shall exit with a
 non-zero status and take no further action.
+<note>
+<para>
+The format of the message is defined only when the <parameter>--type=init</parameter>
+option is specifed.
+</para>
+</note>
 </PARA>
 <PARA>
 If the <parameter>-r</parameter> or <parameter>--remove</parameter>
@@ -3392,12 +3400,10 @@ There shall be one operand, that names a font file.
 <PARA>
 install an init script into the system specific location.
 There shall be one operand, that names an init script file.
-This operation shall be equivalent to 
-<command>install_initd name</command> (or 
-<command>remove_initd name</command> if the <parameter>-r</parameter> or
-<parameter>--remove</parameter> option is specified), 
-where <command>name</command>
-is the first operand.
+On success, a name suitable for use with the <command>install_initd</command>
+and <command>remove_initd</command>
+commands shall be printed to the standard output.
+See also <xref linkend="initsrcinstrm">.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -3572,6 +3578,14 @@ library entries should only be removed from the system configuration
 when the calling application can guarantee no other package or utility
 depends on this library path, 
 </para></note>
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>man</TERM>
+<LISTITEM>
+<PARA>
+Install a manual page into the appropriate system manual repository.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -5693,8 +5707,9 @@ clean up boot script system modifications introduced by install_initd
 modifications made to a distribution's boot script system by the 
 <COMMAND>install_initd</COMMAND> program. This cleanup is performed
 in the preuninstall script of a package; however, the package manager
-is still responsible for removing the /etc/init.d file.
-See also <xref linkend="initsrcinstrm" >.
+is still responsible for removing the script from the repository, typically
+by means of <command>lsbinstall --remove</command>.
+See also <xref linkend="initsrcinstrm" > and <xref linkend="lsbinstall">.
 </PARA>
 
 </REFSECT1>
@@ -6044,7 +6059,7 @@ extensions listed below.
 </PARA>
 </REFSECT1>
 
-<REFSECT1 id="cmd-sh-invoke" xreflabel="Shell Invokation">
+<REFSECT1 id="cmd-sh-invoke" xreflabel="Shell Invocation">
 <TITLE>Shell Invocation</TITLE>
 <PARA>
 The shell shall support an additional option, <parameter>-l</parameter> 
@@ -6056,7 +6071,7 @@ of the shell is a <emphasis>login shell</emphasis>.
 <PARA>
 An interactive shell, as specified in <xref linkend="std.susv3">,
 that is also a login shell, or any shell if invoked with the <parameter>-l</parameter>
-option, shall, prior to reading from the standard input,
+option, shall, prior to reading from the input file,
 first read and execute commands from the file
 <filename>/etc/profile</filename>,
 if that file exists, and then from a file called <filename>~/.profile</filename>,
@@ -6715,8 +6730,8 @@ disable the account.
 <listitem>
 <para>
 creates a system account, that is, a user with a
-UID in the range reserved for system account users. If there is not a
-UID free in the reserved range the command will fail.
+User ID in the range reserved for system account users. If there is not a
+User ID free in the reserved range the command will fail.
 </para>
 </listitem>
 </varlistentry>

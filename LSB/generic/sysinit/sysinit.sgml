@@ -573,20 +573,21 @@ necessary.
 <TITLE>Installation and Removal of Init Scripts</TITLE>
 
 <PARA>
-Conforming applications may install one or more init scripts.
-An init script shall be installed in <filename>/etc/init.d</filename>
-(which may be a symbolic link to another location).
-This should be done by the package installer.
-<!--  XXX More details, maybe xref to packaging book? -->
+Conforming applications may install one or more initialization scripts
+(or <emphasis>init scripts</emphasis>).
+Such scripts are installed in system specific locations by the
+<command>lsbinstall</command> command (see <xref linkend="lsbinstall">),
+and activated by the <command>install_initd</command> command
+(see <xref linkend="installinitd">).
 </para>
 <para>
 During the installer's post-install processing phase the program
 <command>/usr/lib/lsb/install_initd</command> must be called to
 activate the init script. Activation consists of arranging for
 the init script to be called in the correct order on system
-run-level changes (including boot and shutdown), based on
+run-level changes (including system boot and shutdown), based on
 dependencies supplied in the init script (see <XRef linkend="initscrcomconv">).
-<command>install_initd</command> should be thought of as
+The <command>install_initd</command> command should be thought of as
 a wrapper which hides the implementation details;
 how any given implementation arranges for the init
 script to be called at the appropriate time is not specified.
@@ -614,20 +615,25 @@ this specification could be implemented.
 </informalexample>
 
 <PARA>
-<command>install_initd</command> takes a single argument, the full pathname
+The <command>install_initd</command> command takes a single argument, the full pathname
 of the installed init script. The init script must already be
-installed in <filename>/etc/init.d</filename>, 
-<command>install_initd</command> will not copy it there.
+installed, typically by means of a call to the <command>lsbinstall</command> command.
+The <command>install_initd</command> command will not copy it there, only activate
+it once it has been installed in the system specific init script repository.
+The <command>lsbinstall</command>
+will print a suitable name for the <command>install_initd</command> utility on its standard
+output.
 Example:
 <informalexample>
 <screen>
-	/usr/lib/lsb/install_initd /etc/init.d/example.com-coffeed
+	PATH=$PATH:/usr/lib/lsb
+	install_initd $(lsbinstall --type=init example.com-coffeed)
 </screen>
 </informalexample>
 </para>
 
 <PARA>
-<command>install_initd</command>
+The <command>install_initd</command> command
 shall return an exit status of zero if the
 init-script activation was successful or if the init script was
 already activated. If the dependencies in the init script 
@@ -649,7 +655,11 @@ the init script.
 Example:
 <informalexample>
 <screen>
-	/usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
+	PATH=$PATH:/usr/lib/lsb
+	# deactivate the init script
+	remove_initd $(lsbinstall --check --type=init example.com-coffeed)
+	# and remove the init script altogether
+	lsbinstall --remove --type=init example.com-coffeed
 </screen>
 </informalexample>
 </PARA>

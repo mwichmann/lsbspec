@@ -15,30 +15,33 @@ be made using the provided commands.
 <SECT1 ID="usernames">
 <TITLE>User & Group Names</TITLE>
 <PARA>
-Below is a table of required mnemonic user and group names.   This 
-specification makes no attempt to numerically assign uid or gid numbers.
-The exception is the uid and gid for "root" which are equal to 0.
+<xref linkend="tbl-requiredusers"> describes required mnemonic user and group names.   This 
+specification makes no attempt to numerically assign user or group identity numbers,
+with the exception that both the User ID and Group ID for the user <literal>root</literal>
+shall be equal to 0.
 </PARA>
-<TABLE>
+<TABLE ID="tbl-requiredusers">
 <TITLE>Required User & Group Names</TITLE>
 <TGROUP COLS=3>
-<TBODY>
+<THEAD>
 <ROW><ENTRY>User</ENTRY><ENTRY>Group</ENTRY><ENTRY>Comments</ENTRY></ROW>
+</THEAD>
+<TBODY>
 <ROW><ENTRY>root</ENTRY><ENTRY>root</ENTRY><ENTRY>Administrative user
 with all appropriate privileges</ENTRY>
 </ROW>
-<ROW><ENTRY>bin</ENTRY><ENTRY>bin</ENTRY><ENTRY>Legacy UID/GID<FOOTNOTE>
+<ROW><ENTRY>bin</ENTRY><ENTRY>bin</ENTRY><ENTRY>Legacy User ID/Group ID<FOOTNOTE>
 <PARA>
-The 'bin' UID/GID is included for compatibility with legacy applications.
-New applications should no longer use the 'bin' UID/GID.
+The <literal>bin</literal> User ID/Group ID is included for compatibility with legacy applications.
+New applications should no longer use the <literal>bin</literal> User ID/Group ID.
 </PARA>
 </FOOTNOTE>
 </ENTRY></ROW>
-<ROW><ENTRY>daemon</ENTRY><ENTRY>daemon</ENTRY><ENTRY>Legacy UID/GID<FOOTNOTE>
+<ROW><ENTRY>daemon</ENTRY><ENTRY>daemon</ENTRY><ENTRY>Legacy User ID/Group ID<FOOTNOTE>
 <PARA>
-The 'daemon' UID/GID was used as an unprivileged UID/GID for daemons to
+The <literal>daemon</literal> User ID/Group ID was used as an unprivileged User ID/Group ID for daemons to
 execute under in order to limit their access to the system.  Generally
-daemons should now run under individual UID/GIDs in order to further
+daemons should now run under individual User ID/Group IDs in order to further
 partition daemons from one another.
 </PARA>
 </FOOTNOTE>
@@ -50,17 +53,19 @@ partition daemons from one another.
 <PARA>
 </PARA>
 <PARA>
-Below is a table of optional mnemonic user and group names.   This 
+<xref linkend="tbl-optusers"> is a table of optional mnemonic user and group names.   This 
 specification makes no attempt to numerically assign uid or gid numbers.
 If the username exists on a system, then they should be in the suggested
 corresponding group.
 These user and group names are for use by distributions, not by applications.
 </PARA>
-<TABLE>
+<TABLE ID="tbl-optusers">
 <TITLE>Optional User & Group Names</TITLE>
 <TGROUP COLS=3>
-<TBODY>
+<THEAD>
 <ROW><ENTRY>User</ENTRY><ENTRY>Group</ENTRY><ENTRY>Comments</ENTRY></ROW>
+</THEAD>
+<TBODY>
 <ROW><ENTRY>adm</ENTRY><ENTRY>adm</ENTRY><ENTRY>Administrative special privileges</ENTRY></ROW>
 <ROW><ENTRY>lp</ENTRY><ENTRY>lp</ENTRY><ENTRY>Printer special privileges</ENTRY></ROW>
 <ROW><ENTRY>sync</ENTRY><ENTRY>sync</ENTRY><ENTRY>Login to sync the system</ENTRY></ROW>
@@ -76,29 +81,38 @@ These user and group names are for use by distributions, not by applications.
 </TGROUP>
 </TABLE>
 <PARA>
-The differences in numeric values of the uids and gids between systems on a 
-network can be reconciled via NIS, rdist(1), rsync(1), or ugidd(8).  
+<!-- NIS ISN'T SPECIFIED BY THE LSB!
+The differences in numeric values of the Uer IDs and Group IDs between systems on a 
+network can be reconciled via NIS, rdist(1), rsync(1), or ugidd(8).  -->
 Only a minimum working set of "user names" and their corresponding 
 "user groups" are required.
 Applications cannot assume non system user or group names will be defined.
 </PARA>
 <PARA>
-Applications cannot assume any policy for the default umask or the default
+Applications cannot assume any policy for the default file creation mask 
+(<command>umask</command>) or the default
 directory permissions a user may have. Applications should enforce user
 only file permissions on private files such as mailboxes.  The location of
 the users home directory is also not defined by policy other than the
-recommendations of the FHS and shall be obtained by the *pwnam(3) calls.
+recommendations of the <xref linkend="std.fhs"> and should be obtained by 
+the <simplelist type=inline>
+<member><function>getpwnam</function></member>
+<member><function>getpwnam_r</function></member>
+<member><function>getpwent</function></member>
+<member><function>getpwuid</function></member>
+<member>and <function>getpwuid_r</function></member>
+</simplelist> functions.
 </PARA>
 </SECT1>
 <SECT1 ID="uidrange">
-<TITLE>UID Ranges</TITLE>
+<TITLE>User ID Ranges</TITLE>
 <PARA>
-The system UIDs from 0 to 99 should be statically allocated by the system,
+The system User IDs from 0 to 99 should be statically allocated by the system,
 and shall not be created by applications.
 </PARA>
 <PARA>
-The system UIDs from 100 to 499 should be reserved for dynamic
-allocation by system administrators and post install scripts using useradd(1).
+The system User IDs from 100 to 499 should be reserved for dynamic
+allocation by system administrators and post install scripts using <command>useradd</command>.
 </PARA>
 </SECT1>
 
