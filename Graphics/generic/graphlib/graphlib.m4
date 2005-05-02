@@ -10,13 +10,15 @@ The X Libraries should be built thread-safe.
 
 include(libX11.sgml)
 
-include(libXext.sgml)
-
 include(libSM.sgml)
 
 include(libICE.sgml)
 
 include(libXt.sgml)
+
+include(libXext.sgml)
+
+include(libXi.sgml)
 
 </CHAPTER>
 

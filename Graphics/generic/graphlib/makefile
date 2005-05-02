@@ -21,6 +21,7 @@ gensrc:
 	../../../mklibspec -a All -c 4 -l libICE >libICE.sgml
 	../../../mklibspec -a All -c 4 -l libSM >libSM.sgml
 	../../../mklibspec -a All -c 4 -l libXt >libXt.sgml
+	../../../mklibspec -a All -c 4 -l libXi >libXi.sgml
 
 clean:
 	rm -f $(FILES)
