@@ -32,15 +32,26 @@ register a function to be called by exit or when a shared library is unloaded
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>__cxa_atexit</FUNCTION> registers a function to be called by 
-exit or when a shared library is unloaded. 
+As described in <xref linkend="std.cxxabi">,
+<FUNCTION>__cxa_atexit</FUNCTION> registers a destructor function to be called by 
+<function>exit</function> or when a shared library is unloaded. 
+When a shared library is unloaded, any destructor function associated with that
+shared library, identified by <parameter>dso_handle</parameter>, shall be called
+with the single argument <parameter>arg</parameter>, and then that function shall
+be removed, or marked as complete, from the list of functions to run at 
+<function>exit</function>.
+On a call to <function>exit</function>,
+any remaining functions registered shall be called 
+with the single argument <parameter>arg</parameter>.
+Destructor functions shall always be called in the reverse order to their
+registration (i.e. the most recently registered function shall be called first),
 </PARA>
 <PARA>
 The <FUNCTION>__cxa_atexit</FUNCTION> function is used to implement
 <FUNCTION>atexit</FUNCTION>, as described in <XREF LINKEND=STD.SUSv3>.
-Calling <synopsis>atexit(func)</synopsis> from the statically linked part of
+Calling <literal>atexit(func)</literal> from the statically linked part of
 an application shall be equivalent to
-<synopsis>__cxa_atexit(func, NULL, NULL)</synopsis>.
+<literal>__cxa_atexit(func, NULL, NULL)</literal>.
 </PARA>
 <PARA>
 <FUNCTION>__cxa_atexit</FUNCTION> is not in the source standard; 
