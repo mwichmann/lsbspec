@@ -17,11 +17,14 @@ Stylesheet//EN" CDATA dsssl>
 <!--
 ;;#######################################################################
 ;;#                                                                     #
-;;#                 The GNOME Documentation Project's                   #
+;;#                 The LSB Specification Project's                   	#
 ;;#                  Custion DocBook Stylesheet Layer                   #
+;;#             Based on The GNOME Documentation Project's              #
 ;;#                    by Dave Mason dcm@redhat.com                     #
 ;;#            Based on Norman Walsh's Modular Stylesheets              #
 ;;#                                                                     #
+;;#            This version substantially modified by                   #
+;;#                  Nick Stoughton nick@freestandards.org 		#
 ;;#            This is intended as a drop-in replacement for            #
 ;;#            the cygnus-both.dsl file in DocBook Tools.               #
 ;;#           Just copy it to the location dbtools created              #
@@ -126,13 +129,18 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
         (normalize "table")))
 
 ;;What depth should the TOC generate?
-;;!Only top level of appendixes!
+;;not for appendices
+;;And sets have a toc for everything up front
 (define (toc-depth nd)
   (if (string=? (gi nd) (normalize "book"))
-      3
+      (if (gi (parent nd)) 
+      0
+      3)
       (if (string=? (gi nd) (normalize "appendix"))
         0
-        1)))
+        (if (string=? (gi nd) (normalize "set"))
+          5
+          1))))
 
 ;;Do you want a TOC for the element part?
 (define %generate-part-toc% 
@@ -144,11 +152,11 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;Generate Part Title Page?
 (define %generate-part-titlepage% 
-  #t)
+  #f)
 
 ;;Do you want the Part intro on the part title page?
 (define %generate-partintro-on-titlepage%
-  #f)
+  #t)
 
 ;;What elements should have a LOT?
 (define ($generate-book-lot-list$)
