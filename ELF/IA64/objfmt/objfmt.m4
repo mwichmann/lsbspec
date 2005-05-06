@@ -27,8 +27,8 @@ not the ILP32 model shall also be supported.
 <PARA>
 For LP64 relocatable objects, the file class value in
 <literal>e_ident[EI_CLASS]</literal> may be either
-<SystemItem class="Constant">ELFCLASS32</SystemItem> or 
-<SystemItem class="Constant">ELFCLASS64</SystemItem>,
+<type>ELFCLASS32</type> or 
+<type>ELFCLASS64</type>,
 and a conforming linker must be able to process
 either or both classes.
 </PARA>
@@ -39,7 +39,7 @@ either or both classes.
 Implementations shall support 2's complement, little endian data encoding.
 The data encoding value in
 <literal>e_ident[EI_DATA]</literal> shall contain the value
-<SystemItem class="Constant">ELFDATA2LSB</SystemItem>.
+<constant>ELFDATA2LSB</constant>.
 </PARA>
 </SECT2>
 <SECT2 ID="miosidentification">
@@ -47,7 +47,7 @@ The data encoding value in
 <PARA>
 The OS Identification field 
 <literal>e_ident[EI_OSABI]</literal> shall contain the value 
-<SystemItem class="Constant">ELFOSABI_LINUX</SystemItem>.
+<constant>ELFOSABI_LINUX</constant>.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorident">
@@ -55,7 +55,7 @@ The OS Identification field
 <PARA>
 The processor identification value held in <literal>e_machine</literal>
 shall contain the value 
-<SystemItem class="Constant">EM_IA_64</SystemItem>.
+<constant>EM_IA_64</constant>.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorspecialflags">
@@ -131,11 +131,11 @@ Section Types are described in the
 Chapter 4.2.
 LSB conforming implementations are not
 required to use any sections in the range from
-<SystemItem class="Constant">SHT_IA_64_LOPSREG</SystemItem> to
-<SystemItem class="Constant">SHT_IA_64_HIPSREG</SystemItem>.
+<constant>SHT_IA_64_LOPSREG</constant> to
+<constant>SHT_IA_64_HIPSREG</constant>.
 Additionally, LSB conforming implementations are not required
 to support the
-<SystemItem class="Constant">SHT_IA_64_PRIORITY_INIT</SystemItem>
+<constant>SHT_IA_64_PRIORITY_INIT</constant>
 section, beyond the gABI requirements for the handling of
 unrecognized section types, linking them into a contiguous section
 in the object file created by the static linker.
@@ -169,24 +169,70 @@ Chapter 4.2.3.
 If an executable file contains a reference to a function defined in
 one of its associated shared objects, the symbol table section for
 that file shall contain an entry for that symbol.  The 
-<SystemItem class="Constant">st_shndx</SystemItem> member of that
+<StructField>st_shndx</StructField> member of that
 symbol table
-entry contains <SystemItem class="Constant">SHN_UNDEF</SystemItem>.
+entry contains <StructField>SHN_UNDEF</StructField>.
 This signals to the dynamic linker that the symbol definition for that
 function is not contained in the executable file itself.  If that symbol
 has been allocated a procedure linkage table entry in the executable file,
-and the <SystemItem class="Constant">st_value</SystemItem> member for
+and the <StructField>st_value</StructField> member for
 that symbol table entry is non-zero, the value shall contain the virtual
 address of the first instruction of that procedure linkage table entry.
-Otherwise, the <SystemItem class="Constant"> st_value</SystemItem> member
+Otherwise, the <StructField> st_value</StructField> member
 contains zero.  This procedure linkage table entry address is used by
 the dynamic linker in resolving references to the address of the function.
-<NOTE>
+</PARA>
 <PARA>
-Need to add something here about st_info and st_other ...
+The <structfield>st_info</structfield> member holds information about the
+type and binding for the symbol. This member is a single byte field
+with the high order four bits holding the binding information as 
+described in <xref linkend="tbl-ia64-stbind">, and the low order four bits
+holding the symbol type, as described in <xref linkend="tbl-ia64-sttype">.
 </PARA>
-</NOTE>
-</PARA>
+<TABLE ID="tbl-ia64-stbind"> 
+<TITLE>Symbol Binding Values</TITLE>
+<TGROUP cols=3>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY><ENTRY>Value</ENTRY><ENTRY>Description</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>STB_LOCAL</ENTRY><ENTRY>0</ENTRY><ENTRY>Local Symbol</ENTRY></ROW>
+<ROW><ENTRY>STB_GLOBAL</ENTRY><ENTRY>1</ENTRY><ENTRY>Global symbol</ENTRY></ROW>
+<ROW><ENTRY>STB_WEAK</ENTRY><ENTRY>2</ENTRY><ENTRY>Weak symbol</ENTRY></ROW>
+<ROW><ENTRY>STB_NUM</ENTRY><ENTRY>3</ENTRY><ENTRY>Number of defined Types</ENTRY></ROW>
+<ROW><ENTRY>STB_LOOS</ENTRY><ENTRY>10</ENTRY><ENTRY>Start of OS specific range</ENTRY></ROW>
+<ROW><ENTRY>STB_HIOS</ENTRY><ENTRY>12</ENTRY><ENTRY>End of OS specific range</ENTRY></ROW>
+<ROW><ENTRY>STB_LOPROC</ENTRY><ENTRY>13</ENTRY><ENTRY>Start of Processor specific range</ENTRY></ROW>
+<ROW><ENTRY>STB_HIPROC</ENTRY><ENTRY>15</ENTRY><ENTRY>End of Processor specific range</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<TABLE ID="tbl-ia64-sttype">
+<TITLE>Symbol Type Values</TITLE>
+<TGROUP cols=3>
+<THEAD>
+<ROW>
+<ENTRY>Name</ENTRY><ENTRY>Value</ENTRY><ENTRY>Description</ENTRY>
+</ROW>
+</THEAD>
+<TBODY>
+<ROW><ENTRY>STT_NOTYPE</ENTRY><ENTRY>0</ENTRY><ENTRY>Symbol Type is Unspecified</ENTRY></ROW>
+<ROW><ENTRY>STT_OBJECT</ENTRY><ENTRY>1</ENTRY><ENTRY>Symbol is a data object</ENTRY></ROW>
+<ROW><ENTRY>STT_FUNC</ENTRY><ENTRY>2</ENTRY><ENTRY>Symbol is a code object</ENTRY></ROW>
+<ROW><ENTRY>STT_SECTION</ENTRY><ENTRY>3</ENTRY><ENTRY>Symbol assoiated with a section</ENTRY></ROW>
+<ROW><ENTRY>STT_FILE</ENTRY><ENTRY>4</ENTRY><ENTRY>Symbol value is a file name</ENTRY></ROW>
+<ROW><ENTRY>STT_COMMON</ENTRY><ENTRY>5</ENTRY><ENTRY>Symbol is a common data object</ENTRY></ROW>
+<ROW><ENTRY>STT_TLS</ENTRY><ENTRY>6</ENTRY><ENTRY>Symbol is a thread local data object</ENTRY></ROW>
+<ROW><ENTRY>STT_NUM</ENTRY><ENTRY>7</ENTRY><ENTRY>Number of defined types</ENTRY></ROW>
+<ROW><ENTRY>STT_LOOS</ENTRY><ENTRY>10</ENTRY><ENTRY>Start of OS specific range</ENTRY></ROW>
+<ROW><ENTRY>STT_HIOS</ENTRY><ENTRY>12</ENTRY><ENTRY>End of OS specific range</ENTRY></ROW>
+<ROW><ENTRY>STT_LOPROC</ENTRY><ENTRY>13</ENTRY><ENTRY>Start of Processor specific range</ENTRY></ROW>
+<ROW><ENTRY>STT_HIPROC</ENTRY><ENTRY>15</ENTRY><ENTRY>End of Processor specific range</ENTRY></ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 
 </CHAPTER>
 
