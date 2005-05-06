@@ -1,4 +1,4 @@
-<!DOCTYPE SET PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity % entities SYSTEM "../../entities">
 <!entity elf-contents SYSTEM "../../book/ELF-IA32/contents">
@@ -15,8 +15,8 @@
 
 ]>
 
-<SET>
-<SETINFO>
+<BOOK>
+<BOOKINFO>
 <TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
@@ -24,39 +24,13 @@
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
-</SETINFO>
-
-
-<BOOK ID="ia32-intro">
-<BOOKINFO>
-<TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
+
+
 &lsb-ia32-intro;
-</BOOK>
-<BOOK ID="ia32-elf">
-<BOOKINFO>
-<TITLE>ELF Specification</TITLE>
-</BOOKINFO>
 &elf-contents;
-</BOOK>
-<BOOK ID="ia32-lsb">
-<BOOKINFO>
-<TITLE>Linux Standard Base Specification</TITLE>
-</BOOKINFO>
 &lsb-contents;
-&lsb-ia32-appA;
-</BOOK>
-<BOOK ID="ia32-packaging">
-<BOOKINFO>
-<TITLE>Linux Packaging Specification</TITLE>
-</BOOKINFO>
 &packaging-contents;
-</BOOK>
-<BOOK ID="licensing">
-<BOOKINFO>
-<TITLE>Free Documentation License</TITLE>
-</BOOKINFO>
+&lsb-ia32-appA;
 &fdl;
 </BOOK>
-
-</SET>

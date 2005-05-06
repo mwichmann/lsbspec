@@ -1,4 +1,4 @@
-<!DOCTYPE SET PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 <!ENTITY % funcprototype.element "IGNORE">
 <!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
 
@@ -16,8 +16,8 @@
 
 ]>
 
-<SET>
-<SETINFO>
+<BOOK>
+<BOOKINFO>
 <TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2000</YEAR>
@@ -27,32 +27,12 @@
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
-</SETINFO>
-
-
-<BOOK ID="generic-intro">
-<BOOKINFO>
-<TITLE>Specification Introduction</TITLE>
 </BOOKINFO>
+
+
 &lsb-generic-intro;
-</BOOK>
-<BOOK ID="generic-elf">
-<BOOKINFO>
-<TITLE>ELF Specification</TITLE>
-</BOOKINFO>
 &elf-contents;
-</BOOK>
-<BOOK ID="generic-lsb">
-<BOOKINFO>
-<TITLE>Linux Standard Base Specification</TITLE>
-</BOOKINFO>
 &contents;
-</BOOK>
-<BOOK ID="licensing">
-<BOOKINFO>
-<TITLE>Free Documentation License</TITLE>
-</BOOKINFO>
 &fdl;
-</BOOK>
 
-</SET>
+</BOOK>
