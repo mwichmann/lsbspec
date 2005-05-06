@@ -13,7 +13,7 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB-Core | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >liblist.sgml
+	../../../mklibapnd -a All -m LSB_Core | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >liblist.sgml
 
 clean:
 	rm -f $(FILES)
