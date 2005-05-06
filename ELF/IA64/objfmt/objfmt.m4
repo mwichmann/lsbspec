@@ -182,57 +182,6 @@ Otherwise, the <StructField> st_value</StructField> member
 contains zero.  This procedure linkage table entry address is used by
 the dynamic linker in resolving references to the address of the function.
 </PARA>
-<PARA>
-The <structfield>st_info</structfield> member holds information about the
-type and binding for the symbol. This member is a single byte field
-with the high order four bits holding the binding information as 
-described in <xref linkend="tbl-ia64-stbind">, and the low order four bits
-holding the symbol type, as described in <xref linkend="tbl-ia64-sttype">.
-</PARA>
-<TABLE ID="tbl-ia64-stbind"> 
-<TITLE>Symbol Binding Values</TITLE>
-<TGROUP cols=3>
-<THEAD>
-<ROW>
-<ENTRY>Name</ENTRY><ENTRY>Value</ENTRY><ENTRY>Description</ENTRY>
-</ROW>
-</THEAD>
-<TBODY>
-<ROW><ENTRY>STB_LOCAL</ENTRY><ENTRY>0</ENTRY><ENTRY>Local Symbol</ENTRY></ROW>
-<ROW><ENTRY>STB_GLOBAL</ENTRY><ENTRY>1</ENTRY><ENTRY>Global symbol</ENTRY></ROW>
-<ROW><ENTRY>STB_WEAK</ENTRY><ENTRY>2</ENTRY><ENTRY>Weak symbol</ENTRY></ROW>
-<ROW><ENTRY>STB_NUM</ENTRY><ENTRY>3</ENTRY><ENTRY>Number of defined Types</ENTRY></ROW>
-<ROW><ENTRY>STB_LOOS</ENTRY><ENTRY>10</ENTRY><ENTRY>Start of OS specific range</ENTRY></ROW>
-<ROW><ENTRY>STB_HIOS</ENTRY><ENTRY>12</ENTRY><ENTRY>End of OS specific range</ENTRY></ROW>
-<ROW><ENTRY>STB_LOPROC</ENTRY><ENTRY>13</ENTRY><ENTRY>Start of Processor specific range</ENTRY></ROW>
-<ROW><ENTRY>STB_HIPROC</ENTRY><ENTRY>15</ENTRY><ENTRY>End of Processor specific range</ENTRY></ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
-<TABLE ID="tbl-ia64-sttype">
-<TITLE>Symbol Type Values</TITLE>
-<TGROUP cols=3>
-<THEAD>
-<ROW>
-<ENTRY>Name</ENTRY><ENTRY>Value</ENTRY><ENTRY>Description</ENTRY>
-</ROW>
-</THEAD>
-<TBODY>
-<ROW><ENTRY>STT_NOTYPE</ENTRY><ENTRY>0</ENTRY><ENTRY>Symbol Type is Unspecified</ENTRY></ROW>
-<ROW><ENTRY>STT_OBJECT</ENTRY><ENTRY>1</ENTRY><ENTRY>Symbol is a data object</ENTRY></ROW>
-<ROW><ENTRY>STT_FUNC</ENTRY><ENTRY>2</ENTRY><ENTRY>Symbol is a code object</ENTRY></ROW>
-<ROW><ENTRY>STT_SECTION</ENTRY><ENTRY>3</ENTRY><ENTRY>Symbol assoiated with a section</ENTRY></ROW>
-<ROW><ENTRY>STT_FILE</ENTRY><ENTRY>4</ENTRY><ENTRY>Symbol value is a file name</ENTRY></ROW>
-<ROW><ENTRY>STT_COMMON</ENTRY><ENTRY>5</ENTRY><ENTRY>Symbol is a common data object</ENTRY></ROW>
-<ROW><ENTRY>STT_TLS</ENTRY><ENTRY>6</ENTRY><ENTRY>Symbol is a thread local data object</ENTRY></ROW>
-<ROW><ENTRY>STT_NUM</ENTRY><ENTRY>7</ENTRY><ENTRY>Number of defined types</ENTRY></ROW>
-<ROW><ENTRY>STT_LOOS</ENTRY><ENTRY>10</ENTRY><ENTRY>Start of OS specific range</ENTRY></ROW>
-<ROW><ENTRY>STT_HIOS</ENTRY><ENTRY>12</ENTRY><ENTRY>End of OS specific range</ENTRY></ROW>
-<ROW><ENTRY>STT_LOPROC</ENTRY><ENTRY>13</ENTRY><ENTRY>Start of Processor specific range</ENTRY></ROW>
-<ROW><ENTRY>STT_HIPROC</ENTRY><ENTRY>15</ENTRY><ENTRY>End of Processor specific range</ENTRY></ROW>
-</TBODY>
-</TGROUP>
-</TABLE>
 
 </CHAPTER>
 
