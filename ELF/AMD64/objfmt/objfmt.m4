@@ -1,14 +1,16 @@
 <PART ID="tocobjformat">
 <TITLE>Object Format</TITLE>
-<PARTINTRO>
+<CHAPTER>
+<TITLE>Introduction</TITLE>
 <PARA>
 LSB-conforming implementations shall support an object file format, called
 Executable and Linking Format (ELF) as defined by the
 <XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
 <XREF LINKEND="std.x86.64.ABI"> and as supplemented by the
-<XREF LINKEND="std.LSB"> and this document.
+generic LSB specification and
+<XREF LINKEND="std.LSB">.
 </PARA>
-</PARTINTRO>
+</CHAPTER>
 
 <CHAPTER ID=elfheader>
 <TITLE>ELF Header</TITLE>
@@ -22,26 +24,31 @@ Chapter 4 of the
 <SECT2 ID="mifileclass">
 <TITLE>File Class</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 </PARA>
 </SECT2>
 <SECT2 ID="midataencoding">
 <TITLE>Data Encoding</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 </PARA>
 </SECT2>
 <SECT2 ID="miosidentification">
 <TITLE>OS Identification</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorident">
 <TITLE>Processor Identification</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 </PARA>
 </SECT2>
 <SECT2 ID="miprocessorspecialflags">
 <TITLE>Processor Specific Flags</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 </PARA>
 </SECT2>
 </SECT1>
@@ -50,10 +57,12 @@ Chapter 4 of the
 <CHAPTER ID=sections>
 <TITLE>Sections</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 </PARA>
 <SECT1 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 The following sections are defined in the <XREF LINKEND="std.x86.64.ABI">.
 include(elfsect.sgml)
 </PARA>
@@ -61,6 +70,7 @@ include(elfsect.sgml)
 <SECT1 ID="linuxspecial">
 <TITLE>Additional Special Sections</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 The following additional sections are defined here.
 include(linuxsect.sgml)
 </PARA>
@@ -72,6 +82,7 @@ include(linuxsect.sgml)
 <TITLE>Symbol Table</TITLE>
 
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 LSB-conforming applications shall use the Symbol Table as defined in
 Chapter 4 of the <XREF LINKEND="std.x86.64.ABI">.
 </PARA>
@@ -82,6 +93,7 @@ Chapter 4 of the <XREF LINKEND="std.x86.64.ABI">.
 <TITLE>Relocation</TITLE>
 
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 LSB-conforming applications shall use Relocations as defined in
 Chapter 4 of the <XREF LINKEND="std.x86.64.ABI">.
 </PARA>
@@ -89,6 +101,7 @@ Chapter 4 of the <XREF LINKEND="std.x86.64.ABI">.
 <SECT1 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
+See Chapter 4 of <XREF LINKEND="std.X86.64.ABI">.
 </PARA>
 </SECT1>
 
