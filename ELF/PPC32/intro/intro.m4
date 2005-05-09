@@ -3,17 +3,11 @@
 <PARA>
 This is version &specversion; of the Executable and Linking Format (ELF)
 Specification.
-This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 2.0 of the ELF
-Specification.
 </PARA>
 <PARA>
-Implmentations may not claim conformance to this version.
-<!--
 An implementation of this version of the specification may not claim
 to be an implementation of the Linux Standard Base unless it has successfully
 completed the compliance process as defined by the Free Standards Group.
--->
 </PARA>
 </PREFACE>
 
