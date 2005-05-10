@@ -1,6 +1,6 @@
 <PART ID="tocdynlnk">
 <TITLE>Program Loading and Dynamic Linking</TITLE>
-<CHAPTER>
+<CHAPTER ID=dynlnkintro>
 <TITLE>Introduction</TITLE>
 <PARA>
 LSB-conforming implementations shall support the object file information and
