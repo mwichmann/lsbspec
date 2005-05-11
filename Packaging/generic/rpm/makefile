@@ -32,4 +32,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-package.sgml: $(SOURCES)
+package.sgml: $(SOURCES) $(TABLES)
