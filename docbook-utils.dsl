@@ -782,7 +782,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
       3
       (if (string=? (gi nd) (normalize "appendix"))
         0
-        1)))
+        3)))
 
 ;;What elements should have an LOT?
 (define ($generate-book-lot-list$)
