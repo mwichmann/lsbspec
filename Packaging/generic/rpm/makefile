@@ -3,7 +3,7 @@
 
 MANPAGES=
 
-SOURCES=package.m4 cxxpackage.sgml indextypes.sgml rpmdepsattr.sgml rpmdeps.sgml \
+SOURCES=package.m4 indextypes.sgml rpmdepsattr.sgml rpmdeps.sgml \
 	coredep.sgml
 FILES=package.sgml 
 TABLES=privtags.sgml sigtags.sgml hdrtags.sgml pkgtags.sgml insttags.sgml \
