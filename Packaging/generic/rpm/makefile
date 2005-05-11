@@ -3,10 +3,11 @@
 
 MANPAGES=
 
-SOURCES=package.m4 cxxpackage.sgml
+SOURCES=package.m4 cxxpackage.sgml indextypes.sgml rpmdepsattr.sgml rpmdeps.sgml \
+	coredep.sgml
 FILES=package.sgml 
 TABLES=privtags.sgml sigtags.sgml hdrtags.sgml pkgtags.sgml insttags.sgml \
-       filetags.sgml deptags.sgml othtags.sgml
+       filetags.sgml deptags.sgml othtags.sgml sigdigtags.sgml sigsigntags.sgml
 
 .m4.sgml:
 	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
@@ -31,5 +32,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-package.sgml: package.m4 privtags.sgml sigtags.sgml hdrtags.sgml rpmdeps.sgml coredep.sgml
-package.sgml: rpmdepsattr.sgml
+package.sgml: $(SOURCES)
