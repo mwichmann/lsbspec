@@ -106,7 +106,8 @@ operand shall be the name of the service. Any subsequent operands
 provide aliases for this service.
 If any of the <parameter>-r</parameter>, <parameter>--remove</parameter>, 
 <parameter>-c</parameter> or <parameter>--check</parameter> options
-are specified, there shall be a single operand identifiying the 
+are specified, 
+there shall be a single operand identifiying the 
 port and protocol values (with the same format as above).
 </PARA>
 </LISTITEM>
@@ -115,18 +116,37 @@ port and protocol values (with the same format as above).
 <TERM>inet</TERM>
 <LISTITEM>
 <PARA>
-add an entry to the systems network super daemon configuration.
-There shall be one operand, that names a file with the following format:
+add an entry to the system's network super daemon configuration.
+If none of the <parameter>-r</parameter>, <parameter>--remove</parameter>, 
+<parameter>-c</parameter> or <parameter>--check</parameter> options
+are specified, 
+the first operand shall have the format:
 <programlisting>
-service &lt;service_name&gt;
-{
-	&lt;attribute&gt; &lt;assign-op&gt; &lt;value ...&gt;
-}
+"%s:%s:%s:%s:%s:%s"
 </programlisting>
-The system shall support the <literal>assign-op</literal> operator 
-<literal>'='</literal>. 
-The following values for <literal>attribute</literal> shall be supported:
+Otherwise, the first operand shall name the service to be checked or removed
+as specified.
+The fields in the first operand have the following meaning, in order:
 <variablelist>
+<varlistentry>
+<term><literal>svc_name</literal></term>
+<listitem><para>
+The name of this service. If the name does not contain a 
+<literal>/</literal>, this should match the name of an already installed
+<literal>service</literal> (see also <function>getservbyname</function>).
+If the name contains a <literal>/</literal> character,
+the behavior is unspecified.
+<note><title>Rationale</title>
+<para>
+This version of the LSB does not specify the <function>getrpcbyname</function>
+nor the existence or format of the <filename>/etc/rpc</filename> file. Therefore,
+installation of RPC based services is not specified at this point.
+A future version of this specification may require names containing a 
+<literal>/</literal> character to be Remote Procedure Call based services.
+</para>
+</note>
+</para></listitem>
+</varlistentry>
 <varlistentry>
 <term><literal>socket_type</literal></term>
 <listitem><para>
@@ -163,18 +183,18 @@ use an implementation defined default protocol.
 </para></listitem>
 </varlistentry>
 <varlistentry>
-<term><literal>wait</literal></term>
+<term><literal>wait_flag</literal></term>
 <listitem><para>
-If the value of this attribute is <literal>yes</literal>,
+If the value of this attribute is <literal>wait</literal>,
 once the service is started, no further requests for that
 service will be handled until the service exits. If the
-value is <literal>no</literal>, the network super daemon
+value is <literal>nowait</literal>, the network super daemon
 shall continue to handle further requests for the given
 service while that service is running.
 <NOTE><PARA>
 If the service has the <literal>socket_type</literal> attribute set
-to <literal>dgram</literal>, the <literal>wait</literal> attribute 
-should be set to <literal>yes</literal>, since such services
+to <literal>dgram</literal>, the <literal>wait_flag</literal> attribute 
+should be set to <literal>wait</literal>, since such services
 do not have any distinction between the socket used for
 listening and that used for accepting.
 </PARA></NOTE>
@@ -189,18 +209,25 @@ the specified user.
 </para></listitem>
 </varlistentry>
 <varlistentry>
-<term><literal>server</literal></term>
+<term><literal>server [arg ...]</literal></term>
 <listitem><para>
-The name of a program to run to handle the request.
-</para></listitem>
-</varlistentry>
-<varlistentry>
-<term><literal>server_args</literal></term>
-<listitem><para>
-The arguments to pass to the program.
+The name of a program to run to handle the request, optionally followed
+by any arguments required. The server name and each of its arguments
+is separated by whitespace.
 </para></listitem>
 </varlistentry>
 </variablelist>
+If the implementation supports additional controls over services
+started through the inet super daemon, there may be additional,
+implementation-defined, operands.
+<note><title>Rationale</title><para>
+Systems that use the <command>xinetd</command> super daemon may support
+additional controls such as IP address restrictions, logging requirements,
+etc. The LSB does not require these additional controls.
+However, it was believed to be
+of sufficient benefit that implementations are granted permission to extend
+this interface as required.
+</para></note>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
