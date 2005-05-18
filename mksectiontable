@@ -56,7 +56,7 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.10 2002-06-20 20:35:42 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.11 2005-05-18 15:28:19 anderson Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -75,8 +75,10 @@ if($sth->numrows) {
 	for(1..$sth->numrows) {
 		print "<ROW>";
 		%entry=$sth->fetchhash;
+		$stname = $entry{'STname'};
+		$stname =~s/\_//g;
 		printf "<ENTRY>%s</ENTRY>",$entry{'ESname'};
-		printf "<ENTRY>%s</ENTRY>",$entry{'STname'};
+		printf "<ENTRY><XREF LINKEND=\"secttype.%s\"</ENTRY>",$stname;
 		printf "<ENTRY>%s</ENTRY>",$entry{'ESattributes'};
 		print "</ROW>\n";
 	}
@@ -106,5 +108,5 @@ print "</VARIABLELIST>\n";
 }
 
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.10 2002-06-20 20:35:42 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mksectiontable,v 1.11 2005-05-18 15:28:19 anderson Exp $- -->\n");
 
