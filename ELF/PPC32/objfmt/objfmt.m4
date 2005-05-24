@@ -1,6 +1,6 @@
-<PART ID="tocobjformat">
+<CHAPTER ID="tocobjformat">
 <TITLE>Object Format</TITLE>
-<PARTINTRO>
+<SECT1><TITLE>Introduction</TITLE>
 <PARA>
 
 LSB-conforming implementations shall support an object file format,
@@ -11,51 +11,51 @@ need not support tags related functionality. LSB-conforming applications
 must not rely on tags related functionality.
 
 </PARA>
-</PARTINTRO>
+</SECT1>
 
-<CHAPTER ID=elfheader>
+<SECT1 ID=elfheader>
 <TITLE>ELF Header</TITLE>
-<SECT1 ID="machineinfo">
+<SECT2 ID="machineinfo">
 <TITLE>Machine Information</TITLE>
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
 <XREF LINKEND="std.PPC32.ABI">, Chapter 4.
 </PARA>
-<SECT2 ID="mifileclass">
+<SECT3 ID="mifileclass">
 <TITLE>File Class</TITLE>
 <PARA>
 </PARA>
-</SECT2>
-<SECT2 ID="midataencoding">
+</SECT3>
+<SECT3 ID="midataencoding">
 <TITLE>Data Encoding</TITLE>
 <PARA>
 </PARA>
-</SECT2>
-<SECT2 ID="miosidentification">
+</SECT3>
+<SECT3 ID="miosidentification">
 <TITLE>OS Identification</TITLE>
 <PARA>
 </PARA>
-</SECT2>
-<SECT2 ID="miprocessorident">
+</SECT3>
+<SECT3 ID="miprocessorident">
 <TITLE>Processor Identification</TITLE>
 <PARA>
 See Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
-</SECT2>
-<SECT2 ID="miprocessorspecialflags">
+</SECT3>
+<SECT3 ID="miprocessorspecialflags">
 <TITLE>Processor Specific Flags</TITLE>
 <PARA>
 See Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
+</SECT3>
 </SECT2>
 </SECT1>
-</CHAPTER>
 
-<CHAPTER ID=sections>
+<SECT1 ID=sections>
 <TITLE>Sections</TITLE>
 <PARA>
 </PARA>
-<SECT1 ID="specialsections">
+<SECT2 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
 The following sections are defined in the <XREF LINKEND="std.PPC32.ABI">.
@@ -63,39 +63,39 @@ include(elfsect.sgml)
 Note that the <literal>.tags</>, <literal>.taglist</> and <literal>.tagsym</> sections described in 
 <XREF LINKEND="std.PPC32.ABI"> are not supported.
 </PARA>
-</SECT1>
-<SECT1 ID="linuxspecial">
+</SECT2>
+<SECT2 ID="linuxspecial">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
 The following Linux PPC32 specific sections are defined here.
 include(linuxsect.sgml)
 </PARA>
-</SECT1>
+</SECT2>
 
-<SECT1 ID="sectiontypes">
+<SECT2 ID="sectiontypes">
 <TITLE>Section Types</TITLE>
 <PARA>
 See Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
-</SECT1>
+</SECT2>
 
-<SECT1 ID="sectionattribflags">
+<SECT2 ID="sectionattribflags">
 <TITLE>Section Attribute Flags</TITLE>
 <PARA>
 See Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
-</SECT1>
+</SECT2>
 
-<SECT1 ID="specialsectiontypes">
+<SECT2 ID="specialsectiontypes">
 <TITLE>Special Section Types</TITLE>
 <PARA>
 See Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
+</SECT2>
+
 </SECT1>
 
-</CHAPTER>
-
-<CHAPTER ID=symboltable>
+<SECT1 ID=symboltable>
 <TITLE>Symbol Table</TITLE>
 
 <PARA>
@@ -104,9 +104,9 @@ Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 
 </PARA>
 
-</CHAPTER>
+</SECT1>
 
-<CHAPTER ID=relocation>
+<SECT1 ID=relocation>
 <TITLE>Relocation</TITLE>
 
 <PARA>
@@ -114,14 +114,14 @@ LSB-conforming applications shall use Relocations as defined in
 Chapter 4 of the <XREF LINKEND="std.PPC32.ABI">.
 </PARA>
 
-<SECT1 ID="relocationtypes">
+<SECT2 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
 The relocation type <literal>R_PPC_ADDR30</> as specified in Table 4-8 of
 <XREF LINKEND="std.PPC32.ABI"> is not supported.
 </PARA>
+</SECT2>
+
 </SECT1>
 
 </CHAPTER>
-
-</PART>

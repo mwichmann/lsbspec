@@ -1,7 +1,7 @@
-<PART ID="tocobjformat">
+<CHAPTER ID="tocobjformat">
 <TITLE>Object Format</TITLE>
 
-<CHAPTER ID=objfmt>
+<SECT1 ID=objfmt>
 <TITLE>Object Files</TITLE>
 <PARA>
 LSB-conforming implementations shall support the object file Executable and Linking Format (ELF), which is defined by the following documents:
@@ -29,17 +29,17 @@ an architecture-specific LSB specification
 </ITEMIZEDLIST>
 Conforming implementations may also support other unspecified object file formats.
 </PARA>
-</CHAPTER>
+</SECT1>
 
-<CHAPTER ID=Sections>
+<SECT1 ID=Sections>
 <TITLE>Sections</TITLE>
-<SECT1><TITLE>Introduction</TITLE>
+<SECT2><TITLE>Introduction</TITLE>
 <PARA>
 As described in <XREF LINKEND="std.gABI41">,
 an ELF object file contains a number of <emphasis>sections</emphasis>.
 </PARA>
-</SECT1>
-<SECT1 ID="elftypes">
+</SECT2>
+<SECT2 ID="elftypes">
 <TITLE>Sections Types</TITLE>
 <PARA>
 The section header table is an array of 
@@ -53,7 +53,7 @@ ABI, or one of the additional values specified in <XREF LINKEND=tbl.LSB>.
 <PARA>
 A section header's <STRUCTFIELD>sh_type</STRUCTFIELD> member specifies the sections's semantics.
 </PARA>
-<SECT2>
+<SECT3>
 <TITLE>ELF Section Types</TITLE>
 <PARA>
 The following section types are defined in the 
@@ -62,26 +62,26 @@ and the
 <XREF LINKEND="std.ABIupdate">.
 include(elfsecttypes.sgml)
 </PARA>
-</SECT2>
-<SECT2>
+</SECT3>
+<SECT3>
 <TITLE>Additional Section Types</TITLE>
 <PARA>
 The following additional section types are defined here.
 
 include(linuxsecttypes.sgml)
 </PARA>
+</SECT3>
 </SECT2>
 </SECT1>
-</CHAPTER>
 
-<CHAPTER ID=SpecialSections>
+<SECT1 ID=SpecialSections>
 <TITLE>Special Sections</TITLE>
-<SECT1 ID="elfspecial">
+<SECT2 ID="elfspecial">
 <TITLE>Special Sections</TITLE>
 <PARA>
 Various sections hold program and control information. Sections in the lists below are used by the system and have the indicated types and attributes.
 </PARA>
-<SECT2>
+<SECT3>
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in the
@@ -90,35 +90,35 @@ and the
 <XREF LINKEND="std.ABIupdate">.
 include(elfsect.sgml)
 </PARA>
-</SECT2>
-<SECT2>
+</SECT3>
+<SECT3>
 <TITLE>Additional Special Sections</TITLE>
 <PARA>
 Object files in an LSB conforming application may also contain one or more of 
 the additional special sections described below.
 include(linuxsect.sgml)
 </PARA>
+</SECT3>
 </SECT2>
 </SECT1>
-</CHAPTER>
 
-<CHAPTER ID=Symmap>
+<SECT1 ID=Symmap>
 <TITLE>Symbol Mapping</TITLE>
-<SECT1><TITLE>Introduction</TITLE>
+<SECT2><TITLE>Introduction</TITLE>
 <PARA>
 Symbols in a source program are translated by the compilation system into
 symbols that exist in the object file. 
 </PARA>
-<SECT2>
+<SECT3>
 <TITLE>C Language</TITLE>
 <PARA>
 External C symbols shall be unchanged in an object file's symbol table.
 </PARA>
+</SECT3>
 </SECT2>
 </SECT1>
-</CHAPTER>
 
-<CHAPTER ID="dwarfextchtp">
+<SECT1 ID="dwarfext">
 <TITLE>DWARF Extensions</TITLE>
 <PARA>
 The LSB does not specify debugging information, however, some additional
@@ -164,9 +164,9 @@ include(ehframe.sgml)
 
 include(ehframehdr.sgml)
 
-</CHAPTER>
+</SECT1>
 
 include(symversion.sgml)
 
 include(abinote.sgml)
-</PART>
+</CHAPTER>

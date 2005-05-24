@@ -1,6 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity % entities SYSTEM "../../entities">
+<!entity elf-intro SYSTEM "../../ELF/IA32/intro/elfintro.sgml">
 <!entity elf-contents SYSTEM "../../book/ELF-IA32/contents">
 <!entity lsb-contents SYSTEM "../../book/LSB-IA32/contents">
 <!entity packaging-contents SYSTEM "../../book/Packaging-IA32/contents">
@@ -28,7 +29,11 @@
 
 
 &lsb-ia32-intro;
+<PART>
+<TITLE>Executable and Linking Format (ELF)</TITLE>
+&elf-intro;
 &elf-contents;
+</PART>
 &lsb-contents;
 &packaging-contents;
 &lsb-ia32-appA;

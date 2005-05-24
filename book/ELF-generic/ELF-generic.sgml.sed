@@ -23,7 +23,10 @@
 </BOOKINFO>
 
 &elf-generic-intro;
+<PART>
+<TITLE>Executable and Linking Format (ELF)</TITLE>
 &contents;
+</PART>
 &fdl;
 
 </BOOK>

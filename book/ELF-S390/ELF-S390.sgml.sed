@@ -27,7 +27,10 @@
 </BOOKINFO>
 
 &elf-s390-intro;
+<PART>
+<TITLE>Executable and Linking Format (ELF)</TITLE>
 &contents;
+</PART>
 &fdl;
 
 </BOOK>

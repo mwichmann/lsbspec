@@ -1,6 +1,6 @@
-<PART ID="tocobjformat">
+<CHAPTER ID="tocobjformat">
 <TITLE>Object Format</TITLE>
-<PARTINTRO>
+<SECT1><TITLE>Introduction</TITLE>
 <PARA>
 
 LSB-conforming implementations shall support an object file format,
@@ -11,33 +11,33 @@ need not support tags related functionality. LSB-conforming applications
 must not rely on tags related functionality.
 
 </PARA>
-</PARTINTRO>
+</SECT1>
 
-<CHAPTER ID=elfheader>
+<SECT1 ID=elfheader>
 <TITLE>ELF Header</TITLE>
 <PARA>
 LSB-conforming applications shall use the ELF header as defined in
 <XREF LINKEND="std.PPC64.ABI">, Chapter 4.
 </PARA>
-</CHAPTER>
+</SECT1>
 
-<CHAPTER ID=specialsections>
+<SECT1 ID=specialsections>
 <TITLE>Special Sections</TITLE>
 <PARA>
 The following sections are defined in the <XREF LINKEND="std.PPC64.ABI">.
 include(elfsect.sgml)
 </PARA>
-</CHAPTER>
+</SECT1>
 
-<CHAPTER ID=toc>
+<SECT1 ID=toc>
 <TITLE>TOC</TITLE>
 <PARA>
 LSB-conforming applications shall use the Table of Contents (TOC) as defined in
 <XREF LINKEND="std.PPC64.ABI">, Chapter 4.
 </PARA>
-</CHAPTER>
+</SECT1>
 
-<CHAPTER ID=symboltable>
+<SECT1 ID=symboltable>
 <TITLE>Symbol Table</TITLE>
 
 <PARA>
@@ -46,16 +46,16 @@ Chapter 4 of the <XREF LINKEND="std.PPC64.ABI">.
 
 </PARA>
 
-<SECT1 ID="symbolvalues">
+<SECT2 ID="symbolvalues">
 <TITLE>Symbol Values</TITLE>
 <PARA>
 See Chapter 4 of the <XREF LINKEND="std.PPC64.ABI">.
 </PARA>
+</SECT2>
+
 </SECT1>
 
-</CHAPTER>
-
-<CHAPTER ID=relocation>
+<SECT1 ID=relocation>
 <TITLE>Relocation</TITLE>
 
 <PARA>
@@ -63,13 +63,13 @@ LSB-conforming applications shall use Relocations as defined in
 Chapter 4 of the <XREF LINKEND="std.PPC64.ABI">.
 </PARA>
 
-<SECT1 ID="relocationtypes">
+<SECT2 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
 See Chapter 4 of the <XREF LINKEND="std.PPC64.ABI">.
 </PARA>
+</SECT2>
+
 </SECT1>
 
 </CHAPTER>
-
-</PART>

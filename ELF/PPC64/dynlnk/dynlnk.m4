@@ -1,6 +1,6 @@
-<PART ID="tocdynlnk">
+<CHAPTER ID="tocdynlnk">
 <TITLE>Program Loading and Dynamic Linking</TITLE>
-<PARTINTRO>
+<SECT1><TITLE>Introduction</TITLE>
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
@@ -9,26 +9,26 @@ system actions that create running programs as specified in the
 and as supplemented by the Linux
 Standard Base Specification and this document.
 </PARA>
-</PARTINTRO>
+</SECT1>
 
 
-<CHAPTER ID=programloading>
+<SECT1 ID=programloading>
 <TITLE>Program Loading</TITLE>
 <PARA>
 See
 <XREF LINKEND="std.PPC64.ABI">, Chapter 5.1.
 </PARA>
 
-</CHAPTER>
+</SECT1>
 
-<CHAPTER ID=dynamiclinking>
+<SECT1 ID=dynamiclinking>
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
 See
 <XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.
 </PARA>
 
-<SECT1 ID=dynsection>
+<SECT2 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
@@ -42,32 +42,32 @@ include(linuxtag.sgml)
 </PARA>
 
 
-</SECT1>
+</SECT2>
 
-<SECT1 ID=globaloffsettable>
+<SECT2 ID=globaloffsettable>
 <TITLE>Global Offset Table</TITLE>
 <PARA>
 See
 <XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.2.
 </PARA>
-</SECT1>
+</SECT2>
 
-<SECT1 ID=functionaddresses>
+<SECT2 ID=functionaddresses>
 <TITLE>Function Addresses</TITLE>
 <PARA>
 See
 <XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.3.
 </PARA>
-</SECT1>
+</SECT2>
 
-<SECT1 ID=procedurelinkagetable>
+<SECT2 ID=procedurelinkagetable>
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
 See
 <XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.4.
 </PARA>
+</SECT2>
+
 </SECT1>
 
 </CHAPTER>
-
-</PART>

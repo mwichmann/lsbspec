@@ -1,6 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity % entities SYSTEM "../../entities">
+<!entity elf-intro SYSTEM "../../ELF/S390X/intro/elfintro.sgml">
 <!entity elf-contents SYSTEM "../../book/ELF-S390X/contents">
 <!entity lsb-contents SYSTEM "../../book/LSB-S390X/contents">
 <!entity packaging-contents SYSTEM "../../book/Packaging-S390X/contents">
@@ -28,7 +29,11 @@
 
 
 &lsb-s390x-intro;
+<PART>
+<TITLE>Executable and Linking Format (ELF)</TITLE>
+&elf-intro;
 &elf-contents;
+</PART>
 &lsb-contents;
 &lsb-s390x-appA;
 &packaging-contents;

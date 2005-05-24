@@ -5,6 +5,7 @@
 
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "../../book/LSB-generic/contents">
+<!entity elf-intro SYSTEM "../../ELF/generic/intro/elfintro.sgml">
 <!entity elf-contents SYSTEM "../../book/ELF-generic/contents">
 <!entity packaging-contents SYSTEM "../../book/Packaging/contents">
 <!entity desktop-contents SYSTEM "../../book/Desktop/contents">
@@ -31,7 +32,11 @@
 
 
 &lsb-generic-intro;
+<PART>
+<TITLE>Executable and Linking Format (ELF)</TITLE>
+&elf-intro;
 &elf-contents;
+</PART>
 &contents;
 &fdl;
 

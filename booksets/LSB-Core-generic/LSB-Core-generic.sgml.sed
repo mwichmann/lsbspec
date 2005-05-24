@@ -3,6 +3,7 @@
 <!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
 
 <!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY elf-intro SYSTEM "../../ELF/generic/intro/elfintro.sgml">
 <!ENTITY elf-contents SYSTEM "../../book/ELF-generic/contents">
 <!ENTITY lsb-contents SYSTEM "../../book/LSB-generic/contents">
 <!ENTITY packaging-contents SYSTEM "../../book/Packaging-generic/contents">
@@ -28,7 +29,11 @@
 
 
 &lsb-generic-intro;
+<PART ID=ELF-GENERIC>
+<TITLE>Executable And Linking Format (ELF)</TITLE>
+&elf-intro;
 &elf-contents;
+</PART>
 &lsb-contents;
 &packaging-contents;
 &lsb-generic-appA;

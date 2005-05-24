@@ -1,6 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity % entities SYSTEM "../../entities">
+<!entity elf-intro SYSTEM "../../ELF/PPC64/intro/elfintro.sgml">
 <!entity elf-contents SYSTEM "../../book/ELF-PPC64/contents">
 <!entity lsb-contents SYSTEM "../../book/LSB-PPC64/contents">
 <!entity packaging-contents SYSTEM "../../book/Packaging-PPC64/contents">
@@ -28,7 +29,11 @@
 
 
 &lsb-ppc64-intro;
+<PART>
+<TITLE>Executable and Linking Format (ELF)</TITLE>
+&elf-intro;
 &elf-contents;
+</PART>
 &lsb-contents;
 &packaging-contents;
 &lsb-ppc64-appA;

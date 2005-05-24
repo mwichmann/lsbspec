@@ -1,6 +1,6 @@
-<PART ID="tocobjformat">
+<CHAPTER ID="tocobjformat">
 <TITLE>Object Format</TITLE>
-<PARTINTRO>
+<SECT1><TITLE>Introduction</TITLE>
 <PARA>
 LSB-conforming implementations shall support an object file format, called
 Executable and Linking Format (ELF) as defined by the 
@@ -9,11 +9,11 @@ Executable and Linking Format (ELF) as defined by the
 and as supplemented by the Linux Standard
 Base Specification and this document.
 </PARA>
-</PARTINTRO>
+</SECT1>
 
-<CHAPTER ID=elfheader>
+<SECT1 ID=elfheader>
 <TITLE>ELF Header</TITLE>
-<SECT1 ID="machineinfo">
+<SECT2 ID="machineinfo">
 <TITLE>Machine Information</TITLE>
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
@@ -22,7 +22,7 @@ Chapter 4.
 Implementations shall support the LP64 model. It is unspecified whether or
 not the ILP32 model shall also be supported.
 </PARA>
-<SECT2 ID="mifileclass">
+<SECT3 ID="mifileclass">
 <TITLE>File Class</TITLE>
 <PARA>
 For LP64 relocatable objects, the file class value in
@@ -32,8 +32,8 @@ For LP64 relocatable objects, the file class value in
 and a conforming linker must be able to process
 either or both classes.
 </PARA>
-</SECT2>
-<SECT2 ID="midataencoding">
+</SECT3>
+<SECT3 ID="midataencoding">
 <TITLE>Data Encoding</TITLE>
 <PARA>
 Implementations shall support 2's complement, little endian data encoding.
@@ -41,24 +41,24 @@ The data encoding value in
 <literal>e_ident[EI_DATA]</literal> shall contain the value
 <constant>ELFDATA2LSB</constant>.
 </PARA>
-</SECT2>
-<SECT2 ID="miosidentification">
+</SECT3>
+<SECT3 ID="miosidentification">
 <TITLE>OS Identification</TITLE>
 <PARA>
 The OS Identification field 
 <literal>e_ident[EI_OSABI]</literal> shall contain the value 
 <constant>ELFOSABI_LINUX</constant>.
 </PARA>
-</SECT2>
-<SECT2 ID="miprocessorident">
+</SECT3>
+<SECT3 ID="miprocessorident">
 <TITLE>Processor Identification</TITLE>
 <PARA>
 The processor identification value held in <literal>e_machine</literal>
 shall contain the value 
 <constant>EM_IA_64</constant>.
 </PARA>
-</SECT2>
-<SECT2 ID="miprocessorspecialflags">
+</SECT3>
+<SECT3 ID="miprocessorspecialflags">
 <TITLE>Processor Specific Flags</TITLE>
 <PARA>
 The flags field <literal>e_flags</literal> shall be
@@ -95,11 +95,11 @@ is not set, code can not be executed from the stack or heap.</PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
+</SECT3>
 </SECT2>
 </SECT1>
-</CHAPTER>
 
-<CHAPTER ID=sections>
+<SECT1 ID=sections>
 <TITLE>Sections</TITLE>
 <PARA>
 The &itanium; architecture defines two processor-specific
@@ -107,23 +107,23 @@ section types, as described in
 <XREF LINKEND="std.IA64.ABI">,
 Chapter 4.
 </PARA>
-<SECT1 ID="specialsections">
+<SECT2 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
 The following sections are defined in the 
 <XREF LINKEND="std.IA64.ABI">.
 include(elfsect.sgml)
 </PARA>
-</SECT1>
-<SECT1 ID="linuxspecial">
+</SECT2>
+<SECT2 ID="linuxspecial">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
 The following Linux IA-64 specific sections are defined here.
 include(linuxsect.sgml)
 </PARA>
-</SECT1>
+</SECT2>
 
-<SECT1 ID="sectiontypes">
+<SECT2 ID="sectiontypes">
 <TITLE>Section Types</TITLE>
 <PARA>
 Section Types are described in the 
@@ -140,29 +140,29 @@ section, beyond the gABI requirements for the handling of
 unrecognized section types, linking them into a contiguous section
 in the object file created by the static linker.
 </PARA>
-</SECT1>
+</SECT2>
 
-<SECT1 ID="sectionattribflags">
+<SECT2 ID="sectionattribflags">
 <TITLE>Section Attribute Flags</TITLE>
 <PARA>
 See
 <XREF LINKEND="std.IA64.ABI">,
 Chapter 4.2.2.
 </PARA>
-</SECT1>
+</SECT2>
 
-<SECT1 ID="specialsectiontypes">
+<SECT2 ID="specialsectiontypes">
 <TITLE>Special Section Types</TITLE>
 <PARA>
 See
 <XREF LINKEND="std.IA64.ABI">,
 Chapter 4.2.3.
 </PARA>
+</SECT2>
+
 </SECT1>
 
-</CHAPTER>
-
-<CHAPTER ID=symboltable>
+<SECT1 ID=symboltable>
 <TITLE>Symbol Table</TITLE>
 
 <PARA>
@@ -183,9 +183,9 @@ contains zero.  This procedure linkage table entry address is used by
 the dynamic linker in resolving references to the address of the function.
 </PARA>
 
-</CHAPTER>
+</SECT1>
 
-<CHAPTER ID=relocation>
+<SECT1 ID=relocation>
 <TITLE>Relocation</TITLE>
 
 <PARA>
@@ -194,15 +194,15 @@ LSB-conforming applications shall use Relocations as defined in
 Chapter 4.3.
 </PARA>
 
-<SECT1 ID="relocationtypes">
+<SECT2 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
 See
 <XREF LINKEND="std.IA64.ABI">,
 Chapter 4.3.
 </PARA>
+</SECT2>
+
 </SECT1>
 
 </CHAPTER>
-
-</PART>

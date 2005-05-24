@@ -1,6 +1,7 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!entity % entities SYSTEM "../../entities">
+<!entity elf-intro SYSTEM "../../ELF/AMD64/intro/elfintro.sgml">
 <!entity elf-contents SYSTEM "../../book/ELF-AMD64/contents">
 <!entity lsb-contents SYSTEM "../../book/LSB-AMD64/contents">
 <!entity packaging-contents SYSTEM "../../book/Packaging-AMD64/contents">
@@ -28,7 +29,11 @@
 
 
 &lsb-amd64-intro;
+<PART>
+<TITLE>Executable and Linking Format (ELF)</TITLE>
+&elf-intro;
 &elf-contents;
+</PART>
 &lsb-contents;
 &packaging-contents;
 &lsb-amd64-appA;

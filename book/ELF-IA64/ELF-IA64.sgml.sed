@@ -29,7 +29,10 @@
 </BOOKINFO>
 
 &elf-ia64-intro;
+<PART>
+<TITLE>Executable and Linking Format (ELF)</TITLE>
 &contents;
+</PART>
 &fdl;
 
 </BOOK>
