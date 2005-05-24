@@ -12,7 +12,7 @@ hardware in the system.
 </PARA>
 
 <PARA>
-Only those interfaces that are unique to the PowerPC 32 platform are
+Only those interfaces that are unique to the S390 platform are
 defined here. This section should be used in conjunction with the
 corresponding section in the Linux Standard Base Specification.
 </PARA>
