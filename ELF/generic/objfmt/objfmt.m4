@@ -139,9 +139,9 @@ include(dwarfenc.sgml)
 
 include(dwarfext.sgml)
 
-</CHAPTER>
+</SECT1>
 
-<CHAPTER ID="ehframechpt">
+<SECT1 ID="ehframechpt">
 <TITLE>Exception Frames</TITLE>
 <PARA>
 When using languages that support exceptions, such as C++, additional
