@@ -273,7 +273,7 @@ struct rpmhdrindex {
 <LISTITEM>
 <PARA>
 Value identifying the purpose of the data associated with this Index Record.
-This value of this field is dependent on the context in which the Index Record
+The value of this field is dependent on the context in which the Index Record
 is used, and is defined below and in later sections.
 </PARA>
 </LISTITEM>
@@ -316,7 +316,7 @@ in this table.
 </PARA>
 include(indextypes.sgml)
 <PARA>
-The string arrays specified for enties of type
+The string arrays specified for entries of type
 <CONSTANT>RPM_STRING_ARRAY_TYPE</CONSTANT> and
 <CONSTANT>RPM_I18NSTRING_TYPE</CONSTANT>
 are vectors of strings in a contiguous block of memory, each element separated
@@ -671,7 +671,7 @@ the field.  With the exception of <STRUCTFIELD>c_namesize</STRUCTFIELD>
 and the corresponding name string, and <STRUCTFIELD>c_checksum</STRUCTFIELD>,
 all information contained in the CPIO Header is also represented in the
 Header Section.
-The values in in the CPIO Header shall match the values contained in the
+The values in the CPIO Header shall match the values contained in the
 Header Section.
 </PARA>
 <SCREEN>
@@ -878,7 +878,7 @@ Packages shall not use RPM triggers.
 
 <PARA>
 Packages shall not depend on the order in which scripts are executed
-(pre-install, pre-uninstall, &amp;c), when doing an upgrade.
+(pre-install, pre-uninstall, etc), when doing an upgrade.
 </PARA>
 </SECT1>
 
@@ -979,7 +979,7 @@ include(coredep.sgml)
 <TITLE>Package Architecture Considerations</TITLE>
 <PARA>
 Packages which do not contain any architecture specific files must specify an
-architecture of <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>. A LSB runtime
+architecture of <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>. An LSB runtime
 environment must accept values <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>, or
 the value specified in the architecture specific supplement.
 </PARA>
