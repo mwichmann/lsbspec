@@ -44,15 +44,15 @@
 <title>Description</title>
 
 <para>
-The <function>setsockopt</function> function shall behave as specified in 
-<CITETITLE><XREF LINKEND="STD.SUSV3"></CITETITLE>, 
+The <function>setsockopt</function> function shall behave as specified in
+<CITETITLE><XREF LINKEND="STD.SUSV3"></CITETITLE>,
 with the following extensions.
 </para>
 
 <refsect2>
 <title>IP Protocol Level Options</title>
 <para>
-If the <parameter>level</parameter> parameter is 
+If the <parameter>level</parameter> parameter is
 <constant>IPPROTO_IP</constant>, the following values shall be supported for
 <parameter>option_name</parameter> (see <xref linkend="std.rfc791"> for
 further details):
@@ -61,7 +61,7 @@ further details):
 <term><constant>IP_OPTIONS</constant></term>
 <listitem><para>
 Set the Internet Protocol options sent with
-every packet from this socket. 
+every packet from this socket.
 The <parameter>option_value</parameter> shall point to a
 memory buffer containing the options and
 <parameter>option_len</parameter> shall contain the size in bytes
@@ -95,9 +95,106 @@ of the buffer referred to by <parameter>option_value</parameter>.
 </para></listitem>
 </varlistentry>
 
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>IP_MULTICAST_TTL</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+Sets the Time To Live value of outgoing multicast packets for this
+socket. <PARAMETER>optval</PARAMETER> shall point to an integer which contains
+the new TTL value. If the new TTL value is <constant>-1</constant>, the implementation
+should use an unspecified default TTL value. If the new TTL value is out of the range
+of acceptable values (0-255), <function>setsockopt</function> shall return
+<constant>-1</constant> and set <varname>errno</varname> to indicate the error.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>IP_MULTICAST_LOOP</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+Sets a boolean flag indicating whether multicast packets originating locally
+should be looped back to the local sockets.
+<PARAMETER>optval</PARAMETER> shall point to an integer which contains
+the new flag value.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>IP_ADD_MEMBERSHIP</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+Join a multicast group.
+<PARAMETER>optval</PARAMETER> shall point to a
+<STRUCTNAME>ip_mreq</STRUCTNAME> structure. Before calling, the
+caller should fill in the <STRUCTFIELD>imr_multiaddr</STRUCTFIELD>
+field with the multicast group address and the
+<STRUCTFIELD>imr_address</STRUCTFIELD> field with the address of the local
+interface. If <STRUCTFIELD>imr_address</STRUCTFIELD> is set to INADDR_ANY,
+then an appropriate interface is chosen by the system.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>IP_DROP_MEMBERSHIP</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+Leave a multicast group.
+<PARAMETER>optval</PARAMETER> shall point to a
+<STRUCTNAME>ip_mreq</STRUCTNAME> structure containing the same values as were
+used with <CONSTANT>IP_ADD_MEMBERSHIP</CONSTANT>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>IP_MULTICAST_IF</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+Set the local device for a multicast socket.
+<PARAMETER>optval</PARAMETER> shall point to a
+<STRUCTNAME>ip_mreq</STRUCTNAME> structure initialized in the same manner as
+with <CONSTANT>IP_ADD_MEMBERSHIP</CONSTANT>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
 </variablelist>
+</para>
+<para>
+The <STRUCTNAME>ip_mreq</STRUCTNAME> structure contains two
+<STRUCTNAME>struct in_addr</STRUCTNAME> fields:
+<STRUCTFIELD>imr_multiaddr</STRUCTFIELD> and
+<STRUCTFIELD>imr_address</STRUCTFIELD>.
 </para>
 </refsect2>
 
 </refsect1>
+<REFSECT1>	 
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
+On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
+the global variable <VARNAME>errno</VARNAME> is set appropriately.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+As defined in <XREF LINKEND="STD.SUSV3">.
+</PARA>
+</REFSECT1>
 </refentry>
