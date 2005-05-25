@@ -14,7 +14,7 @@ hardware in the system.
 <PARA>
 Only those interfaces that are unique to the PowerPC 32 platform are
 defined here. This section should be used in conjunction with the
-corresponding section in the Linux Standard Base Specification.
+corresponding section in the generic Linux Standard Base Core Specification.
 </PARA>
 
 <SECT1 ID=proginterp>
