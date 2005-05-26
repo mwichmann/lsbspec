@@ -298,15 +298,17 @@ Scripts may write to
 standard error or standard output, but implementations need not
 present text written to standard error/output to the user or do
 anything else with it.
-</PARA>
+<NOTE>
 <PARA>
 Since init scripts may be run manually by a system administrator with
 non-standard environment variable values for <EnVar>PATH</EnVar>, 
 <EnVar>USER</EnVar>, <EnVar>LOGNAME</EnVar>, etc., 
-init scripts shall not depend on the values of these environment
+init scripts should not depend on the values of these environment
 variables.  They should set them to some known/default values if they
 are needed.
 
+</PARA>
+</NOTE>
 </PARA>
 </SECT1>
 
@@ -620,7 +622,7 @@ of the installed init script. The init script must already be
 installed, typically by means of a call to the <command>lsbinstall</command> command.
 The <command>install_initd</command> command will not copy it there, only activate
 it once it has been installed in the system specific init script repository.
-The <command>lsbinstall</command>
+The <command>lsbinstall</command> command
 will print a suitable name for the <command>install_initd</command> utility on its standard
 output.
 Example:
@@ -745,7 +747,7 @@ sign.  Implementations shall provide the following facility names:
 <variablelist termlength=20>
 <varlistentry>
 <term><command>$local_fs</command></term>	
-<listitem><para>all local filesystems are mounted</para></listitem>
+<listitem><para>all local file systems are mounted</para></listitem>
 </varlistentry>
 
 <varlistentry>
@@ -773,8 +775,8 @@ service as defined in <xref linkend="std.RFC1833">
 
 <varlistentry>
 <term><command>$remote_fs</command></term>	
-<listitem><para>all remote filesystems are available. In some
-configurations, filesystems such as <filename>/usr</filename>
+<listitem><para>all remote file systems are available. In some
+configurations, file systems such as <filename>/usr</filename>
 may be remote.  Many
 applications that require <command>$local_fs</command> will probably
 also require <command>$remote_fs</command>.</para></listitem>
@@ -893,15 +895,17 @@ such as package/prerequisites naming.
 <TITLE>Init Script Functions</TITLE>
 
 <PARA>
-Each conforming init script shall source the file
-<filename>/lib/lsb/init-functions</filename>. This file shall cause the
+Each conforming init script shall execute the commands in the file
+<filename>/lib/lsb/init-functions</filename> in the 
+current environment (see shell special built-in command <command>dot</command>).
+This file shall cause the
 following shell script commands to be defined in an unspecified manner.  
 <note>
 <para>
 This can be done either by
 adding a directory to the 
 <envar>PATH</envar> variable which defines these commands, or by
-defining shell aliases.  
+defining shell aliases or functions.  
 </para>
 <para>
 Although the commands made available via this mechanism need not

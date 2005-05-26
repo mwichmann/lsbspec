@@ -542,7 +542,7 @@ process, they have no effect when executed as a file.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mkcmdlist,v 1.1 2002/05/22 15:18:20 anderson Exp 0 -->
-<!--    at Thu May 19 08:23:33 2005 -->
+<!--    at Wed May 25 18:41:51 2005 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -1206,7 +1206,7 @@ df
 <REFNAMEDIV>
 <REFNAME>df</REFNAME>
 <REFPURPOSE>
-report filesystem disk space usage
+report file system disk space usage
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -1239,7 +1239,7 @@ Applications should not specify <parameter>-t</parameter>.
 <para>
 The most common implementation of <command>df</command> uses
 the <parameter>-t</parameter> option for a different purpose
-(restricting output to a particular filesystem type), and
+(restricting output to a particular file system type), and
 use of <parameter>-t</parameter> is therefore non-portable.
 </para>
 </note>
@@ -1249,16 +1249,16 @@ use of <parameter>-t</parameter> is therefore non-portable.
 <TITLE>Operand May Identify Special File</TITLE>
 <PARA>
 If  an argument is the absolute file name of a special file
-containing a mounted filesystem, <COMMAND>df</COMMAND>
+containing a mounted file system, <COMMAND>df</COMMAND>
 shall show  the  space
-available on that filesystem rather than on the filesystem
+available on that file system rather than on the file system
 containing the special file (which  is  typically  the  root
-filesystem).
+file system).
 <NOTE>
 <PARA>
 In <XREF LINKEND="STD.SUSv3"> the XSI optional behavior permits
 an operand to name a special file, but appears to require the
-operation be performed on the filesystem containing the special file.
+operation be performed on the file system containing the special file.
 A defect report has been submitted for this case.
 </PARA>
 </NOTE>
@@ -1330,10 +1330,8 @@ sets the level at which logging of messages is done to the console.
 <term><PARAMETER Class=Option>-s bufsize</PARAMETER></term>
 <listitem>
 <para>
-uses a buffer of <parameter>bufsize</parameter> to query the system message buffer.  This is 16392
-by default (this matches the default kernel syslog buffer size since 2.1.113).
-If you have set the kernel buffer to larger than
-the default then this option can be used to view the entire buffer.
+uses a buffer of <parameter>bufsize</parameter> to query the system message buffer.  This is 
+<constant>16392</constant> by default.
 </para>
 </listitem>
 </varlistentry>
@@ -1431,14 +1429,14 @@ egrep
 <REFNAMEDIV>
 <REFNAME>egrep</REFNAME>
 <REFPURPOSE>
-search a file with an ERE pattern
+search a file with an Extended Regular Expression pattern
 </REFPURPOSE>
 </REFNAMEDIV>
 
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>egrep</COMMAND> is equivalent to grep -E. For further details,
+<COMMAND>egrep</COMMAND> is equivalent to <command>grep -E</command>. For further details,
 see the specification for <COMMAND>grep</COMMAND>.
 </PARA>
 
@@ -1802,7 +1800,7 @@ Specifies locale name.
 </TERM>
 <LISTITEM>
 <PARA>
-Specifies messaging locale, and if present overrides LANG for messages.
+Specifies messaging locale, and if present overrides <CONSTANT>LANG</CONSTANT> for messages.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -1944,7 +1942,7 @@ see <XREF LINKEND="FHS-SYSADMIN">.
 The new group shall have group ID <PARAMETER>gid</PARAMETER>.
 If the <PARAMETER Class=option>-o</PARAMETER> option is not used, no other
 group shall have this group ID.
-The value of <PARAMETER>gid</PARAMETER>shall be non-negative.  
+The value of <PARAMETER>gid</PARAMETER> shall be non-negative.  
 </para>
 </listitem>
 </varlistentry>
@@ -2143,7 +2141,7 @@ The <COMMAND>gzip</COMMAND> command shall attempt to reduce the size of
 the named files.
 Whenever possible, each file is replaced by one with the
 extension <FILENAME>.gz</FILENAME>,
-while keeping the same ownership modes, access and
+while keeping the same ownership, modes, access and
 modification times. If no files are specified, or if a file name is
 <FILENAME>-</FILENAME>, 
 the standard input is compressed to the standard output. 
@@ -2209,12 +2207,13 @@ prompts to verify whether an existing file should be overwritten.
 <TERM>-l, --list</TERM>
 <LISTITEM>
 <PARA>
-lists the compressed size, uncompressed size, ration and uncompressed 
-name for each compressed file. Gives the uncompressed size as 
-<CONSTANT>-1</CONSTANT> for 
-files not in <COMMAND>gzip</COMMAND> format. Additionally displays method, 
-crc and timestamp for the uncompress file when used in combination with 
-<PARAMETER>--verbose</PARAMETER>.
+lists the compressed size, uncompressed size, ratio and uncompressed 
+name for each compressed file. For files that are not in <command>gzip</command>
+format, the uncompressed size shall be given as 
+<CONSTANT>-1</CONSTANT>.
+If the <PARAMETER>--verbose</parameter> or <parameter>-v</parameter> option
+is also specified, the
+crc and timestamp for the uncompressed file shall also be displayed.
 </PARA>
 
 <PARA>
@@ -2234,13 +2233,14 @@ not in <COMMAND>gzip</COMMAND> format.
 </PARA>
 
 <PARA>
-With <PARAMETER>--name</PARAMETER>, the uncompressed name, date and time are those stored
-within the compress file, if present.
+If the <PARAMETER>--name</PARAMETER> or <PARAMETER>-N</PARAMETER> option
+is also specified, the uncompressed name, date and time are those stored
+within the compressed file, if present.
 </PARA>
 
 <PARA>
-With <PARAMETER>--verbose</PARAMETER>, the size totals and compression ratio for all files is
-also displayed, unless some sizes are unknown.  With <PARAMETER>--quiet</PARAMETER>, the
+If the <PARAMETER>--quiet</PARAMETER> or <PARAMETER>-q</PARAMETER> option
+is also specified, the 
 title and totals lines are not displayed.
 </PARA>
 </LISTITEM>
@@ -2457,7 +2457,7 @@ copy files and set attributes
 <PARA>
 In the first two formats, copy <PARAMETER>SOURCE</PARAMETER>
 to <PARAMETER>DEST</PARAMETER> or multiple <PARAMETER>SOURCE(s)</PARAMETER> to
-the existing <PARAMETER>DIRECTORY</PARAMETER>, optionally setting permission modes and
+the existing <PARAMETER>DEST</PARAMETER> directory, optionally setting permission modes and
 file ownership.  In the third format, each
 <PARAMETER>DIRECTORY</PARAMETER> and any missing parent
 directories shall be created.
@@ -2474,29 +2474,45 @@ directories shall be created.
 <para>
 makes a backup of each existing destination file.
 <PARAMETER>METHOD</PARAMETER> may be one of the following:
-<ITEMIZEDLIST>
-<LISTITEM><PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
 <PARAMETER>none</PARAMETER> or <PARAMETER>off</PARAMETER>
+</TERM>
+<LISTITEM><PARA>
 never make backups.
 </PARA></LISTITEM>
-<LISTITEM><PARA>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
 <PARAMETER>numbered</PARAMETER> or <PARAMETER>t</PARAMETER>
+</TERM>
+<LISTITEM><PARA>
 make numbered backups. A numbered backup has the form
 <LITERAL>"%s.~%d~", target_name, version_number</LITERAL>. Each backup
 shall increment the version number by 1.
 </PARA></LISTITEM>
-<LISTITEM><PARA>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
 <PARAMETER>existing</PARAMETER> or <PARAMETER>nil</PARAMETER>
-numbered if numbered backups exist, or simple otherwise.
-</PARA></LISTITEM>
+</TERM>
 <LISTITEM><PARA>
+behave as numbered if numbered backups exist, or simple otherwise.
+</PARA></LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
 <PARAMETER>simple</PARAMETER> or <PARAMETER>never</PARAMETER>
+</TERM>
+<LISTITEM><PARA>
 append a suffix to the name. The default suffix is '<LITERAL>~</LITERAL>',
 but can be overriden by setting <ENVAR>SIMPLE_BACKUP_SUFFIX</ENVAR> in
 the environment, or via the <PARAMETER>-S</PARAMETER> or <PARAMETER>--suffix</PARAMETER>
 option.
 </PARA></LISTITEM>
-</ITEMIZEDLIST>
+</VARLISTENTRY>
+</VARIABLELIST>
 </para>
 <para>
 If no <PARAMETER>METHOD</PARAMETER> is specified, the environment variable
@@ -3232,8 +3248,8 @@ If no options are given, the <parameter>-v</parameter> option is assumed.
 <LISTITEM>
 <PARA>
 displays version of LSB against which distribution is compliant. The version
-is expressed as a colon seperated list of LSB module descriptions. LSB module
-descriptions are dash seperated tuples containing the module name, version,
+is expressed as a colon separated list of LSB module descriptions. LSB module
+descriptions are dash separated tuples containing the module name, version,
 and architecture name.
 The output is a single line of text of the following format:
 </PARA>
@@ -3387,6 +3403,7 @@ the system.
 The <parameter>-t type</parameter> or <parameter>--type=type</parameter>
 option shall support at least the following types:
 <VARIABLELIST>
+<!--
 <VARLISTENTRY>
 <TERM>font</TERM>
 <LISTITEM>
@@ -3397,6 +3414,7 @@ There shall be one operand, that names a font file.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
+-->
 <VARLISTENTRY>
 <TERM>init</TERM>
 <LISTITEM>
@@ -3456,8 +3474,11 @@ the first operand shall have the format:
 <programlisting>
 "%s:%s:%s:%s:%s:%s"
 </programlisting>
-Otherwise, the first operand shall name the service to be checked or removed
-as specified.
+Otherwise, the first operand shall 
+have the format
+<programlisting>
+"%s:%s"
+</programlisting>
 The fields in the first operand have the following meaning, in order:
 <variablelist>
 <varlistentry>
@@ -3480,6 +3501,15 @@ A future version of this specification may require names containing a
 </para></listitem>
 </varlistentry>
 <varlistentry>
+<term><literal>protocol</literal></term>
+<listitem><para>
+The name of a protocol. The name shall be one of those
+listed in <filename>/etc/protocols</filename>.
+If this attribute is not specified (i.e. a null value is passed), the system shall
+use an implementation defined default protocol.
+</para></listitem>
+</varlistentry>
+<varlistentry>
 <term><literal>socket_type</literal></term>
 <listitem><para>
 One of the following values:
@@ -3494,24 +3524,21 @@ the service will use a stream type socket.
 <term><literal>dgram</literal></term>
 <listitem><para>
 the service will use a datagram type socket.
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
 </para></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>seqpacket</literal></term>
 <listitem><para>
 the service will use a sequenced packet type socket.
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
 </para></listitem>
 </varlistentry>
 </variablelist>
-</para></listitem>
-</varlistentry>
-<varlistentry>
-<term><literal>protocol</literal></term>
-<listitem><para>
-The name of a protocol. The name shall be one of those
-listed in <filename>/etc/protocols</filename>.
-If this attribute is not specified, the system shall
-use an implementation defined default protocol.
 </para></listitem>
 </varlistentry>
 <varlistentry>
@@ -3530,14 +3557,21 @@ should be set to <literal>wait</literal>, since such services
 do not have any distinction between the socket used for
 listening and that used for accepting.
 </PARA></NOTE>
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
 </para></listitem>
 </varlistentry>
 <varlistentry>
-<term><literal>user</literal></term>
+<term><literal>user[.group]</literal></term>
 <listitem><para>
-The name of a user from the user login database. The service
+The name of a user from the user login database, optionally followed
+by the name of a group from the group database. The service
 started to handle this request shall run with the privileges of 
-the specified user. 
+the specified user and group. 
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
 </para></listitem>
 </varlistentry>
 <varlistentry>
@@ -3546,6 +3580,9 @@ the specified user.
 The name of a program to run to handle the request, optionally followed
 by any arguments required. The server name and each of its arguments
 is separated by whitespace.
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
 </para></listitem>
 </varlistentry>
 </variablelist>
@@ -3573,6 +3610,7 @@ There shall be one operand, that names a crontab file. See
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
+<!--
 <VARLISTENTRY>
 <TERM>menu</TERM>
 <LISTITEM>
@@ -3582,6 +3620,8 @@ if the system supports one.
 There shall be one operand, that names a menu file.
 </PARA>
 </LISTITEM>
+</VARLISTENTRY>
+-->
 <VARLISTENTRY>
 <TERM>man</TERM>
 <LISTITEM>
@@ -3856,7 +3896,7 @@ output version information and exit.
 
 </variablelist>
 <para>
-If <parameter>type</parameter> is <literal>p</>parameter,
+If <parameter>type</parameter> is <literal>p</literal>,
 <parameter>major</parameter> and <parameter>minor</parameter>
 shall not be specified. Otherwise, these parameters are mandatory.
 </para>
@@ -4182,7 +4222,7 @@ messages on <varname>stdout</varname>.
 <term>-a</term>
 <listitem>
 <para>
-mount all filesystems (of the given types) mentioned in <filename>/etc/fstab</filename>.
+mount all file systems (of the given types) mentioned in <filename>/etc/fstab</filename>.
 </para>
 </listitem>
 </varlistentry>
@@ -4224,7 +4264,7 @@ when <filename>/etc</filename> is on a read-only file system.
 <listitem>
 <para>
 ignore <COMMAND>mount</COMMAND> options not supported by a 
-filesystem type.  Not all filesystems support this option. 
+file system type.  Not all file systems support this option. 
 </para>
 </listitem>
 </varlistentry>
@@ -4987,7 +5027,7 @@ The <literal>c-format</> flag indicates that the <literal>msgid</literal> string
 used as format string by <function>printf</>-like functions. 
 If the <literal>c-format</> flag is
 given for a string the <command>msgfmt</> utility may perform additional 
-tests to check to
+tests to check the
 validity of the translation.
 </PARA>
 </LISTITEM>
@@ -5433,7 +5473,7 @@ be dumped shall be the standard input.
 </PARA>
 <PARA>
 If there are exactly two operands, and they are both of the form
-<literal>[+]offset[.][b]</literal>, then the first shall be an treated
+<literal>[+]offset[.][b]</literal>, then the first shall be treated
 as an offset (as above), and
 the second shall be a label, in the same format as the offset. If a label is
 specified, then the first output line produced for each input block shall be
@@ -5486,12 +5526,13 @@ change user password
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>passwd</COMMAND> changes passwords for user and group accounts. 
-A normal user may only change the password for their own account, the 
-super user may change the password for any account. <COMMAND>passwd</COMMAND> 
-also changes password expiry dates and intervals.
-Applications may not assume the format of prompts and anticipated input 
-for user interaction, because they are unspecified.
+<COMMAND>passwd</COMMAND> changes authentication
+information for user and group accounts, including
+passwords and password expiry details, and may
+be used to enable and disable accounts.
+Only a user with appropriate privilege may change
+the password for other users or modify the
+expiry information.
 </PARA>
 </REFSECT1>
 
@@ -6031,7 +6072,8 @@ there was an error.
 <TITLE>Notes/Rationale
 </TITLE>
 <para>
-This page is intended to reflect functionality provided by 
+The <command>sendmail</command> command specified here
+is intended to reflect functionality provided by 
 <command>smail</command>, 
 <command>exim</command>
 and other implementations, not just the <COMMAND>sendmail</COMMAND> 
@@ -6310,16 +6352,22 @@ option in order for a command to be passed to it).
 
 <PARA>
 The current environment is passed to the new shell.  The value of
-$PATH is reset to /bin:/usr/bin for normal users, or
-/sbin:/bin:/usr/sbin:/usr/bin for the super user.  This may be changed
-with the ENV_PATH and ENV_SUPATH definitions in /etc/login.defs. When
-using the -m or -p options, the user's environment is not changed.
+<ENVAR>PATH</ENVAR>is reset to <LITERAL>/bin:/usr/bin</LITERAL> for unprivileged users, or
+<LITERAL>/sbin:/bin:/usr/sbin:/usr/bin</LITERAL> for users
+with appropriate privilege.  This may be changed
+with the <ENVAR>ENV_PATH</ENVAR> and <ENVAR>ENV_SUPATH</ENVAR>
+definitions in <FILENAME>/etc/login.defs</FILENAME>. When
+using the <PARAMETER>-m</PARAMETER> or <PARAMETER>-p</PARAMETER> options, 
+the user's environment is not changed.
 </PARA>
 
 <PARA>
-A subsystem login is indicated by the presense of a "*" as the first
-character of the login shell. The given home directory will be used as
-the root of a new filesystem which the user is actually logged into.
+A subsystem login is indicated by the presence of a "*" as the first
+character of the login shell. If this character is present,
+it shall be removed, and the remaining path (or 
+<filename>/bin/sh</filename> if the remaining path is empty)
+shall be executed after changing the root directory
+to the directory specified as the home directory.
 </PARA>
 
 </REFSECT1>
@@ -6380,7 +6428,7 @@ shall be present in /etc/shells.
 <REFNAME>sync</REFNAME>
 
 <REFPURPOSE>
-flush filesystem buffers
+flush file system buffers
 </REFPURPOSE>
 
 </REFNAMEDIV>
@@ -6526,7 +6574,7 @@ tries to remount read-only if unmounting fails.
 <listitem>
 <para>
 unmounts all of the file systems described in /etc/mtab except
-for the proc filesystem.
+for the proc file system.
 </para>
 </listitem>
 </varlistentry>
