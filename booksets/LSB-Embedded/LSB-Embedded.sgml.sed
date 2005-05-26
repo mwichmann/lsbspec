@@ -32,7 +32,7 @@
 
 
 &lsb-generic-intro;
-<PART>
+<PART ID=ELF-Embedded>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &elf-intro;
 &elf-contents;

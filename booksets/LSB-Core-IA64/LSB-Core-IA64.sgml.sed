@@ -32,7 +32,7 @@
 
 
 &lsb-ia64-intro;
-<PART>
+<PART ID=ELF-IA64>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &elf-intro;
 &elf-contents;

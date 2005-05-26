@@ -29,7 +29,7 @@
 
 
 &lsb-s390-intro;
-<PART>
+<PART ID=ELF-S390>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &elf-intro;
 &elf-contents;

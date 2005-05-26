@@ -27,7 +27,7 @@
 </BOOKINFO>
 
 &elf-s390x-intro;
-<PART>
+<PART ID=ELF-S390X>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &contents;
 </PART>

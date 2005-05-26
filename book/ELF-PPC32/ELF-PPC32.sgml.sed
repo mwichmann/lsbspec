@@ -27,7 +27,7 @@
 </BOOKINFO>
 
 &elf-ppc32-intro;
-<PART>
+<PART ID=ELF-PPC32>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &contents;
 </PART>

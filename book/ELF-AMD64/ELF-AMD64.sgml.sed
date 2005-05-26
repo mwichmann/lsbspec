@@ -27,7 +27,7 @@
 </BOOKINFO>
 
 &elf-amd64-intro;
-<PART>
+<PART ID=ELF-AMD64>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &contents;
 </PART>

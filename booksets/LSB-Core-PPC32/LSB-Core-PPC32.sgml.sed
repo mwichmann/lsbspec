@@ -29,7 +29,7 @@
 
 
 &lsb-ppc32-intro;
-<PART>
+<PART ID=ELF-PPC32>
 <TITLE>Executable And Linking Format (ELF)</TITLE>
 &elf-intro;
 &elf-contents;

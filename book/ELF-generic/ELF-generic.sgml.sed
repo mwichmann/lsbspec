@@ -23,7 +23,7 @@
 </BOOKINFO>
 
 &elf-generic-intro;
-<PART>
+<PART ID=ELF-GENERIC>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &contents;
 </PART>

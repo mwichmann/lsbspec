@@ -29,7 +29,7 @@
 
 
 &lsb-amd64-intro;
-<PART>
+<PART ID=ELF-AMD64>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &elf-intro;
 &elf-contents;
