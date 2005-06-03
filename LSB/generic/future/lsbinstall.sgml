@@ -1,0 +1,387 @@
+<REFENTRY id="lsbinstall">
+<REFMETA>
+<REFENTRYTITLE>
+lsbinstall
+</REFENTRYTITLE>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>lsbinstall</REFNAME>
+<REFPURPOSE>
+installation tool for various types of data
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<CMDSYNOPSIS>
+<COMMAND>/usr/lib/lsb/lsbinstall</COMMAND> 
+<GROUP><ARG>-c</ARG><ARG>--check</ARG><ARG>-r</ARG><ARG>--remove</ARG></GROUP>
+<GROUP choice=plain><ARG>{ -t type</ARG><ARG>--type=type }</ARG></GROUP>
+<GROUP><ARG>-p package</ARG><ARG>--package=package</ARG></GROUP>
+<ARG rep=repeat choice=plain>operand</ARG>
+</CMDSYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The <COMMAND>lsbinstall</COMMAND> utility may be used to install certain types
+of files into system specific locations, repositories, or databases.
+This command may be used during a
+package post installation script to add package specific data to system wide
+repositories.
+A user may need appropriate privilege to invoke <command>lsbinstall</command>.
+</PARA>
+<PARA>
+The operand (or operands) name an object of type <parameter>type</parameter> (see below)
+that belongs to a package named <parameter>package</parameter>. The combination
+of package name, object type and object name should be unique amongst all objects installed
+by <command>lsbinstall</command>. The <command>lsbinstall</command> utility may rename
+an object if another package already owns an object of the same type 
+with the same name. 
+<note><para>
+If a namespace collision is detected by <command>lsbinstall</command>, it is unspecified
+how the object is renamed, although typical implementations may prepend the package
+name to the object in some way (e.g. <literal>package.obj-name</literal>).  The
+<command>lsbinstall</command> utility may maintain a database of the mappings
+it has performed during installation in order to ensure that the correct object is removed
+during a subsequent removal operation.
+</para></note>
+Scripts installed by <command>lsbinstall</command> should not
+make use of the script name in order to decide on their functionality.
+<NOTE><PARA>It is appropriate for such a script to use the script name in
+error messages, usage statements, etc. The only guarantee made by 
+<command>lsbinstall</command> is
+the effect that an installation (or removal) should have, not where a script is installed, or
+how it is named.
+</PARA></NOTE>
+The <parameter>-p pkg</parameter> or <parameter>--package=pkg</parameter> is required
+for all object types unless explicitly noted below.
+</PARA>
+<PARA>
+If the <parameter>-c</parameter> or <parameter>--check</parameter>
+option is specified, <command>lsbinstall</command> should test to
+see if there is an existing object of the type specified already installed.
+If there is, <command>lsbinstall</command> should print a message to its
+standard output and immediately exit with
+a status of zero. If there is no object of the type and name specified
+already installed, <command>lsbinstall</command> should exit with a
+non-zero status and take no further action.
+<!--
+<note>
+<para>
+The format of the message is defined only when the <parameter>&minus;&minus;type=init</parameter>
+option is specifed.
+</para>
+</note>
+-->
+</PARA>
+<PARA>
+If the <parameter>-r</parameter> or <parameter>--remove</parameter>
+is specified, the named object of the specified type should be removed or disabled from
+the system, except as noted below. The behavior is unspecified if
+the named object was not previously installed by
+<command>lsbinstall</command>.
+<note><para>
+<command>lsbinstall</command> may rename objects during installation in order to prevent
+name collisions where another package has already installed an object with the
+given name. Using <command>lsbinstall --remove</command> will remove only the object belonging
+to the named package, and not the object belonging to another package.
+</para><para>
+Also note that the intent of the <parameter>--remove</parameter> option is to prevent the
+effect of the installed object; it should be sufficient to disable or comment out
+the addition in some way, while leaving the content behind. It is not intended that
+<parameter>--remove</parameter> be required to be the exact reverse of installation.
+</para></note>
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Object Types</TITLE>
+<PARA>
+The <parameter>-t type</parameter> or <parameter>--type=type</parameter>
+option should support at least the following types:
+<VARIABLELIST>
+<!--
+<VARLISTENTRY>
+<TERM>font</TERM>
+<LISTITEM>
+<PARA>
+install a font file into the systemwide font repository,
+if the system supports one.
+There should be one operand, that names a font file.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+-->
+<!--
+<VARLISTENTRY>
+<TERM>init</TERM>
+<LISTITEM>
+<PARA>
+install an init script into the system specific location.
+There should be one operand, that names an init script file.
+On success, a name suitable for use with the <command>install_initd</command>
+and <command>remove_initd</command>
+commands should be printed to the standard output.
+See also <xref linkend="initsrcinstrm">.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+-->
+<VARLISTENTRY>
+<TERM>profile</TERM>
+<LISTITEM>
+<PARA>
+install a profile script into a system specific location.
+There should be one operand, that names a profile shell script.
+The behavior is unspecified if this name does not have the suffix
+<literal>.sh</literal>.
+</para>
+<para>
+The <command>sh</command> utility
+should read and execute commands in its current execution environment 
+from all such installed profile shell scripts 
+when invoked as an interactive login shell,
+or if the <parameter>-l</parameter> (the letter <emphasis>ell</emphasis>)
+is specified (see <xref linkend="cmd-sh-invoke">).
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>service</TERM>
+<LISTITEM>
+<PARA>
+ensure a service name and number pair is known to the system service database.
+When installing, there must be at least two operands.
+The first operand should have the format <literal>%d/%s</literal> with the port
+number and protocol values (e.g. <literal>22/tcp</literal>), and the second
+operand should be the name of the service. Any subsequent operands 
+provide aliases for this service.
+The <parameter>-p pkg</parameter> or <parameter>--package=pkg</parameter>
+option is not required for service objects, and is ignored if specified.
+If any of the <parameter>-r</parameter>, <parameter>--remove</parameter>, 
+<parameter>-c</parameter> or <parameter>--check</parameter> options
+are specified, 
+there should be a single operand identifying the 
+port and protocol values (with the same format as above).
+</PARA>
+<PARA>
+It should not be an error to attempt to add a service name to the
+system service database if that service name already exists for the same
+port and protocol combination. If the port and protocol combination was already present,
+but the name unknown, the name should be added as an alias to the existing
+entry. It should be an error to attempt to add a second entry for a given
+service name and protocol, but where the port number differs from an existing
+entry.
+</PARA>
+<PARA>
+If the <parameter>-r</parameter> or <parameter>--remove</parameter> is
+specified, the system service database need not be updated to remove or disable
+the named service.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>inet</TERM>
+<LISTITEM>
+<PARA>
+add an entry to the system's network super daemon configuration.
+If none of the <parameter>-r</parameter>, <parameter>--remove</parameter>, 
+<parameter>-c</parameter> or <parameter>--check</parameter> options
+are specified, 
+the first operand should have the format:
+<programlisting>
+"%s:%s:%s:%s:%s:%s"
+</programlisting>
+Otherwise, the first operand should 
+have the format
+<programlisting>
+"%s:%s"
+</programlisting>
+The fields in the first operand have the following meaning, in order:
+<variablelist>
+<varlistentry>
+<term><literal>svc_name</literal></term>
+<listitem><para>
+The name of this service. If the name does not contain a 
+<literal>/</literal>, this should match the name of an already installed
+<literal>service</literal> (see also <function>getservbyname</function>).
+If the name contains a <literal>/</literal> character,
+the behavior is unspecified.
+<note><title>Rationale</title>
+<para>
+This version of the LSB does not specify <function>getrpcbyname</function>
+nor the existence or format of the <filename>/etc/rpc</filename> file. Therefore,
+installation of RPC based services is not specified at this point.
+A future version of this specification may require names containing a 
+<literal>/</literal> character to be Remote Procedure Call based services.
+</para>
+</note>
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>protocol</literal></term>
+<listitem><para>
+The name of a protocol. The name should be one of those
+listed in <filename>/etc/protocols</filename>.
+If this attribute is not specified (i.e. a null value is passed), the system should
+use an implementation defined default protocol.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>socket_type</literal></term>
+<listitem><para>
+One of the following values:
+<variablelist>
+<varlistentry>
+<term><literal>stream</literal></term>
+<listitem><para>
+the service will use a stream type socket.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>dgram</literal></term>
+<listitem><para>
+the service will use a datagram type socket.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>seqpacket</literal></term>
+<listitem><para>
+the service will use a sequenced packet type socket.
+</para></listitem>
+</varlistentry>
+</variablelist>
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>wait_flag</literal></term>
+<listitem><para>
+If the value of this attribute is <literal>wait</literal>,
+once the service is started, no further requests for that
+service will be handled until the service exits. If the
+value is <literal>nowait</literal>, the network super daemon
+should continue to handle further requests for the given
+service while that service is running.
+<NOTE><PARA>
+If the service has the <literal>socket_type</literal> attribute set
+to <literal>dgram</literal>, the <literal>wait_flag</literal> attribute 
+should be set to <literal>wait</literal>, since such services
+do not have any distinction between the socket used for
+listening and that used for accepting.
+</PARA></NOTE>
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>user[.group]</literal></term>
+<listitem><para>
+The name of a user from the user login database, optionally followed
+by the name of a group from the group database. The service
+started to handle this request should run with the privileges of 
+the specified user and group. 
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>server [arg ...]</literal></term>
+<listitem><para>
+The name of a program to run to handle the request, optionally followed
+by any arguments required. The server name and each of its arguments
+is separated by whitespace.
+This field is not required for the
+<parameter>-c</parameter>, <parameter>--check</parameter>,
+<parameter>-r</parameter>, or <parameter>--remove</parameter> options.
+</para></listitem>
+</varlistentry>
+</variablelist>
+If the implementation supports additional controls over services
+started through the inet super daemon, there may be additional,
+implementation-defined, operands.
+<note><title>Rationale</title><para>
+Systems that use the <command>xinetd</command> super daemon may support
+additional controls such as IP address restrictions, logging requirements,
+etc. The LSB does not require these additional controls.
+However, it was believed to be
+of sufficient benefit that implementations are granted permission to extend
+this interface as required.
+</para></note>
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<!--
+<VARLISTENTRY>
+<TERM>crontab</TERM>
+<LISTITEM>
+<PARA>
+Install a crontab into the system specific location.
+There should be one operand, that names a crontab file. See
+<xref linkend=cronjobs endterm=cronjobs.title>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+-->
+<!--
+<VARLISTENTRY>
+<TERM>menu</TERM>
+<LISTITEM>
+<PARA>
+install a desktop menu entry into the system menu database,
+if the system supports one.
+There should be one operand, that names a menu file.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+-->
+<!--
+<VARLISTENTRY>
+<TERM>man</TERM>
+<LISTITEM>
+<PARA>
+Install a manual page into the appropriate system manual repository.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+-->
+</VARIABLELIST>
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Examples</TITLE>
+<PROGRAMLISTING>
+lsbinstall --package=myapp --type=profile myco.com-prod.sh
+</PROGRAMLISTING>
+<PARA>
+Install the profile shell script for <literal>myco.com-prod.sh</literal>, part of the
+<literal>myapp</literal> package..
+</PARA>
+<PROGRAMLISTING>
+lsbinstall --package=myapp --check --type=profile myco.com-prod.sh
+</PROGRAMLISTING>
+<PARA>
+Test to see if the profile shell script for <literal>myco.com-prod.sh</literal>, as part of the
+<literal>myapp</literal> package,
+is installed correctly.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Exit Status</TITLE>
+<PARA>
+If the <parameter>-c</parameter> or <parameter>--check</parameter>
+option is specified, <command>lsbinstall</command> should exit with a zero
+status if an object of the specified type and name is already installed,
+or non-zero otherwise.
+Otherwise, <command>lsbinstall</command> should exit with a zero status
+if the object with the specified type and name was successfully installed
+(or removed if the <parameter>-r</parameter> or <parameter>--remove</parameter>
+option was specified), and non-zero if the installation (or removal)
+failed. On failure, a diagnostic message should be printed to the
+standard error file descriptor.
+</PARA>
+</REFSECT1>
+</REFENTRY>
