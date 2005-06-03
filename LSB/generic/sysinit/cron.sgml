@@ -55,6 +55,12 @@ behavior.  In particular, cron scripts should not fail obscurely
 if run in unexpected circumstances. Testing for the existence
 of application binaries before executing them is suggested.
 </PARA>
+<PARA>
+Future versions of this specification may remove the need to install
+file directly into these directories, and instead abstract the interface
+to the <command>cron</command> utility in such a way as to hide the 
+implementation. Please see <XREF LINKEND=future-directions-annex>.
+</PARA>
 </NOTE>
 <PARA>
 If a certain task has to be executed at other than the predefined
@@ -80,63 +86,7 @@ command being run at the specified time, as the specified username.
 </PARA>
 
 <PARA>
-To avoid namespace conflicts in the <filename>/etc/cron.*</filename>
-directories, filenames installed by conforming packages in
-<SIMPLELIST type=inline>
-<MEMBER><FILENAME>/etc/cron.hourly</FILENAME></MEMBER>
-<MEMBER><FILENAME>/etc/cron.daily</FILENAME></MEMBER>
-<MEMBER><FILENAME>/etc/cron.weekly</FILENAME></MEMBER>
-<MEMBER><FILENAME>/etc/cron.monthly</FILENAME></MEMBER>
-<MEMBER>or <FILENAME>/etc/cron.d</FILENAME></MEMBER>
-</SIMPLELIST>
-shall come from a managed namespace.
-These filenames may be assigned using one of the following methods:
+Applications installing files in these directories shall use the
+LSB naming conventions (see <xref linkend="fhs-name-rules">).
 </PARA>
-
-<ITEMIZEDLIST MARK="bullet">
-<LISTITEM><PARA>
-	Assigned names.  Such names must be chosen from
-		the character set <literal>[a-z0-9]</literal>.
-		In order to avoid conflicts these 
-		names shall be reserved
-		through the Linux Assigned Names and Numbers
-		Authority (LANANA).
-		Information about the LANANA
-		may be found at
-		<ULINK URL="http://www.lanana.org">www.lanana.org</ULINK>.
-	</PARA>
-
-<NOTE>
-	<PARA>
-		Commonly used names should be reserved in advance; 
-		developers for projects are encouraged to reserve names
-		from LANANA, so that each distribution can use the same
-		name, and to avoid conflicts with other projects.
-</PARA></NOTE></LISTITEM>
-
-<LISTITEM><PARA>
-	Hierarchical names.  Script names in this category take
-		the form: 
-		<filename>&lt;hier1&gt;-&lt;hier2&gt;-...-&lt;name&gt;</>,
-		where name is taken from the character set 
-		<literal>[a-z0-9],</> 
-		and where there may be one or more 
-		<filename>&lt;hier-n&gt;</> components.  
-		<filename>&lt;hier1&gt;</> may either be an LSB provider name assigned
-		by the LANANA, or
-		it may be owners' DNS name in lower case, with at
-		least one <literal>'.'</>.  
-	e.g.  "<literal>debian.org</>", "<literal>staroffice.sun.com</>", etc.
-		The LSB provider name assigned by LANANA 
-		shall only consist of the ASCII characters <literal>[a-z0-9]</>.
-</PARA></LISTITEM>
-
-<LISTITEM><PARA>
-	Reserved names.  Names that
-		begin with the character '<literal>_</>' are reserved for
-		distribution use only.  These names should be used
-		for essential system packages only.
-</PARA></LISTITEM>
-</ITEMIZEDLIST>
-
 </SECT1>

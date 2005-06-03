@@ -4,10 +4,20 @@
 <PARA>
 Conforming applications may install one or more initialization scripts
 (or <emphasis>init scripts</emphasis>).
+<!--
 Such scripts are installed in system specific locations by the
 <command>lsbinstall</command> command (see <xref linkend="lsbinstall">),
 and activated by the <command>install_initd</command> command
 (see <xref linkend="installinitd">).
+-->
+An init script shall be installed in <filename>/etc/init.d</filename>
+(which may be a symbolic link to another location), by the package
+installer.
+<note><para>The requirement to install scripts
+in <filename>/etc/init.d</filename> may be removed in future versions of this
+specification. See <XREF LINKEND=etc> and <XREF LINKEND=future-directions-annex>
+for further details.
+</para></note>
 </para>
 <para>
 During the installer's post-install processing phase the program
@@ -45,18 +55,26 @@ this specification could be implemented.
 
 <PARA>
 The <command>install_initd</command> command takes a single argument, the full pathname
-of the installed init script. The init script must already be
-installed, typically by means of a call to the <command>lsbinstall</command> command.
+of the installed init script. The init script must already be installed
+in <filename>/etc/init.d</filename>.
+<!--
+typically by means of a call to the <command>lsbinstall</command> command.
 The <command>install_initd</command> command will not copy it there, only activate
 it once it has been installed in the system specific init script repository.
 The <command>lsbinstall</command> command
 will print a suitable name for the <command>install_initd</command> utility on its standard
 output.
-Example:
+-->
+The <command>install_initd</command> command will not copy it there, only activate
+it once it has been installed.
+For example:
 <informalexample>
 <screen>
+<!--
 	PATH=$PATH:/usr/lib/lsb
-	install_initd $(lsbinstall --type=init example.com-coffeed)
+	install_initd $(lsbinstall &minus;&minus;type=init example.com-coffeed)
+-->
+	/usr/lib/lsb/lsbinstall /etc/init.d/example.com-coffeed
 </screen>
 </informalexample>
 </para>
@@ -81,14 +99,10 @@ Thus the installer's pre-remove processing phase must call
 the installed init script.
 The package installer is still responsible for removing 
 the init script.
-Example:
+For example:
 <informalexample>
 <screen>
-	PATH=$PATH:/usr/lib/lsb
-	# deactivate the init script
-	remove_initd $(lsbinstall --check --type=init example.com-coffeed)
-	# and remove the init script altogether
-	lsbinstall --remove --type=init example.com-coffeed
+	/usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
 </screen>
 </informalexample>
 </PARA>
