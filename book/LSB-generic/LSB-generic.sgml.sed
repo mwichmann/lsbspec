@@ -30,5 +30,7 @@
 
 &lsb-generic-intro;
 &contents;
+&lsb-generic-appA;
+&lsb-generic-appB;
 &fdl;
 </BOOK>

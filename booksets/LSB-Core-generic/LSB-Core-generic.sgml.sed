@@ -37,6 +37,7 @@
 &lsb-contents;
 &packaging-contents;
 &lsb-generic-appA;
+&lsb-generic-appB;
 &fdl;
 
 </BOOK>
