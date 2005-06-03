@@ -1,6 +1,6 @@
 
 SUBDIRS= baselib command execenv intro sysinit \
-	 usersgroups utillib appendix
+	 usersgroups utillib appendix future
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
