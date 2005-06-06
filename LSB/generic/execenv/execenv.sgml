@@ -39,7 +39,7 @@ The following directories or links need not be present:
 </para>
 
 <SECT1 id=dev>
-<TITLE><FILENAME>/dev</FILENAME></TITLE>
+<TITLE><FILENAME>/dev</FILENAME>: Device Files</TITLE>
 <PARA>
 The following shall exist under <FILENAME>/dev</FILENAME>. Other
 devices may also exist in <FILENAME>/dev</FILENAME>. Device names may exist
@@ -87,6 +87,157 @@ terminal device had been opened.
 </VARLISTENTRY>
 </VARIABLELIST>
 </SECT1>
+<SECT1 ID=etc xreflabel="Host-specific system configuration">
+<TITLE><filename>/etc</filename>: Host-specific system configuration</TITLE>
+<PARA>
+In addition to the requirements for <filename>/etc</filename> in the
+<xref linkend="std.fhs">, an LSB conforming system shall also provide the
+following directories or symbolic links to directories:
+<variablelist>
+<varlistentry>
+<term><filename>/etc/cron.d</filename></term>
+<listitem><para>A directory containing extended <command>crontab</command> files;
+see <xref linkend="cronjobs">.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><filename>/etc/cron.daily</filename></term>
+<listitem><para>A directory containing shell scripts to be executed once a day;
+see <xref linkend="cronjobs">.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><filename>/etc/cron.hourly</filename></term>
+<listitem><para>A directory containing shell scripts to be executed once per hour;
+see <xref linkend="cronjobs">.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><filename>/etc/cron.monthly</filename></term>
+<listitem><para>A directory containing shell scripts to be executed once per month;
+see <xref linkend="cronjobs">.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><filename>/etc/cron.weekly</filename></term>
+<listitem><para>A directory containing shell scripts to be executed once a week;
+see <xref linkend="cronjobs">.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><filename>/etc/init.d</filename></term>
+<listitem><para>A directory containing system initialization scripts;
+see <xref linkend="initsrcinstrm">.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><filename>/etc/profile.d</filename></term>
+<listitem><para>A directory containing shell scripts. 
+Script names should follow the same conventions
+as specified for cron jobs (see <xref linkend="cronjobs">, but should
+have the suffix <filename>.sh</filename>.
+The behavior is unspecified if a script is installed in this directory that
+does not have the suffix <filename>.sh</filename>.</para>
+<para>
+The <command>sh</command> utility
+shall read and execute commands in its current execution environment 
+from all the shell scripts in this directory that have the suffix <filename>.sh</filename>
+when invoked as an interactive login shell,
+or if the <parameter>-l</parameter> (the letter <emphasis>ell</emphasis>)
+is specified (see <xref linkend="cmd-sh-invoke">).
+</PARA>
+</listitem>
+</varlistentry>
+</variablelist>
+<NOTE>
+<TITLE>Future Directions</TITLE>
+<PARA>
+These directories are required at this version of the LSB since there is not
+yet an agreed method for abstracting the implementation so that applications
+need not be aware of these locations during installation. However,
+<XREF LINKEND="future-directions-annex">
+describes a tool, <command>lsbinstall</command>, that will make these
+directories implementation specific and no longer required.
+</PARA>
+</NOTE>
+</PARA>
+<SECT2 ID="FHS-NAME-RULES" xreflabel="File Naming Conventions">
+<TITLE>File Naming Conventions</TITLE>
+<PARA>
+Applications installing files into any of the above locations under
+<filename>/etc</filename> may only use filenames
+from the following managed namespaces:
+<ITEMIZEDLIST MARK="bullet">
+<LISTITEM><PARA>
+	Assigned names.  Such names must be chosen from
+		the character set <literal>[a-z0-9]</literal>.
+		In order to avoid conflicts these 
+		names shall be reserved
+		through the Linux Assigned Names and Numbers
+		Authority (LANANA).
+		Information about the LANANA
+		may be found at
+		<ULINK URL="http://www.lanana.org">www.lanana.org</ULINK>.
+	</PARA>
+
+<NOTE>
+	<PARA>
+		Commonly used names should be reserved in advance; 
+		developers for projects are encouraged to reserve names
+		from LANANA, so that each distribution can use the same
+		name, and to avoid conflicts with other projects.
+</PARA></NOTE></LISTITEM>
+
+<LISTITEM><PARA>
+	Hierarchical names.  Script names in this category take
+		the form: 
+		<filename>&lt;hier1&gt;-&lt;hier2&gt;-...-&lt;name&gt;</>,
+		where name is taken from the character set 
+		<literal>[a-z0-9],</> 
+		and where there may be one or more 
+		<filename>&lt;hier-n&gt;</> components.  
+		<filename>&lt;hier1&gt;</> may either be an LSB provider name assigned
+		by the LANANA, or
+		it may be owners' DNS name in lower case, with at
+		least one <literal>'.'</>.  
+	e.g.  "<literal>debian.org</>", "<literal>staroffice.sun.com</>", etc.
+		The LSB provider name assigned by LANANA 
+		shall only consist of the ASCII characters <literal>[a-z0-9]</>.
+</PARA></LISTITEM>
+
+<LISTITEM><PARA>
+	Reserved names.  Names that
+		begin with the character '<literal>_</>' are reserved for
+		distribution use only.  These names should be used
+		for essential system packages only.
+
+</PARA></LISTITEM>
+</ITEMIZEDLIST>
+<NOTE>
+<PARA>
+In general, if a package or some system function is likely to be used
+on multiple systems, the package developers or the distribution should
+get a registered name through LANANA, and distributions should strive to
+use the same name whenever possible.  For applications which may not
+be essential or may not be commonly installed, the hierarchical namespace
+may be more appropriate.  An advantage to the hierarchical namespace
+is that there is no need to consult with the LANANA before obtaining an
+assigned name.
+</PARA>
+
+<PARA>
+Short names are highly desirable, since system
+administrators may need to manually start and stop services.
+Given this, they should be standardized on a per-package basis.  This
+is the rationale behind having the LANANA organization assign these
+names.  The LANANA may be called upon to handle other namespace issues,
+such as package/prerequisites naming.
+</PARA>
+</NOTE>
+
+</PARA>
+</SECT2>
+</SECT1>
 
 <SECT1 id='FHS-user-accounting-dbs'>
 <TITLE>User Accounting Databases</TITLE>
@@ -113,7 +264,7 @@ the <function>utmpname</function> function.
 <TITLE>Path For System Administration Utilities</TITLE>
 <PARA>
 Certain utilities used for system administration 
-(and other privilieged commands)
+(and other privileged commands)
 may be stored in 
 <filename>/sbin</filename>, 
 <filename>/usr/sbin</filename>, and 
@@ -123,7 +274,8 @@ should add these directories to their
 <envar>PATH</envar>. By default, as described in
 <xref LINKEND="STD.SUSv3">, standard utilities shall be found on the 
 <envar>PATH</envar> returned
-by <command>getconf CS_PATH</command>.
+by <command>getconf PATH</command> (or <command>command -p getconf PATH</command>
+to be guaranteed to invoke the correct version of <command>getconf</command>).
 </PARA>
 </SECT1>
 </CHAPTER>

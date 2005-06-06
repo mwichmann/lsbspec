@@ -33,7 +33,7 @@ architecture-specific LSB specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.68 2005/03/30 04:12:27 anderson Exp 0 -->
-<!--    at Wed May 25 18:40:57 2005 -->
+<!--    at Mon Jun  6 15:17:53 2005 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2795,22 +2795,7 @@ typedef int nl_item;
 </SCREEN>
 </SECT2>
 <!-- empty header file All/poll.h -->
-<SECT2>
-<TITLE>pty.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-struct winsize
-{
-  unsigned short ws_row;
-  unsigned short ws_col;
-  unsigned short ws_xpixel;
-  unsigned short ws_ypixel;
-}
- ;
-</SCREEN>
-</SECT2>
+<!-- empty header file All/pty.h -->
 <SECT2>
 <TITLE>pwd.h</TITLE>
 <PARA>
@@ -4293,6 +4278,15 @@ idtype_t;
 #define TCIOFLUSH	2
 #define TCSAFLUSH	2
 #define TCION	3
+
+struct winsize
+{
+  unsigned short ws_row;
+  unsigned short ws_col;
+  unsigned short ws_xpixel;
+  unsigned short ws_ypixel;
+}
+ ;
 
 typedef unsigned int speed_t;
 typedef unsigned char cc_t;
@@ -10816,6 +10810,7 @@ socket ioctl commands
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
+#include &lt;sys/ioctl.h&gt;
 #include &lt;sys/socket.h&gt;
 #include &lt;net/if.h&gt;
 #include &lt;netinet/in.h&gt;
@@ -11107,7 +11102,9 @@ tty ioctl commands
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
+#include &lt;sys/ioctl.h&gt;
 #include &lt;fcntl.h&gt;
+#include &lt;pty.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
@@ -11145,8 +11142,18 @@ The following <FUNCTION>ioctl</FUNCTION>s are provided:
 </TERM>
 <LISTITEM>
 <PARA>
-Get the size attributes of the tty. <PARAMETER>argp</PARAMETER> is a pointer
-to a <STRUCTNAME>winsize</STRUCTNAME> structure.
+Get the size attributes of the terminal or pseudo-terminal identified by
+<parameter>fd</parameter>. On entry, <PARAMETER>argp</PARAMETER> shall reference
+a <STRUCTNAME>winsize</STRUCTNAME> structure.
+On return, the structure will have 
+<structfield>ws_row</structfield> set to the number of rows of text (i.e. lines of text)
+that can be viewed on the device, 
+<structfield>ws_col</structfield> set to the number of columns (i.e. text width), 
+<structfield>ws_xpixel</structfield> set to the actual width in pixels, and 
+<structfield>ws_ypixel</structfield> the actual height in pixels.
+<NOTE><PARA>The number of columns stored in <structfield>ws_col</structfield>
+assumes that the terminal device is using a mono-spaced font.
+</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -16407,7 +16414,7 @@ On error, <RETURNVALUE>0</RETURNVALUE> is returned.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.68 2005/03/30 04:12:27 anderson Exp 0 -->
-<!--    at Wed May 25 18:41:04 2005 -->
+<!--    at Mon Jun  6 15:17:58 2005 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -17094,7 +17101,7 @@ it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.68 2005/03/30 04:12:27 anderson Exp 0 -->
-<!--    at Wed May 25 18:41:05 2005 -->
+<!--    at Mon Jun  6 15:17:59 2005 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -17585,7 +17592,7 @@ source standard; it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.68 2005/03/30 04:12:27 anderson Exp 0 -->
-<!--    at Wed May 25 18:41:09 2005 -->
+<!--    at Mon Jun  6 15:18:03 2005 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -17641,16 +17648,9 @@ This specification uses ISO/IEC 9899 C Language as the reference programming lan
 </PARA>
 <SCREEN>
 
-struct dwarf_eh_base
-{
-  void *tbase;
-  void *dbase;
-  void *func;
-}
- ;
 struct _Unwind_Context;
 
-typedef unsigned int _Unwind_Ptr;
+typedef void *_Unwind_Ptr;
 typedef unsigned int _Unwind_Word;
 
 typedef enum
@@ -17664,10 +17664,10 @@ _Unwind_Reason_Code;
 
 struct _Unwind_Exception
 {
-  _Unwind_Exception_Class;
-  _Unwind_Exception_Cleanup_Fn;
-  _Unwind_Word;
-  _Unwind_Word;
+  u_int64_t exception_class;
+  _Unwind_Exception_Cleanup_Fn exception_cleanup;
+  u_int64_t private_1;
+  u_int64_t private_2;
 }
  ;
 #define _UA_SEARCH_PHASE	1
@@ -17685,7 +17685,7 @@ struct _Unwind_Exception
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.68 2005/03/30 04:12:27 anderson Exp 0 -->
-<!--    at Wed May 25 18:41:06 2005 -->
+<!--    at Mon Jun  6 15:18:00 2005 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -18050,7 +18050,7 @@ with the behavior as described in <XREF LINKEND="std.SUSv3">.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.68 2005/03/30 04:12:27 anderson Exp 0 -->
-<!--    at Wed May 25 18:41:08 2005 -->
+<!--    at Mon Jun  6 15:18:02 2005 -->
 <SECT1 ID=librt>
 <TITLE>Interfaces for librt</TITLE>
 <PARA>
@@ -18192,7 +18192,7 @@ underlying specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.68 2005/03/30 04:12:27 anderson Exp 0 -->
-<!--    at Wed May 25 18:41:07 2005 -->
+<!--    at Mon Jun  6 15:18:01 2005 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -18265,7 +18265,7 @@ underlying specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.68 2005/03/30 04:12:27 anderson Exp 0 -->
-<!--    at Wed May 25 18:41:07 2005 -->
+<!--    at Mon Jun  6 15:18:02 2005 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>

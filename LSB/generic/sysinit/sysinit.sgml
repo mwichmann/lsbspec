@@ -61,6 +61,12 @@ behavior.  In particular, cron scripts should not fail obscurely
 if run in unexpected circumstances. Testing for the existence
 of application binaries before executing them is suggested.
 </PARA>
+<PARA>
+Future versions of this specification may remove the need to install
+file directly into these directories, and instead abstract the interface
+to the <command>cron</command> utility in such a way as to hide the 
+implementation. Please see <XREF LINKEND=future-directions-annex>.
+</PARA>
 </NOTE>
 <PARA>
 If a certain task has to be executed at other than the predefined
@@ -86,65 +92,9 @@ command being run at the specified time, as the specified username.
 </PARA>
 
 <PARA>
-To avoid namespace conflicts in the <filename>/etc/cron.*</filename>
-directories, filenames installed by conforming packages in
-<SIMPLELIST type=inline>
-<MEMBER><FILENAME>/etc/cron.hourly</FILENAME></MEMBER>
-<MEMBER><FILENAME>/etc/cron.daily</FILENAME></MEMBER>
-<MEMBER><FILENAME>/etc/cron.weekly</FILENAME></MEMBER>
-<MEMBER><FILENAME>/etc/cron.monthly</FILENAME></MEMBER>
-<MEMBER>or <FILENAME>/etc/cron.d</FILENAME></MEMBER>
-</SIMPLELIST>
-shall come from a managed namespace.
-These filenames may be assigned using one of the following methods:
+Applications installing files in these directories shall use the
+LSB naming conventions (see <xref linkend="fhs-name-rules">).
 </PARA>
-
-<ITEMIZEDLIST MARK="bullet">
-<LISTITEM><PARA>
-	Assigned names.  Such names must be chosen from
-		the character set <literal>[a-z0-9]</literal>.
-		In order to avoid conflicts these 
-		names shall be reserved
-		through the Linux Assigned Names and Numbers
-		Authority (LANANA).
-		Information about the LANANA
-		may be found at
-		<ULINK URL="http://www.lanana.org">www.lanana.org</ULINK>.
-	</PARA>
-
-<NOTE>
-	<PARA>
-		Commonly used names should be reserved in advance; 
-		developers for projects are encouraged to reserve names
-		from LANANA, so that each distribution can use the same
-		name, and to avoid conflicts with other projects.
-</PARA></NOTE></LISTITEM>
-
-<LISTITEM><PARA>
-	Hierarchical names.  Script names in this category take
-		the form: 
-		<filename>&lt;hier1&gt;-&lt;hier2&gt;-...-&lt;name&gt;</>,
-		where name is taken from the character set 
-		<literal>[a-z0-9],</> 
-		and where there may be one or more 
-		<filename>&lt;hier-n&gt;</> components.  
-		<filename>&lt;hier1&gt;</> may either be an LSB provider name assigned
-		by the LANANA, or
-		it may be owners' DNS name in lower case, with at
-		least one <literal>'.'</>.  
-	e.g.  "<literal>debian.org</>", "<literal>staroffice.sun.com</>", etc.
-		The LSB provider name assigned by LANANA 
-		shall only consist of the ASCII characters <literal>[a-z0-9]</>.
-</PARA></LISTITEM>
-
-<LISTITEM><PARA>
-	Reserved names.  Names that
-		begin with the character '<literal>_</>' are reserved for
-		distribution use only.  These names should be used
-		for essential system packages only.
-</PARA></LISTITEM>
-</ITEMIZEDLIST>
-
 </SECT1>
 
 
@@ -577,10 +527,20 @@ necessary.
 <PARA>
 Conforming applications may install one or more initialization scripts
 (or <emphasis>init scripts</emphasis>).
+<!--
 Such scripts are installed in system specific locations by the
 <command>lsbinstall</command> command (see <xref linkend="lsbinstall">),
 and activated by the <command>install_initd</command> command
 (see <xref linkend="installinitd">).
+-->
+An init script shall be installed in <filename>/etc/init.d</filename>
+(which may be a symbolic link to another location), by the package
+installer.
+<note><para>The requirement to install scripts
+in <filename>/etc/init.d</filename> may be removed in future versions of this
+specification. See <XREF LINKEND=etc> and <XREF LINKEND=future-directions-annex>
+for further details.
+</para></note>
 </para>
 <para>
 During the installer's post-install processing phase the program
@@ -618,18 +578,26 @@ this specification could be implemented.
 
 <PARA>
 The <command>install_initd</command> command takes a single argument, the full pathname
-of the installed init script. The init script must already be
-installed, typically by means of a call to the <command>lsbinstall</command> command.
+of the installed init script. The init script must already be installed
+in <filename>/etc/init.d</filename>.
+<!--
+typically by means of a call to the <command>lsbinstall</command> command.
 The <command>install_initd</command> command will not copy it there, only activate
 it once it has been installed in the system specific init script repository.
 The <command>lsbinstall</command> command
 will print a suitable name for the <command>install_initd</command> utility on its standard
 output.
-Example:
+-->
+The <command>install_initd</command> command will not copy it there, only activate
+it once it has been installed.
+For example:
 <informalexample>
 <screen>
+<!--
 	PATH=$PATH:/usr/lib/lsb
-	install_initd $(lsbinstall --type=init example.com-coffeed)
+	install_initd $(lsbinstall &minus;&minus;type=init example.com-coffeed)
+-->
+	/usr/lib/lsb/lsbinstall /etc/init.d/example.com-coffeed
 </screen>
 </informalexample>
 </para>
@@ -654,14 +622,10 @@ Thus the installer's pre-remove processing phase must call
 the installed init script.
 The package installer is still responsible for removing 
 the init script.
-Example:
+For example:
 <informalexample>
 <screen>
-	PATH=$PATH:/usr/lib/lsb
-	# deactivate the init script
-	remove_initd $(lsbinstall --check --type=init example.com-coffeed)
-	# and remove the init script altogether
-	lsbinstall --remove --type=init example.com-coffeed
+	/usr/lib/lsb/remove_initd /etc/init.d/example.com-coffeed
 </screen>
 </informalexample>
 </PARA>
@@ -815,79 +779,10 @@ the same name as the name assigned to the init script.
 
 <PARA>
 Since init scripts live in a single directory, they must
-share a single namespace. To avoid conflicts, three means of
-assigning names from this namespace are provided:
+share a single namespace. To avoid conflicts, 
+applications installing files in this directories shall use the
+LSB naming conventions (see <xref linkend="fhs-name-rules">).
 </PARA>
-
-<ITEMIZEDLIST MARK="bullet">
-<LISTITEM><PARA>
-Assigned names.  Such names must be chosen from 
-characters in the set <literal>[a-z0-9]</literal>. This category is
-desirable for scripts which system administrators may
-need to run manually: e.g., <command>/etc/init.d/named restart</command>.
-In order to avoid conflicts these names shall be reserved
-through the Linux Assigned Names and Numbers Authority (LANANA).  
-Information about the LANANA may be found at
-<ULINK URL="http://www.lanana.org">www.lanana.org</ULINK>.
-</PARA>
-<NOTE>
-<PARA>
-Commonly used names should be reserved in advance; 
-developers for projects are encouraged to reserve names
-from LANANA, so that each distribution can use the same
-name for the project's init script and avoid conflicts with
-other projects.
-</PARA></NOTE></LISTITEM>
-
-<LISTITEM><PARA>
-Hierarchical names.  Script names in this category take
-the form <literal>&lt;hier1&gt;-&lt;hier2&gt;-...-&lt;name&gt;
-</literal>, where name is 
-chosen from characters in the set <literal>[a-z0-9]</literal>, 
-and where there may be one or more <literal>&lt;hier-n&gt;</literal>
-components.  
-<literal>&lt;hier1&gt;</literal> may either be an LSB provider name assigned
-by the LANANA, or it may be the owners' DNS name in lower case, with at
-least one <literal>'.'</literal> (e.g., <literal>"debian.org"</literal>, 
-or <literal>"staroffice.sun.com"</literal>).
-The LSB provider name assigned by LANANA 
-shall consist only of characters chosen from the set 
-<literal>[a-z0-9]</literal>.
-</PARA></LISTITEM>
-
-<LISTITEM><PARA>
-Reserved names.  Names in this category 
-begin with the character <literal>'_'</literal>, and are reserved for
-distribution use only.  These names should be used
-for essential system packages only, and in general use of this
-part of the namespace is highly discouraged.  
-
-</PARA></LISTITEM>
-</ITEMIZEDLIST>
-
-
-<NOTE>
-<PARA>
-In general, if a package or some system function is likely to be used
-on multiple systems, the package developers or the distribution should
-get a registered name through LANANA, and distributions should strive to
-use the same name whenever possible.  For applications which may not
-be essential or may not be commonly installed, the hierarchical namespace
-may be more appropriate.  An advantage to the hierarchical namespace
-is that there is no need to consult with the LANANA before obtaining an
-assigned name.
-</PARA>
-
-<PARA>
-Short names are highly desirable, since system
-administrators may need to manually start and stop services.
-Given this, they should be standardized on a per-package basis.  This
-is the rationale behind having the LANANA organization assign these
-names.  The LANANA may be called upon to handle other namespace issues,
-such as package/prerequisites naming.
-</PARA>
-</NOTE>
-
 </SECT1>
 
 
@@ -930,6 +825,9 @@ and the named <filename>pidfile</filename> exists,
 a single line at the start of the <filename>pidfile</filename> shall be read. 
 If this line contains one or more numeric values, separated by spaces,
 these values shall be used.
+If the <parameter>-p pidfile</parameter> option is specified and the named 
+<filename>pidfile</filename> does not exist, the functions
+shall assume that the daemon is not running.
 </para></listitem>
 <listitem><para>
 Otherwise, 
@@ -937,12 +835,7 @@ Otherwise,
 shall be read in a similar fashion.
 If this contains one or more numeric values on the first line, these values
 shall be used.
-</para>
-</listitem>
-<listitem>
-<para>
-Optionally, if neither of the above methods has determined the
-process identifiers required, implementations may use unspecified additional
+Optionally, implementations may use unspecified additional
 methods to locate the process identifiers required.
 </para>
 </listitem>
