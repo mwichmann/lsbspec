@@ -18,6 +18,7 @@ tty ioctl commands
 <FUNCSYNOPSISINFO>
 #include &lt;sys/ioctl.h&gt;
 #include &lt;fcntl.h&gt;
+#include &lt;pty.h&gt;
 </FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
@@ -55,8 +56,18 @@ The following <FUNCTION>ioctl</FUNCTION>s are provided:
 </TERM>
 <LISTITEM>
 <PARA>
-Get the size attributes of the tty. <PARAMETER>argp</PARAMETER> is a pointer
-to a <STRUCTNAME>winsize</STRUCTNAME> structure.
+Get the size attributes of the terminal or pseudo-terminal identified by
+<parameter>fd</parameter>. On entry, <PARAMETER>argp</PARAMETER> shall reference
+a <STRUCTNAME>winsize</STRUCTNAME> structure.
+On return, the structure will have 
+<structfield>ws_row</structfield> set to the number of rows of text (i.e. lines of text)
+that can be viewed on the device, 
+<structfield>ws_col</structfield> set to the number of columns (i.e. text width), 
+<structfield>ws_xpixel</structfield> set to the actual width in pixels, and 
+<structfield>ws_ypixel</structfield> the actual height in pixels.
+<NOTE><PARA>The number of columns stored in <structfield>ws_col</structfield>
+assumes that the terminal device is using a mono-spaced font.
+</PARA></NOTE>
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
