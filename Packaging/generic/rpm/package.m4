@@ -3,11 +3,13 @@
 
 <CHAPTER ID=swinstall>
 <TITLE>Software Installation</TITLE>
+<SECT1 ID=swinstall-intro>
+<TITLE>Introduction</TITLE>
 <PARA>
 Applications shall either be packaged in the RPM packaging format as
 defined in this specification, or supply an installer which is LSB
 conforming (for example, calls LSB commands and utilities).
-<footnote>
+<note>
 <para>
 Supplying an RPM format package is encouraged because it makes systems
 easier to manage.  A future version of the LSB may require RPM, or specify
@@ -16,21 +18,21 @@ a way for an installer to update a package database.
 <para>
 Applications are also encouraged to uninstall cleanly.
 </para>
-</footnote>
+</note>
 </PARA>
 <PARA>
 Distributions shall provide a mechanism for installing applications in
 this packaging format with some restrictions listed
 below.
-<FOOTNOTE ID="pkg-2">
+<NOTE ID="pkg-2">
 <PARA>
 The distribution itself may use a different packaging format for its
 own packages, and of course it may use any available mechanism for 
 installing the LSB-conformant packages.
 </PARA>
-</FOOTNOTE>
+</NOTE>
 </PARA>
-
+</SECT1>
 
 
 <SECT1 ID=pkgformat>
