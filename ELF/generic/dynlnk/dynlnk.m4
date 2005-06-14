@@ -40,12 +40,14 @@ the following Segment Types shall also be supported.
 <TBODY>
 <ROW><ENTRY>PT_GNU_EH_FRAME</ENTRY><ENTRY>0x6474e550</ENTRY></ROW>
 <ROW><ENTRY>PT_GNU_STACK</ENTRY><ENTRY>0x6474e551</ENTRY></ROW>
+<ROW><ENTRY>PT_GNU_RELRO</ENTRY><ENTRY>0x6474e552</ENTRY></ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
 
 
 <VARIABLELIST>
+
 <VARLISTENTRY>
 <TERM>PT_GNU_EH_FRAME</TERM>
 <LISTITEM>
@@ -55,6 +57,7 @@ information as defined by the .eh_frame_hdr section.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
+
 <VARLISTENTRY>
 <TERM>PT_GNU_STACK</TERM>
 <LISTITEM>
@@ -65,6 +68,16 @@ this header indicates that the stack will be executable.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>PT_GNU_RELRO</TERM>
+<LISTITEM>
+<PARA>
+The array element specifies the location and size of a segment which may be made read-only after relocation shave been processed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
 </VARIABLELIST>
 
 </SECT1>
