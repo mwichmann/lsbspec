@@ -230,7 +230,7 @@ the additional special sections described below.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mksectiontable,v 1.12 2005/05/19 12:25:02 anderson Exp 0 -->
-<!--    at Mon Jun  6 15:11:54 2005 -->
+<!--    at Tue Jun 14 19:01:54 2005 -->
 <TABLE>
 <TITLE>Additional Special Sections</TITLE>
 <TGROUP COLS=3>
@@ -240,12 +240,14 @@ the additional special sections described below.
 </THEAD>
 <TBODY>
 <ROW><ENTRY>.ctors</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_WRITE</ENTRY></ROW>
+<ROW><ENTRY>.data.rel.ro</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
 <ROW><ENTRY>.dtors</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_WRITE</ENTRY></ROW>
 <ROW><ENTRY>.eh_frame</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
 <ROW><ENTRY>.eh_frame_hdr</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
 <ROW><ENTRY>.gnu.version</ENTRY><ENTRY>SHT_GNU_versym</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
 <ROW><ENTRY>.gnu.version_d</ENTRY><ENTRY>SHT_GNU_verdef</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
 <ROW><ENTRY>.gnu.version_r</ENTRY><ENTRY>SHT_GNU_verneed</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
+<ROW><ENTRY>.got.plt</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
 <ROW><ENTRY>.jcr</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>SHF_ALLOC+SHF_WRITE</ENTRY></ROW>
 <ROW><ENTRY>.note.ABI-tag</ENTRY><ENTRY>SHT_NOTE</ENTRY><ENTRY>SHF_ALLOC</ENTRY></ROW>
 <ROW><ENTRY>.stab</ENTRY><ENTRY>SHT_PROGBITS</ENTRY><ENTRY>0</ENTRY></ROW>
@@ -255,12 +257,14 @@ the additional special sections described below.
 </TABLE>
 <VARIABLELIST>
 <VARLISTENTRY><TERM>.ctors</TERM><LISTITEM><PARA>This section contains a list of global constructor function pointers.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.data.rel.ro</TERM><LISTITEM><PARA>This section holds initialized data that contribute to the program's memory image. This section may be made read-only after relocations have been applied.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>.dtors</TERM><LISTITEM><PARA>This section contains a list of global destructor function pointers.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>.eh_frame</TERM><LISTITEM><PARA>This section contains information necessary for frame unwinding during exception handling.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>.eh_frame_hdr</TERM><LISTITEM><PARA>This section contains a pointer to the .eh_frame section which is accessible to the runtime support code of a C++ application. This section may also contain a binary search table which may be used by the runtime support code to more efficiently access records in the .eh_frame section.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>.gnu.version</TERM><LISTITEM><PARA>This section contains the Symbol Version Table.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>.gnu.version_d</TERM><LISTITEM><PARA>This section contains the Version Definitions.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>.gnu.version_r</TERM><LISTITEM><PARA>This section contains the Version Requirments.</PARA></LISTITEM></VARLISTENTRY>
+<VARLISTENTRY><TERM>.got.plt</TERM><LISTITEM><PARA>This section holds the read-only portion of the GLobal Offset Table. This section may be made read-only after relocations have been applied.</PARA></LISTITEM></VARLISTENTRY>
 <VARLISTENTRY><TERM>.jcr</TERM><LISTITEM><PARA>This section contains information necessary for registering compiled
 Java classes.  The contents are compiler-specific and used by compiler
 initialization functions.</PARA></LISTITEM></VARLISTENTRY>
@@ -586,10 +590,6 @@ be aligned to an addressing unit sized boundary.
 <ENTRY>Required</ENTRY>
 </ROW>
 <ROW>
-<ENTRY>EH Data</ENTRY>
-<ENTRY>Optional</ENTRY>
-</ROW>
-<ROW>
 <ENTRY>Code Alignment Factor</ENTRY>
 <ENTRY>Required</ENTRY>
 </ROW>
@@ -661,7 +661,8 @@ records.  This value shall always be 0, which indicates this record is a CIE.
 <TERM><STRUCTFIELD>Version</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Version assigned to the call frame information structure. This value shall be 1.
+A 1 byte value that identifies the version number of the frame information
+structure. This value shall be 1.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -674,18 +675,6 @@ This value is a NUL terminated string that identifies the augmentation to
 the CIE or to the FDEs associated with this CIE. A zero length string
 indicates that no augmentation data is present.  The augmentation string
 is case sensitive and shall be interpreted as described below.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM><STRUCTFIELD>EH Data</STRUCTFIELD></TERM>
-<LISTITEM>
-<PARA>
-On 32 bit architectures, this is a 4 byte value that...
-On 64 bit architectures, this is a 8 byte value that...
-This field is only present if the Augmentation String
-contains the string "eh".
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -731,7 +720,8 @@ contains the character 'z'.
 <PARA>
 A block of data whose contents are defined by the contents of the
 Augmentation String as described below. This field is only present if the
-Augmentation String contains the character 'z'.
+Augmentation String contains the character 'z'. The size of this data is given
+by the Augentation Length.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -740,7 +730,8 @@ Augmentation String contains the character 'z'.
 <TERM><STRUCTFIELD>Initial Instructions</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Initial set of Call Frame Instructions.
+Initial set of Call Frame Instructions. The number of instructions is
+determined by the remaining space in the CIE record.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -774,16 +765,6 @@ character in the augmentation string in the CIE can be interpreted as below:
 A 'z' may be present as the first character of the string. If present, the
 Augmentation Data field shall be present. The contents of the Augmentation Data
 shall be intepreted according to other characters in the Augmentation String.
-</PARA>
-</LISTITEM>
-</VARLISTENTRY>
-
-<VARLISTENTRY>
-<TERM>"eh"</TERM>
-<LISTITEM>
-<PARA>
-If the Augmentation string has the value "eh", then the EH Data field shall
-be present.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -930,8 +911,9 @@ yields the offset of the start of the associated CIE.  This value shall never be
 <TERM><STRUCTFIELD>PC Begin</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-An encoded constant that indicates the address of the initial location
-associated with this FDE.
+An encoded value that indicates the address of the initial location
+associated with this FDE. The encoding format is specified in the
+Augmentation Data.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -940,7 +922,7 @@ associated with this FDE.
 <TERM><STRUCTFIELD>PC Range</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-An encoded constant that indicates the number of bytes of instructions 
+An absolute value that indicates the number of bytes of instructions 
 associated with this FDE.
 </PARA>
 </LISTITEM>
@@ -964,7 +946,8 @@ in the associated CIE contains the character 'z'.
 A block of data whose contents are defined by the contents of the
 Augmentation String in the associated CIE as described above.
 This field is only present if the Augmentation String in the associated CIE
-contains the character 'z'.
+contains the character 'z'. The size of this data is given by the
+Augentation Length.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
