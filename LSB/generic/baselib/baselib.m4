@@ -2,7 +2,7 @@
 <TITLE>Base Libraries</TITLE>
 
 <CHAPTER id=baselib>
-<TITLE>Libraries</TITLE>
+<TITLE>Base Libraries</TITLE>
 <SECT1><TITLE>Introduction</TITLE>
 <PARA>
 An LSB-conforming implementation shall support the following
