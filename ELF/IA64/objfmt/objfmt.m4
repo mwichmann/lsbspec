@@ -47,7 +47,7 @@ The data encoding value in
 <PARA>
 The OS Identification field 
 <literal>e_ident[EI_OSABI]</literal> shall contain the value 
-<constant>ELFOSABI_LINUX</constant>.
+<constant>ELFOSABI_NONE</constant>.
 </PARA>
 </SECT3>
 <SECT3 ID="miprocessorident">
@@ -145,7 +145,8 @@ in the object file created by the static linker.
 <SECT2 ID="sectionattribflags">
 <TITLE>Section Attribute Flags</TITLE>
 <PARA>
-See
+LSB-conforming implementations shall support the section attribute flags
+specified in
 <XREF LINKEND="std.IA64.ABI">,
 Chapter 4.2.2.
 </PARA>
@@ -154,9 +155,10 @@ Chapter 4.2.2.
 <SECT2 ID="specialsectiontypes">
 <TITLE>Special Section Types</TITLE>
 <PARA>
-See
+The special section types <constant>SHT_IA64_EXT</constant> and
+<constant>SHT_IA64_UNWIND</constant> are defined in
 <XREF LINKEND="std.IA64.ABI">,
-Chapter 4.2.3.
+Chapter 4.2.1.
 </PARA>
 </SECT2>
 
@@ -188,16 +190,10 @@ the dynamic linker in resolving references to the address of the function.
 <SECT1 ID=relocation>
 <TITLE>Relocation</TITLE>
 
-<PARA>
-LSB-conforming applications shall use Relocations as defined in
-<XREF LINKEND="std.IA64.ABI">,
-Chapter 4.3.
-</PARA>
-
 <SECT2 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
-See
+LSB-conforming systems shall support the relocation types described in
 <XREF LINKEND="std.IA64.ABI">,
 Chapter 4.3.
 </PARA>
