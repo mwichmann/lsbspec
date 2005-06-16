@@ -74,9 +74,10 @@ information.
 <SECT2 ID="datarepresentation">
 <TITLE>Data Representation</TITLE>
 <PARA>
-See 
-<XREF LINKEND="std.IA64.Conventions">
-Chapter 4.
+The following sections, in conjunction with section 4 of
+<XREF LINKEND="std.IA64.Conventions">,
+define the size, alignment requirements, and hardware representation
+of the standard C data types.
 </PARA>
 <PARA>
 Within this specification, the term <literal>byte</literal> refers to
@@ -84,9 +85,7 @@ an 8-bit object, the term <literal>halfword</literal> refers to a
 16-bit object, the term <literal>word</literal> refers to a 32-bit
 object, the term <literal>doubleword</literal> refers to a 64-bit
 object, and the term <literal>quadword</literal> refers to a 
-128-bit object. Although the &itanium; architecture also supports 120-bit 
-addressable objects, this specification does not require LSB-conforming
-implementations to provide support for these objects.
+128-bit object. 
 </PARA>
 <PARA>
 </PARA>
@@ -100,8 +99,8 @@ LSB-conforming implementations may support big-endian applications.
 <SECT3 ID="fundamentaltyes">
 <TITLE>Fundamental Types</TITLE>
 <PARA>
-Table 2-1 describes how fundemental C language data types shall be represented:
-<TABLE FRAME='All'>
+<XREF LINKEND=tbl-ia64-scalar-types> describes how fundemental C language data types shall be represented:
+<TABLE FRAME='All' ID=tbl-ia64-scalar-types>
 <TITLE>Scalar Types</TITLE>
 <TGROUP COLS=5>
 <THEAD>
@@ -110,77 +109,88 @@ Table 2-1 describes how fundemental C language data types shall be represented:
   <ENTRY>C</ENTRY>
   <ENTRY><COMPUTEROUTPUT>sizeof</COMPUTEROUTPUT></ENTRY>
   <ENTRY>Alignment (bytes)</ENTRY>
-  <ENTRY>Notes</ENTRY>
+  <ENTRY>Hardware Representation</ENTRY>
 </ROW>
 </THEAD>
 <TBODY>
   <ROW>
-    <ENTRY morerows=14 valign=middle>Integral</ENTRY>
+    <ENTRY morerows=15 valign=middle>Integral</ENTRY>
+    <ENTRY>_Bool</ENTRY>
+    <ENTRY>1</ENTRY>
+    <ENTRY>1</ENTRY>
+    <ENTRY>byte (sign unspecified)</ENTRY>
+  </ROW>
+  <ROW>
     <ENTRY>char</ENTRY>
     <ENTRY morerows=2 valign=middle>1</ENTRY>
     <ENTRY morerows=2 valign=middle>1</ENTRY>
-    <ENTRY morerows=2 valign=middle></ENTRY>
+    <ENTRY morerows=1 valign=middle>signed byte</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>signed char</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>unsigned char</ENTRY>
+    <ENTRY>signed byte</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>short</ENTRY>
     <ENTRY morerows=2 valign=middle>2</ENTRY>
     <ENTRY morerows=2 valign=middle>2</ENTRY>
-    <ENTRY morerows=2 valign=middle></ENTRY>
+    <ENTRY morerows=1 valign=middle>signed halfword</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>signed short</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>unsigned short</ENTRY>
+    <ENTRY>unsigned halfword</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>int</ENTRY>
     <ENTRY morerows=2 valign=middle>4</ENTRY>
     <ENTRY morerows=2 valign=middle>4</ENTRY>
-    <ENTRY morerows=2 valign=middle></ENTRY>
+    <ENTRY morerows=1 valign=middle>signed word</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>signed int</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>unsigned int</ENTRY>
+    <ENTRY>unsigned word</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>long</ENTRY>
     <ENTRY morerows=2 valign=middle>8</ENTRY>
     <ENTRY morerows=2 valign=middle>8</ENTRY>
-    <ENTRY morerows=2 valign=middle></ENTRY>
+    <ENTRY morerows=1 valign=middle>signed doubleword</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>signed long</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>unsigned long</ENTRY>
+    <ENTRY>unsigned doubleword</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>long long</ENTRY>
     <ENTRY morerows=2 valign=middle>8</ENTRY>
     <ENTRY morerows=2 valign=middle>8</ENTRY>
-    <ENTRY morerows=2 valign=middle>See Note Below</ENTRY>
+    <ENTRY morerows=1 valign=middle>signed doubleword</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>signed long long</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>unsigned long long</ENTRY>
+    <ENTRY>unsigned doubleword</ENTRY>
   </ROW>
   <ROW>
     <ENTRY morerows=1>Pointer</ENTRY>
     <ENTRY><replaceable>any-type</replaceable> *</ENTRY>
     <ENTRY morerows=1 valign=middle>8</ENTRY>
     <ENTRY morerows=1 valign=middle>8</ENTRY>
-    <ENTRY morerows=1 valign=middle></ENTRY>
+    <ENTRY morerows=1 valign=middle>unsigned doubleword</ENTRY>
   </ROW>
   <ROW>
     <ENTRY><replaceable>any-type (*)()</replaceable></ENTRY>
@@ -190,34 +200,24 @@ Table 2-1 describes how fundemental C language data types shall be represented:
     <ENTRY>float</ENTRY>
     <ENTRY>4</ENTRY>
     <ENTRY>4</ENTRY>
-    <ENTRY></ENTRY>
+    <ENTRY>IEEE Single-precision</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>double</ENTRY>
     <ENTRY>8</ENTRY>
     <ENTRY>8</ENTRY>
-    <ENTRY></ENTRY>
+    <ENTRY>IEEE Double-precision</ENTRY>
   </ROW>
   <ROW>
     <ENTRY>long double</ENTRY>
     <ENTRY>16</ENTRY>
     <ENTRY>16</ENTRY>
-    <ENTRY></ENTRY>
+    <ENTRY>IEEE Double-extended</ENTRY>
   </ROW>
 </TBODY>
 </TGROUP>
 </TABLE>
 </PARA>
-<NOTE>
-<PARA>
-Support for the <literal>long long</literal> 
-data type is dependent on
-support for ISO9899:1999 C language. This standard is not required
-for LSB-conformance, but this data type is important when developing
-applications for the &itanium; architecture.  The GNU Compiler Collection
-(gcc) includes support for <literal>long long</literal> of ISO9899:1999.
-</PARA>
-</NOTE>
 <PARA>
 A null pointer (for all types) shall have the value zero.
 </PARA>
@@ -545,7 +545,7 @@ in Chapter 8.4 of the
 </PARA>
 
 <SECT2 ID="cpuregisters">
-<TITLE>CPU Registers</TITLE>
+<TITLE>Registers</TITLE>
 <PARA>
 The CPU general and other registers are as defined in the 
 <XREF LINKEND="std.IA64.SDM.Vol1">
@@ -573,11 +573,14 @@ Chapter 8.4.
 
 <SECT2 ID="arguments">
 <TITLE>Arguments</TITLE>
+<SECT3 ID=argumentintro>
+<TITLE>Introduction</TITLE>
 <PARA>
-The procedure argument passing mechanism is as described in the
+The procedure parameter passing mechanism is as described in the
 <XREF LINKEND="std.IA64.Conventions">
-Chapter 8.5.
+Chapter 8.5. The following subsections provide additional information.
 </PARA>
+</SECT3>
 <SECT3 ID="integralpointerarg">
 <TITLE>Integral/Pointer</TITLE>
 <PARA>
@@ -614,11 +617,14 @@ Chapter 8.5.4.
 
 <SECT2 ID="returnvalues">
 <TITLE>Return Values</TITLE>
+<SECT3 ID=returnvalsintro>
+<TITLE>Introduction</TITLE>
 <PARA>
-See 
+Values are returned from functions as described in
 <XREF LINKEND="std.IA64.Conventions">
-Chapter 8.6.
+Chapter 8.6, and as further described here.
 </PARA>
+</SECT3>
 <SECT3 ID="voidret">
 <TITLE>Void</TITLE>
 <PARA>
@@ -675,10 +681,14 @@ are reserved for the Operating System.
 
 <SECT2 ID="exceptioninterface">
 <TITLE>Exception Interface</TITLE>
+<SECT3 ID=exceptionintro>
+<TITLE>Introduction</TITLE>
 <PARA>
-See 
+LSB-conforming implementations shall support the exception interface
+as specified in
 <XREF LINKEND="std.IA64.ABI">, section 3.3.1.
 </PARA>
+</SECT3>
 <SECT3 ID="hardwareexceptiontypes">
 <TITLE>Hardware Exception Types</TITLE>
 <PARA>
@@ -693,35 +703,34 @@ See
 <XREF LINKEND="std.IA64.ABI">, section 3.3.1.
 </PARA>
 </SECT3>
-<SECT3 ID="debuggingsupport">
-<TITLE>Debugging Support</TITLE>
-<PARA>
-See 
-<XREF LINKEND="std.IA64.ABI">, section 3.3.4.
-</PARA>
-</SECT3>
-<SECT3 ID="processstartup">
-<TITLE>Process Startup</TITLE>
-<PARA>
-See 
-<XREF LINKEND="std.IA64.ABI">, section 3.3.5.
-</PARA>
-</SECT3>
 </SECT2>
 
 <SECT2 ID="signaldelivery">
 <TITLE>Signal Delivery</TITLE>
 <PARA>
-See 
+LSB-conforming systems shall deliver signals as specified in
 <XREF LINKEND="std.IA64.ABI">, section 3.3.2.
 </PARA>
 <SECT3 ID="signalhandlerinterface">
 <TITLE>Signal Handler Interface</TITLE>
 <PARA>
-See 
+The signal handler interface shall be as specified in 
 <XREF LINKEND="std.IA64.ABI">, section 3.3.3.
 </PARA>
 </SECT3>
+</SECT2>
+<SECT2 ID="debuggingsupport">
+<TITLE>Debugging Support</TITLE>
+<PARA>
+The LSB does not specify debugging information.
+</PARA>
+</SECT2>
+<SECT2 ID="processstartup">
+<TITLE>Process Startup</TITLE>
+<PARA>
+LSB-conforming systems shall initialize processes as specified in
+<XREF LINKEND="std.IA64.ABI">, section 3.3.5.
+</PARA>
 </SECT2>
 
 </SECT1>
@@ -967,6 +976,7 @@ should use <function>getenv</function> to access the environment.
 
 <SECT1 id=codingexamples>
 <TITLE>Coding Examples</TITLE>
+<SECT2 ID=examplesintro>
 <PARA>
 LSB-conforming applications may implement fundamental operations using the
 Coding Examples as shown below.
@@ -975,14 +985,14 @@ Coding Examples as shown below.
 Sample code sequences and coding conventions can be found in
 <XREF LINKEND="std.IA64.Conventions">, Chapter 9.
 </PARA>
-
+</SECT2>
 <SECT2 ID="codemodeloverview">
 <TITLE>Code Model Overview/Architecture Constraints</TITLE>
 <PARA>
 As defined in 
 <XREF LINKEND="std.IA64.ABI">,
 relocatable files, executable files, and shared object files 
-that are supplied as part of an application must use
+that are supplied as part of an application shall use
 Position Independent Code, as described in
 <XREF LINKEND="std.IA64.Conventions">, Chapter 12.
 </PARA>
