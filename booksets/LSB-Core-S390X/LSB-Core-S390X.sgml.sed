@@ -35,8 +35,8 @@
 &elf-contents;
 </PART>
 &lsb-contents;
-&lsb-s390x-appA;
 &packaging-contents;
+&lsb-s390x-appA;
 &fdl;
 
 </BOOK>
