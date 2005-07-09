@@ -27,20 +27,23 @@ Current snapshots can be found <A HREF="specs.php">HERE</A>.
 
 <H1>Current LSB Specification</H1>
 <p>
-The current LSB specification is version 2.1 which can be found
-<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_1_0>Here</A>.</p>
+The current LSB specification is version 3.0 which can be found
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_3_0_0>Here</A>.</p>
 </p>
 
 <H1>LSB 2.0.1 aka the ISO Submission</H1>
 <p>
-Version 2.0.1 of the LSB has been submitted to ISO for consideration as an International Standard.
-This version of the LSB can be found
+Version 2.0.1 of the LSB was submitted to ISO as a Draft International
+Standard (DIS 23360). This version of the LSB can be found
 <A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_0_1>Here</A>.</p>
 
 <H1>Older version of the Specification</H1>
 <p>
-Older versions of the LSB can be found
-<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_1_3_0>Here</A>.</p>
+The previous certification-ready version of the LSB was
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_1_0>2.1</A>.
+Other released versions are archived on the 
+<A HREF=http://refspecs.freestandards.org/lsb.shtml">same page</A>.
+</p>
 
 <H3>About the Specification</H3>
 <p>
