@@ -9,7 +9,8 @@ include(`modscope.sgml')
 
 <CHAPTER ID="normativerefs">
 <TITLE>Normative References</TITLE>
-<PARA>
+<!-- the ID below is for auto generated xrefs to the LSB itself -->
+<PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
 the Linux Standard Base.  In this specification, where only a particular section
 of one of these references is identified, then the normative reference is to
@@ -147,35 +148,35 @@ A conforming application shall satisfy the following requirements: </PARA><PARA>
 
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
-Its executable files are either shell scripts or object files in the format defined for the Object File Format system interface.
+Its executable files shall be either shell scripts or object files in the format defined for the Object File Format system interface.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-Its object files participate in dynamic linking as defined in the Program Loading and Linking System interface.
+Its object files shall participate in dynamic linking as defined in the Program Loading and Linking System interface.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-It employs only the instructions, traps, and other low-level facilities defined in the Low-Level System interface as being for use by applications.
+It shall employ only the instructions, traps, and other low-level facilities defined in the Low-Level System interface as being for use by applications.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-If it requires any optional interface defined in this document in order to be installed or to execute successfully, the requirement for that optional interface is stated in the application's documentation. 
+If it requires any optional interface defined in this document in order to be installed or to execute successfully, the requirement for that optional interface shall be stated in the application's documentation. 
 </PARA>
 </LISTITEM><LISTITEM>
 <PARA>
-It does not use any interface or data format that is not required to be provided by a conforming implementation, unless: 
+It shall not use any interface or data format that is not required to be provided by a conforming implementation, unless: 
 <ITEMIZEDLIST mark="BULLET">
 <LISTITEM>
 <PARA>
-If such an interface or data format is supplied by another application through direct invocation of that application during execution, that application is in turn an LSB conforming application.
+If such an interface or data format is supplied by another application through direct invocation of that application during execution, that application shall be in turn an LSB conforming application.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-The use of that interface or data format, as well as its source, is identified in the documentation of the application. 
+The use of that interface or data format, as well as its source, shall be identified in the documentation of the application. 
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
@@ -186,7 +187,7 @@ It shall not use any values for a named interface that are reserved for vendor e
 </PARA>
 </LISTITEM></ITEMIZEDLIST>
 
-A strictly conforming application does not require or use any interface, facility, or implementation-defined extension that is not defined in this document in order to be installed or to execute successfully. 
+A strictly conforming application shall not require or use any interface, facility, or implementation-defined extension that is not defined in this document in order to be installed or to execute successfully. 
 </PARA>
 </SECT1>
 </CHAPTER>
