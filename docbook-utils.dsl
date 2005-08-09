@@ -152,7 +152,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;Generate Part Title Page?
 (define %generate-part-titlepage% 
-  #f)
+  #t)
 
 ;;Do you want the Part intro on the part title page?
 (define %generate-partintro-on-titlepage%
