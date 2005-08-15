@@ -1350,6 +1350,27 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
                     (literal "(" (format-number conumber "1") ")")))
           (make element gi: "B"
          (literal "(??)")))))
+
+; enhance a simplelist member to generate the anchor points
+; used extensively by mklibspec.
+(element member
+  (let* ((type (inherited-attribute-string (normalize "type")))
+         (id   (attribute-string (normalize "id"))))
+	    (make sequence
+	    (if id
+		(make element gi: "A"
+		      attributes: (list (list "NAME" id))
+		      (empty-sosofo))
+	         (empty-sosofo))
+	    (if (equal? type (normalize "inline"))
+		(make sequence
+		  (process-children-trim)
+		  (if (not (last-sibling?))
+		      (literal ", ")
+		      (literal "")))
+		(process-children)))))
+
+
 ;=============================================
 ; extension to allow ISO-C varargs functions
 ;=============================================

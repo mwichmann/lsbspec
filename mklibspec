@@ -6,6 +6,8 @@ use IPC::Open2;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
+my $trace = 0;
+
 sub usage()
 {
 	print STDERR "mklibspec -l <libname> -a <archname> [-c cols] [-d]\n";
@@ -54,35 +56,22 @@ for $row (1..$inc) {
 		printf "<ENTRY>";
 		my $intnum = $row+($col*$inc);
 		if( $int[$intnum] ) {
-			# figure out a reference
-			# each table is followed by a list of references
-			#
-			# this is a little complex:
-			# %refname is a hash, using keys of the form "std-%d-%d"
-			#   with values being the names of the standards
-			# @ref is an array; each element is a key in %ref
-			# $refno is the current index into that array
-			my $refstr = sprintf "std-%d-%d-%s", 
-				$Lid, $stdnum[$intnum], $name;
-			$refname{$refstr} = $stdname[$intnum];
-			$refno = 0;
-			for $r (0..$#ref) {
-				$refno = $r;
-				last if ($ref[$r] eq $refstr);
-			}
-			if ($ref[$refno] ne $refstr) {
-				push(@ref, $refstr) ;
-				$refno = $#ref;
-				}
+			# the reference stuff is now somewhat simpler than
+			# it used to be. Up front, we calculated a hash
+			# with all of the references. LINK to that table
+			# by looking up the number from the %ref_list hash.
+
 			my $interface = $int[$intnum];
 			$interface = unmangle($interface) if ($demangle);
 			printf "<indexterm><primary>%s</primary></indexterm>%s", $interface, $interface;
 			if( $symver[$intnum] ) {
 				printf "(%s)", $symver[$intnum];
 				}
-			if( $stdnum[$intnum] ) {
-				printf " <LINK LINKEND=\"%s\">[%d]</LINK>",
-					$refstr, $refno+1;
+			if( $stdname[$intnum] ) {
+				printf " <LINK LINKEND=\"STD.%s.%d\">[%d]</LINK>",
+					$Lname,
+					$ref_list{$stdname[$intnum]}, 
+					$ref_list{$stdname[$intnum]};
 				}
 			}
 		printf "</ENTRY>\n";
@@ -92,16 +81,6 @@ for $row (1..$inc) {
 print "</TBODY>\n";
 print "</TGROUP>\n";
 print "</TABLE>\n";
-# and dump the reference list
-if ($#ref >= 0) {
-	print "<PARA><EMPHASIS>Referenced Specification(s)</EMPHASIS></PARA>\n";
-	for $r (0..$#ref) {
-		$refstr = $ref[$r];
-		$refname{$refstr} = "This specification" if ($refname{$refstr} eq "Linux Standard Base");
-		printf "<FORMALPARA><TITLE><ANCHOR id=\"%s\">[%d]</TITLE><para><XREF LINKEND=std.%s></para></FORMALPARA>\n",
-			$refstr, $r+1, makeid($refname{$refstr});
-		}
-	}
 }
 
 sub getinterfacename($)
@@ -535,7 +514,7 @@ $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.68 2005-03-30 04:12:27 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.69 2005-08-15 23:57:47 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -591,6 +570,7 @@ if(open(DESC,"<$Lname.txt" )) {
 	while(<DESC>) {
 		print $_;
 	}
+	close DESC;
 }
 
 #
@@ -607,17 +587,19 @@ $select.= "AND Istatus != 'Excluded' ";
 $select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 $select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
+#my %ref_list;
 $lsh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $lsh->numrows) {
 	print "The behavior of the interfaces in this library is specified ";
 	print "by the following specifications:";
 	print "<SIMPLELIST COLUMNS=1>\n";
-	for(1..$lsh->numrows) {
+	for(my $refno=1; $refno <= $lsh->numrows; $refno++) {
 		local(*entry);
 		%entry=$lsh->fetchhash;
-		print "<MEMBER>\n";
-		printf "<XREF LINKEND=\"std.%s\">\n", makeid($entry{'Sname'});
+		printf "<MEMBER ID='STD.%s.%d'>\n", $Lname, $refno;
+		printf "[%d] <XREF LINKEND=\"std.%s\">\n", $refno, makeid($entry{'Sname'});
 		print "</MEMBER>\n";
+		$ref_list{$entry{'Sname'}} = $refno;
 		}
 	print "</SIMPLELIST>\n";
 	}
@@ -629,6 +611,19 @@ print "</PARA>\n";
 $select = "SELECT * FROM LibGroup WHERE LGlib=$Lid ORDER BY LGorder";
 print STDERR $select,"\n" if $trace;
 $lgh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+if ($lgh->numrows == 0) {
+	if ($archname eq "All") {
+		print "<PARA>\n";
+		print "There are no generic interfaces to this library\n";
+		print "Please refer to the architecture specific supplements for details\n";
+		print "</PARA>\n";
+	} else {
+		print "<PARA>\n";
+		print "The $archname architecture has no architecture specific interfaces\n";
+		print "to this library. Please refer to the generic specification.\n";
+		print "</PARA>\n";
+	}
+}
 for(1..$lgh->numrows) {
 	local(*entry);
 	local(*std);
@@ -794,4 +789,4 @@ if($sth->numrows) {
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.68 2005-03-30 04:12:27 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.69 2005-08-15 23:57:47 nick Exp $- -->\n");
