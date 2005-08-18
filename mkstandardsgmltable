@@ -19,9 +19,12 @@ die;
 #
 # 1) process the arguments
 #
-
-GetOptions("a=s" => \$archname, "s=s" => \$specids, "x=s" => \$exclids);
-
+my $Stype='Standard';
+GetOptions(	"a=s" => \$archname, 
+		"s=s" => \$specids, 
+		"x=s" => \$exclids, 
+		"t=s" => \$Stype, 
+	  );
 if( !$archname && !$specids ) { usage(); }
 
 #
@@ -45,7 +48,7 @@ if( $archname ) {
 }
 
 $select = "SELECT * FROM Standard ";
-$select.= "WHERE Stype='Standard' ";
+$select.= "WHERE Stype='$Stype' ";
 $select.= "AND ( Sarch=$Aid OR Sarch=1 ) ";
 if( $specids ) {
 	$select.= "AND Sname IN ( $specids ) ";
@@ -53,14 +56,15 @@ if( $specids ) {
 if( $exclids ) {
 	$select.= "AND Sname NOT IN ( $exclids ) ";
 }
+$select .= "AND Sname != 'LSB' ";
 $select.= "ORDER BY Sshort";
+print STDERR $select,"\n" if $trace;
 
-#printf $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.15 2004-11-30 21:17:59 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.16 2005-08-18 22:46:28 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -85,7 +89,7 @@ for(1..$sth->numrows) {
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.15 2004-11-30 21:17:59 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.16 2005-08-18 22:46:28 nick Exp $- -->\n");
 
 sub makeid {
 	my ($name) = @_;
