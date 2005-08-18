@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=intro.sgml cxxintro.sgml
-TABLES= standards.sgml glibraries.sgml pslibs.sgml cxxstandards.sgml cxxlibraries.sgml
+TABLES= standards.sgml references.sgml glibraries.sgml pslibs.sgml cxxstandards.sgml cxxlibraries.sgml
 
 # Spec snot part of the main spec
 EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','ISOCXX','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi'"
@@ -16,7 +16,8 @@ EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape',
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All -x $(EXCLSPECS) >standards.sgml
+	../../../mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) >standards.sgml
+	../../../mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) >references.sgml
 	../../../mkstandardsgmltable -s "'LSB','ISOCXX','CXXABI','SUSV3'" >cxxstandards.sgml
 	../../../mklibsgmltable -a All -m "LSB_Core" >glibraries.sgml
 	../../../mklibsgmltable -a None -m "LSB_Core" >pslibs.sgml
