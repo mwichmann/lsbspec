@@ -8,14 +8,24 @@ include(`modscope.sgml')
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
+<TITLE>References</TITLE>
+<SECT1 ID="normativerefssect">
 <TITLE>Normative References</TITLE>
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">
-The specifications listed below are referenced in whole or in part by
-the Linux Standard Base.  In this specification, where only a particular section
-of one of these references is identified, then the normative reference is to
-that section alone, and the rest of the referenced document is informative.
+The following referenced documents are indispensable for the application of this
+document. For dated references, only the edition cited applies. For undated references,
+the latest edition of the referenced document (including any amendments) applies.
 </PARA>
+<NOTE>
+<PARA>
+Where copies of a document are available on the World Wide Web, a Uniform Resource
+Locator (URL) is given. This may point to a more recent copy of the referenced
+specification, or may be out of date. Reference copies of specifications at the revision
+level indicated may be found at the Free Standards Group's 
+<ULINK URL='http://refspecs.freestandards.org'>Reference Specifications</ULINK> site.
+</PARA>
+</NOTE>
 <!-- the ID below is a placeholder for any standards that have Istandard=0 in the database -->
 <TABLE ID='STD.'>
 <TITLE>Normative References</TITLE>
@@ -23,6 +33,21 @@ that section alone, and the rest of the referenced document is informative.
 include(`standards.sgml')
 </TGROUP>
 </TABLE>
+</SECT1>
+<SECT1 ID="informativerefs">
+<TITLE>Informative References/Bibliography</TITLE>
+<PARA>
+In addition, the specifications listed below provide essential background information
+to implementors of this specification. These references are included for information
+only.
+</PARA>
+<TABLE>
+<TITLE>Other References</TITLE>
+<TGROUP COLS=3>
+include(`references.sgml')
+</TGROUP>
+</TABLE>
+</SECT1>
 </CHAPTER>
 
 <CHAPTER ID="REQUIREMENTS">
