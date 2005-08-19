@@ -3,7 +3,7 @@
 <PARA>
 This is version &specversion; of the LSB-Graphics Module Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 1.0 of the LSB-Graphics Moudle
+this version will result in version 3.1 of the LSB-Graphics Moudle
 Specification.
 </PARA>
 <PARA>
@@ -12,15 +12,14 @@ Implmentations may not claim conformance to this version.
 An implementation of this version of the specification may not claim
 to be an implementation of LSB-Graphics Module unless it has successfully
 completed the compliance process as defined by the Free Standards Group.
-Note: This is boilerplate. It need not be a final requirment.
 -->
 </PARA>
 </PREFACE>
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LSB-Graphics Module defines The graphics components that are required to
-be present on a Linux system.
+The LSB-Graphics Module defines the graphics components that are required to
+be present on a conforming system.
 </PARA>
 
 <PARA>
@@ -42,7 +41,8 @@ system.
 
 <CHAPTER ID="normativerefs">
 <TITLE>Normative References</TITLE>
-<PARA>
+<!-- the ID below is for auto generated xrefs to the LSB itself -->
+<PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
 the LSB-Graphics Module Standard.  Such references may be normative or
 informative; a reference to specification shall only be considered
