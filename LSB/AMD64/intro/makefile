@@ -13,7 +13,8 @@ EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape',
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a x86-64 -x $(EXCLSPECS) >standards.sgml
+	../../../mkstandardsgmltable -a x86-64 -t Standard -x $(EXCLSPECS) >standards.sgml
+	../../../mkstandardsgmltable -a x86-64 -t Reference -x $(EXCLSPECS) >references.sgml
 	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI','SUSV3','LSB'" >cxxstandards.sgml
 	../../../mklibsgmltable -a x86-64 -m "LSB_Core" >libraries.sgml
 	../../../mklibsgmltable -a x86-64 -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
