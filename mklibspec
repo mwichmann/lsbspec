@@ -68,10 +68,10 @@ for $row (1..$inc) {
 				printf "(%s)", $symver[$intnum];
 				}
 			if( $stdname[$intnum] ) {
-				printf " <LINK LINKEND=\"STD.%s.%d\">[%d]</LINK>",
-					$Lname,
+				printf " <LINK LINKEND=\"REFSTD.%s.%d\">[%s]</LINK>",
+					makeid($Lname),
 					$ref_list{$stdname[$intnum]}, 
-					$ref_list{$stdname[$intnum]};
+					$stdname[$intnum];
 				}
 			}
 		printf "</ENTRY>\n";
@@ -460,7 +460,7 @@ sub data_def_header()
 	print "in the referenced underlying specifications.\n";
 	print "</PARA>\n";
 	print "<PARA>\n";
-	print "This specification uses ISO/IEC 9899 C Language as the reference programming ";
+	print "This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming ";
 	print "language, and ";
 	print "data definitions are specified in ISO C format. The C language ";
 	print "is used here as a convenient notation. Using a C language ";
@@ -514,7 +514,7 @@ $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.69 2005-08-15 23:57:47 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.70 2005-08-19 00:29:32 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -596,8 +596,8 @@ if( $lsh->numrows) {
 	for(my $refno=1; $refno <= $lsh->numrows; $refno++) {
 		local(*entry);
 		%entry=$lsh->fetchhash;
-		printf "<MEMBER ID='STD.%s.%d'>\n", $Lname, $refno;
-		printf "[%d] <XREF LINKEND=\"std.%s\">\n", $refno, makeid($entry{'Sname'});
+		printf "<MEMBER ID='REFSTD.%s.%d'>\n", makeid($Lname), $refno;
+		printf "[%s] <XREF LINKEND=\"std.%s\">\n", $entry{'Sname'}, makeid($entry{'Sname'});
 		print "</MEMBER>\n";
 		$ref_list{$entry{'Sname'}} = $refno;
 		}
@@ -789,4 +789,4 @@ if($sth->numrows) {
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.69 2005-08-15 23:57:47 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.70 2005-08-19 00:29:32 nick Exp $- -->\n");
