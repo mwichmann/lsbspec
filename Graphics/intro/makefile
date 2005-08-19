@@ -13,7 +13,7 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'Xlib','XSM','Xt','X-dbe','X-DPMS','X-evi','X-Record','X-security','X-shape','X-shm','X-sync','XINPUT','XICE','OGL','LSB'" >standards.sgml
+	../../mkstandardsgmltable -a All -s "'Xlib','XSM','Xt','X-dbe','X-DPMS','X-evi','X-Record','X-security','X-shape','X-shm','X-sync','XINPUT','XICE','OGL','ISOC99'" >standards.sgml
 	../../mklibsgmltable -a All -m LSB_Graphics >glibraries.sgml
 
 
