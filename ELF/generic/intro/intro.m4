@@ -53,24 +53,45 @@ since the publication of that document.
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
+<TITLE>References</TITLE>
+<SECT1 ID="normativerefssect">
 <TITLE>Normative References</TITLE>
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">
-The specifications listed below are referenced in whole or in part by
-the ELF Specification.  Such references may be normative or
-informative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The ELF Specification
-may make normative references to a portion of these
-specifications (that is, to define a specific function or group of
-functions); in such cases, only the explicitly referenced portion of
-the specification is to be considered normative.
+The following referenced documents are indispensable for the application of this
+document. For dated references, only the edition cited applies. For undated references,
+the latest edition of the referenced document (including any amendments) applies.
 </PARA>
+<NOTE>
+<PARA>
+Where copies of a document are available on the World Wide Web, a Uniform Resource
+Locator (URL) is given. This may point to a more recent copy of the referenced
+specification, or may be out of date. Reference copies of specifications at the revision
+level indicated may be found at the Free Standards Group's 
+<ULINK URL='http://refspecs.freestandards.org'>Reference Specifications</ULINK> site.
+</PARA>
+</NOTE>
 <TABLE>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
 include(standards.sgml)
 </TGROUP>
 </TABLE>
+</SECT1>
+<SECT1 ID="informativerefs">
+<TITLE>Informative References/Bibliography</TITLE>
+<PARA>
+In addition, the specifications listed below provide essential background information
+to implementors of this specification. These references are included for information
+only.
+</PARA>
+<TABLE>
+<TITLE>Other References</TITLE>
+<TGROUP COLS=3>
+include(`references.sgml')
+</TGROUP>
+</TABLE>
+</SECT1>
 </CHAPTER>
 
 <CHAPTER ID="REQUIREMENTS">

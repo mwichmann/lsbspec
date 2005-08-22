@@ -13,7 +13,8 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All >standards.sgml
+	../../../mkstandardsgmltable -a All -t Standard  >standards.sgml
+	../../../mkstandardsgmltable -a All -t Reference >references.sgml
 
 clean:
 	rm -f $(FILES)
