@@ -13,13 +13,24 @@ print STDERR "mkstandardsgmltable -a <archname>\n";
 die;
 }
 
+sub quote($)
+{
+	my ($type) = @_;
+	return $type if ($type =~ /^'.*'$/);
+	my @tlist = split(/,/, $type);
+	foreach $t (@tlist) {
+		$t = "'$t'" if ($t !~ /^'.*'$/);
+	}
+	return join(',', @tlist);
+}
+
 # Uncomment to trace SQL statments
 #$trace=1;
 
 #
 # 1) process the arguments
 #
-my $Stype='Standard';
+my $Stype="'Standard','Reference'";
 GetOptions(	"a=s" => \$archname, 
 		"s=s" => \$specids, 
 		"x=s" => \$exclids, 
@@ -47,8 +58,11 @@ if( $archname ) {
 	$Aid=0;
 }
 
+# check Stype is quoted properly
+$Stype = quote($Stype);
+
 $select = "SELECT * FROM Standard ";
-$select.= "WHERE Stype='$Stype' ";
+$select.= "WHERE Stype in ($Stype) ";
 $select.= "AND ( Sarch=$Aid OR Sarch=1 ) ";
 if( $specids ) {
 	$select.= "AND Sname IN ( $specids ) ";
@@ -64,7 +78,7 @@ $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.16 2005-08-18 22:46:28 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.17 2005-08-25 18:38:36 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -89,7 +103,7 @@ for(1..$sth->numrows) {
 }
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.16 2005-08-18 22:46:28 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkstandardsgmltable,v 1.17 2005-08-25 18:38:36 nick Exp $- -->\n");
 
 sub makeid {
 	my ($name) = @_;
