@@ -9,7 +9,8 @@ include(`../../generic/intro/cxxscope.sgml')
 
 <CHAPTER ID="normativerefs">
 <TITLE>Normative References</TITLE>
-<PARA>
+<!-- the ID below is for auto generated xrefs to the LSB itself -->
+<PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
 this module of
 the Linux Standard Base.  In this specification, where only a particular section
