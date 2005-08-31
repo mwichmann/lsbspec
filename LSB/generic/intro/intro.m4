@@ -238,7 +238,8 @@ In addition to the differences noted inline in this specification,
 PDTR 24715 has extracted the differences between this specification and <XREF
 LINKEND="STD.SUSv3">
 into a single place.
-It is the long term plan of the LSB to converge with ISO/IEC 9945 POSIX.
+It is the long term plan of the LSB workgroup to converge the LSB Core Specification
+with ISO/IEC 9945 POSIX.
 </PARA>
 </NOTE>
 <PARA>
