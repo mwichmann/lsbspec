@@ -101,6 +101,16 @@ the dynamic linker shall search by default.
 </SECT1>
 <SECT1 ID="Implementation"><TITLE>LSB Implementation Conformance </TITLE>
 <PARA>
+A conforming implementation is necessarily architecture specific, and must provide the interfaces specified by
+both the generic and the relevant architecture specific LSB Core specifications.
+<NOTE><TITLE>Rationale</TITLE>
+<PARA>
+An implementation must provide <emphasis>at least</emphasis>
+the interfaces specified in these specifications. It may also provide additional interfaces.
+</PARA>
+</NOTE>
+</PARA>
+<PARA>
 A conforming implementation shall satisfy the following requirements:</PARA><PARA>
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
@@ -168,6 +178,10 @@ The implementation may provide additional interfaces with different names. It ma
 </PARA>
 </SECT1>
 <SECT1 ID="Application"><TITLE>LSB Application Conformance </TITLE>
+<PARA>
+A conforming application is necessarily architecture specific, and must conform to
+both the generic and the relevant architecture specific LSB Core specifications.
+</PARA>
 <PARA>
 A conforming application shall satisfy the following requirements: </PARA><PARA>
 
@@ -238,7 +252,7 @@ In addition to the differences noted inline in this specification,
 PDTR 24715 has extracted the differences between this specification and <XREF
 LINKEND="STD.SUSv3">
 into a single place.
-It is the long term plan of the LSB workgroup to converge the LSB Core Specification
+It is the long term plan of the Free Standards Group to converge the LSB Core Specification
 with ISO/IEC 9945 POSIX.
 </PARA>
 </NOTE>
