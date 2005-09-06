@@ -316,6 +316,24 @@ shall be invalid for <function>nl_langinfo</function>.</para>
 <para>The value <constant>"a"</constant> shall be an invalid <parameter>mode</parameter>
 argument to <function>popen</function>.</para>
 
+<para>The <function>fcntl</function> function shall fail and set <varname>errno</varname> to
+<errorcode>EDEADLK</errorcode> if the
+<parameter>cmd</parameter> argument is <constant>F_SETLKW</constant>,
+and the lock is blocked by a lock from another process already blocked by the current process.
+</para>
+
+<para>The <function>opendir</function> function shall consume a file descriptor;
+the <function>readdir</function> function shall fail and set <varname>errno</varname>
+to <errorcode>EBADF</errorcode> if the underlying file descriptor is closed.
+</para>
+
+<para>The <function>link</function> function shall not work across file systems, and
+shall fail and set <varname>errno</varname> to <errorcode>EXDEV</errorcode>
+as described as optional behavior in <XREF linkend="std.susv3">.
+</para>
+
+
+
 </SECT2>
 </SECT1>
 </CHAPTER>
