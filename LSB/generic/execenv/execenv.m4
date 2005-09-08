@@ -365,8 +365,8 @@ location.
 
 <para>
 Implementations shall support the POSIX and C locales as specified in
-<XREF LINKEND=STD.SUSv3>.
-
+<XREF LINKEND=STD.SUSv3>. Other locales may be supported.
+</para><para>
 Implementations may define additional locale categories not defined by that standard.
 <NOTE><PARA>
 Implementations choosing additional locale categories should be aware
