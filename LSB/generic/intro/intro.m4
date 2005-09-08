@@ -114,12 +114,20 @@ the interfaces specified in these specifications. It may also provide additional
 A conforming implementation shall satisfy the following requirements:</PARA><PARA>
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
-The implementation shall implement fully the architecture described in the hardware manual for the target processor architecture. 
+A processor architecture represents a family of related processors
+which may not have identical feature sets. The architecture
+specific supplement to this specification for a given target
+processor architecture describes a minimum acceptable processor.
+The implementation shall provide all features of this processor,
+whether in hardware or through emulation transparent
+to the application.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-The implementation shall be capable of executing compiled applications having the format and using the system interfaces described in this document.
+The implementation shall be capable of executing compiled applications
+having the format and using the system interfaces described in this
+document.
 </PARA>
 </LISTITEM>
 <LISTITEM>
