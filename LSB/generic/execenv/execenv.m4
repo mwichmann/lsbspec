@@ -257,8 +257,9 @@ order to succeed, as described as optional behavior in the
 </para>
 
 <para id="exec-link-unlink"
-XRefLabel="Additional behaviors: unlink/link on directory"
->Calling <FUNCTION>unlink</FUNCTION> on a directory shall fail.
+XRefLabel="Section 18.1, Additional behaviors: unlink/link on directory"
+>
+Calling <FUNCTION>unlink</FUNCTION> on a directory shall fail.
 Calling <FUNCTION>link</FUNCTION> specifying a directory as the first
 argument shall fail.  See also <xref linkend="baselib-unlink-3">.
 <note>
