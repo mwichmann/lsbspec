@@ -36,6 +36,13 @@ The following sections are defined in the <XREF LINKEND="std.S390.ABI">.
 include(elfsect.sgml)
 </PARA>
 </SECT2>
+<SECT2>
+<TITLE>Addition Special Sections</TITLE>
+<PARA>
+The following additional sections are defined here.
+include(linuxsect.sgml)
+</PARA>
+</SECT2>
 
 </SECT1>
 
