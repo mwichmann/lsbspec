@@ -21,6 +21,12 @@ Applications are also encouraged to uninstall cleanly.
 </note>
 </PARA>
 <PARA>
+A package in RPM format may include a dependency on the LSB Core and other
+LSB specifications, as described in <XREF LINKEND=pkgdepend>. Packages that are not
+in RPM format may test for the presence of a conforming implementation by means of
+the <command>lsb_release</command> utility.
+</PARA>
+<PARA>
 Implementations shall provide a mechanism for installing applications in
 this packaging format with some restrictions listed
 below.
@@ -897,7 +903,7 @@ documentation for installing LSB packages.
 <SECT1 ID=pkgnameconv>
 <TITLE>Package Naming</TITLE>
 <PARA>
-Packages supplied by implementations and applications must follow the
+Packages supplied by implementations and applications shall follow the
 following rules for the name field within the package.  These rules
 are not required for the filename of the package file itself.
 <note>
@@ -993,9 +999,9 @@ include(coredep.sgml)
 <SECT1 ID=pkgarchcon>
 <TITLE>Package Architecture Considerations</TITLE>
 <PARA>
-Packages which do not contain any architecture specific files must specify an
+Packages which do not contain any architecture specific files should specify an
 architecture of <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>. An LSB runtime
-environment must accept values <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>, or
+environment shall accept values <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>, or
 the value specified in the architecture specific supplement.
 </PARA>
 
