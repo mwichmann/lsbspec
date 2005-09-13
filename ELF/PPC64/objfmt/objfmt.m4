@@ -27,6 +27,14 @@ LSB-conforming applications shall use the ELF header as defined in
 The following sections are defined in the <XREF LINKEND="std.PPC64.ABI">.
 include(elfsect.sgml)
 </PARA>
+<SECT2>
+<TITLE>Addition Special Sections</TITLE>
+<PARA>
+The following additional sections are defined here.
+include(linuxsect.sgml)
+</PARA>
+</SECT2>
+
 </SECT1>
 
 <SECT1 ID=toc>
