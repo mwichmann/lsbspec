@@ -5,7 +5,7 @@
 <REFNAME>su</REFNAME>
 
 <REFPURPOSE>
-change user ID or become super-user
+change user ID
 </REFPURPOSE>
 
 </REFNAMEDIV>
@@ -21,47 +21,62 @@ change user ID or become super-user
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-<COMMAND>su</COMMAND> is used to become another user during a login 
-session. Invoked without a username, <COMMAND>su</COMMAND> defaults 
-to becoming the super user.  The optional argument - may be used to 
-provide an environment similar to what the user would expect had the 
-user logged in directly.
+The <COMMAND>su</COMMAND> command shall start a shell
+running with the real and effective user and group IDs of
+the user <parameter>username</parameter>.
+If <parameter>username</parameter> is not specified, 
+<command>su</command> shall default to an unspecified user with
+all appropriate privileges. If the <parameter>-s</parameter> or 
+<parameter>--shell</parameter> is not specified, the shell to be invoked shall be that
+specified for <parameter>username</parameter> in the user database
+(see <function>getpwnam</function>),
+or <filename>/bin/sh</filename> if there is no shell specified
+in the user database.
+</PARA>
+<PARA>
+If the <parameter>-</parameter> option
+is specified, or if the first operand is <literal>-</literal>, the 
+environment for the shell shall be initialized as if the new shell was a login shell
+(see <XREF LINKEND="cmd-sh-invoke">).
+</PARA>
+<PARA>
+If the invoking user did not have appropriate privileges, the <command>su</command>
+command shall prompt for a password and validate this before continuing.
+Invalid
+passwords shall produce an error message.  
+The <command>su</command> command shall log in an unspecified manner all invokations,
+whether successful or unsuccessful.
 </PARA>
 
 <PARA>
-The user will be prompted for a password, if appropriate.  Invalid
-passwords will produce an error message.  All attempts, both valid and
-invalid, are logged to detect abuses of the system.
-Applications may not assume the format of prompts and anticipated
-input for user interaction, because they are unspecified.
+Any operands specified after the <parameter>username</parameter>
+shall be passed to the invoked shell.
 </PARA>
 
 <PARA>
-An optional command can be executed. This is done by the shell
-specified in /etc/passwd for the target user unless the -s or -m
-options are used.  Any arguments supplied after the username will be
-passed to the invoked shell (shell shall support the -c command line
-option in order for a command to be passed to it).
-</PARA>
-
-<PARA>
-The current environment is passed to the new shell.  The value of
-<ENVAR>PATH</ENVAR>is reset to <LITERAL>/bin:/usr/bin</LITERAL> for unprivileged users, or
-<LITERAL>/sbin:/bin:/usr/sbin:/usr/bin</LITERAL> for users
-with appropriate privilege.  This may be changed
-with the <ENVAR>ENV_PATH</ENVAR> and <ENVAR>ENV_SUPATH</ENVAR>
-definitions in <FILENAME>/etc/login.defs</FILENAME>. When
-using the <PARAMETER>-m</PARAMETER> or <PARAMETER>-p</PARAMETER> options, 
-the user's environment is not changed.
-</PARA>
-
-<PARA>
-A subsystem login is indicated by the presence of a "*" as the first
-character of the login shell. If this character is present,
-it shall be removed, and the remaining path (or 
-<filename>/bin/sh</filename> if the remaining path is empty)
-shall be executed after changing the root directory
-to the directory specified as the home directory.
+If the option <parameter>-</parameter> is not specified, 
+and if the first operand is not <literal>-</literal>,
+the environemnt for the new shell shall be intialized from the current
+environment. If none of the 
+<simplelist type=inline>
+<member><parameter>-m</parameter></member>
+<member><parameter>-p</parameter></member>
+<member>or <parameter>--preserve-environment</parameter></member>
+</simplelist> 
+options are specified, the environment 
+may be modified in unspecified ways before invoking the shell.
+If any of the 
+<simplelist type=inline>
+<member><parameter>-m</parameter></member>
+<member><parameter>-p</parameter></member>
+<member>or <parameter>--preserve-environment</parameter></member>
+</simplelist> 
+options are specified, the environment shall not be altered.
+<NOTE><PARA>
+Although the <command>su</command> command shall not alter the
+environment, the invoked shell may still alter it before it is ready
+to intepret any commands.
+</PARA></NOTE>
 </PARA>
 
 </REFSECT1>
@@ -74,18 +89,16 @@ to the directory specified as the home directory.
 <term>-</term>
 <listitem>
 <para>
-makes this a login shell.
+the invoked shell shall be a login shell.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>-c, --comand=command</term>
+<term>-c <parameter>command</parameter>, --command=<parameter>command</parameter></term>
 <listitem>
 <para>
-passes command to the invoked shell.
-It is passed directly to the invoked shell (using the shell's -c
-option), so its syntax is whatever that shell can accept.
+Invoke the shell with the option <literal>-c <parameter>command</parameter></literal>.
 </para>
 </listitem>
 </varlistentry>
@@ -94,18 +107,23 @@ option), so its syntax is whatever that shell can accept.
 <term>-m, -p, --preserve-environment</term>
 <listitem>
 <para>
-does not reset environment variables, and keeps the same shell if
-it is present in /etc/shells.
+The current environment shall be passed to the invoked shell. If the environment
+variable <envar>SHELL</envar> is set, it shall specify the shell to invoke, if it matches
+an entry in <filename>/etc/shells</filename>. If there is no matching entry in
+<filename>/etc/shells</filename>, 
+This option shall be ignored if the <parameter>-</parameter> option is also specified, or if the
+first operand is <literal>-</literal>.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>-s, --shell=shell</term>
+<term>-s <parameter>shell</parameter>, --shell=<parameter>shell</parameter></term>
 <listitem>
 <para>
-uses shell instead of the default in /etc/passwd. The shell specified
-shall be present in /etc/shells.
+Invoke <parameter>shell</parameter> as the comamnd interpreter.
+The shell specified
+shall be present in <filename>/etc/shells</filename>.
 </para>
 </listitem>
 </varlistentry>
