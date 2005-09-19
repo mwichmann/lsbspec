@@ -12,8 +12,10 @@ conforming (for example, calls LSB commands and utilities).
 <note>
 <para>
 Supplying an RPM format package is encouraged because it makes systems
-easier to manage.  A future version of the LSB may require RPM, or specify
-a way for an installer to update a package database.
+easier to manage.  
+This specification does not require the implementation to use
+RPM as the package manager; it only specifies the format of
+the package file.
 </para>
 <para>
 Applications are also encouraged to uninstall cleanly.
