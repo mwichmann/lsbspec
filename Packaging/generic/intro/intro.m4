@@ -43,7 +43,8 @@ include(`modscope.sgml')
 </CHAPTER>
 <CHAPTER ID="normativerefs">
 <TITLE>Normative References</TITLE>
-<PARA>
+<!-- the ID below is for auto generated xrefs to the LSB itself -->
+<PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
 the Linux Package Specification (LPS).  Such references may be normative or
 informative; a reference to specification shall only be considered
