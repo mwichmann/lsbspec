@@ -20,7 +20,7 @@ corresponding section in the generic Linux Standard Base Core Specification.
 <SECT1 ID=proginterp>
 <TITLE>Program Interpreter/Dynamic Linker</TITLE>
 <PARA>
-The LSB specifies the Program Interpreter to be
+The Program Interpreter shall be
 <application><XREF LINKEND="lib.proginterp"></application>.
 </PARA>
 </SECT1>
