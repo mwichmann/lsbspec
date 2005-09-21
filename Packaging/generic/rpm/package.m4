@@ -143,7 +143,7 @@ This value shall be 0 to indicate a binary package.
 <LISTITEM>
 <PARA>
 Value indicating the architecture for which this package is valid. This value
-is specified in the architecture-specific LSB specification.
+is specified in the architecture specific supplement.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -611,7 +611,7 @@ index records. The following values may be used.
 include(rpmdeps.sgml)
 <PARA>
 Additional dependencies are specified in the Package Dependencies section of
-this document, and the architecture specific documents.
+this specification, and the architecture specific supplements.
 </PARA>
 </SECT4>
 <SECT4>
