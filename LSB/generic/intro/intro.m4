@@ -20,7 +20,8 @@ the latest edition of the referenced document (including any amendments) applies
 <NOTE>
 <PARA>
 Where copies of a document are available on the World Wide Web, a Uniform Resource
-Locator (URL) is given. This may point to a more recent copy of the referenced
+Locator (URL) is given for informative purposes only. 
+This may point to a more recent copy of the referenced
 specification, or may be out of date. Reference copies of specifications at the revision
 level indicated may be found at the Free Standards Group's 
 <ULINK URL='http://refspecs.freestandards.org'>Reference Specifications</ULINK> site.
@@ -71,7 +72,7 @@ be available on a Linux Standard Base system, with the specified
 runtime names. The libraries listed in <XREF LINKEND="tbl-lsbgeneric-archlib">
 are architecture specific, but shall be available on all LSB
 conforming systems. This list may be supplemented or amended by the
-architecture-specific specification.
+architecture specific supplement.
 ',`
 The libraries listed in <XREF LINKEND='TBLTARGET`> shall
 be available on 'ARCH` Linux Standard Base systems, with the specified
@@ -102,7 +103,7 @@ the dynamic linker shall search by default.
 <SECT1 ID="Implementation"><TITLE>LSB Implementation Conformance </TITLE>
 <PARA>
 A conforming implementation is necessarily architecture specific, and must provide the interfaces specified by
-both the generic and the relevant architecture specific LSB Core specifications.
+both the generic LSB Core specification and its relevant architecture specific supplement.
 <NOTE><TITLE>Rationale</TITLE>
 <PARA>
 An implementation must provide <emphasis>at least</emphasis>
@@ -188,7 +189,7 @@ The implementation may provide additional interfaces with different names. It ma
 <SECT1 ID="Application"><TITLE>LSB Application Conformance </TITLE>
 <PARA>
 A conforming application is necessarily architecture specific, and must conform to
-both the generic and the relevant architecture specific LSB Core specifications.
+both the generic LSB Core specification and its relevant architecture specific supplement.
 </PARA>
 <PARA>
 A conforming application shall satisfy the following requirements: </PARA><PARA>
