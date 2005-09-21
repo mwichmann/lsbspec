@@ -18,12 +18,12 @@ LSB-conforming implementations shall support the object file Executable and Link
 </LISTITEM>
 <LISTITEM>
 <PARA>
-this document
+this specification
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-an architecture-specific LSB specification
+an architecture specific supplement to this specification
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>

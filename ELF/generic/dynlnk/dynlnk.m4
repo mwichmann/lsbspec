@@ -10,7 +10,7 @@ system actions that create running programs as specified in the
 <XREF LINKEND="std.gABI41">
 and
 <XREF LINKEND="std.ABIUpdate">
-and as supplemented by this document and an architecture-specific LSB specification.
+and as further required by this specification and its architecture specific supplement.
 </PARA>
 
 <PARA>
