@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.70 2005/08/19 00:29:32 nick Exp 0 -->
-<!--    at Thu Aug 25 14:57:43 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    at Wed Sep 21 20:52:58 2005 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
@@ -23,17 +23,21 @@ for the libpam library
 </TBODY>
 </TGROUP>
 </TABLE>
-
+<PARA>
+The Pluggable Authentication Module (PAM) interfaces allow
+applications to request authentication via a system administrator
+defined mechanism, known as a <FIRSTTERM>service</FIRSTTERM>.
+</PARA>
 <PARA>
 A single service name, <VARNAME>other</VARNAME>, shall always be present.
 The behavior of this service shall be determined by the system administrator.
 Additional service names may also exist.
-<FOOTNOTE>
+<NOTE>
 <PARA>
 Future versions of this specification might define additional
 service names.
 </PARA>
-</FOOTNOTE>
+</NOTE>
 </PARA>
 <PARA>
 The behavior of the interfaces in this library is specified by the following specifications:<SIMPLELIST COLUMNS=1>
@@ -61,27 +65,30 @@ underlying specification.
 <!--libgroupints-->
 <TABLE id="tbl-libpam-plu-ints">
 <TITLE>libpam - Pluggable Authentication API Function Interfaces</TITLE>
-<TGROUP COLS=5>
+<TGROUP COLS=4>
 <TBODY>
 <ROW>
 <ENTRY><indexterm><primary>pam_acct_mgmt</primary></indexterm>pam_acct_mgmt <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_close_session</primary></indexterm>pam_close_session <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_get_item</primary></indexterm>pam_get_item <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_set_item</primary></indexterm>pam_set_item <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_strerror</primary></indexterm>pam_strerror <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>pam_authenticate</primary></indexterm>pam_authenticate <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_end</primary></indexterm>pam_end <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_getenvlist</primary></indexterm>pam_getenvlist <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_setcred</primary></indexterm>pam_setcred <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY><indexterm><primary>pam_chauthtok</primary></indexterm>pam_chauthtok <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_close_session</primary></indexterm>pam_close_session <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>pam_chauthtok</primary></indexterm>pam_chauthtok <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_end</primary></indexterm>pam_end <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pam_fail_delay</primary></indexterm>pam_fail_delay <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_get_item</primary></indexterm>pam_get_item <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_getenvlist</primary></indexterm>pam_getenvlist <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>pam_open_session</primary></indexterm>pam_open_session <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_set_item</primary></indexterm>pam_set_item <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_setcred</primary></indexterm>pam_setcred <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pam_start</primary></indexterm>pam_start <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+</ROW>
+<ROW>
+<ENTRY><indexterm><primary>pam_strerror</primary></indexterm>pam_strerror <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 </TBODY>
@@ -107,26 +114,21 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 <SCREEN>
 
 typedef struct pam_handle pam_handle_t;
-struct pam_message
-{
-  int msg_style;
-  const char *msg;
-}
- ;
-struct pam_response
-{
-  char *resp;
-  int resp_retcode;
-}
- ;
+struct pam_message {
+    int msg_style;
+    const char *msg;
+};
+struct pam_response {
+    char *resp;
+    int resp_retcode;
+};
 
-struct pam_conv
-{
-  int (*conv) (int num_msg, const struct pam_message * *msg,
-	       struct pam_response * *resp, void *appdata_ptr);
-  void *appdata_ptr;
-}
- ;
+struct pam_conv {
+    int (*conv) (int num_msg, const struct pam_message * *msg,
+		 struct pam_response * *resp, void *appdata_ptr);
+    void *appdata_ptr;
+};
+
 #define PAM_PROMPT_ECHO_OFF	1
 #define PAM_PROMPT_ECHO_ON	2
 #define PAM_ERROR_MSG	3
@@ -181,13 +183,13 @@ struct pam_conv
 <SECT1 ID=libpamman>
 <TITLE>Interface Definitions for libpam</TITLE>
 <PARA>
-The following interfaces are included in libpam and are defined
+The interfaces defined on the following pages are included in libpam and are defined
 by this specification.
 Unless otherwise noted, these interfaces shall be included
 in the source standard.
 </PARA>
 <PARA>
-Other interfaces listed above for libpam shall behave as described
+Other interfaces listed in <XREF LINKEND=libpam> shall behave as described
 in the referenced base document.
 </PARA>
 include(pam_acct_mgmt.sgml)
@@ -205,4 +207,4 @@ include(pam_start.sgml)
 include(pam_strerror.sgml)
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.70 2005/08/19 00:29:32 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->

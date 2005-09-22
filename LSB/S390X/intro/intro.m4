@@ -20,7 +20,8 @@ the latest edition of the referenced document (including any amendments) applies
 <NOTE>
 <PARA>
 Where copies of a document are available on the World Wide Web, a Uniform Resource
-Locator (URL) is given. This may point to a more recent copy of the referenced
+Locator (URL) is given for informative purposes only. 
+This may point to a more recent copy of the referenced
 specification, or may be out of date. Reference copies of specifications at the revision
 level indicated may be found at the Free Standards Group's 
 <ULINK URL='http://refspecs.freestandards.org'>Reference Specifications</ULINK> site.
@@ -71,7 +72,7 @@ be available on a Linux Standard Base system, with the specified
 runtime names. The libraries listed in <XREF LINKEND="tbl-lsbgeneric-archlib">
 are architecture specific, but shall be available on all LSB
 conforming systems. This list may be supplemented or amended by the
-architecture-specific specification.
+architecture specific supplement.
 ',`
 The libraries listed in <XREF LINKEND='TBLTARGET`> shall
 be available on 'ARCH` Linux Standard Base systems, with the specified
@@ -101,15 +102,33 @@ the dynamic linker shall search by default.
 </SECT1>
 <SECT1 ID="Implementation"><TITLE>LSB Implementation Conformance </TITLE>
 <PARA>
+A conforming implementation is necessarily architecture specific, and must provide the interfaces specified by
+both the generic LSB Core specification and its relevant architecture specific supplement.
+<NOTE><TITLE>Rationale</TITLE>
+<PARA>
+An implementation must provide <emphasis>at least</emphasis>
+the interfaces specified in these specifications. It may also provide additional interfaces.
+</PARA>
+</NOTE>
+</PARA>
+<PARA>
 A conforming implementation shall satisfy the following requirements:</PARA><PARA>
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
-The implementation shall implement fully the architecture described in the hardware manual for the target processor architecture. 
+A processor architecture represents a family of related processors
+which may not have identical feature sets. The architecture
+specific supplement to this specification for a given target
+processor architecture describes a minimum acceptable processor.
+The implementation shall provide all features of this processor,
+whether in hardware or through emulation transparent
+to the application.
 </PARA>
 </LISTITEM>
 <LISTITEM>
 <PARA>
-The implementation shall be capable of executing compiled applications having the format and using the system interfaces described in this document.
+The implementation shall be capable of executing compiled applications
+having the format and using the system interfaces described in this
+document.
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -168,6 +187,10 @@ The implementation may provide additional interfaces with different names. It ma
 </PARA>
 </SECT1>
 <SECT1 ID="Application"><TITLE>LSB Application Conformance </TITLE>
+<PARA>
+A conforming application is necessarily architecture specific, and must conform to
+both the generic LSB Core specification and its relevant architecture specific supplement.
+</PARA>
 <PARA>
 A conforming application shall satisfy the following requirements: </PARA><PARA>
 
@@ -238,7 +261,8 @@ In addition to the differences noted inline in this specification,
 PDTR 24715 has extracted the differences between this specification and <XREF
 LINKEND="STD.SUSv3">
 into a single place.
-It is the long term plan of the LSB to converge with ISO/IEC 9945 POSIX.
+It is the long term plan of the Free Standards Group to converge the LSB Core Specification
+with ISO/IEC 9945 POSIX.
 </PARA>
 </NOTE>
 <PARA>

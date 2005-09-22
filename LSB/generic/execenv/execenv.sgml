@@ -164,7 +164,7 @@ directories implementation specific and no longer required.
 <SECT2 ID="FHS-NAME-RULES" xreflabel="File Naming Conventions">
 <TITLE>File Naming Conventions</TITLE>
 <PARA>
-Applications installing files into any of the above locations under
+Conforming implemetnations and applications installing files into any of the above locations under
 <filename>/etc</filename> may only use filenames
 from the following managed namespaces:
 <ITEMIZEDLIST MARK="bullet">
@@ -214,6 +214,11 @@ from the following managed namespaces:
 </PARA></LISTITEM>
 </ITEMIZEDLIST>
 <NOTE>
+<PARA>
+A non-conforming application may still have polluted these managed
+namespaces with unregistered filenames; a conforming application should check
+for namespace collisions and take appropriate steps if they occur.
+</PARA>
 <PARA>
 In general, if a package or some system function is likely to be used
 on multiple systems, the package developers or the distribution should
@@ -535,8 +540,9 @@ order to succeed, as described as optional behavior in the
 </para>
 
 <para id="exec-link-unlink"
-XRefLabel="Additional behaviors: unlink/link on directory"
->Calling <FUNCTION>unlink</FUNCTION> on a directory shall fail.
+XRefLabel="Section 18.1, Additional behaviors: unlink/link on directory"
+>
+Calling <FUNCTION>unlink</FUNCTION> on a directory shall fail.
 Calling <FUNCTION>link</FUNCTION> specifying a directory as the first
 argument shall fail.  See also <xref linkend="baselib-unlink-3">.
 <note>
@@ -594,6 +600,24 @@ shall be invalid for <function>nl_langinfo</function>.</para>
 <para>The value <constant>"a"</constant> shall be an invalid <parameter>mode</parameter>
 argument to <function>popen</function>.</para>
 
+<para>The <function>fcntl</function> function shall fail and set <varname>errno</varname> to
+<errorcode>EDEADLK</errorcode> if the
+<parameter>cmd</parameter> argument is <constant>F_SETLKW</constant>,
+and the lock is blocked by a lock from another process already blocked by the current process.
+</para>
+
+<para>The <function>opendir</function> function shall consume a file descriptor;
+the <function>readdir</function> function shall fail and set <varname>errno</varname>
+to <errorcode>EBADF</errorcode> if the underlying file descriptor is closed.
+</para>
+
+<para>The <function>link</function> function shall not work across file systems, and
+shall fail and set <varname>errno</varname> to <errorcode>EXDEV</errorcode>
+as described as optional behavior in <XREF linkend="std.susv3">.
+</para>
+
+
+
 </SECT2>
 </SECT1>
 </CHAPTER>
@@ -625,8 +649,8 @@ location.
 
 <para>
 Implementations shall support the POSIX and C locales as specified in
-<XREF LINKEND=STD.SUSv3>.
-
+<XREF LINKEND=STD.SUSv3>. Other locales may be supported.
+</para><para>
 Implementations may define additional locale categories not defined by that standard.
 <NOTE><PARA>
 Implementations choosing additional locale categories should be aware
