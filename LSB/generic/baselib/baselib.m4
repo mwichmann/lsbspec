@@ -1,7 +1,7 @@
 <PART ID=tocbaselib>
 <TITLE>Base Libraries</TITLE>
 
-<CHAPTER id=baselib>
+<CHAPTER id=baselib xreflabel="Base Libraries">
 <TITLE>Base Libraries</TITLE>
 <SECT1><TITLE>Introduction</TITLE>
 <PARA>
@@ -32,7 +32,9 @@ as symbol versions, if any.
 The "Interface Definitions" section provides complete or partial
 definitions of certain interfaces where either this specification is
 the source specification, or where there are variations from the source
-specification.
+specification. If an interface definition requires one or more header 
+files, one of those headers shall include the function 
+prototype for the interface.
 </PARA>
 <PARA>
 For source definitions of interfaces which include a reference to a
