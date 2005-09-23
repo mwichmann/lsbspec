@@ -16,6 +16,10 @@ information such as file formats and device names.
 <listitem><para>libutil</para></listitem>
 </itemizedlist>
 </PARA>
+<PARA>
+The structure of the definitions for these libraries follows the
+same model as used for <XREF LINKEND=baselib>.
+</PARA>
 </SECT1>
 include(libz.sgml)
 
