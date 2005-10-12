@@ -15,7 +15,7 @@ all source: $(FILES) $(TABLES)
 gensrc:
 	../../../mkstandardsgmltable -a x86-64 -t Standard -x $(EXCLSPECS) >standards.sgml
 	../../../mkstandardsgmltable -a x86-64 -t Reference -x $(EXCLSPECS) >references.sgml
-	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI','SUSV3','LSB'" >cxxstandards.sgml
+	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI','SUSV3','LSB','ISOC99'" >cxxstandards.sgml
 	../../../mklibsgmltable -a x86-64 -m "LSB_Core" >libraries.sgml
 	../../../mklibsgmltable -a x86-64 -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
 

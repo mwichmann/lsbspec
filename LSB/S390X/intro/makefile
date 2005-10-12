@@ -15,7 +15,7 @@ all source: $(FILES) $(TABLES)
 gensrc:
 	../../../mkstandardsgmltable -a S390X -t Standard -x $(EXCLSPECS) >standards.sgml
 	../../../mkstandardsgmltable -a S390X -t Reference -x $(EXCLSPECS) >references.sgml
-	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI','SUSV3','LSB'" >cxxstandards.sgml
+	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI','SUSV3','LSB','ISOC99'" >cxxstandards.sgml
 	../../../mklibsgmltable -a S390X -m "LSB_Core" >libraries.sgml
 	../../../mklibsgmltable -a S390X -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
 
