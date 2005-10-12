@@ -34,7 +34,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	strnlen.sgml strsep.sgml strsignal.sgml strtok_r.sgml strtoq.sgml strtouq.sgml \
 	strverscmp.sgml system.sgml textdomain.sgml unlink.sgml \
 	svc_register.sgml svc_run.sgml \
-	vasprintf.sgml vdprintf.sgml \
+	ttyio.sgml vasprintf.sgml vdprintf.sgml \
 	verrx.sgml wait4.sgml warn.sgml warnx.sgml wcpcpy.sgml wcpncpy.sgml \
 	wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
 	wcstoq.sgml wcstouq.sgml ngettext.sgml dgettext.sgml dngettext.sgml \
