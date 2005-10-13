@@ -28,8 +28,8 @@ The Program Interpreter shall be
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:47:24 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:27:47 2005 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1846,28 +1846,79 @@ underlying specification.
 </SECT3>
 </SECT2>
 </SECT1>
-<!-- empty header file PPC32/arpa/inet.h -->
-<!-- empty header file PPC32/assert.h -->
 <SECT1 ID=libc-ddefs>
 <TITLE>Data Definitions for libc</TITLE>
 <PARA>
-This section defines global identifiers and their values that are associated with interfaces contained in libc.
-These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+This section defines global identifiers and their values that are associated
+with interfaces contained in libc.
+These definitions are organized into groups that
+correspond to system headers. This convention is used as a
+convenience for the reader, and does not imply the existence
+of these headers, or their content.
+Where an interface is defined as requiring a particular system header file
+all of the data definitions for that system header file presented here shall be in effect.
+</PARA>
 <PARA>
-These definitions are intended to supplement those provided in the referenced underlying specifications.
+This section gives data definitions to promote binary application
+portability, not to repeat source interface definitions available
+elsewhere. System providers and application developers should use this ABI
+to supplement - not to replace - source interface definition specifications.
 </PARA>
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
+<SECT2>
+<TITLE>arpa/inet.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern uint32_t htonl(uint32_t);
+extern uint16_t htons(uint16_t);
+extern in_addr_t inet_addr(const char *);
+extern char *inet_ntoa(struct in_addr);
+extern const char *inet_ntop(int, const void *, char *, socklen_t);
+extern int inet_pton(int, const char *, void *);
+extern uint32_t ntohl(uint32_t);
+extern uint16_t ntohs(uint16_t);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>assert.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern void __assert_fail(const char *, unsigned int, const char *,
+			  const char *);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>ctype.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int _tolower(int);
+extern int _toupper(int);
+extern int isalnum(int);
+extern int isalpha(int);
+extern int isascii(int);
+extern int iscntrl(int);
+extern int isdigit(int);
+extern int isgraph(int);
+extern int islower(int);
+extern int isprint(int);
+extern int ispunct(int);
+extern int isspace(int);
+extern int isupper(int);
+extern int isxdigit(int);
+extern int toascii(int);
+extern int tolower(int);
+extern int toupper(int);
+extern int isblank(int);
+extern const unsigned short **__ctype_b_loc(void);
+extern const int32_t **__ctype_toupper_loc(void);
+extern const int32_t **__ctype_tolower_loc(void);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1876,10 +1927,14 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void rewinddir(DIR *);
+extern void seekdir(long int, DIR *);
+extern long int telldir(DIR *);
+extern int closedir(DIR *);
+extern DIR *opendir(const char *);
+extern struct dirent *readdir(DIR *);
+extern struct dirent64 *readdir64(DIR *);
+extern int readdir_r(DIR *, struct dirent *, struct dirent **);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/endian.h -->
@@ -1890,6 +1945,8 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 <SCREEN>
 
 #define EDEADLOCK	58
+
+extern int *__errno_location(void);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1901,20 +1958,29 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define F_GETLK64	12
 #define F_SETLK64	13
 #define F_SETLKW64	14
+
+extern int lockf64(int, int, off64_t);
+extern int fcntl(int, int, ...);
 </SCREEN>
 </SECT2>
 <!-- missing header file PPC32/features.h -->
-<!-- empty header file PPC32/fmtmsg.h -->
+<SECT2>
+<TITLE>fmtmsg.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern int fmtmsg(long int, const char *, int, const char *, const char *,
+		  const char *);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>fnmatch.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int fnmatch(int, const char *, const char *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1923,10 +1989,10 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int ftw(const char *, __ftw_func_t, int);
+extern int ftw64(const char *, int, __ftw64_func_t);
+extern int nftw(const char *, __nftw_func_t, int, int);
+extern int nftw64(const char *, __nftw64_func_t, int, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1935,10 +2001,10 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int getopt_long(int, char *const, const char *,
+		       const struct option *, int *);
+extern int getopt_long_only(int, char *const, const char *,
+			    const struct option *, int *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1947,23 +2013,45 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int glob(const char *, int,
+		int (*__errfunc) (const char *p1, int p2)
+		, glob_t *);
+extern int glob64(const char *, int,
+		  int (*__errfunc) (const char *p1, int p2)
+		  , glob64_t *);
+extern void globfree(glob_t *);
+extern void globfree64(glob64_t *);
 </SCREEN>
 </SECT2>
-<!-- empty header file PPC32/grp.h -->
+<SECT2>
+<TITLE>grp.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern void endgrent(void);
+extern struct group *getgrent(void);
+extern struct group *getgrgid(gid_t);
+extern struct group *getgrnam(char *);
+extern int initgroups(const char *, gid_t);
+extern void setgrent(void);
+extern int setgroups(size_t, const gid_t *);
+extern int getgrgid_r(struct group **, size_t, char *, struct group *,
+		      gid_t);
+extern int getgrnam_r(char *, size_t, struct group **, const char *,
+		      struct group *);
+extern int getgrouplist(const char *, gid_t, gid_t *, int *);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>iconv.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern size_t iconv(iconv_t, char **, size_t *, char **, size_t *);
+extern int iconv_close(iconv_t);
+extern iconv_t iconv_open(char *, char *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1976,6 +2064,13 @@ typedef unsigned long long int uintmax_t;
 typedef long long int intmax_t;
 typedef unsigned int uintptr_t;
 typedef unsigned long long int uint64_t;
+
+extern intmax_t strtoimax(int, char **, const char *);
+extern uintmax_t strtoumax(const char *, char **, int);
+extern intmax_t wcstoimax(int, wchar_t * *, const wchar_t *);
+extern uintmax_t wcstoumax(const wchar_t *, wchar_t * *, int);
+extern intmax_t imaxabs(intmax_t);
+extern imaxdiv_t imaxdiv(intmax_t, intmax_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1984,14 +2079,38 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern char *nl_langinfo(nl_item);
 </SCREEN>
 </SECT2>
-<!-- empty header file PPC32/libgen.h -->
-<!-- empty header file PPC32/libintl.h -->
+<SECT2>
+<TITLE>libgen.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern char *basename(const char *);
+extern char *dirname(char *);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>libintl.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern char *bindtextdomain(const char *, const char *);
+extern char *dcgettext(const char *, const char *, int);
+extern char *dgettext(const char *, const char *);
+extern char *gettext(const char *);
+extern char *textdomain(const char *);
+extern char *bind_textdomain_codeset(const char *, const char *);
+extern char *dcngettext(const char *, const char *, const char *,
+			unsigned long int, int);
+extern char *dngettext(const char *, const char *, const char *,
+		       unsigned long int);
+extern char *ngettext(const char *, const char *, unsigned long int);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>limits.h</TITLE>
 <PARA>
@@ -2013,14 +2132,24 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern struct lconv *localeconv(void);
+extern char *setlocale(int, const char *);
+extern locale_t uselocale(locale_t);
+extern void freelocale(locale_t);
+extern locale_t duplocale(locale_t);
+extern locale_t newlocale(int, const char *, locale_t);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/malloc.h -->
-<!-- empty header file PPC32/monetary.h -->
+<SECT2>
+<TITLE>monetary.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern ssize_t strfmon(..., const char *, size_t, char *);
+</SCREEN>
+</SECT2>
 <!-- empty header file PPC32/mqueue.h -->
 <SECT2>
 <TITLE>net/if.h</TITLE>
@@ -2028,10 +2157,10 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void if_freenameindex(struct if_nameindex *);
+extern char *if_indextoname(unsigned int, char *);
+extern struct if_nameindex *if_nameindex(void);
+extern unsigned int if_nametoindex(const char *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2040,10 +2169,23 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void endprotoent(void);
+extern void endservent(void);
+extern void freeaddrinfo(struct addrinfo *);
+extern const char *gai_strerror(int);
+extern int getaddrinfo(const char *, const char *, const struct addrinfo *,
+		       struct addrinfo **);
+extern struct hostent *gethostbyaddr(const void *, socklen_t, int);
+extern struct hostent *gethostbyname(const char *);
+extern struct protoent *getprotobyname(const char *);
+extern struct protoent *getprotobynumber(int);
+extern struct protoent *getprotoent(void);
+extern struct servent *getservbyname(const char *, const char *);
+extern struct servent *getservbyport(int, const char *);
+extern struct servent *getservent(void);
+extern void setprotoent(int);
+extern void setservent(int);
+extern int *__h_errno_location(void);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2052,10 +2194,7 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int bindresvport(int, struct sockaddr_in *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2100,24 +2239,46 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int catclose(nl_catd);
+extern char *catgets(const char *, int, int, nl_catd);
+extern nl_catd catopen(const char *, int);
 </SCREEN>
 </SECT2>
-<!-- empty header file PPC32/poll.h -->
-<!-- empty header file PPC32/pty.h -->
+<SECT2>
+<TITLE>poll.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern int poll(struct pollfd *, nfds_t, int);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>pty.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern int openpty(int *, int *, char *, struct termios *,
+		   struct winsize *);
+extern int forkpty(int *, char *, struct termios *, struct winsize *);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>pwd.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void endpwent(void);
+extern struct passwd *getpwent(void);
+extern struct passwd *getpwnam(char *);
+extern struct passwd *getpwuid(uid_t);
+extern void setpwent(void);
+extern int getpwnam_r(struct passwd *, size_t, struct passwd **, char *,
+		      char *);
+extern int getpwuid_r(struct passwd **, size_t, char *, struct passwd *,
+		      uid_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2126,10 +2287,10 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int regcomp(regex_t *, int, const char *);
+extern size_t regerror(const regex_t *, int, size_t, char *);
+extern int regexec(const regex_t *, const char *, size_t, regmatch_t, int);
+extern void regfree(regex_t *);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/regexp.h -->
@@ -2139,10 +2300,9 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern struct AUTH *authnone_create(void);
+extern int key_decryptsession(char *, union des_block *);
+extern bool_t xdr_opaque_auth(XDR *, struct opaque_auth *);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/rpc/auth_des.h -->
@@ -2153,23 +2313,24 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern struct CLIENT *clnt_create(const char *, const u_long, const u_long,
+				  const char *);
+extern void clnt_pcreateerror(const char *);
+extern void clnt_perrno(enum clnt_stat);
+extern void clnt_perror(struct CLIENT *, const char *);
+extern char *clnt_spcreateerror(const char *);
+extern char *clnt_sperrno(enum clnt_stat);
+extern char *clnt_sperror(struct CLIENT *, const char *);
 </SCREEN>
 </SECT2>
-<!-- empty header file PPC32/rpc/rpc.h -->
+<!-- missing header file PPC32/rpc/rpc.h -->
 <SECT2>
 <TITLE>rpc/rpc_msg.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern bool_t xdr_callhdr(XDR *, struct rpc_msg *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2178,10 +2339,20 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void svc_getreqset(fd_set *);
+extern bool_t svc_register(SVCXPRT *, rpcprog_t, rpcvers_t,
+			   __dispatch_fn_t, rpcprot_t);
+extern void svc_run(void);
+extern bool_t svc_sendreply(SVCXPRT *, xdrproc_t, caddr_t);
+extern void svcerr_auth(SVCXPRT *, enum auth_stat);
+extern void svcerr_decode(SVCXPRT *);
+extern void svcerr_noproc(SVCXPRT *);
+extern void svcerr_noprog(SVCXPRT *);
+extern void svcerr_progvers(SVCXPRT *, rpcvers_t, rpcvers_t);
+extern void svcerr_systemerr(SVCXPRT *);
+extern void svcerr_weakauth(SVCXPRT *);
+extern SVCXPRT *svctcp_create(int, u_int, u_int);
+extern SVCXPRT *svcudp_create(int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2202,10 +2373,37 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern bool_t xdr_array(XDR *, caddr_t *, u_int *, u_int, u_int,
+			xdrproc_t);
+extern bool_t xdr_bool(XDR *, bool_t *);
+extern bool_t xdr_bytes(XDR *, char **, u_int *, u_int);
+extern bool_t xdr_char(XDR *, char *);
+extern bool_t xdr_double(XDR *, double *);
+extern bool_t xdr_enum(XDR *, enum_t *);
+extern bool_t xdr_float(XDR *, float *);
+extern void xdr_free(xdrproc_t, char *);
+extern bool_t xdr_int(XDR *, int *);
+extern bool_t xdr_long(XDR *, long int *);
+extern bool_t xdr_opaque(XDR *, caddr_t, u_int);
+extern bool_t xdr_pointer(XDR *, char **, u_int, xdrproc_t);
+extern bool_t xdr_reference(XDR *, caddr_t *, u_int, xdrproc_t);
+extern bool_t xdr_short(XDR *, short *);
+extern bool_t xdr_string(XDR *, char **, u_int);
+extern bool_t xdr_u_char(XDR *, u_char *);
+extern bool_t xdr_u_int(XDR *, u_int *);
+extern bool_t xdr_u_long(XDR *, u_long *);
+extern bool_t xdr_u_short(XDR *, u_short *);
+extern bool_t xdr_union(XDR *, enum_t *, char *,
+			const struct xdr_discrim *, xdrproc_t);
+extern bool_t xdr_vector(XDR *, char *, u_int, u_int, xdrproc_t);
+extern bool_t xdr_void(void);
+extern bool_t xdr_wrapstring(XDR *, char **);
+extern void xdrmem_create(XDR *, caddr_t, u_int, enum xdr_op);
+extern void xdrrec_create(XDR *, u_int, u_int, caddr_t,
+			  int (*__readit) (char *p1, char *p2, int p3)
+			  , int (*__writeit) (char *p1, char *p2, int p3)
+    );
+extern typedef int bool_t xdrrec_eof(XDR *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2214,10 +2412,14 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int sched_get_priority_max(int);
+extern int sched_get_priority_min(int);
+extern int sched_getparam(pid_t, struct sched_param *);
+extern int sched_getscheduler(pid_t);
+extern int sched_rr_get_interval(pid_t, struct timespec *);
+extern int sched_setparam(const struct sched_param *, pid_t);
+extern int sched_setscheduler(int, const struct sched_param *, pid_t);
+extern int sched_yield(void);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2226,10 +2428,19 @@ typedef unsigned long long int uint64_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int hcreate(size_t);
+extern ENTRY *hsearch(ENTRY, ACTION);
+extern void insque(void *, void *);
+extern void *lfind(const void *, const void *, size_t *, size_t,
+		   __compar_fn_t);
+extern void *lsearch(const void *, void *, size_t *, size_t,
+		     __compar_fn_t);
+extern void remque(void *);
+extern void hdestroy(void);
+extern void *tdelete(const void *, void **, __compar_fn_t);
+extern void *tfind(const void *, void *const *, __compar_fn_t);
+extern void *tsearch(const void *, __compar_fn_t, void **);
+extern void twalk(const void *, __action_fn_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2239,6 +2450,12 @@ typedef unsigned long long int uint64_t;
 <SCREEN>
 
 typedef long int __jmp_buf[112] __attribute__ ((aligned(16)));
+
+extern int __sigsetjmp(jmp_buf, int);
+extern void longjmp(jmp_buf, int);
+extern void siglongjmp(sigjmp_buf, int);
+extern void _longjmp(jmp_buf, int);
+extern int _setjmp(jmp_buf);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2271,6 +2488,43 @@ struct sigcontext {
     unsigned long int oldmask;
     struct pt_regs *regs;
 };
+extern int __libc_current_sigrtmax(void);
+extern int __libc_current_sigrtmin(void);
+extern sighandler_t __sysv_signal(int, sighandler_t);
+extern char *const _sys_siglist(void);
+extern int killpg(pid_t, int);
+extern void psignal(int, const char *);
+extern int raise(int);
+extern int sigaddset(sigset_t *, int);
+extern int sigandset(sigset_t *, const sigset_t *, const sigset_t *);
+extern int sigdelset(sigset_t *, int);
+extern int sigemptyset(sigset_t *);
+extern int sigfillset(sigset_t *);
+extern int sighold(int);
+extern int sigignore(int);
+extern int siginterrupt(int, int);
+extern int sigisemptyset(const sigset_t *);
+extern int sigismember(const sigset_t *, int);
+extern int sigorset(sigset_t *, const sigset_t *, const sigset_t *);
+extern int sigpending(sigset_t *);
+extern int sigrelse(int);
+extern sighandler_t sigset(int, sighandler_t);
+extern int pthread_kill(pthread_t, int);
+extern int pthread_sigmask(int, sigset_t *, sigset_t *);
+extern int sigaction(int, const struct sigaction *, struct sigaction *);
+extern int sigwait(sigset_t *, int *);
+extern int kill(pid_t, int);
+extern int sigaltstack(const struct sigaltstack *, struct sigaltstack *);
+extern sighandler_t signal(int, sighandler_t);
+extern int sigpause(int);
+extern int sigprocmask(int, const sigset_t *, sigset_t *);
+extern int sigreturn(struct sigcontext *);
+extern int sigsuspend(const sigset_t *);
+extern int sigqueue(pid_t, int, const union sigval);
+extern int sigwaitinfo(const sigset_t *, siginfo_t *);
+extern int sigtimedwait(const sigset_t *, const struct timespec *,
+			siginfo_t *);
+extern sighandler_t bsd_signal(int, sighandler_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2290,6 +2544,84 @@ typedef int ptrdiff_t;
 <SCREEN>
 
 #define __IO_FILE_SIZE	152
+
+extern char *const _sys_errlist(void);
+extern void clearerr(FILE *);
+extern int fclose(FILE *);
+extern FILE *fdopen(int, const char *);
+extern int fflush_unlocked(FILE *);
+extern int fileno(FILE *);
+extern FILE *fopen(const char *, const char *);
+extern int fprintf(..., const char *, FILE *);
+extern int fputc(int, FILE *);
+extern FILE *freopen(const char *, const char *, FILE *);
+extern FILE *freopen64(const char *, const char *, FILE *);
+extern int fscanf(const char *, FILE *, ...);
+extern int fseek(int, long int, FILE *);
+extern int fseeko(FILE *, int, off_t);
+extern int fseeko64(FILE *, loff_t, int);
+extern off_t ftello(FILE *);
+extern loff_t ftello64(FILE *);
+extern int getchar(void);
+extern int getchar_unlocked(void);
+extern int getw(FILE *);
+extern int pclose(FILE *);
+extern void perror(const char *);
+extern FILE *popen(const char *, const char *);
+extern int printf(const char *, ...);
+extern int putc_unlocked(int, FILE *);
+extern int putchar(int);
+extern int putchar_unlocked(int);
+extern int putw(int, FILE *);
+extern int remove(const char *);
+extern void rewind(FILE *);
+extern int scanf(const char *, ...);
+extern void setbuf(FILE *, char *);
+extern int sprintf(const char *, char *, ...);
+extern int sscanf(const char *, const char *, ...);
+extern FILE *stderr(void);
+extern FILE *stdin(void);
+extern FILE *stdout(void);
+extern char *tempnam(const char *, const char *);
+extern FILE *tmpfile64(void);
+extern FILE *tmpfile(void);
+extern char *tmpnam(char *);
+extern int vfprintf(FILE *, const char *, va_list);
+extern int vprintf(const char *, va_list);
+extern int feof(FILE *);
+extern int ferror(FILE *);
+extern int fflush(FILE *);
+extern int fgetc(FILE *);
+extern int fgetpos(FILE *, fpos_t *);
+extern char *fgets(FILE *, int, char *);
+extern int fputs(FILE *, const char *);
+extern size_t fread(void *, size_t, size_t, FILE *);
+extern int fsetpos(FILE *, const fpos_t *);
+extern long int ftell(FILE *);
+extern size_t fwrite(FILE *, size_t, size_t, const void *);
+extern int getc(FILE *);
+extern int putc(int, FILE *);
+extern int puts(const char *);
+extern int setvbuf(FILE *, char *, int, size_t);
+extern int snprintf(char *, ..., const char *, size_t);
+extern int ungetc(int, FILE *);
+extern int vsnprintf(size_t, char *, va_list, const char *);
+extern int vsprintf(va_list, char *, const char *);
+extern void flockfile(FILE *);
+extern int asprintf(const char *, char **, ...);
+extern int fgetpos64(FILE *, fpos64_t *);
+extern FILE *fopen64(const char *, const char *);
+extern int fsetpos64(FILE *, const fpos64_t *);
+extern int ftrylockfile(FILE *);
+extern void funlockfile(FILE *);
+extern int getc_unlocked(FILE *);
+extern void setbuffer(FILE *, char *, size_t);
+extern int vasprintf(char **, const char *, va_list);
+extern int vdprintf(int, const char *, va_list);
+extern int vfscanf(va_list, const char *, FILE *);
+extern int vscanf(const char *, va_list);
+extern int vsscanf(const char *, const char *, va_list);
+extern size_t __fpending(FILE *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2298,23 +2630,150 @@ typedef int ptrdiff_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern double __strtod_internal(int, char **, const char *);
+extern float __strtof_internal(int, char **, const char *);
+extern long int __strtol_internal(const char *, char **, int, int);
+extern long double __strtold_internal(const char *, int, char **);
+extern long long int __strtoll_internal(const char *, char **, int, int);
+extern unsigned long int __strtoul_internal(char **, int, const char *,
+					    int);
+extern unsigned long long int __strtoull_internal(int, char **,
+						  const char *, int);
+extern long int a64l(const char *);
+extern void abort(void);
+extern int abs(int);
+extern double atof(const char *);
+extern int atoi(char *);
+extern long int atol(char *);
+extern long long int atoll(const char *);
+extern void *bsearch(size_t, const void *, size_t, __compar_fn_t,
+		     const void *);
+extern div_t div(int, int);
+extern double drand48(void);
+extern char *ecvt(int, int *, double, int *);
+extern double erand48(unsigned short);
+extern void exit(int);
+extern char *fcvt(int *, int, double, int *);
+extern char *gcvt(int, double, char *);
+extern char *getenv(const char *);
+extern int getsubopt(char *const *, char **, char **);
+extern int grantpt(int);
+extern long int jrand48(unsigned short);
+extern char *l64a(long int);
+extern long int labs(long int);
+extern void lcong48(unsigned short);
+extern ldiv_t ldiv(long int, long int);
+extern long long int llabs(long long int);
+extern lldiv_t lldiv(long long int, long long int);
+extern long int lrand48(void);
+extern int mblen(const char *, size_t);
+extern size_t mbstowcs(wchar_t *, const char *, size_t);
+extern int mbtowc(size_t, const char *, wchar_t *);
+extern char *mktemp(char *);
+extern long int mrand48(void);
+extern long int nrand48(unsigned short);
+extern char *ptsname(int);
+extern int putenv(char *);
+extern void qsort(__compar_fn_t, size_t, size_t, void *);
+extern int rand(void);
+extern int rand_r(unsigned int *);
+extern unsigned short *seed48(unsigned short);
+extern void srand48(long int);
+extern int unlockpt(int);
+extern size_t wcstombs(const wchar_t *, char *, size_t);
+extern int wctomb(char *, wchar_t);
+extern int system(const char *);
+extern void *calloc(size_t, size_t);
+extern void free(void *);
+extern char *initstate(size_t, char *, unsigned int);
+extern void *malloc(size_t);
+extern long int random(void);
+extern void *realloc(void *, size_t);
+extern char *setstate(char *);
+extern void srand(unsigned int);
+extern void srandom(unsigned int);
+extern double strtod(char *, char **);
+extern float strtof(const char *, char **);
+extern long int strtol(char *, char **, int);
+extern long double strtold(const char *, char **);
+extern long long int strtoll(const char *, int, char **);
+extern long long int strtoq(const char *, char **, int);
+extern unsigned long int strtoul(int, const char *, char **);
+extern unsigned long long int strtoull(const char *, char **, int);
+extern unsigned long long int strtouq(const char *, char **, int);
+extern void _Exit(int);
+extern size_t __ctype_get_mb_cur_max(void);
+extern char **environ(void);
+extern char *realpath(const char *, char *);
+extern int setenv(const char *, const char *, int);
+extern int unsetenv(const char *);
+extern int getloadavg(double, int);
+extern int mkstemp64(char *);
+extern int posix_memalign(void **, size_t, size_t);
+extern int posix_openpt(int);
 </SCREEN>
 </SECT2>
-<!-- empty header file PPC32/string.h -->
+<SECT2>
+<TITLE>string.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern void *__mempcpy(void *, const void *, size_t);
+extern char *__stpcpy(char *, const char *);
+extern char *__strtok_r(char *, const char *, char **);
+extern void bcopy(size_t, void *, void *);
+extern void *memchr(void *, int, size_t);
+extern int memcmp(void *, void *, size_t);
+extern void *memcpy(void *, void *, size_t);
+extern void *memmem(const void *, size_t, const void *, size_t);
+extern void *memmove(void *, const void *, size_t);
+extern void *memset(size_t, int, void *);
+extern char *strcat(char *, const char *);
+extern char *strchr(int, char *);
+extern int strcmp(char *, char *);
+extern int strcoll(const char *, const char *);
+extern char *strcpy(char *, char *);
+extern size_t strcspn(const char *, const char *);
+extern char *strerror(int);
+extern size_t strlen(char *);
+extern char *strncat(char *, char *, size_t);
+extern int strncmp(size_t, char *, char *);
+extern char *strncpy(char *, char *, size_t);
+extern char *strpbrk(const char *, const char *);
+extern char *strrchr(char *, int);
+extern char *strsignal(int);
+extern size_t strspn(const char *, const char *);
+extern char *strstr(char *, char *);
+extern char *strtok(char *, const char *);
+extern size_t strxfrm(size_t, const char *, char *);
+extern int bcmp(void *, void *, size_t);
+extern void bzero(void *, size_t);
+extern int ffs(int);
+extern char *index(char *, int);
+extern void *memccpy(void *, const void *, int, size_t);
+extern char *rindex(int, char *);
+extern int strcasecmp(char *, char *);
+extern char *strdup(char *);
+extern int strncasecmp(char *, char *, size_t);
+extern char *strndup(const char *, size_t);
+extern size_t strnlen(const char *, size_t);
+extern char *strsep(char **, const char *);
+extern char *strerror_r(size_t, char *, int);
+extern char *strtok_r(const char *, char *, char **);
+extern char *strcasestr(const char *, const char *);
+extern char *stpcpy(char *, const char *);
+extern char *stpncpy(char *, const char *, size_t);
+extern void *memrchr(const void *, int, size_t);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>sys/file.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int flock(int, int);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/sys/io.h -->
@@ -2327,6 +2786,8 @@ typedef int ptrdiff_t;
 #define TIOCGWINSZ	0x40087468
 #define TIOCNOTTY	0x5422
 #define FIONREAD	1074030207
+
+extern int ioctl(int, unsigned long int, ...);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2347,6 +2808,8 @@ struct ipc_perm {
     unsigned long long int __unused1;
     unsigned long long int __unused2;
 };
+
+extern key_t ftok(char *, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2357,6 +2820,18 @@ struct ipc_perm {
 
 #define MCL_FUTURE	16384
 #define MCL_CURRENT	8192
+
+extern int msync(int, size_t, void *);
+extern int mlock(const void *, size_t);
+extern int mlockall(int);
+extern void *mmap(void *, size_t, int, int, int, off_t);
+extern int mprotect(int, size_t, void *);
+extern int munlock(const void *, size_t);
+extern int munlockall(void);
+extern int munmap(void *, size_t);
+extern void *mmap64(void *, size_t, int, int, int, off64_t);
+extern int shm_open(const char *, int, mode_t);
+extern int shm_unlink(const char *);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/sys/mmap.h -->
@@ -2385,6 +2860,10 @@ struct msqid_ds {
     unsigned long int __unused4;
     unsigned long int __unused5;
 };
+extern int msgctl(struct msqid_ds *, int, int);
+extern int msgget(key_t, int);
+extern int msgrcv(int, void *, size_t, long int, int);
+extern int msgsnd(int, const void *, size_t, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2417,10 +2896,13 @@ struct msqid_ds {
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int getpriority(__priority_which_t, id_t);
+extern int getrlimit64(id_t, struct rlimit64 *);
+extern int setpriority(id_t, __priority_which_t, int);
+extern int setrlimit(__rlimit_resource_t, const struct rlimit *);
+extern int setrlimit64(__rlimit_resource_t, const struct rlimit64 *);
+extern int getrlimit(struct rlimit *, __rlimit_resource_t);
+extern int getrusage(int, struct rusage *);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/sys/select.h -->
@@ -2440,6 +2922,9 @@ struct semid_ds {
     unsigned long int __unused3;
     unsigned long int __unused4;
 };
+extern int semctl(int, int, int, ...);
+extern int semget(int, key_t, int);
+extern int semop(size_t, struct sembuf *, int);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/sys/sendfile.h -->
@@ -2469,6 +2954,11 @@ struct shmid_ds {
     unsigned long int __unused5;
     unsigned long int __unused6;
 };
+extern int __getpagesize(void);
+extern void *shmat(int, const void *, int);
+extern int shmctl(struct shmid_ds *, int, int);
+extern int shmdt(const void *);
+extern int shmget(key_t, size_t, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2483,6 +2973,29 @@ typedef uint32_t __ss_aligntype;
 #define SO_SNDLOWAT	17
 #define SO_RCVTIMEO	18
 #define SO_SNDTIMEO	19
+
+extern int bind(socklen_t, const struct sockaddr *, int);
+extern int getnameinfo(const struct sockaddr *, socklen_t, char *,
+		       socklen_t, char *, socklen_t, unsigned int);
+extern int getsockname(int, struct sockaddr *, socklen_t *);
+extern int listen(int, int);
+extern int setsockopt(const void *, int, int, int, socklen_t);
+extern int accept(int, socklen_t *, struct sockaddr *);
+extern int connect(int, socklen_t, const struct sockaddr *);
+extern ssize_t recv(int, void *, size_t, int);
+extern ssize_t recvfrom(int, void *, size_t, int, struct sockaddr *,
+			socklen_t *);
+extern ssize_t recvmsg(int, int, struct msghdr *);
+extern ssize_t send(int, const void *, size_t, int);
+extern ssize_t sendmsg(int, const struct msghdr *, int);
+extern ssize_t sendto(int, const void *, size_t, int,
+		      const struct sockaddr *, socklen_t);
+extern int getpeername(int, socklen_t *, struct sockaddr *);
+extern int getsockopt(int, int, int, void *, socklen_t *);
+extern int shutdown(int, int);
+extern int socket(int, int, int);
+extern int socketpair(int, int, int, int);
+extern int sockatmark(int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2530,6 +3043,18 @@ struct stat {
     unsigned long int __unused4;
     unsigned long int __unused5;
 };
+
+extern int __fxstat(int, int, struct stat *);
+extern int __fxstat64(int, int, struct stat64 *);
+extern int __lxstat(int, char *, struct stat *);
+extern int __lxstat64(int, const char *, struct stat64 *);
+extern int __xmknod(int, const char *, mode_t, dev_t *);
+extern int __xstat(int, const char *, struct stat *);
+extern int __xstat64(int, const char *, struct stat64 *);
+extern int mkfifo(const char *, mode_t);
+extern int chmod(const char *, mode_t);
+extern int fchmod(int, mode_t);
+extern mode_t umask(mode_t);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/sys/statfs.h -->
@@ -2569,6 +3094,10 @@ struct statvfs64 {
     unsigned long int f_namemax;
     int __f_spare[6];
 };
+extern int fstatvfs(int, struct statvfs *);
+extern int fstatvfs64(int, struct statvfs64 *);
+extern int statvfs(const char *, struct statvfs *);
+extern int statvfs64(const char *, struct statvfs64 *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2577,10 +3106,12 @@ struct statvfs64 {
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int getitimer(__itimer_which_t, struct itimerval *);
+extern int setitimer(const struct itimerval *, __itimer_which_t,
+		     struct itimerval *);
+extern int adjtime(const struct timeval *, struct timeval *);
+extern int gettimeofday(struct timeval *, struct timezone *);
+extern int utimes(const char *, const struct timeval *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2589,10 +3120,7 @@ struct statvfs64 {
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int ftime(struct timeb *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2601,10 +3129,7 @@ struct statvfs64 {
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern clock_t times(struct tms *);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC32/sys/timex.h -->
@@ -2621,7 +3146,16 @@ typedef int32_t ssize_t;
 #define __FDSET_LONGS	32
 </SCREEN>
 </SECT2>
-<!-- empty header file PPC32/sys/uio.h -->
+<SECT2>
+<TITLE>sys/uio.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern ssize_t readv(int, const struct iovec *, int);
+extern ssize_t writev(const struct iovec *, int, int);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>sys/un.h</TITLE>
 <PARA>
@@ -2640,10 +3174,7 @@ typedef int32_t ssize_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int uname(struct utsname *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2652,10 +3183,9 @@ typedef int32_t ssize_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern pid_t wait(int *);
+extern pid_t waitpid(int, pid_t, int *);
+extern pid_t wait4(pid_t, int *, int, struct rusage *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2664,10 +3194,11 @@ typedef int32_t ssize_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void closelog(void);
+extern void openlog(const char *, int, int);
+extern int setlogmask(int);
+extern void syslog(int, const char *, ...);
+extern void vsyslog(int, const char *, va_list);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2735,9 +3266,67 @@ typedef int32_t ssize_t;
 #define PENDIN	536870912
 #define ECHOCTL	64
 #define FLUSHO	8388608
+
+extern speed_t cfgetispeed(const struct termios *);
+extern speed_t cfgetospeed(const struct termios *);
+extern void cfmakeraw(struct termios *);
+extern int cfsetispeed(struct termios *, speed_t);
+extern int cfsetospeed(struct termios *, speed_t);
+extern int cfsetspeed(struct termios *, speed_t);
+extern int tcflow(int, int);
+extern int tcflush(int, int);
+extern pid_t tcgetsid(int);
+extern int tcsendbreak(int, int);
+extern int tcsetattr(const struct termios *, int, int);
+extern int tcdrain(int);
+extern int tcgetattr(int, struct termios *);
 </SCREEN>
 </SECT2>
-<!-- empty header file PPC32/time.h -->
+<SECT2>
+<TITLE>time.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern int __daylight(void);
+extern long int __timezone(void);
+extern char *__tzname(void);
+extern char *asctime(const struct tm *);
+extern clock_t clock(void);
+extern char *ctime(const time_t *);
+extern char *ctime_r(const time_t *, char *);
+extern double difftime(time_t, time_t);
+extern struct tm *getdate(const char *);
+extern int getdate_err(void);
+extern struct tm *gmtime(const time_t *);
+extern struct tm *localtime(const time_t *);
+extern time_t mktime(struct tm *);
+extern int stime(const time_t *);
+extern size_t strftime(char *, const struct tm *, const char *, size_t);
+extern char *strptime(struct tm *, const char *, const char *);
+extern time_t time(time_t *);
+extern int nanosleep(const struct timespec *, struct timespec *);
+extern int daylight(void);
+extern long int timezone(void);
+extern char *tzname(void);
+extern void tzset(void);
+extern char *asctime_r(const struct tm *, char *);
+extern struct tm *gmtime_r(const time_t *, struct tm *);
+extern struct tm *localtime_r(struct tm *, const time_t *);
+extern int clock_getcpuclockid(pid_t, clockid_t *);
+extern int clock_getres(clockid_t, struct timespec *);
+extern int clock_gettime(clockid_t, struct timespec *);
+extern int clock_nanosleep(clockid_t, int, const struct timespec *,
+			   struct timespec *);
+extern int clock_settime(clockid_t, const struct timespec *);
+extern int timer_create(clockid_t, struct sigevent *, timer_t *);
+extern int timer_delete(timer_t);
+extern int timer_getoverrun(timer_t);
+extern int timer_gettime(timer_t, struct itimerspec *);
+extern int timer_settime(timer_t, int, const struct itimerspec *,
+			 struct itimerspec *);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>ucontext.h</TITLE>
 <PARA>
@@ -2796,6 +3385,11 @@ typedef struct ucontext {
     sigset_t uc_sigmask;
     char uc_reg_space[sizeof(mcontext_t) + 12];
 } ucontext_t;
+extern int getcontext(ucontext_t *);
+extern int makecontext(ucontext_t *, void (*func) (void)
+		       , int, ...);
+extern int setcontext(const struct ucontext *);
+extern int swapcontext(ucontext_t *, const struct ucontext *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2804,10 +3398,7 @@ typedef struct ucontext {
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern long int ulimit(int, ...);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2817,6 +3408,116 @@ typedef struct ucontext {
 <SCREEN>
 
 typedef int intptr_t;
+
+extern char **__environ(void);
+extern pid_t __getpgid(pid_t);
+extern void _exit(int);
+extern int acct(const char *);
+extern unsigned int alarm(unsigned int);
+extern int chown(uid_t, gid_t, const char *);
+extern int chroot(const char *);
+extern size_t confstr(int, char *, size_t);
+extern int creat(const char *, mode_t);
+extern int creat64(const char *, mode_t);
+extern char *ctermid(char *);
+extern char *cuserid(char *);
+extern int daemon(int, int);
+extern int execl(const char *, const char *, ...);
+extern int execle(const char *, const char *, ...);
+extern int execlp(const char *, const char *, ...);
+extern int execv(const char *, char *const);
+extern int execvp(const char *, char *const);
+extern int fdatasync(int);
+extern int ftruncate64(int, off64_t);
+extern long int gethostid(void);
+extern char *getlogin(void);
+extern int getlogin_r(char *, size_t);
+extern int getopt(int, char *const, const char *);
+extern pid_t getpgrp(void);
+extern pid_t getsid(pid_t);
+extern char *getwd(char *);
+extern int lockf(int, int, off_t);
+extern int mkstemp(char *);
+extern int nice(int);
+extern char *optarg(void);
+extern int opterr(void);
+extern int optind(void);
+extern int optopt(void);
+extern int rename(const char *, const char *);
+extern int setegid(gid_t);
+extern int seteuid(uid_t);
+extern int sethostname(size_t, const char *);
+extern int setpgrp(void);
+extern void swab(ssize_t, void *, const void *);
+extern void sync(void);
+extern pid_t tcgetpgrp(int);
+extern int tcsetpgrp(int, pid_t);
+extern int truncate(const char *, off_t);
+extern int truncate64(const char *, off64_t);
+extern char *ttyname(int);
+extern unsigned int ualarm(useconds_t, useconds_t);
+extern int usleep(useconds_t);
+extern int close(int);
+extern int fsync(int);
+extern off_t lseek(int, off_t, int);
+extern int open(const char *, int, ...);
+extern int pause(void);
+extern ssize_t read(size_t, void *, int);
+extern ssize_t write(int, const void *, size_t);
+extern char *crypt(char *, char *);
+extern void encrypt(char *, int);
+extern void setkey(const char *);
+extern int access(const char *, int);
+extern int brk(void *);
+extern int chdir(const char *);
+extern int dup(int);
+extern int dup2(int, int);
+extern int execve(char *const, const char *, char *const);
+extern int fchdir(int);
+extern int fchown(uid_t, int, gid_t);
+extern pid_t fork(void);
+extern gid_t getegid(void);
+extern uid_t geteuid(void);
+extern gid_t getgid(void);
+extern int getgroups(int, gid_t);
+extern int gethostname(size_t, char *);
+extern pid_t getpgid(pid_t);
+extern pid_t getpid(void);
+extern uid_t getuid(void);
+extern int lchown(const char *, uid_t, gid_t);
+extern int link(const char *, const char *);
+extern int mkdir(const char *, mode_t);
+extern long int pathconf(const char *, int);
+extern int pipe(int);
+extern int readlink(char *, const char *, size_t);
+extern int rmdir(const char *);
+extern void *sbrk(ptrdiff_t);
+extern int select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
+extern int setgid(gid_t);
+extern int setpgid(pid_t, pid_t);
+extern int setregid(gid_t, gid_t);
+extern int setreuid(uid_t, uid_t);
+extern pid_t setsid(void);
+extern int setuid(uid_t);
+extern unsigned int sleep(unsigned int);
+extern int symlink(const char *, const char *);
+extern long int sysconf(int);
+extern int unlink(const char *);
+extern pid_t vfork(void);
+extern ssize_t pread(int, void *, size_t, off_t);
+extern ssize_t pwrite(int, const void *, size_t, off_t);
+extern char **_environ(void);
+extern long int fpathconf(int, int);
+extern int ftruncate(int, off_t);
+extern char *getcwd(char *, size_t);
+extern int getpagesize(void);
+extern pid_t getppid(void);
+extern int isatty(int);
+extern loff_t lseek64(int, int, loff_t);
+extern int open64(const char *, int, ...);
+extern ssize_t pread64(int, void *, size_t, off64_t);
+extern ssize_t pwrite64(int, const void *, size_t, off64_t);
+extern int ttyname_r(int, char *, size_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2825,10 +3526,7 @@ typedef int intptr_t;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int utime(const char *, const struct utimbuf *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2856,6 +3554,16 @@ struct utmp {
     int32_t ut_addr_v6[4];
     char __unused[20];
 };
+
+extern void endutent(void);
+extern struct utmp *getutent(void);
+extern void setutent(void);
+extern int getutent_r(struct utmp *, struct utmp **);
+extern int utmpname(const char *);
+extern int login_tty(int);
+extern void login(const struct utmp *);
+extern int logout(const char *);
+extern void logwtmp(const char *, const char *, const char *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2877,19 +3585,129 @@ struct utmpx {
     int32_t ut_addr_v6[4];
     char __unused[20];
 };
+
+extern void endutxent(void);
+extern struct utmpx *getutxent(void);
+extern struct utmpx *getutxid(const struct utmpx *);
+extern struct utmpx *getutxline(const struct utmpx *);
+extern struct utmpx *pututxline(const struct utmpx *);
+extern void setutxent(void);
 </SCREEN>
 </SECT2>
-<!-- empty header file PPC32/wchar.h -->
+<SECT2>
+<TITLE>wchar.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern double __wcstod_internal(const wchar_t *, int, wchar_t * *);
+extern float __wcstof_internal(const wchar_t *, wchar_t * *, int);
+extern long int __wcstol_internal(int, int, wchar_t * *, const wchar_t *);
+extern long double __wcstold_internal(const wchar_t *, wchar_t * *, int);
+extern unsigned long int __wcstoul_internal(int, wchar_t * *,
+					    const wchar_t *, int);
+extern wchar_t *wcscat(wchar_t *, const wchar_t *);
+extern wchar_t *wcschr(const wchar_t *, wchar_t);
+extern int wcscmp(const wchar_t *, const wchar_t *);
+extern int wcscoll(const wchar_t *, const wchar_t *);
+extern wchar_t *wcscpy(wchar_t *, const wchar_t *);
+extern size_t wcscspn(const wchar_t *, const wchar_t *);
+extern wchar_t *wcsdup(const wchar_t *);
+extern wchar_t *wcsncat(wchar_t *, const wchar_t *, size_t);
+extern int wcsncmp(const wchar_t *, const wchar_t *, size_t);
+extern wchar_t *wcsncpy(size_t, const wchar_t *, wchar_t *);
+extern wchar_t *wcspbrk(const wchar_t *, const wchar_t *);
+extern wchar_t *wcsrchr(const wchar_t *, wchar_t);
+extern size_t wcsspn(const wchar_t *, const wchar_t *);
+extern wchar_t *wcsstr(const wchar_t *, const wchar_t *);
+extern wchar_t *wcstok(wchar_t *, const wchar_t *, wchar_t * *);
+extern int wcswidth(const wchar_t *, size_t);
+extern size_t wcsxfrm(size_t, const wchar_t *, wchar_t *);
+extern int wctob(wint_t);
+extern int wcwidth(wchar_t);
+extern wchar_t *wmemchr(wchar_t, const wchar_t *, size_t);
+extern int wmemcmp(const wchar_t *, const wchar_t *, size_t);
+extern wchar_t *wmemcpy(wchar_t *, const wchar_t *, size_t);
+extern wchar_t *wmemmove(const wchar_t *, wchar_t *, size_t);
+extern wchar_t *wmemset(wchar_t *, wchar_t, size_t);
+extern size_t mbrlen(mbstate_t *, size_t, const char *);
+extern size_t mbrtowc(size_t, const char *, mbstate_t *, wchar_t *);
+extern int mbsinit(const mbstate_t *);
+extern size_t mbsnrtowcs(wchar_t *, const char **, size_t, size_t,
+			 mbstate_t *);
+extern size_t mbsrtowcs(wchar_t *, const char **, size_t, mbstate_t *);
+extern wchar_t *wcpcpy(wchar_t *, const wchar_t *);
+extern wchar_t *wcpncpy(wchar_t *, const wchar_t *, size_t);
+extern size_t wcrtomb(wchar_t, mbstate_t *, char *);
+extern size_t wcslen(const wchar_t *);
+extern size_t wcsnrtombs(char *, const wchar_t * *, size_t, size_t,
+			 mbstate_t *);
+extern size_t wcsrtombs(size_t, const wchar_t * *, char *, mbstate_t *);
+extern double wcstod(wchar_t * *, const wchar_t *);
+extern float wcstof(const wchar_t *, wchar_t * *);
+extern long int wcstol(const wchar_t *, int, wchar_t * *);
+extern long double wcstold(const wchar_t *, wchar_t * *);
+extern long long int wcstoq(const wchar_t *, wchar_t * *, int);
+extern unsigned long int wcstoul(int, wchar_t * *, const wchar_t *);
+extern unsigned long long int wcstouq(const wchar_t *, wchar_t * *, int);
+extern wchar_t *wcswcs(const wchar_t *, const wchar_t *);
+extern int wcscasecmp(const wchar_t *, const wchar_t *);
+extern int wcsncasecmp(const wchar_t *, const wchar_t *, size_t);
+extern size_t wcsnlen(const wchar_t *, size_t);
+extern long long int wcstoll(const wchar_t *, int, wchar_t * *);
+extern unsigned long long int wcstoull(int, wchar_t * *, const wchar_t *);
+extern wint_t btowc(int);
+extern wint_t fgetwc(FILE *);
+extern wint_t fgetwc_unlocked(FILE *);
+extern wchar_t *fgetws(wchar_t *, int, FILE *);
+extern wint_t fputwc(wchar_t, FILE *);
+extern int fputws(const wchar_t *, FILE *);
+extern int fwide(FILE *, int);
+extern int fwprintf(FILE *, const wchar_t *, ...);
+extern int fwscanf(FILE *, const wchar_t *, ...);
+extern wint_t getwc(FILE *);
+extern wint_t getwchar(void);
+extern wint_t putwc(wchar_t, FILE *);
+extern wint_t putwchar(wchar_t);
+extern int swprintf(wchar_t *, size_t, const wchar_t *, ...);
+extern int swscanf(const wchar_t *, const wchar_t *, ...);
+extern wint_t ungetwc(wint_t, FILE *);
+extern int vfwprintf(FILE *, const wchar_t *, va_list);
+extern int vfwscanf(FILE *, const wchar_t *, va_list);
+extern int vswprintf(wchar_t *, size_t, const wchar_t *, va_list);
+extern int vswscanf(const wchar_t *, const wchar_t *, va_list);
+extern int vwprintf(const wchar_t *, va_list);
+extern int vwscanf(const wchar_t *, va_list);
+extern size_t wcsftime(wchar_t *, size_t, const wchar_t *,
+		       const struct tm *);
+extern int wprintf(const wchar_t *, ...);
+extern int wscanf(const wchar_t *, ...);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>wctype.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int iswblank(wint_t);
+extern wint_t towlower(wint_t);
+extern wint_t towupper(wint_t);
+extern wctrans_t wctrans(const char *);
+extern int iswalnum(wint_t);
+extern int iswalpha(wint_t);
+extern int iswcntrl(wint_t);
+extern int iswctype(wint_t, wctype_t);
+extern int iswdigit(wint_t);
+extern int iswgraph(wint_t);
+extern int iswlower(wint_t);
+extern int iswprint(wint_t);
+extern int iswpunct(wint_t);
+extern int iswspace(wint_t);
+extern int iswupper(wint_t);
+extern int iswxdigit(wint_t);
+extern wctype_t wctype(const char *);
+extern wint_t towctrans(wint_t, wctrans_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2898,21 +3716,19 @@ struct utmpx {
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int wordexp(const char *, wordexp_t *, int);
+extern void wordfree(wordexp_t *);
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:47:30 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:27:47 2005 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -3450,10 +4266,20 @@ underlying specification.
 <SECT1 ID=libm-ddefs>
 <TITLE>Data Definitions for libm</TITLE>
 <PARA>
-This section defines global identifiers and their values that are associated with interfaces contained in libm.
-These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+This section defines global identifiers and their values that are associated
+with interfaces contained in libm.
+These definitions are organized into groups that
+correspond to system headers. This convention is used as a
+convenience for the reader, and does not imply the existence
+of these headers, or their content.
+Where an interface is defined as requiring a particular system header file
+all of the data definitions for that system header file presented here shall be in effect.
+</PARA>
 <PARA>
-These definitions are intended to supplement those provided in the referenced underlying specifications.
+This section gives data definitions to promote binary application
+portability, not to repeat source interface definitions available
+elsewhere. System providers and application developers should use this ABI
+to supplement - not to replace - source interface definition specifications.
 </PARA>
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
@@ -3463,10 +4289,74 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern double cabs(double complex);
+extern float cabsf(float complex);
+extern long double cabsl(long double complex);
+extern double complex cacos(double complex);
+extern float complex cacosf(float complex);
+extern double complex cacosh(double complex);
+extern float complex cacoshf(float complex);
+extern long double complex cacoshl(long double complex);
+extern long double complex cacosl(long double complex);
+extern double carg(double complex);
+extern float cargf(float complex);
+extern long double cargl(long double complex);
+extern double complex casin(double complex);
+extern float complex casinf(float complex);
+extern double complex casinh(double complex);
+extern float complex casinhf(float complex);
+extern long double complex casinhl(long double complex);
+extern long double complex casinl(long double complex);
+extern double complex catan(double complex);
+extern float complex catanf(float complex);
+extern double complex catanh(double complex);
+extern float complex catanhf(float complex);
+extern long double complex catanhl(long double complex);
+extern long double complex catanl(long double complex);
+extern double complex ccos(double complex);
+extern float complex ccosf(float complex);
+extern double complex ccosh(double complex);
+extern float complex ccoshf(float complex);
+extern long double complex ccoshl(long double complex);
+extern long double complex ccosl(long double complex);
+extern double complex cexp(double complex);
+extern float complex cexpf(float complex);
+extern long double complex cexpl(long double complex);
+extern double cimag(double complex);
+extern float cimagf(float complex);
+extern long double cimagl(long double complex);
+extern double complex clog(double complex);
+extern float complex clog10f(float complex);
+extern long double complex clog10l(long double complex);
+extern float complex clogf(float complex);
+extern long double complex clogl(long double complex);
+extern double complex conj(double complex);
+extern float complex conjf(float complex);
+extern long double complex conjl(long double complex);
+extern double complex cpow(double complex, double complex);
+extern float complex cpowf(float complex, float complex);
+extern long double complex cpowl(long double complex, long double complex);
+extern double complex cproj(double complex);
+extern float complex cprojf(float complex);
+extern long double complex cprojl(long double complex);
+extern double creal(double complex);
+extern float crealf(float complex);
+extern long double creall(long double complex);
+extern double complex csin(double complex);
+extern float complex csinf(float complex);
+extern double complex csinh(double complex);
+extern float complex csinhf(float complex);
+extern long double complex csinhl(long double complex);
+extern long double complex csinl(long double complex);
+extern double complex csqrt(double complex);
+extern float complex csqrtf(float complex);
+extern long double complex csqrtl(long double complex);
+extern double complex ctan(double complex);
+extern float complex ctanf(float complex);
+extern double complex ctanh(double complex);
+extern float complex ctanhf(float complex);
+extern long double complex ctanhl(long double complex);
+extern long double complex ctanl(long double complex);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3494,6 +4384,18 @@ typedef unsigned int fexcept_t;
 typedef double fenv_t;
 
 #define FE_DFL_ENV	(&amp;__fe_dfl_env)
+
+extern int feclearexcept(int);
+extern int fegetenv(fenv_t *);
+extern int fegetexceptflag(fexcept_t *, int);
+extern int fegetround(void);
+extern int feholdexcept(fenv_t *);
+extern int feraiseexcept(int);
+extern int fesetenv(const fenv_t *);
+extern int fesetexceptflag(const fexcept_t *, int);
+extern int fesetround(int);
+extern int fetestexcept(int);
+extern int feupdateenv(const fenv_t *);
 </SCREEN>
 </SECT2>
 <!-- missing header file PPC32/float.h -->
@@ -3510,17 +4412,253 @@ typedef double fenv_t;
 
 #define FP_ILOGB0	-2147483647
 #define FP_ILOGBNAN	2147483647
+
+extern int __finite(double);
+extern int __finitef(float);
+extern int __finitel(long double);
+extern int __isinf(double);
+extern int __isinff(float);
+extern int __isinfl(long double);
+extern int __isnan(double);
+extern int __isnanf(float);
+extern int __isnanl(long double);
+extern int __signbit(double);
+extern int __signbitf(float);
+extern int __fpclassify(double);
+extern int __fpclassifyf(float);
+extern int __fpclassifyl(long double);
+extern int signgam(void);
+extern double copysign(double, double);
+extern int finite(double);
+extern double frexp(double, int *);
+extern double ldexp(double, int);
+extern double modf(double, double *);
+extern double acos(double);
+extern double acosh(double);
+extern double asinh(double);
+extern double atanh(double);
+extern double asin(double);
+extern double atan(double);
+extern double atan2(double, double);
+extern double cbrt(double);
+extern double ceil(double);
+extern double cos(double);
+extern double cosh(double);
+extern double erf(double);
+extern double erfc(double);
+extern double exp(double);
+extern double expm1(double);
+extern double fabs(double);
+extern double floor(double);
+extern double fmod(double, double);
+extern double gamma(double);
+extern double hypot(double, double);
+extern int ilogb(double);
+extern double j0(double);
+extern double j1(double);
+extern double jn(double, int);
+extern double lgamma(double);
+extern double log(double);
+extern double log10(double);
+extern double log1p(double);
+extern double logb(double);
+extern double nextafter(double, double);
+extern double pow(double, double);
+extern double remainder(double, double);
+extern double rint(double);
+extern double scalb(double, double);
+extern double sin(double);
+extern double sinh(double);
+extern double sqrt(double);
+extern double tan(double);
+extern double tanh(double);
+extern double y0(double);
+extern double y1(double);
+extern double yn(int, double);
+extern float copysignf(float, float);
+extern long double copysignl(long double, long double);
+extern int finitef(float);
+extern int finitel(long double);
+extern float frexpf(float, int *);
+extern long double frexpl(long double, int *);
+extern float ldexpf(float, int);
+extern long double ldexpl(long double, int);
+extern float modff(float *, float);
+extern long double modfl(long double, long double *);
+extern double scalbln(double, long int);
+extern float scalblnf(float, long int);
+extern long double scalblnl(long int, long double);
+extern double scalbn(double, int);
+extern float scalbnf(float, int);
+extern long double scalbnl(int, long double);
+extern float acosf(float);
+extern float acoshf(float);
+extern long double acoshl(long double);
+extern long double acosl(long double);
+extern float asinf(float);
+extern float asinhf(float);
+extern long double asinhl(long double);
+extern long double asinl(long double);
+extern float atan2f(float, float);
+extern long double atan2l(long double, long double);
+extern float atanf(float);
+extern float atanhf(float);
+extern long double atanhl(long double);
+extern long double atanl(long double);
+extern float cbrtf(float);
+extern long double cbrtl(long double);
+extern float ceilf(float);
+extern long double ceill(long double);
+extern float cosf(float);
+extern float coshf(float);
+extern long double coshl(long double);
+extern long double cosl(long double);
+extern float dremf(float, float);
+extern long double dreml(long double, long double);
+extern float erfcf(float);
+extern long double erfcl(long double);
+extern float erff(float);
+extern long double erfl(long double);
+extern double exp2(double);
+extern float exp2f(float);
+extern long double exp2l(long double);
+extern float expf(float);
+extern long double expl(long double);
+extern float expm1f(float);
+extern long double expm1l(long double);
+extern float fabsf(float);
+extern long double fabsl(long double);
+extern double fdim(double, double);
+extern float fdimf(float, float);
+extern long double fdiml(long double, long double);
+extern float floorf(float);
+extern long double floorl(long double);
+extern double fma(double, double, double);
+extern float fmaf(float, float, float);
+extern long double fmal(long double, long double, long double);
+extern double fmax(double, double);
+extern float fmaxf(float, float);
+extern long double fmaxl(long double, long double);
+extern double fmin(double, double);
+extern float fminf(float, float);
+extern long double fminl(long double, long double);
+extern float fmodf(float, float);
+extern long double fmodl(long double, long double);
+extern float gammaf(float);
+extern long double gammal(long double);
+extern float hypotf(float, float);
+extern long double hypotl(long double, long double);
+extern int ilogbf(float);
+extern int ilogbl(long double);
+extern float j0f(float);
+extern long double j0l(long double);
+extern float j1f(float);
+extern long double j1l(long double);
+extern float jnf(float, int);
+extern long double jnl(int, long double);
+extern double lgamma_r(int *, double);
+extern float lgammaf(float);
+extern float lgammaf_r(float, int *);
+extern long double lgammal(long double);
+extern long double lgammal_r(long double, int *);
+extern long long int llrint(double);
+extern long long int llrintf(float);
+extern long long int llrintl(long double);
+extern long long int llround(double);
+extern long long int llroundf(float);
+extern long long int llroundl(long double);
+extern float log10f(float);
+extern long double log10l(long double);
+extern float log1pf(float);
+extern long double log1pl(long double);
+extern double log2(double);
+extern float log2f(float);
+extern long double log2l(long double);
+extern float logbf(float);
+extern long double logbl(long double);
+extern float logf(float);
+extern long double logl(long double);
+extern long int lrint(double);
+extern long int lrintf(float);
+extern long int lrintl(long double);
+extern long int lround(double);
+extern long int lroundf(float);
+extern long int lroundl(long double);
+extern int matherr(struct exception *);
+extern double nan(const char *);
+extern float nanf(const char *);
+extern long double nanl(const char *);
+extern double nearbyint(double);
+extern float nearbyintf(float);
+extern long double nearbyintl(long double);
+extern float nextafterf(float, float);
+extern long double nextafterl(long double, long double);
+extern double nexttoward(double, long double);
+extern float nexttowardf(float, long double);
+extern long double nexttowardl(long double, long double);
+extern double pow10(double);
+extern float pow10f(float);
+extern long double pow10l(long double);
+extern float powf(float, float);
+extern long double powl(long double, long double);
+extern float remainderf(float, float);
+extern long double remainderl(long double, long double);
+extern double remquo(int *, double, double);
+extern float remquof(int *, float, float);
+extern long double remquol(long double, int *, long double);
+extern float rintf(float);
+extern long double rintl(long double);
+extern double round(double);
+extern float roundf(float);
+extern long double roundl(long double);
+extern float scalbf(float, float);
+extern long double scalbl(long double, long double);
+extern double significand(double);
+extern float significandf(float);
+extern long double significandl(long double);
+extern void sincos(double *, double *, double);
+extern void sincosf(float *, float, float *);
+extern void sincosl(long double, long double *, long double *);
+extern float sinf(float);
+extern float sinhf(float);
+extern long double sinhl(long double);
+extern long double sinl(long double);
+extern float sqrtf(float);
+extern long double sqrtl(long double);
+extern float tanf(float);
+extern float tanhf(float);
+extern long double tanhl(long double);
+extern long double tanl(long double);
+extern double tgamma(double);
+extern float tgammaf(float);
+extern long double tgammal(long double);
+extern double trunc(double);
+extern float truncf(float);
+extern long double truncl(long double);
+extern float y0f(float);
+extern long double y0l(long double);
+extern float y1f(float);
+extern long double y1l(long double);
+extern float ynf(int, float);
+extern long double ynl(int, long double);
+extern int __fpclassifyl(long double);
+extern int __fpclassifyl(long double);
+extern int __signbitl(long double);
+extern int __signbitl(long double);
+extern int __signbitl(long double);
+extern long double exp2l(long double);
+extern long double exp2l(long double);
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:47:31 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:27:48 2005 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -3797,10 +4935,20 @@ underlying specification.
 <SECT1 ID=libpthread-ddefs>
 <TITLE>Data Definitions for libpthread</TITLE>
 <PARA>
-This section defines global identifiers and their values that are associated with interfaces contained in libpthread.
-These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+This section defines global identifiers and their values that are associated
+with interfaces contained in libpthread.
+These definitions are organized into groups that
+correspond to system headers. This convention is used as a
+convenience for the reader, and does not imply the existence
+of these headers, or their content.
+Where an interface is defined as requiring a particular system header file
+all of the data definitions for that system header file presented here shall be in effect.
+</PARA>
 <PARA>
-These definitions are intended to supplement those provided in the referenced underlying specifications.
+This section gives data definitions to promote binary application
+portability, not to repeat source interface definitions available
+elsewhere. System providers and application developers should use this ABI
+to supplement - not to replace - source interface definition specifications.
 </PARA>
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
@@ -3810,10 +4958,234 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void _pthread_cleanup_pop(struct _pthread_cleanup_buffer *, int);
+extern void _pthread_cleanup_push(struct _pthread_cleanup_buffer *,
+				  void (*__routine) (void *)
+				  , void *);
+extern int pthread_attr_destroy(pthread_attr_t *);
+extern int pthread_attr_getdetachstate(const typedef struct {
+				       int __detachstate;
+				       int __schedpolicy;
+				       struct sched_param __schedparam;
+				       int __inheritsched;
+				       int __scope;
+				       size_t __guardsize;
+				       int __stackaddr_set;
+				       void *__stackaddr;
+				       unsigned long int __stacksize;}
+				       pthread_attr_t *, int *);
+extern int pthread_attr_getinheritsched(const typedef struct {
+					int __detachstate;
+					int __schedpolicy;
+					struct sched_param __schedparam;
+					int __inheritsched;
+					int __scope;
+					size_t __guardsize;
+					int __stackaddr_set;
+					void *__stackaddr;
+					unsigned long int __stacksize;}
+					pthread_attr_t *, int *);
+extern int pthread_attr_getschedparam(const typedef struct {
+				      int __detachstate;
+				      int __schedpolicy;
+				      struct sched_param __schedparam;
+				      int __inheritsched;
+				      int __scope;
+				      size_t __guardsize;
+				      int __stackaddr_set;
+				      void *__stackaddr;
+				      unsigned long int __stacksize;}
+				      pthread_attr_t *, struct sched_param {
+				      int sched_priority;}
+
+				      *);
+extern int pthread_attr_getschedpolicy(const typedef struct {
+				       int __detachstate;
+				       int __schedpolicy;
+				       struct sched_param __schedparam;
+				       int __inheritsched;
+				       int __scope;
+				       size_t __guardsize;
+				       int __stackaddr_set;
+				       void *__stackaddr;
+				       unsigned long int __stacksize;}
+				       pthread_attr_t *, int *);
+extern int pthread_attr_getscope(const typedef struct {
+				 int __detachstate;
+				 int __schedpolicy;
+				 struct sched_param __schedparam;
+				 int __inheritsched;
+				 int __scope;
+				 size_t __guardsize;
+				 int __stackaddr_set;
+				 void *__stackaddr;
+				 unsigned long int __stacksize;}
+				 pthread_attr_t *, int *);
+extern int pthread_attr_init(pthread_attr_t *);
+extern int pthread_attr_setdetachstate(pthread_attr_t *, int);
+extern int pthread_attr_setinheritsched(pthread_attr_t *, int);
+extern int pthread_attr_setschedparam(pthread_attr_t *, const struct sched_param {
+				      int sched_priority;}
+
+				      *);
+extern int pthread_attr_setschedpolicy(pthread_attr_t *, int);
+extern int pthread_attr_setscope(pthread_attr_t *, int);
+extern int pthread_cancel(typedef unsigned long int pthread_t);
+extern int pthread_cond_broadcast(pthread_cond_t *);
+extern int pthread_cond_destroy(pthread_cond_t *);
+extern int pthread_cond_init(pthread_cond_t *, const typedef struct {
+			     int __dummy;}
+
+			     pthread_condattr_t *);
+extern int pthread_cond_signal(pthread_cond_t *);
+extern int pthread_cond_timedwait(pthread_cond_t *, const struct timespec {
+				  time_t tv_sec; long int tv_nsec;}
+
+				  *, pthread_mutex_t *);
+extern int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *);
+extern int pthread_condattr_destroy(pthread_condattr_t *);
+extern int pthread_condattr_init(pthread_condattr_t *);
+extern int pthread_create(pthread_t *, const typedef struct {
+			  int __detachstate;
+			  int __schedpolicy;
+			  struct sched_param __schedparam;
+			  int __inheritsched;
+			  int __scope;
+			  size_t __guardsize;
+			  int __stackaddr_set;
+			  void *__stackaddr;
+			  unsigned long int __stacksize;}
+			  pthread_attr_t *,
+			  void *(*__start_routine) (void *p1)
+			  , void *);
+extern int pthread_detach(typedef unsigned long int pthread_t);
+extern int pthread_equal(typedef unsigned long int pthread_t,
+			 typedef unsigned long int pthread_t);
+extern void pthread_exit(void *);
+extern int pthread_getschedparam(int *,
+				 typedef unsigned long int pthread_t,
+				 struct sched_param {
+				 int sched_priority;}
+
+				 *);
+extern void *pthread_getspecific(typedef unsigned int pthread_key_t);
+extern int pthread_join(void **, typedef unsigned long int pthread_t);
+extern int pthread_key_create(pthread_key_t *, void (*destr_func) (void *)
+    );
+extern int pthread_key_delete(typedef unsigned int pthread_key_t);
+extern int pthread_mutex_destroy(pthread_mutex_t *);
+extern int pthread_mutex_init(pthread_mutex_t *, const typedef struct {
+			      int __mutexkind;}
+
+			      pthread_mutexattr_t *);
+extern int pthread_mutex_lock(pthread_mutex_t *);
+extern int pthread_mutex_trylock(pthread_mutex_t *);
+extern int pthread_mutex_unlock(pthread_mutex_t *);
+extern int pthread_mutexattr_destroy(pthread_mutexattr_t *);
+extern int pthread_mutexattr_init(pthread_mutexattr_t *);
+extern int pthread_once(pthread_once_t *, void (*init_routine) (void)
+    );
+extern int pthread_rwlock_destroy(pthread_rwlock_t *);
+extern int pthread_rwlock_init(pthread_rwlock_t *, pthread_rwlockattr_t *);
+extern int pthread_rwlock_rdlock(pthread_rwlock_t *);
+extern int pthread_rwlock_tryrdlock(pthread_rwlock_t *);
+extern int pthread_rwlock_trywrlock(pthread_rwlock_t *);
+extern int pthread_rwlock_unlock(pthread_rwlock_t *);
+extern int pthread_rwlock_wrlock(pthread_rwlock_t *);
+extern int pthread_rwlockattr_destroy(pthread_rwlockattr_t *);
+extern int pthread_rwlockattr_getpshared(const typedef struct {
+					 int __lockkind; int __pshared;}
+					 pthread_rwlockattr_t *, int *);
+extern int pthread_rwlockattr_init(pthread_rwlockattr_t *);
+extern int pthread_rwlockattr_setpshared(pthread_rwlockattr_t *, int);
+extern typedef unsigned long int pthread_t pthread_self(void);
+extern int pthread_setcancelstate(int, int *);
+extern int pthread_setcanceltype(int, int *);
+extern int pthread_setschedparam(typedef unsigned long int pthread_t, int, const struct sched_param {
+				 int sched_priority;}
+
+				 *);
+extern int pthread_setspecific(typedef unsigned int pthread_key_t,
+			       const void *);
+extern void pthread_testcancel(void);
+extern int pthread_attr_getguardsize(const typedef struct {
+				     int __detachstate;
+				     int __schedpolicy;
+				     struct sched_param __schedparam;
+				     int __inheritsched;
+				     int __scope;
+				     size_t __guardsize;
+				     int __stackaddr_set;
+				     void *__stackaddr;
+				     unsigned long int __stacksize;}
+				     pthread_attr_t *, size_t *);
+extern int pthread_attr_setguardsize(pthread_attr_t *,
+				     typedef unsigned long int size_t);
+extern int pthread_attr_setstackaddr(pthread_attr_t *, void *);
+extern int pthread_attr_getstackaddr(void **, const typedef struct {
+				     int __detachstate;
+				     int __schedpolicy;
+				     struct sched_param __schedparam;
+				     int __inheritsched;
+				     int __scope;
+				     size_t __guardsize;
+				     int __stackaddr_set;
+				     void *__stackaddr;
+				     unsigned long int __stacksize;}
+				     pthread_attr_t *);
+extern int pthread_attr_setstacksize(typedef unsigned long int size_t,
+				     pthread_attr_t *);
+extern int pthread_attr_getstacksize(const typedef struct {
+				     int __detachstate;
+				     int __schedpolicy;
+				     struct sched_param __schedparam;
+				     int __inheritsched;
+				     int __scope;
+				     size_t __guardsize;
+				     int __stackaddr_set;
+				     void *__stackaddr;
+				     unsigned long int __stacksize;}
+				     pthread_attr_t *, size_t *);
+extern int pthread_mutexattr_gettype(const typedef struct {
+				     int __mutexkind;}
+				     pthread_mutexattr_t *, int *);
+extern int pthread_mutexattr_settype(pthread_mutexattr_t *, int);
+extern int pthread_getconcurrency(void);
+extern int pthread_setconcurrency(int);
+extern int pthread_attr_getstack(const typedef struct {
+				 int __detachstate;
+				 int __schedpolicy;
+				 struct sched_param __schedparam;
+				 int __inheritsched;
+				 int __scope;
+				 size_t __guardsize;
+				 int __stackaddr_set;
+				 void *__stackaddr;
+				 unsigned long int __stacksize;}
+				 pthread_attr_t *, void **, size_t *);
+extern int pthread_attr_setstack(pthread_attr_t *, void *,
+				 typedef unsigned long int size_t);
+extern int pthread_condattr_getpshared(const typedef struct {
+				       int __dummy;}
+				       pthread_condattr_t *, int *);
+extern int pthread_condattr_setpshared(pthread_condattr_t *, int);
+extern int pthread_mutexattr_getpshared(const typedef struct {
+					int __mutexkind;}
+					pthread_mutexattr_t *, int *);
+extern int pthread_mutexattr_setpshared(pthread_mutexattr_t *, int);
+extern int pthread_rwlock_timedrdlock(pthread_rwlock_t *, const struct timespec {
+				      time_t tv_sec; long int tv_nsec;}
+
+				      *);
+extern int pthread_rwlock_timedwrlock(pthread_rwlock_t *, const struct timespec {
+				      time_t tv_sec; long int tv_nsec;}
+
+				      *);
+extern int __register_atfork(void (*prepare) (void)
+			     , void (*parent) (void)
+			     , void (*child) (void)
+			     , void *);
+extern int pthread_setschedprio(typedef unsigned long int pthread_t, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3822,21 +5194,27 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int sem_close(sem_t *);
+extern int sem_destroy(sem_t *);
+extern int sem_getvalue(sem_t *, int *);
+extern int sem_init(sem_t *, int, unsigned int);
+extern sem_t *sem_open(..., int, const char *);
+extern int sem_post(sem_t *);
+extern int sem_trywait(sem_t *);
+extern int sem_unlink(const char *);
+extern int sem_wait(sem_t *);
+extern int sem_timedwait(sem_t *, const struct timespec *);
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:47:34 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:27:49 2005 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -3925,10 +5303,20 @@ underlying specification.
 <SECT1 ID=libgcc-s-ddefs>
 <TITLE>Data Definitions for libgcc_s</TITLE>
 <PARA>
-This section defines global identifiers and their values that are associated with interfaces contained in libgcc_s.
-These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+This section defines global identifiers and their values that are associated
+with interfaces contained in libgcc_s.
+These definitions are organized into groups that
+correspond to system headers. This convention is used as a
+convenience for the reader, and does not imply the existence
+of these headers, or their content.
+Where an interface is defined as requiring a particular system header file
+all of the data definitions for that system header file presented here shall be in effect.
+</PARA>
 <PARA>
-These definitions are intended to supplement those provided in the referenced underlying specifications.
+This section gives data definitions to promote binary application
+portability, not to repeat source interface definitions available
+elsewhere. System providers and application developers should use this ABI
+to supplement - not to replace - source interface definition specifications.
 </PARA>
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
@@ -3938,10 +5326,149 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern fde *_Unwind_Find_FDE(void *, struct dwarf_eh_base *);
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
+						   *);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+						  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern fde *_Unwind_Find_FDE(void *, struct dwarf_eh_base *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
+extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
+						   *);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+						  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
+extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
+						   *);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+						  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern fde *_Unwind_Find_FDE(void *, struct dwarf_eh_base *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
+extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
+						   *);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+						  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern fde *_Unwind_Find_FDE(void *, struct dwarf_eh_base *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
+extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
+						   *);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+						  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern fde *_Unwind_Find_FDE(void *, struct dwarf_eh_base *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
+extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(void);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+						  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern fde *_Unwind_Find_FDE(void *, struct dwarf_eh_base *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
+extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(void);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+						  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern _Unwind_Reason_Code _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+						     _Unwind_Exception *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+						     _Unwind_Exception *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+						     _Unwind_Exception *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+						     _Unwind_Exception *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+						     _Unwind_Exception *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+						     _Unwind_Exception *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+						     _Unwind_Exception *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern _Unwind_Word _Unwind_GetBSP(struct _Unwind_Context *);
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -3993,13 +5520,13 @@ in the referenced base document.
 <!-- Lets just hope nobody notices -->
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:47:33 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:27:49 2005 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -4073,10 +5600,20 @@ underlying specification.
 <SECT1 ID=libdl-ddefs>
 <TITLE>Data Definitions for libdl</TITLE>
 <PARA>
-This section defines global identifiers and their values that are associated with interfaces contained in libdl.
-These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+This section defines global identifiers and their values that are associated
+with interfaces contained in libdl.
+These definitions are organized into groups that
+correspond to system headers. This convention is used as a
+convenience for the reader, and does not imply the existence
+of these headers, or their content.
+Where an interface is defined as requiring a particular system header file
+all of the data definitions for that system header file presented here shall be in effect.
+</PARA>
 <PARA>
-These definitions are intended to supplement those provided in the referenced underlying specifications.
+This section gives data definitions to promote binary application
+portability, not to repeat source interface definitions available
+elsewhere. System providers and application developers should use this ABI
+to supplement - not to replace - source interface definition specifications.
 </PARA>
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
@@ -4086,21 +5623,22 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int dladdr(const void *, Dl_info *);
+extern int dlclose(void *);
+extern char *dlerror(void);
+extern void *dlopen(int, char *);
+extern void *dlsym(void *, char *);
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:47:33 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:27:49 2005 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -4164,7 +5702,7 @@ underlying specification.
 </SECT1>
 <!-- empty header file PPC32/crypt.h -->
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
 
 
 </CHAPTER>

@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:51:28 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:29:45 2005 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -278,10 +278,20 @@ underlying specification.
 <SECT1 ID=libpthread-ddefs>
 <TITLE>Data Definitions for libpthread</TITLE>
 <PARA>
-This section defines global identifiers and their values that are associated with interfaces contained in libpthread.
-These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+This section defines global identifiers and their values that are associated
+with interfaces contained in libpthread.
+These definitions are organized into groups that
+correspond to system headers. This convention is used as a
+convenience for the reader, and does not imply the existence
+of these headers, or their content.
+Where an interface is defined as requiring a particular system header file
+all of the data definitions for that system header file presented here shall be in effect.
+</PARA>
 <PARA>
-These definitions are intended to supplement those provided in the referenced underlying specifications.
+This section gives data definitions to promote binary application
+portability, not to repeat source interface definitions available
+elsewhere. System providers and application developers should use this ABI
+to supplement - not to replace - source interface definition specifications.
 </PARA>
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
@@ -291,10 +301,234 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern void _pthread_cleanup_pop(struct _pthread_cleanup_buffer *, int);
+extern void _pthread_cleanup_push(struct _pthread_cleanup_buffer *,
+				  void (*__routine) (void *)
+				  , void *);
+extern int pthread_attr_destroy(pthread_attr_t *);
+extern int pthread_attr_getdetachstate(const typedef struct {
+				       int __detachstate;
+				       int __schedpolicy;
+				       struct sched_param __schedparam;
+				       int __inheritsched;
+				       int __scope;
+				       size_t __guardsize;
+				       int __stackaddr_set;
+				       void *__stackaddr;
+				       unsigned long int __stacksize;}
+				       pthread_attr_t *, int *);
+extern int pthread_attr_getinheritsched(const typedef struct {
+					int __detachstate;
+					int __schedpolicy;
+					struct sched_param __schedparam;
+					int __inheritsched;
+					int __scope;
+					size_t __guardsize;
+					int __stackaddr_set;
+					void *__stackaddr;
+					unsigned long int __stacksize;}
+					pthread_attr_t *, int *);
+extern int pthread_attr_getschedparam(const typedef struct {
+				      int __detachstate;
+				      int __schedpolicy;
+				      struct sched_param __schedparam;
+				      int __inheritsched;
+				      int __scope;
+				      size_t __guardsize;
+				      int __stackaddr_set;
+				      void *__stackaddr;
+				      unsigned long int __stacksize;}
+				      pthread_attr_t *, struct sched_param {
+				      int sched_priority;}
+
+				      *);
+extern int pthread_attr_getschedpolicy(const typedef struct {
+				       int __detachstate;
+				       int __schedpolicy;
+				       struct sched_param __schedparam;
+				       int __inheritsched;
+				       int __scope;
+				       size_t __guardsize;
+				       int __stackaddr_set;
+				       void *__stackaddr;
+				       unsigned long int __stacksize;}
+				       pthread_attr_t *, int *);
+extern int pthread_attr_getscope(const typedef struct {
+				 int __detachstate;
+				 int __schedpolicy;
+				 struct sched_param __schedparam;
+				 int __inheritsched;
+				 int __scope;
+				 size_t __guardsize;
+				 int __stackaddr_set;
+				 void *__stackaddr;
+				 unsigned long int __stacksize;}
+				 pthread_attr_t *, int *);
+extern int pthread_attr_init(pthread_attr_t *);
+extern int pthread_attr_setdetachstate(pthread_attr_t *, int);
+extern int pthread_attr_setinheritsched(pthread_attr_t *, int);
+extern int pthread_attr_setschedparam(pthread_attr_t *, const struct sched_param {
+				      int sched_priority;}
+
+				      *);
+extern int pthread_attr_setschedpolicy(pthread_attr_t *, int);
+extern int pthread_attr_setscope(pthread_attr_t *, int);
+extern int pthread_cancel(typedef unsigned long int pthread_t);
+extern int pthread_cond_broadcast(pthread_cond_t *);
+extern int pthread_cond_destroy(pthread_cond_t *);
+extern int pthread_cond_init(pthread_cond_t *, const typedef struct {
+			     int __dummy;}
+
+			     pthread_condattr_t *);
+extern int pthread_cond_signal(pthread_cond_t *);
+extern int pthread_cond_timedwait(pthread_cond_t *, const struct timespec {
+				  time_t tv_sec; long int tv_nsec;}
+
+				  *, pthread_mutex_t *);
+extern int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *);
+extern int pthread_condattr_destroy(pthread_condattr_t *);
+extern int pthread_condattr_init(pthread_condattr_t *);
+extern int pthread_create(pthread_t *, const typedef struct {
+			  int __detachstate;
+			  int __schedpolicy;
+			  struct sched_param __schedparam;
+			  int __inheritsched;
+			  int __scope;
+			  size_t __guardsize;
+			  int __stackaddr_set;
+			  void *__stackaddr;
+			  unsigned long int __stacksize;}
+			  pthread_attr_t *,
+			  void *(*__start_routine) (void *p1)
+			  , void *);
+extern int pthread_detach(typedef unsigned long int pthread_t);
+extern int pthread_equal(typedef unsigned long int pthread_t,
+			 typedef unsigned long int pthread_t);
+extern void pthread_exit(void *);
+extern int pthread_getschedparam(int *,
+				 typedef unsigned long int pthread_t,
+				 struct sched_param {
+				 int sched_priority;}
+
+				 *);
+extern void *pthread_getspecific(typedef unsigned int pthread_key_t);
+extern int pthread_join(void **, typedef unsigned long int pthread_t);
+extern int pthread_key_create(pthread_key_t *, void (*destr_func) (void *)
+    );
+extern int pthread_key_delete(typedef unsigned int pthread_key_t);
+extern int pthread_mutex_destroy(pthread_mutex_t *);
+extern int pthread_mutex_init(pthread_mutex_t *, const typedef struct {
+			      int __mutexkind;}
+
+			      pthread_mutexattr_t *);
+extern int pthread_mutex_lock(pthread_mutex_t *);
+extern int pthread_mutex_trylock(pthread_mutex_t *);
+extern int pthread_mutex_unlock(pthread_mutex_t *);
+extern int pthread_mutexattr_destroy(pthread_mutexattr_t *);
+extern int pthread_mutexattr_init(pthread_mutexattr_t *);
+extern int pthread_once(pthread_once_t *, void (*init_routine) (void)
+    );
+extern int pthread_rwlock_destroy(pthread_rwlock_t *);
+extern int pthread_rwlock_init(pthread_rwlock_t *, pthread_rwlockattr_t *);
+extern int pthread_rwlock_rdlock(pthread_rwlock_t *);
+extern int pthread_rwlock_tryrdlock(pthread_rwlock_t *);
+extern int pthread_rwlock_trywrlock(pthread_rwlock_t *);
+extern int pthread_rwlock_unlock(pthread_rwlock_t *);
+extern int pthread_rwlock_wrlock(pthread_rwlock_t *);
+extern int pthread_rwlockattr_destroy(pthread_rwlockattr_t *);
+extern int pthread_rwlockattr_getpshared(const typedef struct {
+					 int __lockkind; int __pshared;}
+					 pthread_rwlockattr_t *, int *);
+extern int pthread_rwlockattr_init(pthread_rwlockattr_t *);
+extern int pthread_rwlockattr_setpshared(pthread_rwlockattr_t *, int);
+extern typedef unsigned long int pthread_t pthread_self(void);
+extern int pthread_setcancelstate(int, int *);
+extern int pthread_setcanceltype(int, int *);
+extern int pthread_setschedparam(typedef unsigned long int pthread_t, int, const struct sched_param {
+				 int sched_priority;}
+
+				 *);
+extern int pthread_setspecific(typedef unsigned int pthread_key_t,
+			       const void *);
+extern void pthread_testcancel(void);
+extern int pthread_attr_getguardsize(const typedef struct {
+				     int __detachstate;
+				     int __schedpolicy;
+				     struct sched_param __schedparam;
+				     int __inheritsched;
+				     int __scope;
+				     size_t __guardsize;
+				     int __stackaddr_set;
+				     void *__stackaddr;
+				     unsigned long int __stacksize;}
+				     pthread_attr_t *, size_t *);
+extern int pthread_attr_setguardsize(pthread_attr_t *,
+				     typedef unsigned long int size_t);
+extern int pthread_attr_setstackaddr(pthread_attr_t *, void *);
+extern int pthread_attr_getstackaddr(void **, const typedef struct {
+				     int __detachstate;
+				     int __schedpolicy;
+				     struct sched_param __schedparam;
+				     int __inheritsched;
+				     int __scope;
+				     size_t __guardsize;
+				     int __stackaddr_set;
+				     void *__stackaddr;
+				     unsigned long int __stacksize;}
+				     pthread_attr_t *);
+extern int pthread_attr_setstacksize(typedef unsigned long int size_t,
+				     pthread_attr_t *);
+extern int pthread_attr_getstacksize(const typedef struct {
+				     int __detachstate;
+				     int __schedpolicy;
+				     struct sched_param __schedparam;
+				     int __inheritsched;
+				     int __scope;
+				     size_t __guardsize;
+				     int __stackaddr_set;
+				     void *__stackaddr;
+				     unsigned long int __stacksize;}
+				     pthread_attr_t *, size_t *);
+extern int pthread_mutexattr_gettype(const typedef struct {
+				     int __mutexkind;}
+				     pthread_mutexattr_t *, int *);
+extern int pthread_mutexattr_settype(pthread_mutexattr_t *, int);
+extern int pthread_getconcurrency(void);
+extern int pthread_setconcurrency(int);
+extern int pthread_attr_getstack(const typedef struct {
+				 int __detachstate;
+				 int __schedpolicy;
+				 struct sched_param __schedparam;
+				 int __inheritsched;
+				 int __scope;
+				 size_t __guardsize;
+				 int __stackaddr_set;
+				 void *__stackaddr;
+				 unsigned long int __stacksize;}
+				 pthread_attr_t *, void **, size_t *);
+extern int pthread_attr_setstack(pthread_attr_t *, void *,
+				 typedef unsigned long int size_t);
+extern int pthread_condattr_getpshared(const typedef struct {
+				       int __dummy;}
+				       pthread_condattr_t *, int *);
+extern int pthread_condattr_setpshared(pthread_condattr_t *, int);
+extern int pthread_mutexattr_getpshared(const typedef struct {
+					int __mutexkind;}
+					pthread_mutexattr_t *, int *);
+extern int pthread_mutexattr_setpshared(pthread_mutexattr_t *, int);
+extern int pthread_rwlock_timedrdlock(pthread_rwlock_t *, const struct timespec {
+				      time_t tv_sec; long int tv_nsec;}
+
+				      *);
+extern int pthread_rwlock_timedwrlock(pthread_rwlock_t *, const struct timespec {
+				      time_t tv_sec; long int tv_nsec;}
+
+				      *);
+extern int __register_atfork(void (*prepare) (void)
+			     , void (*parent) (void)
+			     , void (*child) (void)
+			     , void *);
+extern int pthread_setschedprio(typedef unsigned long int pthread_t, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -303,12 +537,18 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+extern int sem_close(sem_t *);
+extern int sem_destroy(sem_t *);
+extern int sem_getvalue(sem_t *, int *);
+extern int sem_init(sem_t *, int, unsigned int);
+extern sem_t *sem_open(..., int, const char *);
+extern int sem_post(sem_t *);
+extern int sem_trywait(sem_t *);
+extern int sem_unlink(const char *);
+extern int sem_wait(sem_t *);
+extern int sem_timedwait(sem_t *, const struct timespec *);
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->

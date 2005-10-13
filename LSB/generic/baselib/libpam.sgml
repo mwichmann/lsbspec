@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:52:58 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:32:42 2005 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
@@ -100,10 +100,20 @@ underlying specification.
 <SECT1 ID=libpam-ddefs>
 <TITLE>Data Definitions for libpam</TITLE>
 <PARA>
-This section defines global identifiers and their values that are associated with interfaces contained in libpam.
-These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+This section defines global identifiers and their values that are associated
+with interfaces contained in libpam.
+These definitions are organized into groups that
+correspond to system headers. This convention is used as a
+convenience for the reader, and does not imply the existence
+of these headers, or their content.
+Where an interface is defined as requiring a particular system header file
+all of the data definitions for that system header file presented here shall be in effect.
+</PARA>
 <PARA>
-These definitions are intended to supplement those provided in the referenced underlying specifications.
+This section gives data definitions to promote binary application
+portability, not to repeat source interface definitions available
+elsewhere. System providers and application developers should use this ABI
+to supplement - not to replace - source interface definition specifications.
 </PARA>
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
@@ -177,6 +187,21 @@ struct pam_conv {
 #define PAM_REFRESH_CRED	0x0010U
 #define PAM_CHANGE_EXPIRED_AUTHTOK	0x0020U
 #define PAM_SILENT	0x8000U
+
+extern int pam_set_item(pam_handle_t *, int, const void *);
+extern int pam_get_item(const pam_handle_t *, int, const void **);
+extern const char *pam_strerror(pam_handle_t *, int);
+extern char **pam_getenvlist(pam_handle_t *);
+extern int pam_fail_delay(pam_handle_t *, unsigned int);
+extern int pam_start(const char *, const char *, pam_handle_t * *,
+		     const struct pam_conv *);
+extern int pam_end(pam_handle_t *, int);
+extern int pam_authenticate(pam_handle_t *, int);
+extern int pam_setcred(pam_handle_t *, int);
+extern int pam_acct_mgmt(pam_handle_t *, int);
+extern int pam_open_session(pam_handle_t *, int);
+extern int pam_close_session(pam_handle_t *, int);
+extern int pam_chauthtok(pam_handle_t *, int);
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -207,4 +232,4 @@ include(pam_start.sgml)
 include(pam_strerror.sgml)
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->

@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
-<!--    at Wed Sep 21 20:54:09 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    at Wed Oct 12 18:34:22 2005 -->
 <SECT1 ID=libz>
 <TITLE>Interfaces for libz</TITLE>
 <PARA>
@@ -126,10 +126,20 @@ underlying specification.
 <SECT1 ID=libz-ddefs>
 <TITLE>Data Definitions for libz</TITLE>
 <PARA>
-This section defines global identifiers and their values that are associated with interfaces contained in libz.
-These definitions are organized into groups that correspond to system headers. This convention is used as a convenience for the reader, and does not imply the existence of these headers, or their content.</PARA>
+This section defines global identifiers and their values that are associated
+with interfaces contained in libz.
+These definitions are organized into groups that
+correspond to system headers. This convention is used as a
+convenience for the reader, and does not imply the existence
+of these headers, or their content.
+Where an interface is defined as requiring a particular system header file
+all of the data definitions for that system header file presented here shall be in effect.
+</PARA>
 <PARA>
-These definitions are intended to supplement those provided in the referenced underlying specifications.
+This section gives data definitions to promote binary application
+portability, not to repeat source interface definitions available
+elsewhere. System providers and application developers should use this ABI
+to supplement - not to replace - source interface definition specifications.
 </PARA>
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
@@ -231,6 +241,51 @@ typedef voidp gzFile;
 #define Z_UNKNOWN	2
 
 #define Z_DEFLATED	8
+
+extern int gzread(gzFile, voidp, unsigned int);
+extern int gzclose(gzFile);
+extern gzFile gzopen(const char *, const char *);
+extern gzFile gzdopen(int, const char *);
+extern int gzwrite(gzFile, voidpc, unsigned int);
+extern int gzflush(gzFile, int);
+extern const char *gzerror(gzFile, int *);
+extern uLong adler32(uLong, const Bytef *, uInt);
+extern int compress(Bytef *, uLongf *, const Bytef *, uLong);
+extern int compress2(Bytef *, uLongf *, const Bytef *, uLong, int);
+extern uLong crc32(uLong, const Bytef *, uInt);
+extern int deflate(z_streamp, int);
+extern int deflateCopy(z_streamp, z_streamp);
+extern int deflateEnd(z_streamp);
+extern int deflateInit2_(z_streamp, int, int, int, int, int, const char *,
+			 int);
+extern int deflateInit_(z_streamp, int, const char *, int);
+extern int deflateParams(int, z_streamp, int);
+extern int deflateReset(z_streamp);
+extern int deflateSetDictionary(z_streamp, const Bytef *, uInt);
+extern const uLongf *get_crc_table(void);
+extern int gzeof(gzFile);
+extern int gzgetc(gzFile);
+extern char *gzgets(gzFile, char *, int);
+extern int gzprintf(const char *, ..., gzFile);
+extern int gzputc(gzFile, int);
+extern int gzputs(gzFile, const char *);
+extern int gzrewind(gzFile);
+extern z_off_t gzseek(gzFile, z_off_t, int);
+extern int gzsetparams(gzFile, int, int);
+extern z_off_t gztell(gzFile);
+extern int inflate(z_streamp, int);
+extern int inflateEnd(z_streamp);
+extern int inflateInit2_(z_streamp, int, const char *, int);
+extern int inflateInit_(z_streamp, const char *, int);
+extern int inflateReset(z_streamp);
+extern int inflateSetDictionary(z_streamp, const Bytef *, uInt);
+extern int inflateSync(z_streamp);
+extern int inflateSyncPoint(z_streamp);
+extern int uncompress(Bytef *, uLongf *, const Bytef *, uLong);
+extern const char *zError(int);
+extern const char *zlibVersion(void);
+extern uLong deflateBound(z_streamp, uLong);
+extern uLong compressBound(uLong);
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -291,4 +346,4 @@ include(zError.sgml)
 include(zlibVersion.sgml)
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.74 2005/09/21 23:56:19 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
