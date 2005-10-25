@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
-<!--    at Wed Oct 12 18:32:36 2005 -->
+<!--    at Tue Oct 25 16:09:02 2005 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -487,10 +487,10 @@ extern int pthread_cond_init(pthread_cond_t *, const typedef struct {
 
 			     pthread_condattr_t *);
 extern int pthread_cond_signal(pthread_cond_t *);
-extern int pthread_cond_timedwait(pthread_cond_t *, const struct timespec {
+extern int pthread_cond_timedwait(pthread_cond_t *, pthread_mutex_t *, const struct timespec {
 				  time_t tv_sec; long int tv_nsec;}
 
-				  *, pthread_mutex_t *);
+				  *);
 extern int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *);
 extern int pthread_condattr_destroy(pthread_condattr_t *);
 extern int pthread_condattr_init(pthread_condattr_t *);
@@ -511,14 +511,13 @@ extern int pthread_detach(typedef unsigned long int pthread_t);
 extern int pthread_equal(typedef unsigned long int pthread_t,
 			 typedef unsigned long int pthread_t);
 extern void pthread_exit(void *);
-extern int pthread_getschedparam(int *,
-				 typedef unsigned long int pthread_t,
-				 struct sched_param {
+extern int pthread_getschedparam(typedef unsigned long int pthread_t,
+				 int *, struct sched_param {
 				 int sched_priority;}
 
 				 *);
 extern void *pthread_getspecific(typedef unsigned int pthread_key_t);
-extern int pthread_join(void **, typedef unsigned long int pthread_t);
+extern int pthread_join(typedef unsigned long int pthread_t, void **);
 extern int pthread_key_create(pthread_key_t *, void (*destr_func) (void *)
     );
 extern int pthread_key_delete(typedef unsigned int pthread_key_t);
@@ -571,7 +570,7 @@ extern int pthread_attr_getguardsize(const typedef struct {
 extern int pthread_attr_setguardsize(pthread_attr_t *,
 				     typedef unsigned long int size_t);
 extern int pthread_attr_setstackaddr(pthread_attr_t *, void *);
-extern int pthread_attr_getstackaddr(void **, const typedef struct {
+extern int pthread_attr_getstackaddr(const typedef struct {
 				     int __detachstate;
 				     int __schedpolicy;
 				     struct sched_param __schedparam;
@@ -581,9 +580,9 @@ extern int pthread_attr_getstackaddr(void **, const typedef struct {
 				     int __stackaddr_set;
 				     void *__stackaddr;
 				     unsigned long int __stacksize;}
-				     pthread_attr_t *);
-extern int pthread_attr_setstacksize(typedef unsigned long int size_t,
-				     pthread_attr_t *);
+				     pthread_attr_t *, void **);
+extern int pthread_attr_setstacksize(pthread_attr_t *,
+				     typedef unsigned long int size_t);
 extern int pthread_attr_getstacksize(const typedef struct {
 				     int __detachstate;
 				     int __schedpolicy;
@@ -657,7 +656,7 @@ extern int sem_close(sem_t *);
 extern int sem_destroy(sem_t *);
 extern int sem_getvalue(sem_t *, int *);
 extern int sem_init(sem_t *, int, unsigned int);
-extern sem_t *sem_open(..., int, const char *);
+extern sem_t *sem_open(const char *, int, ...);
 extern int sem_post(sem_t *);
 extern int sem_trywait(sem_t *);
 extern int sem_unlink(const char *);

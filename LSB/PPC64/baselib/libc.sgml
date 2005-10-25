@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
-<!--    at Wed Oct 12 18:27:59 2005 -->
+<!--    at Tue Oct 25 16:06:18 2005 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -1854,7 +1854,7 @@ extern uint16_t ntohs(uint16_t);
 </PARA>
 <SCREEN>
 
-extern void __assert_fail(const char *, unsigned int, const char *,
+extern void __assert_fail(const char *, const char *, unsigned int,
 			  const char *);
 </SCREEN>
 </SECT2>
@@ -1894,7 +1894,7 @@ extern const int32_t **__ctype_tolower_loc(void);
 <SCREEN>
 
 extern void rewinddir(DIR *);
-extern void seekdir(long int, DIR *);
+extern void seekdir(DIR *, long int);
 extern long int telldir(DIR *);
 extern int closedir(DIR *);
 extern DIR *opendir(const char *);
@@ -1904,6 +1904,19 @@ extern int readdir_r(DIR *, struct dirent *, struct dirent **);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC64/endian.h -->
+<SECT2>
+<TITLE>err.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern void err(int, const char *, ...);
+extern void errx(int, const char *, ...);
+extern void warn(const char *, ...);
+extern void warnx(const char *, ...);
+extern void error(int, int, const char *, ...);
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>errno.h</TITLE>
 <PARA>
@@ -1946,7 +1959,7 @@ extern int fmtmsg(long int, const char *, int, const char *, const char *,
 </PARA>
 <SCREEN>
 
-extern int fnmatch(int, const char *, const char *);
+extern int fnmatch(const char *, const char *, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1956,7 +1969,7 @@ extern int fnmatch(int, const char *, const char *);
 <SCREEN>
 
 extern int ftw(const char *, __ftw_func_t, int);
-extern int ftw64(const char *, int, __ftw64_func_t);
+extern int ftw64(const char *, __ftw64_func_t, int);
 extern int nftw(const char *, __nftw_func_t, int, int);
 extern int nftw64(const char *, __nftw64_func_t, int, int);
 </SCREEN>
@@ -2002,10 +2015,10 @@ extern struct group *getgrnam(char *);
 extern int initgroups(const char *, gid_t);
 extern void setgrent(void);
 extern int setgroups(size_t, const gid_t *);
-extern int getgrgid_r(struct group **, size_t, char *, struct group *,
-		      gid_t);
-extern int getgrnam_r(char *, size_t, struct group **, const char *,
-		      struct group *);
+extern int getgrgid_r(gid_t, struct group *, char *, size_t,
+		      struct group **);
+extern int getgrnam_r(const char *, struct group *, char *, size_t,
+		      struct group **);
 extern int getgrouplist(const char *, gid_t, gid_t *, int *);
 </SCREEN>
 </SECT2>
@@ -2031,9 +2044,9 @@ typedef unsigned long int uintmax_t;
 typedef unsigned long int uintptr_t;
 typedef unsigned long int uint64_t;
 
-extern intmax_t strtoimax(int, char **, const char *);
+extern intmax_t strtoimax(const char *, char **, int);
 extern uintmax_t strtoumax(const char *, char **, int);
-extern intmax_t wcstoimax(int, wchar_t * *, const wchar_t *);
+extern intmax_t wcstoimax(const wchar_t *, wchar_t * *, int);
 extern uintmax_t wcstoumax(const wchar_t *, wchar_t * *, int);
 extern intmax_t imaxabs(intmax_t);
 extern imaxdiv_t imaxdiv(intmax_t, intmax_t);
@@ -2113,7 +2126,7 @@ extern locale_t newlocale(int, const char *, locale_t);
 </PARA>
 <SCREEN>
 
-extern ssize_t strfmon(..., const char *, size_t, char *);
+extern ssize_t strfmon(char *, size_t, const char *, ...);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC64/mqueue.h -->
@@ -2206,7 +2219,7 @@ extern int bindresvport(int, struct sockaddr_in *);
 <SCREEN>
 
 extern int catclose(nl_catd);
-extern char *catgets(const char *, int, int, nl_catd);
+extern char *catgets(nl_catd, int, int, const char *);
 extern nl_catd catopen(const char *, int);
 </SCREEN>
 </SECT2>
@@ -2241,10 +2254,10 @@ extern struct passwd *getpwent(void);
 extern struct passwd *getpwnam(char *);
 extern struct passwd *getpwuid(uid_t);
 extern void setpwent(void);
-extern int getpwnam_r(struct passwd *, size_t, struct passwd **, char *,
-		      char *);
-extern int getpwuid_r(struct passwd **, size_t, char *, struct passwd *,
-		      uid_t);
+extern int getpwnam_r(char *, struct passwd *, char *, size_t,
+		      struct passwd **);
+extern int getpwuid_r(uid_t, struct passwd *, char *, size_t,
+		      struct passwd **);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2253,8 +2266,8 @@ extern int getpwuid_r(struct passwd **, size_t, char *, struct passwd *,
 </PARA>
 <SCREEN>
 
-extern int regcomp(regex_t *, int, const char *);
-extern size_t regerror(const regex_t *, int, size_t, char *);
+extern int regcomp(regex_t *, const char *, int);
+extern size_t regerror(int, const regex_t *, char *, size_t);
 extern int regexec(const regex_t *, const char *, size_t, regmatch_t, int);
 extern void regfree(regex_t *);
 </SCREEN>
@@ -2287,6 +2300,18 @@ extern void clnt_perror(struct CLIENT *, const char *);
 extern char *clnt_spcreateerror(const char *);
 extern char *clnt_sperrno(enum clnt_stat);
 extern char *clnt_sperror(struct CLIENT *, const char *);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>rpc/pmap_clnt.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern u_short pmap_getport(struct sockaddr_in *, const u_long,
+			    const u_long, u_int);
+extern bool_t pmap_set(const u_long, const u_long, int, u_short);
+extern bool_t pmap_unset(u_long, u_long);
 </SCREEN>
 </SECT2>
 <!-- missing header file PPC64/rpc/rpc.h -->
@@ -2383,8 +2408,8 @@ extern int sched_get_priority_min(int);
 extern int sched_getparam(pid_t, struct sched_param *);
 extern int sched_getscheduler(pid_t);
 extern int sched_rr_get_interval(pid_t, struct timespec *);
-extern int sched_setparam(const struct sched_param *, pid_t);
-extern int sched_setscheduler(int, const struct sched_param *, pid_t);
+extern int sched_setparam(pid_t, const struct sched_param *);
+extern int sched_setscheduler(pid_t, int, const struct sched_param *);
 extern int sched_yield(void);
 </SCREEN>
 </SECT2>
@@ -2405,7 +2430,7 @@ extern void remque(void *);
 extern void hdestroy(void);
 extern void *tdelete(const void *, void **, __compar_fn_t);
 extern void *tfind(const void *, void *const *, __compar_fn_t);
-extern void *tsearch(const void *, __compar_fn_t, void **);
+extern void *tsearch(const void *, void **, __compar_fn_t);
 extern void twalk(const void *, __action_fn_t);
 </SCREEN>
 </SECT2>
@@ -2506,8 +2531,8 @@ extern int sigreturn(struct sigcontext *);
 extern int sigsuspend(const sigset_t *);
 extern int sigqueue(pid_t, int, const union sigval);
 extern int sigwaitinfo(const sigset_t *, siginfo_t *);
-extern int sigtimedwait(const sigset_t *, const struct timespec *,
-			siginfo_t *);
+extern int sigtimedwait(const sigset_t *, siginfo_t *,
+			const struct timespec *);
 extern sighandler_t bsd_signal(int, sighandler_t);
 </SCREEN>
 </SECT2>
@@ -2536,13 +2561,13 @@ extern FILE *fdopen(int, const char *);
 extern int fflush_unlocked(FILE *);
 extern int fileno(FILE *);
 extern FILE *fopen(const char *, const char *);
-extern int fprintf(..., const char *, FILE *);
+extern int fprintf(FILE *, const char *, ...);
 extern int fputc(int, FILE *);
 extern FILE *freopen(const char *, const char *, FILE *);
 extern FILE *freopen64(const char *, const char *, FILE *);
-extern int fscanf(const char *, FILE *, ...);
-extern int fseek(int, long int, FILE *);
-extern int fseeko(FILE *, int, off_t);
+extern int fscanf(FILE *, const char *, ...);
+extern int fseek(FILE *, long int, int);
+extern int fseeko(FILE *, off_t, int);
 extern int fseeko64(FILE *, loff_t, int);
 extern off_t ftello(FILE *);
 extern loff_t ftello64(FILE *);
@@ -2561,7 +2586,7 @@ extern int remove(const char *);
 extern void rewind(FILE *);
 extern int scanf(const char *, ...);
 extern void setbuf(FILE *, char *);
-extern int sprintf(const char *, char *, ...);
+extern int sprintf(char *, const char *, ...);
 extern int sscanf(const char *, const char *, ...);
 extern FILE *stderr(void);
 extern FILE *stdin(void);
@@ -2577,22 +2602,22 @@ extern int ferror(FILE *);
 extern int fflush(FILE *);
 extern int fgetc(FILE *);
 extern int fgetpos(FILE *, fpos_t *);
-extern char *fgets(FILE *, int, char *);
-extern int fputs(FILE *, const char *);
+extern char *fgets(char *, int, FILE *);
+extern int fputs(const char *, FILE *);
 extern size_t fread(void *, size_t, size_t, FILE *);
 extern int fsetpos(FILE *, const fpos_t *);
 extern long int ftell(FILE *);
-extern size_t fwrite(FILE *, size_t, size_t, const void *);
+extern size_t fwrite(const void *, size_t, size_t, FILE *);
 extern int getc(FILE *);
 extern int putc(int, FILE *);
 extern int puts(const char *);
 extern int setvbuf(FILE *, char *, int, size_t);
-extern int snprintf(char *, ..., const char *, size_t);
+extern int snprintf(char *, size_t, const char *, ...);
 extern int ungetc(int, FILE *);
-extern int vsnprintf(size_t, char *, va_list, const char *);
-extern int vsprintf(va_list, char *, const char *);
+extern int vsnprintf(char *, size_t, const char *, va_list);
+extern int vsprintf(char *, const char *, va_list);
 extern void flockfile(FILE *);
-extern int asprintf(const char *, char **, ...);
+extern int asprintf(char **, const char *, ...);
 extern int fgetpos64(FILE *, fpos64_t *);
 extern FILE *fopen64(const char *, const char *);
 extern int fsetpos64(FILE *, const fpos64_t *);
@@ -2602,7 +2627,7 @@ extern int getc_unlocked(FILE *);
 extern void setbuffer(FILE *, char *, size_t);
 extern int vasprintf(char **, const char *, va_list);
 extern int vdprintf(int, const char *, va_list);
-extern int vfscanf(va_list, const char *, FILE *);
+extern int vfscanf(FILE *, const char *, va_list);
 extern int vscanf(const char *, va_list);
 extern int vsscanf(const char *, const char *, va_list);
 extern size_t __fpending(FILE *);
@@ -2614,15 +2639,15 @@ extern size_t __fpending(FILE *);
 </PARA>
 <SCREEN>
 
-extern double __strtod_internal(int, char **, const char *);
-extern float __strtof_internal(int, char **, const char *);
+extern double __strtod_internal(const char *, char **, int);
+extern float __strtof_internal(const char *, char **, int);
 extern long int __strtol_internal(const char *, char **, int, int);
-extern long double __strtold_internal(const char *, int, char **);
+extern long double __strtold_internal(const char *, char **, int);
 extern long long int __strtoll_internal(const char *, char **, int, int);
-extern unsigned long int __strtoul_internal(char **, int, const char *,
+extern unsigned long int __strtoul_internal(const char *, char **, int,
 					    int);
-extern unsigned long long int __strtoull_internal(int, char **,
-						  const char *, int);
+extern unsigned long long int __strtoull_internal(const char *, char **,
+						  int, int);
 extern long int a64l(const char *);
 extern void abort(void);
 extern int abs(int);
@@ -2630,17 +2655,17 @@ extern double atof(const char *);
 extern int atoi(char *);
 extern long int atol(char *);
 extern long long int atoll(const char *);
-extern void *bsearch(size_t, const void *, size_t, __compar_fn_t,
-		     const void *);
+extern void *bsearch(const void *, const void *, size_t, size_t,
+		     __compar_fn_t);
 extern div_t div(int, int);
 extern double drand48(void);
-extern char *ecvt(int, int *, double, int *);
+extern char *ecvt(double, int, int *, int *);
 extern double erand48(unsigned short);
 extern void exit(int);
-extern char *fcvt(int *, int, double, int *);
-extern char *gcvt(int, double, char *);
+extern char *fcvt(double, int, int *, int *);
+extern char *gcvt(double, int, char *);
 extern char *getenv(const char *);
-extern int getsubopt(char *const *, char **, char **);
+extern int getsubopt(char **, char *const *, char **);
 extern int grantpt(int);
 extern long int jrand48(unsigned short);
 extern char *l64a(long int);
@@ -2652,24 +2677,24 @@ extern lldiv_t lldiv(long long int, long long int);
 extern long int lrand48(void);
 extern int mblen(const char *, size_t);
 extern size_t mbstowcs(wchar_t *, const char *, size_t);
-extern int mbtowc(size_t, const char *, wchar_t *);
+extern int mbtowc(wchar_t *, const char *, size_t);
 extern char *mktemp(char *);
 extern long int mrand48(void);
 extern long int nrand48(unsigned short);
 extern char *ptsname(int);
 extern int putenv(char *);
-extern void qsort(__compar_fn_t, size_t, size_t, void *);
+extern void qsort(void *, size_t, size_t, __compar_fn_t);
 extern int rand(void);
 extern int rand_r(unsigned int *);
 extern unsigned short *seed48(unsigned short);
 extern void srand48(long int);
 extern int unlockpt(int);
-extern size_t wcstombs(const wchar_t *, char *, size_t);
+extern size_t wcstombs(char *, const wchar_t *, size_t);
 extern int wctomb(char *, wchar_t);
 extern int system(const char *);
 extern void *calloc(size_t, size_t);
 extern void free(void *);
-extern char *initstate(size_t, char *, unsigned int);
+extern char *initstate(unsigned int, char *, size_t);
 extern void *malloc(size_t);
 extern long int random(void);
 extern void *realloc(void *, size_t);
@@ -2680,9 +2705,9 @@ extern double strtod(char *, char **);
 extern float strtof(const char *, char **);
 extern long int strtol(char *, char **, int);
 extern long double strtold(const char *, char **);
-extern long long int strtoll(const char *, int, char **);
+extern long long int strtoll(const char *, char **, int);
 extern long long int strtoq(const char *, char **, int);
-extern unsigned long int strtoul(int, const char *, char **);
+extern unsigned long int strtoul(const char *, char **, int);
 extern unsigned long long int strtoull(const char *, char **, int);
 extern unsigned long long int strtouq(const char *, char **, int);
 extern void _Exit(int);
@@ -2706,15 +2731,15 @@ extern int posix_openpt(int);
 extern void *__mempcpy(void *, const void *, size_t);
 extern char *__stpcpy(char *, const char *);
 extern char *__strtok_r(char *, const char *, char **);
-extern void bcopy(size_t, void *, void *);
+extern void bcopy(void *, void *, size_t);
 extern void *memchr(void *, int, size_t);
 extern int memcmp(void *, void *, size_t);
 extern void *memcpy(void *, void *, size_t);
 extern void *memmem(const void *, size_t, const void *, size_t);
 extern void *memmove(void *, const void *, size_t);
-extern void *memset(size_t, int, void *);
+extern void *memset(void *, int, size_t);
 extern char *strcat(char *, const char *);
-extern char *strchr(int, char *);
+extern char *strchr(char *, int);
 extern int strcmp(char *, char *);
 extern int strcoll(const char *, const char *);
 extern char *strcpy(char *, char *);
@@ -2722,7 +2747,7 @@ extern size_t strcspn(const char *, const char *);
 extern char *strerror(int);
 extern size_t strlen(char *);
 extern char *strncat(char *, char *, size_t);
-extern int strncmp(size_t, char *, char *);
+extern int strncmp(char *, char *, size_t);
 extern char *strncpy(char *, char *, size_t);
 extern char *strpbrk(const char *, const char *);
 extern char *strrchr(char *, int);
@@ -2730,21 +2755,21 @@ extern char *strsignal(int);
 extern size_t strspn(const char *, const char *);
 extern char *strstr(char *, char *);
 extern char *strtok(char *, const char *);
-extern size_t strxfrm(size_t, const char *, char *);
+extern size_t strxfrm(char *, const char *, size_t);
 extern int bcmp(void *, void *, size_t);
 extern void bzero(void *, size_t);
 extern int ffs(int);
 extern char *index(char *, int);
 extern void *memccpy(void *, const void *, int, size_t);
-extern char *rindex(int, char *);
+extern char *rindex(char *, int);
 extern int strcasecmp(char *, char *);
 extern char *strdup(char *);
 extern int strncasecmp(char *, char *, size_t);
 extern char *strndup(const char *, size_t);
 extern size_t strnlen(const char *, size_t);
 extern char *strsep(char **, const char *);
-extern char *strerror_r(size_t, char *, int);
-extern char *strtok_r(const char *, char *, char **);
+extern char *strerror_r(int, char *, size_t);
+extern char *strtok_r(char *, const char *, char **);
 extern char *strcasestr(const char *, const char *);
 extern char *stpcpy(char *, const char *);
 extern char *stpncpy(char *, const char *, size_t);
@@ -2805,11 +2830,11 @@ extern key_t ftok(char *, int);
 #define MCL_FUTURE	16384
 #define MCL_CURRENT	8192
 
-extern int msync(int, size_t, void *);
+extern int msync(void *, size_t, int);
 extern int mlock(const void *, size_t);
 extern int mlockall(int);
 extern void *mmap(void *, size_t, int, int, int, off_t);
-extern int mprotect(int, size_t, void *);
+extern int mprotect(void *, size_t, int);
 extern int munlock(const void *, size_t);
 extern int munlockall(void);
 extern int munmap(void *, size_t);
@@ -2841,7 +2866,7 @@ struct msqid_ds {
     unsigned long int __unused4;
     unsigned long int __unused5;
 };
-extern int msgctl(struct msqid_ds *, int, int);
+extern int msgctl(int, int, struct msqid_ds *);
 extern int msgget(key_t, int);
 extern int msgrcv(int, void *, size_t, long int, int);
 extern int msgsnd(int, const void *, size_t, int);
@@ -2879,10 +2904,10 @@ extern int msgsnd(int, const void *, size_t, int);
 
 extern int getpriority(__priority_which_t, id_t);
 extern int getrlimit64(id_t, struct rlimit64 *);
-extern int setpriority(id_t, __priority_which_t, int);
+extern int setpriority(__priority_which_t, id_t, int);
 extern int setrlimit(__rlimit_resource_t, const struct rlimit *);
 extern int setrlimit64(__rlimit_resource_t, const struct rlimit64 *);
-extern int getrlimit(struct rlimit *, __rlimit_resource_t);
+extern int getrlimit(__rlimit_resource_t, struct rlimit *);
 extern int getrusage(int, struct rusage *);
 </SCREEN>
 </SECT2>
@@ -2902,8 +2927,8 @@ struct semid_ds {
     unsigned long int __unused4;
 };
 extern int semctl(int, int, int, ...);
-extern int semget(int, key_t, int);
-extern int semop(size_t, struct sembuf *, int);
+extern int semget(key_t, int, int);
+extern int semop(int, struct sembuf *, size_t);
 </SCREEN>
 </SECT2>
 <!-- empty header file PPC64/sys/sendfile.h -->
@@ -2931,7 +2956,7 @@ struct shmid_ds {
 };
 extern int __getpagesize(void);
 extern void *shmat(int, const void *, int);
-extern int shmctl(struct shmid_ds *, int, int);
+extern int shmctl(int, int, struct shmid_ds *);
 extern int shmdt(const void *);
 extern int shmget(key_t, size_t, int);
 </SCREEN>
@@ -2949,23 +2974,23 @@ typedef uint64_t __ss_aligntype;
 #define SO_RCVTIMEO	18
 #define SO_SNDTIMEO	19
 
-extern int bind(socklen_t, const struct sockaddr *, int);
+extern int bind(int, const struct sockaddr *, socklen_t);
 extern int getnameinfo(const struct sockaddr *, socklen_t, char *,
 		       socklen_t, char *, socklen_t, unsigned int);
 extern int getsockname(int, struct sockaddr *, socklen_t *);
 extern int listen(int, int);
-extern int setsockopt(const void *, int, int, int, socklen_t);
-extern int accept(int, socklen_t *, struct sockaddr *);
-extern int connect(int, socklen_t, const struct sockaddr *);
+extern int setsockopt(int, int, int, const void *, socklen_t);
+extern int accept(int, struct sockaddr *, socklen_t *);
+extern int connect(int, const struct sockaddr *, socklen_t);
 extern ssize_t recv(int, void *, size_t, int);
 extern ssize_t recvfrom(int, void *, size_t, int, struct sockaddr *,
 			socklen_t *);
-extern ssize_t recvmsg(int, int, struct msghdr *);
+extern ssize_t recvmsg(int, struct msghdr *, int);
 extern ssize_t send(int, const void *, size_t, int);
 extern ssize_t sendmsg(int, const struct msghdr *, int);
 extern ssize_t sendto(int, const void *, size_t, int,
 		      const struct sockaddr *, socklen_t);
-extern int getpeername(int, socklen_t *, struct sockaddr *);
+extern int getpeername(int, struct sockaddr *, socklen_t *);
 extern int getsockopt(int, int, int, void *, socklen_t *);
 extern int shutdown(int, int);
 extern int socket(int, int, int);
@@ -3081,7 +3106,7 @@ extern int statvfs64(const char *, struct statvfs64 *);
 <SCREEN>
 
 extern int getitimer(__itimer_which_t, struct itimerval *);
-extern int setitimer(const struct itimerval *, __itimer_which_t,
+extern int setitimer(__itimer_which_t, const struct itimerval *,
 		     struct itimerval *);
 extern int adjtime(const struct timeval *, struct timeval *);
 extern int gettimeofday(struct timeval *, struct timezone *);
@@ -3127,7 +3152,7 @@ typedef int64_t ssize_t;
 <SCREEN>
 
 extern ssize_t readv(int, const struct iovec *, int);
-extern ssize_t writev(const struct iovec *, int, int);
+extern ssize_t writev(int, const struct iovec *, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3158,7 +3183,7 @@ extern int uname(struct utsname *);
 <SCREEN>
 
 extern pid_t wait(int *);
-extern pid_t waitpid(int, pid_t, int *);
+extern pid_t waitpid(pid_t, int *, int);
 extern pid_t wait4(pid_t, int *, int, struct rusage *);
 </SCREEN>
 </SECT2>
@@ -3251,7 +3276,7 @@ extern int tcflow(int, int);
 extern int tcflush(int, int);
 extern pid_t tcgetsid(int);
 extern int tcsendbreak(int, int);
-extern int tcsetattr(const struct termios *, int, int);
+extern int tcsetattr(int, int, const struct termios *);
 extern int tcdrain(int);
 extern int tcgetattr(int, struct termios *);
 </SCREEN>
@@ -3276,8 +3301,8 @@ extern struct tm *gmtime(const time_t *);
 extern struct tm *localtime(const time_t *);
 extern time_t mktime(struct tm *);
 extern int stime(const time_t *);
-extern size_t strftime(char *, const struct tm *, const char *, size_t);
-extern char *strptime(struct tm *, const char *, const char *);
+extern size_t strftime(char *, size_t, const char *, const struct tm *);
+extern char *strptime(const char *, const char *, struct tm *);
 extern time_t time(time_t *);
 extern int nanosleep(const struct timespec *, struct timespec *);
 extern int daylight(void);
@@ -3286,7 +3311,7 @@ extern char *tzname(void);
 extern void tzset(void);
 extern char *asctime_r(const struct tm *, char *);
 extern struct tm *gmtime_r(const time_t *, struct tm *);
-extern struct tm *localtime_r(struct tm *, const time_t *);
+extern struct tm *localtime_r(const time_t *, struct tm *);
 extern int clock_getcpuclockid(pid_t, clockid_t *);
 extern int clock_getres(clockid_t, struct timespec *);
 extern int clock_gettime(clockid_t, struct timespec *);
@@ -3373,7 +3398,7 @@ extern pid_t __getpgid(pid_t);
 extern void _exit(int);
 extern int acct(const char *);
 extern unsigned int alarm(unsigned int);
-extern int chown(uid_t, gid_t, const char *);
+extern int chown(const char *, uid_t, gid_t);
 extern int chroot(const char *);
 extern size_t confstr(int, char *, size_t);
 extern int creat(const char *, mode_t);
@@ -3405,9 +3430,9 @@ extern int optopt(void);
 extern int rename(const char *, const char *);
 extern int setegid(gid_t);
 extern int seteuid(uid_t);
-extern int sethostname(size_t, const char *);
+extern int sethostname(const char *, size_t);
 extern int setpgrp(void);
-extern void swab(ssize_t, void *, const void *);
+extern void swab(const void *, void *, ssize_t);
 extern void sync(void);
 extern pid_t tcgetpgrp(int);
 extern int tcsetpgrp(int, pid_t);
@@ -3421,7 +3446,7 @@ extern int fsync(int);
 extern off_t lseek(int, off_t, int);
 extern int open(const char *, int, ...);
 extern int pause(void);
-extern ssize_t read(size_t, void *, int);
+extern ssize_t read(int, void *, size_t);
 extern ssize_t write(int, const void *, size_t);
 extern char *crypt(char *, char *);
 extern void encrypt(char *, int);
@@ -3431,15 +3456,15 @@ extern int brk(void *);
 extern int chdir(const char *);
 extern int dup(int);
 extern int dup2(int, int);
-extern int execve(char *const, const char *, char *const);
+extern int execve(const char *, char *const, char *const);
 extern int fchdir(int);
-extern int fchown(uid_t, int, gid_t);
+extern int fchown(int, uid_t, gid_t);
 extern pid_t fork(void);
 extern gid_t getegid(void);
 extern uid_t geteuid(void);
 extern gid_t getgid(void);
 extern int getgroups(int, gid_t);
-extern int gethostname(size_t, char *);
+extern int gethostname(char *, size_t);
 extern pid_t getpgid(pid_t);
 extern pid_t getpid(void);
 extern uid_t getuid(void);
@@ -3448,7 +3473,7 @@ extern int link(const char *, const char *);
 extern int mkdir(const char *, mode_t);
 extern long int pathconf(const char *, int);
 extern int pipe(int);
-extern int readlink(char *, const char *, size_t);
+extern int readlink(const char *, char *, size_t);
 extern int rmdir(const char *);
 extern void *sbrk(ptrdiff_t);
 extern int select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
@@ -3472,7 +3497,7 @@ extern char *getcwd(char *, size_t);
 extern int getpagesize(void);
 extern pid_t getppid(void);
 extern int isatty(int);
-extern loff_t lseek64(int, int, loff_t);
+extern loff_t lseek64(int, loff_t, int);
 extern int open64(const char *, int, ...);
 extern ssize_t pread64(int, void *, size_t, off64_t);
 extern ssize_t pwrite64(int, const void *, size_t, off64_t);
@@ -3565,12 +3590,12 @@ extern void setutxent(void);
 </PARA>
 <SCREEN>
 
-extern double __wcstod_internal(const wchar_t *, int, wchar_t * *);
+extern double __wcstod_internal(const wchar_t *, wchar_t * *, int);
 extern float __wcstof_internal(const wchar_t *, wchar_t * *, int);
-extern long int __wcstol_internal(int, int, wchar_t * *, const wchar_t *);
+extern long int __wcstol_internal(const wchar_t *, wchar_t * *, int, int);
 extern long double __wcstold_internal(const wchar_t *, wchar_t * *, int);
-extern unsigned long int __wcstoul_internal(int, wchar_t * *,
-					    const wchar_t *, int);
+extern unsigned long int __wcstoul_internal(const wchar_t *, wchar_t * *,
+					    int, int);
 extern wchar_t *wcscat(wchar_t *, const wchar_t *);
 extern wchar_t *wcschr(const wchar_t *, wchar_t);
 extern int wcscmp(const wchar_t *, const wchar_t *);
@@ -3580,47 +3605,47 @@ extern size_t wcscspn(const wchar_t *, const wchar_t *);
 extern wchar_t *wcsdup(const wchar_t *);
 extern wchar_t *wcsncat(wchar_t *, const wchar_t *, size_t);
 extern int wcsncmp(const wchar_t *, const wchar_t *, size_t);
-extern wchar_t *wcsncpy(size_t, const wchar_t *, wchar_t *);
+extern wchar_t *wcsncpy(wchar_t *, const wchar_t *, size_t);
 extern wchar_t *wcspbrk(const wchar_t *, const wchar_t *);
 extern wchar_t *wcsrchr(const wchar_t *, wchar_t);
 extern size_t wcsspn(const wchar_t *, const wchar_t *);
 extern wchar_t *wcsstr(const wchar_t *, const wchar_t *);
 extern wchar_t *wcstok(wchar_t *, const wchar_t *, wchar_t * *);
 extern int wcswidth(const wchar_t *, size_t);
-extern size_t wcsxfrm(size_t, const wchar_t *, wchar_t *);
+extern size_t wcsxfrm(wchar_t *, const wchar_t *, size_t);
 extern int wctob(wint_t);
 extern int wcwidth(wchar_t);
-extern wchar_t *wmemchr(wchar_t, const wchar_t *, size_t);
+extern wchar_t *wmemchr(const wchar_t *, wchar_t, size_t);
 extern int wmemcmp(const wchar_t *, const wchar_t *, size_t);
 extern wchar_t *wmemcpy(wchar_t *, const wchar_t *, size_t);
-extern wchar_t *wmemmove(const wchar_t *, wchar_t *, size_t);
+extern wchar_t *wmemmove(wchar_t *, const wchar_t *, size_t);
 extern wchar_t *wmemset(wchar_t *, wchar_t, size_t);
-extern size_t mbrlen(mbstate_t *, size_t, const char *);
-extern size_t mbrtowc(size_t, const char *, mbstate_t *, wchar_t *);
+extern size_t mbrlen(const char *, size_t, mbstate_t *);
+extern size_t mbrtowc(wchar_t *, const char *, size_t, mbstate_t *);
 extern int mbsinit(const mbstate_t *);
 extern size_t mbsnrtowcs(wchar_t *, const char **, size_t, size_t,
 			 mbstate_t *);
 extern size_t mbsrtowcs(wchar_t *, const char **, size_t, mbstate_t *);
 extern wchar_t *wcpcpy(wchar_t *, const wchar_t *);
 extern wchar_t *wcpncpy(wchar_t *, const wchar_t *, size_t);
-extern size_t wcrtomb(wchar_t, mbstate_t *, char *);
+extern size_t wcrtomb(char *, wchar_t, mbstate_t *);
 extern size_t wcslen(const wchar_t *);
 extern size_t wcsnrtombs(char *, const wchar_t * *, size_t, size_t,
 			 mbstate_t *);
-extern size_t wcsrtombs(size_t, const wchar_t * *, char *, mbstate_t *);
-extern double wcstod(wchar_t * *, const wchar_t *);
+extern size_t wcsrtombs(char *, const wchar_t * *, size_t, mbstate_t *);
+extern double wcstod(const wchar_t *, wchar_t * *);
 extern float wcstof(const wchar_t *, wchar_t * *);
-extern long int wcstol(const wchar_t *, int, wchar_t * *);
+extern long int wcstol(const wchar_t *, wchar_t * *, int);
 extern long double wcstold(const wchar_t *, wchar_t * *);
 extern long long int wcstoq(const wchar_t *, wchar_t * *, int);
-extern unsigned long int wcstoul(int, wchar_t * *, const wchar_t *);
+extern unsigned long int wcstoul(const wchar_t *, wchar_t * *, int);
 extern unsigned long long int wcstouq(const wchar_t *, wchar_t * *, int);
 extern wchar_t *wcswcs(const wchar_t *, const wchar_t *);
 extern int wcscasecmp(const wchar_t *, const wchar_t *);
 extern int wcsncasecmp(const wchar_t *, const wchar_t *, size_t);
 extern size_t wcsnlen(const wchar_t *, size_t);
-extern long long int wcstoll(const wchar_t *, int, wchar_t * *);
-extern unsigned long long int wcstoull(int, wchar_t * *, const wchar_t *);
+extern long long int wcstoll(const wchar_t *, wchar_t * *, int);
+extern unsigned long long int wcstoull(const wchar_t *, wchar_t * *, int);
 extern wint_t btowc(int);
 extern wint_t fgetwc(FILE *);
 extern wint_t fgetwc_unlocked(FILE *);
