@@ -51,7 +51,7 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.18 2005-05-25 20:36:15 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.19 2005-10-26 23:35:28 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -105,6 +105,7 @@ $select.= "WHERE Sid=Istandard AND Iid=LGIint AND LGIlibg=LGid ";
 $select.= "AND LGlib=$Lid AND Iarch=$Aid ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
 $lsh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+local @refname;
 if( $lsh->numrows) {
 	print "The behavior of the interfaces in this library is specified ";
 	print "by the following Standards.";
@@ -112,8 +113,10 @@ if( $lsh->numrows) {
 	for(1..$lsh->numrows) {
 		local(*entry);
 		%entry=$lsh->fetchhash;
+		$refname[$_] = $entry{'Sname'};
 		print "<MEMBER>\n";
-		printf "<XREF LINKEND=\"STD.%s\">\n", makeid($entry{'Sname'});
+		printf "<XREF LINKEND=\"STD.%s\"> [%s]\n", 
+			makeid($entry{'Sname'}), $entry{'Sname'};
 		print "</MEMBER>\n";
 		}
 	print "</SIMPLELIST>\n";
@@ -149,6 +152,7 @@ print "<TBODY>\n";
 		$entry[$_]=$entry{'Iname'};
 		$std[$_]=$entry{'Istandard'};
 		$xrefs[$_]=sprintf ("std.%s", makeid($entry{'Sname'}));
+		$refs[$_]=sprintf "[%s]", $entry{'Sname'};
 		$symver[$_]=$entry{'Vname'};
 	}
 	# we now have @entry, an array of interface names
@@ -156,17 +160,6 @@ print "<TBODY>\n";
 	# @refs, an array of xref labels to the standards in the normative refs,
 	# and @symver, an array of symbol versions
 	#
-	# loop through @xrefs and build a hash , %refs, which
-	# such that $refs{'std.SUSv3'} = "[1]" etc;
-	local ($refno);
-	$refno = 0;
-	for(1..$inh->numrows) {
-		if (!defined($refs{$xref[$_]})) {
-			$refs{$xref[$_]} = sprintf "[%d]", ++$refno;
-		}
-	}
-
-	if( $inh->numrows > 0 ) {
 	#
 	# this is a three column table
 	#
@@ -179,7 +172,7 @@ print "<TBODY>\n";
 			printf "(%s)", $symver[$_];
 		}
 		if( $std[$_] ) {
-			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_], $refs{$xref[$_]};
+			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_], $refs[$_];
 		}
 		printf "</ENTRY>";
 		printf "<ENTRY>%s", $entry[$_+$inc];
@@ -187,7 +180,7 @@ print "<TBODY>\n";
 			printf "(%s)", $symver[$_];
 		}
 		if( $std[$_+$inc] ) {
-			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+$inc], $refs{$xref[$_+$inc]};
+			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+$inc], $refs[$_+$inc];
 		}
 		printf "</ENTRY>";
 		printf "<ENTRY>%s", $entry[$_+(2*$inc)];
@@ -195,11 +188,10 @@ print "<TBODY>\n";
 			printf "(%s)", $symver[$_];
 		}
 		if( $std[$_+(2*$inc)] ) {
-			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+(2*$inc)], $refs{$xref[$_+(2*$inc)]};
+			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+(2*$inc)], $refs[$_+(2*$inc)];
 		}
 		printf "</ENTRY>";
 		print "</ROW>\n";
-	}
 	}
 }
 
@@ -241,17 +233,17 @@ print "</TABLE>\n";
 			print "<ROW>";
 			printf "<ENTRY>%s",$datasym[$_];
 			if( $datasym[$_] && $std[$_] ) {
-				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_], $refs{$xref[$_]};
+				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_], $refs{$xrefs[$_]};
 			}
 			printf "</ENTRY>";
 			printf "<ENTRY>%s",$datasym[$_+$inc];
 			if( $datasym[$_+$inc] && $std[$_+$inc] ) {
-				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+$inc], $refs{$xref[$_+$inc]};
+				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+$inc], $refs{$xrefs[$_+$inc]};
 			}
 			printf "</ENTRY>";
 			printf "<ENTRY>%s",$datasym[$_+(2*$inc)];
 			if( $datasym[$_+(2*$inc)] && $std[$_+(2*$inc)] ) {
-				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+(2*$inc)], $refs{$xref[$_+(2*$inc)]};
+				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+(2*$inc)], $refs{$xrefs[$_+(2*$inc)]};
 			}
 			printf "</ENTRY>";
 			print "</ROW>\n";
@@ -265,4 +257,4 @@ print "</SECT1>\n";
 }
 print "</APPENDIX>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.18 2005-05-25 20:36:15 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.19 2005-10-26 23:35:28 nick Exp $- -->\n");
