@@ -5,7 +5,7 @@ FILES=intro.sgml cxxintro.sgml
 TABLES= standards.sgml libraries.sgml cxxstandards.sgml cxxlibraries.sgml 
 
 # Specs not part of the main spec
-EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi'"
+EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi','ATK','Pango'"
 
 .m4.sgml:
 	m4 -Uindex -Uformat -DARCH=S390X $*.m4 >$@
