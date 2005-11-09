@@ -32,13 +32,7 @@ The current LSB specification is version 3.1 which can be found
 ISO LSB Standard (IS 23360:2005).</p>
 </p>
 
-<H1>LSB 2.0.1 aka the ISO Submission</H1>
-<p>
-Version 2.0.1 of the LSB was submitted to ISO as a Draft International
-Standard (DIS 23360). This version of the LSB can be found
-<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_0_1>Here</A>.</p>
-
-<H1>Older version of the Specification</H1>
+<H1>Older versions of the Specification</H1>
 <p>
 The previous certification-ready version of the LSB was
 <A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_1_0>2.1</A>.
