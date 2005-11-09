@@ -27,8 +27,9 @@ Current snapshots can be found <A HREF="specs.php">HERE</A>.
 
 <H1>Current LSB Specification</H1>
 <p>
-The current LSB specification is version 3.0 which can be found
-<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_3_0_0>Here</A>.</p>
+The current LSB specification is version 3.1 which can be found
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0>Here</A>. This contains the approved 
+ISO LSB Standard (IS 23360:2005).</p>
 </p>
 
 <H1>LSB 2.0.1 aka the ISO Submission</H1>
