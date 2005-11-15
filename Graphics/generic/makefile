@@ -1,5 +1,5 @@
 
-SUBDIRS= GTK libpng
+SUBDIRS= graphlib opengl
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
