@@ -1,25 +1,25 @@
 <PREFACE id="OVERVIEW">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the Linux Desktop Specification (LDS).
+This is version &specversion; of the LSB-Desktop Module Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 1.0 of the Linx Desktop Specification.
+this version will result in version 3.1 of the LSB-Desktop Module
+Specification.
 </PARA>
 <PARA>
 Implmentations may not claim conformance to this version.
 <!--
 An implementation of this version of the specification may not claim
-to be an implementation of Linux Desktop unless it has successfully
+to be an implementation of LSB-Desktop Module unless it has successfully
 completed the compliance process as defined by the Free Standards Group.
-Note: This is boilerplate. It need not be a final requirment.
 -->
 </PARA>
 </PREFACE>
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LDS defines The desktop components that are required to be present on
-a Linux system.
+The LSB-Desktop Module defines the desktop components that are required to
+be present on a conforming system.
 </PARA>
 
 <PARA>
@@ -33,47 +33,20 @@ the information explicitly included here.
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
-<!--
 <PARA>
-The Linux Standard Base (LSB) defines a system interface for compiled
-applications and a minimal environment for support of installation scripts.
-Its purpose is to enable a uniform industry standard environment for
-high-volume applications conforming to the LSB.
-</PARA>
-
-<PARA>
-The LSB is composed of two basic parts: A common specification
-("generic LSB" or "gLSB") describing those parts of the interface that
-remain constant across all implementations of the LSB, and an
-architecture-specific specification ("archLSB") describing the
-parts of the interface that vary by processor architecture.
-Together, the generic LSB and the
-architecture-specific supplement for a single hardware architecture provide a
-complete interface specification for compiled application programs on systems
-that share a common hardware architecture.
-</PARA>
-
-<PARA>
-This document is the generic LSB. It shall be used in conjunction with an
-architecture-specific supplement. Whenever a section of this specification
-shall be supplemented by architecture-specific information, this document
-includes a reference to the architecture supplement. Architecture supplements
-may also contain additional information that is not referenced here.
-</PARA>
--->
-<PARA>
-The Linux Desktop Specification (LDS) defines interfaces for implementing
-desktop applications.
+The LSB Desktop module defines the desktop components found on an LSB-Desktop 
+conforming system.
 </PARA>
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
 <TITLE>Normative References</TITLE>
-<PARA>
+<!-- the ID below is for auto generated xrefs to the LSB itself -->
+<PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
-the Linux Desktop Standard.  Such references may be normative or
+the LSB-Desktop Module Standard.  Such references may be normative or
 informative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The LPS
+normative if it is explicitly cited as such.  The LSB-Desktop Module
 may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
@@ -89,12 +62,37 @@ include(standards.sgml)
 
 <CHAPTER ID="REQUIREMENTS">
 <TITLE>Requirements</TITLE>
+<SECT1 ID="rlibraries">
+<TITLE>Relevant Libraries</TITLE>
+<PARA>
+The libraries listed in <XREF LINKEND='tbl-desktop-stdlib'> shall
+be available on a Linux Standard Base - Desktop system, with the specified
+runtime names.  This list may be supplemented or amended by the
+architecture-specific specification.
+</PARA>
+<TABLE ID=tbl-desktop-stdlib>
+<TITLE>Standard Library Names</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Library</ENTRY>
+<ENTRY>Runtime Name</ENTRY>
+</ROW>
+</THEAD>
+include(dlibraries.sgml)
+</TGROUP>
+</TABLE>
+<PARA>
+These libraries will be in an implementation-defined directory which
+the dynamic linker shall search by default.
+</PARA>
+</SECT1>
+
 <SECT1 ID="Implementation"><TITLE>Linux Implementation Conformance </TITLE>
 <PARA>
 An implementation shall satisfy the following requirements:
 </PARA>
 <PARA>
-<!--
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
 The implementation shall implement fully the architecture described in the hardware manual for the target processor architecture. 
@@ -157,15 +155,13 @@ The implementation may provide additional interfaces with different names. It ma
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
--->
 </PARA>
 </SECT1>
-<SECT1 ID="Application"><TITLE>Linux Desktop Conformance </TITLE>
+<SECT1 ID="Application"><TITLE>LSB-Desktop Module Conformance</TITLE>
 <PARA>
 A package shall satisfy the following requirements:
 </PARA>
 <PARA>
-<!--
 <ITEMIZEDLIST><LISTITEM>
 <PARA>
 Its executable files are either shell scripts or object files in the format defined for the Object File Format system interface.
@@ -191,7 +187,7 @@ It does not use any interface or data format that is not required to be provided
 <ITEMIZEDLIST mark="BULLET">
 <LISTITEM>
 <PARA>
-If such an interface or data format is supplied by another application through direct invocation of that application during execution, that application is in turn an LSB conforming application.
+If such an interface or data format is supplied by another application through direct invocation of that application during execution, that application is in turn an LSB-Desktop conforming application.
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -207,7 +203,6 @@ It shall not use any values for a named interface that are reserved for vendor e
 </PARA>
 </LISTITEM></ITEMIZEDLIST>
 A strictly conforming application does not require or use any interface, facility, or implementation-defined extension that is not defined in this document in order to be installed or to execute successfully. 
--->
 </PARA>
 </SECT1>
 </CHAPTER>
