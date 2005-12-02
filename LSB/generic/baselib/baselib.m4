@@ -62,7 +62,7 @@ to supply any header files.
 <TITLE>Program Interpreter</TITLE>
 <PARA>
 The Program Interpreter is specified in the appropriate
-architecture specific supplement.
+architecture specific part of &ISOSTD;.
 </PARA>
 </SECT1>
 
