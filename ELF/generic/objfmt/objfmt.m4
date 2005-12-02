@@ -23,7 +23,7 @@ this specification
 </LISTITEM>
 <LISTITEM>
 <PARA>
-an architecture specific supplement to this specification
+the relevant architecture specific part of &ISOSTD;
 </PARA>
 </LISTITEM>
 </ITEMIZEDLIST>
