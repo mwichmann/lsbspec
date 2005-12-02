@@ -71,13 +71,13 @@ The libraries listed in <XREF LINKEND='TBLTARGET`> shall
 be available on a Linux Standard Base system, with the specified
 runtime names. The libraries listed in <XREF LINKEND="tbl-lsbgeneric-archlib">
 are architecture specific, but shall be available on all LSB
-conforming systems. This list may be supplemented or amended by the
-architecture specific supplement.
+conforming systems. This list may be supplemented or amended by the relevant
+architecture specific part of &ISOSTD;.
 ',`
 The libraries listed in <XREF LINKEND='TBLTARGET`> shall
 be available on 'ARCH` Linux Standard Base systems, with the specified
 runtime names. These names override or supplement the names specified
-in the generic LSB specification. The specified program interpreter,
+in the generic LSB (&ISOSTD-1;) specification. The specified program interpreter,
 referred to as proginterp in this table,
 shall be used to load the shared libraries specified by
 <CONSTANT>DT_NEEDED</CONSTANT> entries at run time.
@@ -103,7 +103,8 @@ the dynamic linker shall search by default.
 <SECT1 ID="Implementation"><TITLE>LSB Implementation Conformance </TITLE>
 <PARA>
 A conforming implementation is necessarily architecture specific, and must provide the interfaces specified by
-both the generic LSB Core specification and its relevant architecture specific supplement.
+both the generic LSB Core specification (&ISOSTD-1) and the relevant architecture specific part
+of &ISOSTD;.
 <NOTE><TITLE>Rationale</TITLE>
 <PARA>
 An implementation must provide <emphasis>at least</emphasis>
@@ -117,8 +118,8 @@ A conforming implementation shall satisfy the following requirements:</PARA><PAR
 <PARA>
 A processor architecture represents a family of related processors
 which may not have identical feature sets. The architecture
-specific supplement to this specification for a given target
-processor architecture describes a minimum acceptable processor.
+specific parts of &ISOSTD; that supplement this specification for a given target
+processor architecture describe a minimum acceptable processor.
 The implementation shall provide all features of this processor,
 whether in hardware or through emulation transparent
 to the application.
@@ -189,7 +190,8 @@ The implementation may provide additional interfaces with different names. It ma
 <SECT1 ID="Application"><TITLE>LSB Application Conformance </TITLE>
 <PARA>
 A conforming application is necessarily architecture specific, and must conform to
-both the generic LSB Core specification and its relevant architecture specific supplement.
+both the generic LSB Core specification (&ISOSTD-1;)and the relevant architecture specific part
+of &ISOSTD;.
 </PARA>
 <PARA>
 A conforming application shall satisfy the following requirements: </PARA><PARA>
