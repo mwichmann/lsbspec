@@ -10,7 +10,7 @@ system actions that create running programs as specified in the
 <XREF LINKEND="std.gABI41">
 and
 <XREF LINKEND="std.ABIUpdate">
-and as further required by this specification and its architecture specific supplement.
+and as further required by this specification and the relevant architecture specific part of &ISOSTD;.
 </PARA>
 
 <PARA>
