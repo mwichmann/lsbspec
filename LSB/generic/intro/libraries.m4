@@ -2,7 +2,7 @@ include(glibraries.sgml)
 </TGROUP>
 </TABLE>
 <TABLE ID='tbl-lsbgeneric-archlib'>
-<TITLE>Standard Library Names defined in the Architecture Specific Supplement</TITLE>
+<TITLE>Standard Library Names defined in the Architecture Specific Parts of &ISOSTD;</TITLE>
 <TGROUP COLS=2>
 <THEAD>
 <ROW>
