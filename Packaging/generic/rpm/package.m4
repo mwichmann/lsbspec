@@ -143,7 +143,7 @@ This value shall be 0 to indicate a binary package.
 <LISTITEM>
 <PARA>
 Value indicating the architecture for which this package is valid. This value
-is specified in the architecture specific supplement.
+is specified in the relevant architecture specific part of &ISOSTD;.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -611,7 +611,7 @@ index records. The following values may be used.
 include(rpmdeps.sgml)
 <PARA>
 Additional dependencies are specified in the Package Dependencies section of
-this specification, and the architecture specific supplements.
+this specification, and in the relevant architecture specific part of &ISOSTD;.
 </PARA>
 </SECT4>
 <SECT4>
@@ -1004,7 +1004,7 @@ include(coredep.sgml)
 Packages which do not contain any architecture specific files should specify an
 architecture of <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>. An LSB runtime
 environment shall accept values <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>, or
-the value specified in the architecture specific supplement.
+the value specified in the relevant architecture specific part of &ISOSTD;.
 </PARA>
 
 <PARA>
