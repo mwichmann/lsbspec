@@ -13,6 +13,7 @@
 
 <BOOK>
 <BOOKINFO>
+<EDITION>LSB Graphics Specification</EDITION>
 <TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>

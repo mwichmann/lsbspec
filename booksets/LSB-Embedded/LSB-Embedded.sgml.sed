@@ -19,6 +19,7 @@
 
 <BOOK>
 <BOOKINFO>
+<EDITION>Embedded Specification</EDITION>
 <TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2000</YEAR>

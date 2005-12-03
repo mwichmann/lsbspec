@@ -18,6 +18,7 @@
 
 <BOOK>
 <BOOKINFO>
+<EDITION>&ISOSTD-5;</EDITION>
 <TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
 <YEAR>2004</YEAR>
