@@ -13,7 +13,7 @@ include(`modscope.sgml')
 <TITLE>Normative References</TITLE>
 ifelse(ARCH,`All', `
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
-<PARA ID=STD.LSB XREFLABEL="This Specification">')
+<PARA ID=STD.LSB XREFLABEL="This Specification">',`<PARA>')
 The following referenced documents are indispensable for the application of this
 document. For dated references, only the edition cited applies. For undated references,
 the latest edition of the referenced document (including any amendments) applies.
