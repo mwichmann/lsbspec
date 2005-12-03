@@ -297,13 +297,17 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (define %top-margin%
 (if (equal? %visual-acuity% "large-type")
       7.5pi
-      6pi))
+      5.5pi))
 
 ;;How big do you want the margin at the bottom?
 (define %bottom-margin% 
  (if (equal? %visual-acuity% "large-type")
-      7.5pi 
-      5pi))
+      8.5pi 
+      8pi))
+
+;; how high is the footer margin?
+(define %footer-margin% 
+  2pi)
 
 ;;Define the text width. (Change the elements in the formula rather
 ;;than the formula itself)
@@ -346,7 +350,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;What quadding do you want by default; start, center, justify, or end?
 (define %default-quadding%
- 'start)
+ 'justify)
 
 ;;What quadding for component titles(Chapter, Appendix, etc)?
 (define %component-title-quadding% 
@@ -385,7 +389,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;What size paper do you need? A4, USletter, USlandscape, or RedHat?
 (define %paper-type%
- "USletter")
+ "A4")
 
 ;;Now define those paper types' width
 (define %page-width%
@@ -486,29 +490,21 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 	    adm-title)
 	  (process-children))))))
 
-;; fix so that books do not
-;; restart page numbering. I.e. a set has pages that run from 1..end
-;; and don't retart at the second book.
-;; trick here is to lie and say that we are never at the start of a book
-;; or in a first chapter.
-;; These two functions are supposed to return #t if we are at the start
-;; of a book or in the first chapter. They are defined in common/dbcommon.dsl.
-;; This might affect any function that uses book-start? or first-chapter?
-;; but at docbook-dsssl-1.79 the only places that these variables are used
-;; are for page numbering decisions. 
-;; [[ these page numbering decisions are in the following:
-;;  (element (book bibliography))
-;;  (element (article))
-;;  $process-partintro$
-;;  (element (index))
-;;  $section$
-;; ]]
+;;
+;; fixes for ISO style - include a running footer.
+;;
+(define ($edition-header-footer$)
+  (let* ((title     (select-elements (descendants (sgml-root-element))
+		                     (normalize "edition"))))
+  (if (node-list-empty? title)
+      (literal "No edition found")
+      (make sequence
+	  font-weight: 'bold
+	  (with-mode hf-mode
+	      (process-node-list title))))))
 
-(define (book-start?)
-  #f)
-
-(define (first-chapter?)
-  #f)
+(define ($center-footer$ #!optional (gi (gi)))
+    ($edition-header-footer$))
 
 
 ;;======================================
@@ -657,7 +653,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
    (list (normalize "chapter")		"")
    (list (normalize "copyright")	"&Copyright;")
    (list (normalize "dedication")	"&Dedication;")
-   (list (normalize "edition")		"&Edition;")
+   (list (normalize "edition")		"")
    (list (normalize "equation")		"&Equation;")
    (list (normalize "example")		"&Example;")
    (list (normalize "figure")		"&Figure;")
