@@ -1,5 +1,5 @@
 
-SUBDIRS= GTK libpng
+SUBDIRS= GTK libpng libjpeg
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
