@@ -1,0 +1,346 @@
+#! /usr/bin/perl
+
+#
+# mklsbmanpage
+#   - based on mksynop, write out an entire man page for a given interface.
+#     NB the database does not (currently) hold names for the positional
+#     parameters stored in the Parameter table, so we temporarily
+#     call them "arg1", "arg2" etc
+#
+
+use Mysql;
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+use strict;
+my $level = 0;
+my $dbh;
+
+#
+# this just doesn't work .... :-(
+#
+sub indent($)
+{
+	my ($level) = @_;
+	my $indentstr = "";
+
+	for my $i (0..$level) {
+		# $indentstr .= " ";
+	}
+	return $indentstr;
+}
+
+#
+# return <tag>content<tag>
+# suitably indented.
+#
+sub tag($$$)
+{
+	my ($tagname,$content,$multiline) = @_;
+	my $retstr = "";
+
+	$level += 2;
+	$retstr .= indent($level);
+	if($multiline) {
+		$retstr .= sprintf("<%s>\n", $tagname);
+		$level += 2;
+		$retstr .= indent ($level);
+		$retstr .= sprintf("%s\n", $content);
+		$level -= 2;
+		$retstr .= sprintf("</%s>", $tagname);
+	} else {
+		$retstr .= sprintf("<%s>%s</%s>\n", $tagname, $content, $tagname);
+	}
+	$level -= 2;
+	return $retstr;
+}
+
+sub function($)
+{
+	my ($name) = @_;
+	return tag("function", $name, 0);
+}
+
+sub funcdef($$)
+{
+	my ($type,$name) = @_;
+	return tag("funcdef", sprintf("%s\n%s%s", $type, indent($level+2),function($name)),0);
+}
+
+sub paramdef($$)
+{
+	my ($type,$name) = @_;
+	return "<void>" if (!defined ($type) || $type eq "" || $type eq "void");
+	return "<varargs>" if ($type eq "...");
+	return tag("paramdef", sprintf("%s\n%s%s", $type, indent($level+2), parameter($name)),0);
+}
+
+sub parameter($)
+{
+	my ($name) = @_;
+	tag("parameter", $name,0);
+}
+
+sub refsynopsisdiv($$)
+{
+	my ($hdrinfo, $content) = @_;
+	tag("refsynopsisdiv", $hdrinfo.$content, 1);
+}
+
+sub funcsynopsisinfo($)
+{
+	my ($hdr) = @_;
+	return tag("funcsynopsisinfo", $hdr, 1);
+}
+
+sub funcsynopsis($$)
+{
+	my ($funcdef, $args) = @_;
+	my $argstr = "";
+	for my $arg (@$args) {
+		$level += 2;
+		$argstr .= paramdef($arg->{'type'}, $arg->{name});
+		$level -= 2;
+	}
+	tag("funcsynopsis", sprintf("%s%s", $funcdef, $argstr), 1);
+}
+
+sub displaytyperef($)
+{
+	my ($param) = @_;
+	my($select,$sth,%type);
+	my ($tselect, $tmselect, $Tid, $tmh, %tmentry, $nameonly);
+	my ($tth, $TMtypeid, $th, %entry);
+	my $retval = "";
+
+	if( $$param{'Pconst'} eq "Y" ) {
+		$retval .= "const ";
+	}
+
+	if( $$param{'Ttype'} eq "Intrinsic" ) {
+		$retval .= $$param{'Tname'};
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "Literal" ) {
+		$retval .= $$param{'Tname'};
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "Const" ) {
+		$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+		$sth = $dbh->query($select) || die $dbh->errmsg();
+		%type=$sth->fetchhash;
+		if( $type{'Ttype'} eq "Pointer" ) {
+			$retval .= displaytyperef(\%type);
+			$retval .= "const ";
+		} else {
+			$retval .= "const ";
+			$retval .= displaytyperef(\%type);
+		}
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "Pointer" ) {
+		$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+		$sth = $dbh->query($select) || die $dbh->errmsg();
+		%type=$sth->fetchhash;
+		$retval .= displaytyperef(\%type);
+		$retval .= " *";
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "Struct" ) {
+		$retval .= "struct ".$$param{'Tname'};
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "Typedef" ) {
+		$retval .= $$param{'Tname'};
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "Union" ) {
+		$retval .= "union ".$$param{'Tname'};
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "Enum" ) {
+		$retval .= "enum ".$$param{'Tname'};
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "Array" ) {
+		my $basetype=$$param{'Tbasetype'};
+		$tselect="SELECT * FROM Type WHERE Tid=$basetype";
+		$tth = $dbh->query($tselect) || die $dbh->errmsg();
+		%type=$tth->fetchhash;
+		if( !$nameonly ) {
+			$nameonly=1;
+			$retval .= displaytyperef(\%type);
+			$nameonly=0;
+		} else {
+			$retval .= displaytyperef(\%type);
+		}
+		if( $$param{'Tname'} =~ "fptr" ) {
+			$$param{'Tname'} =~ s/fptr-//;
+		}
+		return $retval;
+	}
+
+	if( $$param{'Ttype'} eq "FuncPtr" ) {
+		$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+		$sth = $dbh->query($select) || die $dbh->errmsg();
+		%type=$sth->fetchhash;
+		$Tid=$$param{'Tid'};
+		$retval .= displaytyperef(\%type);
+		$retval .= "(*";
+		if( $$param{'Tname'} =~ "fptr" ) {
+			$$param{'Tname'} =~ s/fptr-//;
+		}
+		#print $$param{'Tname'};
+		$retval .= ")";
+
+		$retval .= "(";
+
+		$tmselect="SELECT * FROM TypeMember WHERE TMmemberof=$Tid";
+		$tmselect.=" ORDER BY TMposition";
+		$tmh = $dbh->query($tmselect) || die $dbh->errmsg();
+		if($tmh->numrows == 0) {
+			$retval .= "void";
+		}
+		for(1..$tmh->numrows) {
+			%tmentry=$tmh->fetchhash;
+			$TMtypeid=$tmentry{'TMtypeid'};
+			$tselect="SELECT * FROM Type WHERE Tid=$TMtypeid";
+			$th = $dbh->query($tselect) || die $dbh->errmsg();
+			%entry=$th->fetchhash;
+			$nameonly=1;
+			displaytype(\%entry);
+			#print $tmentry{'TMname'};
+			if( $tmentry{'TMarray'} ) {
+				$retval .= "[".$tmentry{'TMarray'}."]";
+			}
+			if( $_ != $tmh->numrows ) {
+				$retval .= ",";
+			}
+			$nameonly=0;
+		}
+
+		$retval .= ")\n";
+		return $retval;
+	}
+
+	$retval .= $$param{'Ttype'};
+	return $retval;
+}
+
+sub trim($)
+{
+	my ($str) = @_;
+
+	$str =~ s/^ *(.*)$/\1/;
+	$str =~ s/(.*) +$/\1/;
+	return $str;
+}
+
+my @args;
+$dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) 
+	|| die $Mysql::db_errstr;
+
+sub mksynop($)
+{
+	my ($func) = @_;
+	#
+	# we need four things from the db for the interface requested:
+	# - the name (well, we've got that anyway)
+	# - the header file with the prototype
+	# - the type (as a string)
+	# - an array of its parameters (in the right order!), [basically, we
+	#         can only get their type at this time, so make up names for these]
+	#
+	my $sql = "select * from Interface ";
+	$sql .= "left join Type on Tid=Ireturn ";
+	$sql .= "left join Header on Hid=Iheader ";
+	$sql .= "where ";
+	$sql .= "Iname='$func' and ";
+	$sql .= "Itype='Function' and ";
+	$sql .= "Istatus in ('Included','SrcOnly')";
+
+	my $sth = $dbh->query($sql);
+	if ($sth->numrows() > 0) {
+		my %entry = $sth->fetchhash();
+
+		my $type = displaytyperef(\%entry);
+		my $hdr = sprintf("#include &lt;%s&gt;",$entry{'Hname'});
+		#
+		# and now the args ...
+		#
+		my $pos = 0;
+		my $Iid = $entry{'Iid'};
+		$sql = "select * from Type, Parameter ";
+		$sql .= "where Pint=$Iid and Ptype=Tid ";
+		$sql .= "order by Ppos";
+		$sth = $dbh->query($sql) ||
+			die $dbh->errmsg();
+		my $argno = 0;
+		if ($sth->numrows == 0) {
+			# a void ...
+			push(@args, {	'type'	=> undef,
+					'name'	=> "irrelevant",
+				    });
+		}
+		while ((%entry = $sth->fetchhash())) {
+			my $argname = sprintf("arg%d", $argno++);
+			my $argtype = displaytyperef(\%entry);
+			
+			push(@args, {	'type' => $argtype,
+					'name' => $argname,
+				    });
+		}
+		printf "%s\n", refsynopsisdiv(funcsynopsisinfo($hdr), funcsynopsis(funcdef($type, $func), \@args));
+	} else {
+		printf "%s: no such interface\n", $func;
+	}
+}
+
+sub refmeta($$)
+{
+	my ($lib, $interface) = @_;
+	print "<refmeta>\n";
+	print "<refmetatitle>$interface</refmetatitle>\n";
+	print "<refmiscinfo>$lib</refmiscinfo>\n";
+	print "</refmeta>\n";
+}
+
+sub namediv($$)
+{
+	my ($lib, $interface) = @_;
+	print "\n";
+	print "<refnamediv>\n";
+	print "<refname>$interface</refname>\n";
+	print "<refpurpose>INSERT PURPOSE HERE</refpurpose>\n";
+	print "<indexterm id=\"ix-$lib-$interface-1\">\n";
+	print "\t<primary>$interface</primary></indexterm>\n";
+	print "</refnamediv>\n";
+}
+
+sub section($$)
+{
+	my ($title, $interface) = @_;
+	print "<refsect1>\n";
+	print "<title>$title</title>\n";
+	print "<para>\n";
+	print "INSERT TEXT HERE\n";
+	print "</para>\n";
+	print "</refsect1>\n";
+}
+
+my $lib = $ARGV[0];
+my $interface = $ARGV[1];
+printf "<refentry id=\"%s-%s-1\">\n\n", $lib, $interface;
+refmeta($lib, $interface);
+namediv($lib, $interface);
+mksynop($interface);
+section('Description', $interface);
+section('Return Value', $interface);
+section('Errors', $interface);
+printf "</refentry>\n"; 
