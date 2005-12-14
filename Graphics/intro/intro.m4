@@ -1,16 +1,16 @@
 <PREFACE id="OVERVIEW">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the LSB-Desktop Module Specification.
+This is version &specversion; of the LSB-Graphics Module Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 3.1 of the LSB-Desktop Module
+this version will result in version 3.1 of the LSB-Graphics Moudle
 Specification.
 </PARA>
 <PARA>
 Implmentations may not claim conformance to this version.
 <!--
 An implementation of this version of the specification may not claim
-to be an implementation of LSB-Desktop Module unless it has successfully
+to be an implementation of LSB-Graphics Module unless it has successfully
 completed the compliance process as defined by the Free Standards Group.
 -->
 </PARA>
@@ -18,7 +18,7 @@ completed the compliance process as defined by the Free Standards Group.
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LSB-Desktop Module defines the desktop components that are required to
+The LSB-Graphics Module defines the graphics components that are required to
 be present on a conforming system.
 </PARA>
 
@@ -34,8 +34,8 @@ the information explicitly included here.
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
-The LSB Desktop module defines the desktop components found on an LSB-Desktop 
-conforming system.
+The LSB Graphics defines the graphical interface found on an LSB conforming
+system.
 </PARA>
 </CHAPTER>
 
@@ -44,9 +44,9 @@ conforming system.
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
-the LSB-Desktop Module Standard.  Such references may be normative or
+the LSB-Graphics Module Standard.  Such references may be normative or
 informative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The LSB-Desktop Module
+normative if it is explicitly cited as such.  The LSB-Graphics Module
 may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
@@ -65,12 +65,12 @@ include(standards.sgml)
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed in <XREF LINKEND='tbl-desktop-stdlib'> shall
-be available on a Linux Standard Base - Desktop system, with the specified
+The libraries listed in <XREF LINKEND='tbl-graphics-stdlib'> shall
+be available on a Linux Standard Base system, with the specified
 runtime names.  This list may be supplemented or amended by the
 architecture-specific specification.
 </PARA>
-<TABLE ID=tbl-desktop-stdlib>
+<TABLE ID=tbl-graphics-stdlib>
 <TITLE>Standard Library Names</TITLE>
 <TGROUP COLS=2>
 <THEAD>
@@ -79,7 +79,7 @@ architecture-specific specification.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-include(dlibraries.sgml)
+include(glibraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
@@ -88,6 +88,7 @@ the dynamic linker shall search by default.
 </PARA>
 </SECT1>
 
+<!--
 <SECT1 ID="Implementation"><TITLE>Linux Implementation Conformance </TITLE>
 <PARA>
 An implementation shall satisfy the following requirements:
@@ -157,7 +158,9 @@ The implementation may provide additional interfaces with different names. It ma
 </ITEMIZEDLIST>
 </PARA>
 </SECT1>
-<SECT1 ID="Application"><TITLE>LSB-Desktop Module Conformance</TITLE>
+-->
+<!--
+<SECT1 ID="Application"><TITLE>LSB-Graphics Module Conformance</TITLE>
 <PARA>
 A package shall satisfy the following requirements:
 </PARA>
@@ -187,7 +190,7 @@ It does not use any interface or data format that is not required to be provided
 <ITEMIZEDLIST mark="BULLET">
 <LISTITEM>
 <PARA>
-If such an interface or data format is supplied by another application through direct invocation of that application during execution, that application is in turn an LSB-Desktop conforming application.
+If such an interface or data format is supplied by another application through direct invocation of that application during execution, that application is in turn an LSB conforming application.
 </PARA>
 </LISTITEM>
 <LISTITEM>
@@ -205,6 +208,7 @@ It shall not use any values for a named interface that are reserved for vendor e
 A strictly conforming application does not require or use any interface, facility, or implementation-defined extension that is not defined in this document in order to be installed or to execute successfully. 
 </PARA>
 </SECT1>
+-->
 </CHAPTER>
 
 &definitions

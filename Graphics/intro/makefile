@@ -13,8 +13,8 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99','Png12'" >standards.sgml
-	../../mklibsgmltable -a All -m LSB_Desktop >dlibraries.sgml
+	../../mkstandardsgmltable -a All -s "'Xlib','XSM','Xt','X-dbe','X-DPMS','X-evi','X-Record','X-security','X-shape','X-shm','X-sync','XINPUT','XICE','OGL','ISOC99'" >standards.sgml
+	../../mklibsgmltable -a All -m LSB_Graphics >glibraries.sgml
 
 
 clean:
@@ -24,4 +24,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-intro.sgml: standards.sgml dlibraries.sgml
+intro.sgml: standards.sgml glibraries.sgml
