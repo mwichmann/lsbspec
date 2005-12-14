@@ -79,10 +79,10 @@ sub parameter($)
 	tag("parameter", $name,0);
 }
 
-sub refsynopsisdiv($$)
+sub refsynopsisdiv($)
 {
-	my ($hdrinfo, $content) = @_;
-	tag("refsynopsisdiv", $hdrinfo.$content, 1);
+	my ($content) = @_;
+	tag("refsynopsisdiv", $content, 1);
 }
 
 sub funcsynopsisinfo($)
@@ -91,16 +91,23 @@ sub funcsynopsisinfo($)
 	return tag("funcsynopsisinfo", $hdr, 1);
 }
 
-sub funcsynopsis($$)
+sub funcsynopsis($$$)
 {
-	my ($funcdef, $args) = @_;
+	my ($hdrinfo, $funcdef, $args) = @_;
+
 	my $argstr = "";
 	for my $arg (@$args) {
 		$level += 2;
 		$argstr .= paramdef($arg->{'type'}, $arg->{name});
 		$level -= 2;
 	}
-	tag("funcsynopsis", sprintf("%s%s", $funcdef, $argstr), 1);
+	tag("funcsynopsis", sprintf("%s%s%s", $hdrinfo, funcprototype($funcdef . $argstr)), 1);
+}
+
+sub funcprototype($)
+{
+	my ($hdr) = @_;
+	return tag("funcprototype", $hdr, 1);
 }
 
 sub displaytyperef($)
@@ -296,7 +303,7 @@ sub mksynop($)
 					'name' => $argname,
 				    });
 		}
-		printf "%s\n", refsynopsisdiv(funcsynopsisinfo($hdr), funcsynopsis(funcdef($type, $func), \@args));
+		printf "%s\n", refsynopsisdiv(funcsynopsis(funcsynopsisinfo($hdr), funcdef($type, $func), \@args));
 	} else {
 		printf "%s: no such interface\n", $func;
 	}
