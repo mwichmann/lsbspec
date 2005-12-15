@@ -491,21 +491,117 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 	  (process-children))))))
 
 ;;
-;; fixes for ISO style - include a running footer.
+;; fixes for ISO style - include a running header and footer.
 ;;
+(define ($copyright-header-footer$)
+  (let* ((title     (select-elements (descendants (sgml-root-element))
+		                     (normalize "holder"))))
+  (if (node-list-empty? title)
+      (empty-sosofo)
+      (make sequence
+	  font-weight: 'bold
+	  (literal (dingbat "copyright"))
+	  (literal " ")
+	  (with-mode hf-mode
+	      (process-node-list title))))))
+
 (define ($edition-header-footer$)
   (let* ((title     (select-elements (descendants (sgml-root-element))
 		                     (normalize "edition"))))
   (if (node-list-empty? title)
-      (literal "No edition found")
+      (empty-sosofo)
       (make sequence
 	  font-weight: 'bold
 	  (with-mode hf-mode
 	      (process-node-list title))))))
 
-(define ($center-footer$ #!optional (gi (gi)))
+(define ($center-header$ #!optional (gi (gi)))
     ($edition-header-footer$))
 
+
+(define ($center-footer$ #!optional (gi (gi)))
+    ($copyright-header-footer$))
+
+;;
+;; removed preface from the standard list of page-restarting components
+;;
+(define (component-element-list)
+  (list (normalize "chapter")
+	(normalize "appendix") 
+	(normalize "article")
+	(normalize "glossary")
+	(normalize "bibliography")
+	(normalize "index")
+	(normalize "colophon")
+	(normalize "setindex")
+	(normalize "reference")
+	(normalize "refentry")
+	(normalize "book"))) ;; just in case nothing else matches...
+
+
+;;
+;; bug fixed PART that restarts page numbering correctly if this is the very
+;; first part in the book
+;;
+(element part
+  (let* ((partinfo  (select-elements (children (current-node)) 
+				     (normalize "docinfo")))
+	 (partintro (select-elements (children (current-node)) 
+				     (normalize "partintro")))
+
+	 (nl        (titlepage-info-elements 
+		     (current-node) 
+		     partinfo
+		     (if %generate-partintro-on-titlepage%
+			 partintro
+			 (empty-node-list)))))
+    (make sequence
+      (if %generate-part-titlepage%
+	  (make simple-page-sequence
+	    page-n-columns: %titlepage-n-columns%
+	    page-number-restart?: (or %page-number-restart% 
+				  (book-start?) 
+				  (first-chapter?))
+	    input-whitespace-treatment: 'collapse
+	    use: default-text-style
+	    (part-titlepage nl 'recto)
+	    (make display-group
+	      break-before: 'page
+	      (part-titlepage nl 'verso)))
+	  (empty-sosofo))
+
+      (if (not (generate-toc-in-front))
+          (process-children)
+	  (empty-sosofo))
+
+      ;; generate a part TOC on a separate page
+      (if (and %generate-part-toc%
+	       (not %generate-part-toc-on-titlepage%))
+	  (make simple-page-sequence
+	    page-n-columns: %page-n-columns%
+	    page-number-format: ($page-number-format$ (normalize "toc"))
+	    use: default-text-style
+	    left-header:   ($left-header$ (normalize "toc"))
+	    center-header: ($center-header$ (normalize "toc"))
+	    right-header:  ($right-header$ (normalize "toc"))
+	    left-footer:   ($left-footer$ (normalize "toc"))
+	    center-footer: ($center-footer$ (normalize "toc"))
+	    right-footer:  ($right-footer$ (normalize "toc"))
+	    input-whitespace-treatment: 'collapse
+	    (build-toc (current-node)
+		       (toc-depth (current-node))))
+	  (empty-sosofo))
+
+      ;; this seems wrong relative to generate-toc-in-front,
+      ;; goes *after* the content ??!
+      (if (and (not (node-list-empty? partintro))
+	       (not %generate-partintro-on-titlepage%))
+	  ($process-partintro$ partintro #t)
+	  (empty-sosofo))
+      
+      (if (generate-toc-in-front)
+	  (process-children)
+	  (empty-sosofo)))))
 
 ;;======================================
 ;;Non-printing Elements
