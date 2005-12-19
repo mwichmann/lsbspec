@@ -7,7 +7,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
-<!--    at Fri Dec 16 14:35:32 2005 -->
+<!--    at Mon Dec 19 10:42:57 2005 -->
 <SECT1 ID=libjpeg>
 <TITLE>Interfaces for libjpeg</TITLE>
 <PARA>
@@ -175,6 +175,16 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define HAVE_STDLIB_H
 #define HAVE_UNSIGNED_CHAR
 #define HAVE_UNSIGNED_SHORT
+#define jpeg_create_compress(cinfo)	 \
+	jpeg_CreateCompress((cinfo), JPEG_LIB_VERSION, (size_t) sizeof(struct \
+	jpeg_compress_struct))
+#define jpeg_create_decompress(cinfo)	 \
+	jpeg_CreateDecompress((cinfo), JPEG_LIB_VERSION, (size_t) \
+	sizeof(struct jpeg_decompress_struct))
+#define jpeg_common_fields	 \
+	struct jpeg_error_mgr * err; struct jpeg_memory_mgr * mem; struct \
+	jpeg_progress_mgr * progress; void * client_data; boolean \
+	is_decompressor; int global_state
 #define GETJSAMPLE(value)	((int) (value))
 #define GETJOCTET(value)	(value)
 #define JPEG_SUSPENDED	0
@@ -212,11 +222,8 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define EXTERN(type)	extern type
 #define JDCT_FASTEST	JDCT_IFAST
 #define JDCT_DEFAULT	JDCT_ISLOW
-#define jpeg_create_compress(cinfo)	jpeg_CreateCompress((cinfo), JPEG_LIB_VERSION, (size_t) sizeof(struct jpeg_compress_struct))
-#define jpeg_create_decompress(cinfo)	jpeg_CreateDecompress((cinfo), JPEG_LIB_VERSION, (size_t) sizeof(struct jpeg_decompress_struct))
 #define LOCAL(type)	static type
 #define METHODDEF(type)	static type
-#define jpeg_common_fields	struct jpeg_error_mgr * err; struct jpeg_memory_mgr * mem; struct jpeg_progress_mgr * progress; void * client_data; boolean is_decompressor; int global_state
 #define GLOBAL(type)	type
 #define JMETHOD(type,methodname,arglist)	type (*methodname) arglist
 
@@ -488,22 +495,22 @@ typedef struct jpeg_decompress_struct {
     struct jpeg_color_quantizer *cquantize;
 } *j_decompress_ptr;
 typedef enum {
-    JCS_UNKNOWN,
-    JCS_GRAYSCALE = 1,
-    JCS_RGB = 2,
-    JCS_YCbCr = 3,
-    JCS_CMYK = 4,
-    JCS_YCCK = 5
+    JCS_UNKNOWN = 1,
+    JCS_GRAYSCALE = 2,
+    JCS_RGB = 3,
+    JCS_YCbCr = 4,
+    JCS_CMYK = 5,
+    JCS_YCCK = 6
 } J_COLOR_SPACE;
 typedef enum {
-    JDCT_ISLOW,
-    JDCT_IFAST = 1,
-    JDCT_FLOAT = 2
+    JDCT_ISLOW = 1,
+    JDCT_IFAST = 2,
+    JDCT_FLOAT = 3
 } J_DCT_METHOD;
 typedef enum {
-    JDITHER_NONE,
-    JDITHER_ORDERED = 1,
-    JDITHER_FS = 2
+    JDITHER_NONE = 1,
+    JDITHER_ORDERED = 2,
+    JDITHER_FS = 3
 } J_DITHER_MODE;
 typedef short unsigned int UINT16;
 typedef struct {

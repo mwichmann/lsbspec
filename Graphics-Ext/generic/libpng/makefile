@@ -36,8 +36,9 @@ png_set_swap.sgml png_set_text.sgml \
 png_set_tRNS.sgml png_set_write_fn.sgml \
 png_sig_cmp.sgml png_warning.sgml \
 png_write_chunk.sgml png_write_end.sgml \
-png_write_image.sgml png_write_info.sgml \
-png_write_row.sgml png_write_rows.sgml
+png_write_image.sgml png_write_info_before_PLTE.sgml \
+png_write_info.sgml png_write_row.sgml \
+png_write_rows.sgml
 
 FILES=libpng.sgml
 TABLES= png.sgml 
