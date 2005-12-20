@@ -1,5 +1,5 @@
 
-SUBDIRS= libpng libjpeg
+SUBDIRS= libpng libjpeg libfontconfig
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
