@@ -13,7 +13,7 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'ISOC99','Png12','libJPEG'" >standards.sgml
+	../../mkstandardsgmltable -a All -s "'ISOC99','Png12','libJPEG','fontconfig'" >standards.sgml
 	../../mklibsgmltable -a All -m LSB_Graphics_Ext >libraries.sgml
 
 
