@@ -542,7 +542,7 @@ auxiliary vector entry.
 						 grow toward low addresses.  The contents of the word at that address 
 						always point to the previously allocated stack frame.  If required, it can be 
 						decremented by the called function.  See <xref linkend="DYNAM-STACK"> 
-						for additional infromation.  As discussed later in this chapter, the lowest valid 
+						for additional information.  As discussed later in this chapter, the lowest valid 
 						stack address is 288 bytes less than the value in the stack pointer.  The 
 						stack pointer must be atomically updated by a single instruction, thus 
 						avoiding any timing window in which an interrupt can occur with a partially 
@@ -961,7 +961,7 @@ hh            f5           88-95  (not stored)</screen>
 					</listitem>				</itemizedlist>
 			<para>For an externally visible function, the value of the symbol with the same name as the function is the 
 			address of the function descriptor.  Symbol names with a dot (.) prefix are reserved for holding entry point 
-			addresses.  The value of a symbol named &quot;.FN&quot; is the entry point of the function &quot;FN&quot;.
+			addresses.  The value of a symbol named &quot;.FN&quot;, if it exists, is the entry point of the function &quot;FN&quot;.
 			</para>
 			<para>The value of a function pointer in a language like C is the address of the function descriptor.  
 			Examples of calling a function through a pointer are provided in <xref linkend="FUNC-CALLS">.
@@ -2103,7 +2103,8 @@ instructions as valid nop instructions:
 <programlisting>    cror 15,15,15
     cror 31,31,31</programlisting>
 			<para>In a relocatable object file, a direct function call should be made to
-the function entry point, which is a symbol beginning with dot (.).
+the function descriptor symbol.  The link editor will resolve this to call the function entry point
+rather than branching to the descriptor.
 See <xref linkend="FUNC-DES"> for more information.
 			</para>
 			<para>When the link editor is creating an executable or shared object, and
@@ -2138,7 +2139,7 @@ C                             Assembly
 
 extern void func (void);
 func ();
-                              bl   .func
+                              bl   func
                               ori  r0,r0,0
 
 Here is an example of how the link editor transforms this code if the
