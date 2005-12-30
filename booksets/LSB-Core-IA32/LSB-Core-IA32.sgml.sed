@@ -14,6 +14,18 @@
 
 %entities;
 
+<!ENTITY % iso "IGNORE">
+<![%iso;[
+<!ENTITY % fsg "IGNORE">
+<!ENTITY copyrightyear "2006">
+<!ENTITY copyrightholder "ISO/IEC">
+]]>
+<!ENTITY % fsg "INCLUDE">
+<![%fsg;[
+<!ENTITY copyrightyear "2005">
+<!ENTITY copyrightholder "Free Standards Group">
+]]>
+
 ]>
 
 <BOOK>
@@ -21,9 +33,8 @@
 <EDITION>&ISOSTD-2;</EDITION>
 <TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
-<YEAR>2004</YEAR>
-<YEAR>2005</YEAR>
-<HOLDER>Free Standards Group</HOLDER>
+<YEAR>&copyrightyear;</YEAR>
+<HOLDER>&copyrightholder;</HOLDER>
 </COPYRIGHT>
 &legal;
 </BOOKINFO>
