@@ -7,7 +7,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
-<!--    at Mon Dec 19 11:13:30 2005 -->
+<!--    at Sun Jan  1 21:44:50 2006 -->
 <SECT1 ID=libxml2>
 <TITLE>Interfaces for libxml2</TITLE>
 <PARA>
@@ -2354,6 +2354,10 @@ typedef enum {
     HTML_PARSE_NONET = 5,
     HTML_PARSE_COMPACT = 6
 } htmlParserOption;
+typedef xmlParserInputPtr htmlParserInputPtr;
+typedef htmlElemDesc *htmlElemDescPtr;
+typedef htmlEntityDesc *htmlEntityDescPtr;
+typedef xmlParserInput htmlParserInput;
 extern htmlStatus htmlElementStatusHere(const htmlElemDesc *,
 					const htmlElemDesc *);
 extern htmlDocPtr htmlParseDoc(xmlChar *, const char *);
@@ -2453,7 +2457,121 @@ extern void htmlDocDumpMemory(xmlDocPtr, xmlChar * *, int *);
 </PARA>
 <SCREEN>
 
-typedef struct _xmlSAXHandler xmlSAXHandler;
+typedef void (*internalSubsetSAXFunc) (void *, const xmlChar *,
+				       const xmlChar *, const xmlChar *);
+typedef int (*isStandaloneSAXFunc) (void *);
+typedef int (*hasInternalSubsetSAXFunc) (void *);
+typedef int (*hasExternalSubsetSAXFunc) (void *);
+typedef xmlParserInputPtr(*resolveEntitySAXFunc) (void *, const xmlChar *,
+						  const xmlChar *);
+typedef xmlEntityPtr(*getEntitySAXFunc) (void *, const xmlChar *);
+typedef void (*entityDeclSAXFunc) (void *, const xmlChar *, int,
+				   const xmlChar *, const xmlChar *,
+				   xmlChar *);
+typedef void (*notationDeclSAXFunc) (void *, const xmlChar *,
+				     const xmlChar *, const xmlChar *);
+typedef struct _xmlEnumeration {
+    struct _xmlEnumeration *next;
+    const xmlChar *name;
+} xmlEnumeration;
+typedef xmlEnumeration *xmlEnumerationPtr;
+typedef void (*attributeDeclSAXFunc) (void *, const xmlChar *,
+				      const xmlChar *, int, int,
+				      const xmlChar *, xmlEnumerationPtr);
+typedef enum {
+    XML_ELEMENT_CONTENT_PCDATA = 1,
+    XML_ELEMENT_CONTENT_ELEMENT = 2,
+    XML_ELEMENT_CONTENT_SEQ = 3,
+    XML_ELEMENT_CONTENT_OR = 4
+} xmlElementContentType;
+typedef enum {
+    XML_ELEMENT_CONTENT_ONCE = 1,
+    XML_ELEMENT_CONTENT_OPT = 2,
+    XML_ELEMENT_CONTENT_MULT = 3,
+    XML_ELEMENT_CONTENT_PLUS = 4
+} xmlElementContentOccur;
+typedef struct _xmlElementContent {
+    xmlElementContentType type;
+    xmlElementContentOccur ocur;
+    const xmlChar *name;
+    struct _xmlElementContent *c1;
+    struct _xmlElementContent *c2;
+    struct _xmlElementContent *parent;
+    const xmlChar *prefix;
+} xmlElementContent;
+typedef xmlElementContent *xmlElementContentPtr;
+typedef void (*elementDeclSAXFunc) (void *, const xmlChar *, int,
+				    xmlElementContentPtr);
+typedef void (*unparsedEntityDeclSAXFunc) (void *, const xmlChar *,
+					   const xmlChar *,
+					   const xmlChar *,
+					   const xmlChar *);
+typedef struct _xmlSAXLocator {
+    const xmlChar *(*getPublicId) (void *);
+    const xmlChar *(*getSystemId) (void *);
+    int (*getLineNumber) (void *);
+    int (*getColumnNumber) (void *);
+} xmlSAXLocator;
+typedef xmlSAXLocator *xmlSAXLocatorPtr;
+typedef void (*setDocumentLocatorSAXFunc) (void *, xmlSAXLocatorPtr);
+typedef void (*startDocumentSAXFunc) (void *);
+typedef void (*endDocumentSAXFunc) (void *);
+typedef void (*startElementSAXFunc) (void *, const xmlChar *,
+				     const xmlChar * *);
+typedef void (*endElementSAXFunc) (void *, const xmlChar *);
+typedef void (*referenceSAXFunc) (void *, const xmlChar *);
+typedef void (*charactersSAXFunc) (void *, const xmlChar *, int);
+typedef void (*ignorableWhitespaceSAXFunc) (void *, const xmlChar *, int);
+typedef void (*processingInstructionSAXFunc) (void *, const xmlChar *,
+					      const xmlChar *);
+typedef void (*commentSAXFunc) (void *, const xmlChar *);
+typedef void (*warningSAXFunc) (void *, const char *, ...);
+typedef void (*errorSAXFunc) (void *, const char *, ...);
+typedef void (*fatalErrorSAXFunc) (void *, const char *, ...);
+typedef xmlEntityPtr(*getParameterEntitySAXFunc) (void *, const xmlChar *);
+typedef void (*cdataBlockSAXFunc) (void *, const xmlChar *, int);
+typedef void (*externalSubsetSAXFunc) (void *, const xmlChar *,
+				       const xmlChar *, const xmlChar *);
+typedef void (*startElementNsSAX2Func) (void *, const xmlChar *,
+					const xmlChar *, const xmlChar *,
+					int, const xmlChar * *, int, int,
+					const xmlChar * *);
+typedef void (*endElementNsSAX2Func) (void *, const xmlChar *,
+				      const xmlChar *, const xmlChar *);
+typedef struct _xmlSAXHandler {
+    internalSubsetSAXFunc internalSubset;
+    isStandaloneSAXFunc isStandalone;
+    hasInternalSubsetSAXFunc hasInternalSubset;
+    hasExternalSubsetSAXFunc hasExternalSubset;
+    resolveEntitySAXFunc resolveEntity;
+    getEntitySAXFunc getEntity;
+    entityDeclSAXFunc entityDecl;
+    notationDeclSAXFunc notationDecl;
+    attributeDeclSAXFunc attributeDecl;
+    elementDeclSAXFunc elementDecl;
+    unparsedEntityDeclSAXFunc unparsedEntityDecl;
+    setDocumentLocatorSAXFunc setDocumentLocator;
+    startDocumentSAXFunc startDocument;
+    endDocumentSAXFunc endDocument;
+    startElementSAXFunc startElement;
+    endElementSAXFunc endElement;
+    referenceSAXFunc reference;
+    charactersSAXFunc characters;
+    ignorableWhitespaceSAXFunc ignorableWhitespace;
+    processingInstructionSAXFunc processingInstruction;
+    commentSAXFunc comment;
+    warningSAXFunc warning;
+    errorSAXFunc error;
+    fatalErrorSAXFunc fatalError;
+    getParameterEntitySAXFunc getParameterEntity;
+    cdataBlockSAXFunc cdataBlock;
+    externalSubsetSAXFunc externalSubset;
+    unsigned int initialized;
+    void *_private;
+    startElementNsSAX2Func startElementNs;
+    endElementNsSAX2Func endElementNs;
+    xmlStructuredErrorFunc serror;
+} xmlSAXHandler;
 extern void xmlSAX2EndElement(void *, const xmlChar *);
 extern void xmlSAX2Characters(void *, const xmlChar *, int);
 extern int xmlSAX2HasInternalSubset(void *);
@@ -2607,6 +2725,8 @@ typedef struct _xmlShellCtxt {
     xmlShellReadlineFunc input;
 } xmlShellCtxt;
 typedef xmlShellCtxt *xmlShellCtxtPtr;
+typedef int (*xmlShellCmd) (xmlShellCtxtPtr, char *, xmlNodePtr,
+			    xmlNodePtr);
 extern const char *xmlBoolToText(int);
 extern void xmlDebugDumpAttr(FILE *, xmlAttrPtr, int);
 extern void xmlDebugDumpAttrList(FILE *, xmlAttrPtr, int);
@@ -4938,121 +5058,6 @@ extern int xmlXIncludeProcessFlags(xmlDocPtr, int);
 
 typedef int (*xmlOutputMatchCallback) (const char *);
 typedef void *(*xmlOutputOpenCallback) (const char *);
-struct _xmlSAXHandler {
-    internalSubsetSAXFunc internalSubset;
-    isStandaloneSAXFunc isStandalone;
-    hasInternalSubsetSAXFunc hasInternalSubset;
-    hasExternalSubsetSAXFunc hasExternalSubset;
-    resolveEntitySAXFunc resolveEntity;
-    getEntitySAXFunc getEntity;
-    entityDeclSAXFunc entityDecl;
-    notationDeclSAXFunc notationDecl;
-    attributeDeclSAXFunc attributeDecl;
-    elementDeclSAXFunc elementDecl;
-    unparsedEntityDeclSAXFunc unparsedEntityDecl;
-    setDocumentLocatorSAXFunc setDocumentLocator;
-    startDocumentSAXFunc startDocument;
-    endDocumentSAXFunc endDocument;
-    startElementSAXFunc startElement;
-    endElementSAXFunc endElement;
-    referenceSAXFunc reference;
-    charactersSAXFunc characters;
-    ignorableWhitespaceSAXFunc ignorableWhitespace;
-    processingInstructionSAXFunc processingInstruction;
-    commentSAXFunc comment;
-    warningSAXFunc warning;
-    errorSAXFunc error;
-    fatalErrorSAXFunc fatalError;
-    getParameterEntitySAXFunc getParameterEntity;
-    cdataBlockSAXFunc cdataBlock;
-    externalSubsetSAXFunc externalSubset;
-    unsigned int initialized;
-    void *_private;
-    startElementNsSAX2Func startElementNs;
-    endElementNsSAX2Func endElementNs;
-    xmlStructuredErrorFunc serror;
-};
-typedef void (*internalSubsetSAXFunc) (void *, const xmlChar *,
-				       const xmlChar *, const xmlChar *);
-typedef int (*isStandaloneSAXFunc) (void *);
-typedef int (*hasInternalSubsetSAXFunc) (void *);
-typedef int (*hasExternalSubsetSAXFunc) (void *);
-typedef xmlParserInputPtr(*resolveEntitySAXFunc) (void *, const xmlChar *,
-						  const xmlChar *);
-typedef xmlEntityPtr(*getEntitySAXFunc) (void *, const xmlChar *);
-typedef void (*entityDeclSAXFunc) (void *, const xmlChar *, int,
-				   const xmlChar *, const xmlChar *,
-				   xmlChar *);
-typedef void (*notationDeclSAXFunc) (void *, const xmlChar *,
-				     const xmlChar *, const xmlChar *);
-typedef struct _xmlEnumeration {
-    struct _xmlEnumeration *next;
-    const xmlChar *name;
-} xmlEnumeration;
-typedef xmlEnumeration *xmlEnumerationPtr;
-typedef void (*attributeDeclSAXFunc) (void *, const xmlChar *,
-				      const xmlChar *, int, int,
-				      const xmlChar *, xmlEnumerationPtr);
-typedef enum {
-    XML_ELEMENT_CONTENT_PCDATA = 1,
-    XML_ELEMENT_CONTENT_ELEMENT = 2,
-    XML_ELEMENT_CONTENT_SEQ = 3,
-    XML_ELEMENT_CONTENT_OR = 4
-} xmlElementContentType;
-typedef enum {
-    XML_ELEMENT_CONTENT_ONCE = 1,
-    XML_ELEMENT_CONTENT_OPT = 2,
-    XML_ELEMENT_CONTENT_MULT = 3,
-    XML_ELEMENT_CONTENT_PLUS = 4
-} xmlElementContentOccur;
-typedef struct _xmlElementContent {
-    xmlElementContentType type;
-    xmlElementContentOccur ocur;
-    const xmlChar *name;
-    struct _xmlElementContent *c1;
-    struct _xmlElementContent *c2;
-    struct _xmlElementContent *parent;
-    const xmlChar *prefix;
-} xmlElementContent;
-typedef xmlElementContent *xmlElementContentPtr;
-typedef void (*elementDeclSAXFunc) (void *, const xmlChar *, int,
-				    xmlElementContentPtr);
-typedef void (*unparsedEntityDeclSAXFunc) (void *, const xmlChar *,
-					   const xmlChar *,
-					   const xmlChar *,
-					   const xmlChar *);
-typedef struct _xmlSAXLocator {
-    const xmlChar *(*getPublicId) (void *);
-    const xmlChar *(*getSystemId) (void *);
-    int (*getLineNumber) (void *);
-    int (*getColumnNumber) (void *);
-} xmlSAXLocator;
-typedef xmlSAXLocator *xmlSAXLocatorPtr;
-typedef void (*setDocumentLocatorSAXFunc) (void *, xmlSAXLocatorPtr);
-typedef void (*startDocumentSAXFunc) (void *);
-typedef void (*endDocumentSAXFunc) (void *);
-typedef void (*startElementSAXFunc) (void *, const xmlChar *,
-				     const xmlChar * *);
-typedef void (*endElementSAXFunc) (void *, const xmlChar *);
-typedef void (*referenceSAXFunc) (void *, const xmlChar *);
-typedef void (*charactersSAXFunc) (void *, const xmlChar *, int);
-typedef void (*ignorableWhitespaceSAXFunc) (void *, const xmlChar *, int);
-typedef void (*processingInstructionSAXFunc) (void *, const xmlChar *,
-					      const xmlChar *);
-typedef void (*commentSAXFunc) (void *, const xmlChar *);
-typedef void (*warningSAXFunc) (void *, const char *, ...);
-typedef void (*errorSAXFunc) (void *, const char *, ...);
-typedef void (*fatalErrorSAXFunc) (void *, const char *, ...);
-typedef xmlEntityPtr(*getParameterEntitySAXFunc) (void *, const xmlChar *);
-typedef void (*cdataBlockSAXFunc) (void *, const xmlChar *, int);
-typedef void (*externalSubsetSAXFunc) (void *, const xmlChar *,
-				       const xmlChar *, const xmlChar *);
-typedef void (*startElementNsSAX2Func) (void *, const xmlChar *,
-					const xmlChar *, const xmlChar *,
-					int, const xmlChar * *, int, int,
-					const xmlChar * *);
-typedef void (*endElementNsSAX2Func) (void *, const xmlChar *,
-				      const xmlChar *, const xmlChar *);
 typedef struct _xmlParserNodeInfo {
     const struct _xmlNode *node;
     long unsigned int begin_pos;
@@ -5067,7 +5072,8 @@ typedef struct _xmlParserNodeInfoSeq {
 } xmlParserNodeInfoSeq;
 typedef void (*xmlValidityErrorFunc) (void *, const char *, ...);
 typedef void (*xmlValidityWarningFunc) (void *, const char *, ...);
-typedef struct _xmlValidState xmlValidState;
+typedef struct _xmlValidState
+ xmlValidState;
 typedef struct _xmlValidCtxt {
     void *userData;
     xmlValidityErrorFunc error;
@@ -6604,6 +6610,17 @@ typedef enum {
     XPATH_INVALID_CHAR_ERROR = 21,
     XPATH_INVALID_CTXT = 22
 } xmlXPathError;
+typedef void (*xmlXPathEvalFunc) (xmlXPathParserContextPtr, int);
+typedef struct _xmlXPathFunct {
+    const xmlChar *name;
+    xmlXPathEvalFunc func;
+} xmlXPathFunct;
+typedef struct _xmlXPathVariable {
+    const xmlChar *name;
+    xmlXPathObjectPtr value;
+} xmlXPathVariable;
+typedef xmlXPathVariable *xmlXPathVariablePtr;
+typedef xmlXPathFunct *xmlXPathFuncPtr;
 extern double xmlXPathCastNodeToNumber(xmlNodePtr);
 extern long int xmlXPathOrderDocElems(xmlDocPtr);
 extern void xmlXPathFreeCompExpr(xmlXPathCompExprPtr);
