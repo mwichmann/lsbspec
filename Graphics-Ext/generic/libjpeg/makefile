@@ -1,11 +1,11 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-#MANPAGES= jpeg_abort_compress.sgml jpeg_abort_decompress.sgml \
+MANPAGES= jpeg_abort_compress.sgml jpeg_abort_decompress.sgml \
 jpeg_abort.sgml jpeg_add_quant_table.sgml jpeg_alloc_huff_table.sgml \
 jpeg_alloc_quant_table.sgml jpeg_calc_output_dimensions.sgml \
 jpeg_consume_input.sgml jpeg_copy_critical_parameters.sgml \
-jpeg_CreateCompress.sgml jpeg_CreateDecompress.sgml \
+jpeg_create_compress.sgml jpeg_create_decompress.sgml \
 jpeg_default_colorspace.sgml jpeg_destroy_compress.sgml \
 jpeg_destroy_decompress.sgml jpeg_destroy.sgml \
 jpeg_finish_compress.sgml jpeg_finish_decompress.sgml \
@@ -48,4 +48,4 @@ spotless: clean
 
 
 libjpeg.sgml: jpeg.sgml
-#libjpeg.sgml: $(MANPAGES)
+libjpeg.sgml: $(MANPAGES)
