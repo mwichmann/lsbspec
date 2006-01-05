@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
-<!--    at Mon Dec 19 14:41:40 2005 -->
+<!--    at Thu Jan  5 11:20:34 2006 -->
 <SECT1 ID=libglib-2.0>
 <TITLE>Interfaces for libglib-2.0</TITLE>
 <PARA>
@@ -2400,14 +2400,14 @@ typedef gboolean(*GEqualFunc) (gconstpointer, gconstpointer);
 typedef struct _GStaticMutex {
     struct _GMutex *runtime_mutex;
     union {
-	char pad[];
+	char pad[24];
 	double dummy_double;
 	void *dummy_pointer;
 	long int dummy_long;
     } static_mutex;
 } GStaticMutex;
 typedef union _GSystemThread {
-    char data[];
+    char data[4];
     double dummy_double;
     void *dummy_pointer;
     long int dummy_long;
@@ -2929,8 +2929,8 @@ typedef enum {
     G_ONCE_STATUS_READY = 3
 } GOnceStatus;
 typedef struct _GOnce {
-    Unknown Type:".Volatile." status;
-    Unknown Type:".Volatile." retval;
+    volatile GOnceStatus status;
+    volatile gpointer retval;
 } GOnce;
 typedef gboolean(*GTraverseFunc) (gpointer, gpointer, gpointer);
 typedef gint(*GHookCompareFunc) (GHook *, GHook *);
@@ -3002,6 +3002,8 @@ typedef enum {
     G_IO_ERROR_INVAL = 3,
     G_IO_ERROR_UNKNOWN = 4
 } GIOError;
+typedef gboolean(*GOptionArgFunc) (const gchar *, const gchar *, gpointer,
+				   GError * *);
 typedef enum {
     G_OPTION_FLAG_HIDDEN,
     G_OPTION_FLAG_IN_MAIN = 1,
