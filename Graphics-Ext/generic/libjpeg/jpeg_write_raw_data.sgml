@@ -7,7 +7,7 @@
 
 <refnamediv>
 <refname>jpeg_write_raw_data</refname>
-<refpurpose>write raw downsampled data</refpurpose>
+<refpurpose>write raw downsampled image data</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_write_raw_data-1">
 	<primary>jpeg_write_raw_data</primary></indexterm>
 </refnamediv>
@@ -35,19 +35,40 @@
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_write_raw_data() shall write the compressed image data for raw downsampled
+data supplied in the JSAMPIMAGE array argument. The number of scanlines passed
+in num_lines to jpeg_write_raw_data() is measured in terms of the component with the
+largest v_samp_factor.
+</para>
+<para>
+If the image dimensions are not a multiple of the MCU size, the data must be
+padded to a multiple of a DCT block in each component, such that each downsampled row 
+must contain a multiple of 8 valid samples, and there must be a multiple of 8 sample rows
+for each component. Data must be padded so that the passed num_lines value is atleast 
+(cinfo->max_v_samp_factor * DCTSIZE). jpeg_write_raw_data() shall process one MCU
+row per call which is (cinfo->comp_info[0].v_samp_factor*DCTSIZE) sample rows of
+each component.
+</para>
+<para>
+Before starting the compression sequence, cinfo->raw_data_in must be set to
+TRUE. cinfo->jpeg_color_space must be set to colorspace to be used
+in the JPEG file. The sampling factors, cinfo->comp_info[i].h_samp_factor and
+cinfo->comp_info[i].v_samp_factor must be set to the dimensions of the supplied
+data.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
+jpeg_write_raw_data() shall return the number of scanlines processed.
+jpeg_write_raw_data() shall return 0 if the compressor is suspended.
 </para>
 </refsect1>
 <refsect1>
 <title>Errors</title>
 <para>
-INSERT TEXT HERE
+jpeg_write_raw_data() shall report error and exit if num_lines is less than
+(cinfo->max_v_samp_factor*DCTSIZE).
 </para>
 </refsect1>
 </refentry>
