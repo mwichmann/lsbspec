@@ -30,7 +30,7 @@ sub unmangle($)
 	return $int;
 }
 
-sub makeid($) 
+sub makeid($)
 {
 	my ($name) = @_;
 	$name =~ s/\s+/./g;
@@ -71,7 +71,7 @@ for $row (1..$trows) {
 			if( $stdname[$intnum] ) {
 				printf " <LINK LINKEND=\"REFSTD.%s.%d\">[%s]</LINK>",
 					makeid($Lname),
-					$ref_list{$stdname[$intnum]}, 
+					$ref_list{$stdname[$intnum]},
 					$stdname[$intnum];
 				}
 			$intnum++;
@@ -396,7 +396,7 @@ sub getinterfaces($$$$)
 			$i++;
 		}
 		$entry[$i]=$entry{'Iname'};
-		if( $entry{'AIarch'} == $Aid ) { 
+		if( $entry{'AIarch'} == $Aid ) {
 			$symver[$i]=$entry{'Vname'};
 		}
 		$stdnum[$i]=$entry{'Istandard'};
@@ -441,7 +441,7 @@ sub getinterfaces($$$$)
 sub nmhash($)
 {
 	local ($name) = @_;
-	
+
 	# generate a three char name from the (long) libgroup name
 	local ($sname) = lc(substr($name, 0, 3));
 	$namehash{$sname} = $name if (!defined ($namehash{$sname}));
@@ -487,7 +487,7 @@ sub data_def_header()
 # Uncomment to trace SQL statements
 #$trace=1;
 
-# A default value 
+# A default value
 
 $numcols=4;
 
@@ -527,7 +527,7 @@ $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.76 2005-12-02 01:32:08 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.77 2006-01-12 17:58:05 harald Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -645,7 +645,7 @@ for(1..$lgh->numrows) {
 	$LGname=$entry{'LGname'};
 	print "<!-- debug: database interface name $LGname -->\n";
 	$LGname=unmangle($LGname) if ($demangle);
-	
+
 	print "<SECT2>\n";
 	print "<!--libgroup-->\n";
 	print "<TITLE>";
@@ -731,7 +731,7 @@ if( $hdh->numrows ) {
 			print "</TITLE>\n";
 			print "<PARA>\n";
 			$headnote=$headroot.".notes";
-			if (open(HEADNOTE, "<$headnote") || 
+			if (open(HEADNOTE, "<$headnote") ||
 				open(HEADNOTE,"<../$headnote")) {
 				print $_ while (<HEADNOTE>);
 				close(HEADNOTE);
@@ -740,6 +740,7 @@ if( $hdh->numrows ) {
 			print "<SCREEN>\n";
 			while(<HEADER>) {
 				s/\</&lt;/g;
+                                s/\&/&amp;/g;
 				print $_;
 				}
 			print "</SCREEN>\n";
@@ -748,7 +749,7 @@ if( $hdh->numrows ) {
 			print "<!-- empty header file $archname/$Hname -->\n";
 			#
 			# perhaps we should print a :
-			# "No additional data interfaces are defined for $Hname" 
+			# "No additional data interfaces are defined for $Hname"
 			# message here ??
 			#
 		}
@@ -802,4 +803,4 @@ if($sth->numrows) {
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.76 2005-12-02 01:32:08 nick Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.77 2006-01-12 17:58:05 harald Exp $- -->\n");
