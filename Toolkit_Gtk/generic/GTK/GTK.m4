@@ -1,12 +1,12 @@
 <PART ID="tocgtk">
-<TITLE>GTK+ Libraries</TITLE>
+<TITLE>GTK+ Stack Libraries</TITLE>
 
 <CHAPTER id=gtk>
 <TITLE>Libraries</TITLE>
 <SECT1><TITLE>Introduction</TITLE>
 <PARA>
-An LSB-Toolkit-Gtk conforming implementation shall support the following
-GTK+ libraries which
+A conforming implementation shall support the following
+GTK+ stack libraries which
 provide interfaces for creating rich graphical user interface applications.
 <VARIABLELIST>
 <VARLISTENTRY>

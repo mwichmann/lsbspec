@@ -18,8 +18,8 @@ completed the compliance process as defined by the Free Standards Group.
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LSB-Toolkit-Gtk Module defines the Gnome Desktop toolkit components that are required to
-be present on a conforming system.
+The LSB-Toolkit-Gtk Module defines the GTK+ toolkit and related libraries
+that are required to be present on a conforming system.
 </PARA>
 
 <PARA>
@@ -34,7 +34,7 @@ the information explicitly included here.
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
-The LSB Toolkit-Gtk defines the Gnome Desktop toolkit libraries 
+The LSB Toolkit-Gtk defines the GTK+ toolkit and related libraries
 interface found on an LSB conforming system.
 </PARA>
 </CHAPTER>
