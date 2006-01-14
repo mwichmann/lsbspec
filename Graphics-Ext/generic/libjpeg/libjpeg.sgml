@@ -6,8 +6,8 @@
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
-<!--    at Tue Jan  3 11:51:20 2006 -->
+<!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.76 2005/12/02 01:32:08 nick Exp 0 -->
+<!--    at Fri Jan 13 17:46:37 2006 -->
 <SECT1 ID=libjpeg>
 <TITLE>Interfaces for libjpeg</TITLE>
 <PARA>
@@ -325,8 +325,8 @@ struct jpeg_error_mgr {
     void (*reset_error_mgr) (j_common_ptr);
     int msg_code;
     union {
-	int i[];
-	char s[];
+	int i[8];
+	char s[80];
     } msg_parm;
     int trace_level;
     long int num_warnings;
@@ -345,8 +345,8 @@ struct jpeg_common_struct {
     int global_state;
 };
 struct jpeg_memory_mgr {
-    void *(*alloc_small) (j_common_ptr, int, size_t[4]);
-    void *(*alloc_large) (j_common_ptr, int, size_t[4]);
+    void *(*alloc_small) (j_common_ptr, int, size_t);
+    void *(*alloc_large) (j_common_ptr, int, size_t);
      JSAMPARRAY(*alloc_sarray) (j_common_ptr, int, JDIMENSION, JDIMENSION);
      JBLOCKARRAY(*alloc_barray) (j_common_ptr, int, JDIMENSION,
 				 JDIMENSION);
@@ -495,22 +495,22 @@ typedef struct jpeg_decompress_struct {
     struct jpeg_color_quantizer *cquantize;
 } *j_decompress_ptr;
 typedef enum {
-    JCS_UNKNOWN = 1,
-    JCS_GRAYSCALE = 2,
-    JCS_RGB = 3,
-    JCS_YCbCr = 4,
-    JCS_CMYK = 5,
-    JCS_YCCK = 6
+    JCS_UNKNOWN = 0,
+    JCS_GRAYSCALE = 1,
+    JCS_RGB = 2,
+    JCS_YCbCr = 3,
+    JCS_CMYK = 4,
+    JCS_YCCK = 5
 } J_COLOR_SPACE;
 typedef enum {
-    JDCT_ISLOW = 1,
-    JDCT_IFAST = 2,
-    JDCT_FLOAT = 3
+    JDCT_ISLOW = 0,
+    JDCT_IFAST = 1,
+    JDCT_FLOAT = 2
 } J_DCT_METHOD;
 typedef enum {
-    JDITHER_NONE = 1,
-    JDITHER_ORDERED = 2,
-    JDITHER_FS = 3
+    JDITHER_NONE = 0,
+    JDITHER_ORDERED = 1,
+    JDITHER_FS = 2
 } J_DITHER_MODE;
 typedef short unsigned int UINT16;
 typedef struct {
@@ -804,13 +804,13 @@ in the referenced base document.
 <function>jpeg_CreateCompress</function>
 </funcdef>
 <paramdef>j_compress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 <paramdef>int
-<parameter>arg1</parameter>
+<parameter>version</parameter>
 </paramdef>
 <paramdef>size_t
-<parameter>arg2</parameter>
+<parameter>size</parameter>
 </paramdef>
 
 </funcprototype>
@@ -819,19 +819,20 @@ in the referenced base document.
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Return Value</title>
-<para>
-INSERT TEXT HERE
+The function <function>jpeg_CreateCompress</function> shall allocate and
+initialize a JPEG compression object of type struct jpeg_compress_struct.
+The error handler structure of type struct jpeg_error_mgr must be initialized
+before making a call to <function>jpeg_CreateCompress</function>.
+JPEG_LIB_VERSION and size of the structure used to hold the JPEG compression
+object struct jpeg_compress_struct must be passed in arguments version and size
+respectively.
 </para>
 </refsect1>
 <refsect1>
 <title>Errors</title>
 <para>
-INSERT TEXT HERE
+<function>jpeg_CreateCompress</function> shall exit via the error handler if 
+it fails to allocate memory.
 </para>
 </refsect1>
 </refentry>
@@ -845,7 +846,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_CreateDecompress</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>allocate and initialize a JPEG decompression object</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_CreateDecompress-1">
 	<primary>jpeg_CreateDecompress</primary></indexterm>
 </refnamediv>
@@ -858,13 +859,13 @@ INSERT TEXT HERE
 <function>jpeg_CreateDecompress</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 <paramdef>int
-<parameter>arg1</parameter>
+<parameter>version</parameter>
 </paramdef>
 <paramdef>size_t
-<parameter>arg2</parameter>
+<parameter>size</parameter>
 </paramdef>
 
 </funcprototype>
@@ -873,19 +874,20 @@ INSERT TEXT HERE
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Return Value</title>
-<para>
-INSERT TEXT HERE
+The function <function>jpeg_CreateDecompress</function> shall allocate and
+initialize a JPEG decompression object of type struct jpeg_decompress_struct.
+The error handler structure of type struct jpeg_error_mgr must be initialized
+before making a call to <function>jpeg_CreateDecompress</function>.
+JPEG_LIB_VERSION and size of the structure used to hold the JPEG compression
+object struct jpeg_decompress_struct must be passed in arguments version and size
+respectively.
 </para>
 </refsect1>
 <refsect1>
 <title>Errors</title>
 <para>
-INSERT TEXT HERE
+<function>jpeg_CreateDecompress</function> shall exit via the error handler if 
+it fails to allocate memory.
 </para>
 </refsect1>
 </refentry>
@@ -1003,18 +1005,6 @@ The function jpeg_abort_decompress() shall abort the processing of a JPEG
 decompression operation. The function shall return the given decompression
 object to an idle state releasing any working memory. The decompression object
 may be reused after a call to jpeg_abort_decompress().
-</para>
-</refsect1>
-<refsect1>
-<title>Return Value</title>
-<para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
 </para>
 </refsect1>
 </refentry>
@@ -1600,7 +1590,7 @@ reading the specified number of scanlines.
 
 <refnamediv>
 <refname>jpeg_finish_output</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>complete pass in buffered-image mode</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_finish_output-1">
 	<primary>jpeg_finish_output</primary></indexterm>
 </refnamediv>
@@ -1613,7 +1603,7 @@ reading the specified number of scanlines.
 <function>jpeg_finish_output</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 
 </funcprototype>
@@ -1622,19 +1612,16 @@ reading the specified number of scanlines.
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_start_output() shall change state for completion of an output pass in 
+buffered-image mode. The scan number shall be incremented if the end-of-image
+marker is not reached.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+jpeg_finish_output() shall return FALSE if decompression is suspended.
+Otherwise, jpeg_finish_output() shall return TRUE.
 </para>
 </refsect1>
 </refentry>
@@ -1648,7 +1635,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_has_multiple_scans</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>test if input image has multiple scans</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_has_multiple_scans-1">
 	<primary>jpeg_has_multiple_scans</primary></indexterm>
 </refnamediv>
@@ -1661,7 +1648,7 @@ INSERT TEXT HERE
 <function>jpeg_has_multiple_scans</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 
 </funcprototype>
@@ -1670,19 +1657,14 @@ INSERT TEXT HERE
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_has_multiple_scans() shall return TRUE if the incoming image file has more
+than one scan.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+TRUE for multiple scans, FALSE otherwise.
 </para>
 </refsect1>
 </refentry>
@@ -1696,7 +1678,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_input_complete</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>test for end-of-image</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_input_complete-1">
 	<primary>jpeg_input_complete</primary></indexterm>
 </refnamediv>
@@ -1709,7 +1691,7 @@ INSERT TEXT HERE
 <function>jpeg_input_complete</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 
 </funcprototype>
@@ -1718,19 +1700,14 @@ INSERT TEXT HERE
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_input_complete() shall return TRUE if the end-of-image marker has not been
+read for the input image file.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+TRUE if reached EOI, FALSE otherwise.
 </para>
 </refsect1>
 </refentry>
@@ -1744,7 +1721,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_new_colormap</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>switch to a new external colormap between output passes</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_new_colormap-1">
 	<primary>jpeg_new_colormap</primary></indexterm>
 </refnamediv>
@@ -1757,7 +1734,7 @@ INSERT TEXT HERE
 <function>jpeg_new_colormap</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 
 </funcprototype>
@@ -1766,19 +1743,10 @@ INSERT TEXT HERE
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Return Value</title>
-<para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+jpeg_new_colormap() shall select 2-pass quantizer for using an external colormap
+and notify the quantizer of the switch to a colormap that is different from the
+one used in the previous pass. The new colormap must be set using cinfo.colormap
+before a call to jpeg_new_colormap().
 </para>
 </refsect1>
 </refentry>
@@ -1838,7 +1806,7 @@ percentage.
 
 <refnamediv>
 <refname>jpeg_read_coefficients</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>read the contents of JPEG file as DCT coefficients</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_read_coefficients-1">
 	<primary>jpeg_read_coefficients</primary></indexterm>
 </refnamediv>
@@ -1851,7 +1819,7 @@ percentage.
 <function>jpeg_read_coefficients</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 
 </funcprototype>
@@ -1957,7 +1925,7 @@ is TRUE.
 
 <refnamediv>
 <refname>jpeg_read_raw_data</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>read raw downsampled image data</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_read_raw_data-1">
 	<primary>jpeg_read_raw_data</primary></indexterm>
 </refnamediv>
@@ -1970,13 +1938,13 @@ is TRUE.
 <function>jpeg_read_raw_data</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 <paramdef>JSAMPIMAGE
-<parameter>arg1</parameter>
+<parameter>data</parameter>
 </paramdef>
 <paramdef>JDIMENSION
-<parameter>arg2</parameter>
+<parameter>max_lines</parameter>
 </paramdef>
 
 </funcprototype>
@@ -1985,19 +1953,29 @@ is TRUE.
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_read_raw_data() shall return upto max_lines number of scanlines of raw downsampled
+data into the JSAMPIMAGE array argument. The data buffer must be of atleast
+max_v_samp_factor*DCTSIZE scanlines as jpeg_read_raw_data() shall return one MCU
+row per call. 
+</para>
+<para>
+The passed max_lines value must be atleast (cinfo->max_v_samp_factor * DCTSIZE). 
+Before starting the decompression sequence, cinfo->raw_data_out must be set to
+TRUE. 
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
+jpeg_read_raw_data() shall return the number of scanlines processed.
+jpeg_read_raw_data() shall return 0 if the data source is suspended.
 </para>
 </refsect1>
 <refsect1>
 <title>Errors</title>
 <para>
-INSERT TEXT HERE
+jpeg_read_raw_data() shall report error and exit if max_lines is less than
+(cinfo->max_v_samp_factor*DCTSIZE).
 </para>
 </refsect1>
 </refentry>
@@ -2011,7 +1989,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_read_scanlines</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>read scanlines of data from JPEG decompressor</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_read_scanlines-1">
 	<primary>jpeg_read_scanlines</primary></indexterm>
 </refnamediv>
@@ -2024,13 +2002,13 @@ INSERT TEXT HERE
 <function>jpeg_read_scanlines</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 <paramdef>JSAMPARRAY
-<parameter>arg1</parameter>
+<parameter>scanlines</parameter>
 </paramdef>
 <paramdef>JDIMENSION
-<parameter>arg2</parameter>
+<parameter>max_lines</parameter>
 </paramdef>
 
 </funcprototype>
@@ -2039,19 +2017,25 @@ INSERT TEXT HERE
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_read_scanlines() shall return upto the maximum number of scanlines of 
+decompressed image data. This may be less than the number requested in 
+cases such as bottom of image, data source suspension, and operating
+modes that emit multiple scanlines at a time. Image data shall be returned in
+top-to-bottom scanline order.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
+On success, jpeg_read_scanlines() shall return the number of lines actually
+read.
 </para>
 </refsect1>
 <refsect1>
 <title>Errors</title>
 <para>
-INSERT TEXT HERE
+jpeg_read_scanlines() shall report a non-fatal error if the requested number
+of scanlines is greater than the height of the original unscaled image.
 </para>
 </refsect1>
 </refentry>
@@ -2065,7 +2049,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_resync_to_restart</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>resync if marker other than expected restart marker found</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_resync_to_restart-1">
 	<primary>jpeg_resync_to_restart</primary></indexterm>
 </refnamediv>
@@ -2078,10 +2062,10 @@ INSERT TEXT HERE
 <function>jpeg_resync_to_restart</function>
 </funcdef>
 <paramdef>j_decompress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 <paramdef>int
-<parameter>arg1</parameter>
+<parameter>desired</parameter>
 </paramdef>
 
 </funcprototype>
@@ -2090,19 +2074,18 @@ INSERT TEXT HERE
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_resync_to_restart() is the default resync procedure that a data source
+manager can invoke when the decompressor fails to find a restart (RSTn) marker
+where one is expected. The function shall find a suitable point for resuming
+decompression and position the input stream to the next data segment. The desired
+restart marker number (0..7) is passed as argument "desired".
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+jpeg_resync_to_restart() shall return FALSE if decompression is suspended.
+Otherwise, jpeg_start_output() shall return TRUE.
 </para>
 </refsect1>
 </refentry>
@@ -2330,8 +2313,8 @@ limited to 1..255 for JPEG baseline compatibility.
 <para>
 jpeg_set_marker_processor() shall set a marker processor routine having
 signature 
-boolean <function>jpeg_marker_parser_method</function>
-j_decompress_ptr <parameter>cinfo</parameter> 
+boolean <function>jpeg_marker_parser_method</function> 
+j_decompress_ptr <parameter>cinfo</parameter>
 The marker processor routine must return TRUE if the marker and its parameters
 are processed completely. The routine must return FALSE if it is forced to
 suspend before reaching the end of marker parameters.
@@ -2515,7 +2498,7 @@ jpeg_start_decompress() to obtain the parameters for decompression.
 
 <refnamediv>
 <refname>jpeg_start_output</refname>
-<refpurpose>Initialize for a pass in buffered-image mode</refpurpose>
+<refpurpose>initialize for a pass in buffered-image mode</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_start_output-1">
 	<primary>jpeg_start_output</primary></indexterm>
 </refnamediv>
@@ -2543,6 +2526,8 @@ jpeg_start_decompress() to obtain the parameters for decompression.
 jpeg_start_output() shall initialize state for an output pass in buffered-image
 mode. The scan_number indicates the scan of the image to be displayed. Scan
 numbers start from 1.
+The buffered-image mode must be selected before starting an output pass by
+setting cinfo.buffered_image = TRUE.
 </para>
 </refsect1>
 <refsect1>
@@ -2675,18 +2660,6 @@ jpeg_stdio_src() shall initialize state for input from the given stdio stream
 infile. The stream infile must be in open state. 
 </para>
 </refsect1>
-<refsect1>
-<title>Return Value</title>
-<para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
-</para>
-</refsect1>
 </refentry>
 
 <refentry id="libjpeg-jpeg_suppress_tables-1">
@@ -2698,7 +2671,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_suppress_tables</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>control quantization and Huffman table suppression</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_suppress_tables-1">
 	<primary>jpeg_suppress_tables</primary></indexterm>
 </refnamediv>
@@ -2916,7 +2889,7 @@ followed by the length of marker data.
 
 <refnamediv>
 <refname>jpeg_write_raw_data</refname>
-<refpurpose>write raw downsampled data</refpurpose>
+<refpurpose>write raw downsampled image data</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_write_raw_data-1">
 	<primary>jpeg_write_raw_data</primary></indexterm>
 </refnamediv>
@@ -2944,19 +2917,40 @@ followed by the length of marker data.
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_write_raw_data() shall write the compressed image data for raw downsampled
+data supplied in the JSAMPIMAGE array argument. The number of scanlines passed
+in num_lines to jpeg_write_raw_data() is measured in terms of the component with the
+largest v_samp_factor.
+</para>
+<para>
+If the image dimensions are not a multiple of the MCU size, the data must be
+padded to a multiple of a DCT block in each component, such that each downsampled row 
+must contain a multiple of 8 valid samples, and there must be a multiple of 8 sample rows
+for each component. Data must be padded so that the passed num_lines value is atleast 
+(cinfo->max_v_samp_factor * DCTSIZE). jpeg_write_raw_data() shall process one MCU
+row per call which is (cinfo->comp_info[0].v_samp_factor*DCTSIZE) sample rows of
+each component.
+</para>
+<para>
+Before starting the compression sequence, cinfo->raw_data_in must be set to
+TRUE. cinfo->jpeg_color_space must be set to colorspace to be used
+in the JPEG file. The sampling factors, cinfo->comp_info[i].h_samp_factor and
+cinfo->comp_info[i].v_samp_factor must be set to the dimensions of the supplied
+data.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
+jpeg_write_raw_data() shall return the number of scanlines processed.
+jpeg_write_raw_data() shall return 0 if the compressor is suspended.
 </para>
 </refsect1>
 <refsect1>
 <title>Errors</title>
 <para>
-INSERT TEXT HERE
+jpeg_write_raw_data() shall report error and exit if num_lines is less than
+(cinfo->max_v_samp_factor*DCTSIZE).
 </para>
 </refsect1>
 </refentry>
@@ -2970,7 +2964,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_write_scanlines</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>write scanlines of data to JPEG compressor</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_write_scanlines-1">
 	<primary>jpeg_write_scanlines</primary></indexterm>
 </refnamediv>
@@ -2983,13 +2977,13 @@ INSERT TEXT HERE
 <function>jpeg_write_scanlines</function>
 </funcdef>
 <paramdef>j_compress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 <paramdef>JSAMPARRAY
-<parameter>arg1</parameter>
+<parameter>scanlines</parameter>
 </paramdef>
 <paramdef>JDIMENSION
-<parameter>arg2</parameter>
+<parameter>num_lines</parameter>
 </paramdef>
 
 </funcprototype>
@@ -2998,19 +2992,23 @@ INSERT TEXT HERE
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+jpeg_write_scanlines() shall write the number of scanlines of image data to be
+compressed from in-memory buffers. The image data shall be written in
+top-to-bottom scanline order.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
+On success, jpeg_read_scanlines() shall return the number of lines actually
+written.
 </para>
 </refsect1>
 <refsect1>
 <title>Errors</title>
 <para>
-INSERT TEXT HERE
+jpeg_write_scanlines() shall report a non-fatal error if the requested number
+of scanlines is greater than the height of the original unscaled image.
 </para>
 </refsect1>
 </refentry>
@@ -3024,7 +3022,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>jpeg_write_tables</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>create a tables-only file</refpurpose>
 <indexterm id="ix-libjpeg-jpeg_write_tables-1">
 	<primary>jpeg_write_tables</primary></indexterm>
 </refnamediv>
@@ -3037,7 +3035,7 @@ INSERT TEXT HERE
 <function>jpeg_write_tables</function>
 </funcdef>
 <paramdef>j_compress_ptr
-<parameter>arg0</parameter>
+<parameter>cinfo</parameter>
 </paramdef>
 
 </funcprototype>
@@ -3046,26 +3044,18 @@ INSERT TEXT HERE
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Return Value</title>
-<para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+jpeg_write_tables() shall create a tables-only file by writing an abbreviated
+datastream containing only SOI, DQT and/or DHT and EOI markers. All the
+quantization and Huffman tables  currently defined in the compression object
+shall be emitted unless their sent_table flag is set to TRUE. Once emitted,
+sent_table flag shall be set for all tables written.
 </para>
 </refsect1>
 </refentry>
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.76 2005/12/02 01:32:08 nick Exp 0 -->
 
 
 </CHAPTER>

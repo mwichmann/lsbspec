@@ -1,7 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES= FcAtomicCreate.sgml \
+#MANPAGES= FcAtomicCreate.sgml \
 FcAtomicDeleteNew.sgml \
 FcAtomicDestroy.sgml \
 FcAtomicLock.sgml \
