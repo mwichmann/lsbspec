@@ -5,7 +5,7 @@
 <TITLE>Libraries</TITLE>
 <SECT1><TITLE>Introduction</TITLE>
 <PARA>
-An LSB-Toolkit-Qt conforming implementation shall support the following
+An conforming implementation shall support the following
 Qt libraries which
 provide interfaces for creating rich user applications, either graphical or console.
 <VARIABLELIST>
