@@ -13,7 +13,7 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99','Png12','libJPEG','libXML2','fontconfig'" >standards.sgml
+	../../mkstandardsgmltable -a All -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99','Png12','libJPEG','libXML2','fontconfig','QtCore','QtGui','QtXml','QtNetwork','QtOpenGL','QtSql','QtSvg'" >standards.sgml
 	../../mklibsgmltable -a All -m LSB_Toolkit_Gtk > glibraries.sgml
 #	../../mklibsgmltable -a All -m LSB_Toolkit_Qt > qlibraries.sgml
 	../../mklibsgmltable -a All -m LSB_Graphics_Ext > elibraries.sgml
