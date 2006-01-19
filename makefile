@@ -1,5 +1,5 @@
 
-DOCDIRS=Desktop ELF Graphics LSB Packaging 
+DOCDIRS=ELF Graphics LSB Packaging Graphics_Ext Toolkit_Gtk Toolkit_Qt XML Desktop
 BOOKDIRS=book booksets
 SUBDIRS= $(DOCDIRS) $(BOOKDIRS)
 
