@@ -5,7 +5,7 @@ FILES=intro.sgml
 TABLES=standards.sgml
 
 # Specs not part of the main spec
-EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','ISOCXX','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi'"
+EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','ISOCXX','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi','ATK','Pango'"
 
 .cpp.sgml:
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
