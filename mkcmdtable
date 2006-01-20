@@ -15,6 +15,11 @@ local %references;
 local %standards;
 my $builtins = 0;
 
+sub usage()
+{
+        print STDERR "mkcmdtable [-b] [-m <moduleid>]\n Default moduleid is 1 (i.e LSB Core).\n";
+        die;
+}
 ################################################################################
 #	lsbOpenDB
 ################################################################################
@@ -124,7 +129,7 @@ sub lsbCommands {
 		$tbl = "tbl-cmds";
 		$MainTitle = "Commands And Utilities";
 	}
-	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command WHERE Standard.Sid=Command.Cstandard AND Command.Cstatus='$status' ORDER BY Sname");
+	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command  LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid WHERE ModCmd.MCmid=$moduleid AND Standard.Sid=Command.Cstandard AND Command.Cstatus='$status' ORDER BY Sname");
 	$sth->execute;
 
 	if ($sth->rows > 0) {
@@ -141,7 +146,7 @@ sub lsbCommands {
 
 	printf("</PARA>\n");
 
-	$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE Command.Cstatus='$status' ORDER BY Command.Cname");
+	$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE Command.Cstatus='$status' AND ModCmd.MCmid=$moduleid ORDER BY Command.Cname");
 	$sth->execute;
 
 	if ($sth->rows < 1) {
@@ -254,7 +259,12 @@ sub makeid($)
 #	main
 ################################################################################
 
-GetOptions("b" => \$builtins);
+# We can get module id from Module Table. Commands list will be generated as per modules.
+GetOptions("b" => \$builtins,
+           "m=i" => \$moduleid);
+
+if(!$moduleid) { $moduleid=1; }
+
 lsbOpenDB;
 lsbCommands;
 lsbCloseDB;
