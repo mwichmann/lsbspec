@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkcmdlist\n";
+print STDERR "mkcmdlist [-m <moduleid> ]\n Default moduleid is 1 (i.e LSB Core)\n";
 die;
 }
 
@@ -17,10 +17,9 @@ die;
 #
 # 1) process the arguments
 #
-# Commands are not per architecture
-#GetOptions("a=s" => \$archname);
-
-#if( !$archname ) { usage(); }
+# We can get module id from Module Table. Commands list will be generated as per modules.
+GetOptions("m=i" => \$moduleid);
+if( !$moduleid ) { $moduleid=1; }
 
 #
 # 2) Establish connection to the database
@@ -29,7 +28,7 @@ $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::d
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkcmdlist,v 1.1 2002-05-22 15:18:20 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkcmdlist,v 1.2 2006-01-20 08:23:36 shrikant Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -45,9 +44,9 @@ print "</PARA>\n";
 # 3) get & print the library info
 #
 $select = "SELECT * FROM Command ";
+$select.= "Left JOIN ModCmd ON MCcid=Cid ";
 $select.= "LEFT JOIN Standard ON Sid=Cstandard ";
-$select.= "WHERE Cstatus='Included' ";
-$select.= "AND Sname='LSB'";
+$select.= "WHERE MCmid=$moduleid AND Cstatus='Included' ";
 $select.= "ORDER BY Cname";
 print STDERR $select,"\n" if $trace;
 $cth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -58,4 +57,4 @@ for(1..$cth->numrows) {
 
 print "</SECT1>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkcmdlist,v 1.1 2002-05-22 15:18:20 anderson Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mkcmdlist,v 1.2 2006-01-20 08:23:36 shrikant Exp $- -->\n");
