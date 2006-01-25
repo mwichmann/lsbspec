@@ -25,7 +25,7 @@
 
 &desktop-intro;
 &toolkit-qt-contents;
-&packaging-rpm-desktopdep
+&packaging-ia32-desktop-rpm
 &fdl;
 
 </BOOK>
