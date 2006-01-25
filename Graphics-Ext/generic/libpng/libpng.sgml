@@ -6,8 +6,8 @@
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.76 2005/12/02 01:32:08 nick Exp 0 -->
-<!--    at Fri Jan 13 17:46:37 2006 -->
+<!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.78 2006/01/18 19:35:13 rajesh Exp 0 -->
+<!--    at Wed Jan 25 14:00:35 2006 -->
 <SECT1 ID=libpng12>
 <TITLE>Interfaces for libpng12</TITLE>
 <PARA>
@@ -48,12 +48,12 @@ The behavior of the interfaces in this library is specified by the following spe
 <TITLE>Interfaces for PNG Reference library</TITLE>
 <PARA>
 An LSB conforming implementation shall provide the generic functions
-for PNG Reference library specified in <XREF linkend="tbl-libpng12-png-ints">,
+for PNG Reference library specified in <XREF linkend="tbl-libpng12-png-r-ints">,
 with the full mandatory functionality as described in the referenced
 underlying specification.
 </PARA>
 <!--libgroupints-->
-<TABLE id="tbl-libpng12-png-ints">
+<TABLE id="tbl-libpng12-png-r-ints">
 <TITLE>libpng12 - PNG Reference library Function Interfaces</TITLE>
 <TGROUP COLS=3>
 <TBODY>
@@ -227,12 +227,12 @@ underlying specification.
 </TABLE>
 <PARA>
 An LSB conforming implementation shall provide the generic data interfaces
-for PNG Reference library specified in <XREF linkend="tbl-libpng12-png-data">,
+for PNG Reference library specified in <XREF linkend="tbl-libpng12-png-r-data">,
 with the full mandatory functionality as described in the referenced
 underlying specification.
 </PARA>
 <!--libgroupdata-->
-<TABLE id="tbl-libpng12-png-data">
+<TABLE id="tbl-libpng12-png-r-data">
 <TITLE>libpng12 - PNG Reference library Data Interfaces</TITLE>
 <TGROUP COLS=3>
 <TBODY>
@@ -409,7 +409,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 	(PNG_FILTER_NONE | PNG_FILTER_SUB | PNG_FILTER_UP | PNG_FILTER_AVG | \
 	PNG_FILTER_PAETH)
 #define png_info_init(info_ptr)	 \
-	png_info_init_3(&amp;info_ptr, png_sizeof(png_info));
+	png_info_init_3(&amp;amp;info_ptr, png_sizeof(png_info));
 #define png_composite(composite,fg,alpha,bg)	 \
 	{ png_uint_16 temp = (png_uint_16)((png_uint_16)(fg) * \
 	(png_uint_16)(alpha) + (png_uint_16)(bg)*(png_uint_16)(255 - \
@@ -688,6 +688,7 @@ typedef struct png_row_info_struct {
     png_byte pixel_depth;
 } png_row_info;
 typedef png_row_info *png_row_infop;
+typedef png_structp version_1_2_8;
 extern void png_set_gAMA(png_structp, png_infop, double);
 extern void png_set_progressive_read_fn(png_structp, png_voidp,
 					png_progressive_info_ptr,
@@ -1444,7 +1445,7 @@ PNG_INFO_PLTE. Otherwise, png_get_PLTE() shall return 0.
 
 <refnamediv>
 <refname>png_get_bKGD</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>get background color for given image</refpurpose>
 <indexterm id="ix-libpng12-png_get_bKGD-1">
 	<primary>png_get_bKGD</primary></indexterm>
 </refnamediv>
@@ -1457,13 +1458,13 @@ PNG_INFO_PLTE. Otherwise, png_get_PLTE() shall return 0.
 <function>png_get_bKGD</function>
 </funcdef>
 <paramdef>png_structp
-<parameter>arg0</parameter>
+<parameter>png_ptr</parameter>
 </paramdef>
 <paramdef>png_infop
-<parameter>arg1</parameter>
+<parameter>info_ptr</parameter>
 </paramdef>
 <paramdef>png_color_16p *
-<parameter>arg2</parameter>
+<parameter>background</parameter>
 </paramdef>
 
 </funcprototype>
@@ -1472,19 +1473,15 @@ PNG_INFO_PLTE. Otherwise, png_get_PLTE() shall return 0.
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+png_get_bKGD() shall return the background color to "background" if the validity
+flag for background is set.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+On success, png_get_bKGD() shall return PNG_INFO_bKGD. Otherwise, png_get_bKGD()
+shall return 0.
 </para>
 </refsect1>
 </refentry>
@@ -2137,7 +2134,7 @@ format "1.0.0" through "99.99.99zz".
 
 <refnamediv>
 <refname>png_get_oFFs</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>get screen offsets for the given image</refpurpose>
 <indexterm id="ix-libpng12-png_get_oFFs-1">
 	<primary>png_get_oFFs</primary></indexterm>
 </refnamediv>
@@ -2150,19 +2147,19 @@ format "1.0.0" through "99.99.99zz".
 <function>png_get_oFFs</function>
 </funcdef>
 <paramdef>png_structp
-<parameter>arg0</parameter>
+<parameter>png_ptr</parameter>
 </paramdef>
 <paramdef>png_infop
-<parameter>arg1</parameter>
+<parameter>info_ptr</parameter>
 </paramdef>
 <paramdef>png_int_32 *
-<parameter>arg2</parameter>
+<parameter>x_offset</parameter>
 </paramdef>
 <paramdef>png_int_32 *
-<parameter>arg3</parameter>
+<parameter>y_offset</parameter>
 </paramdef>
 <paramdef>int *
-<parameter>arg4</parameter>
+<parameter>unit_type</parameter>
 </paramdef>
 
 </funcprototype>
@@ -2171,19 +2168,21 @@ format "1.0.0" through "99.99.99zz".
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+png_get_oFFs() shall read the positive offset from the left edge of the screen
+from info_ptr to x_offset and the positive offset from the top edge of the
+screen to y_offset. The unit type shall be returned in unit_type, which can take
+the following values
+<simplelist>
+<member> PNG_OFFSET_PIXEL </member>
+<member> PNG_OFFSET_MICROMETER </member>
+</simplelist>
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+On success, png_get_oFFs() shall return PNG_INFO_oFFs. Otherwise, png_get_oFFs()
+shall return 0.
 </para>
 </refsect1>
 </refentry>
@@ -2387,7 +2386,7 @@ for each row of the image.
 
 <refnamediv>
 <refname>png_get_sBIT</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>get number of significant bits for each color channel</refpurpose>
 <indexterm id="ix-libpng12-png_get_sBIT-1">
 	<primary>png_get_sBIT</primary></indexterm>
 </refnamediv>
@@ -2400,13 +2399,13 @@ for each row of the image.
 <function>png_get_sBIT</function>
 </funcdef>
 <paramdef>png_structp
-<parameter>arg0</parameter>
+<parameter>png_ptr</parameter>
 </paramdef>
 <paramdef>png_infop
-<parameter>arg1</parameter>
+<parameter>info_ptr</parameter>
 </paramdef>
 <paramdef>png_color_8p *
-<parameter>arg2</parameter>
+<parameter>sig_bit</parameter>
 </paramdef>
 
 </funcprototype>
@@ -2415,19 +2414,15 @@ for each row of the image.
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+png_get_sBIT() shall return the number of significant bit for each of the gray,
+red, blue and green color channels.
 </para>
 </refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+On success, png_get_sBIT() shall return PNG_INFO_sBIT. Otherwise, png_get_sBIT()
+shall return 0.
 </para>
 </refsect1>
 </refentry>
@@ -4320,7 +4315,7 @@ image is converted to 24-bit RGB.
 
 <refnamediv>
 <refname>png_set_hIST</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>set the histogram of color palette</refpurpose>
 <indexterm id="ix-libpng12-png_set_hIST-1">
 	<primary>png_set_hIST</primary></indexterm>
 </refnamediv>
@@ -4333,13 +4328,13 @@ image is converted to 24-bit RGB.
 <function>png_set_hIST</function>
 </funcdef>
 <paramdef>png_structp
-<parameter>arg0</parameter>
+<parameter>png_ptr</parameter>
 </paramdef>
 <paramdef>png_infop
-<parameter>arg1</parameter>
+<parameter>info_ptr</parameter>
 </paramdef>
 <paramdef>png_uint_16p
-<parameter>arg2</parameter>
+<parameter>hist</parameter>
 </paramdef>
 
 </funcprototype>
@@ -4348,19 +4343,7 @@ image is converted to 24-bit RGB.
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Return Value</title>
-<para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+png_set_hIST() shall set the histogram of palette to "hist".
 </para>
 </refsect1>
 </refentry>
@@ -4374,7 +4357,7 @@ INSERT TEXT HERE
 
 <refnamediv>
 <refname>png_set_iCCP</refname>
-<refpurpose>INSERT PURPOSE HERE</refpurpose>
+<refpurpose>set ICC component</refpurpose>
 <indexterm id="ix-libpng12-png_set_iCCP-1">
 	<primary>png_set_iCCP</primary></indexterm>
 </refnamediv>
@@ -4387,43 +4370,50 @@ INSERT TEXT HERE
 <function>png_set_iCCP</function>
 </funcdef>
 <paramdef>png_structp
-<parameter>arg0</parameter>
+<parameter>png_ptr</parameter>
 </paramdef>
 <paramdef>png_infop
-<parameter>arg1</parameter>
+<parameter>info_ptr</parameter>
 </paramdef>
 <paramdef>png_charp
-<parameter>arg2</parameter>
+<parameter>name</parameter>
 </paramdef>
 <paramdef>int
-<parameter>arg3</parameter>
+<parameter>compression_type</parameter>
 </paramdef>
 <paramdef>png_charp
-<parameter>arg4</parameter>
+<parameter>profile</parameter>
 </paramdef>
 <paramdef>png_uint_32
-<parameter>arg5</parameter>
+<parameter>proflen</parameter>
 </paramdef>
-
 </funcprototype>
 </funcsynopsis>
 </refsynopsisdiv>
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Return Value</title>
-<para>
-INSERT TEXT HERE
-</para>
-</refsect1>
-<refsect1>
-<title>Errors</title>
-<para>
-INSERT TEXT HERE
+png_set_iCCP() shall set the ICC component information to info_ptr. The
+arguments used to describe the ICC profile information have been described
+below:
+<variablelist>
+<varlistentry>
+<term><parameter>name</parameter> </term>
+<listitem><para>ICC profile name</para></listitem> 
+</varlistentry>
+<varlistentry>
+<term><parameter>compression_type</parameter> </term>
+<listitem><para>compression type used must be 0</para></listitem> 
+</varlistentry>
+<varlistentry>
+<term><parameter>profile</parameter> </term>
+<listitem><para>profile data</para></listitem> 
+</varlistentry>
+<varlistentry>
+<term><parameter>proflen</parameter> </term>
+<listitem><para>length of profile data</para></listitem> 
+</varlistentry>
+</variablelist>
 </para>
 </refsect1>
 </refentry>
@@ -5940,7 +5930,7 @@ Process and write "num_rows" rows of image data starting from "row".
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.76 2005/12/02 01:32:08 nick Exp 0 -->
+<!--    by $Header: //cvsroot/lsb/lsbspec/mklibspec,v 1.78 2006/01/18 19:35:13 rajesh Exp 0 -->
 
 
 </CHAPTER>

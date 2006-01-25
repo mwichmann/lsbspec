@@ -1,5 +1,5 @@
 
-SUBDIRS= libpng libjpeg libfontconfig fontconfig-commands
+SUBDIRS= libpng libjpeg fontconfig-commands libfontconfig 
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
