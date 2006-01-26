@@ -40,6 +40,8 @@ conforming system.
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
+<TITLE>References</TITLE>
+<SECT1 ID="normativerefssect">
 <TITLE>Normative References</TITLE>
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">
@@ -58,6 +60,21 @@ the specification is to be considered normative.
 include(standards.sgml)
 </TGROUP>
 </TABLE>
+</SECT1>
+<SECT1 ID="informativerefs">
+<TITLE>Informative References/Bibliography</TITLE>
+<PARA>
+In addition, the specifications listed below provide essential background information
+to implementors of this specification. These references are included for information
+only.
+</PARA>
+<TABLE>
+<TITLE>Other References</TITLE>
+<TGROUP COLS=3>
+include(`references.sgml')
+</TGROUP>
+</TABLE>
+</SECT1>
 </CHAPTER>
 
 <CHAPTER ID="REQUIREMENTS">
