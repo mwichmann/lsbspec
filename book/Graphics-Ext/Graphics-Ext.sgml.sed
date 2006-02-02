@@ -14,6 +14,7 @@
 <TITLE>LSB Graphics Extensions Specification</TITLE>
 <COPYRIGHT>
 <YEAR>2005</YEAR>
+<YEAR>2006</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;

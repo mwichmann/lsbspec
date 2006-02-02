@@ -13,6 +13,7 @@
 <TITLE>Java Placeholder Specification</TITLE>
 <COPYRIGHT>
 <YEAR>2005</YEAR>
+<YEAR>2006</YEAR>
 <HODER>Linux Stadards Base</HOLDER>
 </COPYRIGHT>
 &legal
