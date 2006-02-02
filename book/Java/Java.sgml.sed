@@ -10,7 +10,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>Java Placeholder Specificatoin</TITLE>
+<TITLE>Java Placeholder Specification</TITLE>
 <COPYRIGHT>
 <YEAR>2005</YEAR>
 <HODER>Linux Stadards Base</HOLDER>
