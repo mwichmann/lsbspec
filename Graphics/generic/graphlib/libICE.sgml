@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
-<!--    at Wed Oct 12 18:27:05 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.78 2006/01/18 19:35:13 rajesh Exp 0 -->
+<!--    at Sun Feb  5 21:42:44 2006 -->
 <SECT1 ID=libICE>
 <TITLE>Interfaces for libICE</TITLE>
 <PARA>
@@ -42,12 +42,12 @@ The behavior of the interfaces in this library is specified by the following spe
 <TITLE>Interfaces for ICE Functions</TITLE>
 <PARA>
 An LSB conforming implementation shall provide the generic functions
-for ICE Functions specified in <XREF linkend="tbl-libICE-ice-ints">,
+for ICE Functions specified in <XREF linkend="tbl-libICE-ice-f-ints">,
 with the full mandatory functionality as described in the referenced
 underlying specification.
 </PARA>
 <!--libgroupints-->
-<TABLE id="tbl-libICE-ice-ints">
+<TABLE id="tbl-libICE-ice-f-ints">
 <TITLE>libICE - ICE Functions Function Interfaces</TITLE>
 <TGROUP COLS=4>
 <TBODY>
@@ -163,31 +163,44 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 
 typedef void *IcePointer;
 typedef enum {
-    IcePoAuthHaveReply, IcePoAuthRejected, IcePoAuthFailed,
-	IcePoAuthDoneCleanup
+    IcePoAuthHaveReply,
+    IcePoAuthRejected,
+    IcePoAuthFailed,
+    IcePoAuthDoneCleanup
 } IcePoAuthStatus;
 typedef enum {
-    IcePaAuthContinue, IcePaAuthAccepted, IcePaAuthRejected,
-	IcePaAuthFailed
+    IcePaAuthContinue,
+    IcePaAuthAccepted,
+    IcePaAuthRejected,
+    IcePaAuthFailed
 } IcePaAuthStatus;
 typedef enum {
-    IceConnectPending, IceConnectAccepted, IceConnectRejected,
-	IceConnectIOError
+    IceConnectPending,
+    IceConnectAccepted,
+    IceConnectRejected,
+    IceConnectIOError
 } IceConnectStatus;
 typedef enum {
-    IceProtocolSetupSuccess, IceProtocolSetupFailure,
-	IceProtocolSetupIOError, IceProtocolAlreadyActive
+    IceProtocolSetupSuccess,
+    IceProtocolSetupFailure,
+    IceProtocolSetupIOError,
+    IceProtocolAlreadyActive
 } IceProtocolSetupStatus;
 typedef enum {
-    IceAcceptSuccess, IceAcceptFailure, IceAcceptBadMalloc
+    IceAcceptSuccess,
+    IceAcceptFailure,
+    IceAcceptBadMalloc
 } IceAcceptStatus;
 typedef enum {
-    IceClosedNow, IceClosedASAP, IceConnectionInUse,
-	IceStartedShutdownNegotiation
+    IceClosedNow,
+    IceClosedASAP,
+    IceConnectionInUse,
+    IceStartedShutdownNegotiation
 } IceCloseStatus;
 typedef enum {
-    IceProcessMessagesSuccess, IceProcessMessagesIOError,
-	IceProcessMessagesConnectionClosed
+    IceProcessMessagesSuccess,
+    IceProcessMessagesIOError,
+    IceProcessMessagesConnectionClosed
 } IceProcessMessagesStatus;
 
 typedef struct {
@@ -231,12 +244,12 @@ extern void IceAppLockConn(IceConn);
 extern void IceAppUnlockConn(IceConn);
 extern int IceCheckShutdownNegotiation(IceConn);
 extern IceCloseStatus IceCloseConnection(IceConn);
-extern char *IceComposeNetworkIdList(IceListenObj *, int);
+extern char *IceComposeNetworkIdList(int, IceListenObj *);
 extern int IceConnectionNumber(IceConn);
 extern IceConnectStatus IceConnectionStatus(IceConn);
 extern char *IceConnectionString(IceConn);
 extern int IceFlush(IceConn);
-extern void IceFreeListenObjs(IceListenObj *, int);
+extern void IceFreeListenObjs(int, IceListenObj *);
 extern IcePointer IceGetConnectionContext(IceConn);
 extern int IceGetInBufSize(IceConn);
 extern int IceGetListenConnectionNumber(IceListenObj);
@@ -245,35 +258,37 @@ extern int IceGetOutBufSize(IceConn);
 extern int IceInitThreads(void);
 extern unsigned long int IceLastReceivedSequenceNumber(IceConn);
 extern unsigned long int IceLastSentSequenceNumber(IceConn);
-extern int IceListenForConnections(char *, int, IceListenObj * *, int *);
-extern int IceListenForWellKnownConnections(IceListenObj * *, int *,
-					    char *, char *, int);
-extern IceConn IceOpenConnection(char *, int, int, int, IcePointer,
+extern int IceListenForConnections(int *, IceListenObj * *, int, char *);
+extern int IceListenForWellKnownConnections(char *, int *,
+					    IceListenObj * *, int, char *);
+extern IceConn IceOpenConnection(char *, IcePointer, int, int, int,
 				 char *);
 extern int IcePing(IceConn, IcePingReplyProc, IcePointer);
-extern IceProcessMessagesStatus IceProcessMessages(int *, IceConn,
-						   IceReplyWaitInfo *);
+extern IceProcessMessagesStatus IceProcessMessages(IceConn,
+						   IceReplyWaitInfo *,
+						   int *);
 extern int IceProtocolRevision(IceConn);
-extern IceProtocolSetupStatus IceProtocolSetup(char **, char **, char *,
-					       int, IcePointer, int *, int,
-					       IceConn, int *, int);
-extern int IceProtocolShutdown(int, IceConn);
+extern IceProtocolSetupStatus IceProtocolSetup(IceConn, int, IcePointer,
+					       int, int *, int *, char **,
+					       char **, int, char *);
+extern int IceProtocolShutdown(IceConn, int);
 extern int IceProtocolVersion(IceConn);
-extern int IceRegisterForProtocolReply(IceProtocolActivateProc,
-				       IceProtocolSetupProc,
+extern int IceRegisterForProtocolReply(char *, char *, char *, int,
+				       IcePaVersionRec *, int, char **,
+				       IcePaAuthProc *,
 				       IceHostBasedAuthProc,
-				       IcePaAuthProc *, char **, int,
-				       IcePaVersionRec *, char *, char *,
-				       int, char *, IceIOErrorProc);
-extern int IceRegisterForProtocolSetup(char **, int, IcePoAuthProc *,
-				       char *, int, char *, char *,
-				       IceIOErrorProc, IcePoVersionRec *);
+				       IceProtocolSetupProc,
+				       IceProtocolActivateProc,
+				       IceIOErrorProc);
+extern int IceRegisterForProtocolSetup(char *, char *, char *, int,
+				       IcePoVersionRec *, int, char **,
+				       IcePoAuthProc *, IceIOErrorProc);
 extern char *IceRelease(IceConn);
 extern void IceRemoveConnectionWatch(IceWatchProc, IcePointer);
 extern IceErrorHandler IceSetErrorHandler(IceErrorHandler);
-extern void IceSetHostBasedAuthProc(IceHostBasedAuthProc, IceListenObj);
+extern void IceSetHostBasedAuthProc(IceListenObj, IceHostBasedAuthProc);
 extern IceIOErrorHandler IceSetIOErrorHandler(IceIOErrorHandler);
-extern void IceSetShutdownNegotiation(int, IceConn);
+extern void IceSetShutdownNegotiation(IceConn, int);
 extern int IceSwapping(IceConn);
 extern char *IceVendor(IceConn);
 </SCREEN>
@@ -304,13 +319,13 @@ extern char *IceAuthFileName(void);
 extern void IceFreeAuthFileEntry(IceAuthFileEntry *);
 extern char *IceGenerateMagicCookie(int);
 extern IceAuthFileEntry *IceGetAuthFileEntry(char *, char *, char *);
-extern int IceLockAuthFile(char *, long int, int, int);
+extern int IceLockAuthFile(char *, int, int, long int);
 extern IceAuthFileEntry *IceReadAuthFileEntry(FILE);
-extern void IceSetPaAuthData(IceAuthDataEntry *, int);
+extern void IceSetPaAuthData(int, IceAuthDataEntry *);
 extern void IceUnlockAuthFile(char *);
 extern int IceWriteAuthFileEntry(FILE, IceAuthFileEntry *);
 </SCREEN>
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.78 2006/01/18 19:35:13 rajesh Exp 0 -->

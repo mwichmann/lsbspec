@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
-<!--    at Wed Oct 12 18:27:05 2005 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.78 2006/01/18 19:35:13 rajesh Exp 0 -->
+<!--    at Sun Feb  5 21:42:44 2006 -->
 <SECT1 ID=libSM>
 <TITLE>Interfaces for libSM</TITLE>
 <PARA>
@@ -42,12 +42,12 @@ The behavior of the interfaces in this library is specified by the following spe
 <TITLE>Interfaces for Session Management Functions</TITLE>
 <PARA>
 An LSB conforming implementation shall provide the generic functions
-for Session Management Functions specified in <XREF linkend="tbl-libSM-ses-ints">,
+for Session Management Functions specified in <XREF linkend="tbl-libSM-sessi-ints">,
 with the full mandatory functionality as described in the referenced
 underlying specification.
 </PARA>
 <!--libgroupints-->
-<TABLE id="tbl-libSM-ses-ints">
+<TABLE id="tbl-libSM-sessi-ints">
 <TITLE>libSM - Session Management Functions Function Interfaces</TITLE>
 <TGROUP COLS=4>
 <TBODY>
@@ -159,7 +159,9 @@ typedef struct {
 } SmProp;
 
 typedef enum {
-    SmcClosedNow, SmcClosedASAP, SmcConnectionInUse
+    SmcClosedNow,
+    SmcClosedASAP,
+    SmcConnectionInUse
 } SmcCloseStatus;
 
 typedef void (*SmcSaveYourselfPhase2Proc) (void);
@@ -191,24 +193,23 @@ typedef void (*SmsErrorHandler) (void);
 extern void SmFreeProperty(SmProp *);
 extern void SmFreeReasons(int, char **);
 extern char *SmcClientID(SmcConn);
-extern SmcCloseStatus SmcCloseConnection(char **, int, SmcConn);
-extern void SmcDeleteProperties(char **, int, SmcConn);
+extern SmcCloseStatus SmcCloseConnection(SmcConn, int, char **);
+extern void SmcDeleteProperties(SmcConn, int, char **);
 extern IceConn SmcGetIceConnection(SmcConn);
-extern int SmcGetProperties(SmPointer, SmcPropReplyProc, SmcConn);
+extern int SmcGetProperties(SmcConn, SmcPropReplyProc, SmPointer);
 extern void SmcInteractDone(SmcConn, int);
-extern int SmcInteractRequest(SmcConn, SmPointer, SmcInteractProc, int);
-extern void SmcModifyCallbacks(SmcConn, SmcCallbacks *, unsigned long int);
-extern SmcConn SmcOpenConnection(char **, SmPointer, int, int, char *,
-				 char *, SmcCallbacks *, unsigned long int,
-				 int, char *);
+extern int SmcInteractRequest(SmcConn, int, SmcInteractProc, SmPointer);
+extern void SmcModifyCallbacks(SmcConn, unsigned long int, SmcCallbacks *);
+extern SmcConn SmcOpenConnection(char *, SmPointer, int, int,
+				 unsigned long int, SmcCallbacks *, char *,
+				 char **, int, char *);
 extern int SmcProtocolRevision(SmcConn);
 extern int SmcProtocolVersion(SmcConn);
 extern char *SmcRelease(SmcConn);
-extern void SmcRequestSaveYourself(int, int, int, SmcConn, int, int);
-extern int SmcRequestSaveYourselfPhase2(SmPointer,
-					SmcSaveYourselfPhase2Proc,
-					SmcConn);
-extern void SmcSaveYourselfDone(int, SmcConn);
+extern void SmcRequestSaveYourself(SmcConn, int, int, int, int, int);
+extern int SmcRequestSaveYourselfPhase2(SmcConn, SmcSaveYourselfPhase2Proc,
+					SmPointer);
+extern void SmcSaveYourselfDone(SmcConn, int);
 extern SmcErrorHandler SmcSetErrorHandler(SmcErrorHandler);
 extern void SmcSetProperties(SmcConn, int, SmProp * *);
 extern char *SmcVendor(SmcConn);
@@ -218,15 +219,15 @@ extern char *SmsClientID(SmsConn);
 extern void SmsDie(SmsConn);
 extern char *SmsGenerateClientID(SmsConn);
 extern IceConn SmsGetIceConnection(SmsConn);
-extern int SmsInitialize(char *, int, IceHostBasedAuthProc, SmPointer,
-			 SmsNewClientProc, char *, char *);
+extern int SmsInitialize(char *, char *, SmsNewClientProc, SmPointer,
+			 IceHostBasedAuthProc, int, char *);
 extern void SmsInteract(SmsConn);
 extern int SmsProtocolRevision(SmsConn);
 extern int SmsProtocolVersion(SmsConn);
-extern int SmsRegisterClientReply(char *, SmsConn);
-extern void SmsReturnProperties(int, SmsConn, SmProp * *);
+extern int SmsRegisterClientReply(SmsConn, char *);
+extern void SmsReturnProperties(SmsConn, int, SmProp * *);
 extern void SmsSaveComplete(SmsConn);
-extern void SmsSaveYourself(int, int, int, SmsConn, int);
+extern void SmsSaveYourself(SmsConn, int, int, int, int);
 extern void SmsSaveYourselfPhase2(SmsConn);
 extern SmsErrorHandler SmsSetErrorHandler(SmsErrorHandler);
 extern void SmsShutdownCancelled(SmsConn);
@@ -234,4 +235,4 @@ extern void SmsShutdownCancelled(SmsConn);
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.75 2005/10/12 22:24:36 nick Exp 0 -->
+<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.78 2006/01/18 19:35:13 rajesh Exp 0 -->
