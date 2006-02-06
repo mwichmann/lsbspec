@@ -20,16 +20,30 @@ complete specification for a platform consists of the common specification plus
 one of the architecture specifications.</p>
 </blockquote>
 
+<H1>Current LSB 3.1 Release Candidate 1 (RC1) Specifications</H1>
+<p>
+Please review the documents
+<A HREF="http://www.linuxbase.org/~mats/rcspecs.html/">HERE</A>.
+Release candidates are for LSB-Graphics, LSB-CXX (C++),
+and LSB-Desktop. LSB-Core is already released at 3.1,
+see below for links.
+</p>
+
 <H1>Current in-progress Snapshots of the LSB Specification</H1>
 <p>
 Current snapshots can be found <A HREF="specs.php">HERE</A>.
 </p>
 
-<H1>Current LSB Specification</H1>
+<H1>Released LSB Specification</H1>
 <p>
-The current LSB specification is version 3.1 which can be found
-<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0>Here</A>. This contains the approved 
-ISO LSB Standard (IS 23360:2005).</p>
+The current LSB-Core specification is version 3.1 which can be found
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0>Here</A>.
+This contains the approved ISO LSB Standard (IS 23360:2006).
+The current released LSB-Graphics and LSB-CXX (C++) specifications
+are version 3.0 which may be found 
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_3_0_0>lower down</A>.
+on the same page.
+</p>
 </p>
 
 <H1>Older versions of the Specification</H1>
