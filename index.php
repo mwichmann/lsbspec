@@ -23,7 +23,7 @@ one of the architecture specifications.</p>
 <H1>Current LSB 3.1 Release Candidate 1 (RC1) Specifications</H1>
 <p>
 Please review the documents
-<A HREF="http://www.linuxbase.org/~mats/rcspecs.html/">HERE</A>.
+<A HREF="http://www.linuxbase.org/~mats/rcspecs.html">HERE</A>.
 Release candidates are for LSB-Graphics, LSB-CXX (C++),
 and LSB-Desktop. LSB-Core is already released at 3.1,
 see below for links.
