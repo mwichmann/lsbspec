@@ -15,43 +15,31 @@
 
 %entities;
 
-<!ENTITY % iso "IGNORE">
-<![%iso;[
-<!ENTITY % fsg "IGNORE">
-<!ENTITY copyrightyear "2006">
-<!ENTITY copyrightholder "ISO/IEC">
-]]>
-<!ENTITY % fsg "INCLUDE">
-<![%fsg;[
-<!ENTITY copyrightyear "2005">
-<!ENTITY copyrightholder "Free Standards Group">
-]]>
-
 ]>
 
 <BOOK>
 <BOOKINFO>
-<EDITION>Embedded Specification</EDITION>
+<EDITION>LSB Embedded Specification</EDITION>
 <TITLE>&spectitle; &specversion;</TITLE>
 <COPYRIGHT>
 <YEAR>2000</YEAR>
 <YEAR>2001</YEAR>
 <YEAR>2002</YEAR>
 <YEAR>2003</YEAR>
+<YEAR>2004</YEAR>
+<YEAR>2005</YEAR>
+<YEAR>2006</YEAR>
 <HOLDER>Free Standards Group</HOLDER>
 </COPYRIGHT>
 &legal;
 </BOOKINFO>
 
-
 &lsb-generic-intro;
-
 <PART ID=ELF-Embedded>
 <TITLE>Executable and Linking Format (ELF)</TITLE>
 &elf-intro;
 &elf-contents;
 </PART>
-
 &lsb-contents;
 &lsb-generic-appA;
 &lsb-generic-appB;
