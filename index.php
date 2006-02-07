@@ -15,23 +15,25 @@ virtual("/themes/FreeStandards2/contentmain.html");
 
 <blockquote style="background-color: #ffffdd">
 <p>
-The LSB specification is made up of several components.
-The base specification consists of Core, Graphics and CXX (C++).
-The specification is extended with Desktop.
+The LSB specification is made up of several components, known
+as modules.  The base specification consists the of Core,
+Graphics and CXX (C++) modules.
+The specification is further extended with the Desktop set.
 Each of these may be subdivided into a common document plus
 architecture-specific documents (in some cases this
 subdivision is not needed). A complete binary standard for
-a particular processor architecture argument consists of the set of
+a particular processor architecture consists of the set of
 necessary common documents plus the matching set of
 architecture-specific documents.
 </p>
 <p>
 Some of the components are further subdivided into functional
-units known as books.  For convenience, the functional units
-may be used for review purposes (for example, if your interest
-is in packaging, you may wish to review the packaging book
-by itself.  The "books" are not released by the LSB project
-as standalone specifications.
+units.  For convenience, the functional units may be used for
+review purposes (for example, if your interest is in packaging,
+you may wish to review the packaging "individual specification"
+by itself.  The individual specifications (sometimes called
+"books") are <b>not</b> released by the LSB project on a standalone
+basis, only rolled up into the specification modules.
 </p>
 </blockquote>
 
