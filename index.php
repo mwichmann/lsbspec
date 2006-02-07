@@ -19,9 +19,9 @@ The LSB specification is made up of several components, known
 as modules.  The base specification consists the of Core,
 Graphics and CXX (C++) modules.
 The specification is further extended with the Desktop set.
-Each of these may be subdivided into a common document plus
-architecture-specific documents (in some cases this
-subdivision is not needed). A complete binary standard for
+Each module might be subdivided into a common document plus
+architecture-specific documents (in some cases the
+division is not needed). A complete binary standard for
 a particular processor architecture consists of the set of
 necessary common documents plus the matching set of
 architecture-specific documents.
@@ -29,7 +29,7 @@ architecture-specific documents.
 <p>
 Some of the components are further subdivided into functional
 units.  For convenience, the functional units may be used for
-review purposes (for example, if your interest is in packaging,
+review purposes. For example, if your interest is in packaging,
 you may wish to review the packaging "individual specification"
 by itself.  The individual specifications (sometimes called
 "books") are <b>not</b> released by the LSB project on a standalone
