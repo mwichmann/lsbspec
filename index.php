@@ -14,10 +14,25 @@ virtual("/themes/FreeStandards2/contentmain.html");
 ?>
 
 <blockquote style="background-color: #ffffdd">
-<p>The LSB specification is composed of a set of specifications:
-a single common specification, and architecture specific specifications. The
-complete specification for a platform consists of the common specification plus
-one of the architecture specifications.</p>
+<p>
+The LSB specification is made up of several components.
+The base specification consists of Core, Graphics and CXX (C++).
+The specification is extended with Desktop.
+Each of these may be subdivided into a common document plus
+architecture-specific documents (in some cases this
+subdivision is not needed). A complete binary standard for
+a particular processor architecture argument consists of the set of
+necessary common documents plus the matching set of
+architecture-specific documents.
+</p>
+<p>
+Some of the components are further subdivided into functional
+units known as books.  For convenience, the functional units
+may be used for review purposes (for example, if your interest
+is in packaging, you may wish to review the packaging book
+by itself.  The "books" are not released by the LSB project
+as standalone specifications.
+</p>
 </blockquote>
 
 <H1>Current LSB 3.1 Release Candidate 1 (RC1) Specifications</H1>
