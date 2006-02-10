@@ -492,18 +492,30 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 
 ;;
 ;; fixes for ISO style - include a running header and footer.
+;; there could be multiple years ... not sure if that would work!
 ;;
 (define ($copyright-header-footer$)
-  (let* ((title     (select-elements (descendants (sgml-root-element))
-		                     (normalize "holder"))))
-  (if (node-list-empty? title)
+  (let* ((copyright (select-elements (descendants (sgml-root-element))
+		                     (normalize "copyright")))
+         (year      (select-elements (descendants copyright)
+		                     (normalize "year")))
+	 (holder    (select-elements (descendants copyright)
+	                             (normalize "holder"))))
+  (if (node-list-empty? copyright)
       (empty-sosofo)
       (make sequence
 	  font-weight: 'bold
 	  (literal (dingbat "copyright"))
 	  (literal " ")
 	  (with-mode hf-mode
-	      (process-node-list title))))))
+	      (process-node-list year))
+	  (literal " ") 
+	  (with-mode hf-mode
+	      (process-node-list holder))
+	  ;; (literal " ") 
+          ;; (literal (dingbat "em-dash"))
+	  ;; (literal " All rights reserved")
+      ))))
 
 (define ($edition-header-footer$)
   (let* ((title     (select-elements (descendants (sgml-root-element))
