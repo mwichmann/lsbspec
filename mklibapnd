@@ -52,7 +52,7 @@ $Aname=$entry{'Aname'};
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.20 2006-01-24 01:17:04 rajesh Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.21 2006-02-14 22:10:41 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -83,10 +83,12 @@ $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
 
 $select = "SELECT Iname,Istandard,Vname,Sname ";
-$select.= "FROM Interface,LGInt,LibGroup ";
+$select.= "FROM Interface ";
+$select.= "INNER JOIN LGInt ON Iid=LGIint ";
+$select.= "INNER JOIN LibGroup ON LGIlibg=LGid ";
 $select.= "LEFT JOIN Version ON Vid=Iversion ";
 $select.= "LEFT JOIN Standard ON Sid=Istandard ";
-$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
+$select.= "WHERE Itype='Function' ";
 $select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
 $select.= "ORDER BY Iname";
 $inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -209,10 +211,12 @@ print "</TABLE>\n";
 	local(*xrefs);
 	local(*refs);
 	$select = "SELECT Iname,Istandard,Vname,Sname ";
-	$select.= "FROM Interface,LGInt,LibGroup ";
+	$select.= "FROM Interface ";
+	$select.= "INNER JOIN LGInt ON Iid=LGIint ";
+	$select.= "INNER JOIN LibGroup ON LGIlibg=LGid ";
 	$select.= "LEFT JOIN Version ON Vid=Iversion ";
 	$select.= "LEFT JOIN Standard ON Sid=Istandard ";
-	$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Data' ";
+	$select.= "WHERE Itype='Data' ";
 	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
 	$select.= "ORDER BY Iname";
 	print STDERR $select,"\n" if $trace;
@@ -258,4 +262,4 @@ print "</SECT1>\n";
 }
 print "</APPENDIX>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.20 2006-01-24 01:17:04 rajesh Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibapnd,v 1.21 2006-02-14 22:10:41 nick Exp $- -->\n");
