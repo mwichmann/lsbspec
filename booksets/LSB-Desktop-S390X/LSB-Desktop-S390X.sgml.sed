@@ -3,6 +3,7 @@
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "../../book/LSB-generic/contents">
 <!entity toolkit-qt-contents SYSTEM "../../book/Toolkit_Qt-S390X/contents">
+<!entity toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk-S390X/contents">
 
 <!entity specversion "LSBVERSION">
 <!entity spectitle "Linux Standard Base Desktop Specification for S390X">
@@ -24,6 +25,7 @@
 
 
 &desktop-intro;
+&toolkit-gtk-contents;
 &toolkit-qt-contents;
 &packaging-s390x-desktop-rpm
 &fdl;
