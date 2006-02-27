@@ -405,7 +405,7 @@ sub getinterfaces($$$$)
 	if( $i > 0 ) {
 		$arch_type = ($archname eq "All") ? "generic" : "architecture specific";
 		$tblname = sprintf "tbl-%s-%s-%s", $safeLname, nmhash($LGname), $name;
-		$tblname =~ s/\s/-/g;
+		$tblname =~ s/[^A-Za-z0-9.]+/-/g;
 		$tblname =~ s/\+/x/g;		# change the C++ names into Cxx
 		print "<PARA>\n";
 		print "An LSB conforming implementation shall provide the $arch_type $type\n";
@@ -442,11 +442,12 @@ sub nmhash($)
 {
 	local ($name) = @_;
 
-	# generate a three char name from the (long) libgroup name
+	# generate a five char name from the (long) libgroup name
 	local ($sname) = lc(substr($name, 0, 5));
 	$namehash{$sname} = $name if (!defined ($namehash{$sname}));
 	until (!defined($namehash{$sname}) || ($namehash{$sname} eq $name)) {
 		$sname++;
+		$sname +~ s/_/-/g;
 	}
 	$namehash{$sname} = $name;
 	return $sname;
@@ -527,7 +528,7 @@ $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.78 2006-01-18 19:35:13 rajesh Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.79 2006-02-27 17:31:10 nick Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -803,4 +804,4 @@ if($sth->numrows) {
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.78 2006-01-18 19:35:13 rajesh Exp $- -->\n");
+printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.79 2006-02-27 17:31:10 nick Exp $- -->\n");
