@@ -7,7 +7,6 @@
 <!ENTITY elf-contents SYSTEM "../../book/ELF-generic/contents">
 <!ENTITY lsb-contents SYSTEM "../../book/LSB-generic/contents">
 <!ENTITY packaging-contents SYSTEM "../../book/Packaging-generic/contents">
-<!ENTITY desktop-contents SYSTEM "../../book/Desktop/contents">
 
 <!ENTITY specversion "LSBVERSION">
 <!ENTITY spectitle "Linux Standard Base Core Specification">
