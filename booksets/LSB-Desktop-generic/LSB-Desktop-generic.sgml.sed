@@ -4,6 +4,7 @@
 <!entity contents SYSTEM "../../book/LSB-generic/contents">
 <!entity graphics-ext-contents SYSTEM "../../book/Graphics-Ext/contents">
 <!entity toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk/contents">
+<!entity toolkit-qt-contents SYSTEM "../../book/Toolkit_Qt/contents">
 <!entity toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3/contents">
 <!entity xml-contents SYSTEM "../../book/XML/contents">
 
