@@ -13,10 +13,10 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -t Standard -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99','Png12','libJPEG','libXML2','fontconfig','QtCore','QtGui','QtXml','QtNetwork','QtOpenGL','QtSql','QtSvg'" >standards.sgml
-	../../mkstandardsgmltable -a All -t Reference -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99','Png12','libJPEG','libXML2','fontconfig','QtCore','QtGui','QtXml','QtNetwork','QtOpenGL','QtSql','QtSvg'" >references.sgml
+	../../mkstandardsgmltable -a All -t Standard -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99','Png12','libJPEG','libXML2','fontconfig','qt-mt'" >standards.sgml
+	../../mkstandardsgmltable -a All -t Reference -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99','Png12','libJPEG','libXML2','fontconfig','qt-mt'" >references.sgml
 	../../mklibsgmltable -a All -m LSB_Toolkit_Gtk > glibraries.sgml
-	../../mklibsgmltable -a All -m LSB_Toolkit_Qt > qlibraries.sgml
+	../../mklibsgmltable -a All -m LSB_Toolkit_Qt3 > qlibraries.sgml
 	../../mklibsgmltable -a All -m LSB_Graphics_Ext > elibraries.sgml
 	../../mklibsgmltable -a All -m LSB_XML > xlibraries.sgml
 
