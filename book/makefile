@@ -10,7 +10,7 @@ SUBDIRS= Graphics errata wip \
 	Packaging-AMD64 Packaging-IA32 Packaging-IA64 Packaging-PPC32 \
 	Packaging-PPC64 Packaging-S390 Packaging-S390X \
 	Packaging-generic \
-	Graphics-Ext Toolkit_Gtk Toolkit_Qt XML 
+	Graphics-Ext Toolkit_Gtk Toolkit_Qt Toolkit_Qt3 XML 
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
