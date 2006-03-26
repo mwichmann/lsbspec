@@ -20,7 +20,7 @@
 &legal;
 </BOOKINFO>
 
-&toolkit-qt-intro;
+&toolkit-qt4-intro;
 &contents;
 &fdl;
 

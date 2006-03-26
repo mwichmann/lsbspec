@@ -23,7 +23,7 @@
 &legal;
 </BOOKINFO>
 
-&toolkit-qt3-intro;
+&toolkit-qt4-intro;
 &contents;
 &fdl;
 
