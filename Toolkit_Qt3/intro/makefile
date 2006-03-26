@@ -13,7 +13,7 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'qt-mt'" >standards.sgml
+	../../mkstandardsgmltable -a All -s "'qt-mt'","ISOC99","ISOCXX" >standards.sgml
 	../../mklibsgmltable -a All -m LSB_Toolkit_Qt3 >libraries.sgml
 
 
