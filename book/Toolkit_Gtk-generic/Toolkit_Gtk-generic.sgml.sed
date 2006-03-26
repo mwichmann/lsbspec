@@ -4,7 +4,7 @@
 <!entity contents SYSTEM "contents">
 
 <!entity specversion "LSBVERSION">
-<!entity spectitle "LSB Generic Qt3 Toolkit Module Specification">
+<!entity spectitle "LSB Generic Gtk Toolkit Module Specification">
 
 %entities;
 
