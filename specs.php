@@ -1,4 +1,18 @@
-<?
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title>LSB Specifications</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+ </head>
+ <body>
+
+<?php
+virtual("/themes/FreeStandards2/contentheader.html");
+virtual("/themes/FreeStandards2/nav.linuxbase.php");
+virtual("/themes/FreeStandards2/contentmain.html");
+?>
+<?php
 error_reporting(0);
 include("objects.php");
 
@@ -38,24 +52,11 @@ function addProject($project) {
 }
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
- <head>
-  <title>LSB Specifications</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
- </head>
- <body>
-<?
-virtual("/themes/FreeStandards2/contentheader.html");
-virtual("/themes/FreeStandards2/nav.linuxbase.php");
-virtual("/themes/FreeStandards2/contentmain.html");
-?>
 
 <P>
 You can review the specification using either the Module documents, or
 the individual specification which are found below.
-<?
+<?php
 $path = eregi_replace("/$", "", $_SERVER["PATH_INFO"]);
 $project = $r;
 $navstr = "";
@@ -87,7 +88,7 @@ virtual("/themes/FreeStandards2/contentfooter.html");
 ?>
  </body>
 </html>
-<?
+<?php
 
 function navForm($navstr, $project, $filter) {
 	global $colours;
