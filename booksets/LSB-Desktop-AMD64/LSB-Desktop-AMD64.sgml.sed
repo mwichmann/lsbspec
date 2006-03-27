@@ -2,7 +2,6 @@
 
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "../../book/LSB-generic/contents">
-<!entity toolkit-qt-contents SYSTEM "../../book/Toolkit_Qt-AMD64/contents">
 <!entity toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3-AMD64/contents">
 <!entity toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk-AMD64/contents">
 
@@ -15,7 +14,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>&spectitle &specversion</TITLE>
+<TITLE>&spectitle; &specversion;</TITLE>
 <COPYRIGHT>
 <YEAR>2005</YEAR>
 <YEAR>2006</YEAR>

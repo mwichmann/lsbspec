@@ -4,8 +4,7 @@
 <!entity contents SYSTEM "../../book/LSB-generic/contents">
 <!entity graphics-ext-contents SYSTEM "../../book/Graphics-Ext/contents">
 <!entity toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk/contents">
-<!entity toolkit-qt-contents SYSTEM "../../book/Toolkit_Qt/contents">
-<!entity toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3/contents">
+<!entity toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3-generic/contents">
 <!entity xml-contents SYSTEM "../../book/XML/contents">
 
 <!entity specversion "LSBVERSION">
@@ -17,7 +16,7 @@
 
 <BOOK>
 <BOOKINFO>
-<TITLE>&spectitle &specversion</TITLE>
+<TITLE>&spectitle; &specversion;</TITLE>
 <COPYRIGHT>
 <YEAR>2005</YEAR>
 <YEAR>2006</YEAR>
@@ -32,7 +31,7 @@
 &toolkit-gtk-contents;
 &toolkit-qt3-contents;
 &xml-contents;
-&packaging-rpm-desktopdep
+&packaging-rpm-desktopdep;
 &fdl;
 
 </BOOK>
