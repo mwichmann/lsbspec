@@ -39,17 +39,22 @@ basis, only rolled up into the specification modules.
 
 <H1>LSB 3.1 Release Candidate 1 (RC1) Specifications</H1>
 <p>
-Please review the documents
-<A HREF="http://lsb.freestandards.org/~mats/lsbspec-3.1rc1/specs.php">HERE</A>.
-Release candidates are for LSB-Graphics, LSB-CXX (C++),
-and LSB-Desktop. 
+Please review these LSB 3.1
+<A HREF="http://lsb.freestandards.org/~mats/lsbspec-3.1rc1/specs.php">
+release candidate specifications</A>.
+Available for review are LSB-Graphics, LSB-CXX (C++), and LSB-Desktop. 
 <A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0">
-LSB-Core 3.1</A> is already released.
+LSB-Core 3.1</A> is already released. </p>
+<p>
+<em>Note</em>: some structural changes were proposed just as rc2
+was finalized. As a result of the discussion, rc2 was not published;
+until rc3 is issued in early April, the Current Snapshot specification
+below will be more reflective of the state of the specification.
 </p>
 
-<H1>Current Progress Snapshots of the LSB Specification</H1>
+<H1>Current Snapshots of the LSB Specification</H1>
 <p>
-Current <A HREF="specs.php">in-progress snapshots</A> are also available.
+<A HREF="specs.php">Current in-progress snapshots</A> are also available.
 These specifications reflect work in progress and can be commented on,
 but are not intended to be released as is.
 </p>
