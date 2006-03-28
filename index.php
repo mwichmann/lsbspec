@@ -42,35 +42,38 @@ basis, only rolled up into the specification modules.
 Please review the documents
 <A HREF="http://lsb.freestandards.org/~mats/lsbspec-3.1rc1/specs.php">HERE</A>.
 Release candidates are for LSB-Graphics, LSB-CXX (C++),
-and LSB-Desktop. LSB-Core is already released at 3.1,
-see the Released Specification section.
+and LSB-Desktop. 
+<A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0">
+LSB-Core 3.1</A> is already released.
 </p>
 
 <H1>Current Progress Snapshots of the LSB Specification</H1>
 <p>
-Current in-progress snapshots can be found <A HREF="specs.php">HERE</A>.
+Current <A HREF="specs.php">in-progress snapshots</A> are also available.
 These specifications reflect work in progress and can be commented on,
 but are not intended to be released as is.
 </p>
 
 <H1>Released LSB Specification</H1>
 <p>
-The current LSB-Core specification is version 3.1 which can be found
-<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0>Here</A>.
+The current 
+<A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0">
+LSB-Core specification</A> is version 3.1.
 This contains the approved ISO LSB Standard (IS 23360:2006).
-The current released LSB-Graphics and LSB-CXX (C++) specifications
-are version 3.0 which may be found 
-<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_3_0_0>lower down</A>.
-on the same page.
+The current released 
+<A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_0_0">LSB-Graphics</A>
+and 
+<A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_0_0">LSB-CXX (C++)</A>
+specifications are version 3.0.
 </p>
 </p>
 
 <H1>Older versions of the Specification</H1>
 <p>
-The previous certification-ready version of the LSB was
-<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_1_0>2.1</A>.
-Other released versions are archived on the 
-<A HREF=http://refspecs.freestandards.org/lsb.shtml">same page</A>.
+The previous certification-ready version was
+<A HREF=http://refspecs.freestandards.org/lsb.shtml#LSB_2_1_0>LSB 2.1</A>.
+Older released versions are also archived on the 
+<A HREF=http://refspecs.freestandards.org/lsb.shtml">Released Specifications</A>page.
 </p>
 
 <H3>About the Specification</H3>
