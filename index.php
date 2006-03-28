@@ -21,7 +21,7 @@ Graphics and CXX (C++) modules.
 The specification is further extended with the Desktop set.
 Each module might be subdivided into a common document plus
 architecture-specific documents (in some cases the
-division is not needed). A complete binary standard for
+subdivision is not needed). A complete binary standard for
 a particular processor architecture consists of the set of
 necessary common documents plus the matching set of
 architecture-specific documents.
@@ -37,18 +37,20 @@ basis, only rolled up into the specification modules.
 </p>
 </blockquote>
 
-<H1>Current LSB 3.1 Release Candidate 1 (RC1) Specifications</H1>
+<H1>LSB 3.1 Release Candidate 1 (RC1) Specifications</H1>
 <p>
 Please review the documents
-<A HREF="http://www.linuxbase.org/~mats/rcspecs.html">HERE</A>.
+<A HREF="http://lsb.freestandards.org/~mats/lsbspec-3.1rc1/specs.php">HERE</A>.
 Release candidates are for LSB-Graphics, LSB-CXX (C++),
 and LSB-Desktop. LSB-Core is already released at 3.1,
-see below for links.
+see the Released Specification section.
 </p>
 
-<H1>Current in-progress Snapshots of the LSB Specification</H1>
+<H1>Current Progress Snapshots of the LSB Specification</H1>
 <p>
-Current snapshots can be found <A HREF="specs.php">HERE</A>.
+Current in-progress snapshots can be found <A HREF="specs.php">HERE</A>.
+These specifications reflect work in progress and can be commented on,
+but are not intended to be released as is.
 </p>
 
 <H1>Released LSB Specification</H1>
