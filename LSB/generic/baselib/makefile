@@ -52,7 +52,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
-	libpam.sgml libstdcxx.sgml librt.sgml
+	libpam.sgml librt.sgml libgcc_s.sgml libstdcxx.sgml 
 SCANFFILES=fscanf.sgml fwscanf.sgml scanf.sgml sscanf.sgml swscanf.sgml \
 	vfscanf.sgml vfwscanf.sgml vscanf.sgml vsscanf.sgml vswscanf.sgml \
 	vwscanf.sgml wscanf.sgml
