@@ -2,6 +2,7 @@
 
 <!entity % entities SYSTEM "../../entities">
 <!entity contents SYSTEM "../../book/LSB-generic/contents">
+<!entity graphics-contents SYSTEM "../../book/Graphics/contents">
 <!entity graphics-ext-contents SYSTEM "../../book/Graphics-Ext/contents">
 <!entity toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk-generic/contents">
 <!entity toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3-generic/contents">
@@ -27,6 +28,7 @@
 
 
 &desktop-intro;
+&graphics-contents;
 &graphics-ext-contents;
 &toolkit-gtk-contents;
 &toolkit-qt3-contents;
