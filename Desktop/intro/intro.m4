@@ -96,6 +96,9 @@ architecture-specific specification.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
+include(x11libraries.sgml)
+</TGROUP>
+<TGROUP COLS=2>
 include(elibraries.sgml)
 </TGROUP>
 <TGROUP COLS=2>
