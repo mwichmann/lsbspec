@@ -40,7 +40,7 @@ basis, only rolled up into the specification modules.
 <H1>LSB 3.1 Release Candidate 1 (RC1) Specifications</H1>
 <p>
 Please review these LSB 3.1
-<A HREF="http://lsb.freestandards.org/~mats/lsbspec-3.1rc1/specs.php">
+<A HREF="http://webservices.freestandards.org/~mats/lsbspec-3.1rc1/specs.php">
 release candidate specifications</A>.
 Available for review are LSB-Graphics, LSB-CXX (C++), and LSB-Desktop. 
 <A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0">
