@@ -56,10 +56,15 @@ $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
 
 $select = "SELECT Iname,Istandard,Istatus,Vname ";
-$select.= "FROM Interface,LGInt,LibGroup ";
+#$select.= "FROM Interface,LGInt,LibGroup ";
+$select.= "FROM Interface ";
+$select.= "INNER JOIN LGInt ON LGIint=Iid ";
+$select.= "INNER JOIN LibGroup ON LGlib=$Lid ";
 $select.= "LEFT JOIN Version ON Vid=Iversion ";
-$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
-$select.= "AND LGlib=$Lid AND Iarch=$Aid ";
+#$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
+$select.= "WHERE LGIlibg=LGid AND Itype='Function' ";
+#$select.= "AND LGlib=$Lid AND Iarch=$Aid ";
+$select.= "AND Iarch=$Aid ";
 $select.= "AND ( Istatus='Included' OR Istatus='Deprecated' )";
 $select.= "ORDER BY Iname";
 $inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
