@@ -16,8 +16,8 @@ virtual("/themes/FreeStandards2/contentmain.html");
 error_reporting(0);
 include("objects.php");
 
-$baseroot = dirname($_SERVER['PATH_TRANSLATED']);
-$removeroot = dirname($_SERVER['PATH_TRANSLATED']);
+$baseroot = dirname($_SERVER['SCRIPT_FILENAME']);
+$removeroot = dirname($_SERVER['SCRIPT_FILENAME']);
 $addroot = "http://".$_SERVER['SERVER_NAME'].dirname($_SERVER['SCRIPT_NAME'])."/";
 
 /* a root project. all projects belong to this. */
