@@ -16,9 +16,10 @@ virtual("/themes/FreeStandards2/contentmain.html");
 <blockquote style="background-color: #ffffdd">
 <p>
 The LSB specification is made up of several components, known
-as modules.  The base specification consists the of Core,
-Graphics and CXX (C++) modules.
-The specification is further extended with the Desktop set.
+as modules.  The base specification consists of the Core and
+C++ modules, and is extended with the full LSB set, which
+is labelled Desktop.  Prior to LSB 3.1, Graphics was a separate
+but required module, it is now part of the full set.
 Each module might be subdivided into a common document plus
 architecture-specific documents (in some cases the
 subdivision is not needed). A complete binary standard for
@@ -37,19 +38,19 @@ basis, only rolled up into the specification modules.
 </p>
 </blockquote>
 
-<H1>LSB 3.1 Release Candidate 1 (RC1) Specifications</H1>
+<H1>LSB 3.1 Release Candidate 3 (RC3) Specifications</H1>
 <p>
 Please review these LSB 3.1
-<A HREF="http://webservices.freestandards.org/~mats/lsbspec-3.1rc1/specs.php">
+<A HREF="http://webservices.freestandards.org/~mats/lsbspec-3.1rc3/specs.php">
 release candidate specifications</A>.
-Available for review are LSB-Graphics, LSB-CXX (C++), and LSB-Desktop. 
+Available for review are LSB-CXX (C++) and LSB-Desktop and the
+optional Toolkit_Qt4 module.
 <A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0">
 LSB-Core 3.1</A> is already released. </p>
 <p>
-<em>Note</em>: some structural changes were proposed just as rc2
-was finalized. As a result of the discussion, rc2 was not published;
-until rc3 is issued in early April, the Current Snapshot specification
-below will be more reflective of the state of the specification.
+<em>Note</em>: some structural changes were made after rc2 (which
+was not published). If you reviewed rc1, please pay attention
+to the new layout.
 </p>
 
 <H1>Current Snapshots of the LSB Specification</H1>
