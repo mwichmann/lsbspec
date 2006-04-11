@@ -4,6 +4,13 @@
  <head>
   <title>LSB Specifications</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <style type="text/css">
+table  { border-collapse: collapse; margin-top: 12px; border-spacing: 0px; border: thin solid black; }
+td, th { padding: 3px; margin: 0px; border: thin solid black; }
+#nav { font-size: small; vertical-align: middle; border: thin solid black; padding: 5px; }
+.project { padding: 10px; margin-bottom: 20px; }
+select,input { font-size: small; }
+  </style>
  </head>
  <body>
 
@@ -36,7 +43,7 @@ $p->url = $addroot;
 $p->indexDir($baseroot.'/book');
 addProject($p);
 
-$colours = array("beta" => "#ccccff",
+$colours = array("beta" => "#ffff88",
                  "1.0.1" => "#ffffff",
                  "1.1.0" => "#eeeeee",
                  "1.2.0" => "#dddddd",
@@ -143,7 +150,7 @@ function formatProject($project, $level = 0)
 	$haspackages = 0;
 		
 	$packagesstr .= "<table>\n";
-	$packagesstr .= " <tr><th>Document</th><th>Version</th><th>Single HTML</th><th>RTF</th><th>Text</th><th>Text w/ line #s</th><th>Last Updated</th></tr>\n";
+	$packagesstr .= " <tr><th>Document</th><th>Version</th><th colspan=5>Links</th><th>Last Updated</th></tr>\n";
 	$prevspecversion = "";
 	$prevname = "";
 	$prevversion = "";
@@ -158,12 +165,13 @@ function formatProject($project, $level = 0)
 			$finish = 0;
 		}
 		$packagesstr .= " <tr style=\"background: ".$colours[$package->specversion].";\">\n";
-		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->link."\">".$package->name."</a></td>";
+		$packagesstr .="  <td>".$package->name."</td>";
 		$packagesstr .="  <td>".$package->version."</td>\n";
-		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->html1link."\">".$package->name."</a></td>";
-		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->rtflink."\">".$package->name."</a></td>";
-		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->txtlink."\">".$package->name."</a></td>";
-		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->txt1link."\">".$package->name."</a></td>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->link."\">HTML</a></td>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->html1link."\">SingleHTML</a></td>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->rtflink."\">RTF</a></td>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->txtlink."\">Text</a></td>";
+		$packagesstr .="  <td><a href=\"/modules.php?name=specrev&url=".$package->txt1link."\">TextLine#</a></td>";
 		$packagesstr .="  <td>".$package->lastmod."</a>";
 		$finish = 1;
 		$prevspecversion = $package->specversion;
