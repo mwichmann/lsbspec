@@ -41,7 +41,11 @@ $colours = array("beta" => "#ccccff",
                  "1.1.0" => "#eeeeee",
                  "1.2.0" => "#dddddd",
                  "1.3.0" => "#ccffcc");
-
+		 "2.0.0" => "#ffccff",
+		 "3.0.0" => "#bbbbff",
+		 "3.1.0" => "#66ff66",
+		 "3.2.0" => "#ff8888",
+		 "4.0.0" => "#cc66ff");
 
 
 /* end user serviceable bits */
