@@ -1,24 +1,24 @@
 <PREFACE id="OVERVIEW">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the LSB-Toolkit-Qt Module Specification.
+This is version &specversion; of the LSB-Toolkit-Qt4 Module Specification.
+<!--
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 3.1 of the LSB-Toolkit-Qt Module
+this version will result in version 3.1 of the LSB-Toolkit-Qt4 Module
 Specification.
 </PARA>
 <PARA>
 Implmentations may not claim conformance to this version.
-<!--
-An implementation of this version of the specification may not claim
-to be an implementation of LSB-Toolkit-Qt Module unless it has successfully
-completed the compliance process as defined by the Free Standards Group.
 -->
+An implementation of this version of the specification may not claim
+to be an implementation of LSB-Toolkit-Qt4 Module unless it has successfully
+completed the compliance process as defined by the Free Standards Group.
 </PARA>
 </PREFACE>
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LSB-Toolkit-Qt Module defines the Qt toolkit components that are required to
+The LSB-Toolkit-Qt4 Module defines the Qt4 toolkit components that are required to
 be present on a conforming system.
 </PARA>
 
@@ -34,7 +34,7 @@ the information explicitly included here.
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
-The LSB Toolkit-Qt defines the Qt Application framework libraries 
+The LSB Toolkit-Qt4 defines the Qt4 Application framework libraries 
 interface found on an LSB conforming system.
 </PARA>
 </CHAPTER>
@@ -44,9 +44,9 @@ interface found on an LSB conforming system.
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
-the LSB-Toolkit-Qt Module Standard.  Such references may be normative or
+the LSB-Toolkit-Qt4 Module Standard.  Such references may be normative or
 informative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The LSB-Toolkit-Qt Module
+normative if it is explicitly cited as such.  The LSB-Toolkit-Qt4 Module
 may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
