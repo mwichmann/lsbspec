@@ -2,24 +2,24 @@
 <TITLE>Foreword</TITLE>
 <PARA>
 This is version &specversion; of the LSB-Desktop Module Specification.
+<!--
 This version is a preliminary version for review only. Conclusion of work on
 this version will result in version 3.1 of the LSB-Desktop Module
 Specification.
 </PARA>
 <PARA>
 Implmentations may not claim conformance to this version.
-<!--
-An implementation of this version of the specification may not claim
-to be an implementation of LSB-Desktop Module unless it has successfully
-completed the compliance process as defined by the Free Standards Group.
 -->
+This specification is part of a family of specifications under the general title"Linux Standard Base". Developers of applications or implementations interested
+in using the LSB trademark should see the Free Standards Group Certification
+Policy for details.
 </PARA>
 </PREFACE>
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LSB-Desktop Module defines the desktop components that are required to
-be present on a conforming system.
+The LSB-Desktop Module defines components that are required to
+be present on an LSB conforming system.
 </PARA>
 
 <PARA>
@@ -34,7 +34,7 @@ the information explicitly included here.
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
-The LSB Desktop module defines the desktop components found on an LSB-Desktop 
+The LSB Desktop module defines components found on an LSB
 conforming system.
 </PARA>
 </CHAPTER>
