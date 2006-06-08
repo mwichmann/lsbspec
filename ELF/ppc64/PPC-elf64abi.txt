@@ -760,7 +760,7 @@ vrsave    Non-volatile 32-bit register
           always point to the previously allocated stack frame.
           If required, it can be decremented by the called
           function. See Section 3.5.13 for additional
-          infromation. As discussed later in this chapter, the
+          information. As discussed later in this chapter, the
           lowest valid stack address is 288 bytes less than the
           value in the stack pointer. The stack pointer must be
           atomically updated by a single instruction, thus
@@ -1164,7 +1164,8 @@ hh            f5           88-95  (not stored)
    with the same name as the function is the address of the
    function descriptor. Symbol names with a dot (.) prefix are
    reserved for holding entry point addresses. The value of a
-   symbol named ".FN" is the entry point of the function "FN".
+   symbol named ".FN", if it exists, is the entry point of the
+   function "FN".
 
    The value of a function pointer in a language like C is the
    address of the function descriptor. Examples of calling a
@@ -2376,8 +2377,10 @@ ptr = &dst;
     cror 31,31,31
 
    In a relocatable object file, a direct function call should be
-   made to the function entry point, which is a symbol beginning
-   with dot (.). See Section 3.2.5 for more information.
+   made to the function descriptor symbol. The link editor will
+   resolve this to call the function entry point rather than
+   branching to the descriptor. See Section 3.2.5 for more
+   information.
 
    When the link editor is creating an executable or shared
    object, and it sees a function call followed by a nop
@@ -2411,7 +2414,7 @@ C                             Assembly
 
 extern void func (void);
 func ();
-                              bl   .func
+                              bl   func
                               ori  r0,r0,0
 
 Here is an example of how the link editor transforms this code if the
