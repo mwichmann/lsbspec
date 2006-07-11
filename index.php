@@ -38,21 +38,6 @@ basis, only rolled up into the specification modules.
 </p>
 </blockquote>
 
-<H1>LSB 3.1 Release Candidate 3 (RC3) Specifications</H1>
-<p>
-Please review these LSB 3.1
-<A HREF="http://webservices.freestandards.org/~mats/lsbspec-3.1rc3/">
-release candidate specifications</A>.
-Available for review are LSB-CXX (C++) and LSB-Desktop and the
-optional Toolkit_Qt4 module.
-<A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0">
-LSB-Core 3.1</A> is already released. </p>
-<p>
-<em>Note</em>: some structural changes were made after rc2 (which
-was not published). If you reviewed rc1, please pay attention
-to the new layout.
-</p>
-
 <H1>Current Snapshots of the LSB Specification</H1>
 <p>
 <A HREF="specs.php">Current in-progress snapshots</A> are also available.
@@ -64,14 +49,9 @@ but are not intended to be released as is.
 <p>
 The current 
 <A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_1_0">
-LSB-Core specification</A> is version 3.1.
-This contains the approved ISO LSB Standard (IS 23360:2006).
-The current released 
-<A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_0_0">LSB-Graphics</A>
-and 
-<A HREF="http://refspecs.freestandards.org/lsb.shtml#LSB_3_0_0">LSB-CXX (C++)</A>
-specifications are version 3.0.
-</p>
+LSB Specification</A> is version 3.1.
+This includes the approved ISO LSB Standard (IS 23360:2006),
+which is the LSB-Core books.
 </p>
 
 <H1>Older versions of the Specification</H1>
