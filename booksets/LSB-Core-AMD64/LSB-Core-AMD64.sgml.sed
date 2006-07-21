@@ -18,11 +18,15 @@
 <![%iso;[
 <!ENTITY % fsg "IGNORE">
 <!ENTITY copyrightyear "2006">
+<!ENTITY license "">
+<!ENTITY doccopyright SYSTEM "../../matters/isocopyright.sgml">
 <!ENTITY copyrightholder "ISO/IEC">
 ]]>
 <!ENTITY % fsg "INCLUDE">
 <![%fsg;[
 <!ENTITY copyrightyear "2005">
+<!ENTITY license "&fdl;">
+<!ENTITY doccopyright SYSTEM "../../matters/fsgcopyright.sgml">
 <!ENTITY copyrightholder "Free Standards Group">
 ]]>
 ]>
@@ -48,6 +52,6 @@
 &lsb-contents;
 &packaging-contents;
 &lsb-amd64-appA;
-&fdl;
+&license;
 
 </BOOK>
