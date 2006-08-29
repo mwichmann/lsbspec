@@ -25,7 +25,7 @@ TABLES=
 
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
-gensrc:
+gensrc: $(MANPAGES)
 	../../../mklibspec -a PPC32 -l libc >libc.sgml
 	../../../mklibspec -a PPC32 -l libm >libm.sgml
 	../../../mklibspec -a PPC32 -l libpthread >libpthread.sgml

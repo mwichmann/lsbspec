@@ -25,7 +25,7 @@ TABLES=
 
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
-gensrc:
+gensrc: $(MANPAGES)
 	../../../mklibspec -a S390 -l libc >libc.sgml
 	../../../mklibspec -a S390 -l libm >libm.sgml
 	../../../mklibspec -a S390 -l libpthread >libpthread.sgml

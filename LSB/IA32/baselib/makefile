@@ -8,7 +8,7 @@ UNWINDPAGES= _Unwind_DeleteException.sgml _Unwind_Find_FDE.sgml \
 	     _Unwind_GetTextRelBase.sgml _Unwind_RaiseException.sgml \
 	     _Unwind_Resume.sgml _Unwind_SetGR.sgml _Unwind_SetIP.sgml
 
-MANPAGES= __divdi3.sgml __fpclassifyl.sgml $(UNWINDPAGES)
+MANPAGES= $(UNWINDPAGES) __fpclassifyl.sgml 
 
 LIBS=libc.sgml libm.sgml libgcc_s.sgml libpthread.sgml libdl.sgml \
 	libcrypt.sgml libstdcxx.sgml
@@ -25,7 +25,7 @@ TABLES=
 
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
-gensrc:
+gensrc: $(MANPAGES)
 	../../../mklibspec -a IA32 -l libc >libc.sgml
 	../../../mklibspec -a IA32 -l libm >libm.sgml
 	../../../mklibspec -a IA32 -l libpthread >libpthread.sgml
