@@ -34,7 +34,7 @@
 
 <BOOK>
 <BOOKINFO>
-<EDITION>&ISOSTD-6;</EDITION>
+<EDITION>&ISOSTD-6;:&copyrightyear;(E)</EDITION>
 <TITLE>&spectitle; &specversion;</TITLE>
 <COPYRIGHT>
 <YEAR>&copyrightyear;</YEAR>
