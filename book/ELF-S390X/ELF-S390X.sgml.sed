@@ -12,6 +12,11 @@
 
 %entities;
 
+<!ENTITY copyrightyear "2005">
+<!ENTITY copyrightholder "Free Standards Group">
+<!ENTITY license "&fdl;">
+<!ENTITY doccopyright SYSTEM "../../matters/fsgcopyright.sgml">
+
 ]>
 
 <BOOK>
