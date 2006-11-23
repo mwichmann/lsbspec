@@ -1,16 +1,16 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity elf-intro SYSTEM "../../ELF/IA32/intro/elfintro.sgml">
-<!entity elf-contents SYSTEM "../../book/ELF-IA32/contents">
-<!entity lsb-contents SYSTEM "../../book/LSB-IA32/contents">
-<!entity packaging-contents SYSTEM "../../book/Packaging-IA32/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY elf-intro SYSTEM "../../ELF/IA32/intro/elfintro.sgml">
+<!ENTITY elf-contents SYSTEM "../../book/ELF-IA32/contents">
+<!ENTITY lsb-contents SYSTEM "../../book/LSB-IA32/contents">
+<!ENTITY packaging-contents SYSTEM "../../book/Packaging-IA32/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "IA32">
-<!entity canonicalarch "IA32">
-<!entity specarchitecture "IA32">
-<!entity spectitle "Linux Standard Base Core Specification for IA32">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "IA32">
+<!ENTITY canonicalarch "IA32">
+<!ENTITY specarchitecture "IA32">
+<!ENTITY spectitle "Linux Standard Base Core Specification for IA32">
 
 %entities;
 

@@ -1,16 +1,16 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity elf-intro SYSTEM "../../ELF/S390/intro/elfintro.sgml">
-<!entity elf-contents SYSTEM "../../book/ELF-S390/contents">
-<!entity lsb-contents SYSTEM "../../book/LSB-S390/contents">
-<!entity packaging-contents SYSTEM "../../book/Packaging-S390/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY elf-intro SYSTEM "../../ELF/S390/intro/elfintro.sgml">
+<!ENTITY elf-contents SYSTEM "../../book/ELF-S390/contents">
+<!ENTITY lsb-contents SYSTEM "../../book/LSB-S390/contents">
+<!ENTITY packaging-contents SYSTEM "../../book/Packaging-S390/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "S390">
-<!entity canonicalarch "S390">
-<!entity specarchitecture "S390">
-<!entity spectitle "Linux Standard Base Core Specification for S390">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "S390">
+<!ENTITY canonicalarch "S390">
+<!ENTITY specarchitecture "S390">
+<!ENTITY spectitle "Linux Standard Base Core Specification for S390">
 
 %entities;
 

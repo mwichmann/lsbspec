@@ -1,15 +1,15 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "../../book/LSB-generic/contents">
-<!entity graphics-contents SYSTEM "../../book/Graphics/contents">
-<!entity graphics-ext-contents SYSTEM "../../book/Graphics-Ext/contents">
-<!entity toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk-generic/contents">
-<!entity toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3-generic/contents">
-<!entity xml-contents SYSTEM "../../book/XML/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "../../book/LSB-generic/contents">
+<!ENTITY graphics-contents SYSTEM "../../book/Graphics/contents">
+<!ENTITY graphics-ext-contents SYSTEM "../../book/Graphics-Ext/contents">
+<!ENTITY toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk-generic/contents">
+<!ENTITY toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3-generic/contents">
+<!ENTITY xml-contents SYSTEM "../../book/XML/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity spectitle "Linux Standard Base Desktop Specification">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY spectitle "Linux Standard Base Desktop Specification">
 
 %entities;
 

@@ -1,18 +1,18 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity elf-intro SYSTEM "../../ELF/IA64/intro/elfintro.sgml">
-<!entity elf-contents SYSTEM "../../book/ELF-IA64/contents">
-<!entity lsb-contents SYSTEM "../../book/LSB-IA64/contents">
-<!entity packaging-contents SYSTEM "../../book/Packaging-IA64/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY elf-intro SYSTEM "../../ELF/IA64/intro/elfintro.sgml">
+<!ENTITY elf-contents SYSTEM "../../book/ELF-IA64/contents">
+<!ENTITY lsb-contents SYSTEM "../../book/LSB-IA64/contents">
+<!ENTITY packaging-contents SYSTEM "../../book/Packaging-IA64/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "IA64">
-<!entity canonicalarch "IA64">
-<!entity specarchitecture "Itanium&trade;">
-<!entity spectitle "Linux Standard Base Core Specification for IA64">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "IA64">
+<!ENTITY canonicalarch "IA64">
+<!ENTITY specarchitecture "Itanium&trade;">
+<!ENTITY spectitle "Linux Standard Base Core Specification for IA64">
 
-<!entity itanium "Itanium&trade;">
+<!ENTITY itanium "Itanium&trade;">
 <!ENTITY w "<emphasis>w</emphasis>">
 
 %entities;

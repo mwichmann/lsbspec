@@ -1,16 +1,16 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity elf-intro SYSTEM "../../ELF/PPC32/intro/elfintro.sgml">
-<!entity elf-contents SYSTEM "../../book/ELF-PPC32/contents">
-<!entity lsb-contents SYSTEM "../../book/LSB-PPC32/contents">
-<!entity packaging-contents SYSTEM "../../book/Packaging-PPC32/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY elf-intro SYSTEM "../../ELF/PPC32/intro/elfintro.sgml">
+<!ENTITY elf-contents SYSTEM "../../book/ELF-PPC32/contents">
+<!ENTITY lsb-contents SYSTEM "../../book/LSB-PPC32/contents">
+<!ENTITY packaging-contents SYSTEM "../../book/Packaging-PPC32/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "PPC32">
-<!entity canonicalarch "PPC32">
-<!entity specarchitecture "PPC32">
-<!entity spectitle "Linux Standard Base Core Specification for PPC32">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "PPC32">
+<!ENTITY canonicalarch "PPC32">
+<!ENTITY specarchitecture "PPC32">
+<!ENTITY spectitle "Linux Standard Base Core Specification for PPC32">
 
 %entities;
 

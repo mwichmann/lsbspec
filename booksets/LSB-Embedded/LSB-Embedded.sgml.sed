@@ -1,16 +1,16 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+
 <!ENTITY % funcprototype.element "IGNORE">
 <!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
 
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY elf-intro SYSTEM "../../ELF/generic/intro/elfintro.sgml">
+<!ENTITY elf-contents SYSTEM "../../book/ELF-generic/contents">
+<!ENTITY lsb-contents SYSTEM "../../book/LSB-generic/contents">
+<!ENTITY packaging-contents SYSTEM "../../book/Packaging/contents">
 
-<!entity % entities SYSTEM "../../entities">
-<!entity elf-intro SYSTEM "../../ELF/generic/intro/elfintro.sgml">
-<!entity elf-contents SYSTEM "../../book/ELF-generic/contents">
-<!entity lsb-contents SYSTEM "../../book/LSB-generic/contents">
-<!entity packaging-contents SYSTEM "../../book/Packaging/contents">
-
-<!entity specversion "LSBVERSION">
-<!entity spectitle "Linux Standard Base Embedded Specification">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY spectitle "Linux Standard Base Embedded Specification">
 
 %entities;
 

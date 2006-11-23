@@ -1,16 +1,16 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity elf-intro SYSTEM "../../ELF/AMD64/intro/elfintro.sgml">
-<!entity elf-contents SYSTEM "../../book/ELF-AMD64/contents">
-<!entity lsb-contents SYSTEM "../../book/LSB-AMD64/contents">
-<!entity packaging-contents SYSTEM "../../book/Packaging-AMD64/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY elf-intro SYSTEM "../../ELF/AMD64/intro/elfintro.sgml">
+<!ENTITY elf-contents SYSTEM "../../book/ELF-AMD64/contents">
+<!ENTITY lsb-contents SYSTEM "../../book/LSB-AMD64/contents">
+<!ENTITY packaging-contents SYSTEM "../../book/Packaging-AMD64/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "AMD64">
-<!entity canonicalarch "AMD64">
-<!entity specarchitecture "AMD64">
-<!entity spectitle "Linux Standard Base Core Specification for AMD64">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "AMD64">
+<!ENTITY canonicalarch "AMD64">
+<!ENTITY specarchitecture "AMD64">
+<!ENTITY spectitle "Linux Standard Base Core Specification for AMD64">
 
 %entities;
 

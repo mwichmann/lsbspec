@@ -1,12 +1,12 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "../../book/LSB-generic/contents">
-<!entity toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3-PPC32/contents">
-<!entity toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk-PPC32/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "../../book/LSB-generic/contents">
+<!ENTITY toolkit-qt3-contents SYSTEM "../../book/Toolkit_Qt3-PPC32/contents">
+<!ENTITY toolkit-gtk-contents SYSTEM "../../book/Toolkit_Gtk-PPC32/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity spectitle "Linux Standard Base Desktop Specification for PPC32">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY spectitle "Linux Standard Base Desktop Specification for PPC32">
 
 %entities;
 

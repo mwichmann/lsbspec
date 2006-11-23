@@ -1,11 +1,11 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "../../book/LSB-generic/contents">
-<!entity graphics-contents SYSTEM "../../book/Graphics/contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "../../book/LSB-generic/contents">
+<!ENTITY graphics-contents SYSTEM "../../book/Graphics/contents">
 
-<!entity specversion "LSBVERSION">
-<!entity spectitle "Linux Standard Base Graphics Module Specification">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY spectitle "Linux Standard Base Graphics Module Specification">
 
 %entities;
 
