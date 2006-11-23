@@ -1,13 +1,13 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "AMD64">
-<!entity canonicalarch "AMD64">
-<!entity specarchitecture "AMD64&trade;">
-<!entity spectitle "Linux Standard Base C++ Specification for AMD64">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "AMD64">
+<!ENTITY canonicalarch "AMD64">
+<!ENTITY specarchitecture "AMD64&trade;">
+<!ENTITY spectitle "Linux Standard Base C++ Specification for AMD64">
 
 %entities;
 

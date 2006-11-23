@@ -1,16 +1,16 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "ELFVERSION">
-<!entity archspec "IA64">
-<!entity canonicalarch "IA64">
-<!entity specarchitecture "IA64">
-<!entity spectitle "ELF Specification for the IA64 Architecture">
+<!ENTITY specversion "ELFVERSION">
+<!ENTITY archspec "IA64">
+<!ENTITY canonicalarch "IA64">
+<!ENTITY specarchitecture "IA64">
+<!ENTITY spectitle "ELF Specification for the IA64 Architecture">
 
-<!entity itanium "Itanium&trade;">
-<!entity w "<emphasis>w</emphasis>">
+<!ENTITY itanium "Itanium&trade;">
+<!ENTITY w "<emphasis>w</emphasis>">
 
 %entities;
 

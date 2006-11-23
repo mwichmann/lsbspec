@@ -1,13 +1,13 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "ELFVERSION">
-<!entity archspec "PPC32">
-<!entity canonicalarch "PPC32">
-<!entity specarchitecture "PPC32">
-<!entity spectitle "ELF Specification for the PPC32 Architecture"
+<!ENTITY specversion "ELFVERSION">
+<!ENTITY archspec "PPC32">
+<!ENTITY canonicalarch "PPC32">
+<!ENTITY specarchitecture "PPC32">
+<!ENTITY spectitle "ELF Specification for the PPC32 Architecture"
 >
 
 %entities;

@@ -1,13 +1,13 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "ELFVERSION">
-<!entity archspec "M32R">
-<!entity canonicalarch "M32R">
-<!entity specarchitecture "M32R">
-<!entity spectitle "ELF Specification for the M32R Architecture"
+<!ENTITY specversion "ELFVERSION">
+<!ENTITY archspec "M32R">
+<!ENTITY canonicalarch "M32R">
+<!ENTITY specarchitecture "M32R">
+<!ENTITY spectitle "ELF Specification for the M32R Architecture"
 >
 
 %entities;

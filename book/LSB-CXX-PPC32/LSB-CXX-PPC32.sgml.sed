@@ -1,13 +1,13 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "PPC32">
-<!entity canonicalarch "PPC32">
-<!entity specarchitecture "PPC32&trade;">
-<!entity spectitle "Linux Standard Base C++ Specification for PPC32">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "PPC32">
+<!ENTITY canonicalarch "PPC32">
+<!ENTITY specarchitecture "PPC32&trade;">
+<!ENTITY spectitle "Linux Standard Base C++ Specification for PPC32">
 
 %entities;
 

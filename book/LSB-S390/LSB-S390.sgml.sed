@@ -1,13 +1,13 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "S390">
-<!entity canonicalarch "S390">
-<!entity specarchitecture "S390&trade;">
-<!entity spectitle "Linux Standard Base Specification for the S390 Architecture">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "S390">
+<!ENTITY canonicalarch "S390">
+<!ENTITY specarchitecture "S390&trade;">
+<!ENTITY spectitle "Linux Standard Base Specification for the S390 Architecture">
 
 %entities;
 

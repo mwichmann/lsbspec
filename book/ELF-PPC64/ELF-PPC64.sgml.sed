@@ -1,13 +1,13 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "ELFVERSION">
-<!entity archspec "PPC64">
-<!entity canonicalarch "PPC64">
-<!entity specarchitecture "PPC64">
-<!entity spectitle "ELF Specification for the PPC64 Architecture"
+<!ENTITY specversion "ELFVERSION">
+<!ENTITY archspec "PPC64">
+<!ENTITY canonicalarch "PPC64">
+<!ENTITY specarchitecture "PPC64">
+<!ENTITY spectitle "ELF Specification for the PPC64 Architecture"
 >
 
 %entities;

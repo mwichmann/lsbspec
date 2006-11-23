@@ -1,15 +1,15 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "IA64">
-<!entity canonicalarch "IA64">
-<!entity specarchitecture "Itanium&trade;">
-<!entity spectitle "Linux Standard Base C++ Specification for Itanium&trade;">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "IA64">
+<!ENTITY canonicalarch "IA64">
+<!ENTITY specarchitecture "Itanium&trade;">
+<!ENTITY spectitle "Linux Standard Base C++ Specification for Itanium&trade;">
 
-<!entity itanium "Itanium&trade;">
+<!ENTITY itanium "Itanium&trade;">
 <!ENTITY w "<emphasis>w</emphasis>">
 
 %entities;

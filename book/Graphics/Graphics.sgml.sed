@@ -1,10 +1,10 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
-<!entity contents-gl SYSTEM "contents-gl">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
+<!ENTITY contents-gl SYSTEM "contents-gl">
 
-<!entity specversion "VERSION">
+<!ENTITY specversion "VERSION">
 
 %entities;
 

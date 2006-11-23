@@ -1,10 +1,10 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../errata/entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../errata/entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity spectitle "Linux Standard Base Specification 3.1 Errata">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY spectitle "Linux Standard Base Specification 3.1 Errata">
 
 %entities;
 

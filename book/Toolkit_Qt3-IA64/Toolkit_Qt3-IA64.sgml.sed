@@ -1,13 +1,13 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "IA64">
-<!entity canonicalarch "IA64">
-<!entity specarchitecture "IA64">
-<!entity spectitle "LSB Qt3 Toolkit Module Specification for the IA64 Architecture">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "IA64">
+<!ENTITY canonicalarch "IA64">
+<!ENTITY specarchitecture "IA64">
+<!ENTITY spectitle "LSB Qt3 Toolkit Module Specification for the IA64 Architecture">
 
 %entities;
 

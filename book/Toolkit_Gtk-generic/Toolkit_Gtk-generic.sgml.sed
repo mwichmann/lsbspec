@@ -1,10 +1,10 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity spectitle "LSB Generic Gtk Toolkit Module Specification">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY spectitle "LSB Generic Gtk Toolkit Module Specification">
 
 %entities;
 

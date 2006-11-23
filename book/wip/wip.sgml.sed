@@ -1,26 +1,26 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity specversion "Work In Progress LSBVERSION">
-<!entity changes.sgm system "changes.sgml">
-<!entity intro.sgm system "intro/intro.sgml">
-<!entity lowlevel.sgm system "lowlevel/lowlevel.sgml">
-<!entity objfmt.sgm system "objfmt/objfmt.sgml">
-<!entity dynlnk.sgm system "dynlnk/dynlnk.sgml">
-<!entity baselib.sgm system "baselib/baselib.sgml">
-<!entity utillib.sgm system "utillib/utillib.sgml">
-<!entity graphlib.sgm system "graphlib/graphlib.sgml">
-<!entity package.sgm system "package/package.sgml">
-<!entity command.sgm system "command/command.sgml">
-<!entity stdshell.sgm system "stdshell/stdshell.sgml">
-<!entity usersgroups.sgm system "usersgroups/usersgroups.sgml">
-<!entity fhs.sgm system "fhs/fhs.sgml">
-<!entity execenv.sgm system "execenv/execenv.sgml">
-<!entity sysinit.sgm system "sysinit/sysinit.sgml">
-<!entity sgmlspec.sgm system "sgmlspec/sgmlspec.sgml">
-<!entity appA.sgm system "appendix/liblist.sgml">
-<!entity appB.sgm system "appendix/fdl.sgml">
-<!entity appZ.sgm system "appendix/howtocompliant.sgml">
-<!entity legal.sgm system "../../matters/legal.sgml">
+<!ENTITY specversion "Work In Progress LSBVERSION">
+<!ENTITY changes.sgm system "changes.sgml">
+<!ENTITY intro.sgm system "intro/intro.sgml">
+<!ENTITY lowlevel.sgm system "lowlevel/lowlevel.sgml">
+<!ENTITY objfmt.sgm system "objfmt/objfmt.sgml">
+<!ENTITY dynlnk.sgm system "dynlnk/dynlnk.sgml">
+<!ENTITY baselib.sgm system "baselib/baselib.sgml">
+<!ENTITY utillib.sgm system "utillib/utillib.sgml">
+<!ENTITY graphlib.sgm system "graphlib/graphlib.sgml">
+<!ENTITY package.sgm system "package/package.sgml">
+<!ENTITY command.sgm system "command/command.sgml">
+<!ENTITY stdshell.sgm system "stdshell/stdshell.sgml">
+<!ENTITY usersgroups.sgm system "usersgroups/usersgroups.sgml">
+<!ENTITY fhs.sgm system "fhs/fhs.sgml">
+<!ENTITY execenv.sgm system "execenv/execenv.sgml">
+<!ENTITY sysinit.sgm system "sysinit/sysinit.sgml">
+<!ENTITY sgmlspec.sgm system "sgmlspec/sgmlspec.sgml">
+<!ENTITY appA.sgm system "appendix/liblist.sgml">
+<!ENTITY appB.sgm system "appendix/fdl.sgml">
+<!ENTITY appZ.sgm system "appendix/howtocompliant.sgml">
+<!ENTITY legal.sgm system "../../matters/legal.sgml">
 ]>
 
 <BOOK>

@@ -1,13 +1,13 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity archspec "S390X">
-<!entity canonicalarch "S390X">
-<!entity specarchitecture "S390X">
-<!entity spectitle "LSB Qt4 Toolkit Module Specification for the S390X Architecture">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY archspec "S390X">
+<!ENTITY canonicalarch "S390X">
+<!ENTITY specarchitecture "S390X">
+<!ENTITY spectitle "LSB Qt4 Toolkit Module Specification for the S390X Architecture">
 
 %entities;
 

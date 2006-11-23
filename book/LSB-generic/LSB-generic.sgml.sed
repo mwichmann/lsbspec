@@ -3,11 +3,11 @@
 <!ELEMENT FuncPrototype - O (FuncDef, (Void | (ParamDef*, VarArgs?)))>
 
 
-<!entity % entities SYSTEM "../../entities">
-<!entity contents SYSTEM "contents">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY contents SYSTEM "contents">
 
-<!entity specversion "LSBVERSION">
-<!entity spectitle "Linux Standard Base Specification">
+<!ENTITY specversion "LSBVERSION">
+<!ENTITY spectitle "Linux Standard Base Specification">
 
 %entities;
 

@@ -1,9 +1,9 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS/DTD DocBook V4.1//EN" [
 
-<!entity % entities SYSTEM "../../entities">
-<!entity java-contents SYSTEM "java-intro">
+<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY java-contents SYSTEM "java-intro">
 
-<!entity specversion "VERSION">
+<!ENTITY specversion "VERSION">
 
 ]>
 
