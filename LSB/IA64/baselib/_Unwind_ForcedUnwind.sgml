@@ -1,0 +1,117 @@
+<REFENTRY ID="baselib--Unwind-ForcedUnwind"> <REFMETA>
+<REFENTRYTITLE>_Unwind_ForcedUnwind</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>_Unwind_ForcedUnwind
+</REFNAME>
+<REFPURPOSE>
+private C++ error handling method
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>8 October 2002</DATE>
+</REFSYNOPSISDIVINFO>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>_Unwind_Reason_Code
+  <FUNCTION>_Unwind_ForcedUnwind</FUNCTION></FUNCDEF>
+ <PARAMDEF>struct _Unwind_Exception *
+  <PARAMETER>object</PARAMETER></PARAMDEF>
+ <PARAMDEF>_Unwind_Stop_Fn
+  <PARAMETER><REPLACEABLE>stop</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>void *
+  <PARAMETER><REPLACEABLE>stop_parameter</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>8 October 2002</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+<FUNCTION>_Unwind_ForcedUnwind</FUNCTION> raises an exception 
+for forced unwinding, passing along the given exception
+<PARAMETER>object</PARAMETER>, which should have its
+<EMPHASIS>exception_class</EMPHASIS> and 
+<EMPHASIS>exception_cleanup</EMPHASIS> fields set. The exception 
+<PARAMETER>object</PARAMETER> has been allocated by the language-specific
+runtime, and has a language-specific format, except that it shall contain an
+<STRUCTNAME>_Unwind_Exception</STRUCTNAME> struct.
+</PARA>
+<PARA>
+Forced unwinding is a single-phase process. <PARAMETER>stop</PARAMETER>
+and <PARAMETER>stop_parameter</PARAMETER> control the termination of the 
+unwind process instead of the usual personality routine query.
+<PARAMETER>stop</PARAMETER> is called for each unwind frame, with the 
+parameteres described for the usual personality routine below,
+plus an additional <PARAMETER>stop_parameter</PARAMETER>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+When <PARAMETER>stop</PARAMETER> identifies the destination frame, it 
+transfers control to the user code as appropriate without returning, 
+normally after calling <FUNCTION>_Unwind_DeleteException</FUNCTION>. If not,
+then it should return an <VARNAME>_Unwind_Reason_Code</VARNAME> value.
+</PARA>
+<PARA>
+If <PARAMETER>stop</PARAMETER> returns any reason code other than
+<SYMBOL>_URC_NO_REASON</SYMBOL>, then the stack state is indeterminate
+from the point of view of the caller of 
+<FUNCTION>_Unwind_ForcedUnwind</FUNCTION>. Rather than attempt to return,
+therefore, the unwind library should use the 
+<STRUCTFIELD>exception_cleanup</STRUCTFIELD> entry in the exception, and then 
+call <FUNCTION>abort</FUNCTION>.
+</PARA>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>_URC_NO_REASON</TERM>
+<LISTITEM>
+<PARA>
+This is not the destination from. The unwind runtime will call frame's
+personality routine with the <VARNAME>_UA_FORCE_UNWIND</VARNAME>
+and <VARNAME>_UA_CLEANUP_PHASE</VARNAME> flag set in 
+<EMPHASIS>actions</EMPHASIS>, and then unwind to the next frame
+and call the <FUNCTION>stop</FUNCTION> function again.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>_URC_END_OF_STACK</TERM>
+<LISTITEM>
+<PARA>
+In order to allow <FUNCTION>_Unwind_ForcedUnwind</FUNCTION> to 
+perform special processing when it reaches the end of the stack, the 
+unwind runtime will call it after the last frame is rejected, with a 
+<CONSTANT>NULL</CONSTANT> stack pointer in the context, and the 
+<FUNCTION>stop</FUNCTION> function shall catch this condition. It may 
+return this code if it cannot handle end-of-stack.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>_URC_FATAL_PHASE2_ERROR</TERM>
+<LISTITEM>
+<PARA>
+The <FUNCTION>stop</FUNCTION> function may return this code for other fatal 
+conditions like stack corruption.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+</REFSECT1>
+
+</REFENTRY>
