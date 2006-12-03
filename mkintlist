@@ -46,7 +46,7 @@ $Aname=$entry{'Aname'};
 # 4) get & print the library info
 #
 $select = "SELECT * FROM Library WHERE ";
-$select.= "Library.Lstd='Yes'";
+$select.= "Library.Lstdstatus='Included'";
 print STDERR $select,"\n" if $trace;
 $lth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 for(1..$lth->numrows) {
@@ -55,7 +55,7 @@ for(1..$lth->numrows) {
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
 
-$select = "SELECT Iname,Istandard,Istatus,Vname ";
+$select = "SELECT Iname,Istandard,Istdstatus,Iisdeprecated,Vname ";
 #$select.= "FROM Interface,LGInt,LibGroup ";
 $select.= "FROM Interface ";
 $select.= "INNER JOIN LGInt ON LGIint=Iid ";
@@ -65,7 +65,8 @@ $select.= "LEFT JOIN Version ON Vid=Iversion ";
 $select.= "WHERE LGIlibg=LGid AND Itype='Function' ";
 #$select.= "AND LGlib=$Lid AND Iarch=$Aid ";
 $select.= "AND Iarch=$Aid ";
-$select.= "AND ( Istatus='Included' OR Istatus='Deprecated' )";
+#$select.= "AND ( Istdstatus='Included' OR Istdstatus='Deprecated' )";
+$select.= "AND Istdstatus='Included' ";
 $select.= "ORDER BY Iname";
 $inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $inh->numrows == 0) { next; }
@@ -83,7 +84,8 @@ print "$Lname Function Interfaces\n";
 	for(1..$inh->numrows) {
 		%entry=$inh->fetchhash;
 		print $entry{'Iname'}."(".$entry{'Vname'}.")";
-		if( $entry{'Istatus'} eq "Deprecated" ) {
+#		if( $entry{'Istdstatus'} eq "Deprecated" ) {
+		if( ($entry{'Iisdeprecated'} eq "Yes") && ($entry{'Istdstatus'} eq "Included") ) {
 			print " *Deprecated*";
 			}
 		print "\n";
@@ -98,7 +100,7 @@ print "$Lname Function Interfaces\n";
 	local(*std);
 	$select = "SELECT * FROM Interface,LGInt,LibGroup ";
 	$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Data' ";
-	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istatus='Included' ";
+	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istdstatus='Included' ";
 	$select.= "ORDER BY Iname";
 	print STDERR $select,"\n" if $trace;
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();

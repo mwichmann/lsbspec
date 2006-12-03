@@ -117,19 +117,21 @@ END_EXCEPT_TEXT
 
 sub lsbCommands {
 
-	my $status, $title, $tbl, $MainTitle;
+	my $status, $title, $tbl, $MainTitle, $builtinCheck;
 	if ($builtins) {
-		$status = 'Builtin';
+		$status = 'Included';
+		$builtinCheck = 'Command.Cbuiltin = \'Yes\'';
 		$title = 'shell built in utilities';
 		$tbl = "tbl-builtins";
 		$MainTitle = "Built In Utilities";
 	} else {
 		$status = 'Included';
+		$builtinCheck = 'Command.Cbuiltin != \'Yes\''; # let's include 'Unknown' builtins here
 		$title = 'commands and utilities';
 		$tbl = "tbl-cmds";
 		$MainTitle = "Commands And Utilities";
 	}
-	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command  LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid WHERE ModCmd.MCmid=$moduleid AND Standard.Sid=Command.Cstandard AND Command.Cstatus='$status' ORDER BY Sname");
+	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command  LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid WHERE ModCmd.MCmid=$moduleid AND Standard.Sid=Command.Cstandard AND Command.Cstdstatus='$status' AND $builtinCheck ORDER BY Sname");
 	$sth->execute;
 
 	if ($sth->rows > 0) {
@@ -146,7 +148,7 @@ sub lsbCommands {
 
 	printf("</PARA>\n");
 
-	$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE Command.Cstatus='$status' AND ModCmd.MCmid=$moduleid ORDER BY Command.Cname");
+	$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE Command.Cstdstatus='$status' AND $builtinCheck AND ModCmd.MCmid=$moduleid ORDER BY Command.Cname");
 	$sth->execute;
 
 	if ($sth->rows < 1) {

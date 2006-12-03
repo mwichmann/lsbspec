@@ -258,13 +258,13 @@ sub output_classinfo($)
 		printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
 		print "</ENTRY>\n";
 		print "</ROW>\n";
-		if( $$class{'CInumbasetype'} ) {
+		if( $$class{'CInumbasetype'} == '1' ) {
 			$select = "SELECT * FROM BaseTypes ";
 			$select.= "LEFT JOIN ClassInfo ON BTcid=CIid ";
 			$select.= "WHERE CIid=".$$class{'CIid'}." ";
 			$select.= "ORDER BY BTpos";
 			$vsth = $Dbh->query($select) || die $Dbh->errmsg();
-			for(1..$$class{'CInumbasetype'}) {
+#			for(1..$$class{'CInumbasetype'}) {
 				%entry=$vsth->fetchhash;
 				print "<ROW>\n";
 				print "<ENTRY>basetype:</ENTRY>\n";
@@ -274,7 +274,7 @@ sub output_classinfo($)
 				print "</ENTRY>\n";
 				print "</ROW>\n";
 				}
-			}
+#			}
 		if( $$class{'CInumvmitypes'} ) {
 			print "<ROW>\n";
 			print "<ENTRY>flags:</ENTRY>\n";
@@ -351,30 +351,30 @@ sub getinterfaces($$$$)
 
 	if ($type eq "functions" || $type eq "methods") {
 		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
-		# $where.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
-		$where.= "AND ( Istatus='Included' ) ";
+		$where.= "AND ( Istdstatus='Included' ) ";
 		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 		$name  = "ints";
 		$table_title = "$Lname - $LGname Function Interfaces";
 		}
 	elsif ($type eq "deprecated functions") {
 		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
-		$where.= "AND Istatus='Deprecated' ";
+		$where.= "AND Istdstatus='Included' ";
+		$where.= "AND Iisdeprecated='Yes' ";
 		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 		$name  = "depints";
 		$table_title = "$Lname - $LGname Deprecated Function Interfaces";
 		}
 	elsif ($type eq "data interfaces") {
 		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-		# $where.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
-		$where.= "AND ( Istatus='Included' ) ";
+		$where.= "AND ( Istdstatus='Included' ) ";
 		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 		$name  = "data";
 		$table_title = "$Lname - $LGname Data Interfaces";
 		}
 	elsif ($type eq "deprecated data interfaces") {
 		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-		$where.= "AND Istatus='Deprecated' ";
+		$where.= "AND Istdstatus='Included' ";
+		$where.= "AND Iisdeprecated='Yes' ";
 		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 		$name  = "ddata";
 		$table_title = "$Lname - $LGname Deprecated Data Interfaces";
@@ -530,7 +530,7 @@ $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.82 2006-03-29 19:10:18 mats Exp $- -->\n");
+printf("<!--    by \$Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -547,7 +547,7 @@ print "</PARA>\n";
 $select = "SELECT * FROM Library ";
 $select.= "LEFT JOIN ArchLib ON Lid=ALlid ";
 $select.= "WHERE Library.Lname=".$Dbh->quote($libname)." ";
-$select.= "AND Lstd!='No'";
+$select.= "AND Lstdstatus!='Excluded'";
 $select.= "AND ALaid=$Aid";
 print STDERR $select,"\n" if $trace;
 $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -599,7 +599,7 @@ $select.= "LEFT JOIN LGInt ON LGIint=Iid ";
 $select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
 $select.= "LEFT JOIN ArchInt ON AIint=Iid ";
 $select.= "WHERE LGlib=$Lid ";
-$select.= "AND Istatus != 'Excluded' ";
+$select.= "AND Istdstatus != 'Excluded' ";
 $select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
 $select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
@@ -768,7 +768,8 @@ $select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
 $select.= "LEFT JOIN Library ON Lid=LGlib ";
 $select.= "LEFT JOIN Standard ON Sid=Istandard ";
 $select.= "WHERE Lid=$Lid AND Iarch=$Aid ";
-$select.= "AND ( Istatus='Included' OR Istatus='Deprecated' ) ";
+#$select.= "AND ( Istdstatus='Included' OR Istdstatus='Deprecated' ) ";
+$select.= "AND ( Istdstatus='Included' ) ";
 $select.= "AND Sname='LSB'";
 $select.= "ORDER BY Iname";
 print STDERR $select,"\n" if $trace;
@@ -806,4 +807,4 @@ if($sth->numrows) {
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: /home/mats.deb/cvsrepo/lsb/lsbspec.smaller/mklibspec,v 1.82 2006-03-29 19:10:18 mats Exp $- -->\n");
+printf("<!--    by \$Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp $- -->\n");
