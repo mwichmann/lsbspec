@@ -1,25 +1,25 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
 <!ENTITY specversion "Work In Progress LSBVERSION">
-<!ENTITY changes.sgm system "changes.sgml">
-<!ENTITY intro.sgm system "intro/intro.sgml">
-<!ENTITY lowlevel.sgm system "lowlevel/lowlevel.sgml">
-<!ENTITY objfmt.sgm system "objfmt/objfmt.sgml">
-<!ENTITY dynlnk.sgm system "dynlnk/dynlnk.sgml">
-<!ENTITY baselib.sgm system "baselib/baselib.sgml">
-<!ENTITY utillib.sgm system "utillib/utillib.sgml">
-<!ENTITY graphlib.sgm system "graphlib/graphlib.sgml">
-<!ENTITY package.sgm system "package/package.sgml">
-<!ENTITY command.sgm system "command/command.sgml">
-<!ENTITY stdshell.sgm system "stdshell/stdshell.sgml">
-<!ENTITY usersgroups.sgm system "usersgroups/usersgroups.sgml">
-<!ENTITY fhs.sgm system "fhs/fhs.sgml">
-<!ENTITY execenv.sgm system "execenv/execenv.sgml">
-<!ENTITY sysinit.sgm system "sysinit/sysinit.sgml">
-<!ENTITY sgmlspec.sgm system "sgmlspec/sgmlspec.sgml">
-<!ENTITY appA.sgm system "appendix/liblist.sgml">
-<!ENTITY appB.sgm system "appendix/fdl.sgml">
-<!ENTITY appZ.sgm system "appendix/howtocompliant.sgml">
+<!ENTITY changes.sgm system "../../wip/changes.sgml">
+<!ENTITY intro.sgm system "../../wip/intro/intro.sgml">
+<!ENTITY lowlevel.sgm system "../../wip/lowlevel/lowlevel.sgml">
+<!ENTITY objfmt.sgm system "../../wip/objfmt/objfmt.sgml">
+<!ENTITY dynlnk.sgm system "../../wip/dynlnk/dynlnk.sgml">
+<!ENTITY baselib.sgm system "../../wip/baselib/baselib.sgml">
+<!ENTITY utillib.sgm system "../../wip/utillib/utillib.sgml">
+<!ENTITY graphlib.sgm system "../../wip/graphlib/graphlib.sgml">
+<!ENTITY package.sgm system "../../wip/package/package.sgml">
+<!ENTITY command.sgm system "../../wip/command/command.sgml">
+<!ENTITY stdshell.sgm system "../../wip/stdshell/stdshell.sgml">
+<!ENTITY usersgroups.sgm system "../../wip/usersgroups/usersgroups.sgml">
+<!ENTITY fhs.sgm system "../../wip/fhs/fhs.sgml">
+<!ENTITY execenv.sgm system "../../wip/execenv/execenv.sgml">
+<!ENTITY sysinit.sgm system "../../wip/sysinit/sysinit.sgml">
+<!ENTITY sgmlspec.sgm system "../../wip/sgmlspec/sgmlspec.sgml">
+<!ENTITY appA.sgm system "../../wip/appendix/liblist.sgml">
+<!ENTITY appB.sgm system "../../wip/appendix/fdl.sgml">
+<!ENTITY appZ.sgm system "../../wip/appendix/howtocompliant.sgml">
 <!ENTITY legal.sgm system "../../matters/legal.sgml">
 
 <!ENTITY copyrightyear "2005">
