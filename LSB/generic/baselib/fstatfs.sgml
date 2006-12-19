@@ -1,0 +1,108 @@
+<REFENTRY ID="baselib-fstatfs-2"> <REFMETA>
+<REFENTRYTITLE>fstatfs</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>fstatfs</REFNAME>
+<REFPURPOSE>(deprecated)</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/statfs.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>fstatfs</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>fd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>struct statfs *
+  <PARAMETER><REPLACEABLE>buf</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<TITLE>
+Description
+</TITLE>
+<PARA>
+<FUNCTION>fstatfs</FUNCTION> returns information about a mounted file 
+system. <PARAMETER>fd</PARAMETER> is the open file descriptor of any 
+file within the mounted filesystem. <PARAMETER>buf</PARAMETER> is a 
+pointer to a <STRUCTNAME>statfs</STRUCTNAME> structure.
+</PARA>
+<PARA>
+Fields that are undefined for a particular file system are set to 
+<LITERAL>0</LITERAL>.
+</PARA>
+<PARA>
+<FUNCTION>fstatvfs</FUNCTION> is the approved way to obtain
+file system information; applications should only call the
+<FUNCTION>fstatfs</FUNCTION> interface if they must determine
+the file system type, which is not provided by 
+<FUNCTION>fstatvfs</FUNCTION>.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
+On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
+the global variable <VARNAME>errno</VARNAME> is set appropriately.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EBADF
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>fd</PARAMETER> is not a valid open file descriptor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>buf</PARAMETER> points to an invalid address.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EIO
+</TERM>
+<LISTITEM>
+<PARA>
+An I/O error occurred while reading from or writing to the file system.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOSYS
+</TERM>
+<LISTITEM>
+<PARA>
+The filesystem <PARAMETER>fd</PARAMETER> is open on does not support 
+<FUNCTION>statfs</FUNCTION>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+<!--	  LDP GENERAL PUBLIC LICENSE  -->
+<!--        Version 1a, November 1998   -->
+</REFENTRY>
