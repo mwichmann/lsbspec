@@ -379,7 +379,7 @@ that specification.
 </para>
 </section>
 <section id="localization-regex"
- XRefLabel="Internationalization and Regular Expressions">
+ XRefLabel="Regular Expressions">
 <title>Regular Expressions</title>
 <para>
 Utilities that process regular expressions shall support Basic
@@ -414,7 +414,7 @@ at least
 </section>
 
 <section id="localization-glob"
- XRefLabel="Internationalization and Pattern Matching Notation">
+ XRefLabel="Pattern Matching Notation">
 <title>Pattern Matching Notation</title>
 <para>
 Utilities that perform filename pattern matching (also known as Filename
