@@ -1,0 +1,42 @@
+Specfication: LSB Core Generic
+Edition of Specification: 3.1
+Type: Editorial
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1329
+
+
+Rationale: strnlen wording is not clear; references to string
+where the array of characters need not be null-terminated.
+
+
+Section:  13.5. Interface Definitions for libc
+
+Interface strnlen, section Description,
+
+Change:
+
+   strnlen() returns the number of characters in the string s,
+   not including the terminating \0 character, but at most
+   maxlen. In doing this, strnlen() looks only at the first
+   maxlen characters at s and never beyond s + maxlen.
+
+To:
+
+   The strnlen() function shall compute the number of bytes in the
+   array to which s points, stopping at maxlen bytes. A null byte
+   and any bytes following it are not counted.
+
+
+Interface strnlen, section Return Value,
+
+Change:
+
+   strnlen() returns strlen(s), if that is less than maxlen, or
+   maxlen if there is no \0 character among the first maxlen
+   characters pointed to by s.
+
+To:
+
+   The strnlen() function shall return the length of s if that is
+   less than maxlen, or maxlen if there is no null byte in the first
+   maxlen bytes.
