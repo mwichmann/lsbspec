@@ -1,0 +1,263 @@
+Specfication: LSB Core Generic
+Edition of Specification: 3.1
+Type: Editorial
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1525
+
+Rationale: the statfs and fstatfs functions were marked as obsolete in
+LSB 1.3 and removed at 2.0. However, since these interfaces provide
+the only method for discovering the file system type, their removal
+was regarded as premature, and they have been reinstated (together with
+their obsolete status) until such time as there is a better alternative
+in widespread use.
+
+
+
+Section : 13.3.2.1. Interfaces for System Calls, add
+
+   fstatfs [LSB]
+   statfs [LSB]
+
+
+Section : 13.3.16.1. Interfaces for Large File Support, add
+
+   fstatfs64 [LSB]
+   statfs64 [LSB]
+
+
+Section : 13.4 Data Defintions for libc, add
+
+13.4.60. sys/statfs.h
+
+   #define NFS_SUPER_MAGIC 0x6969
+
+   struct statfs {
+       int f_type;
+       int f_bsize;
+       fsblkcnt_t f_blocks;
+       fsblkcnt_t f_bfree;
+       fsblkcnt_t f_bavail;
+       fsblkcnt_t f_files;
+       fsblkcnt_t f_ffree;
+       fsid_t f_fsid;
+       int f_namelen;
+       int f_spare[6];
+   };
+   struct statfs64 {
+       int f_type;
+       int f_bsize;
+       fsblkcnt64_t f_blocks;
+       fsblkcnt64_t f_bfree;
+       fsblkcnt64_t f_bavail;
+       fsblkcnt64_t f_files;
+       fsblkcnt64_t f_ffree;
+       fsid_t f_fsid;
+       int f_namelen;
+       int f_spare[6];
+   };
+   extern int fstatfs64(int, struct statfs64 *);
+   extern int statfs64(const char *, struct stat64 *);
+   extern int fstatfs(int, struct statfs *);
+   extern int statfs(const char *, struct statfs *);
+
+
+Section : 13.5. Interface Definitions for libc, add
+
+   fstatfs -- (deprecated)
+   fstatfs64 -- (deprecated)
+   statfs -- (deprecated)
+   statfs64 -- (deprecated)
+
+
+and add:
+
+
+fstatfs
+
+Name
+
+   fstatfs -- (deprecated)
+
+Synopsis
+
+   #include <sys/statfs.h>
+
+   int fstatfs(int fd, struct statfs * buf);
+
+Description
+
+   The  fstatfs()  function  returns  information about a mounted
+   file  system.  The  file  system  is  identified by fd, a file
+   descriptor  of an open file within the mounted filesystem. The
+   results are placed in the structure pointed to by buf.
+
+   Fields  that  are undefined for a particular file system shall
+   be set to 0.
+
+     Note:  Application  developers  should  use  the fstatvfs()
+     function   to   obtain  general  file  system  information.
+     Applications should only use the fstatfs() function if they
+     must  determine  the  file  system  type, which need not be
+     provided by fstatvfs().
+
+Return Value
+
+   On  success, the fstatfs() function shall return 0 and sed the
+   fields  of  the  structure  idenfitied  by buf accordingly. On
+   error,  the  fstatfs()  function shall return -1 and set errno
+   accordingly.
+
+Errors
+
+   EBADF    fd is not a valid open file descriptor.
+
+   EFAULT   buf points to an invalid address.
+
+   EIO      An I/O error occurred while reading from or writing to
+            the file system.
+
+   ENOSYS The filesystem fd is open on does not support statfs().
+
+
+fstatfs64
+
+Name
+
+   fstatfs64 -- (deprecated)
+
+Synopsis
+
+   #include <sys/statfs.h>
+
+   int fstatfs64(int fd, struct statfs64 * buf);
+
+Description
+
+   The  fstatfs64()  function returns information about a mounted
+   file  system.  The  file  system  is  identified by fd, a file
+   descriptor  of an open file within the mounted filesystem. The
+   results are placed in the structure pointed to by buf.
+
+   Fields  that  are undefined for a particular file system shall
+   be set to 0.
+
+   fstatfs64() is the 64-bit version of fstatfs().
+
+     Note:  Application  developers  should use the fstatvfs64()
+     function   to   obtain  general  file  system  information.
+     Applications  should  only  use the fstatfs64() function if
+     they must determine the file system type, which need not be
+     provided by fstatvfs64().
+
+Return Value
+
+   On  success,  the  fstatfs64() function shall return 0 and sed
+   the  fields of the structure idenfitied by buf accordingly. On
+   error,  the fstatfs64() function shall return -1 and set errno
+   accordingly.
+
+Errors
+
+   See fstatfs().
+
+
+statfs
+
+Name
+
+   statfs -- (deprecated)
+
+Synopsis
+
+   #include <sys/statfs.h>
+
+   int statfs(const char *path, (struct statfs * buf));
+
+Description
+
+   The statfs() function returns information about a mounted file
+   system.  The file system is identified by path, a path name of
+   a  file  within the mounted filesystem. The results are placed
+   in the structure pointed to by
+
+   Fields  that  are undefined for a particular file system shall
+   be set to 0.
+
+     Note:  Application  developers  should  use  the  statvfs()
+     function   to   obtain  general  file  system  information.
+     Applications  should only use the statfs() function if they
+     must  determine  the  file  system  type, which need not be
+     provided by statvfs().
+
+Return Value
+
+   On  success,  the statfs() function shall return 0 and sed the
+   fields  of  the  structure  idenfitied  by buf accordingly. On
+   error,  the  statfs()  function  shall return -1 and set errno
+   accordingly.
+
+Errors
+
+   ENOTDIR  A component of the path prefix of path is not a
+            directory.
+
+   ENAMETOOLONG  path is too long.
+
+   ENOENT   The file referred to by path does not exist.
+
+   EACCES   Search permission is denied for a component of the
+            path prefix of path.
+
+   ELOOP    Too many symbolic links were encountered in translating
+            path.
+
+   EFAULT   buf or path points to an invalid address.
+
+   EIO      An I/O error occurred while reading from or writing
+            to the file system.
+
+   ENOMEM   Insufficient kernel memory was available.
+
+   ENOSYS   The filesystem path is on does not support statfs().
+
+
+statfs64
+
+Name
+
+   statfs64 -- (deprecated)
+
+Synopsis
+
+   #include <sys/statfs.h>
+
+   int statfs64(const char * path, (struct statfs64 * buf));
+
+Description
+
+   The  statfs64()  function  returns information about a mounted
+   file  system.  The  file  system is identified by path, a path
+   name  of a file within the mounted filesystem. The results are
+   placed in the structure pointed to by buf.
+
+   statfs64() is the 64-bit version of statfs().
+
+   Fields  that  are undefined for a particular file system shall
+   be set to 0.
+
+     Note:  Application  developers  should  use the statvfs64()
+     function   to   obtain  general  file  system  information.
+     Applications  should  only  use  the statfs64() function if
+     they must determine the file system type, which need not be
+     provided by statvfs64().
+
+Return Value
+
+   On success, the statfs64() function shall return 0 and sed the
+   fields  of  the  structure  idenfitied  by buf accordingly. On
+   error,  the  statfs64() function shall return -1 and set errno
+   accordingly.
+
+Errors
+
+   See fstatfs().
+
