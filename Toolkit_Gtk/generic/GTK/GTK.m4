@@ -91,6 +91,7 @@ to supply any header files.
 include(libGlib.sgml)
 include(libGobject.sgml)
 include(libGmodule.sgml)
+include(libGthread.sgml)
 include(libAtk.sgml)
 include(libPango.sgml)
 include(libPangoxft.sgml)
