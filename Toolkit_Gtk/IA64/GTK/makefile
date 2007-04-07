@@ -5,7 +5,7 @@
 	_XtIsSubclassOf.sgml
 
 FILES=GTK.sgml
-TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml
+TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml
 
 .cpp.sgml:
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
@@ -19,6 +19,7 @@ gensrc:
 	../../../mklibspec -a IA64 -c 2 -l libglib-2.0 >libGlib.sgml
 	../../../mklibspec -a IA64 -c 2 -l libgobject-2.0 >libGobject.sgml
 	../../../mklibspec -a IA64 -c 2 -l libgmodule-2.0 >libGmodule.sgml
+	../../../mklibspec -a IA64 -c 2 -l libgthread-2.0 >libGthread.sgml
 	../../../mklibspec -a IA64 -c 2 -l libatk-1.0 >libAtk.sgml
 	../../../mklibspec -a IA64 -c 2 -l libpango-1.0 >libPango.sgml
 	../../../mklibspec -a IA64 -c 2 -l libpangoxft-1.0 >libPangoxft.sgml
@@ -35,5 +36,5 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-GTK.sgml: libGlib.sgml libGobject.sgml libGmodule.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml
+GTK.sgml: libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml
 #GTK.sgml: $(MANPAGES)
