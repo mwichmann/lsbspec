@@ -21,14 +21,14 @@ all::
 all:: intlists
 
 intlists:
-	./mkintlist -A All >intlist.All.txt
-	./mkintlist -A IA32 >intlist.IA32.txt
-	./mkintlist -A IA64 >intlist.IA64.txt
-	./mkintlist -A PPC32 >intlist.PPC32.txt
-	./mkintlist -A PPC64 >intlist.PPC64.txt
-	./mkintlist -A S390 >intlist.S390.txt
-	./mkintlist -A S390X >intlist.S390X.txt
-	./mkintlist -A X86-64 >intlist.AMD64.txt
+	./mkintlist -A All -v `cat ./LSB/version.generic` >intlist.All.txt
+	./mkintlist -A IA32 -v `cat ./LSB/version.IA32` >intlist.IA32.txt
+	./mkintlist -A IA64 -v `cat ./LSB/version.IA64` >intlist.IA64.txt
+	./mkintlist -A PPC32 -v `cat ./LSB/version.PPC32` >intlist.PPC32.txt
+	./mkintlist -A PPC64 -v `cat ./LSB/version.PPC64` >intlist.PPC64.txt
+	./mkintlist -A S390 -v `cat ./LSB/version.S390` >intlist.S390.txt
+	./mkintlist -A S390X -v `cat ./LSB/version.S390X` >intlist.S390X.txt
+	./mkintlist -A X86-64 -v `cat ./LSB/version.AMD64` >intlist.AMD64.txt
 
 gensrc:
 	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done

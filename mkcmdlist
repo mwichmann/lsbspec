@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkcmdlist [-m <moduleid> ]\n Default moduleid is 1 (i.e LSB Core)\n";
+print STDERR "mkcmdlist -v <lsbversion> [-m <moduleid> ]\n Default moduleid is 1 (i.e LSB Core)\n";
 die;
 }
 
@@ -18,8 +18,10 @@ die;
 # 1) process the arguments
 #
 # We can get module id from Module Table. Commands list will be generated as per modules.
-GetOptions("m=i" => \$moduleid);
+GetOptions("m=i" => \$moduleid,
+			"v=s" => \$lsbversion);
 if( !$moduleid ) { $moduleid=1; }
+if( !$lsbversion ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -46,7 +48,9 @@ print "</PARA>\n";
 $select = "SELECT * FROM Command ";
 $select.= "Left JOIN ModCmd ON MCcid=Cid ";
 $select.= "LEFT JOIN Standard ON Sid=Cstandard ";
-$select.= "WHERE MCmid=$moduleid AND Cstdstatus='Included' AND Cbuiltin != 'Yes'";
+$select.= "WHERE MCmid=$moduleid AND MCappearedin <= '$lsbversion' AND MCappearedin <>'' ";
+$select.= "AND (MCwithdrawnin IS NULL OR MCwithdrawnin > '$lsbversion') ";
+$select.= "AND Cbuiltin != 'Yes' ";
 $select.= "AND Sname='LSB' " ;
 $select.= "ORDER BY Cname";
 print STDERR $select,"\n" if $trace;

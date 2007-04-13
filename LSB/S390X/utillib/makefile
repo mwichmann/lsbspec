@@ -13,9 +13,9 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a S390X -l libz >libz.sgml
-	../../../mklibspec -a S390X -l libncurses >libcurses.sgml
-	../../../mklibspec -a S390X -l libutil >libutil.sgml
+	../../../mklibspec -a S390X -l libz -v `cat ../../version.S390X` >libz.sgml
+	../../../mklibspec -a S390X -l libncurses -v `cat ../../version.S390X` >libcurses.sgml
+	../../../mklibspec -a S390X -l libutil -v `cat ../../version.S390X` >libutil.sgml
 
 clean:
 	rm -f $(FILES)

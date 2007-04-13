@@ -10,7 +10,7 @@ my $trace = 0;
 
 sub usage()
 {
-	print STDERR "mklibspec -l <libname> -a <archname> [-c cols] [-d]\n";
+	print STDERR "mklibspec -l <libname> -a <archname> -v <lsbversion> [-c cols] [-d]\n";
 	die;
 }
 
@@ -351,31 +351,31 @@ sub getinterfaces($$$$)
 
 	if ($type eq "functions" || $type eq "methods") {
 		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
-		$where.= "AND ( Istdstatus='Included' ) ";
-		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+		$where.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
+		$where.= "AND AIarch=$Aid ";
 		$name  = "ints";
 		$table_title = "$Lname - $LGname Function Interfaces";
 		}
 	elsif ($type eq "deprecated functions") {
 		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
-		$where.= "AND Istdstatus='Included' ";
 		$where.= "AND Iisdeprecated='Yes' ";
-		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+		$where.= "AND AIarch=$Aid ";
 		$name  = "depints";
 		$table_title = "$Lname - $LGname Deprecated Function Interfaces";
 		}
 	elsif ($type eq "data interfaces") {
 		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-		$where.= "AND ( Istdstatus='Included' ) ";
-		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+		$where.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
+		$where.= "AND AIarch=$Aid ";
 		$name  = "data";
 		$table_title = "$Lname - $LGname Data Interfaces";
 		}
 	elsif ($type eq "deprecated data interfaces") {
 		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-		$where.= "AND Istdstatus='Included' ";
 		$where.= "AND Iisdeprecated='Yes' ";
-		$where.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+		$where.= "AND AIarch=$Aid ";
 		$name  = "ddata";
 		$table_title = "$Lname - $LGname Deprecated Data Interfaces";
 		}
@@ -502,11 +502,13 @@ $demangle = 0;
 
 GetOptions("l=s" => \$libname,
 	   "c=i" => \$numcols,
+	   "v=s" => \$lsbversion,
 	   "d"   => \$demangle,
 	   "a=s" => \$archname);
 
 if( !$libname ) { usage(); }
 if( !$archname ) { usage(); }
+if( !$lsbversion ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -516,7 +518,7 @@ $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::d
 #
 # 3) get & print the architecture info
 #
-$select = "SELECT * FROM Architecture WHERE ";
+$select = "SELECT Aname,Aid FROM Architecture WHERE ";
 $select.= "Architecture.Aname=".$Dbh->quote($archname);
 print STDERR $select,"\n" if $trace;
 $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -547,7 +549,9 @@ print "</PARA>\n";
 $select = "SELECT * FROM Library ";
 $select.= "LEFT JOIN ArchLib ON Lid=ALlid ";
 $select.= "WHERE Library.Lname=".$Dbh->quote($libname)." ";
-$select.= "AND Lstdstatus!='Excluded'";
+$select.= "AND ( (ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
+$select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
+$select.= "OR Lcandidatefor<>'' )";
 $select.= "AND ALaid=$Aid";
 print STDERR $select,"\n" if $trace;
 $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -599,8 +603,9 @@ $select.= "LEFT JOIN LGInt ON LGIint=Iid ";
 $select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
 $select.= "LEFT JOIN ArchInt ON AIint=Iid ";
 $select.= "WHERE LGlib=$Lid ";
-$select.= "AND Istdstatus != 'Excluded' ";
-$select.= "AND ( AIarch=$Aid OR Iarch=$Aid ) ";
+$select.= "AND ( (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ";
+$select.= "AND AIarch=$Aid ";
 $select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
 #my %ref_list;
@@ -762,14 +767,27 @@ if( $hdh->numrows ) {
 #
 # List the Interface Definitions of things specified by the LSB document.
 #
+
 $select = "SELECT Iname,Istandard FROM Interface ";
 $select.= "LEFT JOIN LGInt ON Iid=LGIint ";
 $select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
 $select.= "LEFT JOIN Library ON Lid=LGlib ";
 $select.= "LEFT JOIN Standard ON Sid=Istandard ";
-$select.= "WHERE Lid=$Lid AND Iarch=$Aid ";
-#$select.= "AND ( Istdstatus='Included' OR Istdstatus='Deprecated' ) ";
-$select.= "AND ( Istdstatus='Included' ) ";
+$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+$select.= "WHERE Lid=$Lid AND AIarch=$Aid ";
+$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
+# Don't try to include the description of generic interfaces
+# into the arch specific document
+if( $Aid!=1 ) {
+	$select.= "AND Iid NOT IN ";
+#	$select.= "(SELECT Iid FROM Interface";
+#	$select.= " LEFT JOIN ArchInt ON Iid=AIint";
+	$select.= "(SELECT DISTINCT AIint FROM ArchInt";
+	$select.= " WHERE AIarch=1 ";
+	$select.= " AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$select.= " AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') )";
+}
 $select.= "AND Sname='LSB'";
 $select.= "ORDER BY Iname";
 print STDERR $select,"\n" if $trace;
@@ -785,7 +803,14 @@ if($sth->numrows) {
 	print "</PARA>\n";
 	print "<PARA>\n";
 	print "Other interfaces listed in <XREF LINKEND=$safelibname> shall behave as described\n";
-	print "in the referenced base document.\n";
+	print "in the referenced base document.";
+	if( $Aid != 1 ) {
+		print " For interfaces referencing LSB and not listed below, please see the generic part of the specification.\n"
+	}
+	else {
+		print "\n";
+	}
+	
 	print "</PARA>\n";
 
 	for(1..$sth->numrows) {

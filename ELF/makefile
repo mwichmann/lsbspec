@@ -1,5 +1,5 @@
 
-SUBDIRS= generic AMD64 IA32 IA64 M32R PPC32 PPC64 S390 S390X
+SUBDIRS= generic AMD64 IA32 IA64 PPC32 PPC64 S390 S390X
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done

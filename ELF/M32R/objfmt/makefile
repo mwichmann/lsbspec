@@ -16,8 +16,8 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../../../mksecttypestable -a M32R -s 'M32R ABI' -t 'ELF Section Types' >elfsecttypes.sgml
 	../../../mksecttypestable -a M32R -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
-	../../../mksectiontable -a M32R -s 'M32R ABI' -t 'ELF Special Sections' >elfsect.sgml
-	../../../mksectiontable -a M32R -s 'LSB' -t 'Additional Special Sections'  >linuxsect.sgml
+	../../../mksectiontable -a M32R -s 'M32R ABI' -t 'ELF Special Sections' -v `cat ../../../LSB/version.M32R` >elfsect.sgml
+	../../../mksectiontable -a M32R -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/version.M32R` >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)

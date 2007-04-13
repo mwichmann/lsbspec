@@ -16,11 +16,22 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 use File::Temp qw(tempfile);
 use Data::Dumper;
 use strict;
+use Getopt::Long;
 
+my $lsbversion;
 my $verbose = 1;
 my $dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) 
 	|| die $Mysql::db_errstr;
 
+sub usage()
+{
+die "Usage: checksynop -v <lsbversion> [<file> ...]\n";
+}
+
+GetOptions(	"v=s" => \$lsbversion );
+
+if( !$lsbversion ) { usage(); }
+	
 foreach my $file (@ARGV) {
 	checksynopsis($file, $dbh);
 }
@@ -90,7 +101,9 @@ sub checksynopsis($$)
 	$sql .= "where ";
 	$sql .= "Iname='$funcname' and ";
 	$sql .= "Itype='function' and ";
-	$sql .= "Istdstatus in ('Included','SrcOnly','Deprecated')";
+	$sql .= "(Isrconly ='Yes' OR Iisdeprecated='Yes'";
+	$sql .= "OR ( (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$sql .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ) ";
 
 	my $sth = $dbh->query($sql) || die $dbh->errmsg();
 	if ($sth->numrows() == 0) {

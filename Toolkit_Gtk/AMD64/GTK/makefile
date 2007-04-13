@@ -16,18 +16,18 @@ TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a x86-64 -c 2 -l libglib-2.0 >libGlib.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libgobject-2.0 >libGobject.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libgmodule-2.0 >libGmodule.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libgthread-2.0 >libGthread.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libatk-1.0 >libAtk.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libpango-1.0 >libPango.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libpangoxft-1.0 >libPangoxft.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libpangoft2-1.0 >libPangoft2.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libgdk_pixbuf-2.0 >libGdk_pixbuf.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libgdk_pixbuf_xlib-2.0 >libGdk_pixbuf_xlib.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libgdk-x11-2.0 >libGdk-x11.sgml
-	../../../mklibspec -a x86-64 -c 2 -l libgtk-x11-2.0 >libGtk-x11.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libglib-2.0 >libGlib.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libgobject-2.0 >libGobject.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libgmodule-2.0 >libGmodule.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libgthread-2.0 >libGthread.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libatk-1.0 >libAtk.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libpango-1.0 >libPango.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libpangoxft-1.0 >libPangoxft.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libpangoft2-1.0 >libPangoft2.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libgdk_pixbuf-2.0 >libGdk_pixbuf.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libgdk_pixbuf_xlib-2.0 >libGdk_pixbuf_xlib.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libgdk-x11-2.0 >libGdk-x11.sgml
+	../../../mklibspec -a x86-64 -c 2 -v `cat ../../../LSB/version.AMD64` -l libgtk-x11-2.0 >libGtk-x11.sgml
 
 clean:
 	rm -f $(FILES)
