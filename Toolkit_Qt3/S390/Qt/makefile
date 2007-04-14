@@ -13,7 +13,7 @@ TABLES= libqt_mt.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a S390 -c 2 -l libqt-mt >libqt_mt.sgml
+	../../../mklibspec -a S390 -v `cat ../../../LSB/version.S390` -c 2 -l libqt-mt >libqt_mt.sgml
 
 clean:
 	rm -f $(FILES)

@@ -16,8 +16,8 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../../../mksecttypestable -a All -s 'ABIUpdate' -t 'ELF Section Types' >elfsecttypes.sgml
 	../../../mksecttypestable -a All -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
-	../../../mksectiontable -a All -s 'ABIUpdate' -t 'ELF Special Sections' >elfsect.sgml
-	../../../mksectiontable -a All -s 'LSB' -t 'Additional Special Sections' >linuxsect.sgml
+	../../../mksectiontable -a All -s 'ABIUpdate' -t 'ELF Special Sections' -v `cat ../../../LSB/version.generic` >elfsect.sgml
+	../../../mksectiontable -a All -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/version.generic` >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)

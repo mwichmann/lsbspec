@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkrpmtag -g <groupname> -t <tabletitle>\n";
+print STDERR "mkrpmtag -g <groupname> -t <tabletitle> -v <lsbversion>\n";
 die;
 }
 
@@ -18,10 +18,12 @@ die;
 # 1) process the arguments
 #
 GetOptions("g=s" => \$groupname,
-           "t=s" => \$title);
+			"v=s" => \$lsbversion,
+			"t=s" => \$title);
 
 if( !$groupname ) { usage(); }
 if( !$title ) { usage(); }
+if( !$lsbversion ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -33,6 +35,8 @@ $Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::d
 #
 $select = "SELECT * FROM RpmTag ";
 $select.= "WHERE Rgroup=".$Dbh->quote($groupname);
+$select.= " AND (Rappearedin IS NOT NULL and Rappearedin <= '$lsbversion' and Rappearedin<>'') ";
+$select.= " AND (Rwithdrawnin IS NULL OR Rwithdrawnin > '$lsbversion') ";
 $select.= " ORDER BY Rtag ";
 print STDERR $select,"\n" if $trace;
 $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
@@ -78,6 +82,8 @@ if($sth->numrows) {
 
 $select = "SELECT * FROM RpmTag ";
 $select.= "WHERE Rgroup=".$Dbh->quote($groupname);
+$select.= " AND (Rappearedin IS NOT NULL and Rappearedin <= '$lsbversion' and Rappearedin<>'') ";
+$select.= " AND (Rwithdrawnin IS NULL OR Rwithdrawnin > '$lsbversion') ";
 $select.= " ORDER BY Rtag ";
 #print $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();

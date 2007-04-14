@@ -13,8 +13,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkdyntagtable -a x86-64 -s 'x86-64-ABI' -c 4 >dyntag.sgml
-	../../../mkdyntagtable -a x86-64 -s 'LSB' -d >linuxtag.sgml
+	../../../mkdyntagtable -a x86-64 -s 'x86-64-ABI' -v `cat ../../../LSB/version.AMD64` -c 4 >dyntag.sgml
+	../../../mkdyntagtable -a x86-64 -s 'LSB' -v `cat ../../../LSB/version.AMD64` -d >linuxtag.sgml
 
 clean:
 	rm -f $(FILES)

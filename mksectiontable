@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mksectiontable -a <archname> -s <stdname> -t <tabletitle>\n";
+print STDERR "mksectiontable -a <archname> -s <stdname> -t <tabletitle> -v <lsbversion>\n";
 die;
 }
 
@@ -19,11 +19,13 @@ die;
 #
 GetOptions("a=s" => \$archname,
            "s=s" => \$stdname,
+		   "v=s" => \$lsbversion,
            "t=s" => \$title);
 
 if( !$archname ) { usage(); }
 if( !$stdname ) { usage(); }
 if( !$title ) { usage(); }
+if( !$lsbversion ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -42,17 +44,23 @@ $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 $Aid=$entry{'Aid'};
 $Aname=$entry{'Aname'};
 
+if( not $Aname ) {
+	die "Unsupported architecture";
+}
+
 #
 # 4) Get the data
 #
 $select = "SELECT * ";
 $select.= "FROM ElfSections ";
-$select .= "INNER JOIN Standard on ESstandard=Sid ";
-$select.= "LEFT JOIN SectionTypes ON STid=EStype ";
+$select.= "LEFT JOIN ArchES ON AESesid=ESid ";
+$select.= "INNER JOIN Standard on AESstd=Sid ";
+$select.= "LEFT JOIN SectionTypes ON STid=AEStype ";
 $select.= "WHERE Sname=".$Dbh->quote($stdname);
-$select.= " AND ESarch=$Aid";
+$select.= " AND AESaid=$Aid";
+$select.= " AND (AESappearedin <= '$lsbversion' and AESappearedin<>'') ";
+$select.= " AND (AESwithdrawnin IS NULL OR AESwithdrawnin > '$lsbversion')";
 $select.= " ORDER BY ElfSections.ESname ";
-#print $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
@@ -78,7 +86,7 @@ if($sth->numrows) {
 		%entry=$sth->fetchhash;
 		printf "<ENTRY>%s</ENTRY>",$entry{'ESname'};
 		printf "<ENTRY>%s</ENTRY>",$entry{'STname'};
-		printf "<ENTRY>%s</ENTRY>",$entry{'ESattributes'};
+		printf "<ENTRY>%s</ENTRY>",$entry{'AESattributes'};
 		print "</ROW>\n";
 	}
 	print "</TBODY>\n";
@@ -87,9 +95,12 @@ if($sth->numrows) {
 }
 
 $select = "SELECT * ";
-$select.= "FROM ElfSections,Standard ";
-$select.= "WHERE ESstandard=Sid and Sname=".$Dbh->quote($stdname);
-$select.= " AND ESarch=$Aid";
+$select.= "FROM Standard,ElfSections ";
+$select.= "LEFT JOIN ArchES ON AESesid=ESid ";
+$select.= "WHERE AESstd=Sid and Sname=".$Dbh->quote($stdname);
+$select.= " AND AESaid=$Aid";
+$select.= " AND (AESappearedin <= '$lsbversion' and AESappearedin<>'') ";
+$select.= " AND (AESwithdrawnin IS NULL OR AESwithdrawnin > '$lsbversion')";
 $select.= " ORDER BY ElfSections.ESname ";
 #print $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
@@ -100,7 +111,7 @@ if($sth->numrows) {
 		print "<VARLISTENTRY>";
 		%entry=$sth->fetchhash;
 		printf "<TERM>%s</TERM>",$entry{'ESname'};
-		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry{'ESdescription'};
+		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry{'AESdescription'};
 		print "</VARLISTENTRY>\n";
 	}
 print "</VARIABLELIST>\n";
@@ -108,4 +119,3 @@ print "</VARIABLELIST>\n";
 
 printf("<!-- End of text generated from database -->\n");
 printf("<!--    by \$Header: mksectiontable 1.14 2006-02-14 02:07:22 nick Exp $- -->\n");
-

@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mklibapdn -a <archname> [-m module]\n Default module is 1 (i.e LSB Core)\n";
+print STDERR "mklibapdn -a <archname> -v <lsbversion> [-m module]\n Default module is 1 (i.e LSB Core)\n";
 die;
 }
 
@@ -28,10 +28,12 @@ sub makeid($)
 # 1) process the arguments
 #
 GetOptions("a=s" => \$archname,
+		   "v=s" => \$lsbversion,
            "m=s" => \$module);
 if( !$module ) { $module='LSB_Core'; }
 
 if( !$archname ) { usage(); }
+if( !$lsbversion ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -64,14 +66,29 @@ print "</PARA>\n";
 # 4) get & print the library info
 #
 $select = "SELECT * FROM Library ";
+$select.= "LEFT JOIN ArchLib ON ALlid=Lid ";
 if( $module ) {
 	$select.= "LEFT JOIN ModLib ON MLlid=Lid ";
 	$select.= "LEFT JOIN Module ON MLmid=Mid ";
 }
-$select.= "WHERE Library.Lstdstatus='Included' ";
+$select.= "WHERE (ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
+$select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
 if( $module ) {
 	$select.= "AND Mname='".$module."' ";
 }
+
+if( $Aid != 1 ) {
+	$select.= "AND (ALaid=$Aid OR (ALaid=1 AND Lid NOT IN ( ";
+	$select.= "SELECT Lid FROM Library ";
+	$select.= "LEFT JOIN ArchLib ON ALlid=Lid ";
+	$select.= "WHERE (ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
+	$select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
+	$select.= "AND ALaid=$Aid ) ) ) ";
+}
+else {
+	$select.= "AND ALaid=$Aid ";
+}
+
 $select.= "AND Library.Lname!='libstdcxx' ";
 $select.= "ORDER BY Lname ";
 print STDERR $select,"\n" if $trace;
@@ -86,10 +103,13 @@ $select = "SELECT Iname,Istandard,Vname,Sname ";
 $select.= "FROM Interface ";
 $select.= "INNER JOIN LGInt ON Iid=LGIint ";
 $select.= "INNER JOIN LibGroup ON LGIlibg=LGid ";
-$select.= "LEFT JOIN Version ON Vid=Iversion ";
+$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+$select.= "LEFT JOIN Version ON Vid=AIversion ";
 $select.= "LEFT JOIN Standard ON Sid=Istandard ";
 $select.= "WHERE Itype='Function' ";
-$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istdstatus='Included' ";
+$select.= "AND LGlib=$Lid AND AIarch=$Aid ";
+$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
 $select.= "ORDER BY Iname";
 $inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $inh->numrows == 0) { next; }
@@ -104,8 +124,10 @@ print "</PARA>\n";
 #
 print "<PARA>\n";
 $select = "SELECT DISTINCT Sname,Sid FROM Standard,LibGroup,LGInt,Interface ";
+$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "WHERE Sid=Istandard AND Iid=LGIint AND LGIlibg=LGid ";
-$select.= "AND LGlib=$Lid AND Iarch=$Aid ORDER BY Sname";
+$select.= "AND LGlib=$Lid AND AIarch=$Aid ";
+$select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
 $lsh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 local @refname;
@@ -214,10 +236,13 @@ print "</TABLE>\n";
 	$select.= "FROM Interface ";
 	$select.= "INNER JOIN LGInt ON Iid=LGIint ";
 	$select.= "INNER JOIN LibGroup ON LGIlibg=LGid ";
-	$select.= "LEFT JOIN Version ON Vid=Iversion ";
+	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+	$select.= "LEFT JOIN Version ON Vid=AIversion ";
 	$select.= "LEFT JOIN Standard ON Sid=Istandard ";
 	$select.= "WHERE Itype='Data' ";
-	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istdstatus='Included' ";
+	$select.= "AND LGlib=$Lid AND AIarch=$Aid ";
+	$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
 	$select.= "ORDER BY Iname";
 	print STDERR $select,"\n" if $trace;
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();

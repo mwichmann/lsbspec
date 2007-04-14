@@ -16,8 +16,8 @@ gensrc:
 	../../../mkstandardsgmltable -a IA64 -t Standard -x $(EXCLSPECS) >standards.sgml
 	../../../mkstandardsgmltable -a IA64 -t Reference -x $(EXCLSPECS) >references.sgml
 	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI','SUSV3','LSB','ISOC99'" >cxxstandards.sgml
-	../../../mklibsgmltable -a IA64 -m "LSB_Core" >libraries.sgml
-	../../../mklibsgmltable -a IA64 -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
+	../../../mklibsgmltable -a IA64 -v `cat ../../../LSB/version.IA64` -m "LSB_Core" >libraries.sgml
+	../../../mklibsgmltable -a IA64 -v `cat ../../../LSB/version.IA64` -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
 
 clean:
 	rm -f $(FILES)

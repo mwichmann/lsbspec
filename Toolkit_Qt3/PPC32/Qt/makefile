@@ -13,7 +13,7 @@ TABLES= libqt_mt.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a PPC32 -c 2 -l libqt-mt >libqt_mt.sgml
+	../../../mklibspec -a PPC32 -v `cat ../../../LSB/version.PPC32` -c 2 -l libqt-mt >libqt_mt.sgml
 
 clean:
 	rm -f $(FILES)

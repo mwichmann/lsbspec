@@ -12,8 +12,11 @@
 use Mysql;
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 use strict;
+use Getopt::Long;
+
 my $level = 0;
 my $dbh;
+my $lsbversion;
 
 #
 #
@@ -127,7 +130,7 @@ sub displaytyperef($)
 	}
 
 	if( $$param{'Ttype'} eq "Const" ) {
-		$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." GROUP BY Tid";
 		$sth = $dbh->query($select) || die $dbh->errmsg();
 		%type=$sth->fetchhash;
 		if( $type{'Ttype'} eq "Pointer" ) {
@@ -141,7 +144,7 @@ sub displaytyperef($)
 	}
 
 	if( $$param{'Ttype'} eq "Pointer" ) {
-		$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." GROUP BY Tid";
 		$sth = $dbh->query($select) || die $dbh->errmsg();
 		%type=$sth->fetchhash;
 		$retval .= displaytyperef(\%type);
@@ -170,8 +173,8 @@ sub displaytyperef($)
 	}
 
 	if( $$param{'Ttype'} eq "Array" ) {
-		my $basetype=$$param{'Tbasetype'};
-		$tselect="SELECT * FROM Type WHERE Tid=$basetype";
+		my $basetype=$$param{'ATbasetype'};
+		$tselect="SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$basetype GROUP BY Tid";
 		$tth = $dbh->query($tselect) || die $dbh->errmsg();
 		%type=$tth->fetchhash;
 		if( !$nameonly ) {
@@ -188,7 +191,7 @@ sub displaytyperef($)
 	}
 
 	if( $$param{'Ttype'} eq "FuncPtr" ) {
-		$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
+		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." GROUP BY Tid";
 		$sth = $dbh->query($select) || die $dbh->errmsg();
 		%type=$sth->fetchhash;
 		$Tid=$$param{'Tid'};
@@ -211,7 +214,7 @@ sub displaytyperef($)
 		for(1..$tmh->numrows) {
 			%tmentry=$tmh->fetchhash;
 			$TMtypeid=$tmentry{'TMtypeid'};
-			$tselect="SELECT * FROM Type WHERE Tid=$TMtypeid";
+			$tselect="SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$TMtypeid GROUP BY Tid";
 			$th = $dbh->query($tselect) || die $dbh->errmsg();
 			%entry=$th->fetchhash;
 			$nameonly=1;
@@ -243,9 +246,18 @@ sub trim($)
 	return $str;
 }
 
+sub usage()
+{
+die "Usage: mksynop -v <lsbversion> [<interface_name> ...]\n";
+}
+
+GetOptions(	"v=s" => \$lsbversion );
+
+if( !$lsbversion ) { usage(); }
+
 my @args;
 die "Invalid database" if (!defined($LSBDB) || $LSBDB eq "");
-$dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) 
+$dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD)
 	|| die $Mysql::db_errstr;
 #
 # we need four things from the db for the interface in $ARGV[0]
@@ -258,11 +270,14 @@ $dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD)
 for my $func (@ARGV) {
 	my $sql = "select * from Interface ";
 	$sql .= "left join Type on Tid=Ireturn ";
+	$sql .= "left join ArchInt on Iid=AIint ";
 	$sql .= "left join Header on Hid=Iheader ";
 	$sql .= "where ";
 	$sql .= "Iname='$func' and ";
 	$sql .= "Itype='Function' and ";
-	$sql .= "Istdstatus in ('Included','SrcOnly')";
+	$sql .= "(Isrconly ='Yes' ";
+	$sql .= "OR ( (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$sql .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ) ";
 
 	my $sth = $dbh->query($sql);
 	if ($sth->numrows() > 0) {
@@ -275,9 +290,10 @@ for my $func (@ARGV) {
 		#
 		my $pos = 0;
 		my $Iid = $entry{'Iid'};
-		$sql = "select * from Type, Parameter ";
+		$sql = "select * from Parameter,Type ";
+		$sql .= "left join ArchType on ATtid=Tid ";
 		$sql .= "where Pint=$Iid and Ptype=Tid ";
-		$sql .= "order by Ppos";
+		$sql .= "group by Ppos,ATtid order by Ppos"; # Note that arch specific basetypew will not be handled here correctly
 		$sth = $dbh->query($sql) ||
 			die $dbh->errmsg();
 		my $argno = 0;
@@ -290,7 +306,7 @@ for my $func (@ARGV) {
 		while ((%entry = $sth->fetchhash())) {
 			my $argname = sprintf("arg%d", $argno++);
 			my $argtype = displaytyperef(\%entry);
-			
+
 			push(@args, {	'type' => $argtype,
 					'name' => $argname,
 				    });

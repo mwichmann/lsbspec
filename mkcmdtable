@@ -17,7 +17,7 @@ my $builtins = 0;
 
 sub usage()
 {
-        print STDERR "mkcmdtable [-b] [-m <moduleid>]\n Default moduleid is 1 (i.e LSB Core).\n";
+        print STDERR "mkcmdtable -v <lsbversion> [-b] [-m <moduleid>]\n Default moduleid is 1 (i.e LSB Core).\n";
         die;
 }
 ################################################################################
@@ -126,12 +126,12 @@ sub lsbCommands {
 		$MainTitle = "Built In Utilities";
 	} else {
 		$status = 'Included';
-		$builtinCheck = 'Command.Cbuiltin != \'Yes\''; # let's include 'Unknown' builtins here
+		$builtinCheck = 'Command.Cbuiltin <> \'Yes\''; # let's include 'Unknown' builtins here
 		$title = 'commands and utilities';
 		$tbl = "tbl-cmds";
 		$MainTitle = "Commands And Utilities";
 	}
-	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command  LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid WHERE ModCmd.MCmid=$moduleid AND Standard.Sid=Command.Cstandard AND Command.Cstdstatus='$status' AND $builtinCheck ORDER BY Sname");
+	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command  LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid WHERE ModCmd.MCmid=$moduleid AND Standard.Sid=Command.Cstandard AND (MCappearedin<>'' AND MCappearedin<='$lsbversion' AND (MCwithdrawnin IS NULL OR MCwithdrawnin>'$lsbversion') ) AND $builtinCheck ORDER BY Sname");
 	$sth->execute;
 
 	if ($sth->rows > 0) {
@@ -148,7 +148,7 @@ sub lsbCommands {
 
 	printf("</PARA>\n");
 
-	$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE Command.Cstdstatus='$status' AND $builtinCheck AND ModCmd.MCmid=$moduleid ORDER BY Command.Cname");
+	$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE (MCappearedin<>'' AND MCappearedin<='$lsbversion' AND (MCwithdrawnin IS NULL OR MCwithdrawnin>'$lsbversion') ) AND $builtinCheck AND ModCmd.MCmid=$moduleid ORDER BY Command.Cname");
 	$sth->execute;
 
 	if ($sth->rows < 1) {
@@ -263,9 +263,11 @@ sub makeid($)
 
 # We can get module id from Module Table. Commands list will be generated as per modules.
 GetOptions("b" => \$builtins,
-           "m=i" => \$moduleid);
+           "m=i" => \$moduleid,
+		   "v=s" => \$lsbversion);
 
 if(!$moduleid) { $moduleid=1; }
+if(!$lsbversion) { usage(); }
 
 lsbOpenDB;
 lsbCommands;

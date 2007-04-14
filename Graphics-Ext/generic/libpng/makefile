@@ -112,7 +112,7 @@ TABLES= png.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -c 3 -l libpng12 >png.sgml
+	../../../mklibspec -a All -v `cat ../../../LSB/version.generic` -c 3 -l libpng12 >png.sgml
 
 clean:
 	rm -f $(FILES)

@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkintlist -a <archname>\n";
+print STDERR "mkintlist -a <archname> -v <lsbversion>\n";
 die;
 }
 
@@ -17,9 +17,11 @@ die;
 #
 # 1) process the arguments
 #
-GetOptions("a=s" => \$archname);
+GetOptions("a=s" => \$archname,
+			"v=s" => \$lsbversion);
 
 if( !$archname ) { usage(); }
+if( !$lsbversion ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -45,8 +47,10 @@ $Aname=$entry{'Aname'};
 #
 # 4) get & print the library info
 #
-$select = "SELECT * FROM Library WHERE ";
-$select.= "Library.Lstdstatus='Included'";
+$select = "SELECT * FROM Library LEFT JOIN ArchLib ON ALlid=Lid WHERE ";
+$select.= "(ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
+$select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
+$select.= "AND ALaid=$Aid ";
 print STDERR $select,"\n" if $trace;
 $lth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 for(1..$lth->numrows) {
@@ -55,18 +59,28 @@ for(1..$lth->numrows) {
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
 
-$select = "SELECT Iname,Istandard,Istdstatus,Iisdeprecated,Vname ";
+$select = "SELECT Iname,Istandard,Isrconly,Iisdeprecated,Vname ";
 #$select.= "FROM Interface,LGInt,LibGroup ";
 $select.= "FROM Interface ";
 $select.= "INNER JOIN LGInt ON LGIint=Iid ";
 $select.= "INNER JOIN LibGroup ON LGlib=$Lid ";
-$select.= "LEFT JOIN Version ON Vid=Iversion ";
+$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+$select.= "LEFT JOIN Version ON Vid=AIversion ";
 #$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
 $select.= "WHERE LGIlibg=LGid AND Itype='Function' ";
 #$select.= "AND LGlib=$Lid AND Iarch=$Aid ";
-$select.= "AND Iarch=$Aid ";
-#$select.= "AND ( Istdstatus='Included' OR Istdstatus='Deprecated' )";
-$select.= "AND Istdstatus='Included' ";
+$select.= "AND AIarch=$Aid ";
+$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
+# Include only arch specific interfaces
+if( $Aid!=1 ) {
+	$select.= "AND Iid NOT IN ";
+	$select.= "(SELECT Iid FROM Interface";
+	$select.= " LEFT JOIN ArchInt ON Iid=AIint";
+	$select.= " WHERE AIarch=1 ";
+	$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') )";
+}
 $select.= "ORDER BY Iname";
 $inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 if( $inh->numrows == 0) { next; }
@@ -84,8 +98,7 @@ print "$Lname Function Interfaces\n";
 	for(1..$inh->numrows) {
 		%entry=$inh->fetchhash;
 		print $entry{'Iname'}."(".$entry{'Vname'}.")";
-#		if( $entry{'Istdstatus'} eq "Deprecated" ) {
-		if( ($entry{'Iisdeprecated'} eq "Yes") && ($entry{'Istdstatus'} eq "Included") ) {
+		if( $entry{'Iisdeprecated'} eq "Yes" ) {
 			print " *Deprecated*";
 			}
 		print "\n";
@@ -98,10 +111,24 @@ print "$Lname Function Interfaces\n";
 {
 	local(*datasym);
 	local(*std);
-	$select = "SELECT * FROM Interface,LGInt,LibGroup ";
-	$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Data' ";
-	$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istdstatus='Included' ";
+
+	$select = "SELECT * FROM Interface ";
+	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
+	$select.= "LEFT JOIN LibGroup ON LGIlibg=LGid ";
+	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+	$select.= "WHERE Itype='Data' AND LGlib=$Lid AND AIarch=$Aid ";
+	$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
+	if( $Aid!=1 ) {
+		$select.= "AND Iid NOT IN ";
+		$select.= "(SELECT Iid FROM Interface";
+		$select.= " LEFT JOIN ArchInt ON Iid=AIint";
+		$select.= " WHERE AIarch=1 ";
+		$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+		$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ";
+	}
 	$select.= "ORDER BY Iname";
+		
 	print STDERR $select,"\n" if $trace;
 	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	if ($sth->numrows > 0 ) {

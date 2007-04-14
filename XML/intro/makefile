@@ -14,7 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkstandardsgmltable -a All -s "'libXML2','ISOC99'" >standards.sgml
-	../../mklibsgmltable -a All -m LSB_XML >libraries.sgml
+	../../mklibsgmltable -a All -v `cat ../../LSB/version.generic` -m LSB_XML >libraries.sgml
 
 
 clean:

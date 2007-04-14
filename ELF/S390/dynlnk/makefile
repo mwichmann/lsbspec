@@ -15,8 +15,8 @@ all: $(FILES) $(TABLES)
 source: all
 
 gensrc:
-	../../../mkdyntagtable -a S390 -s 'S390 ABI' -c 4 >dyntag.sgml
-	../../../mkdyntagtable -a S390 -s 'LSB' -d >linuxtag.sgml
+	../../../mkdyntagtable -a S390 -s 'S390 ABI' -v `cat ../../../LSB/version.S390` -c 4 >dyntag.sgml
+	../../../mkdyntagtable -a S390 -s 'LSB' -v `cat ../../../LSB/version.S390` -d >linuxtag.sgml
 
 clean:
 	rm -f $(FILES)

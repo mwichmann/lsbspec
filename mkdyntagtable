@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkdyntagtable -a <archname> -s <stdname> [-c <numcols>] [-d]\n";
+print STDERR "mkdyntagtable -a <archname> -s <stdname> -v lsbversion [-c <numcols>] [-d]\n";
 die;
 }
 
@@ -22,10 +22,12 @@ $dodesc=0;
 GetOptions("a=s" => \$archname,
 	   "s=s" => \$stdname,
 	   "c=i" => \$numcols,
+	   "v=s" => \$lsbversion,
 	   "d" => \$dodesc);
 
 if( !$archname ) { usage(); }
 if( !$stdname ) { usage(); }
+if( !$lsbversion ) { usage(); }
 
 #
 # 2) Establish connection to the database
@@ -44,13 +46,20 @@ $sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 $Aid=$entry{'Aid'};
 $Aname=$entry{'Aname'};
 
-$select = "SELECT DEname,DEdescription ";
-$select.= "FROM DynamicEntries,Standard ";
-$select.= "WHERE DEstandard=Sid and Sname=".$Dbh->quote($stdname)." ";
-$select.= "AND DEarch=$Aid ";
-$select.= "AND DEstdstatus='Included' ";
-$select.= "ORDER BY DynamicEntries.DEname ";
-#print $select,"\n";
+if( not $Aname ) {
+	die "Unsupported architecture";
+}
+
+$select = "SELECT DEname,ADEdescription ";
+$select.= "FROM DynamicEntries ";
+$select.= "LEFT JOIN ArchDE ON ADEdeid=DEid ";
+$select.= "LEFT JOIN Standard ON ADEstd=Sid ";
+$select.= "WHERE Sname=".$Dbh->quote($stdname)." ";
+$select.= "AND ADEaid=$Aid ";
+$select.= "AND (ADEappearedin <= '$lsbversion' and ADEappearedin<>'') ";
+$select.= "AND (ADEwithdrawnin IS NULL OR ADEwithdrawnin > '$lsbversion')";
+$select.= " ORDER BY DynamicEntries.DEname ";
+# print $select,"\n";
 $sth = $Dbh->query($select) || die $Dbh->errmsg();
 
 printf("<!-- Start of text generated from database -->\n");
@@ -65,7 +74,7 @@ if($sth->numrows) {
 		print "<VARLISTENTRY>\n";
 		%entry=$sth->fetchhash;
 		printf "<TERM>%s</TERM>\n",$entry{'DEname'};
-		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>\n",$entry{'DEdescription'};
+		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>\n",$entry{'ADEdescription'};
 		print "</VARLISTENTRY>\n";
 	}
 print "</VARIABLELIST>\n";

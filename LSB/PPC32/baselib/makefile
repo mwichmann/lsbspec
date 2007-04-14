@@ -26,13 +26,13 @@ TABLES=
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
 gensrc: $(MANPAGES)
-	../../../mklibspec -a PPC32 -l libc >libc.sgml
-	../../../mklibspec -a PPC32 -l libm >libm.sgml
-	../../../mklibspec -a PPC32 -l libpthread >libpthread.sgml
-	../../../mklibspec -a PPC32 -l libdl >libdl.sgml
-	../../../mklibspec -a PPC32 -l libcrypt >libcrypt.sgml
-	../../../mklibspec -a PPC32 -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../../mklibspec -a PPC32 -c 1 -l libstdcxx -d | ../../../fixc++spec >libstdcxx.sgml
+	../../../mklibspec -a PPC32 -l libc -v `cat ../../version.PPC32` >libc.sgml
+	../../../mklibspec -a PPC32 -l libm -v `cat ../../version.PPC32` >libm.sgml
+	../../../mklibspec -a PPC32 -l libpthread -v `cat ../../version.PPC32` >libpthread.sgml
+	../../../mklibspec -a PPC32 -l libdl -v `cat ../../version.PPC32` >libdl.sgml
+	../../../mklibspec -a PPC32 -l libcrypt -v `cat ../../version.PPC32` >libcrypt.sgml
+	../../../mklibspec -a PPC32 -l libgcc_s -v `cat ../../version.PPC32` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	../../../mklibspec -a PPC32 -c 1 -l libstdcxx -d -v `cat ../../version.PPC32` | ../../../fixc++spec >libstdcxx.sgml
 
 _Unwind_%.sgml: 
 	cp ../../generic/baselib/$@ .

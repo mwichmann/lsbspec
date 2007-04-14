@@ -14,7 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkstandardsgmltable -a All -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99'" >standards.sgml
-	../../mklibsgmltable -a All -m LSB_Toolkit_Gtk >libraries.sgml
+	../../mklibsgmltable -a All -v `cat ../../LSB/version.generic` -m LSB_Toolkit_Gtk >libraries.sgml
 
 
 clean:

@@ -13,9 +13,9 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a PPC32 -l libz >libz.sgml
-	../../../mklibspec -a PPC32 -l libncurses >libcurses.sgml
-	../../../mklibspec -a PPC32 -l libutil >libutil.sgml
+	../../../mklibspec -a PPC32 -l libz -v `cat ../../version.PPC32` >libz.sgml
+	../../../mklibspec -a PPC32 -l libncurses -v `cat ../../version.PPC32` >libcurses.sgml
+	../../../mklibspec -a PPC32 -l libutil -v `cat ../../version.PPC32` >libutil.sgml
 
 clean:
 	rm -f $(FILES)
