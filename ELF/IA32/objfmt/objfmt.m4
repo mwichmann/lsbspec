@@ -87,7 +87,7 @@ include(elfsect.sgml)
 </PARA>
 </SECT3>
 <SECT3>
-<TITLE>Addition Special Sections</TITLE>
+<TITLE>Additional Special Sections</TITLE>
 <PARA>
 The following additional sections are defined here.
 include(linuxsect.sgml)

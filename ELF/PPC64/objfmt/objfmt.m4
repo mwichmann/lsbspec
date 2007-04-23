@@ -28,7 +28,7 @@ The following sections are defined in the <XREF LINKEND="std.PPC64.ABI">.
 include(elfsect.sgml)
 </PARA>
 <SECT2>
-<TITLE>Addition Special Sections</TITLE>
+<TITLE>Additional Special Sections</TITLE>
 <PARA>
 The following additional sections are defined here.
 include(linuxsect.sgml)
