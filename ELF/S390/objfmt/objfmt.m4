@@ -37,7 +37,7 @@ include(elfsect.sgml)
 </PARA>
 </SECT2>
 <SECT2>
-<TITLE>Addition Special Sections</TITLE>
+<TITLE>Additional Special Sections</TITLE>
 <PARA>
 The following additional sections are defined here.
 include(linuxsect.sgml)
