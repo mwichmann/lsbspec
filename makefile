@@ -1,7 +1,6 @@
 
 DOCDIRS=ELF Graphics LSB Packaging Graphics-Ext Toolkit_Gtk Toolkit_Qt3 Toolkit_Qt XML Desktop
-BOOKDIRS=book booksets
-SUBDIRS= $(DOCDIRS) $(BOOKDIRS)
+SUBDIRS= $(DOCDIRS)
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
@@ -46,8 +45,6 @@ relbuild: intlists
 	find . -name '*.m4' | xargs touch
 	find . -name '*.sed' | xargs touch
 	for dir in $(DOCDIRS);do (cd $$dir && make gensrc source);done
-	for dir in $(BOOKDIRS);do (cd $$dir && make all);done
-	tar czf LSBrtfs.tar.gz `find book booksets -name '*.rtf' -o -name '*.eps'`
 
 clean::
 	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
