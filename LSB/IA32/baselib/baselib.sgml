@@ -27,7 +27,7 @@ The Program Interpreter shall be
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Sat Jan 13 07:38:34 2007 -->
+<!--    at Wed May 16 14:42:13 2007 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2030,7 +2030,6 @@ typedef unsigned long long int uint64_t;
 </SECT2>
 <!-- empty header file IA32/malloc.h -->
 <!-- empty header file IA32/monetary.h -->
-<!-- empty header file IA32/mqueue.h -->
 <SECT2>
 <TITLE>net/if.h</TITLE>
 <PARA>
@@ -2338,12 +2337,14 @@ struct sigcontext {
 };
 </SCREEN>
 </SECT2>
+<!-- missing header file IA32/spawn.h -->
 <SECT2>
 <TITLE>stddef.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
+typedef long int wchar_t;
 typedef unsigned int size_t;
 typedef int ptrdiff_t;
 </SCREEN>
@@ -2974,8 +2975,8 @@ struct utmpx {
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Thu Jun  8 17:15:58 2006 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    at Wed May 16 14:42:18 2007 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -3608,8 +3609,8 @@ typedef struct {
 #define FP_ILOGBNAN	(-2147483647 - 1)
 
 extern int __fpclassifyl(long double);
-extern int __signbitl(long double);
 extern long double exp2l(long double);
+extern int __signbitl(long double);
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -3623,7 +3624,7 @@ in the source standard.
 </PARA>
 <PARA>
 Other interfaces listed in <XREF LINKEND=libm> shall behave as described
-in the referenced base document.
+in the referenced base document. For interfaces referencing LSB and not listed below, please see the generic part of the specification.
 </PARA>
 <REFENTRY ID="baselib---fpclassifyl"> <REFMETA>
 <REFENTRYTITLE>__fpclassifyl</REFENTRYTITLE>
@@ -3663,13 +3664,13 @@ it is only in the binary standard.
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Mon Apr 24 10:57:40 2006 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    at Wed May 16 14:42:19 2007 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -3989,13 +3990,13 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Thu Jun  8 17:15:04 2006 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    at Wed May 16 14:42:21 2007 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -4107,22 +4108,34 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
+typedef _Unwind_Reason_Code(*_Unwind_Stop_Fn) (int version,
+					       _Unwind_Action actions,
+					       _Unwind_Exception_Class
+					       exceptionClass,
+					       struct _Unwind_Exception *
+					       exceptionObject,
+					       struct _Unwind_Context *
+					       context,
+					       void *stop_parameter);
+
+typedef _Unwind_Reason_Code(*_Unwind_Trace_Fn) (struct _Unwind_Context *,
+						void *);
 extern void _Unwind_DeleteException(struct _Unwind_Exception *);
 extern fde *_Unwind_Find_FDE(void *, struct dwarf_eh_base *);
-extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
-					_Unwind_Stop_Fn, void *);
 extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
 extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
 extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
 extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
-						   *);
+						   *, unsigned int);
 extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
-extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
 extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
 						  *);
+extern void _Unwind_SetIP(struct _Unwind_Context *, unsigned int);
 extern void _Unwind_Resume(struct _Unwind_Exception *);
 extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
-extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
 extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
 extern _Unwind_Reason_Code _Unwind_GetCFA(struct _Unwind_Context *);
 extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
@@ -4141,7 +4154,7 @@ in the source standard.
 </PARA>
 <PARA>
 Other interfaces listed in <XREF LINKEND=libgcc-s> shall behave as described
-in the referenced base document.
+in the referenced base document. For interfaces referencing LSB and not listed below, please see the generic part of the specification.
 </PARA>
 <!-- MISSING DEFINITION FOR _Unwind_Backtrace -->
 <!-- Lets just hope nobody notices -->
@@ -4833,13 +4846,13 @@ routine identified by the unwind <PARAMETER>context</PARAMETER>
 
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Mon Apr 24 10:57:41 2006 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    at Wed May 16 14:42:20 2007 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -4944,13 +4957,13 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </SECT2>
 </SECT1>
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
 
 
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Mon Apr 24 10:57:41 2006 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    at Wed May 16 14:42:20 2007 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -5014,7 +5027,7 @@ underlying specification.
 </SECT1>
 <!-- empty header file IA32/crypt.h -->
 <!-- End of text generated from database -->
-<!--    by $Header: /cvsroot/lsb/lsbspec/mklibspec,v 1.82 2006/03/29 19:10:18 mats Exp 0 -->
+<!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
 
 
 </CHAPTER>
