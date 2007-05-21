@@ -6,7 +6,7 @@
 <REFNAME>getgrouplist
 </REFNAME>
 <REFPURPOSE>
-get network group entry
+get groups a user belongs to
 </REFPURPOSE>
 </REFNAMEDIV>
 
@@ -37,7 +37,7 @@ get network group entry
 
 <REFSECT1>
 <REFSECT1INFO>
-<DATE>2 April 2001</DATE>
+<DATE>21 May 2007</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
@@ -50,29 +50,32 @@ by <parameter>user</parameter>. On entry,
 containing the maximum number of <type>gid_t</type>
 members in the <parameter>groups</parameter> array.
 The group <parameter>group</parameter> shall also be included.
-On success, the value referred to by <parameter>ngroups</parameter>
-shall be updated to contain the number of <type>gid_t</type>
-objects copied.
 </PARA>
 </REFSECT1>
 <REFSECT1><TITLE>Return Value</TITLE>
 <PARA>
-On success, if there was sufficient room to copy all the
-supplementatry group identifiers to the array
-identified by <parameter>groups</parameter>, 
+If on entry the value referenced by <parameter>ngroups</parameter>
+was greater than or equal to the number of supplementary
+group identifiers to be copied to the array identified by
+<parameter>groups</parameter>, 
 <function>getgrouplist</function> shall return the number of 
-<type>gid_t</type> objects copied, and the value referenced by
-<parameter>ngroups</parameter> shall be updated.
-If there was not sufficient room to copy all the supplementary
-group identifiers, <function>grouplist</function> shall return
-<constant>-1</constant>, and update the value referenced
-by <parameter>ngroups</parameter> to the number actually copied.
+group identifiers actually copied, and shall set the value
+referenced by <parameter>ngroups</parameter> to this value.
+</PARA>
+<PARA>
+If on entry the value referenced by <parameter>ngroups</parameter>
+was less than to the number of supplementary
+group identifiers, <function>getgrouplist</function> shall return
+<constant>-1</constant>. The initial <parameter>*ngroups</parameter>
+entries in
+<parameter>groups</parameter> may be overwritten.
 </PARA>
 <PARA>
 If <parameter>user</parameter> does not refer to a valid
 user on the system, <function>getgrouplist</function> shall
-return <constant>0</constant>, and set the value referenced by
-<parameter>ngroups</parameter> to <constant>0</constant>.
+return <constant>1</constant>, and set the value referenced by
+<parameter>ngroups</parameter> to <constant>1</constant>,
+reflecting the group supplied as <parameter>group</parameter>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
