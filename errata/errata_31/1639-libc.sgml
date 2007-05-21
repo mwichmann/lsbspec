@@ -1,0 +1,96 @@
+Specification: LSB Core Generic
+Edition of Specification: 3.1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1639
+
+Rationale: several errors in definition of interface - wrong summary,
+wrong behavior if user argument is invalid, wrong behavior if ngroups
+is smaller than the number of groups found.
+
+
+In section 13.5. Interface Definitions for libc
+
+Table of Contents,
+
+Change:
+
+   getgrouplist -- get network group entry
+
+to
+
+   getgrouplist -- get groups a user belongs to
+
+
+In the interface definition for getgrouplist,
+
+section Name,
+
+Change:
+
+   getgrouplist -- get network group entry
+
+To:
+
+   getgrouplist -- get groups a user belongs to
+
+
+section Synopsis,
+
+Change:
+
+   The getgrouplist() function shall fill in the array groups
+   with the supplementary groups for the user specified by user.
+   On entry, ngroups shall refer to an integer containing the
+   maximum number of gid_t members in the groups array. The group
+   group shall also be included. On success, the value referred
+   to by ngroups shall be updated to contain the number of gid_t
+   objects copied.
+
+To:
+
+   The getgrouplist() function shall fill in the array groups
+   with the supplementary groups for the user specified by user.
+   On entry, ngroups shall refer to an integer containing the
+   maximum number of gid_t members in the groups array. The group
+   group shall also be included.
+
+
+section Return Value,
+
+Change:
+
+   On success, if there was sufficient room to copy all the
+   supplementatry group identifiers to the array identified by
+   groups, getgrouplist() shall return the number of gid_t
+   objects copied, and the value referenced by ngroups shall be
+   updated. If there was not sufficient room to copy all the
+   supplementary group identifiers, grouplist() shall return -1,
+   and update the value referenced by ngroups to the number
+   actually copied.
+
+To:
+
+   If on entry the value referenced by ngroups was greater than
+   or equal to the number of supplementary group identifiers to
+   be copied to the array identified by groups, getgrouplist()
+   shall return the number of group identifiers actually copied,
+   and shall set the value referenced by ngroups to this value.
+
+   If on entry the value referenced by ngroups was less than to
+   the number of supplementary group identifiers, getgrouplist()
+   shall return -1. The initial *ngroups entries in groups may be
+   overwritten.
+
+
+and Change:
+
+   If user does not refer to a valid user on the system,
+   getgrouplist() shall return 0, and set the value referenced by
+   ngroups to 0.
+
+To:
+
+   If user does not refer to a valid user on the system,
+   getgrouplist() shall return 1, and set the value referenced by
+   ngroups to 1, reflecting the group supplied as group.
