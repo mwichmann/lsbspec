@@ -670,8 +670,15 @@ for(1..$lgh->numrows) {
 	$select = "SELECT * FROM ClassInfo ";
 	$select.= "LEFT JOIN LibGroup ON CIlibg=LGid ";
 	$select.= "LEFT JOIN ClassVtab ON CVcid=CIid ";
+	$select.= "LEFT JOIN ArchClass ON ACcid=CIid ";
 	$select.= "WHERE LGid=$LGid ";
+	if( $Aid != 1 ) {
+		$select.= "AND (ACaid=1 OR ACaid=$Aid) ";
+	}
+	$select.= "AND ACappearedin<>'' AND ACappearedin <= '$lsbversion' ";
+	$select.= "AND (ACwithdrawnin IS NULL OR ACwithdrawnin > '$lsbversion') ";
 	$select.= "AND CVpos=0 ";
+	$select.= "GROUP BY ACcid ";
 	$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
 	print STDERR $select,"\n" if $trace;
 	for(1..$inh->numrows) {
