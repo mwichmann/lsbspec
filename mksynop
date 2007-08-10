@@ -17,6 +17,8 @@ use Getopt::Long;
 my $level = 0;
 my $dbh;
 my $lsbversion;
+my $Aid;
+my $arch;
 
 #
 #
@@ -115,10 +117,6 @@ sub displaytyperef($)
 	my ($tth, $TMtypeid, $th, %entry);
 	my $retval = "";
 
-	if( $$param{'Pconst'} eq "Yes" ) {
-		$retval .= "const ";
-	}
-
 	if( $$param{'Ttype'} eq "Intrinsic" ) {
 		$retval .= $$param{'Tname'};
 		return $retval;
@@ -130,7 +128,7 @@ sub displaytyperef($)
 	}
 
 	if( $$param{'Ttype'} eq "Const" ) {
-		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." GROUP BY Tid";
+		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." AND ATaid IN (1,$Aid) GROUP BY Tid";
 		$sth = $dbh->query($select) || die $dbh->errmsg();
 		%type=$sth->fetchhash;
 		if( $type{'Ttype'} eq "Pointer" ) {
@@ -144,7 +142,7 @@ sub displaytyperef($)
 	}
 
 	if( $$param{'Ttype'} eq "Pointer" ) {
-		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." GROUP BY Tid";
+		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." AND ATaid IN (1,$Aid) GROUP BY Tid";
 		$sth = $dbh->query($select) || die $dbh->errmsg();
 		%type=$sth->fetchhash;
 		$retval .= displaytyperef(\%type);
@@ -174,7 +172,7 @@ sub displaytyperef($)
 
 	if( $$param{'Ttype'} eq "Array" ) {
 		my $basetype=$$param{'ATbasetype'};
-		$tselect="SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$basetype GROUP BY Tid";
+		$tselect="SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$basetype AND ATaid IN (1,$Aid) GROUP BY Tid";
 		$tth = $dbh->query($tselect) || die $dbh->errmsg();
 		%type=$tth->fetchhash;
 		if( !$nameonly ) {
@@ -191,7 +189,7 @@ sub displaytyperef($)
 	}
 
 	if( $$param{'Ttype'} eq "FuncPtr" ) {
-		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." GROUP BY Tid";
+		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." AND ATaid IN (1,$Aid) GROUP BY Tid";
 		$sth = $dbh->query($select) || die $dbh->errmsg();
 		%type=$sth->fetchhash;
 		$Tid=$$param{'Tid'};
@@ -205,7 +203,7 @@ sub displaytyperef($)
 
 		$retval .= "(";
 
-		$tmselect="SELECT * FROM TypeMember WHERE TMmemberof=$Tid";
+		$tmselect="SELECT * FROM TypeMember WHERE TMmemberof=$Tid AND TMaid IN (1,$Aid) ";
 		$tmselect.=" ORDER BY TMposition";
 		$tmh = $dbh->query($tmselect) || die $dbh->errmsg();
 		if($tmh->numrows == 0) {
@@ -214,7 +212,7 @@ sub displaytyperef($)
 		for(1..$tmh->numrows) {
 			%tmentry=$tmh->fetchhash;
 			$TMtypeid=$tmentry{'TMtypeid'};
-			$tselect="SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$TMtypeid GROUP BY Tid";
+			$tselect="SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$TMtypeid AND ATaid IN (1,$Aid) GROUP BY Tid";
 			$th = $dbh->query($tselect) || die $dbh->errmsg();
 			%entry=$th->fetchhash;
 			$nameonly=1;
@@ -248,10 +246,10 @@ sub trim($)
 
 sub usage()
 {
-die "Usage: mksynop -v <lsbversion> [<interface_name> ...]\n";
+die "Usage: mksynop -v <lsbversion> -a <archname> [<interface_name> ...]\n";
 }
 
-GetOptions(	"v=s" => \$lsbversion );
+GetOptions(	"v=s" => \$lsbversion, "a=s" => \$arch );
 
 if( !$lsbversion ) { usage(); }
 
@@ -259,6 +257,23 @@ my @args;
 die "Invalid database" if (!defined($LSBDB) || $LSBDB eq "");
 $dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD)
 	|| die $Mysql::db_errstr;
+
+if( !$arch ) {
+	print STDERR "Generating generic information. Note that synopsis can vary on different architectures.\n";
+	$Aid=1;
+}
+else {
+	my $select="SELECT Aid FROM Architecture WHERE Aname='$arch'";
+	my $th = $dbh->query($select) || die $dbh->errmsg();
+	my %entry=$th->fetchhash;
+	if( $entry{'Aid'} ) {
+		$Aid = $entry{'Aid'};
+	}
+	else {
+		die "Illegal architecture\n";
+	}
+}
+
 #
 # we need four things from the db for the interface in $ARGV[0]
 # - the name (well, we've got that anyway)
@@ -275,7 +290,7 @@ for my $func (@ARGV) {
 	$sql .= "where ";
 	$sql .= "Iname='$func' and ";
 	$sql .= "Itype='Function' and ";
-	$sql .= "(Isrconly ='Yes' ";
+	$sql .= "(Isrcbin ='SrcOnly' ";
 	$sql .= "OR ( (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 	$sql .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ) ";
 
@@ -292,8 +307,8 @@ for my $func (@ARGV) {
 		my $Iid = $entry{'Iid'};
 		$sql = "select * from Parameter,Type ";
 		$sql .= "left join ArchType on ATtid=Tid ";
-		$sql .= "where Pint=$Iid and Ptype=Tid ";
-		$sql .= "group by Ppos,ATtid order by Ppos"; # Note that arch specific basetypew will not be handled here correctly
+		$sql .= "where Pint=$Iid and Ptype=Tid AND ATaid IN (1,$Aid) ";
+		$sql .= "group by Ppos,ATtid order by Ppos"; # Note that arch specific basetype will not be handled here correctly
 		$sth = $dbh->query($sql) ||
 			die $dbh->errmsg();
 		my $argno = 0;
