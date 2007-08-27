@@ -21,11 +21,11 @@ The structure of the definitions for these libraries follows the
 same model as used for <XREF LINKEND=baselib>.
 </PARA>
 </SECT1>
-include(libz.sgml)
+m4_include(libz.sgml)
 
-include(libcurses.sgml)
+m4_include(libcurses.sgml)
 
-include(libutil.sgml)
+m4_include(libutil.sgml)
 
 </CHAPTER>
 

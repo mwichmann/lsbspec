@@ -4,7 +4,7 @@
 <CHAPTER id=libjpeg62>
 <TITLE>Libraries</TITLE>
 
-include(jpeg.sgml)
+m4_include(jpeg.sgml)
 
 </CHAPTER>
 

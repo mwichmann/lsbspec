@@ -43,7 +43,7 @@ flags and section types that are not required by LSB-conforming systems.
 <PARA>
 The following architecture-specific sections are defined in the 
 <XREF LINKEND="std.x86.64.ABI">.
-include(elfsect.sgml)
+m4_include(elfsect.sgml)
 <NOTE><PARA>
 Since LSB-conforming implementations are not required to support the
 large code model, it is not necessary for them to provide support for the
@@ -63,7 +63,7 @@ for the <literal>SHT_AMD64_UNWIND</literal> section type.
 <TITLE>Additional Special Sections</TITLE>
 <PARA>
 The following additional sections are defined here.
-include(linuxsect.sgml)
+m4_include(linuxsect.sgml)
 </PARA>
 </SECT2>
 

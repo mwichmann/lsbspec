@@ -1,17 +1,17 @@
-include(`../../generic/intro/preface.sgml')
+m4_include(`../../generic/intro/preface.sgml')
 <PART ID="TOCINTRO">
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
-include(`../../generic/intro/genscope.sgml')
-include(`modscope.sgml')
+m4_include(`../../generic/intro/genscope.sgml')
+m4_include(`modscope.sgml')
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
 <TITLE>References</TITLE>
 <SECT1 ID="normativerefssect">
 <TITLE>Normative References</TITLE>
-ifelse(ARCH,`All', `
+m4_ifelse(ARCH,`All', `
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">',`<PARA>')
 The following referenced documents are indispensable for the application of this
@@ -24,7 +24,7 @@ Where copies of a document are available on the World Wide Web, a Uniform Resour
 Locator (URL) is given for informative purposes only. 
 This may point to a more recent copy of the referenced
 specification, or may be out of date. Reference copies of specifications at the revision
-level indicated may be found at the Free Standards Group's 
+level indicated may be found at the Linux Foundation's 
 <ULINK URL='http://refspecs.freestandards.org'>Reference Specifications</ULINK> site.
 </PARA>
 </NOTE>
@@ -32,7 +32,7 @@ level indicated may be found at the Free Standards Group's
 <TABLE ID='STD.'>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=3>
-include(`standards.sgml')
+m4_include(`standards.sgml')
 </TGROUP>
 </TABLE>
 </SECT1>
@@ -46,7 +46,7 @@ only.
 <TABLE>
 <TITLE>Other References</TITLE>
 <TGROUP COLS=3>
-include(`references.sgml')
+m4_include(`references.sgml')
 </TGROUP>
 </TABLE>
 </SECT1>
@@ -57,12 +57,12 @@ include(`references.sgml')
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-dnl 
-dnl the following para is architecture specific. The makefile
-dnl now contains -DARCH=foobar to ensure that this para comes out
-dnl the way it is supposed to for the different architectures
-dnl since this file is copied from generic to each archLSB
-dnl
+m4_dnl 
+m4_dnl the following para is architecture specific. The makefile
+m4_dnl now contains -DARCH=foobar to ensure that this para comes out
+m4_dnl the way it is supposed to for the different architectures
+m4_dnl since this file is copied from generic to each archLSB
+m4_dnl
 ifelse(ARCH,`All', 
 	`define(`TBLTARGET',`"tbl-glsb-stdlib"')', 
 	`define(`TBLTARGET',`"tbl-archlsb-stdlib"')')
@@ -93,7 +93,7 @@ shall be used to load the shared libraries specified by
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-include(libraries.sgml)
+m4_include(libraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
@@ -243,11 +243,11 @@ A strictly conforming application shall not require or use any interface, facili
 </SECT1>
 </CHAPTER>
 
-include(../../../matters/definitions.sgml)
+m4_include(../../../matters/definitions.sgml)
 
-include(../../generic/intro/terms.sgml)
+m4_include(../../generic/intro/terms.sgml)
 
-ifdef(`CORE',`
+m4_ifdef(`CORE',`
 <CHAPTER ID="POSIXConflicts">
 <TITLE>Relationship To ISO/IEC 9945 POSIX</TITLE>
 <PARA>
@@ -264,7 +264,7 @@ In addition to the differences noted inline in this specification,
 PDTR 24715 has extracted the differences between this specification and <XREF
 LINKEND="STD.SUSv3">
 into a single place.
-It is the long term plan of the Free Standards Group to converge the LSB Core Specification
+It is the long term plan of the Linux Foundation to converge the LSB Core Specification
 with ISO/IEC 9945 POSIX.
 </PARA>
 </NOTE>
@@ -277,13 +277,13 @@ that standard.
 </PARA>
 </CHAPTER>
 <CHAPTER ID="reltofsg">
-<TITLE>Relationship To Other Free Standards Group Specifications</TITLE>
+<TITLE>Relationship To Other Linux Foundation Specifications</TITLE>
 <PARA>
 The LSB is the base for several other specification projects under the umbrella
-of the Free Standards Group (FSG). This specification is the foundation, and other
+of the Linux Foundation (LF). This specification is the foundation, and other
 specifications build on the interfaces defined here. However, beyond those
 specifications listed as Normative References, this specification has no
-dependencies on other FSG projects.
+dependencies on other LF projects.
 </PARA>
 </CHAPTER>
 ')

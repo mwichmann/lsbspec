@@ -33,12 +33,12 @@ See
 <PARA>
 The following dynamic entries are defined in the 
 <XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.
-include(dyntag.sgml)
+m4_include(dyntag.sgml)
 </PARA>
 
 <PARA>
 In addtion the following dynamic entries are also supported:
-include(linuxtag.sgml)
+m4_include(linuxtag.sgml)
 </PARA>
 
 

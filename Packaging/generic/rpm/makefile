@@ -10,7 +10,7 @@ TABLES=privtags.sgml sigtags.sgml hdrtags.sgml pkgtags.sgml insttags.sgml \
        filetags.sgml deptags.sgml othtags.sgml sigdigtags.sgml sigsigntags.sgml
 
 .m4.sgml:
-	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
+	m4 -P -Uindex -Uformat -Usubstr $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 

@@ -324,7 +324,7 @@ defined by the type of this Record.
 The possible values for the <STRUCTFIELD>type</STRUCTFIELD> field are defined
 in this table.
 </PARA>
-include(indextypes.sgml)
+m4_include(indextypes.sgml)
 <PARA>
 The string arrays specified for entries of type
 <CONSTANT>RPM_STRING_ARRAY_TYPE</CONSTANT> and
@@ -346,7 +346,7 @@ Some values are designated as header private, and may appear in any header
 structure. These are defined here. Additional values are defined in later
 sections.
 </PARA>
-include(privtags.sgml)
+m4_include(privtags.sgml)
 <PARA>
 Not all Index records defined here will be present in all packages. Each tag
 value has a status which is defined here.
@@ -427,15 +427,15 @@ the Index structures.
 These values exist to provide additional information about the rest of the
 package.
 </PARA>
-include(sigtags.sgml)
+m4_include(sigtags.sgml)
 <PARA>
 These values exist to ensure the integrity of the rest of the package.
 </PARA>
-include(sigdigtags.sgml)
+m4_include(sigdigtags.sgml)
 <PARA>
 These values exist to provide authentication of the package.
 </PARA>
-include(sigsigntags.sgml)
+m4_include(sigsigntags.sgml)
 </SECT2>
 
 
@@ -452,7 +452,7 @@ the Index structures.
 The following tag values are used to indicate information that describes the
 package as a whole.
 </PARA>
-include(pkgtags.sgml)
+m4_include(pkgtags.sgml)
 </SECT3>
 <SECT3>
 <TITLE>Installation Information</TITLE>
@@ -460,7 +460,7 @@ include(pkgtags.sgml)
 The following tag values are used to provide information needed during the
 installation of the package.
 </PARA>
-include(insttags.sgml)
+m4_include(insttags.sgml)
 </SECT3>
 <SECT3>
 <TITLE>File Information</TITLE>
@@ -469,7 +469,7 @@ The following tag values are used to provide information about the files
 in the payload. This information is provided in the header to allow more
 efficient access of the information.
 </PARA>
-include(filetags.sgml)
+m4_include(filetags.sgml)
 <PARA>
 One of <CONSTANT>RPMTAG_OLDFILENAMES</CONSTANT> or the tuple
 <CONSTANT>RPMTAG_DIRINDEXES,RPMTAG_BASENAMES,RPMTAG_DIRNAMES</CONSTANT> shall be present, but not
@@ -599,7 +599,7 @@ and should not be installed.
 The following tag values are used to provide information about
 interdependencies between packages.
 </PARA>
-include(deptags.sgml)
+m4_include(deptags.sgml)
 <SECT4>
 <TITLE>Package Dependency Values</TITLE>
 <PARA>
@@ -608,7 +608,7 @@ The package dependencies are stored in the
 <VARNAME>RPMTAG_REQUIREVERSION</VARNAME>
 index records. The following values may be used.
 </PARA>
-include(rpmdeps.sgml)
+m4_include(rpmdeps.sgml)
 <PARA>
 Additional dependencies are specified in the Package Dependencies section of
 this specification, and in the relevant architecture specific part of &ISOSTD;.
@@ -623,7 +623,7 @@ The package dependency attributes are stored in the
 <VARNAME>RPMTAG_OBSOLETEFLAGS</VARNAME>
 index records. The following values may be used.
 </PARA>
-include(rpmdepsattr.sgml)
+m4_include(rpmdepsattr.sgml)
 </SECT4>
 </SECT3>
 <SECT3>
@@ -631,7 +631,7 @@ include(rpmdepsattr.sgml)
 <PARA>
 The following tag values are also found in the Header section.
 </PARA>
-include(othtags.sgml)
+m4_include(othtags.sgml)
 </SECT3>
 </SECT2>
 
@@ -996,7 +996,7 @@ names starting with <literal>lsb-</literal>).
 
 </SECT1>
 
-include(coredep.sgml)
+m4_include(coredep.sgml)
 
 <SECT1 ID=pkgarchcon>
 <TITLE>Package Architecture Considerations</TITLE>

@@ -5,7 +5,7 @@ This is the placeholder specification for Sun Microsystems Java language environ
 </PARA>
 
 <PARA>
-An implementation of this version of the specification may not claim to be an implementation of the Linux Standard Base unless it has successfully completed the compliance process as defined by the Free Standards Group.
+An implementation of this version of the specification may not claim to be an implementation of the Linux Standard Base unless it has successfully completed the compliance process as defined by the Linux Foundation.
 </PARA>
 </PREFACE>
 
@@ -82,7 +82,7 @@ The specifications listed below are referenced in whole or in part by the Linux 
 <TABLE>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
-include(standards.sgml)
+m4_include(standards.sgml)
 </TGROUP>
 </TABLE>
 </CHAPTER>

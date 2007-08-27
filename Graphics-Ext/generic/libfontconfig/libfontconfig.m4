@@ -3,8 +3,8 @@
 
 <CHAPTER id=libfontconfigchap>
 <TITLE>Libraries</TITLE>
-include(fontconfig.sgml)
+m4_include(fontconfig.sgml)
 </CHAPTER>
 
-include(../fontconfig-commands/command.sgml)
+m4_include(../fontconfig-commands/command.sgml)
 </PART>

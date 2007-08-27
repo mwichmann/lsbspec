@@ -25,7 +25,7 @@ LSB-conforming applications shall use the ELF header as defined in
 <TITLE>Special Sections</TITLE>
 <PARA>
 The following sections are defined in the <XREF LINKEND="std.M32R.ABI">.
-include(elfsect.sgml)
+m4_include(elfsect.sgml)
 </PARA>
 </CHAPTER>
 

@@ -107,7 +107,7 @@ TABLES= png.sgml
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 

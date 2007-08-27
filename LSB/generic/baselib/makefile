@@ -11,20 +11,21 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	_nl_msg_cat_cntr.sgml _obstack_begin.sgml _obstack_newchunk.sgml \
 	__stpcpy.sgml __strtod_internal.sgml __strtol_internal.sgml _sys_errlist.sgml \
 	__timezone.sgml __tzname.sgml __xstat.sgml __xstat64.sgml \
+	__xpg_basename.sgml  __xpg_sigpause.sgml  __xpg_strerror_r.sgml \
 	_sys_siglist.sgml __xmknod.sgml acct.sgml adjtime.sgml adjtimex.sgml \
 	bindtextdomain.sgml cfmakeraw.sgml \
 	creat.sgml fopen.sgml freopen.sgml \
 	cfsetspeed.sgml daemon.sgml dcgettext.sgml dladdr.sgml endutent.sgml \
 	err.sgml error.sgml errx.sgml flock.sgml fcntl.sgml getdomainname.sgml \
-	gethostbyname_r.sgml getloadavg.sgml getopt.sgml getopt_long.sgml \
+	gethostbyname_r.sgml gethostbyaddr_r.sgml getloadavg.sgml getopt.sgml getopt_long.sgml \
 	getopt_long_only.sgml getservbyname.sgml getservent.sgml \
 	gettext.sgml getutent.sgml getutent_r.sgml glob64.sgml \
 	getgrouplist.sgml htons.sgml inet_aton.sgml inet_ntoa.sgml \
 	initgroups.sgml ioctl.sgml iswctype.sgml kill.sgml llabs.sgml \
 	link.sgml mbsnrtowcs.sgml memmem.sgml memrchr.sgml \
 	mkstemp64.sgml ntohs.sgml obstack_free.sgml opterr.sgml \
-	optind.sgml optopt.sgml regexec.sgml \
-	psignal.sgml putwchar.sgml pwrite64.sgml sem_timedwait.sgml \
+	optind.sgml optopt.sgml regexec.sgml readdir64_r.sgml posix_fadvise64.sgml \
+	posix_fallocate64.sgml psignal.sgml putwchar.sgml pwrite64.sgml sem_timedwait.sgml \
 	setbuffer.sgml setegid.sgml seteuid.sgml setgroups.sgml \
 	sethostid.sgml sethostname.sgml setsockopt.sgml \
 	setutent.sgml getsockopt.sgml \
@@ -45,6 +46,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	pam_acct_mgmt.sgml pam_authenticate.sgml pam_chauthtok.sgml pam_close_session.sgml \
 	pam_end.sgml pam_fail_delay.sgml pam_getenvlist.sgml pam_get_item.sgml \
 	pam_open_session.sgml pam_setcred.sgml pam_set_item.sgml pam_start.sgml pam_strerror.sgml \
+	pam_getenv.sgml pam_putenv.sgml \
 	uselocale.sgml newlocale.sgml duplocale.sgml freelocale.sgml \
 	fscanf.sgml fwscanf.sgml scanf.sgml sscanf.sgml swscanf.sgml \
 	vfscanf.sgml vfwscanf.sgml vscanf.sgml vsscanf.sgml vswscanf.sgml \
@@ -58,7 +60,7 @@ SCANFFILES=fscanf.sgml fwscanf.sgml scanf.sgml sscanf.sgml swscanf.sgml \
 	vwscanf.sgml wscanf.sgml
 
 .m4.sgml:
-	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
+	m4 -P -Uindex -Uformat -Usubstr $*.m4 >$@
 
 all source: $(FILES) $(GENFILES)
 

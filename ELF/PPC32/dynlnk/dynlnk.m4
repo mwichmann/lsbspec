@@ -43,12 +43,12 @@ specified in Section "Dynamic Linking" of the <XREF LINKEND="std.PPC32.ABI">, Ch
 <PARA>
 The following dynamic entries are defined in the 
 <XREF LINKEND="std.PPC32.ABI">, Chapter 5, Section "Dynamic Linking".
-include(dyntag.sgml)
+m4_include(dyntag.sgml)
 </PARA>
 
 <PARA>
 In addtion the following dynamic entries are also supported:
-include(linuxtag.sgml)
+m4_include(linuxtag.sgml)
 </PARA>
 
 

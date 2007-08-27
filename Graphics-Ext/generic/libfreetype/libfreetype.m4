@@ -3,7 +3,7 @@
 
 <CHAPTER id=libfreetypechap>
 <TITLE>Libraries</TITLE>
-include(freetype.sgml)
+m4_include(freetype.sgml)
 </CHAPTER>
 
 </PART>

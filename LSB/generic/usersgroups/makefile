@@ -8,7 +8,7 @@ FILES = usersgroups.sgml
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 -Uformat -Uindex $*.m4 >$@
+	m4 -P -Uformat -Uindex $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 

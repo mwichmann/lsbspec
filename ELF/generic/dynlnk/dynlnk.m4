@@ -132,7 +132,7 @@ The following dynamic entries are defined in the
 <XREF LINKEND="std.gABI41">
 and
 <XREF LINKEND="std.ABIUpdate">.
-include(dyntag.sgml)
+m4_include(dyntag.sgml)
 </PARA>
 </SECT3>
 <SECT3>
@@ -140,7 +140,7 @@ include(dyntag.sgml)
 <PARA>
 An LSB conforming object may also use the following additional Dynamic Entry
 types.
-include(linuxtag.sgml)
+m4_include(linuxtag.sgml)
 </PARA>
 </SECT3>
 </SECT2>

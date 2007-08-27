@@ -24,7 +24,7 @@ database -->
 <TABLE ID='STD.'>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
-include(`standards.sgml')
+m4_include(`standards.sgml')
 </TGROUP>
 </TABLE>
 </CHAPTER>

@@ -59,14 +59,14 @@ See
 <PARA>
 The following dynamic entries are defined in the 
 <XREF LINKEND="std.IA64.ABI">, Chapter 5.3.2.
-include(dyntag.sgml)
+m4_include(dyntag.sgml)
 </PARA>
 </SECT3>
 <SECT3>
 <TITLE>Additional Dynamic Entries</TITLE>
 <PARA>
 The following dynamic entries are defined here.
-include(linuxtag.sgml)
+m4_include(linuxtag.sgml)
 </PARA>
 </SECT3>
 </SECT2>

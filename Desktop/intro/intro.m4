@@ -11,7 +11,7 @@ Specification.
 Implmentations may not claim conformance to this version.
 -->
 This specification is part of a family of specifications under the general title"Linux Standard Base". Developers of applications or implementations interested
-in using the LSB trademark should see the Free Standards Group Certification
+in using the LSB trademark should see the Linux Foundation Certification
 Policy for details.
 </PARA>
 </PREFACE>
@@ -57,7 +57,7 @@ the specification is to be considered normative.
 <TABLE>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
-include(standards.sgml)
+m4_include(standards.sgml)
 </TGROUP>
 </TABLE>
 </SECT1>
@@ -71,7 +71,7 @@ only.
 <TABLE>
 <TITLE>Other References</TITLE>
 <TGROUP COLS=3>
-include(`references.sgml')
+m4_include(`references.sgml')
 </TGROUP>
 </TABLE>
 </SECT1>
@@ -96,19 +96,19 @@ architecture-specific specification.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-include(x11libraries.sgml)
+m4_include(x11libraries.sgml)
 </TGROUP>
 <TGROUP COLS=2>
-include(elibraries.sgml)
+m4_include(elibraries.sgml)
 </TGROUP>
 <TGROUP COLS=2>
-include(glibraries.sgml)
+m4_include(glibraries.sgml)
 </TGROUP>
 <TGROUP COLS=2>
-include(qlibraries.sgml)
+m4_include(qlibraries.sgml)
 </TGROUP>
 <TGROUP COLS=2>
-include(xlibraries.sgml)
+m4_include(xlibraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
@@ -121,6 +121,6 @@ the dynamic linker shall search by default.
 
 &definitions
 
-include(terms.sgml)
+m4_include(terms.sgml)
 
 </PART>

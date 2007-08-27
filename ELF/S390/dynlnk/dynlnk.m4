@@ -31,7 +31,7 @@ See chapter 3 of the <XREF LINKEND="std.S390.ABI">.
 <PARA>
 The following dynamic entries are defined in the
 <XREF LINKEND="std.S390.ABI">.
-include(dyntag.sgml)
+m4_include(dyntag.sgml)
 </PARA>
 </SECT2>
 

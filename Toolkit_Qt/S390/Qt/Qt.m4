@@ -86,13 +86,13 @@ to supply any header files.
 </PARA>
 </SECT1>
 
-include(libQtCore.sgml)
-include(libQtGui.sgml)
-include(libQtXml.sgml)
-include(libQtOpenGL.sgml)
-include(libQtSql.sgml)
-include(libQtSvg.sgml)
-include(libQtNetwork.sgml)
+m4_include(libQtCore.sgml)
+m4_include(libQtGui.sgml)
+m4_include(libQtXml.sgml)
+m4_include(libQtOpenGL.sgml)
+m4_include(libQtSql.sgml)
+m4_include(libQtSvg.sgml)
+m4_include(libQtNetwork.sgml)
 
 </CHAPTER>
 

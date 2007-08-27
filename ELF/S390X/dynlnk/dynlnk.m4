@@ -29,7 +29,7 @@ and this document.
 <PARA>
 The following dynamic entries are defined in the
 <XREF LINKEND="std.S390X.ABI">.
-include(dyntag.sgml)
+m4_include(dyntag.sgml)
 </PARA>
 </SECT2>
 

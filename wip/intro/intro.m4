@@ -102,7 +102,7 @@ specifications.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-include(libraries.sgml)
+m4_include(libraries.sgml)
 </TGROUP>
 </TABLE>
 <TABLE>
@@ -114,7 +114,7 @@ include(libraries.sgml)
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-include(pslibs.sgml)
+m4_include(pslibs.sgml)
 </TGROUP>
 </TABLE>
 <PARA>

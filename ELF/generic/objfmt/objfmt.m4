@@ -60,7 +60,7 @@ The following section types are defined in the
 <XREF LINKEND="std.gABI41">
 and the
 <XREF LINKEND="std.ABIupdate">.
-include(elfsecttypes.sgml)
+m4_include(elfsecttypes.sgml)
 </PARA>
 </SECT3>
 <SECT3>
@@ -68,7 +68,7 @@ include(elfsecttypes.sgml)
 <PARA>
 The following additional section types are defined here.
 
-include(linuxsecttypes.sgml)
+m4_include(linuxsecttypes.sgml)
 </PARA>
 </SECT3>
 </SECT2>
@@ -88,7 +88,7 @@ The following sections are defined in the
 <XREF LINKEND="std.gABI41">
 and the
 <XREF LINKEND="std.ABIupdate">.
-include(elfsect.sgml)
+m4_include(elfsect.sgml)
 </PARA>
 </SECT3>
 <SECT3>
@@ -96,7 +96,7 @@ include(elfsect.sgml)
 <PARA>
 Object files in an LSB conforming application may also contain one or more of 
 the additional special sections described below.
-include(linuxsect.sgml)
+m4_include(linuxsect.sgml)
 </PARA>
 </SECT3>
 </SECT2>
@@ -135,9 +135,9 @@ from that document instead of being specified here.
 
 </PARA>
 
-include(dwarfenc.sgml)
+m4_include(dwarfenc.sgml)
 
-include(dwarfext.sgml)
+m4_include(dwarfext.sgml)
 
 </SECT1>
 
@@ -160,13 +160,13 @@ and care should be taken when comparing the two sections.
 </PARA>
 </NOTE>
 </PARA>
-include(ehframe.sgml)
+m4_include(ehframe.sgml)
 
-include(ehframehdr.sgml)
+m4_include(ehframehdr.sgml)
 
 </SECT1>
 
-include(symversion.sgml)
+m4_include(symversion.sgml)
 
-include(abinote.sgml)
+m4_include(abinote.sgml)
 </CHAPTER>

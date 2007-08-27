@@ -3,7 +3,7 @@
 
 <CHAPTER id=libXrenderchap>
 <TITLE>Libraries</TITLE>
-include(Xrender.sgml)
+m4_include(Xrender.sgml)
 </CHAPTER>
 
 </PART>

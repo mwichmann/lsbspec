@@ -12,7 +12,7 @@ TABLES=
 BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 
 .m4.sgml:
-	m4 -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 

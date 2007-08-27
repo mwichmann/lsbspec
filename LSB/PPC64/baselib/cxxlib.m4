@@ -17,7 +17,7 @@ defined here. This section should be used in conjunction with the
 corresponding section in the Linux Standard Base Specification.
 </PARA>
 
-include(libstdcxx.sgml)
+m4_include(libstdcxx.sgml)
 
 </CHAPTER>
 

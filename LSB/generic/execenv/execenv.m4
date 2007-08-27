@@ -1,7 +1,7 @@
 <PART ID="tocexecenv">
 <TITLE>Execution Environment</TITLE>
 
-include(fhs.sgml)
+m4_include(fhs.sgml)
 
 <CHAPTER id=execstuff>
 <TITLE>Additional Recommendations</TITLE>

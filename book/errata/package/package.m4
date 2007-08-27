@@ -303,7 +303,7 @@ defined by the type of this Record.
 The possible values for the <STRUCTFIELD>type</STRUCTFIELD> field are defined
 in this table.
 </PARA>
-include(indextypes.sgml)
+m4_include(indextypes.sgml)
 <PARA>
 The string arrays specified for enties of type
 <CONSTANT>RPM_STRING_ARRAY_TYPE</CONSTANT> and
@@ -325,7 +325,7 @@ Some values are designated as header private, and may appear in any header
 structure. These are defined here. Additional values are defined in later
 sections.
 </PARA>
-include(privtags.sgml)
+m4_include(privtags.sgml)
 <PARA>
 Not all Index records defined here will be present in all packages. Each tag
 value has a status which indicated is defined here.
@@ -386,7 +386,7 @@ The Signature section is implemented using the Header structure. The signature
 section defines 3 additional tag values which may be used in the Index
 structures.
 </PARA>
-include(sigtags.sgml)
+m4_include(sigtags.sgml)
 </SECT2>
 
 
@@ -397,7 +397,7 @@ The Header section is implemented using the Header structure. The Header
 section defines the following additional tag values which may be used in
 the Index structures.
 </PARA>
-include(hdrtags.sgml)
+m4_include(hdrtags.sgml)
 <SECT3>
 <TITLE>Package Dependencies</TITLE>
 <PARA>
@@ -406,7 +406,7 @@ The package dependencies are stored in the
 <VARNAME>RPMTAG_REQUIREVERSION</VARNAME>
 index records. The following values may be used.
 </PARA>
-include(rpmdeps.sgml)
+m4_include(rpmdeps.sgml)
 </SECT3>
 <SECT3>
 <TITLE>Package Dependencies Attributes</TITLE>
@@ -417,7 +417,7 @@ The package dependency attributes are stored in the
 <VARNAME>RPMTAG_OBSOLETEFLAGS</VARNAME>
 index records. The following values may be used.
 </PARA>
-include(rpmdepsattr.sgml)
+m4_include(rpmdepsattr.sgml)
 </SECT3>
 </SECT2>
 

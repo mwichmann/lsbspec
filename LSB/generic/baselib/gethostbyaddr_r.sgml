@@ -1,0 +1,96 @@
+<REFENTRY ID="baselib-gethostbyaddr-r-3"> <REFMETA>
+<REFENTRYTITLE>gethostbyaddr_r</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>gethostbyaddr_r
+</REFNAME>
+<REFPURPOSE>
+find network host database entry matching host name (DEPRECATED)
+</REFPURPOSE>
+</REFNAMEDIV>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;netdb.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>gethostbyaddr_r</function>
+</funcdef>
+<paramdef>const void * restrict
+<parameter>addr</parameter>
+</paramdef>
+<paramdef>socklen_t
+<parameter>len</parameter>
+</paramdef>
+<paramdef>int
+<parameter>type</parameter>
+</paramdef>
+<paramdef>struct hostent * restrict
+<parameter>result_buf</parameter>
+</paramdef>
+<paramdef>char * restrict
+<parameter>buf</parameter>
+</paramdef>
+<paramdef>size_t
+<parameter>buflen</parameter>
+</paramdef>
+<paramdef>struct hostent * * restrict
+<parameter>result</parameter>
+</paramdef>
+<paramdef>int *
+<parameter>h_errnop</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<REFSECT1>
+<TITLE>Description
+</TITLE>
+<para>
+The <function>gethostbyaddr_r</function> function is deprecated;
+applications should use <function>getaddrinfo</function> instead.
+</para>
+<PARA>
+<FUNCTION>gethostbyaddr_r</FUNCTION> is a reentrant version of 
+<FUNCTION>gethostbyaddr</FUNCTION> that searches the network host 
+database for a host address match.
+</PARA>
+<PARA>
+The <function>gethostbyaddr_r</function> function shall search the network host database
+for an entry of address family <parameter>type</parameter> with
+the host with address <parameter>addr</parameter>. The <parameter>len</parameter> argument contains the length of the address referenced by
+<parameter>addr</parameter>. 
+</PARA>
+<PARA>
+If <parameter>type</parameter> is <constant>AF_INET</constant>, the <parameter>addr</parameter> argument shall be an
+<varname>in_addr</varname> structure. 
+If <parameter>type</parameter> is <constant>AF_INET6</constant>, the <parameter>addr</parameter> argument shall be an
+<varname>in6_addr</varname> structure. 
+If <parameter>type</parameter> is any other value, the behavior is unspecified.
+</PARA>
+<PARA>
+The application must provide a buffer for the <function>gethostbyaddr_r</function> to use during
+the lookup process. The buffer is referenced by <parameter>buf</parameter>, and is of size <parameter>buflen</parameter>.
+If the buffer is not of sufficient size, <function>gethostbyaddr_r</function> may fail and return
+<errorcode>ERANGE</errorcode>.
+If a matching entry is found in the database, <function>gethostbyaddr_r</function> shall
+copy the relevant information to the application supplied <varname>hostent</varname> structure referenced by 
+<parameter>result_buf</parameter>, and return a pointer to this structure in *<parameter>result</parameter>.
+If no matching entry is found, *<parameter>result</parameter> shall be set to a null pointer.
+Additional error information shall be set in the variable referenced by <parameter>h_errnop</parameter>.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, the <function>gethostbyaddr_r</function> function shall return zero. If the 
+return value was 
+<errorcode>ERANGE</errorcode>,
+the size of the buffer <parameter>buf</parameter>, indicated by <parameter>buflen</parameter>, was too small.
+If the <function>gethostbyaddr_r</function> function returns returns any other
+value, then the variable referenced by <parameter>h_errnop</parameter> shall be set to indicate the cause as
+for <function>gethostbyaddr</function>.
+</PARA>
+</REFSECT1>
+</REFENTRY>

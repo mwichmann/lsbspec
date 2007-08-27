@@ -8,7 +8,7 @@ TABLES= standards.sgml references.sgml libraries.sgml cxxstandards.sgml cxxlibra
 EXCLSPECS="'Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','ISOCXX','CXXABI','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi','ATK','Pango','fontconfig','libJPEG','libXML2','Png12','QtCore','QtGui','QtXml','QtNetwork','QtOpenGL','QtSql','QtSvg','qt-mt'"
 
 .m4.sgml:
-	m4 -Uindex -Uformat -DARCH=x86-64 $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=x86-64 $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 

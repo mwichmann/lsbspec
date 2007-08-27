@@ -33,7 +33,7 @@ LSB-conforming applications shall use the Machine Information as defined in
 <PARA>
 The following sections are defined in the <XREF LINKEND="std.PPC32.ABI"> Chapter 4, 
 Section "Section", Subsection "Special Sections".
-include(elfsect.sgml)
+m4_include(elfsect.sgml)
 Note that the <literal>.tags</>, <literal>.taglist</> and <literal>.tagsym</> sections described in 
 Chapter 4, Section "Sections" <XREF LINKEND="std.PPC32.ABI"> are not supported.
 </PARA>
@@ -42,7 +42,7 @@ Chapter 4, Section "Sections" <XREF LINKEND="std.PPC32.ABI"> are not supported.
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
 The following Linux PPC32 specific sections are defined here.
-include(linuxsect.sgml)
+m4_include(linuxsect.sgml)
 </PARA>
 </SECT2>
 

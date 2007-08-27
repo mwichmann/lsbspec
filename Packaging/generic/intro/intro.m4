@@ -11,7 +11,7 @@ Implmentations may not claim conformance to this version.
 An implementation of this version of the specification may not claim
 to be an implementation of the Linux Package Specification
 unless it has successfully
-completed the compliance process as defined by the Free Standards Group.
+completed the compliance process as defined by the Linux Foundation.
 Note: This is boilerplate. It need not be a final requirment.
 -->
 </PARA>
@@ -38,8 +38,8 @@ the information explicitly included here.
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
-include(`../../../LSB/generic/intro/genscope.sgml')
-include(`modscope.sgml')
+m4_include(`../../../LSB/generic/intro/genscope.sgml')
+m4_include(`modscope.sgml')
 </CHAPTER>
 <CHAPTER ID="normativerefs">
 <TITLE>Normative References</TITLE>
@@ -57,7 +57,7 @@ the specification is to be considered normative.
 <TABLE>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
-include(standards.sgml)
+m4_include(standards.sgml)
 </TGROUP>
 </TABLE>
 </CHAPTER>
@@ -187,6 +187,6 @@ A strictly conforming application does not require or use any interface, facilit
 
 &definitions
 
-include(terms.sgml)
+m4_include(terms.sgml)
 
 </PART>

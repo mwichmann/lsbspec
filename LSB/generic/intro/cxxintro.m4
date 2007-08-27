@@ -1,10 +1,10 @@
-include(`../../generic/intro/preface.sgml')
+m4_include(`../../generic/intro/preface.sgml')
 <PART ID="TOCINTRO">
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
-include(`../../generic/intro/genscope.sgml')
-include(`../../generic/intro/cxxscope.sgml')
+m4_include(`../../generic/intro/genscope.sgml')
+m4_include(`../../generic/intro/cxxscope.sgml')
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
@@ -20,7 +20,7 @@ that section alone, and the rest of the referenced document is informative.
 <TABLE ID='STD.'>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
-include(`cxxstandards.sgml')
+m4_include(`cxxstandards.sgml')
 </TGROUP>
 </TABLE>
 </CHAPTER>
@@ -43,7 +43,7 @@ runtime names.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-include(cxxlibraries.sgml)
+m4_include(cxxlibraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
@@ -169,8 +169,8 @@ A strictly conforming application does not require or use any interface, facilit
 </SECT1>
 </CHAPTER>
 
-include(../../../matters/definitions.sgml)
+m4_include(../../../matters/definitions.sgml)
 
-include(../../generic/intro/terms.sgml)
+m4_include(../../generic/intro/terms.sgml)
 
 </PART>

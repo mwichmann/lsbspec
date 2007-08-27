@@ -25,17 +25,17 @@ The Program Interpreter shall be
 </SECT1>
 
 
-include(libc.sgml)
+m4_include(libc.sgml)
 
-include(libm.sgml)
+m4_include(libm.sgml)
 
-include(libpthread.sgml)
+m4_include(libpthread.sgml)
 
-include(libgcc_s.sgml)
+m4_include(libgcc_s.sgml)
 
-include(libdl.sgml)
+m4_include(libdl.sgml)
 
-include(libcrypt.sgml)
+m4_include(libcrypt.sgml)
 
 </CHAPTER>
 

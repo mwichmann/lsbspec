@@ -4,7 +4,7 @@
 <CHAPTER id=xmllibxml2>
 <TITLE>Libraries</TITLE>
 
-include(xml2.sgml)
+m4_include(xml2.sgml)
 
 </CHAPTER>
 

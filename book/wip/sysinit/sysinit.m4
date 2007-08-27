@@ -4,21 +4,21 @@
 <CHAPTER ID=sysinit>
 <TITLE>System Initialization</TITLE>
 
-include(cron.sgml)
+m4_include(cron.sgml)
 
-include(initactions.sgml)
+m4_include(initactions.sgml)
 
-include(initscripts.sgml)
+m4_include(initscripts.sgml)
 
-include(installinit.sgml)
+m4_include(installinit.sgml)
 
-include(runlevels.sgml)
+m4_include(runlevels.sgml)
 
-include(facnames.sgml)
+m4_include(facnames.sgml)
 
-include(scriptnames.sgml)
+m4_include(scriptnames.sgml)
 
-include(initfunctions.sgml)
+m4_include(initfunctions.sgml)
 
 </CHAPTER>
 

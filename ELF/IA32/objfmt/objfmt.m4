@@ -83,14 +83,14 @@ below are used by the system and have the indicated types and attributes.
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in Chapter 4 of the <XREF LINKEND="std.IA32.ABI.4">.
-include(elfsect.sgml)
+m4_include(elfsect.sgml)
 </PARA>
 </SECT3>
 <SECT3>
 <TITLE>Additional Special Sections</TITLE>
 <PARA>
 The following additional sections are defined here.
-include(linuxsect.sgml)
+m4_include(linuxsect.sgml)
 </PARA>
 </SECT3>
 </SECT2>

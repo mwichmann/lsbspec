@@ -7,7 +7,7 @@ Specification.
 <PARA>
 An implementation of this version of the specification may not claim
 to be an implementation of the Linux Standard Base unless it has successfully
-completed the compliance process as defined by the Free Standards Group.
+completed the compliance process as defined by the Linux Foundation.
 </PARA>
 </PREFACE>
 
@@ -66,14 +66,14 @@ the latest edition of the referenced document (including any amendments) applies
 Where copies of a document are available on the World Wide Web, a Uniform Resource
 Locator (URL) is given. This may point to a more recent copy of the referenced
 specification, or may be out of date. Reference copies of specifications at the revision
-level indicated may be found at the Free Standards Group's 
+level indicated may be found at the Linux Foundation's 
 <ULINK URL='http://refspecs.freestandards.org'>Reference Specifications</ULINK> site.
 </PARA>
 </NOTE>
 <TABLE>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
-include(standards.sgml)
+m4_include(standards.sgml)
 </TGROUP>
 </TABLE>
 </SECT1>
@@ -87,7 +87,7 @@ only.
 <TABLE>
 <TITLE>Other References</TITLE>
 <TGROUP COLS=3>
-include(`references.sgml')
+m4_include(`references.sgml')
 </TGROUP>
 </TABLE>
 </SECT1>
@@ -242,8 +242,8 @@ document in order to be installed or to execute successfully.
 </SECT1>
 </CHAPTER>
 
-include(../../../matters/definitions.sgml)
+m4_include(../../../matters/definitions.sgml)
 
-include(../../generic/intro/terms.sgml)
+m4_include(../../generic/intro/terms.sgml)
 
 </PART>

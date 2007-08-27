@@ -112,14 +112,14 @@ Chapter 4.
 <PARA>
 The following sections are defined in the 
 <XREF LINKEND="std.IA64.ABI">.
-include(elfsect.sgml)
+m4_include(elfsect.sgml)
 </PARA>
 </SECT2>
 <SECT2 ID="linuxspecial">
 <TITLE>Linux Special Sections</TITLE>
 <PARA>
 The following Linux IA-64 specific sections are defined here.
-include(linuxsect.sgml)
+m4_include(linuxsect.sgml)
 </PARA>
 </SECT2>
 

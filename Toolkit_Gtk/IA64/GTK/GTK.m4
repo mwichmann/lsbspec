@@ -88,18 +88,18 @@ to supply any header files.
 </SECT1>
 
 
-include(libGlib.sgml)
-include(libGobject.sgml)
-include(libGmodule.sgml)
-include(libGthread.sgml)
-include(libAtk.sgml)
-include(libPango.sgml)
-include(libPangoxft.sgml)
-include(libPangoft2.sgml)
-include(libGdk_pixbuf.sgml)
-include(libGdk_pixbuf_xlib.sgml)
-include(libGdk-x11.sgml)
-include(libGtk-x11.sgml)
+m4_include(libGlib.sgml)
+m4_include(libGobject.sgml)
+m4_include(libGmodule.sgml)
+m4_include(libGthread.sgml)
+m4_include(libAtk.sgml)
+m4_include(libPango.sgml)
+m4_include(libPangoxft.sgml)
+m4_include(libPangoft2.sgml)
+m4_include(libGdk_pixbuf.sgml)
+m4_include(libGdk_pixbuf_xlib.sgml)
+m4_include(libGdk-x11.sgml)
+m4_include(libGtk-x11.sgml)
 
 </CHAPTER>
 

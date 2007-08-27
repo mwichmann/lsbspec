@@ -3,7 +3,7 @@
 
 <CHAPTER id=libXftchap>
 <TITLE>Libraries</TITLE>
-include(Xft.sgml)
+m4_include(Xft.sgml)
 </CHAPTER>
 
 </PART>

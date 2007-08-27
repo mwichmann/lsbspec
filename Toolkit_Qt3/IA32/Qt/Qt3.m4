@@ -56,7 +56,7 @@ to supply any header files.
 </PARA>
 </SECT1>
 
-include(libqt_mt.sgml)
+m4_include(libqt_mt.sgml)
 
 </CHAPTER>
 

@@ -6,7 +6,7 @@ FILES=dynlnk.sgml $(GENSRC)
 TABLES=
 
 .m4.sgml:
-	m4 $*.m4 >$@
+	m4 -P $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 

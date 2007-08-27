@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Mon Aug 13 06:32:31 2007 -->
+<!--    at Fri Aug 24 13:08:20 2007 -->
 <SECT1 ID=libfreetype>
 <TITLE>Interfaces for libfreetype</TITLE>
 <PARA>
@@ -467,6 +467,60 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define ft_render_mode_mono	FT_RENDER_MODE_MONO
 #define ft_render_mode_normal	FT_RENDER_MODE_NORMAL
 
+typedef void *FT_Pointer;
+typedef enum FT_Encoding_ {
+    FT_ENCODING_NONE = 0,
+    FT_ENCODING_MS_SYMBOL = 1937337698,
+    FT_ENCODING_UNICODE = 1970170211,
+    FT_ENCODING_SJIS = 1936353651,
+    FT_ENCODING_GB2312 = 1734484000,
+    FT_ENCODING_BIG5 = 1651074869,
+    FT_ENCODING_WANSUNG = 2002873971,
+    FT_ENCODING_JOHAB = 1785686113,
+    FT_ENCODING_MS_SJIS = 1936353651,
+    FT_ENCODING_MS_GB2312 = 1734484000,
+    FT_ENCODING_MS_BIG5 = 1651074869,
+    FT_ENCODING_MS_WANSUNG = 2002873971,
+    FT_ENCODING_MS_JOHAB = 1785686113,
+    FT_ENCODING_ADOBE_STANDARD = 1094995778,
+    FT_ENCODING_ADOBE_EXPERT = 1094992453,
+    FT_ENCODING_ADOBE_CUSTOM = 1094992451,
+    FT_ENCODING_ADOBE_LATIN_1 = 1818326065,
+    FT_ENCODING_OLD_LATIN_2 = 1818326066,
+    FT_ENCODING_APPLE_ROMAN = 1634889070
+} FT_Encoding;
+typedef long int FT_F26Dot6;
+struct FT_StreamRec_ {
+    unsigned char *base;
+    long unsigned int size;
+    long unsigned int pos;
+    FT_StreamDesc descriptor;
+    FT_StreamDesc pathname;
+    FT_Stream_IoFunc read;
+    FT_Stream_CloseFunc close;
+    FT_Memory memory;
+    unsigned char *cursor;
+    unsigned char *limit;
+};
+typedef union FT_StreamDesc_ {
+    long int value;
+    void *pointer;
+} FT_StreamDesc;
+typedef long unsigned int (*FT_Stream_IoFunc) (FT_Stream,
+					       long unsigned int,
+					       unsigned char *,
+					       long unsigned int);
+typedef void (*FT_Stream_CloseFunc) (FT_Stream);
+typedef struct FT_Open_Args_ {
+    FT_UInt flags;
+    const FT_Byte *memory_base;
+    FT_Long memory_size;
+    FT_String *pathname;
+    FT_Stream stream;
+    FT_Module driver;
+    FT_Int num_params;
+    FT_Parameter *params;
+} FT_Open_Args;
 extern FT_Int FT_Get_Charmap_Index(FT_CharMap);
 extern FT_Fixed FT_RoundFix(FT_Fixed);
 extern FT_Fixed FT_CeilFix(FT_Fixed);
@@ -512,10 +566,22 @@ extern FT_Error FT_Get_Kerning(FT_Face, FT_UInt, FT_UInt, FT_UInt,
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture dependent
- * Please refer to the specific architecture specification for details
- */
+typedef int FT_Int32;
+typedef enum BDF_PropertyType_ {
+    BDF_PROPERTY_TYPE_NONE = 0,
+    BDF_PROPERTY_TYPE_ATOM = 1,
+    BDF_PROPERTY_TYPE_INTEGER = 2,
+    BDF_PROPERTY_TYPE_CARDINAL = 3
+} BDF_PropertyType;
+typedef unsigned int FT_UInt32;
+typedef struct BDF_PropertyRec_ {
+    BDF_PropertyType type;
+    union {
+	const char *atom;
+	FT_Int32 integer;
+	FT_UInt32 cardinal;
+    } u;
+} BDF_PropertyRec;
 </SCREEN>
 </SECT2>
 <!-- empty header file All/freetype/ftbitmap.h -->
@@ -638,6 +704,10 @@ extern FT_Error FT_Get_Kerning(FT_Face, FT_UInt, FT_UInt, FT_UInt,
 #define ft_glyph_bbox_subpixels	FT_GLYPH_BBOX_SUBPIXELS
 #define ft_glyph_bbox_truncate	FT_GLYPH_BBOX_TRUNCATE
 #define ft_glyph_bbox_unscaled	FT_GLYPH_BBOX_UNSCALED
+
+typedef struct FT_Matrix_ FT_Matrix;
+typedef struct FT_BBox_ FT_BBox;
+typedef enum FT_Render_Mode_ FT_Render_Mode;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -721,6 +791,24 @@ extern FT_Error FT_Get_Kerning(FT_Face, FT_UInt, FT_UInt, FT_UInt,
 </PARA>
 <SCREEN>
 
+struct FT_ListNodeRec_ {
+    FT_ListNode prev;
+    FT_ListNode next;
+    void *data;
+};
+typedef struct FT_ListNodeRec_ *FT_ListNode;
+typedef struct FT_ListRec_ *FT_List;
+struct FT_MemoryRec_ {
+    void *user;
+    FT_Alloc_Func alloc;
+    FT_Free_Func free;
+    FT_Realloc_Func realloc;
+};
+typedef void *(*FT_Alloc_Func) (FT_Memory, long int);
+typedef void (*FT_Free_Func) (FT_Memory, void *);
+typedef void *(*FT_Realloc_Func) (FT_Memory, long int, long int, void *);
+typedef void (*FT_List_Destructor) (FT_Memory, void *, void *);
+typedef FT_Error(*FT_List_Iterator) (FT_ListNode, void *);
 extern void FT_List_Finalize(FT_List, FT_List_Destructor, FT_Memory,
 			     void *);
 extern void FT_List_Insert(FT_List, FT_ListNode);
@@ -737,7 +825,36 @@ extern FT_Error FT_List_Iterate(FT_List, FT_List_Iterator, void *);
 </PARA>
 <SCREEN>
 
-FT_MM_Axis;
+typedef long unsigned int FT_ULong;
+typedef struct FT_MM_Axis_ {
+    FT_String *name;
+    FT_Long minimum;
+    FT_Long maximum;
+} FT_MM_Axis;
+typedef struct FT_Multi_Master_ {
+    FT_UInt num_axis;
+    FT_UInt num_designs;
+    FT_MM_Axis axis[4];
+} FT_Multi_Master;
+typedef struct FT_Var_Axis_ {
+    FT_String *name;
+    FT_Fixed minimum;
+    FT_Fixed def;
+    FT_Fixed maximum;
+    FT_ULong tag;
+    FT_UInt strid;
+} FT_Var_Axis;
+typedef struct FT_Var_Named_Style_ {
+    FT_Fixed *coords;
+    FT_UInt strid;
+} FT_Var_Named_Style;
+typedef struct FT_MM_Var_ {
+    FT_UInt num_axis;
+    FT_UInt num_designs;
+    FT_UInt num_namedstyles;
+    FT_Var_Axis *axis;
+    FT_Var_Named_Style *namedstyle;
+} FT_MM_Var;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -760,6 +877,11 @@ FT_MM_Axis;
 #define ft_module_hinter	FT_MODULE_HINTER
 #define ft_module_renderer	FT_MODULE_RENDERER
 #define ft_module_styler	FT_MODULE_STYLER
+
+typedef struct FT_ModuleRec_ *FT_Module;
+typedef struct FT_Module_Class_ FT_Module_Class;
+typedef struct FT_LibraryRec_ *FT_Library;
+typedef void (*FT_DebugHook_Func) (void *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -787,6 +909,8 @@ FT_MM_Axis;
 #define FT_VALIDATE_GPOS	0x0400
 #define FT_VALIDATE_GSUB	0x0800
 #define FT_VALIDATE_JSTF	0x1000
+
+typedef const FT_Byte *FT_Bytes;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -798,8 +922,214 @@ FT_MM_Axis;
 typedef struct FT_FaceRec_ *FT_Face;
 typedef unsigned int FT_UInt;
 typedef struct FT_Bitmap_ FT_Bitmap;
-FT_Module;
-FT_DebugHook_Func;
+struct FT_LibraryRec_ {
+    FT_Memory memory;
+    FT_Generic generic;
+    FT_Int version_major;
+    FT_Int version_minor;
+    FT_Int version_patch;
+    FT_UInt num_modules;
+    FT_Module modules[32];
+    FT_ListRec renderers;
+    FT_Renderer cur_renderer;
+    FT_Module auto_hinter;
+    FT_Byte *raster_pool;
+    FT_ULong raster_pool_size;
+    FT_DebugHook_Func debug_hooks[4];
+};
+typedef void (*FT_Generic_Finalizer) (void *);
+typedef FT_Error(*FT_Module_Constructor) (FT_Module);
+typedef void (*FT_Module_Destructor) (FT_Module);
+typedef FT_Pointer FT_Module_Interface;
+typedef FT_Module_Interface(*FT_Module_Requester) (FT_Module,
+						   const char *);
+typedef struct FT_ListRec_ FT_ListRec;
+struct FT_RendererRec_ {
+    FT_ModuleRec root;
+    FT_Renderer_Class *clazz;
+    FT_Glyph_Format glyph_format;
+    FT_Glyph_Class glyph_class;
+    FT_Raster raster;
+    FT_Raster_RenderFunc raster_render;
+    FT_Renderer_RenderFunc render;
+};
+typedef struct FT_ModuleRec_ {
+    FT_Module_Class *clazz;
+    FT_Library library;
+    FT_Memory memory;
+    FT_Generic generic;
+} FT_ModuleRec;
+struct FT_GlyphSlotRec_ {
+    FT_Library library;
+    FT_Face face;
+    FT_GlyphSlot next;
+    FT_UInt reserved;
+    FT_Generic generic;
+    FT_Glyph_Metrics metrics;
+    FT_Fixed linearHoriAdvance;
+    FT_Fixed linearVertAdvance;
+    FT_Vector advance;
+    FT_Glyph_Format format;
+    FT_Bitmap bitmap;
+    FT_Int bitmap_left;
+    FT_Int bitmap_top;
+    FT_Outline outline;
+    FT_UInt num_subglyphs;
+    FT_SubGlyph subglyphs;
+    void *control_data;
+    long int control_len;
+    FT_Pos lsb_delta;
+    FT_Pos rsb_delta;
+    void *other;
+    FT_Slot_Internal internal;
+};
+typedef struct FT_Glyph_Metrics_ {
+    FT_Pos width;
+    FT_Pos height;
+    FT_Pos horiBearingX;
+    FT_Pos horiBearingY;
+    FT_Pos horiAdvance;
+    FT_Pos vertBearingX;
+    FT_Pos vertBearingY;
+    FT_Pos vertAdvance;
+} FT_Glyph_Metrics;
+struct FT_SubGlyphRec_ {
+    FT_Int index;
+    FT_UShort flags;
+    FT_Int arg1;
+    FT_Int arg2;
+    FT_Matrix transform;
+};
+typedef struct FT_SubGlyphRec_ *FT_SubGlyph;
+struct FT_Slot_InternalRec_ {
+    FT_GlyphLoader loader;
+    FT_UInt flags;
+    FT_Bool glyph_transformed;
+    FT_Matrix glyph_matrix;
+    FT_Vector glyph_delta;
+    void *glyph_hints;
+};
+struct FT_GlyphLoaderRec_ {
+    FT_Memory memory;
+    FT_UInt max_points;
+    FT_UInt max_contours;
+    FT_UInt max_subglyphs;
+    FT_Bool use_extra;
+    FT_GlyphLoadRec base;
+    FT_GlyphLoadRec current;
+    void *other;
+};
+typedef struct FT_GlyphLoadRec_ {
+    FT_Outline outline;
+    FT_Vector *extra_points;
+    FT_UInt num_subglyphs;
+    FT_SubGlyph subglyphs;
+} FT_GlyphLoadRec;
+typedef struct FT_GlyphLoaderRec_ *FT_GlyphLoader;
+typedef struct FT_Slot_InternalRec_ *FT_Slot_Internal;
+typedef FT_Error(*FT_Renderer_RenderFunc) (FT_Renderer, FT_Renderer,
+					   FT_GlyphSlot, FT_GlyphSlot,
+					   FT_UInt, FT_UInt, FT_Vector *,
+					   FT_Vector *);
+typedef FT_Error(*FT_Renderer_TransformFunc) (FT_Renderer, FT_GlyphSlot,
+					      FT_Matrix *, FT_Vector *);
+typedef void (*FT_Renderer_GetCBoxFunc) (FT_Renderer, FT_GlyphSlot,
+					 FT_BBox *);
+typedef FT_Error(*FT_Renderer_SetModeFunc) (FT_Renderer, FT_ULong,
+					    FT_Pointer);
+typedef struct FT_RasterRec_ *FT_Raster;
+typedef int (*FT_Raster_NewFunc) (void *, FT_Raster *);
+typedef void (*FT_Raster_ResetFunc) (FT_Raster, unsigned char *,
+				     long unsigned int);
+typedef int (*FT_Raster_SetModeFunc) (FT_Raster, long unsigned int,
+				      void *);
+typedef struct FT_Span_ {
+    short int x;
+    short unsigned int len;
+    unsigned char coverage;
+} FT_Span;
+typedef void (*FT_SpanFunc) (int, int, int, int, FT_Span *, FT_Span *,
+			     void *, void *);
+typedef int (*FT_Raster_BitTest_Func) (int, int, void *);
+typedef void (*FT_Raster_BitSet_Func) (int, int, void *);
+typedef struct FT_Raster_Params_ {
+    const FT_Bitmap *target;
+    const void *source;
+    int flags;
+    FT_SpanFunc gray_spans;
+    FT_SpanFunc black_spans;
+    FT_Raster_BitTest_Func bit_test;
+    FT_Raster_BitSet_Func bit_set;
+    void *user;
+    FT_BBox clip_box;
+} FT_Raster_Params;
+typedef int (*FT_Raster_RenderFunc) (FT_Raster, FT_Raster,
+				     FT_Raster_Params *,
+				     FT_Raster_Params *);
+typedef void (*FT_Raster_DoneFunc) (FT_Raster);
+typedef struct FT_Raster_Funcs_ {
+    FT_Glyph_Format glyph_format;
+    FT_Raster_NewFunc raster_new;
+    FT_Raster_ResetFunc raster_reset;
+    FT_Raster_SetModeFunc raster_set_mode;
+    FT_Raster_RenderFunc raster_render;
+    FT_Raster_DoneFunc raster_done;
+} FT_Raster_Funcs;
+typedef struct FT_Renderer_Class_ {
+    FT_Module_Class root;
+    FT_Glyph_Format glyph_format;
+    FT_Renderer_RenderFunc render_glyph;
+    FT_Renderer_TransformFunc transform_glyph;
+    FT_Renderer_GetCBoxFunc get_glyph_cbox;
+    FT_Renderer_SetModeFunc set_mode;
+    FT_Raster_Funcs *raster_class;
+} FT_Renderer_Class;
+struct FT_GlyphRec_ {
+    FT_Library library;
+    const FT_Glyph_Class *clazz;
+    FT_Glyph_Format format;
+    FT_Vector advance;
+};
+typedef struct FT_Glyph_Class_ {
+    FT_Long glyph_size;
+    FT_Glyph_Format glyph_format;
+    FT_Glyph_InitFunc glyph_init;
+    FT_Glyph_DoneFunc glyph_done;
+    FT_Glyph_CopyFunc glyph_copy;
+    FT_Glyph_TransformFunc glyph_transform;
+    FT_Glyph_GetBBoxFunc glyph_bbox;
+    FT_Glyph_PrepareFunc glyph_prepare;
+} FT_Glyph_Class;
+typedef FT_Error(*FT_Glyph_InitFunc) (FT_Glyph, FT_Glyph, FT_GlyphSlot,
+				      FT_GlyphSlot);
+typedef void (*FT_Glyph_DoneFunc) (FT_Glyph);
+typedef FT_Error(*FT_Glyph_CopyFunc) (FT_Glyph, FT_Glyph);
+typedef void (*FT_Glyph_TransformFunc) (FT_Glyph, FT_Matrix *,
+					FT_Vector *);
+typedef void (*FT_Glyph_GetBBoxFunc) (FT_Glyph, FT_BBox *);
+typedef FT_Error(*FT_Glyph_PrepareFunc) (FT_Glyph, FT_Glyph, FT_GlyphSlot,
+					 FT_GlyphSlot);
+typedef int (*FT_Outline_MoveToFunc) (FT_Vector *, FT_Vector *, void *,
+				      void *);
+typedef int (*FT_Outline_LineToFunc) (FT_Vector *, FT_Vector *, void *,
+				      void *);
+typedef int (*FT_Outline_ConicToFunc) (FT_Vector *, FT_Vector *, void *);
+typedef int (*FT_Outline_CubicToFunc) (FT_Vector *, FT_Vector *,
+				       FT_Vector *, void *);
+typedef struct FT_Outline_Funcs_ {
+    FT_Outline_MoveToFunc move_to;
+    FT_Outline_LineToFunc line_to;
+    FT_Outline_ConicToFunc conic_to;
+    FT_Outline_CubicToFunc cubic_to;
+    int shift;
+    FT_Pos delta;
+} FT_Outline_Funcs;
+typedef enum {
+    FT_ORIENTATION_TRUETYPE = 0,
+    FT_ORIENTATION_POSTSCRIPT = 1,
+    FT_ORIENTATION_FILL_RIGHT = 0,
+    FT_ORIENTATION_FILL_LEFT = 1
+} FT_Orientation;
 extern void FT_Outline_Reverse(FT_Outline *);
 extern FT_Error FT_Outline_New(FT_Library, FT_UInt, FT_Int, FT_Outline *);
 extern void FT_Outline_Transform(const FT_Outline *, const FT_Matrix *);
@@ -846,6 +1176,10 @@ extern FT_Error FT_Get_PFR_Kerning(FT_Face, FT_UInt, FT_UInt, FT_Vector *);
 #define FTRenderer_render	FT_Renderer_RenderFunc
 #define FTRenderer_setMode	FT_Renderer_SetModeFunc
 #define FTRenderer_transform	FT_Renderer_TransformFunc
+
+typedef enum FT_Glyph_Format_ FT_Glyph_Format;
+typedef struct FT_RendererRec_ *FT_Renderer;
+typedef struct FT_Parameter_ FT_Parameter;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -854,10 +1188,26 @@ extern FT_Error FT_Get_PFR_Kerning(FT_Face, FT_UInt, FT_UInt, FT_Vector *);
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture dependent
- * Please refer to the specific architecture specification for details
- */
+typedef long int FT_Pos;
+typedef struct FT_Generic_ FT_Generic;
+struct FT_SizeRec_ {
+    FT_Face face;
+    FT_Generic generic;
+    FT_Size_Metrics metrics;
+    FT_Size_Internal internal;
+};
+typedef struct FT_Size_Metrics_ {
+    FT_UShort x_ppem;
+    FT_UShort y_ppem;
+    FT_Fixed x_scale;
+    FT_Fixed y_scale;
+    FT_Pos ascender;
+    FT_Pos descender;
+    FT_Pos height;
+    FT_Pos max_advance;
+} FT_Size_Metrics;
+typedef struct FT_Size_InternalRec_ *FT_Size_Internal;
+typedef struct FT_SizeRec_ *FT_Size;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -866,10 +1216,14 @@ extern FT_Error FT_Get_PFR_Kerning(FT_Face, FT_UInt, FT_UInt, FT_Vector *);
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture dependent
- * Please refer to the specific architecture specification for details
- */
+typedef struct FT_SfntName_ {
+    FT_UShort platform_id;
+    FT_UShort encoding_id;
+    FT_UShort language_id;
+    FT_UShort name_id;
+    FT_Byte *string;
+    FT_UInt string_len;
+} FT_SfntName;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -878,7 +1232,51 @@ extern FT_Error FT_Get_PFR_Kerning(FT_Face, FT_UInt, FT_UInt, FT_Vector *);
 </PARA>
 <SCREEN>
 
-FT_StrokeBorderRec;
+typedef struct FT_Vector_ FT_Vector;
+typedef struct FT_Outline_ FT_Outline;
+typedef struct FT_GlyphRec_ *FT_Glyph;
+typedef FT_Fixed FT_Angle;
+struct FT_StrokerRec_ {
+    FT_Angle angle_in;
+    FT_Angle angle_out;
+    FT_Vector center;
+    FT_Bool first_point;
+    FT_Bool subpath_open;
+    FT_Angle subpath_angle;
+    FT_Vector subpath_start;
+    FT_Stroker_LineCap line_cap;
+    FT_Stroker_LineJoin line_join;
+    FT_Fixed miter_limit;
+    FT_Fixed radius;
+    FT_Bool valid;
+    FT_StrokeBorderRec borders[2];
+    FT_Memory memory;
+};
+typedef enum {
+    FT_STROKER_LINECAP_BUTT = 0,
+    FT_STROKER_LINECAP_ROUND = 1,
+    FT_STROKER_LINECAP_SQUARE = 2
+} FT_Stroker_LineCap;
+typedef enum {
+    FT_STROKER_LINEJOIN_ROUND = 0,
+    FT_STROKER_LINEJOIN_BEVEL = 1,
+    FT_STROKER_LINEJOIN_MITER = 2
+} FT_Stroker_LineJoin;
+typedef struct FT_StrokeBorderRec_ {
+    FT_UInt num_points;
+    FT_UInt max_points;
+    FT_Vector *points;
+    FT_Byte *tags;
+    FT_Bool movable;
+    FT_Int start;
+    FT_Memory memory;
+    FT_Bool valid;
+} FT_StrokeBorderRec;
+typedef struct FT_StrokerRec_ *FT_Stroker;
+typedef enum {
+    FT_STROKER_BORDER_LEFT = 0,
+    FT_STROKER_BORDER_RIGHT = 1
+} FT_StrokerBorder;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -887,10 +1285,7 @@ FT_StrokeBorderRec;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture dependent
- * Please refer to the specific architecture specification for details
- */
+typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -957,11 +1352,53 @@ extern void FT_Vector_Polarize(FT_Vector *, FT_Fixed *, FT_Angle *);
 #define t1_blend_underline_position	T1_BLEND_UNDERLINE_POSITION
 #define t1_blend_underline_thickness	T1_BLEND_UNDERLINE_THICKNESS
 
-FT_Short;
-FT_Short;
-FT_UShort;
-FT_Short;
-FT_Short;
+typedef int FT_Error;
+typedef int FT_Int;
+typedef long int FT_Long;
+typedef char FT_String;
+typedef long int FT_Fixed;
+typedef short unsigned int FT_UShort;
+typedef unsigned char FT_Bool;
+typedef unsigned char FT_Byte;
+typedef short int FT_Short;
+typedef struct PS_PrivateRec_ {
+    FT_Int unique_id;
+    FT_Int lenIV;
+    FT_Byte num_blue_values;
+    FT_Byte num_other_blues;
+    FT_Byte num_family_blues;
+    FT_Byte num_family_other_blues;
+    FT_Short blue_values[14];
+    FT_Short other_blues[10];
+    FT_Short family_blues[14];
+    FT_Short family_other_blues[10];
+    FT_Fixed blue_scale;
+    FT_Int blue_shift;
+    FT_Int blue_fuzz;
+    FT_UShort standard_width[1];
+    FT_UShort standard_height[1];
+    FT_Byte num_snap_widths;
+    FT_Byte num_snap_heights;
+    FT_Bool force_bold;
+    FT_Bool round_stem_up;
+    FT_Short snap_widths[13];
+    FT_Short snap_heights[13];
+    FT_Fixed expansion_factor;
+    FT_Long language_group;
+    FT_Long password;
+    FT_Short min_feature[2];
+} PS_PrivateRec;
+typedef struct PS_FontInfoRec {
+    FT_String *version;
+    FT_String *notice;
+    FT_String *full_name;
+    FT_String *family_name;
+    FT_String *weight;
+    FT_Long italic_angle;
+    FT_Bool is_fixed_pitch;
+    FT_Short underline_position;
+    FT_UShort underline_thickness;
+} PS_FontInfoRec;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1520,10 +1957,17 @@ FT_Short;
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture dependent
- * Please refer to the specific architecture specification for details
- */
+typedef struct FT_CharMapRec_ *FT_CharMap;
+typedef enum {
+    ft_sfnt_head = 0,
+    ft_sfnt_maxp = 1,
+    ft_sfnt_os2 = 2,
+    ft_sfnt_hhea = 3,
+    ft_sfnt_vhea = 4,
+    ft_sfnt_post = 5,
+    ft_sfnt_pclt = 6,
+    sfnt_max = 7
+} FT_Sfnt_Tag;
 </SCREEN>
 </SECT2>
 <SECT2>

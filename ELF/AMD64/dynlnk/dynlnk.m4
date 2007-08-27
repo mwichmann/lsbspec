@@ -58,7 +58,7 @@ required.
 <PARA>
 Dynamic section entries give information to the dynamic linker.
 The following dynamic entry types shall be supported:
-include(dyntag.sgml)
+m4_include(dyntag.sgml)
 </PARA>
 </SECT2>
 

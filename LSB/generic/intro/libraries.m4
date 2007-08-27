@@ -1,4 +1,4 @@
-include(glibraries.sgml)
+m4_include(glibraries.sgml)
 </TGROUP>
 </TABLE>
 <TABLE ID='tbl-lsbgeneric-archlib'>
@@ -10,5 +10,5 @@ include(glibraries.sgml)
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-include(pslibs.sgml)
+m4_include(pslibs.sgml)
 

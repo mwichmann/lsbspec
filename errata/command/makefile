@@ -7,7 +7,7 @@ FILES=command.sgml
 TABLES=
 
 .m4.sgml:
-	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
+	m4 -P -Uindex -Uformat -Usubstr $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 

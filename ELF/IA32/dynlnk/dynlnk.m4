@@ -61,7 +61,7 @@ Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 <PARA>
 The following dynamic entries are defined in the
 <XREF LINKEND="std.IA32.ABI.4">.
-include(dyntag.sgml)
+m4_include(dyntag.sgml)
 </PARA>
 </SECT2>
 

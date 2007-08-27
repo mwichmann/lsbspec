@@ -8,17 +8,17 @@
 The X Libraries should be built thread-safe.
 </PARA>
 
-include(libX11.sgml)
+m4_include(libX11.sgml)
 
-include(libSM.sgml)
+m4_include(libSM.sgml)
 
-include(libICE.sgml)
+m4_include(libICE.sgml)
 
-include(libXt.sgml)
+m4_include(libXt.sgml)
 
-include(libXext.sgml)
+m4_include(libXext.sgml)
 
-include(libXi.sgml)
+m4_include(libXi.sgml)
 
 </CHAPTER>
 

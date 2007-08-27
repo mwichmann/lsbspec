@@ -11,7 +11,7 @@ Implmentations may not claim conformance to this version.
 <!--
 An implementation of this version of the specification may not claim
 to be an implementation of LSB-Toolkit-Gtk Module unless it has successfully
-completed the compliance process as defined by the Free Standards Group.
+completed the compliance process as defined by the Linux Foundation.
 -->
 </PARA>
 </PREFACE>
@@ -55,7 +55,7 @@ the specification is to be considered normative.
 <TABLE>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
-include(standards.sgml)
+m4_include(standards.sgml)
 </TGROUP>
 </TABLE>
 </CHAPTER>
@@ -79,7 +79,7 @@ architecture-specific specification.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-include(libraries.sgml)
+m4_include(libraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
@@ -213,6 +213,6 @@ A strictly conforming application does not require or use any interface, facilit
 
 &definitions
 
-include(terms.sgml)
+m4_include(terms.sgml)
 
 </PART>

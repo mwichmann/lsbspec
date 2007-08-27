@@ -4,10 +4,10 @@
 <CHAPTER id=baselib>
 <TITLE>Libraries</TITLE>
 
-include(libc.sgml)
-include(libpthread.sgml)
-include(libm.sgml)
-include(libstdcxx.sgml)
+m4_include(libc.sgml)
+m4_include(libpthread.sgml)
+m4_include(libm.sgml)
+m4_include(libstdcxx.sgml)
 
 </CHAPTER>
 

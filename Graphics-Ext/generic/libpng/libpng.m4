@@ -4,7 +4,7 @@
 <CHAPTER id=libpng>
 <TITLE>Libraries</TITLE>
 
-include(png.sgml)
+m4_include(png.sgml)
 
 </CHAPTER>
 

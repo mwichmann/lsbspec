@@ -21,7 +21,7 @@ TABLES=
 	cpp -I../../../../src/include $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 -Uindex -Uformat -Usubstr $*.m4 >$@
+	m4 -P -Uindex -Uformat -Usubstr $*.m4 >$@
 
 all source: $(FILES) $(TABLES) $(MANPAGES)
 

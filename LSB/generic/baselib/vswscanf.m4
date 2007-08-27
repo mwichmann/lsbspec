@@ -9,4 +9,4 @@ convert formatted input
 </REFPURPOSE>
 </REFNAMEDIV>
 
-include(`scanf_diffs.sgml')
+m4_include(`scanf_diffs.sgml')

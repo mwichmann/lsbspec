@@ -8,7 +8,7 @@ TABLES=
 	cpp -I../../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
-	m4 $*.m4 >$@
+	m4 -P $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 

@@ -26,18 +26,18 @@ Specification.
 <PARA>
 The IA64 architecture also specifies the .opd section.
 </PARA>
-include(ia64sect.sgml)
+m4_include(ia64sect.sgml)
 </SECT2>
 <SECT2>
 <TITLE>PPC32 Additional Special Sections</TITLE>
 <PARA>
 The PPC32 architecture also specifies the .sbss and .sdata2 sections.
 </PARA>
-include(ppc32sect.sgml)
+m4_include(ppc32sect.sgml)
 </SECT2>
 </SECT1>
 </CHAPTER>
 
-include(../../../ELF/generic/objfmt/dwarfext.sgml)
+m4_include(../../../ELF/generic/objfmt/dwarfext.sgml)
 
 </PART>

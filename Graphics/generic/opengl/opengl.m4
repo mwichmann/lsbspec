@@ -4,7 +4,7 @@
 <CHAPTER id=opengllib
 <TITLE>Libraries</TITLE>
 
-include(libGL.sgml)
+m4_include(libGL.sgml)
 
 </CHAPTER>
 

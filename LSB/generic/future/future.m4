@@ -22,15 +22,15 @@ cannot be reached.
 <!--
 <SECT1 ID=appb-elf>
 <TITLE>ELF Future Directions</TITLE>
-dnl include(elf.sgml)
+m4_dnl m4_include(elf.sgml)
 </SECT1>
 <SECT1 ID=appb-baselib>
 <TITLE>Base Libraries</TITLE>
-dnl include(baselib.sgml)
+m4_dnl m4_include(baselib.sgml)
 </SECT1>
 -->
 <SECT1 ID=appb-commands>
 <TITLE>Commands And Utilities</TITLE>
-include(lsbinstall.sgml)
+m4_include(lsbinstall.sgml)
 </SECT1>
 </APPENDIX>
