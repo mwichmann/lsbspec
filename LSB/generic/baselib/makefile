@@ -30,7 +30,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	sethostid.sgml sethostname.sgml setsockopt.sgml \
 	setutent.sgml getsockopt.sgml \
 	sigandset.sgml sigblock.sgml siggetmask.sgml sigisemptyset.sgml sigorset.sgml \
-	sigreturn.sgml sigsetmask.sgml sigvec.sgml sockio.sgml stime.sgml stpcpy.sgml \
+	sigpause.sgml sigreturn.sgml sigsetmask.sgml sigvec.sgml sockio.sgml stime.sgml stpcpy.sgml \
 	stpncpy.sgml strcasestr.sgml strerror_r.sgml strfry.sgml strndup.sgml \
 	strnlen.sgml strsep.sgml strsignal.sgml strtok_r.sgml strtoq.sgml strtouq.sgml \
 	strverscmp.sgml system.sgml textdomain.sgml unlink.sgml \

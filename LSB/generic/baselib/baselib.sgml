@@ -70,7 +70,7 @@ architecture specific part of &ISOSTD;.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 24 13:08:14 2007 -->
+<!--    at Mon Aug 27 16:42:23 2007 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -481,7 +481,7 @@ in future releases of this specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>fstatfs</primary></indexterm>fstatfs(GLIBC_2.0) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>fstatfs</primary></indexterm>fstatfs <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>statfs</primary></indexterm>statfs <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
@@ -694,7 +694,7 @@ underlying specification.
 <ENTRY><indexterm><primary>siglongjmp</primary></indexterm>siglongjmp <LINK LINKEND="REFSTD.libc.4">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>signal</primary></indexterm>signal <LINK LINKEND="REFSTD.libc.4">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>sigorset</primary></indexterm>sigorset <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>sigpause</primary></indexterm>sigpause <LINK LINKEND="REFSTD.libc.4">[SUSv3]</LINK></ENTRY>
+<ENTRY><indexterm><primary>sigpause</primary></indexterm>sigpause <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>sigpending</primary></indexterm>sigpending <LINK LINKEND="REFSTD.libc.4">[SUSv3]</LINK></ENTRY>
@@ -711,6 +711,31 @@ underlying specification.
 <ROW>
 <ENTRY><indexterm><primary>sigwait</primary></indexterm>sigwait <LINK LINKEND="REFSTD.libc.4">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>sigwaitinfo</primary></indexterm>sigwaitinfo <LINK LINKEND="REFSTD.libc.4">[SUSv3]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+An LSB conforming implementation shall provide the generic deprecated functions
+for Signal Handling specified in <XREF linkend="tbl-libc-signa-depints">,
+with the full mandatory functionality as described in the referenced
+underlying specification.
+</PARA>
+<NOTE><PARA>These interfaces are deprecated, and applications
+should avoid using them.
+These interfaces may be withdrawn
+in future releases of this specification.
+</PARA></NOTE>
+<!--libgroupdepints-->
+<TABLE id="tbl-libc-signa-depints">
+<TITLE>libc - Signal Handling Deprecated Function Interfaces</TITLE>
+<TGROUP COLS=4>
+<TBODY>
+<ROW>
+<ENTRY><indexterm><primary>sigpause</primary></indexterm>sigpause <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -1773,7 +1798,7 @@ in future releases of this specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>fstatfs64</primary></indexterm>fstatfs64(GLIBC_2.1) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>fstatfs64</primary></indexterm>fstatfs64 <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>statfs64</primary></indexterm>statfs64 <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
@@ -9166,7 +9191,7 @@ In the binary standard, <function>basename</function> is the version described i
 <REFSECT1>
 <TITLE>Return Value</TITLE>
 <PARA>
-On success, the <function>basename</function> function shall return a pointer to the final componenet of
+On success, the <function>basename</function> function shall return a pointer to the final component of
 <parameter>path</parameter>. Otherwise, it shall return a null pointer.
 </PARA>
 </REFSECT1>
@@ -15230,6 +15255,65 @@ One or more of
 </REFENTRY>
 
 
+<REFENTRY ID="baselib-sigpause-3"> <REFMETA>
+<REFENTRYTITLE>sigpause</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sigpause
+</REFNAME>
+<REFPURPOSE>
+remove a signal from the signal mask and suspend the thread (deprecated)
+</REFPURPOSE>
+</REFNAMEDIV>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;signal.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>sigpause</function>
+</funcdef>
+<paramdef>int
+<parameter>sigmask</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<REFSECT1>
+<TITLE>Description
+</TITLE>
+<para>
+The <function>sigpause</function> function is deprecated from the LSB and
+is expected to disappear from a future version of the LSB. Conforming applications
+should use <function>sigsuspend</function> instead.
+</para>
+<para>
+In the source standard, if <constant>_XOPEN_SOURCE</constant> is defined, the <function>__xpg_sigpause</function>
+function is used, and <function>sigpause</function> shall behave as described in
+<xref linkend="std.susv3">. 
+If <constant>_XOPEN_SOURCE</constant> is not defined, this function is used.
+</para>
+<para>
+In the binary standard, <function>sigpause</function> is the version described here.
+</para>
+<para>
+The <function>sigpause</function> shall block those signals indicated by
+<parameter>sigmask</parameter> and suspend execution of the thread until
+a signal is delivered. When a signal is delivered, the original signal
+mask shall be restored.
+</para>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+The <function>sigpause</function> function shall suspend execution of the thread until a signal is received,
+whereupon it shall return <returnvalue>-1</returnvalue> and set <varname>errno</varname> to <errorname>EINTR</errorname>.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
 <REFENTRY ID="baselib-sigreturn-2"> <REFMETA>
 <REFENTRYTITLE>sigreturn</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -19083,7 +19167,7 @@ None.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 24 13:08:14 2007 -->
+<!--    at Mon Aug 27 16:42:25 2007 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -20277,7 +20361,7 @@ The <function>clog10l</function> function shall return the base 10 logarithm.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 24 13:08:15 2007 -->
+<!--    at Mon Aug 27 16:42:25 2007 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -20971,7 +21055,7 @@ source standard; it is only in the binary standard.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 24 13:08:15 2007 -->
+<!--    at Mon Aug 27 16:42:26 2007 -->
 <SECT1 ID=libgcc-s>
 <TITLE>Interfaces for libgcc_s</TITLE>
 <PARA>
@@ -21083,7 +21167,7 @@ typedef int _Unwind_Action;
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 24 13:08:15 2007 -->
+<!--    at Mon Aug 27 16:42:26 2007 -->
 <SECT1 ID=libdl>
 <TITLE>Interfaces for libdl</TITLE>
 <PARA>
@@ -21471,7 +21555,7 @@ with the behavior as described in <XREF LINKEND="std.SUSv3">.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 24 13:08:15 2007 -->
+<!--    at Mon Aug 27 16:42:26 2007 -->
 <SECT1 ID=librt>
 <TITLE>Interfaces for librt</TITLE>
 <PARA>
@@ -21709,7 +21793,7 @@ extern int mq_unlink(const char *);
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 24 13:08:15 2007 -->
+<!--    at Mon Aug 27 16:42:26 2007 -->
 <SECT1 ID=libcrypt>
 <TITLE>Interfaces for libcrypt</TITLE>
 <PARA>
@@ -21779,7 +21863,7 @@ underlying specification.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 24 13:08:15 2007 -->
+<!--    at Mon Aug 27 16:42:26 2007 -->
 <SECT1 ID=libpam>
 <TITLE>Interfaces for libpam</TITLE>
 <PARA>
