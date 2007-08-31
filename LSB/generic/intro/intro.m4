@@ -63,10 +63,10 @@ m4_dnl now contains -DARCH=foobar to ensure that this para comes out
 m4_dnl the way it is supposed to for the different architectures
 m4_dnl since this file is copied from generic to each archLSB
 m4_dnl
-ifelse(ARCH,`All', 
+m4_ifelse(ARCH,`All', 
 	`define(`TBLTARGET',`"tbl-glsb-stdlib"')', 
 	`define(`TBLTARGET',`"tbl-archlsb-stdlib"')')
-ifelse(ARCH,`All',
+m4_ifelse(ARCH,`All',
 `
 The libraries listed in <XREF LINKEND='TBLTARGET`> shall
 be available on a Linux Standard Base system, with the specified
