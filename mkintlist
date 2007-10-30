@@ -59,7 +59,7 @@ for(1..$lth->numrows) {
 $Lid=$entry{'Lid'};
 $Lname=$entry{'Lname'};
 
-$select = "SELECT Iname,Istandard,Isrcbin,Iisdeprecated,Vname ";
+$select = "SELECT Iname,Istandard,Isrcbin,Ideprecatedsince,Vname ";
 #$select.= "FROM Interface,LGInt,LibGroup ";
 $select.= "FROM Interface ";
 $select.= "INNER JOIN LGInt ON LGIint=Iid ";
@@ -98,7 +98,7 @@ print "$Lname Function Interfaces\n";
 	for(1..$inh->numrows) {
 		%entry=$inh->fetchhash;
 		print $entry{'Iname'}."(".$entry{'Vname'}.")";
-		if( $entry{'Iisdeprecated'} eq "Yes" ) {
+		if( $entry{'Ideprecatedsince'} and $entry{'Ideprecatedsince'} le $lsbversion ) {
 			print " *Deprecated*";
 			}
 		print "\n";
