@@ -1,0 +1,72 @@
+Specification: LSB Core Generic
+Edition of Specification: 3.1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1663
+
+Rationale: the functions sigadnset, sigorset and sigisemptyset
+were documented as returning an error code of -1 with errno set
+to EINVAL if a NULL sigset_t is passed as any of the arguments.
+In reality, this behavior is undefined, as is the behavior if
+an uninitialized sigset_t is passed.
+
+
+In section 13.5. Interface Definitions for libc
+
+Interface sigandset, section Description, add at end:
+
+   Applications shall call sigemptyset() or sigfillset() at least
+   once for each object of type sigset_t to initialize it. If an
+   uninitialized or NULL object is passed to sigandset(), the
+   results are undefined.
+
+Section Return Value, change
+
+   On success, sigandset() shall return 0. Otherise, sigandset()
+   shall return -1 and set errno to indicate the error.
+
+to
+
+   sigandset() returns 0. There are no defined error returns.
+
+Section Errors, delete section
+
+
+Interface sigisemptyset, section Description, add at end:
+
+   Applications shall call sigemptyset() or sigfillset() at least
+   once for each object of type sigset_t to initialize it. If an
+   uninitialized or NULL object is passed to sigisemptyset(), the
+   results are undefined.
+
+Section Return Value, change
+
+      On error, sigisemptyset() shall return -1
+   and set errno to indicate the error.
+
+to
+
+      There are no defined error returns.
+
+Section Errors, delete section
+
+
+Interface sigorset, section Description, add at end:
+
+   Applications shall call sigemptyset() or sigfillset() at least
+   once for each object of type sigset_t to initialize it. If an
+   uninitialized or NULL object is passed to sigorset(), the
+   results are undefined.
+
+Section Return Value, change
+
+   On success, sigorset() shall return 0. Otherise, sigorset()
+   shall return -1 and set errno to indicate the error.
+
+to
+
+   sigorset() returns 0. There are no defined error returns.
+
+Section Errors, delete section
+
+
