@@ -1,0 +1,41 @@
+Specification: LSB Desktop Generic
+Edition of Specification: 3.1 
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1707
+
+Rationale: function prototypes for the three libX11 *IfEvent functions
+were mangled.
+
+
+In section 6.2. Data Definitions for libX11
+
+In 6.2.5. X11/Xlib.h
+
+Change:
+
+  extern int XCheckIfEvent(Display *, XEvent *, struct , XPointer);
+
+To:
+
+  extern int XCheckIfEvent(Display *, XEvent *, int (*XIDProc) (void),
+                           XPointer);
+
+Change:
+
+  extern int XIfEvent(Display *, XEvent *, int, XPointer);
+
+To:
+
+  extern int XIfEvent(Display *, XEvent *, int (*XIDProc) (void),
+                      XPointer);
+
+Change:
+
+  extern int XPeekIfEvent(Display *, XEvent *, int, XPointer);
+
+To:
+
+  extern int XPeekIfEvent(Display *, XEvent *, int (*XIDProc) (void),
+                          XPointer);
+
