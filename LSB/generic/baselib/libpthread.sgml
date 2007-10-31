@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Aug 31 16:50:12 2007 -->
+<!--    at Wed Oct 31 12:07:24 2007 -->
 <SECT1 ID=libpthread>
 <TITLE>Interfaces for libpthread</TITLE>
 <PARA>
@@ -130,25 +130,25 @@ underlying specification.
 </TABLE>
 </SECT3>
 </SECT2>
-<!-- debug: database interface name POSIX Threads -->
+<!-- debug: database interface name Posix Threads -->
 <SECT2>
 <!--libgroup-->
-<TITLE>POSIX Threads</TITLE>
+<TITLE>Posix Threads</TITLE>
 <PARA>
 </PARA>
 
 
 <SECT3>
-<TITLE>Interfaces for POSIX Threads</TITLE>
+<TITLE>Interfaces for Posix Threads</TITLE>
 <PARA>
 An LSB conforming implementation shall provide the generic functions
-for POSIX Threads specified in <XREF linkend="tbl-libpthread-posix-ints">,
+for Posix Threads specified in <XREF linkend="tbl-libpthread-posix-ints">,
 with the full mandatory functionality as described in the referenced
 underlying specification.
 </PARA>
 <!--libgroupints-->
 <TABLE id="tbl-libpthread-posix-ints">
-<TITLE>libpthread - POSIX Threads Function Interfaces</TITLE>
+<TITLE>libpthread - Posix Threads Function Interfaces</TITLE>
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
@@ -274,6 +274,31 @@ underlying specification.
 </TBODY>
 </TGROUP>
 </TABLE>
+<PARA>
+An LSB conforming implementation shall provide the generic deprecated functions
+for Posix Threads specified in <XREF linkend="tbl-libpthread-posix-depints">,
+with the full mandatory functionality as described in the referenced
+underlying specification.
+</PARA>
+<NOTE><PARA>These interfaces are deprecated, and applications
+should avoid using them.
+These interfaces may be withdrawn
+in future releases of this specification.
+</PARA></NOTE>
+<!--libgroupdepints-->
+<TABLE id="tbl-libpthread-posix-depints">
+<TITLE>libpthread - Posix Threads Deprecated Function Interfaces</TITLE>
+<TGROUP COLS=4>
+<TBODY>
+<ROW>
+<ENTRY><indexterm><primary>pthread_attr_getstackaddr</primary></indexterm>pthread_attr_getstackaddr <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_attr_setstackaddr</primary></indexterm>pthread_attr_setstackaddr <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 </SECT3>
 </SECT2>
 <!-- debug: database interface name Thread aware versions of libc interfaces -->
@@ -371,10 +396,10 @@ typedef unsigned int pthread_key_t;
 typedef int pthread_once_t;
 typedef long long int __pthread_cond_align_t;
 typedef volatile int pthread_spinlock_t;
-union pthread_barrierattr_t {
+typedef union {
     char __size[__SIZEOF_PTHREAD_BARRIERATTR_T];
     int __align;
-};
+} pthread_barrierattr_t;
 
 typedef unsigned long int pthread_t;
 struct _pthread_fastlock {
@@ -447,15 +472,14 @@ typedef struct {
 #define PTHREAD_CANCEL_ASYNCHRONOUS	1
 #define PTHREAD_CANCEL_DISABLE	1
 
-extern int pthread_barrier_destroy(union pthread_barrier_t *);
-extern int pthread_barrier_init(union pthread_barrier_t *,
-				const union pthread_barrierattr_t *,
+extern int pthread_barrier_destroy(pthread_barrier_t *);
+extern int pthread_barrier_init(pthread_barrier_t *,
+				const pthread_barrierattr_t *,
 				unsigned int);
-extern int pthread_barrier_wait(union pthread_barrier_t *);
-extern int pthread_barrierattr_destroy(union pthread_barrierattr_t *);
-extern int pthread_barrierattr_init(union pthread_barrierattr_t *);
-extern int pthread_barrierattr_setpshared(union pthread_barrierattr_t *,
-					  int);
+extern int pthread_barrier_wait(pthread_barrier_t *);
+extern int pthread_barrierattr_destroy(pthread_barrierattr_t *);
+extern int pthread_barrierattr_init(pthread_barrierattr_t *);
+extern int pthread_barrierattr_setpshared(pthread_barrierattr_t *, int);
 extern int pthread_getcpuclockid(pthread_t, clockid_t *);
 extern int pthread_spin_destroy(pthread_spinlock_t *);
 extern int pthread_spin_init(pthread_spinlock_t *, int);
@@ -464,8 +488,8 @@ extern int pthread_spin_trylock(pthread_spinlock_t *);
 extern int pthread_spin_unlock(pthread_spinlock_t *);
 extern int pthread_mutex_timedlock(pthread_mutex_t *,
 				   const struct timespec *);
-extern int pthread_barrierattr_getpshared(const union pthread_barrierattr_t
-					  *, int *);
+extern int pthread_barrierattr_getpshared(const pthread_barrierattr_t *,
+					  int *);
 extern void _pthread_cleanup_pop(struct _pthread_cleanup_buffer *, int);
 extern void _pthread_cleanup_push(struct _pthread_cleanup_buffer *,
 				  void (*__pshared) (void *)
