@@ -28,7 +28,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	posix_fallocate64.sgml psignal.sgml putwchar.sgml pwrite64.sgml sem_timedwait.sgml \
 	setbuffer.sgml setegid.sgml seteuid.sgml setgroups.sgml \
 	sethostid.sgml sethostname.sgml setsockopt.sgml \
-	setutent.sgml getsockopt.sgml \
+	setutent.sgml getsockopt.sgml sched_setscheduler.sgml \
 	sigandset.sgml sigblock.sgml siggetmask.sgml sigisemptyset.sgml sigorset.sgml \
 	sigpause.sgml sigreturn.sgml sigsetmask.sgml sigvec.sgml sockio.sgml stime.sgml stpcpy.sgml \
 	stpncpy.sgml strcasestr.sgml strerror_r.sgml strfry.sgml strndup.sgml \
