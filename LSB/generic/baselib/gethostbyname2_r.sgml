@@ -1,0 +1,84 @@
+<REFENTRY ID="baselib-gethostbyname2-r-3"> <REFMETA>
+<REFENTRYTITLE>gethostbyname2_r</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>gethostbyname2_r
+</REFNAME>
+<REFPURPOSE>
+find network host database entry matching host name (DEPRECATED)
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>gethostbyname2_r</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char * restrict 
+  <PARAMETER><REPLACEABLE>name</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int
+  <PARAMETER><REPLACEABLE>af</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>struct hostent * restrict 
+  <PARAMETER>result_buf</PARAMETER></PARAMDEF>
+ <PARAMDEF>char * restrict  
+  <PARAMETER><REPLACEABLE>buf</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>size_t 
+  <PARAMETER><REPLACEABLE>buflen</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>struct hostent ** restrict <PARAMETER>result</PARAMETER></PARAMDEF>
+ <PARAMDEF>int * restrict 
+  <PARAMETER><REPLACEABLE>h_errnop</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+
+<note><para>
+The <function>gethostbyname2_r</function> function is deprecated;
+applications should use <function>getaddrinfo</function> instead.
+</para></note>
+
+<PARA>
+The <function>gethostbyname2_r</function> function shall search the
+network host database for an entry with name <parameter>name</parameter>.
+<FUNCTION>gethostbyname2_r</FUNCTION> is a reentrant version of 
+<FUNCTION>gethostbyname2</FUNCTION>.  These functions are similar to
+the <FUNCTION>gethostbyname</FUNCTION> and 
+<FUNCTION>gethostbyname_r</FUNCTION> functions but additionally
+allow the search to be restricted to a particular address family
+specified by <parameter>af</parameter>.
+</PARA>
+<PARA>
+The application must provide a buffer for the <function>gethostbyname2_r
+</function> function to use during the lookup process. The buffer is referenced
+by <parameter>buf</parameter>, and is of size <parameter>buflen</parameter>.
+If the buffer is not of sufficient size, <function>gethostbyname_r</function>
+may fail and return <errorcode>ERANGE</errorcode>.
+If a matching entry is found in the database, 
+<function>gethostbyname_r</function> shall
+copy the relevant information to the application-supplied
+<varname>hostent</varname> structure referenced by 
+<parameter>result_buf</parameter>, and return a pointer to this
+structure in *<parameter>result</parameter>.
+If no matching entry is found, *<parameter>result</parameter> shall
+be set to a null pointer.
+Additional error information shall be set in the variable referenced
+by <parameter>h_errnop</parameter>.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, the <function>gethostbyname2_r</function> function shall
+return zero. If the return value was <errorcode>ERANGE</errorcode>,
+the size of the buffer <parameter>buf</parameter>, indicated
+by <parameter>buflen</parameter>, was too small.
+If the <function>gethostbyname2_r</function> function returns returns any other
+value, then the variable referenced by <parameter>h_errnop</parameter>
+shall be set to indicate the cause as for <function>gethostbyname_r</function>.
+</PARA>
+
+</REFSECT1>
+</REFENTRY>
