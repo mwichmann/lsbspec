@@ -22,20 +22,26 @@ else
   exit 1
 fi
 
-HTML=$(mktemp /tmp/html-XXXXXX) || exit 1
-trap 'rm -f "$HTML"; exit' 0 1 2 3 7 13 15
+# ===== old way:
+#HTML=$(mktemp /tmp/html-XXXXXX) || exit 1
+#trap 'rm -f "$HTML"; exit' 0 1 2 3 7 13 15
 
 # Convert to HTML
-$SGML_JADE -V nochunks -t sgml ${SGML_ARGUMENTS} "$SGML_FILE" >${HTML}
-if [ $? -ne 0 ]
-then exit 1
-fi
-
-# Convert from HTML to ASCII
-${CONVERT} ${ARGS} ${HTML} > "${SGML_FILE_NAME}.txt"
-if [ $? -ne 0 ]
+#$SGML_JADE -V nochunks -t sgml ${SGML_ARGUMENTS} "$SGML_FILE" >${HTML}
+#
+# ===== new way for LSB spec building:
+# require the one-file html first, instead of converting on the fly
+if [ -f "${SGML_FILE_NAME}.html" ]
 then
-  exit 2
+  # Convert from HTML to ASCII
+  ${CONVERT} ${ARGS} "${SGML_FILE_NAME}.html" > "${SGML_FILE_NAME}.txt"
+  if [ $? -ne 0 ]
+  then
+    exit 2
+  fi
+else
+  echo >&2 "Error: cannot find \"${SGML_FILE_NAME}.html\" to convert"
+  exit 1
 fi
 
 exit 0
