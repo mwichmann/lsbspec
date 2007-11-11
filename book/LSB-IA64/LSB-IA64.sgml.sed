@@ -1,6 +1,6 @@
 <!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!ENTITY % entities SYSTEM "../../entities">
+<!ENTITY % entities SYSTEM "SPECSRC/entities">
 <!ENTITY contents SYSTEM "contents">
 
 <!ENTITY specversion "LSBVERSION">
@@ -14,10 +14,10 @@
 
 %entities;
 
-<!ENTITY copyrightyear "2005">
-<!ENTITY copyrightholder "Free Standards Group">
+<!ENTITY copyrightyear "2007">
+<!ENTITY copyrightholder "Linux Foundation">
 <!ENTITY license "&fdl;">
-<!ENTITY doccopyright SYSTEM "../../matters/fsgcopyright.sgml">
+<!ENTITY doccopyright SYSTEM "SPECSRC/matters/fsgcopyright.sgml">
 
 ]>
 
@@ -25,14 +25,8 @@
 <BOOKINFO>
 <TITLE>&spectitle &specversion</TITLE>
 <COPYRIGHT>
-<YEAR>2000</YEAR>
-<YEAR>2001</YEAR>
-<YEAR>2002</YEAR>
-<YEAR>2003</YEAR>
-<YEAR>2004</YEAR>
-<YEAR>2005</YEAR>
-<YEAR>2006</YEAR>
-<HOLDER>Free Standards Group</HOLDER>
+<YEAR>&copyrightyear;</YEAR>
+<HOLDER>&copyrightholder;</HOLDER>
 </COPYRIGHT>
 &legal;
 </BOOKINFO>
