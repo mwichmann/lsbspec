@@ -21,23 +21,23 @@ SUBDIRS= Graphics errata wip \
 	# $(GTK_SUBDIRS) $(QT3_SUBDIRS) 
 
 all:
-	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+#	for dir in $(SUBDIRS);do (cd $$dir && make all);done
 
 autobuild:
-	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
+#	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
 
 gensrc:
-	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
+#	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
 
 source:
-	for dir in $(SUBDIRS);do (cd $$dir && make source);done
+#	for dir in $(SUBDIRS);do (cd $$dir && make source);done
 
 clean:
-	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
-	rm -f $(HTML)
+#	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
+#	rm -f $(HTML)
 
 spotless:
-	for dir in $(SUBDIRS);do (cd $$dir && make spotless);done
-	rm -f $(HTML)
+#	for dir in $(SUBDIRS);do (cd $$dir && make spotless);done
+#	rm -f $(HTML)
 
 

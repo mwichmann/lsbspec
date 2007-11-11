@@ -1,25 +1,25 @@
-
+SPECSRC=..
 
 # These commands are those found on sourceforge.net. Please create your own
 # wrapper script if needed instead of changing this
 
-#DB2HTML=sgmltools -s ../../docbook-utils.dsl\#html -b html
-DB2HTML=docbook2html -d ../../docbook-utils.dsl\#html -o $(DOC) -V '%use-id-as-filename%'
+#DB2HTML=sgmltools -s $(SPECSRC)/docbook-utils.dsl\#html -b html
+DB2HTML=docbook2html -d $(SPECSRC)/docbook-utils.dsl\#html -o $(DOC) -V '%use-id-as-filename%'
 
-#DB2RTF=sgmltools -s ../../docbook-utils.dsl -b rtf
-DB2RTF=docbook2rtf -d ../../docbook-utils.dsl\#print
+#DB2RTF=sgmltools -s $(SPECSRC)/docbook-utils.dsl -b rtf
+DB2RTF=docbook2rtf -d $(SPECSRC)/docbook-utils.dsl\#print
 
-#DB2PS=sgmltools -s ../../docbook-utils.dsl -b ps
-DB2PS=docbook2ps -d ../../docbook-utils.dsl\#print
+#DB2PS=sgmltools -s $(SPECSRC)/docbook-utils.dsl -b ps
+DB2PS=docbook2ps -d $(SPECSRC)/docbook-utils.dsl\#print
 
-#DB2PDF=sgmltools -s ../../docbook-utils.dsl -b pdf
-DB2PDF=docbook2pdf -d ../../docbook-utils.dsl\#print
+#DB2PDF=sgmltools -s $(SPECSRC)/docbook-utils.dsl -b pdf
+DB2PDF=docbook2pdf -d $(SPECSRC)/docbook-utils.dsl\#print
 
-#DB2ONEHTML=sgmltools -s ../../docbook-utils.dsl -b onehtml
-DB2ONEHTML=docbook2html -d ../../docbook-utils.dsl\#html -u -V '%use-id-as-filename%'
+#DB2ONEHTML=sgmltools -s $(SPECSRC)/docbook-utils.dsl -b onehtml
+DB2ONEHTML=docbook2html -d $(SPECSRC)/docbook-utils.dsl\#html -u -V '%use-id-as-filename%'
 
-#DB2TXT=sgmltools -s ../../docbook-utils.dsl -b txt
-DB2TXT=jw -f docbook -b $(PWD)/../../backends/txt -d ../../docbook-utils.dsl\#html
+#DB2TXT=sgmltools -s $(SPECSRC)/docbook-utils.dsl -b txt
+DB2TXT=jw -f docbook -b $(PWD)/$(SPECSRC)/backends/txt -d $(SPECSRC)/docbook-utils.dsl\#html
 
 all:: buildspecs
 
@@ -33,7 +33,8 @@ onehtmlspec: $(DOC).sgml source
 
 htmlspecs: htmlspec onehtmlspec
 
-txtspec: $(DOC).sgml source
+#txtspec: $(DOC).sgml source
+txtspec: $(DOC).sgml source onehtmlspec
 	$(DB2TXT) $(DOC).sgml
 	nl -ba $(DOC).txt > $(DOC)_lines.txt
 
@@ -51,16 +52,16 @@ source:
 gensrc:
 
 dateversion:
-	echo `cat ../../LSB/version.$(ARCH)`-`date +"%Y%m%d"` >buildversion;\
-	sed -e "s#LSBVERSION#`cat ../../LSB/version.$(ARCH)`-`date +"%Y%m%d"`#" <$(DOC).sgml.sed >$(DOC).sgml
+	echo `cat $(SPECSRC)/LSB/version.$(ARCH)`-`date +"%Y%m%d"` >buildversion;\
+	sed -e "s#LSBVERSION#`cat $(SPECSRC)/LSB/version.$(ARCH)`-`date +"%Y%m%d"`#" <$(DOC).sgml.sed -e "s#SPECSRC#$(SPECSRC)#">$(DOC).sgml
 
 $(DOC).sgml: $(DOC).sgml.sed 
-	echo `cat ../../LSB/version.$(ARCH)` >buildversion;\
-	sed -e "s#LSBVERSION#`cat ../../LSB/version.$(ARCH)`#" <$(DOC).sgml.sed >$(DOC).sgml
+	echo `cat $(SPECSRC)/LSB/version.$(ARCH)` >buildversion;\
+	sed -e "s#LSBVERSION#`cat $(SPECSRC)/LSB/version.$(ARCH)`#" <$(DOC).sgml.sed -e "s#SPECSRC#$(SPECSRC)#">$(DOC).sgml
 
 autobuild: source
-	echo `cat ../../LSB/version.$(ARCH)`-`date +"%Y%m%d"` >buildversion;\
-	sed -e "s#LSBVERSION#`cat ../../LSB/version.$(ARCH)`-`date +"%Y%m%d"`#" <$(DOC).sgml.sed >$(DOC).sgml
+	echo `cat $(SPECSRC)/LSB/version.$(ARCH)`-`date +"%Y%m%d"` >buildversion;\
+	sed -e "s#LSBVERSION#`cat $(SPECSRC)/LSB/version.$(ARCH)`-`date +"%Y%m%d"`#" <$(DOC).sgml.sed -e "s#SPECSRC#$(SPECSRC)#">$(DOC).sgml
 	make buildspecs
 
 clean::
