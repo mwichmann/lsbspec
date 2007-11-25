@@ -1,0 +1,45 @@
+Specification: LSB Core Generic
+Edition of Specification: 3.1 Update 1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1472
+
+Rationale: several interfaces were classified in the wrong header
+file. In some cases, this was causing compilation problems in POSIX
+conforming code.
+
+open() was placed in <unistd.h>, not <fcntl.h> where ISO POSIX (2003)
+documents it.  By extension, open64() should also be in <fcntl.h>.
+creat() was placed in <unistd.h>, not <fcntl.h> where ISO POSIX (2003)
+documents it.  By extension, creat64() should also be in <fcntl.h>.
+lockf64() was placed in <fcntl.h>, not <unistd.h> where ISO POSIX (2003)
+documents the base function lockf().
+
+
+In 13.4.74. unistd.h,
+
+Remove:
+
+  extern int lockf64(int, int, off64_t);
+
+Add:
+
+  extern int creat(const char *, mode_t);
+  extern int creat64(const char *, mode_t);
+  extern int open(const char *, int, ...);
+  extern int open64(const char *, int, ...);
+
+
+In 13.4.74. unistd.h,
+
+Remove:
+
+  extern int creat(const char *, mode_t);
+  extern int creat64(const char *, mode_t);
+  extern int open(const char *, int, ...);
+  extern int open64(const char *, int, ...);
+
+Add:
+
+  extern int lockf64(int, int, off64_t);
+

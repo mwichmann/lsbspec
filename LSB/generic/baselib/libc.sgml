@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Wed Nov 14 15:09:44 2007 -->
+<!--    at Sun Nov 25 10:00:02 2007 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -2455,9 +2455,11 @@ extern int posix_fadvise(int, off_t, off_t, int);
 extern int posix_fallocate(int, off_t, off_t);
 extern int posix_fadvise64(int, off64_t, off64_t, int);
 extern int posix_fallocate64(int, off64_t, off64_t);
-extern int lockf64(int, int, off64_t);
+extern int creat(const char *, mode_t);
+extern int creat64(const char *, mode_t);
 extern int fcntl(int, int, ...);
 extern int open(const char *, int, ...);
+extern int open64(const char *, int, ...);
 </SCREEN>
 </SECT2>
 <!-- missing header file All/features.h -->
@@ -4447,6 +4449,7 @@ extern unsigned long long int __strtoull_internal(const char *, char **,
 extern long int a64l(const char *);
 extern void abort(void);
 extern int abs(int);
+extern int atexit(void (*)(void));
 extern double atof(const char *);
 extern int atoi(const char *);
 extern long int atol(const char *);
@@ -5146,8 +5149,12 @@ extern clock_t times(struct tms *);
 </PARA>
 <SCREEN>
 
+#ifndef FALSE
 #define FALSE	0
+#endif
+#ifndef TRUE
 #define TRUE	1
+#endif
 #define FD_SETSIZE	1024
 #define FD_ZERO(fdsetp)	bzero(fdsetp, sizeof(*(fdsetp)))
 #define FD_ISSET(d,set)	\
@@ -5821,8 +5828,6 @@ extern unsigned int alarm(unsigned int);
 extern int chown(const char *, uid_t, gid_t);
 extern int chroot(const char *);
 extern size_t confstr(int, char *, size_t);
-extern int creat(const char *, mode_t);
-extern int creat64(const char *, mode_t);
 extern char *ctermid(char *);
 extern char *cuserid(char *);
 extern int daemon(int, int);
@@ -5842,6 +5847,7 @@ extern pid_t getpgrp(void);
 extern pid_t getsid(pid_t);
 extern char *getwd(char *);
 extern int lockf(int, int, off_t);
+extern int lockf64(int, int, off64_t);
 extern int mkstemp(char *);
 extern int nice(int);
 extern char *optarg;
@@ -5918,7 +5924,6 @@ extern int getpagesize(void);
 extern pid_t getppid(void);
 extern int isatty(int);
 extern loff_t lseek64(int, loff_t, int);
-extern int open64(const char *, int, ...);
 extern ssize_t pread64(int, void *, size_t, off64_t);
 extern ssize_t pwrite64(int, const void *, size_t, off64_t);
 extern int ttyname_r(int, char *, size_t);
