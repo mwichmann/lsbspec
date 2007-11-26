@@ -13,8 +13,8 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'PPD','PPDUPDATE','ISOC99'" >standards.sgml
-	../../mklibsgmltable -a All -v `cat ../../LSB/version.generic` -m LSB_Printing >libraries.sgml
+	../../../mkstandardsgmltable -a All -t Standard -s "'PPD','PPDUpdate','ISOC99'" >standards.sgml
+	../../../mklibsgmltable -a All -v `cat ../../version.generic` -m LSB_Printing >libraries.sgml
 
 
 clean:
