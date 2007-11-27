@@ -4,8 +4,9 @@
 FILES=intro.sgml cxxintro.sgml
 TABLES= standards.sgml references.sgml glibraries.sgml pslibs.sgml cxxstandards.sgml cxxlibraries.sgml
 
-# Specs not part of the main spec
-EXCLSPECS="'LSB','Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','ISOCXX','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi','ATK','Pango','fontconfig','libJPEG','libXML2','Png12','QtCore','QtGui','QtXml','QtNetwork','QtOpenGL','QtSql','QtSvg','qt-mt','xrender','freetype','xft'"
+# Specs not part of the Core spec
+# FIX THIS: there's got to be a better way than listing each spec
+EXCLSPECS="'LSB','Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','ISOCXX','CXXABI','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi','ATK','Pango','fontconfig','libJPEG','libXML2','Png12','QtCore','QtGui','QtXml','QtNetwork','QtOpenGL','QtSql','QtSvg','qt-mt','xrender','freetype','xft','ALSA','PPD','PPDUpdate','PerlLang','PerlFunc','PerlMod','PerlOp','PerlSyn','PythonLib','Python','XdgMenu','XdgDesktop','XdgIcon','XdgBasedir'"
 
 .cpp.sgml:
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
