@@ -1,5 +1,5 @@
 
-SUBDIRS= libxml2
+SUBDIRS= libasound
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
