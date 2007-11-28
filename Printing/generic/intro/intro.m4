@@ -209,4 +209,6 @@ A strictly conforming application does not require or use any interface, facilit
 
 m4_include(terms.sgml)
 
+m4_include(ppd.sgml)
+
 </PART>
