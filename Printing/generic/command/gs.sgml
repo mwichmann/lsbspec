@@ -20,7 +20,7 @@
     gs -h | --help
   </para>
   <para>
-    gs [ options ] ps-file [ ... ]
+    gs [ options ] ps-file [ [ options ] ps-file2 ] ...
   </para>
 </refsect1>
 
@@ -41,8 +41,8 @@
 
   <para>
     Some of GhostScript's options are set via command-line options;
-    others are set within the memory space of the PostScript
-    interpreter (called "systemdict").
+    others are set as processing parameters, each of which consists of
+    a name and a value.
   </para>
 
 </refsect1>
@@ -64,6 +64,16 @@
     </varlistentry>
 
     <varlistentry>
+      <term><parameter>-q</parameter></term>
+      <listitem>
+        <para>
+          Suppress normal startup messages, and also set the
+          processing parameter QUIET.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
       <term><parameter>-c</parameter></term>
       <listitem>
         <para>
@@ -79,15 +89,26 @@
     </varlistentry>
 
     <varlistentry>
+      <term><parameter>-f</parameter></term>
+      <listitem>
+        <para>
+          Specifies a PostScript file to run as its argument.  This is
+          equivalent to the ps-file arguments, but is useful for
+          terminating PostScript code as passed via
+          <parameter>-c</parameter>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
       <term><parameter>-d -D</parameter></term>
       <listitem>
         <para>
-          Set a name in systemdict to a value.  The "name=value" pair
-          follows immediately after the parameter, as in "-Dfoo=bar".
-          The values here must be valid PostScript tokens: either
-          literals (such as numbers), or the values "true", "false",
-          or "null".  The equals sign and value may be omitted; this
-          is assumed to set the name to "true".
+          Set a processing parameter.  The "name=value" pair follows
+          immediately after the option, as in "-Dfoo=bar".  The values
+          here must be integers or the values "true" or "false".  The
+          equals sign and value may be omitted; this is assumed to set
+          the name to "true".
         </para>
       </listitem>
     </varlistentry>
@@ -96,9 +117,9 @@
       <term><parameter>-s -S</parameter></term>
       <listitem>
         <para>
-          Set a name in systemdict to a value.  The "name=value" pair
-          follows immediately after the parameter, as in "-Sfoo=bar".
-          The values here are translated into strings in PostScript.
+          Set a processing parameter to a string value.  The
+          "name=value" pair follows immediately after the option, as
+          in "-Sfoo=bar".
         </para>
       </listitem>
     </varlistentry>
@@ -107,24 +128,20 @@
       <term><parameter>-u</parameter></term>
       <listitem>
         <para>
-          Unset a name in systemdict.  The name parameter follows
+          Unset a processing parameter.  The name to be unset follows
           immediately after the option, as in "-ufoo".
         </para>
       </listitem>
     </varlistentry>
 
     <varlistentry>
-      <term><parameter>-g</parameter></term>
+      <term><parameter>-o</parameter></term>
       <listitem>
         <para>
-          Set the device size, in pixels.  The size is specified as
-          two numbers separated with an "x", as in "640x480",
-          corresponding to the width and height, respectively.
-        </para>
-
-        <para>
-          This is equivalent to setting DEVICEWIDTH and DEVICEHEIGHT
-          in systemdict.
+          Write rendered output to the named file, and also inhibit
+          pauses and the interactive shell.  This is equivalent to
+          setting the processing parameters BATCH and NOPAUSE to true,
+          and OutputFile to the parameter after -o.
         </para>
       </listitem>
     </varlistentry>
@@ -149,23 +166,17 @@
     </varlistentry>
 
     <varlistentry>
-      <term><parameter>-o</parameter></term>
+      <term><parameter>-g</parameter></term>
       <listitem>
         <para>
-          Write rendered output to the named file, and also inhibit
-          pauses and the interactive shell.  This is equivalent to
-          setting the systemdict settings BATCH and NOPAUSE to true,
-          and the setting OutputFile to the parameter after -o.
+          Set the device size, in pixels.  The size is specified as
+          two numbers separated with an "x", as in "640x480",
+          corresponding to the width and height, respectively.
         </para>
-      </listitem>
-    </varlistentry>
 
-    <varlistentry>
-      <term><parameter>-q</parameter></term>
-      <listitem>
         <para>
-          Suppress normal startup messages, and also set QUIET in
-          systemdict.
+          This is equivalent to setting DEVICEWIDTH and DEVICEHEIGHT
+          in systemdict.
         </para>
       </listitem>
     </varlistentry>
@@ -175,10 +186,10 @@
 </refsect1>
 
 <refsect1 id='options'>
-  <title>RECOGNIZED SYSTEMDICT SETTINGS</title>
+  <title>RECOGNIZED PROCESSING PARAMETERS</title>
 
   <para>
-    The gs systemdict is simply a settings namespace; no limits are
+    Processing parameters may have arbitrary names; no limits are
     placed on the settings that may be made.  However, certain
     settings have meaning to the gs interpreter, and drivers may use
     other settings.  Below is a list of recognized settings that the
@@ -204,6 +215,13 @@
           Contains the name of the device used to render the page, as
           a string.
         </para>
+
+        <para>
+          The list of available devices can be discovered with the -h
+          parameter, as described above.  At least the following
+          devices must be present: cups (CUPS Raster), ijs, pxlmono,
+          pxlcolor, and opvp (OpenPrinting Vector).
+        </para>
       </listitem>
     </varlistentry>
 
@@ -213,6 +231,20 @@
         <para>
           Contains the height, in pixels, of the output device.
         </para>
+
+        <para>
+          The effect of this setting when the current driver is a
+          vector driver is undefined.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICEHEIGHTPOINTS</parameter></term>
+      <listitem>
+        <para>
+          Sets the initial page height, in units of 1/72 of an inch.
+        </para>
       </listitem>
     </varlistentry>
 
@@ -221,6 +253,20 @@
       <listitem>
         <para>
           Contains the width, in pixels, of the output device.
+        </para>
+
+        <para>
+          The effect of this setting when the current driver is a
+          vector driver is undefined.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICEWIDTHPOINTS</parameter></term>
+      <listitem>
+        <para>
+          Sets the initial page width, in units of 1/72 of an inch.
         </para>
       </listitem>
     </varlistentry>
@@ -262,6 +308,19 @@
           Contains the path to the file to which gs should write its
           output, as a string.  This parameter may be set to '-', in
           which case gs's output is sent to standard output.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>PAPERSIZE</parameter></term>
+      <listitem>
+        <para>
+          Contains the string representation of the paper size.  The
+          ISO paper sizes a0-a10 (plus a4small), isob0-isob6, and
+          c0-c6 are recognized, as are jisb0-jisb6 (JIS standard
+          sizes) and the US paper sizes 11x17, ledger, legal, letter,
+          lettersmall, and archA-archE.
         </para>
       </listitem>
     </varlistentry>
@@ -320,7 +379,7 @@
   <para>
     Portions of this page were taken from the GhostScript
     documentation.  The maintainer and rights holder for GhostScript
-    is artofcode LLC.
+    is Artifex Software, Inc.
   </para>
 
 </refsect1>
