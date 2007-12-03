@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Fri Nov 30 12:02:42 2007 -->
+<!--    at Mon Dec  3 09:55:12 2007 -->
 <SECT1 ID=libasound>
 <TITLE>Interfaces for libasound</TITLE>
 <PARA>
@@ -4092,6 +4092,80 @@ typedef struct snd_seq_addr {
     unsigned char client;
     unsigned char port;
 } snd_seq_addr_t;
+typedef struct snd_seq_connect {
+    snd_seq_addr_t sender;
+    snd_seq_addr_t dest;
+} snd_seq_connect_t;
+typedef struct snd_seq_ev_cluster {
+    snd_seq_instr_cluster_t cluster;
+} snd_seq_ev_cluster_t;
+typedef struct snd_seq_ev_ctrl {
+    unsigned char channel;
+    unsigned char unused[3];
+    unsigned int param;
+    int value;
+} snd_seq_ev_ctrl_t;
+typedef struct snd_seq_ev_ext {
+    unsigned int len;
+    void *ptr;
+} snd_seq_ev_ext_t;
+typedef struct snd_seq_ev_instr_begin {
+    int timeout;
+} snd_seq_ev_instr_begin_t;
+typedef struct snd_seq_ev_loop {
+    unsigned int start;
+    unsigned int end;
+} snd_seq_ev_loop_t;
+typedef struct snd_seq_ev_note {
+    unsigned char channel;
+    unsigned char note;
+    unsigned char velocity;
+    unsigned char off_velocity;
+    unsigned int duration;
+} snd_seq_ev_note_t;
+typedef struct snd_seq_ev_queue_control {
+    unsigned char queue;
+    unsigned char unused[3];
+    union {
+	int value;
+	snd_seq_timestamp_t time;
+	unsigned int position;
+	snd_seq_queue_skew_t skew;
+	unsigned int d32[2];
+	unsigned char d8[8];
+    } param;
+} snd_seq_ev_queue_control_t;
+typedef struct snd_seq_ev_raw32 {
+    unsigned int d[3];
+} snd_seq_ev_raw32_t;
+typedef struct snd_seq_ev_raw8 {
+    unsigned char d[12];
+} snd_seq_ev_raw8_t;
+typedef struct snd_seq_ev_sample_control {
+    unsigned char channel;
+    unsigned char unused[3];
+    union {
+	snd_seq_ev_sample_t sample;
+	snd_seq_ev_cluster_t cluster;
+	snd_seq_position_t position;
+	snd_seq_stop_mode_t stop_mode;
+	snd_seq_frequency_t frequency;
+	snd_seq_ev_volume_t volume;
+	snd_seq_ev_loop_t loop;
+	unsigned char raw8[8];
+    } param;
+} snd_seq_ev_sample_control_t;
+typedef struct snd_seq_ev_sample {
+    unsigned int std;
+    short unsigned int bank;
+    short unsigned int prg;
+} snd_seq_ev_sample_t;
+typedef struct snd_seq_ev_volume {
+    short int volume;
+    short int lr;
+    short int fr;
+    short int du;
+} snd_seq_ev_volume_t;
 typedef struct snd_seq_event {
     snd_seq_event_type_t type;
     unsigned char flags;
@@ -4100,9 +4174,23 @@ typedef struct snd_seq_event {
     snd_seq_timestamp_t time;
     snd_seq_addr_t source;
     snd_seq_addr_t dest;
-    union data;
+    union {
+	snd_seq_ev_note_t note;
+	snd_seq_ev_ctrl_t control;
+	snd_seq_ev_raw8_t raw8;
+	snd_seq_ev_raw32_t raw32;
+	snd_seq_ev_ext_t ext;
+	snd_seq_ev_queue_control_t queue;
+	snd_seq_timestamp_t time;
+	snd_seq_addr_t addr;
+	snd_seq_connect_t connect;
+	snd_seq_result_t result;
+	snd_seq_ev_instr_begin_t instr_begin;
+	snd_seq_ev_sample_control_t sample;
+    } data;
 } snd_seq_event_t;
 typedef unsigned char snd_seq_event_type_t;
+typedef int snd_seq_frequency_t;
 typedef unsigned int snd_seq_instr_cluster_t;
 typedef struct snd_seq_instr {
     snd_seq_instr_cluster_t cluster;
@@ -4110,6 +4198,11 @@ typedef struct snd_seq_instr {
     short unsigned int bank;
     short unsigned int prg;
 } snd_seq_instr_t;
+typedef unsigned int snd_seq_position_t;
+typedef struct snd_seq_queue_skew {
+    unsigned int value;
+    unsigned int base;
+} snd_seq_queue_skew_t;
 union snd_seq_timestamp {
     snd_seq_tick_time_t tick;
     struct snd_seq_real_time time;
@@ -4118,6 +4211,15 @@ typedef struct snd_seq_real_time {
     unsigned int tv_sec;
     unsigned int tv_nsec;
 } snd_seq_real_time_t;
+typedef struct snd_seq_result {
+    int event;
+    int result;
+} snd_seq_result_t;
+typedef enum snd_seq_stop_mode {
+    SND_SEQ_SAMPLE_STOP_IMMEDIATELY,
+    SND_SEQ_SAMPLE_STOP_VENVELOPE,
+    SND_SEQ_SAMPLE_STOP_LOOP
+} snd_seq_stop_mode_t;
 typedef unsigned int snd_seq_tick_time_t;
 typedef union snd_seq_timestamp {
     snd_seq_tick_time_t tick;
