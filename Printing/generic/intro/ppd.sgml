@@ -1,0 +1,345 @@
+<CHAPTER ID="PPDEXT">
+<TITLE>PPD Format Extensions</TITLE>
+<PARA>
+The Postscript Printer Description (PPD) format is used in a text file
+to describe device capabilities for a printing device. PPD files shall
+conform to the format described by &PPD; and &PPDupdate;. In
+addition, several extensions to the standard attribute list are
+recognized, as listed below.  The "cupsVersion" attribute is required
+in a compliant PPD, while the other attributes are optional.
+
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>cupsColorProfile</TERM>
+<LISTITEM>
+<PARA>
+This string attribute specifies an sRGB-based color profile consisting
+of gamma and density controls and a 3x3 CMY color transform matrix.
+</PARA>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*cupsColorProfile Resolution/MediaType: "density gamma m00 m01 m02 m10
+m11 m12 m20 m21 m22"
+</PARA>
+<PARA>
+The Resolution and MediaType values may be "-" to act as a wildcard.
+Otherwise, they must match one of the Resolution or MediaType
+attributes defined in the PPD file.
+</PARA>
+<PARA>
+The density and gamma values define the gamma and density adjustment
+function such that (in terms of C math):
+</PARA>
+<PARA>
+f(x) = density * pow(x, gamma)
+</PARA>
+<PARA>
+The m00 through m22 values define a 3x3 transformation matrix for the
+CMY color values. The density function is applied after the CMY
+transformation:
+</PARA>
+<PARA>
+| m00 m01 m02 |
+| m10 m11 m12 |
+| m20 m21 m22 |
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>cupsFax</TERM>
+<LISTITEM>
+<PARA>
+This boolean attribute specifies whether the PPD defines a facsimile
+device. The default is false.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>cupsFilter</TERM
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*cupsFilter: "source/type cost program"
+</PARA>
+<PARA>
+This string attribute provides a conversion rule from the given source
+type to the printer's native format using the filter "program". A
+source type is specified according to the conventions of the MIME
+specification, using "type/subtype" nomenclature, and may refer to a
+standard MIME type or a CUPS-specific MIME type using the prefix
+"vnd.cups-" in the subtype. If a printer supports the source type
+directly, the special filter program "-" may be specified.  The cost
+is an arbitrary positive integer, used to calculate the relative
+impact a print job has on system load.
+</PARA>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>cupsManualCopies</TERM>
+<LISTITEM>
+<PARA>
+This boolean attribute notifies the RIP filters that the destination
+printer does not support copy generation in hardware. The default
+value is false.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>cupsModelNumber</TERM>
+<LISTITEM>
+<PARA>
+This integer attribute specifies a printer-specific model number. This
+number can be used by a filter program to adjust the output for a
+specific model of printer.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>cupsVersion</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*cupsVersion: "major.minor"
+</PARA>
+<PARA>
+This required attribute describes which version of the CUPS PPD file
+extensions was used. Currently it must be the string "1.0" or "1.1".
+The strings "1.2" and "1.3" represent newer versions of the CUPS PPD
+API that are not covered in this version of the specification, and are
+currently not allowed, although they may be found in non-conforming
+PPDs which use a newer version of the CUPS PPD specification.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticIDs</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticIDs printer driver
+</PARA>
+<PARA>
+The parameters correspond to the IDs in the Foomatic database for the
+printer and driver, respectively.
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticNoPageAccounting</TERM>
+<LISTITEM>
+<PARA>
+This boolean attribute tells foomatic-rip whether or not to insert
+accounting information into the PostScript data stream.  By default,
+foomatic-rip will insert this information.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPCommandLine</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPCommandLine "code"
+</PARA>
+<PARA>
+This attribute defines the command line in the "code" parameter for
+the renderer that is called by foomatic-rip.  The command must take
+PostScript on standard input and provide the job data stream in the
+printer's native language on standard output.  The command must exit
+with status 0 if the conversion was successful and exit with another
+status if an error occurs.  The "code" parameter may contain option
+setting wildcards, as described below under "FoomaticRIPOption".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPDefault</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPDefaultOptionName value
+</PARA>
+<PARA>
+This attribute sets a default for a Foomatic option.  The name of the
+attribute should contain the name of the option appended to
+"FoomaticRIPDefault", with the desired default value as the only
+parameter.
+</PARA>
+<PARA>
+This option is only used to provide numeric options in the PPD, which
+are not supported by the Adobe spec, via enumerated options, and
+should not be used except for that purpose.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPOption</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPOption name: type style spot [order]
+</PARA>
+<PARA>
+This attribute sets options for the command line specified in the
+"FoomaticRIPCommandLine" attribute.  The "name" parameter specifies
+the option name, the "type" parameter specifies the option type, the
+"style" parameter specifies one of "CmdLine", "JCL", "PS", or
+"Composite", and the "spot" parameter specifies a letter, which is
+prepended with a "%" and used in the "FoomaticRIPCommandLine"
+attribute to indicate where the option should go in the command line.
+The optional "order" parameter indicates an order number for
+one-choice options.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPOptionAllowedChars</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPOptionAllowedChars name: "code"
+</PARA>
+<PARA>
+This option sets a list of allowed characters in a string option.  The
+"name" parameter identifies the option, while the "code" parameter is
+a list of allowed characters.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPOptionAllowedRegExp</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPOptionAllowedRegExp name: "code"
+</PARA>
+<PARA>
+This option causes the option named by "name" to be validated by the
+Perl-style regular expression in "code".
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPOptionMaxLength</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPOptionMaxLength name: length
+</PARA>
+<PARA>
+For string or password options, this attribute sets a maximum length
+which can be returned.  The "name" parameter identifies the option,
+and the "length" parameter is the maximum number of characters
+allowed.
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPOptionPrototype</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPOptionPrototype name: "code"
+</PARA>
+<PARA>
+For string, password, or simulated numeric options, this attribute
+sets a code prototype to be inserted into the output.  This works for
+options where the FoomaticRIPOption "style" parameter is set to
+CmdLine, JCL, or PS.  The value of the option can be represented with
+the string "%s" in the "code" parameter.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPOptionRange</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPOptionRange name: min max
+</PARA>
+<PARA>
+This attribute adds a minimux and maximum limit to numeric options
+(that are simulated by Foomatic via emumerated options).  The "name"
+parameter identifies the option, while the "min" and "max" parameters
+set the minumum and maximum allowed values, respectively, for the
+option.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPOptionSetting</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPOptionSetting name=choice: "code"
+</PARA>
+<PARA>
+This attribute adds code to an option, identified by "name", with a
+FoomaticRIPOption "style" parameter set to Composite.  It
+inserts options for other options that are members of the Composite
+option "name".
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>FoomaticRIPPostPipe</TERM>
+<LISTITEM>
+<PARA>
+The attribute has the following parameter usage:
+</PARA>
+<PARA>
+*FoomaticRIPPostPipe "code"
+</PARA>
+<PARA>
+This attribute defines the command line in the "code" parameter for
+the job output command used by foomatic-rip in standalone mode.  The
+command should take printer-native data on standard input.  The "code"
+parameter should include the preceding shell pipe symbol ("|").
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+
+<PARA>
+</CHAPTER>

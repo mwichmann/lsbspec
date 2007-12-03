@@ -1,0 +1,251 @@
+<!-- lifted from troff+man by doclifter -->
+<refentry id='foomaticrip1'>
+
+<refentryinfo><date>2002-11-26</date></refentryinfo>
+<refmeta>
+<refentrytitle>FOOMATIC-RIP</refentrytitle>
+<manvolnum>1</manvolnum>
+<refmiscinfo class='date'>2002-11-26</refmiscinfo>
+<refmiscinfo class='source'>Foomatic Project</refmiscinfo>
+</refmeta>
+<refnamediv id='name'>
+<refname>foomatic-rip</refname>
+<refpurpose>Universal print filter/RIP wrapper</refpurpose>
+</refnamediv>
+
+<!-- body begins here -->
+
+<refsect1 id='synopsis'>
+  <title>SYNOPSIS</title>
+
+  <refsect2 id='synopsis-nospooler'>
+    <title>Standalone Mode</title>
+    <para>
+      foomatic-rip [-v] [-q] [-d] [ --ppd ppdfile ] [ -J jobtitle ] [ -o option=value [...] ] [ files ]
+    </para>
+  </refsect2>
+
+  <refsect2 id='synopsis-cups'>
+    <title>CUPS Mode</title>
+    <para>
+      foomatic-rip jobid user jobtitle numcopies options [file]
+    </para>
+  </refsect2>
+</refsect1>
+
+<refsect1 id='description'>
+  <title>DESCRIPTION</title>
+  <para>
+    foomatic-rip is a universal print filter which works with every
+    known free software printer spooler.
+  </para>
+
+  <para>
+    This page describes the facilities of foomatic-rip when used as a
+    CUPS filter and when used outside of a print system.  While
+    implementations of foomatic-rip may support other print systems,
+    such use is not documented here.
+  </para>
+
+  <para>
+    When run as a CUPS filter, foomatic-rip reads the job from the
+    specified file, or from standard input if no file is specified.
+    It renders the file into a printer-specific format, and writes the
+    result to standard output.
+  </para>
+
+  <para>
+    When run standalone, foomatic-rip will read the job from the
+    specified files, or from standard input if no files are given.
+    The files are rendered into a printer-specific format, which is
+    then output according to the PPD option "FoomaticRIPPostPipe",
+    documented in the LSB.
+  </para>
+
+  <para>
+    Printer capabilities are described to foomatic-rip via PPD files,
+    as described (with extensions used by foomatic-rip) in the LSB.
+    The method foomatic-rip uses to determine the proper PPD file for
+    the printer in question is defined by the implementation of both
+    the spooler and foomatic-rip.
+  </para>
+
+</refsect1>
+
+<refsect1 id='cups-options'>
+  <title>CUPS OPTIONS</title>
+
+  <para>
+    Unless otherwise noted, all parameters are required when running
+    foomatic-rip as a CUPS filter.
+  </para>
+
+  <variablelist>
+
+    <varlistentry>
+      <term><parameter>jobid</parameter></term>
+      <listitem>
+        <para>
+          The internal Job ID from CUPS.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>username</parameter></term>
+      <listitem>
+        <para>
+          The username of the user who submitted the job.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>jobtitle</parameter></term>
+      <listitem>
+        <para>
+          The job's title, as submitted by the user.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>numcopies</parameter></term>
+      <listitem>
+        <para>
+          The number of copies of the job requested.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>options</parameter></term>
+      <listitem>
+        <para>
+          A series of printer options, separated by spaces, each of
+          which take the form <parameter>name</parameter> or
+          <parameter>name=value</parameter>.  The specific list of
+          options supported is dependent on the printer and spooler,
+          and is usually documented in the PPD file for the printer.
+        </para>
+
+        <para>
+          An option may be preceded by a page specification,
+          describing the pages to which the option should apply.  A
+          page specification consists of one or more items, separated
+          by commas, and separated from the option name by a colon.
+          Valid items include the words "even" and "odd", a single
+          page number, and a page range.  Page ranges are described
+          with a starting page, a dash ("-"), and an ending page.  If
+          omitted, the starting and ending pages are the first and
+          last page, respectively, but only one of the ends of the
+          range may be omitted.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>file</parameter></term>
+      <listitem>
+        <para>
+          The full path to the file containing the job.  This
+          parameter is optional; if it is not supplied, the job is
+          read from standard input.
+        </para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+</refsect1>
+
+<refsect1 id='spoolerless-options'>
+  <title>SPOOLER-LESS OPTIONS</title>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term><option>-v</option></term>
+      <listitem>
+        <para>
+          Verbose mode.  Intended for debugging and testing purposes
+          only.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-q</option></term>
+      <listitem>
+        <para>Quiet mode - minimal information output.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-d</option></term>
+      <listitem>
+        <para>
+          Identical to the 'opts' option, but option information is left
+          in text format.  The PPD file will need to be specified using
+          the --ppd option.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>--ppd</option> <replaceable>ppdfile</replaceable></term>
+      <listitem>
+        <para>
+          The PPD file <filename>ppdfile</filename> should be applied
+          for processing this job.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-J</option> <replaceable>jobtitle</replaceable></term>
+      <listitem>
+        <para>
+          Print the given job title in the header of every page of a
+          plain text job.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-o</option> <replaceable>option=value</replaceable></term>
+      <listitem>
+        <para>Set an option setting for this job.</para> 
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+</refsect1>
+
+<refsect1 id='exit_status'>
+  <title>EXIT STATUS</title>
+  <para>
+    <emphasis remap='B'>foomatic-rip</emphasis> returns 0 unless
+    something unexpected happens.
+  </para>
+</refsect1>
+
+<refsect1 id='author'>
+  <title>AUTHOR</title>
+  <para>
+    Till Kamppeter 
+    &lt;<emphasis remap='I'>till.kamppeter@gmail.com</emphasis>&gt;
+    with parts of Manfred Wassmanns's 
+    &lt;<emphasis remap='I'>manolo@NCC-1701.B.Shuttle.de</emphasis>&gt;
+    man pages for the Foomatic 2.0.x filters.
+  </para>
+
+  <para>
+    Jeff Licquia
+    &lt;<emphasis remap='I'>licquia@linux-foundation.org</emphasis>&gt;
+    adapted the original man page for the LSB.
+  </para>
+
+</refsect1>
+
+</refentry>
+
