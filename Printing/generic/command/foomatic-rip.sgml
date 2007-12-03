@@ -17,9 +17,27 @@
 
 <refsect1 id='synopsis'>
   <title>SYNOPSIS</title>
-  <para>
-    foomatic-rip jobid user jobtitle numcopies options [file]
-  </para>
+
+  <refsect2 id='synopsis-generic'>
+    <title>Generic Options</title>
+    <para>
+      foomatic-rip [-v] [-q] [-d] filter-specific-options
+    </para>
+  </refsect2>
+
+  <refsect2 id='synopsis-nospooler'>
+    <title>Standalone Mode</title>
+    <para>
+      foomatic-rip [ -P printer | --ppd ppdfile ] [ -J jobtitle ] [ -o option=value [...] ] [ files ]
+    </para>
+  </refsect2>
+
+  <refsect2 id='synopsis-cups'>
+    <title>CUPS Mode</title>
+    <para>
+      foomatic-rip jobid user jobtitle numcopies options [file]
+    </para>
+  </refsect2>
 </refsect1>
 
 <refsect1 id='description'>
@@ -31,8 +49,9 @@
 
   <para>
     This page describes the facilities of foomatic-rip when used as a
-    CUPS filter.  While implementations of foomatic-rip may support
-    other print systems, such use is not documented here.
+    CUPS filter and when used outside of a print system.  While
+    implementations of foomatic-rip may support other print systems,
+    such use is not documented here.
   </para>
 
   <para>
@@ -40,6 +59,14 @@
     specified file, or from standard input if no file is specified.
     It renders the file into a printer-specific format, and writes the
     result to standard output.
+  </para>
+
+  <para>
+    When run standalone, foomatic-rip will read the job from the
+    specified files, or from standard input if no files are given.
+    The files are rendered into a printer-specific format, which is
+    then output according to the PPD option "FoomaticRIPPostPipe",
+    documented in the LSB.
   </para>
 
   <para>
@@ -137,6 +164,124 @@
 
   </variablelist>
 
+</refsect1>
+
+<refsect1 id='spoolerless_printing'><title>SPOOLER-LESS PRINTING</title>
+
+<refsect2 id='options'><title>Options</title>
+
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><option>-v</option></term>
+  <listitem>
+<para>verbose mode for debugging.
+<emphasis remap='B'>WARNING:</emphasis>
+This will create a file in /tmp that contains the debugging information.
+This opens a security loophole and should not be used in production.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-q</option></term>
+  <listitem>
+<para>quiet mode - minimal information output</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-d</option></term>
+  <listitem>
+<para>identical to the 'opts' option, but option information is
+left in text format.  This is useful for running foomatic-rip
+from the command line to determine what the printer option are.
+The PPD file will need to be specified using the --ppd option.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-P</option><replaceable>&nbsp;&lt;printer&gt;</replaceable></term>
+  <listitem>
+<para><emphasis remap='I'>&lt;printer&gt;</emphasis> is the configured printer which should be used for this job.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--ppd</option><replaceable>&nbsp;&lt;ppdfile&gt;</replaceable></term>
+  <listitem>
+<para>The PPD file <filename>&lt;ppdfile&gt;</filename> should be applied for processing this job.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-J</option><replaceable>&nbsp;&lt;jobtitle&gt;</replaceable></term>
+  <listitem>
+<para>The <emphasis remap='I'>&lt;jobtitle&gt;</emphasis> will be printed in the head line of every page of
+a plain text job.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-o</option><replaceable>&nbsp;&lt;option&gt;</replaceable><emphasis remap='B'>=</emphasis><emphasis remap='I'>&lt;value&gt;</emphasis></term>
+  <listitem>
+<para>Option settings for this job, do</para> 
+
+<para><emphasis remap='B'>foomatic-rip -P </emphasis><emphasis remap='I'>&lt;printer&gt;</emphasis> <option>-o docs </option><emphasis remap='I'>&lt;file&gt;</emphasis></para>
+
+<para>(<emphasis remap='I'>&lt;file&gt;</emphasis> can be an arbitrary existing file, as <markup>.bashrc</markup>,
+will not be printed) to print a list of available options for the
+specified <emphasis remap='I'>&lt;printer&gt;</emphasis>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'></emphasis><emphasis remap='I'>&lt;files&gt;</emphasis></term>
+  <listitem>
+<para>The file(s) to be printed.</para>
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+
+<para><emphasis remap='B'>foomatic-rip</emphasis> will print from standard input unless a file to
+print is specified on the command line.
+If your printer PPD file is stored as <filename>/etc/direct/&lt;printer&gt;.ppd</filename>
+or <filename>~/.foomatic/direct/&lt;printer&gt;.ppd</filename> you can use it by simply specifying "-P <emphasis remap='I'>&lt;printer&gt;</emphasis>".</para>
+
+<para>Put a line</para>
+
+<para><emphasis remap='B'>*FoomaticRIPPostPipe: "| </emphasis><emphasis remap='I'>&lt;command&gt;</emphasis><emphasis remap='B'>"</emphasis></para>
+<!-- .hy 0 -->
+
+<para>into the PPD file, right after <emphasis remap='B'>*PPD-Adobe: "4.3"</emphasis>, where
+<emphasis remap='I'>&lt;command&gt;</emphasis> is a command into which you wnat to re-direct the
+output data.</para>
+
+<para>This way you can print directly to your printer, use</para>
+
+<para><emphasis remap='B'>*FoomaticRIPPostPipe: "| cat &amp;gt; /dev/lp0"</emphasis></para>
+
+<para>or</para>
+
+<para><emphasis remap='B'>*FoomaticRIPPostPipe: "| cat &amp;gt; /dev/usb/lp0"</emphasis></para>
+
+<para>for local parallel or USB printers. To make normal users able to print
+this way add them to the group <emphasis remap='B'>lp</emphasis> and make sure that the
+appropriate printer device file <filename>/dev/...</filename> is group-writable for
+the <emphasis remap='B'>lp</emphasis> group.</para>
+
+<para>for a TCP/Socket/JetDirect printer with the host name <emphasis remap='B'>printer</emphasis>
+listening on port <literal>9100</literal> you need this:</para>
+
+<para><emphasis remap='B'>*FoomaticRIPPostPipe: "| /usr/bin/nc -w 1 printer 9100"</emphasis></para>
+
+<para>Note the "-w 1" in the "nc" command line, it makes "nc" exiting
+immediately after the data is tranferred to the printer.</para>
+
+<para><emphasis remap='B'>*FoomaticRIPPostPipe: "| rlpr -Plp@printserver"</emphasis></para>
+
+<para>directs your jobs to the LPD printer queue <emphasis remap='B'>lp</emphasis> on the machine
+named <emphasis remap='B'>printserver</emphasis>.</para>
+
+<para>See also <ulink url='http://www.openprinting.org/direct-doc.html'>http://www.openprinting.org/direct-doc.html</ulink></para>
+
+</refsect2>
 </refsect1>
 
 <refsect1 id='exit_status'>
