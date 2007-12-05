@@ -105,6 +105,9 @@ m4_include(elibraries.sgml)
 m4_include(glibraries.sgml)
 </TGROUP>
 <TGROUP COLS=2>
+m4_include(q4libraries.sgml)
+</TGROUP>
+<TGROUP COLS=2>
 m4_include(qlibraries.sgml)
 </TGROUP>
 <TGROUP COLS=2>
