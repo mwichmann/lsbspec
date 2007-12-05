@@ -64,7 +64,7 @@ commands in ways which work with either the POSIX or GNU behaviors.</para>
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mkcmdlist 1.3 2006/01/20 13:19:39 pradosh Exp 0 -->
-<!--    at Mon Nov 26 13:27:44 2007 -->
+<!--    at Mon Nov 26 13:30:27 2007 -->
 <SECT1 ID=cmdbehav>
 <TITLE>Command Behavior</TITLE>
 <PARA>
@@ -73,6 +73,645 @@ specified behavior in the LSB contradicts or extends the standards
 referenced. It also contains commands and utilities only required by
 the LSB and not specified by other standards.
 </PARA>
+<!-- lifted from troff+man by doclifter -->
+<refentry id='foomaticrip1'>
+
+<refentryinfo><date>2002-11-26</date></refentryinfo>
+<refmeta>
+<refentrytitle>FOOMATIC-RIP</refentrytitle>
+<manvolnum>1</manvolnum>
+<refmiscinfo class='date'>2002-11-26</refmiscinfo>
+<refmiscinfo class='source'>Foomatic Project</refmiscinfo>
+</refmeta>
+<refnamediv id='name'>
+<refname>foomatic-rip</refname>
+<refpurpose>Universal print filter/RIP wrapper</refpurpose>
+</refnamediv>
+
+<!-- body begins here -->
+
+<refsect1 id='synopsis'>
+  <title>SYNOPSIS</title>
+
+  <refsect2 id='synopsis-nospooler'>
+    <title>Standalone Mode</title>
+    <para>
+      foomatic-rip [-v] [-q] [-d] [ --ppd ppdfile ] [ -J jobtitle ] [ -o option=value [...] ] [ files ]
+    </para>
+  </refsect2>
+
+  <refsect2 id='synopsis-cups'>
+    <title>CUPS Mode</title>
+    <para>
+      foomatic-rip jobid user jobtitle numcopies options [file]
+    </para>
+  </refsect2>
+</refsect1>
+
+<refsect1 id='description'>
+  <title>DESCRIPTION</title>
+  <para>
+    foomatic-rip is a universal print filter which works with every
+    known free software printer spooler.
+  </para>
+
+  <para>
+    This page describes the facilities of foomatic-rip when used as a
+    CUPS filter and when used outside of a print system.  While
+    implementations of foomatic-rip may support other print systems,
+    such use is not documented here.
+  </para>
+
+  <para>
+    When run as a CUPS filter, foomatic-rip reads the job from the
+    specified file, or from standard input if no file is specified.
+    It renders the file into a printer-specific format, and writes the
+    result to standard output.
+  </para>
+
+  <para>
+    When run standalone, foomatic-rip will read the job from the
+    specified files, or from standard input if no files are given.
+    The files are rendered into a printer-specific format, which is
+    then output according to the PPD option "FoomaticRIPPostPipe",
+    documented in the LSB.
+  </para>
+
+  <para>
+    Printer capabilities are described to foomatic-rip via PPD files,
+    as described (with extensions used by foomatic-rip) in the LSB.
+    The method foomatic-rip uses to determine the proper PPD file for
+    the printer in question is defined by the implementation of both
+    the spooler and foomatic-rip.
+  </para>
+
+</refsect1>
+
+<refsect1 id='cups-options'>
+  <title>CUPS OPTIONS</title>
+
+  <para>
+    Unless otherwise noted, all parameters are required when running
+    foomatic-rip as a CUPS filter.
+  </para>
+
+  <variablelist>
+
+    <varlistentry>
+      <term><parameter>jobid</parameter></term>
+      <listitem>
+        <para>
+          The internal Job ID from CUPS.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>username</parameter></term>
+      <listitem>
+        <para>
+          The username of the user who submitted the job.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>jobtitle</parameter></term>
+      <listitem>
+        <para>
+          The job's title, as submitted by the user.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>numcopies</parameter></term>
+      <listitem>
+        <para>
+          The number of copies of the job requested.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>options</parameter></term>
+      <listitem>
+        <para>
+          A series of printer options, separated by spaces, each of
+          which take the form <parameter>name</parameter> or
+          <parameter>name=value</parameter>.  The specific list of
+          options supported is dependent on the printer and spooler,
+          and is usually documented in the PPD file for the printer.
+        </para>
+
+        <para>
+          An option may be preceded by a page specification,
+          describing the pages to which the option should apply.  A
+          page specification consists of one or more items, separated
+          by commas, and separated from the option name by a colon.
+          Valid items include the words "even" and "odd", a single
+          page number, and a page range.  Page ranges are described
+          with a starting page, a dash ("-"), and an ending page.  If
+          omitted, the starting and ending pages are the first and
+          last page, respectively, but only one of the ends of the
+          range may be omitted.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>file</parameter></term>
+      <listitem>
+        <para>
+          The full path to the file containing the job.  This
+          parameter is optional; if it is not supplied, the job is
+          read from standard input.
+        </para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+</refsect1>
+
+<refsect1 id='spoolerless-options'>
+  <title>SPOOLER-LESS OPTIONS</title>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term><option>-v</option></term>
+      <listitem>
+        <para>
+          Verbose mode.  Intended for debugging and testing purposes
+          only.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-q</option></term>
+      <listitem>
+        <para>Quiet mode - minimal information output.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-d</option></term>
+      <listitem>
+        <para>
+          Identical to the 'opts' option, but option information is left
+          in text format.  The PPD file will need to be specified using
+          the --ppd option.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>--ppd</option> <replaceable>ppdfile</replaceable></term>
+      <listitem>
+        <para>
+          The PPD file <filename>ppdfile</filename> should be applied
+          for processing this job.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-J</option> <replaceable>jobtitle</replaceable></term>
+      <listitem>
+        <para>
+          Print the given job title in the header of every page of a
+          plain text job.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-o</option> <replaceable>option=value</replaceable></term>
+      <listitem>
+        <para>Set an option setting for this job.</para> 
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+</refsect1>
+
+<refsect1 id='exit_status'>
+  <title>EXIT STATUS</title>
+  <para>
+    <emphasis remap='B'>foomatic-rip</emphasis> returns 0 unless
+    something unexpected happens.
+  </para>
+</refsect1>
+
+<refsect1 id='author'>
+  <title>AUTHOR</title>
+  <para>
+    Till Kamppeter 
+    &lt;<emphasis remap='I'>till.kamppeter@gmail.com</emphasis>&gt;
+    with parts of Manfred Wassmanns's 
+    &lt;<emphasis remap='I'>manolo@NCC-1701.B.Shuttle.de</emphasis>&gt;
+    man pages for the Foomatic 2.0.x filters.
+  </para>
+
+  <para>
+    Jeff Licquia
+    &lt;<emphasis remap='I'>licquia@linux-foundation.org</emphasis>&gt;
+    adapted the original man page for the LSB.
+  </para>
+
+</refsect1>
+
+</refentry>
+
+
+<refentry id='gs'>
+
+<refentryinfo><date>2007-11-29</date></refentryinfo>
+<refmeta>
+<refentrytitle>GS</refentrytitle>
+<manvolnum>1</manvolnum>
+<refmiscinfo class='date'>2007-11-29</refmiscinfo>
+<refmiscinfo class='source'>LSB</refmiscinfo>
+</refmeta>
+<refnamediv id='name'>
+<refname>gs</refname>
+<refpurpose>GhostScript (PostScript and PDF language interpreter)</refpurpose>
+</refnamediv>
+
+<!-- body begins here -->
+
+<refsect1 id='synopsis'>
+  <title>SYNOPSIS</title>
+  <para>
+    gs -h | --help
+  </para>
+  <para>
+    gs [ options ] ps-file [ [ options ] ps-file2 ] ...
+  </para>
+</refsect1>
+
+<refsect1 id='description'>
+  <title>DESCRIPTION</title>
+
+  <para>
+    The gs command invokes Ghostscript, an interpreter of Adobe
+    Systems' PostScript(tm) and Portable Document Format (PDF)
+    languages.  gs reads the files named by ps-file in sequence and
+    executes them as Ghostscript programs. After doing this, it reads
+    further input from the standard input stream (normally the
+    keyboard), interpreting each line separately.  The interpreter
+    exits gracefully when it encounters the "quit" command (either in
+    a file or from the keyboard), at end-of-file, or at an interrupt
+    signal (such as Control-C at the keyboard).
+  </para>
+
+  <para>
+    Some of GhostScript's options are set via command-line options;
+    others are set as processing parameters, each of which consists of
+    a name and a value.
+  </para>
+
+</refsect1>
+
+<refsect1 id='options'>
+  <title>OPTIONS</title>
+
+  <variablelist>
+
+    <varlistentry>
+      <term><parameter>-h --help</parameter></term>
+      <listitem>
+        <para>
+          Show GhostScript's help, as well as lists of the supported
+          input formats, supported devices, and the search path for gs
+          components.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-q</parameter></term>
+      <listitem>
+        <para>
+          Suppress normal startup messages, and also set the
+          processing parameter QUIET.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-c</parameter></term>
+      <listitem>
+        <para>
+          Begin interpreting arguments as PostScript code.  All
+          following arguments are sent to the interpreter up to the
+          next argument beginning with "-" followed by a non-digit, or
+          with "@".  This code is interpolated with the file list, so
+          files specified before <parameter>-c</parameter> are
+          interpreted beforehand, and files after
+          <parameter>-c</parameter> are interpreted afterwards.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-f</parameter></term>
+      <listitem>
+        <para>
+          Specifies a PostScript file to run as its argument.  This is
+          equivalent to the ps-file arguments, but is useful for
+          terminating PostScript code as passed via
+          <parameter>-c</parameter>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-d -D</parameter></term>
+      <listitem>
+        <para>
+          Set a processing parameter.  The "name=value" pair follows
+          immediately after the option, as in "-Dfoo=bar".  The values
+          here must be integers or the values "true" or "false".  The
+          equals sign and value may be omitted; this is assumed to set
+          the name to "true".
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-s -S</parameter></term>
+      <listitem>
+        <para>
+          Set a processing parameter to a string value.  The
+          "name=value" pair follows immediately after the option, as
+          in "-Sfoo=bar".
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-u</parameter></term>
+      <listitem>
+        <para>
+          Unset a processing parameter.  The name to be unset follows
+          immediately after the option, as in "-ufoo".
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-o</parameter></term>
+      <listitem>
+        <para>
+          Write rendered output to the named file, and also inhibit
+          pauses and the interactive shell.  This is equivalent to
+          setting the processing parameters BATCH and NOPAUSE to true,
+          and OutputFile to the parameter after -o.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-r</parameter></term>
+      <listitem>
+        <para>
+          Set the device resolution.  The resolution is specified as
+          two numbers separated with an "x", as in "300x150",
+          corresponding to the X and Y axis resolutions, respectively.
+          If a single number is given without an "x", it is treated as
+          the value for both resolutions.
+        </para>
+
+        <para>
+          This is equivalent to
+          setting DEVICEXRESOLUTION and DEVICEYRESOLUTION in
+          systemdict.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>-g</parameter></term>
+      <listitem>
+        <para>
+          Set the device size, in pixels.  The size is specified as
+          two numbers separated with an "x", as in "640x480",
+          corresponding to the width and height, respectively.
+        </para>
+
+        <para>
+          This is equivalent to setting DEVICEWIDTH and DEVICEHEIGHT
+          in systemdict.
+        </para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+</refsect1>
+
+<refsect1 id='options'>
+  <title>RECOGNIZED PROCESSING PARAMETERS</title>
+
+  <para>
+    Processing parameters may have arbitrary names; no limits are
+    placed on the settings that may be made.  However, certain
+    settings have meaning to the gs interpreter, and drivers may use
+    other settings.  Below is a list of recognized settings that the
+    gs interpreter must respect.
+  </para>
+
+  <variablelist>
+
+    <varlistentry>
+      <term><parameter>BATCH</parameter></term>
+      <listitem>
+        <para>
+          If set to true, do not enter an interactive shell after
+          processing all command-line files.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICE</parameter></term>
+      <listitem>
+        <para>
+          Contains the name of the device used to render the page, as
+          a string.
+        </para>
+
+        <para>
+          The list of available devices can be discovered with the -h
+          parameter, as described above.  At least the following
+          devices must be present: cups (CUPS Raster), ijs, pxlmono,
+          pxlcolor, and opvp (OpenPrinting Vector).
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICEHEIGHT</parameter></term>
+      <listitem>
+        <para>
+          Contains the height, in pixels, of the output device.
+        </para>
+
+        <para>
+          The effect of this setting when the current driver is a
+          vector driver is undefined.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICEHEIGHTPOINTS</parameter></term>
+      <listitem>
+        <para>
+          Sets the initial page height, in units of 1/72 of an inch.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICEWIDTH</parameter></term>
+      <listitem>
+        <para>
+          Contains the width, in pixels, of the output device.
+        </para>
+
+        <para>
+          The effect of this setting when the current driver is a
+          vector driver is undefined.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICEWIDTHPOINTS</parameter></term>
+      <listitem>
+        <para>
+          Sets the initial page width, in units of 1/72 of an inch.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICEXRESOLUTION</parameter></term>
+      <listitem>
+        <para>
+          Contains the resolution, in pixels per inch, of the X
+          dimension (horizontal) of the output device.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>DEVICEYRESOLUTION</parameter></term>
+      <listitem>
+        <para>
+          Contains the resolution, in pixels per inch, of the Y
+          dimension (vertical) of the output device.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>NOPAUSE</parameter></term>
+      <listitem>
+        <para>
+          If set to true, disable the prompt and pause normally
+          displayed after rendering a page.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>OutputFile</parameter></term>
+      <listitem>
+        <para>
+          Contains the path to the file to which gs should write its
+          output, as a string.  This parameter may be set to '-', in
+          which case gs's output is sent to standard output.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>PAPERSIZE</parameter></term>
+      <listitem>
+        <para>
+          Contains the string representation of the paper size.  The
+          ISO paper sizes a0-a10 (plus a4small), isob0-isob6, and
+          c0-c6 are recognized, as are jisb0-jisb6 (JIS standard
+          sizes) and the US paper sizes 11x17, ledger, legal, letter,
+          lettersmall, and archA-archE.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>QUIET</parameter></term>
+      <listitem>
+        <para>
+          If set to true, suppress routine information comments on
+          standard output.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>SAFER</parameter></term>
+      <listitem>
+        <para>
+          If set to true, disable several unsafe PostScript features:
+          the deletefile and renamefile operators, piped commands,
+          reading or writing to general files, and changing of certain
+          system settings.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><parameter>STRICT</parameter></term>
+      <listitem>
+        <para>
+          If set to true, disable as many extensions to the Adobe
+          PostScript specification as possible.
+        </para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+</refsect1>
+
+<refsect1 id='exit_status'>
+  <title>EXIT STATUS</title>
+  <para>
+    gs returns 0 on successful execution.  Any other return value
+    indicates an error.
+  </para>
+</refsect1>
+
+<refsect1 id='author'>
+  <title>AUTHOR</title>
+  <para>
+    Jeff Licquia (licquia@linux-foundation.org)
+    wrote this man page for the LSB specification.
+  </para>
+
+  <para>
+    Portions of this page were taken from the GhostScript
+    documentation.  The maintainer and rights holder for GhostScript
+    is Artifex Software, Inc.
+  </para>
+
+</refsect1>
+
+</refentry>
 
 
 </SECT1>
