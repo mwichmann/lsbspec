@@ -1,10 +1,10 @@
 <PREFACE id="OVERVIEW">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the LSB-Desktop Module Specification.
+This is version &specversion; of the LSB Desktop Specification.
 <!--
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 3.1 of the LSB-Desktop Module
+this version will result in version 3.2 of the LSB Desktop
 Specification.
 </PARA>
 <PARA>
@@ -18,7 +18,7 @@ Policy for details.
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LSB-Desktop Module defines components that are required to
+The LSB Desktop specification defines components that are required to
 be present on an LSB conforming system.
 </PARA>
 
@@ -46,9 +46,9 @@ conforming system.
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
-the LSB-Desktop Module Standard.  Such references may be normative or
+the LSB Desktop specification.  Such references may be normative or
 informative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The LSB-Desktop Module
+normative if it is explicitly cited as such.  The LSB Desktop specification
 may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
