@@ -1,0 +1,56 @@
+<PART ID="tum">
+<TITLE>Trial Use Module</TITLE>
+
+<CHAPTER ID="trialuse-tum">
+<TITLE>Trial Use Module</TITLE>
+
+<SECT1 ID="tumintro">
+<TITLE>Introduction</TITLE>
+<PARA>
+The Trial Use Module decribes components in Trial Use status.
+Trial Use Specifications are non-mandatory components of the
+Linux Standard Base.
+</PARA>
+</SECT1>
+
+<SECT1 ID="xdgutils">
+<TITLE>Xdg-utils</TITLE>
+<PARA>
+Xdg-utils is a set of command line utilities that assist applications with
+a variety of desktop integration tasks. Some of the utilities focus on
+tasks commonly required during the installation of a desktop application.
+The remainder focus on integration with the desktop environment
+while the application is running. 
+</PARA>
+<PARA>
+These utilities operate as described at <xref linkend="std.xdg.utils">
+</PARA>
+
+<!--
+Overview
+
+Xdg-utils consists of the following installation related tools:
+
+    * xdg-desktop-menu, install desktop menu items
+    * xdg-desktop-icon, install icons to the desktop
+    * xdg-icon-resource, install icon resources
+    * xdg-mime, query information about file type handling and
+      add descriptions for new file types 
+
+It also contains the following runtime integration tools:
+
+    * xdg-open, open a file or URL in the user's preferred application
+    * xdg-email, send mail using the user's preferred e-mail composer
+    * xdg-screensaver, control the screensaver
+-->
+
+<SECT2>
+<TITLE>Xdg-utils Commands</TITLE>
+
+m4_include(cmdlist.sgml)
+
+</SECT2>
+</SECT1>
+
+</CHAPTER>
+</PART>
