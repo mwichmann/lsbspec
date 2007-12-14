@@ -1,0 +1,2511 @@
+<?xml version="1.0"?><mxmldoc
+xmlns="http://www.easysw.com"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.minixml.org/mxmldoc.xsd">
+  <function name="cupsAddDest">
+    <returnvalue>
+      <type>int</type>
+      <description>New number of destinations</description>
+    </returnvalue>
+    <description>Add a destination to the list of destinations.
+
+This function cannot be used to add a new class or printer queue,
+it only adds a new container of saved options for the named
+destination or instance.
+
+If the named destination already exists, the destination list is
+returned unchanged.  Adding a new instance of a destination creates
+a copy of that destination's options.
+
+Use the cupsSaveDests() function to save the updated list of
+destinations to the user's lpoptions file.</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Destination name</description>
+    </argument>
+    <argument name="instance" direction="I">
+      <type>const char *</type>
+      <description>Instance name or NULL for none/primary</description>
+    </argument>
+    <argument name="num_dests" direction="I">
+      <type>int</type>
+      <description>Number of destinations</description>
+    </argument>
+    <argument name="dests" direction="IO">
+      <type>cups_dest_t **</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsAddOption">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of options</description>
+    </returnvalue>
+    <description>Add an option to an option array.</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Name of option</description>
+    </argument>
+    <argument name="value" direction="I">
+      <type>const char *</type>
+      <description>Value of option</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="IO">
+      <type>cups_option_t **</type>
+      <description>Pointer to options</description>
+    </argument>
+  </function>
+  <function name="cupsCancelJob">
+    <returnvalue>
+      <type>int</type>
+      <description>1 on success, 0 on failure</description>
+    </returnvalue>
+    <description>Cancel a print job on the default server.
+
+Use the cupsLastError() and cupsLastErrorString() functions to get
+the cause of any failure.</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Name of printer or class</description>
+    </argument>
+    <argument name="job" direction="I">
+      <type>int</type>
+      <description>Job ID</description>
+    </argument>
+  </function>
+  <function name="cupsEncryption">
+    <returnvalue>
+      <type>http_encryption_t</type>
+      <description>Encryption settings</description>
+    </returnvalue>
+    <description>Get the default encryption settings.
+
+The default encryption setting comes from the CUPS_ENCRYPTION
+environment variable, then the ~/.cupsrc file, and finally the
+/etc/cups/client.conf file. If not set, the default is
+HTTP_ENCRYPT_IF_REQUESTED.</description>
+  </function>
+  <function name="cupsFreeDests">
+    <description>Free the memory used by the list of destinations.</description>
+    <argument name="num_dests" direction="I">
+      <type>int</type>
+      <description>Number of destinations</description>
+    </argument>
+    <argument name="dests" direction="I">
+      <type>cups_dest_t *</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsFreeJobs">
+    <description>Free memory used by job data.</description>
+    <argument name="num_jobs" direction="I">
+      <type>int</type>
+      <description>Number of jobs</description>
+    </argument>
+    <argument name="jobs" direction="I">
+      <type>cups_job_t *</type>
+      <description>Jobs</description>
+    </argument>
+  </function>
+  <function name="cupsFreeOptions">
+    <description>Free all memory used by options.</description>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="I">
+      <type>cups_option_t *</type>
+      <description>Pointer to options</description>
+    </argument>
+  </function>
+  <function name="cupsGetClasses">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of classes</description>
+    </returnvalue>
+    <description>Get a list of printer classes from the default server.
+
+This function is deprecated - use cupsGetDests() instead.
+
+@deprecated@</description>
+    <argument name="classes" direction="O">
+      <type>char ***</type>
+      <description>Classes</description>
+    </argument>
+  </function>
+  <function name="cupsGetDefault">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Default printer or NULL</description>
+    </returnvalue>
+    <description>Get the default printer or class for the default server.
+
+This function returns the default printer or class as defined by
+the LPDEST or PRINTER environment variables. If these environment
+variables are not set, the server default destination is returned.
+Applications should use the cupsGetDests() and cupsGetDest() functions
+to get the user-defined default printer, as this function does not
+support the lpoptions-defined default printer.</description>
+  </function>
+  <function name="cupsGetDefault2">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Default printer or NULL</description>
+    </returnvalue>
+    <description>Get the default printer or class for the specified server.
+
+This function returns the default printer or class as defined by
+the LPDEST or PRINTER environment variables. If these environment
+variables are not set, the server default destination is returned.
+Applications should use the cupsGetDests() and cupsGetDest() functions
+to get the user-defined default printer, as this function does not
+support the lpoptions-defined default printer.
+
+@since CUPS 1.1.21@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection</description>
+    </argument>
+  </function>
+  <function name="cupsGetDest">
+    <returnvalue>
+      <type>cups_dest_t *</type>
+      <description>Destination pointer or NULL</description>
+    </returnvalue>
+    <description>Get the named destination from the list.
+
+Use the cupsGetDests() or cupsGetDests2() functions to get a
+list of supported destinations for the current user.</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Destination name or NULL for the default destination</description>
+    </argument>
+    <argument name="instance" direction="I">
+      <type>const char *</type>
+      <description>Instance name or NULL</description>
+    </argument>
+    <argument name="num_dests" direction="I">
+      <type>int</type>
+      <description>Number of destinations</description>
+    </argument>
+    <argument name="dests" direction="I">
+      <type>cups_dest_t *</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsGetDests">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of destinations</description>
+    </returnvalue>
+    <description>Get the list of destinations from the default server.
+
+Starting with CUPS 1.2, the returned list of destinations include the
+printer-info, printer-is-accepting-jobs, printer-is-shared,
+printer-make-and-model, printer-state, printer-state-change-time,
+printer-state-reasons, and printer-type attributes as options.
+
+Use the cupsFreeDests() function to free the destination list and
+the cupsGetDest() function to find a particular destination.</description>
+    <argument name="dests" direction="O">
+      <type>cups_dest_t **</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsGetDests2">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of destinations</description>
+    </returnvalue>
+    <description>Get the list of destinations from the specified server.
+
+Starting with CUPS 1.2, the returned list of destinations include the
+printer-info, printer-is-accepting-jobs, printer-is-shared,
+printer-make-and-model, printer-state, printer-state-change-time,
+printer-state-reasons, and printer-type attributes as options.
+
+Use the cupsFreeDests() function to free the destination list and
+the cupsGetDest() function to find a particular destination.
+
+@since CUPS 1.1.21@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection</description>
+    </argument>
+    <argument name="dests" direction="O">
+      <type>cups_dest_t **</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsGetFd">
+    <returnvalue>
+      <type>http_status_t</type>
+      <description>HTTP status</description>
+    </returnvalue>
+    <description>Get a file from the server.
+
+This function returns HTTP_OK when the file is successfully retrieved.
+
+@since CUPS 1.1.20@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection to server</description>
+    </argument>
+    <argument name="resource" direction="I">
+      <type>const char *</type>
+      <description>Resource name</description>
+    </argument>
+    <argument name="fd" direction="I">
+      <type>int</type>
+      <description>File descriptor</description>
+    </argument>
+  </function>
+  <function name="cupsGetFile">
+    <returnvalue>
+      <type>http_status_t</type>
+      <description>HTTP status</description>
+    </returnvalue>
+    <description>Get a file from the server.
+
+This function returns HTTP_OK when the file is successfully retrieved.
+
+@since CUPS 1.1.20@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection to server</description>
+    </argument>
+    <argument name="resource" direction="I">
+      <type>const char *</type>
+      <description>Resource name</description>
+    </argument>
+    <argument name="filename" direction="I">
+      <type>const char *</type>
+      <description>Filename</description>
+    </argument>
+  </function>
+  <function name="cupsGetJobs">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of jobs</description>
+    </returnvalue>
+    <description>Get the jobs from the default server.</description>
+    <argument name="jobs" direction="O">
+      <type>cups_job_t **</type>
+      <description>Job data</description>
+    </argument>
+    <argument name="mydest" direction="I">
+      <type>const char *</type>
+      <description>NULL = all destinations,       *
+otherwise show jobs for mydest</description>
+    </argument>
+    <argument name="myjobs" direction="I">
+      <type>int</type>
+      <description>0 = all users, 1 = mine</description>
+    </argument>
+    <argument name="completed" direction="I">
+      <type>int</type>
+      <description>-1 = show all, 0 = active, *
+1 = completed jobs</description>
+    </argument>
+  </function>
+  <function name="cupsGetJobs2">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of jobs</description>
+    </returnvalue>
+    <description>Get the jobs from the specified server.
+
+@since CUPS 1.1.21@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection</description>
+    </argument>
+    <argument name="jobs" direction="O">
+      <type>cups_job_t **</type>
+      <description>Job data</description>
+    </argument>
+    <argument name="mydest" direction="I">
+      <type>const char *</type>
+      <description>NULL = all destinations,       *
+otherwise show jobs for mydest</description>
+    </argument>
+    <argument name="myjobs" direction="I">
+      <type>int</type>
+      <description>0 = all users, 1 = mine</description>
+    </argument>
+    <argument name="completed" direction="I">
+      <type>int</type>
+      <description>-1 = show all, 0 = active, *
+1 = completed jobs</description>
+    </argument>
+  </function>
+  <function name="cupsGetOption">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Option value or NULL</description>
+    </returnvalue>
+    <description>Get an option value.</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Name of option</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="I">
+      <type>cups_option_t *</type>
+      <description>Options</description>
+    </argument>
+  </function>
+  <function name="cupsGetPPD">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Filename for PPD file</description>
+    </returnvalue>
+    <description>Get the PPD file for a printer on the default server.
+
+For classes, cupsGetPPD() returns the PPD file for the first printer
+in the class.</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Printer name</description>
+    </argument>
+  </function>
+  <function name="cupsGetPPD2">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Filename for PPD file</description>
+    </returnvalue>
+    <description>Get the PPD file for a printer from the specified server.
+
+For classes, cupsGetPPD2() returns the PPD file for the first printer
+in the class.
+
+@since CUPS 1.1.21@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Printer name</description>
+    </argument>
+  </function>
+  <function name="cupsGetPassword">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Password</description>
+    </returnvalue>
+    <description>Get a password from the user.
+
+Uses the current password callback function. Returns NULL if the
+user does not provide a password.</description>
+    <argument name="prompt" direction="I">
+      <type>const char *</type>
+      <description>Prompt string</description>
+    </argument>
+  </function>
+  <function name="cupsGetPrinters">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of printers</description>
+    </returnvalue>
+    <description>Get a list of printers from the default server.
+
+This function is deprecated - use cupsGetDests() instead.
+
+@deprecated@</description>
+    <argument name="printers" direction="O">
+      <type>char ***</type>
+      <description>Printers</description>
+    </argument>
+  </function>
+  <function name="cupsGetServerPPD">
+    <returnvalue>
+      <type>char *</type>
+      <description>Name of PPD file or NULL on error</description>
+    </returnvalue>
+    <description>Get an available PPD file from the server.
+
+This function returns the named PPD file from the server.  The
+list of available PPDs is provided by the IPP CUPS_GET_PPDS
+operation.
+
+You must remove (unlink) the PPD file when you are finished with
+it. The PPD filename is stored in a static location that will be
+overwritten on the next call to cupsGetPPD(), cupsGetPPD2(), or
+cupsGetServerPPD().
+
+@since CUPS 1.3@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Name of PPD file (&quot;ppd-name&quot;)</description>
+    </argument>
+  </function>
+  <function name="cupsLangDefault">
+    <returnvalue>
+      <type>cups_lang_t *</type>
+      <description>Language data</description>
+    </returnvalue>
+    <description>Return the default language.</description>
+  </function>
+  <function name="cupsLangEncoding">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Character encoding</description>
+    </returnvalue>
+    <description>Return the character encoding (us-ascii, etc.)
+for the given language.</description>
+    <argument name="lang" direction="I">
+      <type>cups_lang_t *</type>
+      <description>Language data</description>
+    </argument>
+  </function>
+  <function name="cupsLangFlush">
+    <description>Flush all language data out of the cache.</description>
+  </function>
+  <function name="cupsLangFree">
+    <description>Free language data.
+
+This does not actually free anything; use cupsLangFlush() for that.</description>
+    <argument name="lang" direction="I">
+      <type>cups_lang_t *</type>
+      <description>Language to free</description>
+    </argument>
+  </function>
+  <function name="cupsLangGet">
+    <returnvalue>
+      <type>cups_lang_t *</type>
+      <description>Language data</description>
+    </returnvalue>
+    <description>Get a language.</description>
+    <argument name="language" direction="I">
+      <type>const char *</type>
+      <description>Language or locale</description>
+    </argument>
+  </function>
+  <function name="cupsLastError">
+    <returnvalue>
+      <type>ipp_status_t</type>
+      <description>IPP status code from last request</description>
+    </returnvalue>
+    <description>Return the last IPP status code.</description>
+  </function>
+  <function name="cupsLastErrorString">
+    <returnvalue>
+      <type>const char *</type>
+      <description>status-message text from last request</description>
+    </returnvalue>
+    <description>Return the last IPP status-message.
+
+@since CUPS 1.2@</description>
+  </function>
+  <function name="cupsMarkOptions">
+    <returnvalue>
+      <type>int</type>
+      <description>1 if conflicting</description>
+    </returnvalue>
+    <description>Mark command-line options in a PPD file.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="I">
+      <type>cups_option_t *</type>
+      <description>Options</description>
+    </argument>
+  </function>
+  <function name="cupsNotifySubject">
+    <returnvalue>
+      <type>char *</type>
+      <description>Subject string or NULL</description>
+    </returnvalue>
+    <description>Return the subject for the given notification message.
+
+The returned string must be freed by the caller using free().
+
+@since CUPS 1.2@</description>
+    <argument name="lang" direction="I">
+      <type>cups_lang_t *</type>
+      <description>Language data</description>
+    </argument>
+    <argument name="event" direction="I">
+      <type>ipp_t *</type>
+      <description>Event data</description>
+    </argument>
+  </function>
+  <function name="cupsNotifyText">
+    <returnvalue>
+      <type>char *</type>
+      <description>Message text or NULL</description>
+    </returnvalue>
+    <description>Return the text for the given notification message.
+
+The returned string must be freed by the caller using free().
+
+@since CUPS 1.2@</description>
+    <argument name="lang" direction="I">
+      <type>cups_lang_t *</type>
+      <description>Language data</description>
+    </argument>
+    <argument name="event" direction="I">
+      <type>ipp_t *</type>
+      <description>Event data</description>
+    </argument>
+  </function>
+  <function name="cupsParseOptions">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of options found</description>
+    </returnvalue>
+    <description>Parse options from a command-line argument.
+
+This function converts space-delimited name/value pairs according
+to the PAPI text option ABNF specification. Collection values
+(&quot;name={a=... b=... c=...}&quot;) are stored with the curley brackets
+intact - use cupsParseOptions() on the value to extract the collection
+attributes.</description>
+    <argument name="arg" direction="I">
+      <type>const char *</type>
+      <description>Argument to parse</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="O">
+      <type>cups_option_t **</type>
+      <description>Options found</description>
+    </argument>
+  </function>
+  <function name="cupsPrintFile">
+    <returnvalue>
+      <type>int</type>
+      <description>Job ID</description>
+    </returnvalue>
+    <description>Print a file to a printer or class on the default server.</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Printer or class name</description>
+    </argument>
+    <argument name="filename" direction="I">
+      <type>const char *</type>
+      <description>File to print</description>
+    </argument>
+    <argument name="title" direction="I">
+      <type>const char *</type>
+      <description>Title of job</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="I">
+      <type>cups_option_t *</type>
+      <description>Options</description>
+    </argument>
+  </function>
+  <function name="cupsPrintFile2">
+    <returnvalue>
+      <type>int</type>
+      <description>Job ID</description>
+    </returnvalue>
+    <description>Print a file to a printer or class on the specified server.
+
+@since CUPS 1.1.21@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Printer or class name</description>
+    </argument>
+    <argument name="filename" direction="I">
+      <type>const char *</type>
+      <description>File to print</description>
+    </argument>
+    <argument name="title" direction="I">
+      <type>const char *</type>
+      <description>Title of job</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="I">
+      <type>cups_option_t *</type>
+      <description>Options</description>
+    </argument>
+  </function>
+  <function name="cupsPrintFiles">
+    <returnvalue>
+      <type>int</type>
+      <description>Job ID</description>
+    </returnvalue>
+    <description>Print one or more files to a printer or class on the
+default server.</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Printer or class name</description>
+    </argument>
+    <argument name="num_files" direction="I">
+      <type>int</type>
+      <description>Number of files</description>
+    </argument>
+    <argument name="files" direction="I">
+      <type>const char **</type>
+      <description>File(s) to print</description>
+    </argument>
+    <argument name="title" direction="I">
+      <type>const char *</type>
+      <description>Title of job</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="I">
+      <type>cups_option_t *</type>
+      <description>Options</description>
+    </argument>
+  </function>
+  <function name="cupsPrintFiles2">
+    <returnvalue>
+      <type>int</type>
+      <description>Job ID</description>
+    </returnvalue>
+    <description>Print one or more files to a printer or class on the
+specified server.
+
+@since CUPS 1.1.21@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Printer or class name</description>
+    </argument>
+    <argument name="num_files" direction="I">
+      <type>int</type>
+      <description>Number of files</description>
+    </argument>
+    <argument name="files" direction="I">
+      <type>const char **</type>
+      <description>File(s) to print</description>
+    </argument>
+    <argument name="title" direction="I">
+      <type>const char *</type>
+      <description>Title of job</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="I">
+      <type>cups_option_t *</type>
+      <description>Options</description>
+    </argument>
+  </function>
+  <function name="cupsPutFd">
+    <returnvalue>
+      <type>http_status_t</type>
+      <description>HTTP status</description>
+    </returnvalue>
+    <description>Put a file on the server.
+
+This function returns HTTP_CREATED when the file is stored successfully.
+
+@since CUPS 1.1.20@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection to server</description>
+    </argument>
+    <argument name="resource" direction="I">
+      <type>const char *</type>
+      <description>Resource name</description>
+    </argument>
+    <argument name="fd" direction="I">
+      <type>int</type>
+      <description>File descriptor</description>
+    </argument>
+  </function>
+  <function name="cupsPutFile">
+    <returnvalue>
+      <type>http_status_t</type>
+      <description>HTTP status</description>
+    </returnvalue>
+    <description>Put a file on the server.
+
+This function returns HTTP_CREATED when the file is stored successfully.
+
+@since CUPS 1.1.20@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection to server</description>
+    </argument>
+    <argument name="resource" direction="I">
+      <type>const char *</type>
+      <description>Resource name</description>
+    </argument>
+    <argument name="filename" direction="I">
+      <type>const char *</type>
+      <description>Filename</description>
+    </argument>
+  </function>
+  <function name="cupsRemoveDest">
+    <returnvalue>
+      <type>int</type>
+      <description>New number of destinations</description>
+    </returnvalue>
+    <description>Remove a destination from the destination list.
+
+Removing a destination/instance does not delete the class or printer
+queue, merely the lpoptions for that destination/instance.  Use the
+cupsSetDests() or cupsSetDests2() functions to save the new options
+for the user.
+
+@since CUPS 1.3@</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Destination name</description>
+    </argument>
+    <argument name="instance" direction="I">
+      <type>const char *</type>
+      <description>Instance name or NULL</description>
+    </argument>
+    <argument name="num_dests" direction="I">
+      <type>int</type>
+      <description>Number of destinations</description>
+    </argument>
+    <argument name="dests" direction="IO">
+      <type>cups_dest_t **</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsRemoveOption">
+    <returnvalue>
+      <type>int</type>
+      <description>New number of options</description>
+    </returnvalue>
+    <description>Remove an option from an option array.
+
+@since CUPS 1.2@</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Option name</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Current number of options</description>
+    </argument>
+    <argument name="options" direction="IO">
+      <type>cups_option_t **</type>
+      <description>Options</description>
+    </argument>
+  </function>
+  <function name="cupsServer">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Server name</description>
+    </returnvalue>
+    <description>Return the hostname/address of the default server.
+
+The returned value can be a fully-qualified hostname, a numeric
+IPv4 or IPv6 address, or a domain socket pathname.</description>
+  </function>
+  <function name="cupsSetDefaultDest">
+    <description>Set the default destination.
+
+@since CUPS 1.3@</description>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Destination name</description>
+    </argument>
+    <argument name="instance" direction="I">
+      <type>const char *</type>
+      <description>Instance name or NULL</description>
+    </argument>
+    <argument name="num_dests" direction="I">
+      <type>int</type>
+      <description>Number of destinations</description>
+    </argument>
+    <argument name="dests" direction="I">
+      <type>cups_dest_t *</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsSetDests">
+    <description>Save the list of destinations for the default server.
+
+This function saves the destinations to /etc/cups/lpoptions when run
+as root and ~/.cups/lpoptions when run as a normal user.</description>
+    <argument name="num_dests" direction="I">
+      <type>int</type>
+      <description>Number of destinations</description>
+    </argument>
+    <argument name="dests" direction="I">
+      <type>cups_dest_t *</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsSetDests2">
+    <returnvalue>
+      <type>int</type>
+      <description>0 on success, -1 on error</description>
+    </returnvalue>
+    <description>Save the list of destinations for the specified server.
+
+This function saves the destinations to /etc/cups/lpoptions when run
+as root and ~/.cups/lpoptions when run as a normal user.
+
+@since CUPS 1.1.21@</description>
+    <argument name="http" direction="I">
+      <type>http_t *</type>
+      <description>HTTP connection</description>
+    </argument>
+    <argument name="num_dests" direction="I">
+      <type>int</type>
+      <description>Number of destinations</description>
+    </argument>
+    <argument name="dests" direction="I">
+      <type>cups_dest_t *</type>
+      <description>Destinations</description>
+    </argument>
+  </function>
+  <function name="cupsSetEncryption">
+    <description>Set the encryption preference.</description>
+    <argument name="e" direction="I">
+      <type>http_encryption_t</type>
+      <description>New encryption preference</description>
+    </argument>
+  </function>
+  <function name="cupsSetPasswordCB">
+    <description>Set the password callback for CUPS.
+
+Pass NULL to restore the default (console) password callback.</description>
+    <argument name="cb" direction="I">
+      <type>cups_password_cb_t</type>
+      <description>Callback function</description>
+    </argument>
+  </function>
+  <function name="cupsSetServer">
+    <description>Set the default server name.
+
+The &quot;server&quot; string can be a fully-qualified hostname, a numeric
+IPv4 or IPv6 address, or a domain socket pathname. Pass NULL to
+restore the default server name.</description>
+    <argument name="server" direction="I">
+      <type>const char *</type>
+      <description>Server name</description>
+    </argument>
+  </function>
+  <function name="cupsSetUser">
+    <description>Set the default user name.
+
+Pass NULL to restore the default user name.</description>
+    <argument name="user" direction="I">
+      <type>const char *</type>
+      <description>User name</description>
+    </argument>
+  </function>
+  <function name="cupsTempFd">
+    <returnvalue>
+      <type>int</type>
+      <description>New file descriptor or -1 on error</description>
+    </returnvalue>
+    <description>Creates a temporary file.
+
+The temporary filename is returned in the filename buffer.
+The temporary file is opened for reading and writing.</description>
+    <argument name="filename" direction="I">
+      <type>char *</type>
+      <description>Pointer to buffer</description>
+    </argument>
+    <argument name="len" direction="I">
+      <type>int</type>
+      <description>Size of buffer</description>
+    </argument>
+  </function>
+  <function name="cupsTempFile">
+    <returnvalue>
+      <type>char *</type>
+      <description>Filename or NULL on error</description>
+    </returnvalue>
+    <description>Generates a temporary filename.
+
+The temporary filename is returned in the filename buffer.
+This function is deprecated - use cupsTempFd() or cupsTempFile2()
+instead.
+
+@deprecated@</description>
+    <argument name="filename" direction="I">
+      <type>char *</type>
+      <description>Pointer to buffer</description>
+    </argument>
+    <argument name="len" direction="I">
+      <type>int</type>
+      <description>Size of buffer</description>
+    </argument>
+  </function>
+  <function name="cupsTempFile2">
+    <returnvalue>
+      <type>cups_file_t *</type>
+      <description>CUPS file or NULL on error</description>
+    </returnvalue>
+    <description>Creates a temporary CUPS file.
+
+The temporary filename is returned in the filename buffer.
+The temporary file is opened for writing.
+
+@since CUPS 1.2@</description>
+    <argument name="filename" direction="I">
+      <type>char *</type>
+      <description>Pointer to buffer</description>
+    </argument>
+    <argument name="len" direction="I">
+      <type>int</type>
+      <description>Size of buffer</description>
+    </argument>
+  </function>
+  <function name="cupsUser">
+    <returnvalue>
+      <type>const char *</type>
+      <description>User name</description>
+    </returnvalue>
+    <description>Return the current user's name.</description>
+  </function>
+  <struct name="cups_dest_s">
+    <description>Destination</description>
+    <variable name="instance">
+      <type>char *name, *</type>
+      <description>Local instance name or NULL</description>
+    </variable>
+    <variable name="is_default">
+      <type>int</type>
+      <description>Is this printer the default?</description>
+    </variable>
+    <variable name="num_options">
+      <type>int</type>
+      <description>Number of options</description>
+    </variable>
+    <variable name="options">
+      <type>cups_option_t *</type>
+      <description>Options</description>
+    </variable>
+  </struct>
+  <typedef name="cups_dest_t">
+    <type>struct cups_dest_s</type>
+    <description>Destination</description>
+  </typedef>
+  <struct name="cups_job_s">
+    <description>Job</description>
+    <variable name="completed_time">
+      <type>time_t</type>
+      <description>Time the job was completed</description>
+    </variable>
+    <variable name="creation_time">
+      <type>time_t</type>
+      <description>Time the job was created</description>
+    </variable>
+    <variable name="dest">
+      <type>char *</type>
+      <description>Printer or class name</description>
+    </variable>
+    <variable name="format">
+      <type>char *</type>
+      <description>Document format</description>
+    </variable>
+    <variable name="id">
+      <type>int</type>
+      <description>The job ID</description>
+    </variable>
+    <variable name="priority">
+      <type>int</type>
+      <description>Priority (1-100)</description>
+    </variable>
+    <variable name="processing_time">
+      <type>time_t</type>
+      <description>Time the job was processed</description>
+    </variable>
+    <variable name="size">
+      <type>int</type>
+      <description>Size in kilobytes</description>
+    </variable>
+    <variable name="state">
+      <type>ipp_jstate_t</type>
+      <description>Job state</description>
+    </variable>
+    <variable name="title">
+      <type>char *</type>
+      <description>Title/job name</description>
+    </variable>
+    <variable name="user">
+      <type>char *</type>
+      <description>User the submitted the job</description>
+    </variable>
+  </struct>
+  <typedef name="cups_job_t">
+    <type>struct cups_job_s</type>
+    <description>Job</description>
+  </typedef>
+  <struct name="cups_option_s">
+    <description>Printer Options</description>
+    <variable name="name">
+      <type>char *</type>
+      <description>Name of option</description>
+    </variable>
+    <variable name="value">
+      <type>char *</type>
+      <description>Value of option</description>
+    </variable>
+  </struct>
+  <typedef name="cups_option_t">
+    <type>struct cups_option_s</type>
+    <description>Printer Options</description>
+  </typedef>
+  <typedef name="cups_password_cb_t">
+    <type>const char *(*)(const char *)</type>
+    <description>Password callback</description>
+  </typedef>
+  <enumeration name="cups_ptype_e">
+    <description>Not a typedef'd enum so we can OR</description>
+    <constant name="CUPS_PRINTER_AUTHENTICATED">
+      <description>Printer requires authentication @since CUPS 1.2@</description>
+    </constant>
+    <constant name="CUPS_PRINTER_BIND">
+      <description>Can bind output</description>
+    </constant>
+    <constant name="CUPS_PRINTER_BW">
+      <description>Can do B&amp;W printing</description>
+    </constant>
+    <constant name="CUPS_PRINTER_CLASS">
+      <description>Printer class</description>
+    </constant>
+    <constant name="CUPS_PRINTER_COLLATE">
+      <description>Can collage copies</description>
+    </constant>
+    <constant name="CUPS_PRINTER_COLOR">
+      <description>Can do color printing</description>
+    </constant>
+    <constant name="CUPS_PRINTER_COMMANDS">
+      <description>Printer supports maintenance commands @since CUPS 1.2@</description>
+    </constant>
+    <constant name="CUPS_PRINTER_COPIES">
+      <description>Can do copies</description>
+    </constant>
+    <constant name="CUPS_PRINTER_COVER">
+      <description>Can cover output</description>
+    </constant>
+    <constant name="CUPS_PRINTER_DEFAULT">
+      <description>Default printer on network</description>
+    </constant>
+    <constant name="CUPS_PRINTER_DELETE">
+      <description>Delete printer @since CUPS 1.2@</description>
+    </constant>
+    <constant name="CUPS_PRINTER_DISCOVERED">
+      <description>Printer was automatically discovered and added @since CUPS 1.3@</description>
+    </constant>
+    <constant name="CUPS_PRINTER_DUPLEX">
+      <description>Can do duplexing</description>
+    </constant>
+    <constant name="CUPS_PRINTER_FAX">
+      <description>Fax queue</description>
+    </constant>
+    <constant name="CUPS_PRINTER_IMPLICIT">
+      <description>Implicit class</description>
+    </constant>
+    <constant name="CUPS_PRINTER_LARGE">
+      <description>Can do D/E/A1/A0</description>
+    </constant>
+    <constant name="CUPS_PRINTER_LOCAL">
+      <description>Local printer or class</description>
+    </constant>
+    <constant name="CUPS_PRINTER_MEDIUM">
+      <description>Can do Tabloid/B/C/A3/A2</description>
+    </constant>
+    <constant name="CUPS_PRINTER_NOT_SHARED">
+      <description>Printer is not shared @since CUPS 1.2@</description>
+    </constant>
+    <constant name="CUPS_PRINTER_OPTIONS">
+      <description>~(CLASS | REMOTE | IMPLICIT | DEFAULT | FAX | REJECTING | DELETE | NOT_SHARED | AUTHENTICATED | COMMANDS | DISCOVERED)</description>
+    </constant>
+    <constant name="CUPS_PRINTER_PUNCH">
+      <description>Can punch output</description>
+    </constant>
+    <constant name="CUPS_PRINTER_REJECTING">
+      <description>Printer is rejecting jobs</description>
+    </constant>
+    <constant name="CUPS_PRINTER_REMOTE">
+      <description>Remote printer or class</description>
+    </constant>
+    <constant name="CUPS_PRINTER_SMALL">
+      <description>Can do Letter/Legal/A4</description>
+    </constant>
+    <constant name="CUPS_PRINTER_SORT">
+      <description>Can sort output</description>
+    </constant>
+    <constant name="CUPS_PRINTER_STAPLE">
+      <description>Can staple output</description>
+    </constant>
+    <constant name="CUPS_PRINTER_VARIABLE">
+      <description>Can do variable sizes</description>
+    </constant>
+  </enumeration>
+  <typedef name="cups_ptype_t">
+    <type>unsigned</type>
+    <description>Printer Type/Capability Bits</description>
+  </typedef>
+  <function name="ppdClose">
+    <description>Free all memory used by the PPD file.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+  </function>
+  <function name="ppdCollect">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of options marked</description>
+    </returnvalue>
+    <description>Collect all marked options that reside in the specified
+section.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file data</description>
+    </argument>
+    <argument name="section" direction="I">
+      <type>ppd_section_t</type>
+      <description>Section to collect</description>
+    </argument>
+    <argument name="choices" direction="O">
+      <type>ppd_choice_t ***</type>
+      <description>Pointers to choices</description>
+    </argument>
+  </function>
+  <function name="ppdCollect2">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of options marked</description>
+    </returnvalue>
+    <description>Collect all marked options that reside in the
+specified section and minimum order.
+
+@since CUPS 1.2@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file data</description>
+    </argument>
+    <argument name="section" direction="I">
+      <type>ppd_section_t</type>
+      <description>Section to collect</description>
+    </argument>
+    <argument name="min_order" direction="I">
+      <type>float</type>
+      <description>Minimum OrderDependency value</description>
+    </argument>
+    <argument name="choices" direction="O">
+      <type>ppd_choice_t ***</type>
+      <description>Pointers to choices</description>
+    </argument>
+  </function>
+  <function name="ppdConflicts">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of conflicts found</description>
+    </returnvalue>
+    <description>Check to see if there are any conflicts.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD to check</description>
+    </argument>
+  </function>
+  <function name="ppdEmit">
+    <returnvalue>
+      <type>int</type>
+      <description>0 on success, -1 on failure</description>
+    </returnvalue>
+    <description>Emit code for marked options to a file.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="fp" direction="I">
+      <type>FILE *</type>
+      <description>File to write to</description>
+    </argument>
+    <argument name="section" direction="I">
+      <type>ppd_section_t</type>
+      <description>Section to write</description>
+    </argument>
+  </function>
+  <function name="ppdEmitAfterOrder">
+    <returnvalue>
+      <type>int</type>
+      <description>0 on success, -1 on failure</description>
+    </returnvalue>
+    <description>Emit a subset of the code for marked options to a file.
+
+When &quot;limit&quot; is non-zero, this function only emits options whose
+OrderDependency value is greater than or equal to &quot;min_order&quot;.
+
+When &quot;limit&quot; is zero, this function is identical to ppdEmit().
+
+@since CUPS 1.2@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="fp" direction="I">
+      <type>FILE *</type>
+      <description>File to write to</description>
+    </argument>
+    <argument name="section" direction="I">
+      <type>ppd_section_t</type>
+      <description>Section to write</description>
+    </argument>
+    <argument name="limit" direction="I">
+      <type>int</type>
+      <description>Non-zero to use min_order</description>
+    </argument>
+    <argument name="min_order" direction="I">
+      <type>float</type>
+      <description>Lowest OrderDependency</description>
+    </argument>
+  </function>
+  <function name="ppdEmitFd">
+    <returnvalue>
+      <type>int</type>
+      <description>0 on success, -1 on failure</description>
+    </returnvalue>
+    <description>Emit code for marked options to a file.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="fd" direction="I">
+      <type>int</type>
+      <description>File to write to</description>
+    </argument>
+    <argument name="section" direction="I">
+      <type>ppd_section_t</type>
+      <description>Section to write</description>
+    </argument>
+  </function>
+  <function name="ppdEmitJCL">
+    <returnvalue>
+      <type>int</type>
+      <description>0 on success, -1 on failure</description>
+    </returnvalue>
+    <description>Emit code for JCL options to a file.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="fp" direction="I">
+      <type>FILE *</type>
+      <description>File to write to</description>
+    </argument>
+    <argument name="job_id" direction="I">
+      <type>int</type>
+      <description>Job ID</description>
+    </argument>
+    <argument name="user" direction="I">
+      <type>const char *</type>
+      <description>Username</description>
+    </argument>
+    <argument name="title" direction="I">
+      <type>const char *</type>
+      <description>Title</description>
+    </argument>
+  </function>
+  <function name="ppdEmitJCLEnd">
+    <returnvalue>
+      <type>int</type>
+      <description>0 on success, -1 on failure</description>
+    </returnvalue>
+    <description>Emit JCLEnd code to a file.
+
+@since CUPS 1.2@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="fp" direction="I">
+      <type>FILE *</type>
+      <description>File to write to</description>
+    </argument>
+  </function>
+  <function name="ppdEmitString">
+    <returnvalue>
+      <type>char *</type>
+      <description>String containing option code</description>
+    </returnvalue>
+    <description>Get a string containing the code for marked options.
+
+When &quot;min_order&quot; is greater than zero, this function only includes options
+whose OrderDependency value is greater than or equal to &quot;min_order&quot;.
+Otherwise, all options in the specified section are included in the
+returned string.
+
+The return string is allocated on the heap and should be freed using
+free() when you are done with it.
+
+@since CUPS 1.2@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="section" direction="I">
+      <type>ppd_section_t</type>
+      <description>Section to write</description>
+    </argument>
+    <argument name="min_order" direction="I">
+      <type>float</type>
+      <description>Lowest OrderDependency</description>
+    </argument>
+  </function>
+  <function name="ppdErrorString">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Status string</description>
+    </returnvalue>
+    <description>Returns the text assocated with a status.
+
+@since CUPS 1.1.19@</description>
+    <argument name="status" direction="I">
+      <type>ppd_status_t</type>
+      <description>PPD status</description>
+    </argument>
+  </function>
+  <function name="ppdFindAttr">
+    <returnvalue>
+      <type>ppd_attr_t *</type>
+      <description>Attribute or NULL if not found</description>
+    </returnvalue>
+    <description>Find the first matching attribute...
+
+@since CUPS 1.1.19@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file data</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Attribute name</description>
+    </argument>
+    <argument name="spec" direction="I">
+      <type>const char *</type>
+      <description>Specifier string or NULL</description>
+    </argument>
+  </function>
+  <function name="ppdFindChoice">
+    <returnvalue>
+      <type>ppd_choice_t *</type>
+      <description>Choice pointer or NULL</description>
+    </returnvalue>
+    <description>Return a pointer to an option choice.</description>
+    <argument name="o" direction="I">
+      <type>ppd_option_t *</type>
+      <description>Pointer to option</description>
+    </argument>
+    <argument name="choice" direction="I">
+      <type>const char *</type>
+      <description>Name of choice</description>
+    </argument>
+  </function>
+  <function name="ppdFindCustomOption">
+    <returnvalue>
+      <type>ppd_coption_t *</type>
+      <description>Custom option or NULL</description>
+    </returnvalue>
+    <description>Find a custom option.
+
+@since CUPS 1.2@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+    <argument name="keyword" direction="I">
+      <type>const char *</type>
+      <description>Custom option name</description>
+    </argument>
+  </function>
+  <function name="ppdFindCustomParam">
+    <returnvalue>
+      <type>ppd_cparam_t *</type>
+      <description>Custom parameter or NULL</description>
+    </returnvalue>
+    <description>Find a parameter for a custom option.
+
+@since CUPS 1.2@</description>
+    <argument name="opt" direction="I">
+      <type>ppd_coption_t *</type>
+      <description>Custom option</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Parameter name</description>
+    </argument>
+  </function>
+  <function name="ppdFindMarkedChoice">
+    <returnvalue>
+      <type>ppd_choice_t *</type>
+      <description>Pointer to choice or NULL</description>
+    </returnvalue>
+    <description>Return the marked choice for the specified option.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+    <argument name="option" direction="I">
+      <type>const char *</type>
+      <description>Keyword/option name</description>
+    </argument>
+  </function>
+  <function name="ppdFindNextAttr">
+    <returnvalue>
+      <type>ppd_attr_t *</type>
+      <description>Attribute or NULL if not found</description>
+    </returnvalue>
+    <description>Find the next matching attribute...
+
+@since CUPS 1.1.19@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file data</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Attribute name</description>
+    </argument>
+    <argument name="spec" direction="I">
+      <type>const char *</type>
+      <description>Specifier string or NULL</description>
+    </argument>
+  </function>
+  <function name="ppdFindOption">
+    <returnvalue>
+      <type>ppd_option_t *</type>
+      <description>Pointer to option or NULL</description>
+    </returnvalue>
+    <description>Return a pointer to the specified option.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file data</description>
+    </argument>
+    <argument name="option" direction="I">
+      <type>const char *</type>
+      <description>Option/Keyword name</description>
+    </argument>
+  </function>
+  <function name="ppdFirstCustomParam">
+    <returnvalue>
+      <type>ppd_cparam_t *</type>
+      <description>Custom parameter or NULL</description>
+    </returnvalue>
+    <description>Return the first parameter for a custom option.
+
+@since CUPS 1.2@</description>
+    <argument name="opt" direction="I">
+      <type>ppd_coption_t *</type>
+      <description>Custom option</description>
+    </argument>
+  </function>
+  <function name="ppdFirstOption">
+    <returnvalue>
+      <type>ppd_option_t *</type>
+      <description>First option or NULL</description>
+    </returnvalue>
+    <description>Return the first option in the PPD file.
+
+Options are returned from all groups in sorted order.
+
+@since CUPS 1.2@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+  </function>
+  <function name="ppdIsMarked">
+    <returnvalue>
+      <type>int</type>
+      <description>Non-zero if option is marked</description>
+    </returnvalue>
+    <description>Check to see if an option is marked...</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file data</description>
+    </argument>
+    <argument name="option" direction="I">
+      <type>const char *</type>
+      <description>Option/Keyword name</description>
+    </argument>
+    <argument name="choice" direction="I">
+      <type>const char *</type>
+      <description>Choice name</description>
+    </argument>
+  </function>
+  <function name="ppdLastError">
+    <returnvalue>
+      <type>ppd_status_t</type>
+      <description>Status code</description>
+    </returnvalue>
+    <description>Return the status from the last ppdOpen*().
+
+@since CUPS 1.1.19@</description>
+    <argument name="line" direction="O">
+      <type>int *</type>
+      <description>Line number</description>
+    </argument>
+  </function>
+  <function name="ppdLocalize">
+    <returnvalue>
+      <type>int</type>
+      <description>0 on success, -1 on error</description>
+    </returnvalue>
+    <description>Localize the PPD file to the current locale.
+
+All groups, options, and choices are localized, as are ICC profile
+descriptions, printer presets, and custom option parameters.  Each
+localized string uses the UTF-8 character encoding.
+
+@since CUPS 1.2@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+  </function>
+  <function name="ppdLocalizeIPPReason">
+    <returnvalue>
+      <type>const char *</type>
+      <description>Value or NULL if not found</description>
+    </returnvalue>
+    <description>Get the localized version of a cupsIPPReason
+attribute.
+
+This function uses the current locale to find the corresponding reason
+text or URI from the attribute value. If &quot;scheme&quot; is NULL or &quot;text&quot;,
+the returned value contains human-readable (UTF-8) text from the translation
+string or attribute value. Otherwise the corresponding URI is returned.
+
+If no value of the requested scheme can be found, NULL is returned.
+
+@since CUPS 1.3@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+    <argument name="reason" direction="I">
+      <type>const char *</type>
+      <description>IPP reason keyword to look up</description>
+    </argument>
+    <argument name="scheme" direction="I">
+      <type>const char *</type>
+      <description>URI scheme or NULL for text</description>
+    </argument>
+    <argument name="buffer" direction="I">
+      <type>char *</type>
+      <description>Value buffer</description>
+    </argument>
+    <argument name="bufsize" direction="I">
+      <type>size_t</type>
+      <description>Size of value buffer</description>
+    </argument>
+  </function>
+  <function name="ppdMarkDefaults">
+    <description>Mark all default options in the PPD file.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+  </function>
+  <function name="ppdMarkOption">
+    <returnvalue>
+      <type>int</type>
+      <description>Number of conflicts</description>
+    </returnvalue>
+    <description>Mark an option in a PPD file.
+
+Notes:
+
+-1 is returned if the given option would conflict with any currently
+selected option.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="option" direction="I">
+      <type>const char *</type>
+      <description>Keyword</description>
+    </argument>
+    <argument name="choice" direction="I">
+      <type>const char *</type>
+      <description>Option name</description>
+    </argument>
+  </function>
+  <function name="ppdNextCustomParam">
+    <returnvalue>
+      <type>ppd_cparam_t *</type>
+      <description>Custom parameter or NULL</description>
+    </returnvalue>
+    <description>Return the next parameter for a custom option.
+
+@since CUPS 1.2@</description>
+    <argument name="opt" direction="I">
+      <type>ppd_coption_t *</type>
+      <description>Custom option</description>
+    </argument>
+  </function>
+  <function name="ppdNextOption">
+    <returnvalue>
+      <type>ppd_option_t *</type>
+      <description>Next option or NULL</description>
+    </returnvalue>
+    <description>Return the next option in the PPD file.
+
+Options are returned from all groups in sorted order.
+
+@since CUPS 1.2@</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+  </function>
+  <function name="ppdOpen">
+    <returnvalue>
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </returnvalue>
+    <description>Read a PPD file into memory.</description>
+    <argument name="fp" direction="I">
+      <type>FILE *</type>
+      <description>File to read from</description>
+    </argument>
+  </function>
+  <function name="ppdOpen2">
+    <returnvalue>
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </returnvalue>
+    <description>Read a PPD file into memory.
+
+@since CUPS 1.2@</description>
+    <argument name="fp" direction="I">
+      <type>cups_file_t *</type>
+      <description>File to read from</description>
+    </argument>
+  </function>
+  <function name="ppdOpenFd">
+    <returnvalue>
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </returnvalue>
+    <description>Read a PPD file into memory.</description>
+    <argument name="fd" direction="I">
+      <type>int</type>
+      <description>File to read from</description>
+    </argument>
+  </function>
+  <function name="ppdOpenFile">
+    <returnvalue>
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </returnvalue>
+    <description>Read a PPD file into memory.</description>
+    <argument name="filename" direction="I">
+      <type>const char *</type>
+      <description>File to read from</description>
+    </argument>
+  </function>
+  <function name="ppdPageLength">
+    <returnvalue>
+      <type>float</type>
+      <description>Length of page in points or 0.0</description>
+    </returnvalue>
+    <description>Get the page length for the given size.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Size name</description>
+    </argument>
+  </function>
+  <function name="ppdPageSize">
+    <returnvalue>
+      <type>ppd_size_t *</type>
+      <description>Size record for page or NULL</description>
+    </returnvalue>
+    <description>Get the page size record for the given size.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Size name</description>
+    </argument>
+  </function>
+  <function name="ppdPageWidth">
+    <returnvalue>
+      <type>float</type>
+      <description>Width of page in points or 0.0</description>
+    </returnvalue>
+    <description>Get the page width for the given size.</description>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file record</description>
+    </argument>
+    <argument name="name" direction="I">
+      <type>const char *</type>
+      <description>Size name</description>
+    </argument>
+  </function>
+  <function name="ppdSetConformance">
+    <description>Set the conformance level for PPD files.
+
+@since CUPS 1.1.20@</description>
+    <argument name="c" direction="I">
+      <type>ppd_conform_t</type>
+      <description>Conformance level</description>
+    </argument>
+  </function>
+  <struct name="ppd_attr_s">
+    <description>PPD Attribute Structure @since CUPS 1.1.19@</description>
+    <variable name="name[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Name of attribute (cupsXYZ)</description>
+    </variable>
+    <variable name="spec[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Specifier string, if any</description>
+    </variable>
+    <variable name="text[PPD_MAX_TEXT]">
+      <type>char</type>
+      <description>Human-readable text, if any</description>
+    </variable>
+    <variable name="value">
+      <type>char *</type>
+      <description>Value string</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_attr_t">
+    <type>struct ppd_attr_s</type>
+    <description>PPD Attribute Structure @since CUPS 1.1.19@</description>
+  </typedef>
+  <struct name="ppd_choice_s">
+    <description>Option choices</description>
+    <variable name="choice[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Computer-readable option name</description>
+    </variable>
+    <variable name="code">
+      <type>char *</type>
+      <description>Code to send for this option</description>
+    </variable>
+    <variable name="marked">
+      <type>char</type>
+      <description>0 if not selected, 1 otherwise</description>
+    </variable>
+    <variable name="option">
+      <type>ppd_option_t *</type>
+      <description>Pointer to parent option structure</description>
+    </variable>
+    <variable name="text[PPD_MAX_TEXT]">
+      <type>char</type>
+      <description>Human-readable option name</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_choice_t">
+    <type>struct ppd_choice_s</type>
+    <description>Option choices</description>
+  </typedef>
+  <enumeration name="ppd_conform_e">
+    <description />    <constant name="PPD_CONFORM_RELAXED">
+      <description>Relax whitespace and control char</description>
+    </constant>
+    <constant name="PPD_CONFORM_STRICT">
+      <description>Require strict conformance</description>
+    </constant>
+  </enumeration>
+  <typedef name="ppd_conform_t">
+    <type>enum ppd_conform_e</type>
+  </typedef>
+  <typedef name="ppd_const_t">
+    <type>struct</type>
+    <description>Constraints</description>
+  </typedef>
+  <struct name="ppd_coption_s">
+    <description>Custom Option @since CUPS 1.2@</description>
+    <variable name="keyword[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Name of option that is being extended...</description>
+    </variable>
+    <variable name="marked">
+      <type>int</type>
+      <description>Extended option is marked</description>
+    </variable>
+    <variable name="option">
+      <type>ppd_option_t *</type>
+      <description>Option that is being extended...</description>
+    </variable>
+    <variable name="params">
+      <type>cups_array_t *</type>
+      <description>Parameters</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_coption_t">
+    <type>struct ppd_coption_s</type>
+    <description>Custom Option @since CUPS 1.2@</description>
+  </typedef>
+  <struct name="ppd_cparam_s">
+    <description>Custom Parameter @since CUPS 1.2@</description>
+    <variable name="current">
+      <type>ppd_cpvalue_t</type>
+      <description>Current value</description>
+    </variable>
+    <variable name="maximum">
+      <type>ppd_cplimit_t minimum,</type>
+      <description>Maximum value</description>
+    </variable>
+    <variable name="name[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Parameter name</description>
+    </variable>
+    <variable name="order">
+      <type>int</type>
+      <description>Order (0 to N)</description>
+    </variable>
+    <variable name="text[PPD_MAX_TEXT]">
+      <type>char</type>
+      <description>Human-readable text</description>
+    </variable>
+    <variable name="type">
+      <type>ppd_cptype_t</type>
+      <description>Parameter type</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_cparam_t">
+    <type>struct ppd_cparam_s</type>
+    <description>Custom Parameter @since CUPS 1.2@</description>
+  </typedef>
+  <typedef name="ppd_cplimit_t">
+    <type>union ppd_cplimit_u</type>
+    <description>Custom Parameter Limit @since CUPS 1.2@</description>
+  </typedef>
+  <union name="ppd_cplimit_u">
+    <description>Custom Parameter Limit @since CUPS 1.2@</description>
+    <variable name="custom_curve">
+      <type>float</type>
+      <description>Gamma value</description>
+    </variable>
+    <variable name="custom_int">
+      <type>int</type>
+      <description>Integer value</description>
+    </variable>
+    <variable name="custom_invcurve">
+      <type>float</type>
+      <description>Gamma value</description>
+    </variable>
+    <variable name="custom_passcode">
+      <type>int</type>
+      <description>Passcode length</description>
+    </variable>
+    <variable name="custom_password">
+      <type>int</type>
+      <description>Password length</description>
+    </variable>
+    <variable name="custom_points">
+      <type>float</type>
+      <description>Measurement value</description>
+    </variable>
+    <variable name="custom_real">
+      <type>float</type>
+      <description>Real value</description>
+    </variable>
+    <variable name="custom_string">
+      <type>int</type>
+      <description>String length</description>
+    </variable>
+  </union>
+  <enumeration name="ppd_cptype_e">
+    <description>Custom Parameter Type @since CUPS 1.2@</description>
+    <constant name="PPD_CUSTOM_CURVE">
+      <description>Curve value for f(x) = x^value</description>
+    </constant>
+    <constant name="PPD_CUSTOM_INT">
+      <description>Integer number value</description>
+    </constant>
+    <constant name="PPD_CUSTOM_INVCURVE">
+      <description>Curve value for f(x) = x^(1/value)</description>
+    </constant>
+    <constant name="PPD_CUSTOM_PASSCODE">
+      <description>String of (hidden) numbers</description>
+    </constant>
+    <constant name="PPD_CUSTOM_PASSWORD">
+      <description>String of (hidden) characters</description>
+    </constant>
+    <constant name="PPD_CUSTOM_POINTS">
+      <description>Measurement value in points</description>
+    </constant>
+    <constant name="PPD_CUSTOM_REAL">
+      <description>Real number value</description>
+    </constant>
+    <constant name="PPD_CUSTOM_STRING">
+      <description>String of characters</description>
+    </constant>
+  </enumeration>
+  <typedef name="ppd_cptype_t">
+    <type>enum ppd_cptype_e</type>
+    <description>Custom Parameter Type @since CUPS 1.2@</description>
+  </typedef>
+  <typedef name="ppd_cpvalue_t">
+    <type>union ppd_cpvalue_u</type>
+    <description>Custom Parameter Value @since CUPS 1.2@</description>
+  </typedef>
+  <union name="ppd_cpvalue_u">
+    <description>Custom Parameter Value @since CUPS 1.2@</description>
+    <variable name="custom_curve">
+      <type>float</type>
+      <description>Gamma value</description>
+    </variable>
+    <variable name="custom_int">
+      <type>int</type>
+      <description>Integer value</description>
+    </variable>
+    <variable name="custom_invcurve">
+      <type>float</type>
+      <description>Gamma value</description>
+    </variable>
+    <variable name="custom_passcode">
+      <type>char *</type>
+      <description>Passcode value</description>
+    </variable>
+    <variable name="custom_password">
+      <type>char *</type>
+      <description>Password value</description>
+    </variable>
+    <variable name="custom_points">
+      <type>float</type>
+      <description>Measurement value</description>
+    </variable>
+    <variable name="custom_real">
+      <type>float</type>
+      <description>Real value</description>
+    </variable>
+    <variable name="custom_string">
+      <type>char *</type>
+      <description>String value</description>
+    </variable>
+  </union>
+  <enumeration name="ppd_cs_e">
+    <description>Colorspaces</description>
+    <constant name="PPD_CS_CMY">
+      <description>CMY colorspace</description>
+    </constant>
+    <constant name="PPD_CS_CMYK">
+      <description>CMYK colorspace</description>
+    </constant>
+    <constant name="PPD_CS_GRAY">
+      <description>Grayscale colorspace</description>
+    </constant>
+    <constant name="PPD_CS_N">
+      <description>DeviceN colorspace</description>
+    </constant>
+    <constant name="PPD_CS_RGB">
+      <description>RGB colorspace</description>
+    </constant>
+    <constant name="PPD_CS_RGBK">
+      <description>RGBK (K = gray) colorspace</description>
+    </constant>
+  </enumeration>
+  <struct name="ppd_emul_s">
+    <description>Emulators</description>
+    <variable name="name[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Emulator name</description>
+    </variable>
+    <variable name="start">
+      <type>char *</type>
+      <description>Code to switch to this emulation</description>
+    </variable>
+    <variable name="stop">
+      <type>char *</type>
+      <description>Code to stop this emulation</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_emul_t">
+    <type>struct ppd_emul_s</type>
+    <description>Emulators</description>
+  </typedef>
+  <struct name="ppd_file_s">
+    <description>PPD File</description>
+    <variable name="accurate_screens">
+      <type>int</type>
+      <description>1 = supports accurate screens, 0 = not</description>
+    </variable>
+    <variable name="attrs">
+      <type>ppd_attr_t **</type>
+      <description>Attributes @since CUPS 1.1.19@ @private@</description>
+    </variable>
+    <variable name="color_device">
+      <type>int</type>
+      <description>1 = color device, 0 = grayscale</description>
+    </variable>
+    <variable name="colorspace">
+      <type>ppd_cs_t</type>
+      <description>Default colorspace</description>
+    </variable>
+    <variable name="consts">
+      <type>ppd_const_t *</type>
+      <description>UI/Non-UI constraints</description>
+    </variable>
+    <variable name="contone_only">
+      <type>int</type>
+      <description>1 = continuous tone only, 0 = not</description>
+    </variable>
+    <variable name="coptions">
+      <type>cups_array_t *</type>
+      <description>Custom options array @since CUPS 1.2@ @private@</description>
+    </variable>
+    <variable name="cur_attr">
+      <type>int</type>
+      <description>Current attribute @since CUPS 1.1.19@ @private@</description>
+    </variable>
+    <variable name="custom_margins[4]">
+      <type>float</type>
+      <description>Margins around page</description>
+    </variable>
+    <variable name="custom_max[2]">
+      <type>float</type>
+      <description>Maximum variable page size</description>
+    </variable>
+    <variable name="custom_min[2]">
+      <type>float</type>
+      <description>Minimum variable page size</description>
+    </variable>
+    <variable name="emulations">
+      <type>ppd_emul_t *</type>
+      <description>Emulations and the code to invoke them</description>
+    </variable>
+    <variable name="filters">
+      <type>char **</type>
+      <description>Filter strings...</description>
+    </variable>
+    <variable name="flip_duplex">
+      <type>int</type>
+      <description>1 = Flip page for back sides @deprecated@</description>
+    </variable>
+    <variable name="fonts">
+      <type>char **</type>
+      <description>Pre-loaded fonts</description>
+    </variable>
+    <variable name="groups">
+      <type>ppd_group_t *</type>
+      <description>UI groups</description>
+    </variable>
+    <variable name="jcl_begin">
+      <type>char *</type>
+      <description>Start JCL commands</description>
+    </variable>
+    <variable name="jcl_end">
+      <type>char *</type>
+      <description>End JCL commands</description>
+    </variable>
+    <variable name="jcl_ps">
+      <type>char *</type>
+      <description>Enter PostScript interpreter</description>
+    </variable>
+    <variable name="landscape">
+      <type>int</type>
+      <description>-90 or 90</description>
+    </variable>
+    <variable name="lang_encoding">
+      <type>char *</type>
+      <description>Language encoding</description>
+    </variable>
+    <variable name="lang_version">
+      <type>char *</type>
+      <description>Language version (English, Spanish, etc.)</description>
+    </variable>
+    <variable name="language_level">
+      <type>int</type>
+      <description>Language level of device</description>
+    </variable>
+    <variable name="manual_copies">
+      <type>int</type>
+      <description>1 = Copies done manually, 0 = hardware</description>
+    </variable>
+    <variable name="manufacturer">
+      <type>char *</type>
+      <description>Manufacturer name</description>
+    </variable>
+    <variable name="marked">
+      <type>cups_array_t *</type>
+      <description>Marked choices @since CUPS 1.3@ @private@</description>
+    </variable>
+    <variable name="model_number">
+      <type>int</type>
+      <description>Device-specific model number</description>
+    </variable>
+    <variable name="modelname">
+      <type>char *</type>
+      <description>Model name (general)</description>
+    </variable>
+    <variable name="nickname">
+      <type>char *</type>
+      <description>Nickname (specific)</description>
+    </variable>
+    <variable name="num_attrs">
+      <type>int</type>
+      <description>Number of attributes @since CUPS 1.1.19@ @private@</description>
+    </variable>
+    <variable name="num_consts">
+      <type>int</type>
+      <description>Number of UI/Non-UI constraints</description>
+    </variable>
+    <variable name="num_emulations">
+      <type>int</type>
+      <description>Number of emulations supported</description>
+    </variable>
+    <variable name="num_filters">
+      <type>int</type>
+      <description>Number of filters</description>
+    </variable>
+    <variable name="num_fonts">
+      <type>int</type>
+      <description>Number of pre-loaded fonts</description>
+    </variable>
+    <variable name="num_groups">
+      <type>int</type>
+      <description>Number of UI groups</description>
+    </variable>
+    <variable name="num_profiles">
+      <type>int</type>
+      <description>Number of sRGB color profiles</description>
+    </variable>
+    <variable name="num_sizes">
+      <type>int</type>
+      <description>Number of page sizes</description>
+    </variable>
+    <variable name="options">
+      <type>cups_array_t *</type>
+      <description>Option lookup array @since CUPS 1.2@ @private@</description>
+    </variable>
+    <variable name="patches">
+      <type>char *</type>
+      <description>Patch commands to be sent to printer</description>
+    </variable>
+    <variable name="pcfilename">
+      <type>char *</type>
+      <description>PCFileName string @since CUPS 1.1.19@</description>
+    </variable>
+    <variable name="product">
+      <type>char *</type>
+      <description>Product name (from PS RIP/interpreter)</description>
+    </variable>
+    <variable name="profiles">
+      <type>ppd_profile_t *</type>
+      <description>sRGB color profiles</description>
+    </variable>
+    <variable name="protocols">
+      <type>char *</type>
+      <description>Protocols (BCP, TBCP) string @since CUPS 1.1.19@</description>
+    </variable>
+    <variable name="shortnickname">
+      <type>char *</type>
+      <description>Short version of nickname</description>
+    </variable>
+    <variable name="sizes">
+      <type>ppd_size_t *</type>
+      <description>Page sizes</description>
+    </variable>
+    <variable name="sorted_attrs">
+      <type>cups_array_t *</type>
+      <description>Attribute lookup array @since CUPS 1.2@ @private@</description>
+    </variable>
+    <variable name="throughput">
+      <type>int</type>
+      <description>Pages per minute</description>
+    </variable>
+    <variable name="ttrasterizer">
+      <type>char *</type>
+      <description>Truetype rasterizer</description>
+    </variable>
+    <variable name="variable_sizes">
+      <type>int</type>
+      <description>1 = supports variable sizes, 0 = doesn't</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_file_t">
+    <type>struct ppd_file_s</type>
+    <description>PPD File</description>
+  </typedef>
+  <struct name="ppd_group_s">
+    <description>Groups</description>
+    <variable name="PPD_MAX_NAME]">
+      <type>char text[PPD_MAX_TEXT -</type>
+      <description>Human-readable group name</description>
+    </variable>
+    <variable name="name[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Group name @since CUPS 1.1.18@</description>
+    </variable>
+    <variable name="num_options">
+      <type>int</type>
+      <description>Number of options</description>
+    </variable>
+    <variable name="num_subgroups">
+      <type>int</type>
+      <description>Number of sub-groups</description>
+    </variable>
+    <variable name="options">
+      <type>ppd_option_t *</type>
+      <description>Options</description>
+    </variable>
+    <variable name="subgroups">
+      <type>struct ppd_group_s *</type>
+      <description>Sub-groups (max depth = 1)</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_group_t">
+    <type>struct ppd_group_s</type>
+    <description>Groups</description>
+  </typedef>
+  <struct name="ppd_option_s">
+    <description>Options</description>
+    <variable name="choices">
+      <type>ppd_choice_t *</type>
+      <description>Option choices</description>
+    </variable>
+    <variable name="conflicted">
+      <type>char</type>
+      <description>0 if no conflicts exist, 1 otherwise</description>
+    </variable>
+    <variable name="defchoice[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Default option choice</description>
+    </variable>
+    <variable name="keyword[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Option keyword name (&quot;PageSize&quot;, etc.)</description>
+    </variable>
+    <variable name="num_choices">
+      <type>int</type>
+      <description>Number of option choices</description>
+    </variable>
+    <variable name="order">
+      <type>float</type>
+      <description>Order number</description>
+    </variable>
+    <variable name="section">
+      <type>ppd_section_t</type>
+      <description>Section for command</description>
+    </variable>
+    <variable name="text[PPD_MAX_TEXT]">
+      <type>char</type>
+      <description>Human-readable text</description>
+    </variable>
+    <variable name="ui">
+      <type>ppd_ui_t</type>
+      <description>Type of UI option</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_option_t">
+    <type>struct ppd_option_s</type>
+    <description>Options</description>
+  </typedef>
+  <struct name="ppd_profile_s">
+    <description>sRGB Color Profiles</description>
+    <variable name="density">
+      <type>float</type>
+      <description>Ink density to use</description>
+    </variable>
+    <variable name="gamma">
+      <type>float</type>
+      <description>Gamma correction to use</description>
+    </variable>
+    <variable name="matrix[3][3]">
+      <type>float</type>
+      <description>Transform matrix</description>
+    </variable>
+    <variable name="media_type[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Media type or &quot;-&quot;</description>
+    </variable>
+    <variable name="resolution[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Resolution or &quot;-&quot;</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_profile_t">
+    <type>struct ppd_profile_s</type>
+    <description>sRGB Color Profiles</description>
+  </typedef>
+  <enumeration name="ppd_section_e">
+    <description>Order dependency sections</description>
+    <constant name="PPD_ORDER_ANY">
+      <description>Option code can be anywhere in the file</description>
+    </constant>
+    <constant name="PPD_ORDER_DOCUMENT">
+      <description>... must be in the DocumentSetup section</description>
+    </constant>
+    <constant name="PPD_ORDER_EXIT">
+      <description>... must be sent prior to the document</description>
+    </constant>
+    <constant name="PPD_ORDER_JCL">
+      <description>... must be sent as a JCL command</description>
+    </constant>
+    <constant name="PPD_ORDER_PAGE">
+      <description>... must be in the PageSetup section</description>
+    </constant>
+    <constant name="PPD_ORDER_PROLOG">
+      <description>... must be in the Prolog section</description>
+    </constant>
+  </enumeration>
+  <typedef name="ppd_section_t">
+    <type>enum ppd_section_e</type>
+    <description>Order dependency sections</description>
+  </typedef>
+  <struct name="ppd_size_s">
+    <description>Page Sizes</description>
+    <variable name="bottom">
+      <type>float</type>
+      <description>Bottom printable margin in points</description>
+    </variable>
+    <variable name="left">
+      <type>float</type>
+      <description>Left printable margin in points</description>
+    </variable>
+    <variable name="length">
+      <type>float</type>
+      <description>Length of media in points</description>
+    </variable>
+    <variable name="marked">
+      <type>int</type>
+      <description>Page size selected?</description>
+    </variable>
+    <variable name="name[PPD_MAX_NAME]">
+      <type>char</type>
+      <description>Media size option</description>
+    </variable>
+    <variable name="right">
+      <type>float</type>
+      <description>Right printable margin in points</description>
+    </variable>
+    <variable name="top">
+      <type>float</type>
+      <description>Top printable margin in points</description>
+    </variable>
+    <variable name="width">
+      <type>float</type>
+      <description>Width of media in points</description>
+    </variable>
+  </struct>
+  <typedef name="ppd_size_t">
+    <type>struct ppd_size_s</type>
+    <description>Page Sizes</description>
+  </typedef>
+  <enumeration name="ppd_status_e">
+    <description>Types and structures...</description>
+    <constant name="PPD_ALLOC_ERROR">
+      <description>Memory allocation error</description>
+    </constant>
+    <constant name="PPD_BAD_CUSTOM_PARAM">
+      <description>Bad custom parameter</description>
+    </constant>
+    <constant name="PPD_BAD_OPEN_GROUP">
+      <description>Bad OpenGroup</description>
+    </constant>
+    <constant name="PPD_BAD_OPEN_UI">
+      <description>Bad OpenUI/JCLOpenUI</description>
+    </constant>
+    <constant name="PPD_BAD_ORDER_DEPENDENCY">
+      <description>Bad OrderDependency</description>
+    </constant>
+    <constant name="PPD_BAD_UI_CONSTRAINTS">
+      <description>Bad UIConstraints</description>
+    </constant>
+    <constant name="PPD_FILE_OPEN_ERROR">
+      <description>Unable to open PPD file</description>
+    </constant>
+    <constant name="PPD_ILLEGAL_CHARACTER">
+      <description>Illegal control character</description>
+    </constant>
+    <constant name="PPD_ILLEGAL_MAIN_KEYWORD">
+      <description>Illegal main keyword string</description>
+    </constant>
+    <constant name="PPD_ILLEGAL_OPTION_KEYWORD">
+      <description>Illegal option keyword string</description>
+    </constant>
+    <constant name="PPD_ILLEGAL_TRANSLATION">
+      <description>Illegal translation string</description>
+    </constant>
+    <constant name="PPD_ILLEGAL_WHITESPACE">
+      <description>Illegal whitespace character</description>
+    </constant>
+    <constant name="PPD_INTERNAL_ERROR">
+      <description>Internal error</description>
+    </constant>
+    <constant name="PPD_LINE_TOO_LONG">
+      <description>Line longer than 255 chars</description>
+    </constant>
+    <constant name="PPD_MISSING_ASTERISK">
+      <description>Missing asterisk in column 0</description>
+    </constant>
+    <constant name="PPD_MISSING_PPDADOBE4">
+      <description>Missing PPD-Adobe-4.x header</description>
+    </constant>
+    <constant name="PPD_MISSING_VALUE">
+      <description>Missing value string</description>
+    </constant>
+    <constant name="PPD_NESTED_OPEN_GROUP">
+      <description>OpenGroup without a CloseGroup first</description>
+    </constant>
+    <constant name="PPD_NESTED_OPEN_UI">
+      <description>OpenUI/JCLOpenUI without a CloseUI/JCLCloseUI first</description>
+    </constant>
+    <constant name="PPD_NULL_FILE">
+      <description>NULL PPD file pointer</description>
+    </constant>
+    <constant name="PPD_OK">
+      <description>OK</description>
+    </constant>
+  </enumeration>
+  <enumeration name="ppd_ui_e">
+    <description>UI Types</description>
+    <constant name="PPD_UI_BOOLEAN">
+      <description>True or False option</description>
+    </constant>
+    <constant name="PPD_UI_PICKMANY">
+      <description>Pick zero or more from a list</description>
+    </constant>
+    <constant name="PPD_UI_PICKONE">
+      <description>Pick one from a list</description>
+    </constant>
+  </enumeration>
+  <typedef name="ppd_ui_t">
+    <type>enum ppd_ui_e</type>
+    <description>UI Types</description>
+  </typedef>
+  <typedef name="ssize_t">
+    <type>off_t</type>
+    <description>@private@</description>
+  </typedef>
+</mxmldoc>
