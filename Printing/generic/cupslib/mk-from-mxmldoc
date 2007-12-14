@@ -145,12 +145,15 @@ def extract_meta(function, treename):
 
     meta["indexterm_id"] = "ix." + meta["refentry_id"]
 
-    retval_type = function.find("./{%s}returnvalue/{%s}type" %
-                                (ns_url, ns_url))
-    if retval_type:
+    retval = function.find("./{%s}returnvalue" % ns_url)
+    if retval:
+        retval_desc = retval.find("./{%s}description" % ns_url)
+        retval_type = retval.find("./{%s}type" % ns_url)
         meta["function_retval"] = retval_type.text.strip()
+        meta["retval_desc"] = retval_desc.text.strip()
     else:
         meta["function_retval"] = "void"
+        meta["retval_desc"] = "This function does not return a value."
 
     meta["function_parameters"] = make_parameters(function)
 
