@@ -13,7 +13,7 @@ CUPSFILES=cupsAddDest.sgml cupsAddOption.sgml cupsCancelJob.sgml \
 	cupsLangFree.sgml cupsLangGet.sgml cupsLastError.sgml \
 	cupsMarkOptions.sgml cupsParseOptions.sgml cupsPrintFile2.sgml \
 	cupsPrintFiles2.sgml cupsPrintFile.sgml cupsPrintFiles.sgml \
-	cupsPutFd.sgml cupsPutFile.sgml cupsRasterClose.sgml
+	cupsPutFd.sgml cupsPutFile.sgml cupsRasterClose.sgml \
 	cupsRasterOpen.sgml cupsRasterReadHeader.sgml \
 	cupsRasterReadPixels.sgml cupsRasterWriteHeader.sgml \
 	cupsRasterWritePixels.sgml cupsServer.sgml cupsSetDests2.sgml \
