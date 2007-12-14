@@ -113,6 +113,23 @@ def make_description(description):
     docbook_desc = docbook_desc + "\n</para>"
     return docbook_desc
 
+def make_parameters(function):
+    """Create the parameter list for the function element."""
+
+    docbook_args = ""
+
+    for argument in function.getiterator(etree.QName(ns_url,
+                                                     "argument")):
+        param_name = argument.attrib["name"]
+        param_type = argument.find("./{%s}type" % ns_url)
+        param_type_str = param_type.text.strip()
+        param_str = \
+                  "<paramdef>%s\n<parameter>%s</parameter>\n</paramdef>" \
+                  % (param_type_str, param_name)
+        docbook_args = docbook_args + param_str + "\n"
+
+    return docbook_args
+
 def extract_meta(function, treename):
     """Translate the data in the function element into metadata to
     interpolate into the DocBook template."""
@@ -134,6 +151,8 @@ def extract_meta(function, treename):
         meta["function_retval"] = retval_type.text.strip()
     else:
         meta["function_retval"] = "void"
+
+    meta["function_parameters"] = make_parameters(function)
 
     if treename == "cups":
         meta["header"] = "cups/cups.h"
