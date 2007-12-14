@@ -23,6 +23,13 @@
 import sys
 import re
 
+# StringIO.
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 # ElementTree.  When Python 2.4 goes out of style, this can be made
 # much simpler.  The goal: whatever version of ElementTree is
 # available gets exposed to this script as the 'etree' module.
@@ -91,6 +98,21 @@ def parse_mxmldoc(fileobj):
 
     return etree.parse(fileobj)
 
+def make_description(description):
+    """Descriptions provided by mxmldoc don't have semantic formatting
+    to separate paragraphs, etc.  Fix that."""
+
+    docbook_desc = "<para>\n"
+
+    for line in StringIO(description):
+        if len(line.strip()) == 0:
+            docbook_desc = docbook_desc + "</para>\n<para>\n"
+        else:
+            docbook_desc = docbook_desc + line
+
+    docbook_desc = docbook_desc + "\n</para>"
+    return docbook_desc
+
 def extract_meta(function, treename):
     """Translate the data in the function element into metadata to
     interpolate into the DocBook template."""
@@ -113,7 +135,15 @@ def extract_meta(function, treename):
     else:
         meta["function_retval"] = "void"
 
-    meta["description"] = "Not done yet."
+    if treename == "cups":
+        meta["header"] = "cups/cups.h"
+    elif treename == "cupsimage":
+        meta["header"] = "cups/raster.h"
+    else:
+        raise ValueError, "unrecognized library name: " + treename
+
+    description = function.find("./{%s}description" % ns_url)
+    meta["description"] = make_description(description.text.strip())
 
     return meta
 
