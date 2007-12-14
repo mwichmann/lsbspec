@@ -104,6 +104,19 @@ $isth = $Dbh->query($select) || die $Dbh->errmsg();
 return $entry{'Iname'};
 }
 
+sub getinterfacevisibility($)
+{
+local($Iid)=@_;
+my($select,%entry);
+
+if( $Iid eq "" ) {return "";}
+
+$select = "SELECT Isrcbin FROM Interface ";
+$select.= "WHERE Iid=$Iid";
+$isth = $Dbh->query($select) || die $Dbh->errmsg();
+%entry=$isth->fetchhash;
+return $entry{'Isrcbin'};
+}
 
 sub output_classinfo($)
 {
@@ -215,7 +228,13 @@ sub output_classinfo($)
 			print "<ENTRY>";
 			if( $ventry{'VTviid'} != 0 ) {
 				$func=unmangle(getinterfacename($ventry{'VTviid'}));
+				$visibility = getinterfacevisibility($ventry{'VTviid'});
+				if( $visibility eq "SrcOnly" ) {
+				    printf "<indexterm><primary>%s</primary></indexterm>NULL or %s", $func, $func;
+				}
+				else {
 				printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+				}
 			} else {
 				printf "Unspecified";
 				}
