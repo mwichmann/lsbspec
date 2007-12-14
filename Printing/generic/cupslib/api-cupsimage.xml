@@ -1,0 +1,763 @@
+<?xml version="1.0"?><mxmldoc
+xmlns="http://www.easysw.com"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.minixml.org/mxmldoc.xsd">
+  <function name="cupsRasterClose">
+    <description>Close a raster stream.</description>
+    <argument name="r" direction="I">
+      <type>cups_raster_t *</type>
+      <description>Stream to close</description>
+    </argument>
+  </function>
+  <function name="cupsRasterInterpretPPD">
+    <returnvalue>
+      <type>int</type>
+      <description>0 on success, -1 on failure</description>
+    </returnvalue>
+    <description>Interpret PPD commands to create a page header.
+
+This function does not mark the options in the PPD using the &quot;num_options&quot;
+and &quot;options&quot; arguments.  Instead, mark the options prior to calling
+cupsRasterInterpretPPD() - this allows you to do per-page options
+without manipulating the options array.
+
+The &quot;func&quot; argument specifies an optional callback function that is
+called prior to the computation of the final raster data.  The function
+can make changes to the cups_page_header2_t data as needed to use a
+supported raster format and then returns 0 on success and -1 if the
+requested attributes cannot be supported.
+
+cupsRasterInterpretPPD() supports a subset of the PostScript language.
+Currently only the [, ], &lt;&lt;, &gt;&gt;, {, }, cleartomark, copy, dup, index,
+pop, roll, setpagedevice, and stopped operators are supported.
+
+@since CUPS 1.2@</description>
+    <argument name="h" direction="O">
+      <type>cups_page_header2_t *</type>
+      <description>Page header</description>
+    </argument>
+    <argument name="ppd" direction="I">
+      <type>ppd_file_t *</type>
+      <description>PPD file</description>
+    </argument>
+    <argument name="num_options" direction="I">
+      <type>int</type>
+      <description>Number of options</description>
+    </argument>
+    <argument name="options" direction="I">
+      <type>cups_option_t *</type>
+      <description>Options</description>
+    </argument>
+    <argument name="func" direction="I">
+      <type>cups_interpret_cb_t</type>
+      <description>Optional page header callback</description>
+    </argument>
+  </function>
+  <function name="cupsRasterOpen">
+    <returnvalue>
+      <type>cups_raster_t *</type>
+      <description>New stream</description>
+    </returnvalue>
+    <description>Open a raster stream.</description>
+    <argument name="fd" direction="I">
+      <type>int</type>
+      <description>File descriptor</description>
+    </argument>
+    <argument name="mode" direction="I">
+      <type>cups_mode_t</type>
+      <description>Mode</description>
+    </argument>
+  </function>
+  <function name="cupsRasterReadHeader">
+    <returnvalue>
+      <type>unsigned</type>
+      <description>1 on success, 0 on fail</description>
+    </returnvalue>
+    <description>Read a raster page header and store it in a
+V1 page header structure.</description>
+    <argument name="r" direction="I">
+      <type>cups_raster_t *</type>
+      <description>Raster stream</description>
+    </argument>
+    <argument name="h" direction="I">
+      <type>cups_page_header_t *</type>
+      <description>Pointer to header data</description>
+    </argument>
+  </function>
+  <function name="cupsRasterReadHeader2">
+    <returnvalue>
+      <type>unsigned</type>
+      <description>1 on success, 0 on fail</description>
+    </returnvalue>
+    <description>Read a raster page header and store it in a
+V2 page header structure.
+
+@since CUPS 1.2@</description>
+    <argument name="r" direction="I">
+      <type>cups_raster_t *</type>
+      <description>Raster stream</description>
+    </argument>
+    <argument name="h" direction="I">
+      <type>cups_page_header2_t *</type>
+      <description>Pointer to header data</description>
+    </argument>
+  </function>
+  <function name="cupsRasterReadPixels">
+    <returnvalue>
+      <type>unsigned</type>
+      <description>Number of bytes read</description>
+    </returnvalue>
+    <description>Read raster pixels.</description>
+    <argument name="r" direction="I">
+      <type>cups_raster_t *</type>
+      <description>Raster stream</description>
+    </argument>
+    <argument name="p" direction="I">
+      <type>unsigned char *</type>
+      <description>Pointer to pixel buffer</description>
+    </argument>
+    <argument name="len" direction="I">
+      <type>unsigned</type>
+      <description>Number of bytes to read</description>
+    </argument>
+  </function>
+  <function name="cupsRasterWriteHeader">
+    <returnvalue>
+      <type>unsigned</type>
+      <description>1 on success, 0 on failure</description>
+    </returnvalue>
+    <description>Write a raster page header from a V1 page
+header structure.</description>
+    <argument name="r" direction="I">
+      <type>cups_raster_t *</type>
+      <description>Raster stream</description>
+    </argument>
+    <argument name="h" direction="I">
+      <type>cups_page_header_t *</type>
+      <description>Raster page header</description>
+    </argument>
+  </function>
+  <function name="cupsRasterWriteHeader2">
+    <returnvalue>
+      <type>unsigned</type>
+      <description>1 on success, 0 on failure</description>
+    </returnvalue>
+    <description>Write a raster page header from a V2 page
+header structure.
+
+@since CUPS 1.2@</description>
+    <argument name="r" direction="I">
+      <type>cups_raster_t *</type>
+      <description>Raster stream</description>
+    </argument>
+    <argument name="h" direction="I">
+      <type>cups_page_header2_t *</type>
+      <description>Raster page header</description>
+    </argument>
+  </function>
+  <function name="cupsRasterWritePixels">
+    <returnvalue>
+      <type>unsigned</type>
+      <description>Number of bytes written</description>
+    </returnvalue>
+    <description>Write raster pixels.</description>
+    <argument name="r" direction="I">
+      <type>cups_raster_t *</type>
+      <description>Raster stream</description>
+    </argument>
+    <argument name="p" direction="I">
+      <type>unsigned char *</type>
+      <description>Bytes to write</description>
+    </argument>
+    <argument name="len" direction="I">
+      <type>unsigned</type>
+      <description>Number of bytes to write</description>
+    </argument>
+  </function>
+  <enumeration name="cups_adv_e">
+    <description>AdvanceMedia attribute values</description>
+    <constant name="CUPS_ADVANCE_FILE">
+      <description>Advance the roll after this file</description>
+    </constant>
+    <constant name="CUPS_ADVANCE_JOB">
+      <description>Advance the roll after this job</description>
+    </constant>
+    <constant name="CUPS_ADVANCE_NONE">
+      <description>Never advance the roll</description>
+    </constant>
+    <constant name="CUPS_ADVANCE_PAGE">
+      <description>Advance the roll after this page</description>
+    </constant>
+    <constant name="CUPS_ADVANCE_SET">
+      <description>Advance the roll after this set</description>
+    </constant>
+  </enumeration>
+  <enumeration name="cups_bool_e">
+    <description>Types...</description>
+    <constant name="CUPS_FALSE">
+      <description>Logical false</description>
+    </constant>
+    <constant name="CUPS_TRUE">
+      <description>Logical true</description>
+    </constant>
+  </enumeration>
+  <enumeration name="cups_cspace_e">
+    <description />    <constant name="CUPS_CSPACE_CIELab">
+      <description>CIE Lab @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_CIEXYZ">
+      <description>CIE XYZ @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_CMY">
+      <description>Cyan, magenta, yellow</description>
+    </constant>
+    <constant name="CUPS_CSPACE_CMYK">
+      <description>Cyan, magenta, yellow, black</description>
+    </constant>
+    <constant name="CUPS_CSPACE_GMCK">
+      <description>Gold, magenta, yellow, black</description>
+    </constant>
+    <constant name="CUPS_CSPACE_GMCS">
+      <description>Gold, magenta, yellow, silver</description>
+    </constant>
+    <constant name="CUPS_CSPACE_GOLD">
+      <description>Gold foil</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC1">
+      <description>ICC-based, 1 color @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC2">
+      <description>ICC-based, 2 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC3">
+      <description>ICC-based, 3 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC4">
+      <description>ICC-based, 4 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC5">
+      <description>ICC-based, 5 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC6">
+      <description>ICC-based, 6 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC7">
+      <description>ICC-based, 7 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC8">
+      <description>ICC-based, 8 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICC9">
+      <description>ICC-based, 9 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICCA">
+      <description>ICC-based, 10 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICCB">
+      <description>ICC-based, 11 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICCC">
+      <description>ICC-based, 12 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICCD">
+      <description>ICC-based, 13 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICCE">
+      <description>ICC-based, 14 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_ICCF">
+      <description>ICC-based, 15 colors @since CUPS 1.1.19@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_K">
+      <description>Black</description>
+    </constant>
+    <constant name="CUPS_CSPACE_KCMY">
+      <description>Black, cyan, magenta, yellow</description>
+    </constant>
+    <constant name="CUPS_CSPACE_KCMYcm">
+      <description>Black, cyan, magenta, yellow, *
+light-cyan, light-magenta</description>
+    </constant>
+    <constant name="CUPS_CSPACE_RGB">
+      <description>Red, green, blue</description>
+    </constant>
+    <constant name="CUPS_CSPACE_RGBA">
+      <description>Red, green, blue, alpha</description>
+    </constant>
+    <constant name="CUPS_CSPACE_RGBW">
+      <description>Red, green, blue, white @since CUPS 1.2@</description>
+    </constant>
+    <constant name="CUPS_CSPACE_SILVER">
+      <description>Silver foil</description>
+    </constant>
+    <constant name="CUPS_CSPACE_W">
+      <description>Luminance</description>
+    </constant>
+    <constant name="CUPS_CSPACE_WHITE">
+      <description>White ink (as black)</description>
+    </constant>
+    <constant name="CUPS_CSPACE_YMC">
+      <description>Yellow, magenta, cyan</description>
+    </constant>
+    <constant name="CUPS_CSPACE_YMCK">
+      <description>Yellow, magenta, cyan, black</description>
+    </constant>
+  </enumeration>
+  <enumeration name="cups_cut_e">
+    <description />    <constant name="CUPS_CUT_FILE">
+      <description>Cut the roll after this file</description>
+    </constant>
+    <constant name="CUPS_CUT_JOB">
+      <description>Cut the roll after this job</description>
+    </constant>
+    <constant name="CUPS_CUT_NONE">
+      <description>Never cut the roll</description>
+    </constant>
+    <constant name="CUPS_CUT_PAGE">
+      <description>Cut the roll after this page</description>
+    </constant>
+    <constant name="CUPS_CUT_SET">
+      <description>Cut the roll after this set</description>
+    </constant>
+  </enumeration>
+  <enumeration name="cups_edge_e">
+    <description />    <constant name="CUPS_EDGE_BOTTOM">
+      <description>Leading edge is the bottom of the page</description>
+    </constant>
+    <constant name="CUPS_EDGE_LEFT">
+      <description>Leading edge is the left of the page</description>
+    </constant>
+    <constant name="CUPS_EDGE_RIGHT">
+      <description>Leading edge is the right of the page</description>
+    </constant>
+    <constant name="CUPS_EDGE_TOP">
+      <description>Leading edge is the top of the page</description>
+    </constant>
+  </enumeration>
+  <typedef name="cups_interpret_cb_t">
+    <type>int(*)(cups_page_header2_t *header, int preferred_bits)</type>
+    <description>Prototypes...</description>
+  </typedef>
+  <enumeration name="cups_jog_e">
+    <description />    <constant name="CUPS_JOG_FILE">
+      <description>Move pages after this file</description>
+    </constant>
+    <constant name="CUPS_JOG_JOB">
+      <description>Move pages after this job</description>
+    </constant>
+    <constant name="CUPS_JOG_NONE">
+      <description>Never move pages</description>
+    </constant>
+    <constant name="CUPS_JOG_SET">
+      <description>Move pages after this set</description>
+    </constant>
+  </enumeration>
+  <enumeration name="cups_mode_e">
+    <description />    <constant name="CUPS_RASTER_READ">
+      <description>Open stream for reading</description>
+    </constant>
+    <constant name="CUPS_RASTER_WRITE">
+      <description>Open stream for writing</description>
+    </constant>
+    <constant name="CUPS_RASTER_WRITE_COMPRESSED">
+      <description>Open stream for compressed writing @since CUPS 1.3@</description>
+    </constant>
+  </enumeration>
+  <enumeration name="cups_order_e">
+    <description />    <constant name="CUPS_ORDER_BANDED">
+      <description>CCC MMM YYY KKK ...</description>
+    </constant>
+    <constant name="CUPS_ORDER_CHUNKED">
+      <description>CMYK CMYK CMYK ...</description>
+    </constant>
+    <constant name="CUPS_ORDER_PLANAR">
+      <description>CCC ... MMM ... YYY ... KKK ...</description>
+    </constant>
+  </enumeration>
+  <enumeration name="cups_orient_e">
+    <description />    <constant name="CUPS_ORIENT_0">
+      <description>Don't rotate the page</description>
+    </constant>
+    <constant name="CUPS_ORIENT_180">
+      <description>Turn the page upside down</description>
+    </constant>
+    <constant name="CUPS_ORIENT_270">
+      <description>Rotate the page clockwise</description>
+    </constant>
+    <constant name="CUPS_ORIENT_90">
+      <description>Rotate the page counter-clockwise</description>
+    </constant>
+  </enumeration>
+  <struct name="cups_page_header2_s">
+    <description>Version 2 Page Header @since CUPS 1.2@</description>
+    <variable name="AdvanceDistance">
+      <type>unsigned</type>
+      <description>AdvanceDistance value in points</description>
+    </variable>
+    <variable name="AdvanceMedia">
+      <type>cups_adv_t</type>
+      <description>AdvanceMedia value (see above)</description>
+    </variable>
+    <variable name="Collate">
+      <type>cups_bool_t</type>
+      <description>Collated copies value</description>
+    </variable>
+    <variable name="CutMedia">
+      <type>cups_cut_t</type>
+      <description>CutMedia value (see above)</description>
+    </variable>
+    <variable name="Duplex">
+      <type>cups_bool_t</type>
+      <description>Duplexed (double-sided) value</description>
+    </variable>
+    <variable name="HWResolution[2]">
+      <type>unsigned</type>
+      <description>Resolution in dots-per-inch</description>
+    </variable>
+    <variable name="ImagingBoundingBox[4]">
+      <type>unsigned</type>
+      <description>Pixel region that is painted (points)</description>
+    </variable>
+    <variable name="InsertSheet">
+      <type>cups_bool_t</type>
+      <description>InsertSheet value</description>
+    </variable>
+    <variable name="Jog">
+      <type>cups_jog_t</type>
+      <description>Jog value (see above)</description>
+    </variable>
+    <variable name="LeadingEdge">
+      <type>cups_edge_t</type>
+      <description>LeadingEdge value (see above)</description>
+    </variable>
+    <variable name="ManualFeed">
+      <type>cups_bool_t</type>
+      <description>ManualFeed value</description>
+    </variable>
+    <variable name="Margins[2]">
+      <type>unsigned</type>
+      <description>Lower-lefthand margins in points</description>
+    </variable>
+    <variable name="MediaClass[64]">
+      <type>char</type>
+      <description>MediaClass string</description>
+    </variable>
+    <variable name="MediaColor[64]">
+      <type>char</type>
+      <description>MediaColor string</description>
+    </variable>
+    <variable name="MediaPosition">
+      <type>unsigned</type>
+      <description>MediaPosition value</description>
+    </variable>
+    <variable name="MediaType[64]">
+      <type>char</type>
+      <description>MediaType string</description>
+    </variable>
+    <variable name="MediaWeight">
+      <type>unsigned</type>
+      <description>MediaWeight value in grams/m^2</description>
+    </variable>
+    <variable name="MirrorPrint">
+      <type>cups_bool_t</type>
+      <description>MirrorPrint value</description>
+    </variable>
+    <variable name="NegativePrint">
+      <type>cups_bool_t</type>
+      <description>NegativePrint value</description>
+    </variable>
+    <variable name="NumCopies">
+      <type>unsigned</type>
+      <description>Number of copies to produce</description>
+    </variable>
+    <variable name="Orientation">
+      <type>cups_orient_t</type>
+      <description>Orientation value (see above)</description>
+    </variable>
+    <variable name="OutputFaceUp">
+      <type>cups_bool_t</type>
+      <description>OutputFaceUp value</description>
+    </variable>
+    <variable name="OutputType[64]">
+      <type>char</type>
+      <description>OutputType string</description>
+    </variable>
+    <variable name="PageSize[2]">
+      <type>unsigned</type>
+      <description>Width and length of page in points</description>
+    </variable>
+    <variable name="Separations">
+      <type>cups_bool_t</type>
+      <description>Separations value</description>
+    </variable>
+    <variable name="TraySwitch">
+      <type>cups_bool_t</type>
+      <description>TraySwitch value</description>
+    </variable>
+    <variable name="Tumble">
+      <type>cups_bool_t</type>
+      <description>Tumble value</description>
+    </variable>
+    <variable name="cupsBitsPerColor">
+      <type>unsigned</type>
+      <description>Number of bits for each color</description>
+    </variable>
+    <variable name="cupsBitsPerPixel">
+      <type>unsigned</type>
+      <description>Number of bits for each pixel</description>
+    </variable>
+    <variable name="cupsBorderlessScalingFactor">
+      <type>float</type>
+      <description>Scaling that was applied to page data @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsBytesPerLine">
+      <type>unsigned</type>
+      <description>Number of bytes per line</description>
+    </variable>
+    <variable name="cupsColorOrder">
+      <type>cups_order_t</type>
+      <description>Order of colors</description>
+    </variable>
+    <variable name="cupsColorSpace">
+      <type>cups_cspace_t</type>
+      <description>True colorspace</description>
+    </variable>
+    <variable name="cupsCompression">
+      <type>unsigned</type>
+      <description>Device compression to use</description>
+    </variable>
+    <variable name="cupsHeight">
+      <type>unsigned</type>
+      <description>Height of page image in pixels</description>
+    </variable>
+    <variable name="cupsImagingBBox[4]">
+      <type>float</type>
+      <description>Floating point ImagingBoundingBox *
+(scaling factor not applied) @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsInteger[16]">
+      <type>unsigned</type>
+      <description>User-defined integer values @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsMarkerType[64]">
+      <type>char</type>
+      <description>Ink/toner type @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsMediaType">
+      <type>unsigned</type>
+      <description>Media type code</description>
+    </variable>
+    <variable name="cupsNumColors">
+      <type>unsigned</type>
+      <description>Number of colors @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsPageSizeName[64]">
+      <type>char</type>
+      <description>PageSize name @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsPageSize[2]">
+      <type>float</type>
+      <description>Floating point PageSize (scaling *
+factor not applied) @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsReal[16]">
+      <type>float</type>
+      <description>User-defined floating-point values @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsRenderingIntent[64]">
+      <type>char</type>
+      <description>Color rendering intent @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsRowCount">
+      <type>unsigned</type>
+      <description>Rows per band</description>
+    </variable>
+    <variable name="cupsRowFeed">
+      <type>unsigned</type>
+      <description>Feed between bands</description>
+    </variable>
+    <variable name="cupsRowStep">
+      <type>unsigned</type>
+      <description>Spacing between lines</description>
+    </variable>
+    <variable name="cupsString[16][64]">
+      <type>char</type>
+      <description>User-defined string values @since CUPS 1.2@</description>
+    </variable>
+    <variable name="cupsWidth">
+      <type>unsigned</type>
+      <description>Width of page image in pixels</description>
+    </variable>
+  </struct>
+  <typedef name="cups_page_header2_t">
+    <type>struct cups_page_header2_s</type>
+    <description>Version 2 Page Header @since CUPS 1.2@</description>
+  </typedef>
+  <struct name="cups_page_header_s">
+    <description>Version 1 Page Header</description>
+    <variable name="AdvanceDistance">
+      <type>unsigned</type>
+      <description>AdvanceDistance value in points</description>
+    </variable>
+    <variable name="AdvanceMedia">
+      <type>cups_adv_t</type>
+      <description>AdvanceMedia value (see above)</description>
+    </variable>
+    <variable name="Collate">
+      <type>cups_bool_t</type>
+      <description>Collated copies value</description>
+    </variable>
+    <variable name="CutMedia">
+      <type>cups_cut_t</type>
+      <description>CutMedia value (see above)</description>
+    </variable>
+    <variable name="Duplex">
+      <type>cups_bool_t</type>
+      <description>Duplexed (double-sided) value</description>
+    </variable>
+    <variable name="HWResolution[2]">
+      <type>unsigned</type>
+      <description>Resolution in dots-per-inch</description>
+    </variable>
+    <variable name="ImagingBoundingBox[4]">
+      <type>unsigned</type>
+      <description>Pixel region that is painted (points)</description>
+    </variable>
+    <variable name="InsertSheet">
+      <type>cups_bool_t</type>
+      <description>InsertSheet value</description>
+    </variable>
+    <variable name="Jog">
+      <type>cups_jog_t</type>
+      <description>Jog value (see above)</description>
+    </variable>
+    <variable name="LeadingEdge">
+      <type>cups_edge_t</type>
+      <description>LeadingEdge value (see above)</description>
+    </variable>
+    <variable name="ManualFeed">
+      <type>cups_bool_t</type>
+      <description>ManualFeed value</description>
+    </variable>
+    <variable name="Margins[2]">
+      <type>unsigned</type>
+      <description>Lower-lefthand margins in points</description>
+    </variable>
+    <variable name="MediaClass[64]">
+      <type>char</type>
+      <description>MediaClass string</description>
+    </variable>
+    <variable name="MediaColor[64]">
+      <type>char</type>
+      <description>MediaColor string</description>
+    </variable>
+    <variable name="MediaPosition">
+      <type>unsigned</type>
+      <description>MediaPosition value</description>
+    </variable>
+    <variable name="MediaType[64]">
+      <type>char</type>
+      <description>MediaType string</description>
+    </variable>
+    <variable name="MediaWeight">
+      <type>unsigned</type>
+      <description>MediaWeight value in grams/m^2</description>
+    </variable>
+    <variable name="MirrorPrint">
+      <type>cups_bool_t</type>
+      <description>MirrorPrint value</description>
+    </variable>
+    <variable name="NegativePrint">
+      <type>cups_bool_t</type>
+      <description>NegativePrint value</description>
+    </variable>
+    <variable name="NumCopies">
+      <type>unsigned</type>
+      <description>Number of copies to produce</description>
+    </variable>
+    <variable name="Orientation">
+      <type>cups_orient_t</type>
+      <description>Orientation value (see above)</description>
+    </variable>
+    <variable name="OutputFaceUp">
+      <type>cups_bool_t</type>
+      <description>OutputFaceUp value</description>
+    </variable>
+    <variable name="OutputType[64]">
+      <type>char</type>
+      <description>OutputType string</description>
+    </variable>
+    <variable name="PageSize[2]">
+      <type>unsigned</type>
+      <description>Width and length of page in points</description>
+    </variable>
+    <variable name="Separations">
+      <type>cups_bool_t</type>
+      <description>Separations value</description>
+    </variable>
+    <variable name="TraySwitch">
+      <type>cups_bool_t</type>
+      <description>TraySwitch value</description>
+    </variable>
+    <variable name="Tumble">
+      <type>cups_bool_t</type>
+      <description>Tumble value</description>
+    </variable>
+    <variable name="cupsBitsPerColor">
+      <type>unsigned</type>
+      <description>Number of bits for each color</description>
+    </variable>
+    <variable name="cupsBitsPerPixel">
+      <type>unsigned</type>
+      <description>Number of bits for each pixel</description>
+    </variable>
+    <variable name="cupsBytesPerLine">
+      <type>unsigned</type>
+      <description>Number of bytes per line</description>
+    </variable>
+    <variable name="cupsColorOrder">
+      <type>cups_order_t</type>
+      <description>Order of colors</description>
+    </variable>
+    <variable name="cupsColorSpace">
+      <type>cups_cspace_t</type>
+      <description>True colorspace</description>
+    </variable>
+    <variable name="cupsCompression">
+      <type>unsigned</type>
+      <description>Device compression to use</description>
+    </variable>
+    <variable name="cupsHeight">
+      <type>unsigned</type>
+      <description>Height of page image in pixels</description>
+    </variable>
+    <variable name="cupsMediaType">
+      <type>unsigned</type>
+      <description>Media type code</description>
+    </variable>
+    <variable name="cupsRowCount">
+      <type>unsigned</type>
+      <description>Rows per band</description>
+    </variable>
+    <variable name="cupsRowFeed">
+      <type>unsigned</type>
+      <description>Feed between bands</description>
+    </variable>
+    <variable name="cupsRowStep">
+      <type>unsigned</type>
+      <description>Spacing between lines</description>
+    </variable>
+    <variable name="cupsWidth">
+      <type>unsigned</type>
+      <description>Width of page image in pixels</description>
+    </variable>
+  </struct>
+  <typedef name="cups_page_header_t">
+    <type>struct cups_page_header_s</type>
+    <description>Version 1 Page Header</description>
+  </typedef>
+  <typedef name="cups_raster_t">
+    <type>struct _cups_raster_s</type>
+    <description>Raster stream data</description>
+  </typedef>
+</mxmldoc>
