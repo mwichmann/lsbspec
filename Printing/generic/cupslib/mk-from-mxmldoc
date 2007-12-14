@@ -37,7 +37,16 @@ except ImportError:
             import xml.etree.ElementTree as etree
         except ImportError:
             # If this fails, we just don't have ElementTree.
-            import ElementTree.ElementTree as etree
+            import elementtree.ElementTree as etree
+
+# Macro style in the template.  Should return one group in the match
+# object, corresponding to the meta key.
+
+subst_re = re.compile(r'@(.+)@')
+
+# Namespace URL for the mxmldoc namespace.
+
+ns_url = "http://www.easysw.com"
 
 def get_function_list():
     "Return the list of functions we support."
@@ -82,29 +91,77 @@ def parse_mxmldoc(fileobj):
 
     return etree.parse(fileobj)
 
+def extract_meta(function, treename):
+    """Translate the data in the function element into metadata to
+    interpolate into the DocBook template."""
+
+    # Simple parsing can be done when creating the dict.
+
+    meta = { "function_name": function.attrib["name"],
+             "library_name": "lib" + treename }
+
+    func_name_normalized = re.sub(r'_', ".", meta["function_name"])
+    meta["refentry_id"] = "%s.%s.1" % (meta["library_name"],
+                                       func_name_normalized)
+
+    meta["indexterm_id"] = "ix." + meta["refentry_id"]
+
+    retval_type = function.find("./{%s}returnvalue/{%s}type" %
+                                (ns_url, ns_url))
+    if retval_type:
+        meta["function_retval"] = retval_type.text.strip()
+    else:
+        meta["function_retval"] = "void"
+
+    meta["description"] = "Not done yet."
+
+    return meta
+
+def write_template(template, meta, outfile):
+    """Write template to outfile, substituting the appropriate data
+    from meta."""
+
+    for line in template:
+        subst_match = subst_re.search(line)
+        while subst_match:
+            match_key = subst_match.group(1)
+            match_re = re.compile('@%s@' % match_key)
+            if match_key in meta:
+                line = match_re.sub(meta[match_key], line, 1)
+            else:
+                line = match_re.sub("", line, 1)
+            subst_match = subst_re.search(line)
+
+        outfile.write(line)
+
 def main():
     "Main function."
 
     funcs = get_function_list()
+    template = [x for x in open("cupsfunc_template.sgml.in")]
 
     seen_funcs = {"cups": [], "cupsimage": []}
     for fn in ("api-cups.xml", "api-cupsimage.xml"):
         treename = re.match(r'api-(.+)\.xml', fn).group(1)
         tree = parse_mxmldoc(open(fn))
 
-        qname = etree.QName("http://www.easysw.com", "function")
+        qname = etree.QName(ns_url, "function")
         for function in tree.getroot().getiterator(qname):
             if function.attrib["name"] not in funcs[treename]:
                 continue
 
-            print "function from %s: %s" % (treename,
-                                            function.attrib["name"])
+            funcmeta = extract_meta(function, treename)
+
+            docbook = open(funcmeta["function_name"] + ".sgml", "w")
+            write_template(template, funcmeta, docbook)
+            docbook.close()
+
             seen_funcs[treename].append(function.attrib["name"])
 
     for api in funcs.keys():
         for func in funcs[api]:
             if func not in seen_funcs[api]:
-                print "Function not seen: " + func
+                sys.stderr.write("Function not seen: " + func + "\n")
 
 if __name__ == "__main__":
     main()
