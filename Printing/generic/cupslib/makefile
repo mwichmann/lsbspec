@@ -13,7 +13,7 @@ CUPSFILES=cupsAddDest.sgml cupsAddOption.sgml cupsCancelJob.sgml \
 	cupsLangFree.sgml cupsLangGet.sgml cupsLastError.sgml \
 	cupsMarkOptions.sgml cupsParseOptions.sgml cupsPrintFile2.sgml \
 	cupsPrintFiles2.sgml cupsPrintFile.sgml cupsPrintFiles.sgml \
-	cupsPutFd.sgml cupsPutFile.sgml cupsRasterClose.sgml
+	cupsPutFd.sgml cupsPutFile.sgml cupsRasterClose.sgml \
 	cupsRasterOpen.sgml cupsRasterReadHeader.sgml \
 	cupsRasterReadPixels.sgml cupsRasterWriteHeader.sgml \
 	cupsRasterWritePixels.sgml cupsServer.sgml cupsSetDests2.sgml \
@@ -24,7 +24,8 @@ CUPSFILES=cupsAddDest.sgml cupsAddOption.sgml cupsCancelJob.sgml \
 	ppdFindMarkedChoice.sgml ppdFindNextAttr.sgml ppdFindOption.sgml \
 	ppdIsMarked.sgml ppdLastError.sgml ppdMarkDefaults.sgml \
 	ppdMarkOption.sgml ppdOpenFd.sgml ppdOpenFile.sgml ppdOpen.sgml \
-	ppdPageSize.sgml ppdPageWidth.sgml ppdSetConformance.sgml
+	ppdPageSize.sgml ppdPageWidth.sgml ppdSetConformance.sgml \
+	ppdFindAttr.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat -Usubstr $*.m4 >$@
