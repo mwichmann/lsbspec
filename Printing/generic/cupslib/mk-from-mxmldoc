@@ -103,23 +103,26 @@ def make_description(description):
     to separate paragraphs, etc.  Fix that."""
 
     docbook_desc = "<para>\n"
+    first_line = 1
 
     for line in StringIO(description):
+        if first_line:
+            refpurpose = line
+            first_line = 0
         if len(line.strip()) == 0:
             docbook_desc = docbook_desc + "</para>\n<para>\n"
         else:
             docbook_desc = docbook_desc + line
 
     docbook_desc = docbook_desc + "\n</para>"
-    return docbook_desc
+    return refpurpose, docbook_desc
 
 def make_parameters(function):
     """Create the parameter list for the function element."""
 
     docbook_args = ""
 
-    for argument in function.getiterator(etree.QName(ns_url,
-                                                     "argument")):
+    for argument in function.getiterator(etree.QName(ns_url, "argument")):
         param_name = argument.attrib["name"]
         param_type = argument.find("./{%s}type" % ns_url)
         param_type_str = param_type.text.strip()
@@ -127,6 +130,10 @@ def make_parameters(function):
                   "<paramdef>%s\n<parameter>%s</parameter>\n</paramdef>" \
                   % (param_type_str, param_name)
         docbook_args = docbook_args + param_str + "\n"
+
+    # catch no-args case
+    if docbook_args == "":
+        docbook_args = "<void>";
 
     return docbook_args
 
@@ -165,7 +172,9 @@ def extract_meta(function, treename):
         raise ValueError, "unrecognized library name: " + treename
 
     description = function.find("./{%s}description" % ns_url)
-    meta["description"] = make_description(description.text.strip())
+    (refpurpose, docbook_desc) = make_description(description.text.strip())
+    meta["refpurpose"] = refpurpose
+    meta["description"] = docbook_desc
 
     return meta
 
