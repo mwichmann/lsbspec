@@ -45,4 +45,4 @@ clean:
 spotless: clean
 	rm -f $(GENFILES) $(FILES) $(CUPSFILES)
 
-baselib.sgml: cupslib.m4 $(GENFILES) $(CUPSFILES)
+cupslib.sgml: cupslib.m4 $(GENFILES) $(CUPSFILES)
