@@ -35,7 +35,7 @@ all source: $(FILES) $(GENFILES) $(CUPSFILES)
 $(CUPSFILES): api-cups.xml api-cupsimage.xml cupsfunc_template.sgml.in
 	./mk-from-mxmldoc
 
-gensrc:
+gensrc: $(CUPSFILES)
 	../../../mklibspec -a All -v `cat ../../version.generic` -l libcups >libcups.sgml
 	../../../mklibspec -a All -v `cat ../../version.generic` -l libcupsimage >libcupsimage.sgml
 
