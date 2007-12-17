@@ -25,7 +25,7 @@ CUPSFILES=cupsAddDest.sgml cupsAddOption.sgml cupsCancelJob.sgml \
 	ppdIsMarked.sgml ppdLastError.sgml ppdMarkDefaults.sgml \
 	ppdMarkOption.sgml ppdOpenFd.sgml ppdOpenFile.sgml ppdOpen.sgml \
 	ppdPageSize.sgml ppdPageWidth.sgml ppdSetConformance.sgml \
-	ppdFindAttr.sgml
+	ppdFindAttr.sgml ppdPageLength.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat -Usubstr $*.m4 >$@
