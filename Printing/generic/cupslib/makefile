@@ -5,18 +5,18 @@ FILES=cupslib.sgml
 GENFILES=libcups.sgml libcupsimage.sgml
 CUPSFILES=cupsAddDest.sgml cupsAddOption.sgml cupsCancelJob.sgml \
 	cupsEncryption.sgml cupsFreeDests.sgml cupsFreeJobs.sgml \
-	cupsFreeOptions.sgml cupsGetDefault2.sgml cupsGetDefault.sgml \
-	cupsGetDests2.sgml cupsGetDest.sgml cupsGetDests.sgml cupsGetFd.sgml \
-	cupsGetFile.sgml cupsGetJobs2.sgml cupsGetJobs.sgml \
-	cupsGetOption.sgml cupsGetPassword.sgml cupsGetPPD2.sgml \
+	cupsFreeOptions.sgml cupsGetDefault.sgml \
+	cupsGetDest.sgml cupsGetDests.sgml \
+	cupsGetJobs.sgml \
+	cupsGetOption.sgml cupsGetPassword.sgml \
 	cupsGetPPD.sgml cupsLangEncoding.sgml cupsLangFlush.sgml \
 	cupsLangFree.sgml cupsLangGet.sgml cupsLastError.sgml \
-	cupsMarkOptions.sgml cupsParseOptions.sgml cupsPrintFile2.sgml \
-	cupsPrintFiles2.sgml cupsPrintFile.sgml cupsPrintFiles.sgml \
-	cupsPutFd.sgml cupsPutFile.sgml cupsRasterClose.sgml \
+	cupsMarkOptions.sgml cupsParseOptions.sgml \
+	cupsPrintFile.sgml cupsPrintFiles.sgml \
+	cupsRasterClose.sgml \
 	cupsRasterOpen.sgml cupsRasterReadHeader.sgml \
 	cupsRasterReadPixels.sgml cupsRasterWriteHeader.sgml \
-	cupsRasterWritePixels.sgml cupsServer.sgml cupsSetDests2.sgml \
+	cupsRasterWritePixels.sgml cupsServer.sgml \
 	cupsSetDests.sgml cupsSetEncryption.sgml cupsSetPasswordCB.sgml \
 	cupsSetServer.sgml cupsSetUser.sgml cupsTempFd.sgml cupsUser.sgml \
 	ppdClose.sgml ppdCollect.sgml ppdConflicts.sgml ppdEmitFd.sgml \
