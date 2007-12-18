@@ -1,16 +1,15 @@
 <PREFACE id="OVERVIEW">
 <TITLE>Foreword</TITLE>
 <PARA>
-This is version &specversion; of the LSB Languages Specification.
+This is version &specversion; of the LSB Languages specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 3.2 of the LSB Languages
-Specification.
+this version will result in version 3.2 of the LSB Languages specification.
 </PARA>
 <PARA>
 Implmentations may not claim conformance to this version.
 <!--
 An implementation of this version of the specification may not claim
-to be an implementation of LSB Languages unless it has successfully
+to be an implementation of the LSB Languages specification unless it has successfully
 completed the compliance process as defined by the Linux Foundation.
 -->
 </PARA>
@@ -18,7 +17,7 @@ completed the compliance process as defined by the Linux Foundation.
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LSB Languages defines the runtime language components that are
+The LSB Languages specification defines the runtime language components that are
 required to be present on a conforming system.
 </PARA>
 
@@ -34,8 +33,8 @@ the information explicitly included here.
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
-The LSB Perl Module defines the Perl components found on an LSB conforming
-system.
+The LSB Languages specification defines components for runtime languages
+which are found on an LSB conforming system.
 </PARA>
 </CHAPTER>
 
@@ -64,132 +63,12 @@ m4_include(references.sgml)
 <TITLE>Requirements</TITLE>
 
 <PARA>
-This specification describes a Perl interpreter which shall
-be found in a specified location.  It also defines a number
+This specification describes runtime language interpreters which shall
+be found in specified locations.  It also defines a number
 of runtime modules which shall be in an implementation-defined
-directory which the interpreter shall search by default.
+directory which the interpreters shall search by default.
 </PARA>
 
-<!--
-<SECT1 ID="Implementation"><TITLE>Linux Implementation Conformance </TITLE>
-<PARA>
-An implementation shall satisfy the following requirements:
-</PARA>
-<PARA>
-<ITEMIZEDLIST><LISTITEM>
-<PARA>
-The implementation shall implement fully the architecture described in the hardware manual for the target processor architecture. 
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The implementation shall be capable of executing compiled applications having the format and using the system interfaces described in this document.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The implementation shall provide libraries containing the interfaces
-specified by this document, and shall provide a dynamic linking
-mechanism that allows these interfaces to be attached to applications
-at runtime. All the interfaces shall behave as specified in
-this document.
-</PARA>
-<LISTITEM>
-<PARA>
-The map of virtual memory provided by the implementation shall conform to the requirements of this document. 
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The implementation's low-level behavior with respect to function call linkage, system traps, signals, and other such activities shall conform to the formats described in this document. 
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The implementation shall provide all of the mandatory interfaces
-in their entirety. 
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The implementation may provide one or more of the optional interfaces. Each optional interface that is provided shall be provided in its entirety. The product documentation shall state which optional interfaces are provided. 
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The implementation shall provide all files and utilities specified as part of this document in the format defined here and in other referenced documents. All commands and utilities shall behave as required by this document. The implementation shall also provide all mandatory components of an application's runtime environment that are included or referenced in this document. 
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The implementation, when provided with standard data formats and
-values at a named interface, shall provide the behavior defined for
-those values and data formats at that interface. However, a conforming
-implementation may consist of components which are separately packaged
-and/or sold. For example, a vendor of a conforming implementation
-might sell the hardware, operating system, and windowing system as
-separately packaged items.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The implementation may provide additional interfaces with different names. It may also provide additional behavior corresponding to data values outside the standard ranges, for standard named interfaces.
-</PARA>
-</LISTITEM>
-</ITEMIZEDLIST>
-</PARA>
-</SECT1>
--->
-<!--
-<SECT1 ID="Application"><TITLE>LSB Languages Conformance</TITLE>
-<PARA>
-A package shall satisfy the following requirements:
-</PARA>
-<PARA>
-<ITEMIZEDLIST><LISTITEM>
-<PARA>
-Its executable files are either shell scripts or object files in the format defined for the Object File Format system interface.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-Its object files participate in dynamic linking as defined in the Program Loading and Linking System interface.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-It employs only the instructions, traps, and other low-level facilities defined in the Low-Level System interface as being for use by applications.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-If it requires any optional interface defined in this document in order to be installed or to execute successfully, the requirement for that optional interface is stated in the application's documentation. 
-</PARA>
-</LISTITEM><LISTITEM>
-<PARA>
-It does not use any interface or data format that is not required to be provided by a conforming implementation, unless: 
-<ITEMIZEDLIST mark="BULLET">
-<LISTITEM>
-<PARA>
-If such an interface or data format is supplied by another application through direct invocation of that application during execution, that application is in turn an LSB conforming application.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-The use of that interface or data format, as well as its source, is identified in the documentation of the application. 
-</PARA>
-</LISTITEM>
-</ITEMIZEDLIST>
-</PARA>
-</LISTITEM><LISTITEM>
-<PARA>
-It shall not use any values for a named interface that are reserved for vendor extensions. 
-</PARA>
-</LISTITEM></ITEMIZEDLIST>
-A strictly conforming application does not require or use any interface, facility, or implementation-defined extension that is not defined in this document in order to be installed or to execute successfully. 
-</PARA>
-</SECT1>
--->
 </CHAPTER>
 
 &definitions;
