@@ -8669,7 +8669,7 @@ See <xref linkend="std.SUSv3">.
 <REFNAME>__xpg_strerror_r
 </REFNAME>
 <REFPURPOSE>
-return the last component of a file name
+return string describing error number
 </REFPURPOSE>
 </REFNAMEDIV>
 <refsynopsisdiv>
@@ -9382,6 +9382,7 @@ return the last component of a file name
 </REFPURPOSE>
 </REFNAMEDIV>
 <refsynopsisdiv>
+<!-- Nick's original. based on glibc impl
 <funcsynopsis>
 <funcsynopsisinfo>
 #include &lt;string.h&gt;
@@ -9394,6 +9395,7 @@ return the last component of a file name
 </paramdef>
 </funcprototype>
 </funcsynopsis>
+-->
 <funcsynopsis>
 <funcsynopsisinfo>
 #include &lt;libgen.h&gt;
@@ -9410,10 +9412,7 @@ return the last component of a file name
 <REFSECT1>
 <TITLE>Description
 </TITLE>
-<para>
-The <function>basename</function> shall return a pointer to the final component
-of the pathname named by <parameter>path</parameter>.
-</para>
+<!-- this was Nick's decription of the glibc implementation:
 <para>
 In the source standard, if <filename>&lt;libgen.h&gt;</filename> is included,
 this shall be equivalent to <function>__xpg_basename</function>.
@@ -9428,7 +9427,7 @@ The version of <function>basename</function> defined in <xref linkend="std.SUSv3
 must include <filename>&lt;libgen.h&gt;</filename> first, and then <literal>#undef basename</literal> before including
 <filename>&lt;string.h&gt;</filename>.
 </para></note>
-</PARA>
+</para>
 <para>
 If <filename>&lt;libgen.h&gt;</filename> is not included, and <parameter>path</parameter> is <literal>"/"</literal>, or ends with a trailing
 <literal>'/'</literal> character,
@@ -9437,15 +9436,40 @@ the <function>basename</function> function shall return a pointer to an empty st
 <para>
 In the binary standard, <function>basename</function> is the version described in <filename>&lt;string.h&gt;</filename>.
 </para>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
+-->
+<!-- at least for the time being, we ended up with a simpler version: -->
+<para>
+In the source standard, <function>basename</function> is implemented
+as a macro causing it to behave as described in <xref linkend="std.susv3">,
+and is equivalent to the function <function>__xpg_basename</function>.
+If the macro is undefined, <function>basename</function> from
+the binary standard is used, with differences as described here:
+</para>
+<para>
+The string identified by <parameter>path</parameter> shall not be modified.
+</para>
+<para>
+If <parameter>path</parameter> is <literal>"/"</literal>, or ends with a 
+trailing <literal>'/'</literal> character, the <function>basename</function>
+function shall return a pointer to an empty string.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
 On success, the <function>basename</function> function shall return a pointer to the final component of
 <parameter>path</parameter>. Otherwise, it shall return a null pointer.
-</PARA>
-</REFSECT1>
-</REFENTRY>
+</para>
+</refsect1>
+<refsect1>
+<title>See Also</title>
+<para>
+<simplelist type=inline>
+<member><function>__xpg_basename</function></member>
+</simplelist>
+</para>
+</refsect1>
+</refentry>
 
 <REFENTRY ID="baselib-bind-textdomain-codeset"> <REFMETA>
 <REFENTRYTITLE>bind_textdomain_codeset</REFENTRYTITLE>
@@ -16043,7 +16067,7 @@ remove a signal from the signal mask and suspend the thread (deprecated)
 <function>sigpause</function>
 </funcdef>
 <paramdef>int
-<parameter>sigmask</parameter>
+<parameter>sig</parameter>
 </paramdef>
 
 </funcprototype>
@@ -16057,6 +16081,8 @@ The <function>sigpause</function> function is deprecated from the LSB and
 is expected to disappear from a future version of the LSB. Conforming applications
 should use <function>sigsuspend</function> instead.
 </para>
+
+<!-- this was Nick's decription of the glibc implementation:
 <para>
 In the source standard, if <constant>_XOPEN_SOURCE</constant> is defined, the <function>__xpg_sigpause</function>
 function is used, and <function>sigpause</function> shall behave as described in
@@ -16066,21 +16092,32 @@ If <constant>_XOPEN_SOURCE</constant> is not defined, this function is used.
 <para>
 In the binary standard, <function>sigpause</function> is the version described here.
 </para>
+-->
+<!-- at least for the time being, we ended up with a simpler version: -->
 <para>
-The <function>sigpause</function> shall block those signals indicated by
-<parameter>sigmask</parameter> and suspend execution of the thread until
-a signal is delivered. When a signal is delivered, the original signal
-mask shall be restored.
+In the source standard, <function>sigpause</function> is implemented
+as a macro causing it to behave as described in <xref linkend="std.susv3">,
+and is equivalent to the function <function>__xpg_sigpause</function>.
+If the macro is undefined, <function>sigpause</function> from
+the binary standard is used, with differences as described here:
 </para>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
-The <function>sigpause</function> function shall suspend execution of the thread until a signal is received,
-whereupon it shall return <returnvalue>-1</returnvalue> and set <varname>errno</varname> to <errorname>EINTR</errorname>.
-</PARA>
-</REFSECT1>
-</REFENTRY>
+
+<para>
+The <function>sigpause</function> function shall block those signals
+indicated by <parameter>sig</parameter> and suspend execution of the
+thread until a signal is delivered. When a signal is delivered,
+the original signal mask shall be restored.
+</para>
+</refsect1>
+<refsect1>
+<title>See Also</title>
+<para>
+<simplelist type=inline>
+<member><function>__xpg_sigpause</function></member>
+</simplelist>
+</para>
+</refsect1>
+</refentry>
 
 <REFENTRY ID="baselib-sigreturn-2"> <REFMETA>
 <REFENTRYTITLE>sigreturn</REFENTRYTITLE>
@@ -16744,7 +16781,7 @@ with zero length, the function shall return <PARAMETER>s1</PARAMETER>.
 <REFNAMEDIV>
 <REFNAME>strerror_r</REFNAME>
 <REFPURPOSE>
-reentrant version of strerror
+return string describing error number
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -16767,6 +16804,7 @@ reentrant version of strerror
 <REFSECT1>
 <TITLE>Description
 </TITLE>
+<!-- this was Nick's decription of the glibc implementation:
 <PARA>
 If the symbol <symbol>_XOPEN_SOURCE</symbol> is defined with a value of <literal>600</literal>, or the
 symbol <symbol>_POSIX_C_SOURCE</symbol> is defined with a value of <literal>200112L</literal>, the
@@ -16775,17 +16813,24 @@ and is equivalent to the function <function>__xpg_strerror_r</function>. Otherwi
 the <function>strerror_r</function> function shall behave as specified in
 <xref linkend="std.susv3">, except as described below.
 </para>
-<refsect2>
-<title>Returns String, not Error Value</title>
+-->
+<!-- at least for the time being, we ended up with a simpler version: -->
+<para>
+In the source standard, <function>strerror_r</function> is implemented
+as a macro causing it to behave as described in <xref linkend="std.susv3">,
+and is equivalent to the function <function>__xpg_strerror_r</function>.
+If the macro is undefined, <function>strerror_r</function> from
+the binary standard is used, with differences as described here.
+</para>
+
 <para>
 The <function>strerror_r</function> function shall return a pointer to
 the string corresponding to <parameter>errno</parameter>. 
 The returned pointer may point within 
-the buffer <PARAMETER>buf</PARAMETER> (at most 
-<PARAMETER>buflen</PARAMETER> bytes).
-</PARA>
-</refsect2>
-</REFSECT1>
+the buffer <parameter>buf</parameter> (at most 
+<parameter>buflen</parameter> bytes).
+</para>
+</refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
@@ -16794,11 +16839,6 @@ to the generated message string (determined by the setting of the
 <envar>LC_MESSAGES</envar> category in the current locale).
 Otherwise, <function>strerror_r</function> shall return the string
 corresponding to <returnvalue>"Unknown error"</returnvalue>.
-</para>
-<para>
-In the binary standard, <function>strerror_r</function> shall be the version
-that does not conform to <xref linkend="std.susv3">, while <function>__xpg_strerror_r</function>
-shall be the conforming version.
 </para>
 </refsect1>
 <refsect1>
@@ -16809,7 +16849,7 @@ shall be the conforming version.
 </simplelist>
 </para>
 </refsect1>
-</REFENTRY>
+</refentry>
 
 
 <REFENTRY ID="baselib-strndup"> <REFMETA>

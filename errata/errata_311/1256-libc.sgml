@@ -1,0 +1,148 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1256
+
+Rationale: the interface strerror_r, documented in ISO POSIX (2003),
+does not behave as documented. The implementation contains an
+alternative interface, __xpg_strerror_r, which matches the behavior
+of the ISO POSIX (2003) specification for strerror_r. As a transitional
+fix, __xpg_strerror_r is added and made the default behavior when
+an application calls strerror_r; the strerror_r interface is retained
+for binary compatibility with older applications.
+
+
+In Table 13-17. libc - String Functions Function Interfaces
+
+Add:
+
+   __xpg_strerror_r [LSB]
+
+Change:
+
+   strerror_r [SUSv3]
+
+To:
+
+   strerror_r [LSB]
+
+
+Add:
+
+   Table 13-18. libc - String Functions Deprecated Function Interfaces
+   strerror_r [LSB]
+
+
+
+In 13.4.49. string.h
+
+Add:
+
+#define strerror_r __xpg_strerror_r
+
+Delete:
+
+extern char *strerror_r(int, char *, size_t);
+
+Add:
+
+extern char *__xpg_strerror_r(int, char *, size_t);
+
+
+13.5. Interface Definitions for libc, Table of Contents
+
+Add:
+
+   __xpg_basename -- return string describing error number
+
+
+Add:
+
+   strerror_r -- return string describing error number
+
+
+Add:
+
+basenamtrerror_r
+
+Name
+
+   __xpg_strerror_r -- return string describing error number
+
+Synopsis
+
+   #include <string.h>
+
+   char * __xpg_strerror_r(int errnum, char * buf, size_t buflen);
+
+Description
+
+   The __xpg_strerror_r() function shall map the error number in
+   errnum to a locale-dependent error message string and shall
+   return the string in the buffer pointed to by strerrbuf, with
+   length buflen, as described in ISO POSIX (2003) strerror_r().
+
+   This function is not in the source standard, it is only in the
+   binary standard.
+
+Return Value
+
+   See ISO POSIX (2003).
+
+
+Add:
+
+strerror_r
+
+Name
+
+   strerror_r -- return string describing error number
+
+Synopsis
+
+   #include <string.h>
+
+   char * strerror_r(int errnum, char * buf, size_t buflen);
+
+Description
+
+   In the source standard, strerror_r() is implemented as a macro
+   causing it to behave as described in ISO POSIX (2003), and is
+   equivalent to the function __xpg_strerror_r(). If the macro is
+   undefined, strerror_r() from the binary standard is used, with
+   differences as described here.
+
+   The strerror_r() function shall return a pointer to the string
+   corresponding to errno. The returned pointer may point within
+   the buffer buf (at most buflen bytes).
+
+Return Value
+
+   On success, strerror_r() shall return a pointer to the
+   generated message string (determined by the setting of the
+   LC_MESSAGES category in the current locale). Otherwise,
+   strerror_r() shall return the string corresponding to "Unknown
+   error".
+
+See Also
+
+   __xpg_strerror_r()
+
+
+
+In Table A-1. libc Function Interfaces,
+
+Add:
+
+   __xpg_strerror_r[LSB]
+
+Change:
+
+   strerror_r[SUSv3]
+
+To:
+
+   strerror_r[LSB]
+

@@ -10,6 +10,7 @@ return the last component of a file name
 </REFPURPOSE>
 </REFNAMEDIV>
 <refsynopsisdiv>
+<!-- Nick's original. based on glibc impl
 <funcsynopsis>
 <funcsynopsisinfo>
 #include &lt;string.h&gt;
@@ -22,6 +23,7 @@ return the last component of a file name
 </paramdef>
 </funcprototype>
 </funcsynopsis>
+-->
 <funcsynopsis>
 <funcsynopsisinfo>
 #include &lt;libgen.h&gt;
@@ -38,10 +40,7 @@ return the last component of a file name
 <REFSECT1>
 <TITLE>Description
 </TITLE>
-<para>
-The <function>basename</function> shall return a pointer to the final component
-of the pathname named by <parameter>path</parameter>.
-</para>
+<!-- this was Nick's decription of the glibc implementation:
 <para>
 In the source standard, if <filename>&lt;libgen.h&gt;</filename> is included,
 this shall be equivalent to <function>__xpg_basename</function>.
@@ -56,7 +55,7 @@ The version of <function>basename</function> defined in <xref linkend="std.SUSv3
 must include <filename>&lt;libgen.h&gt;</filename> first, and then <literal>#undef basename</literal> before including
 <filename>&lt;string.h&gt;</filename>.
 </para></note>
-</PARA>
+</para>
 <para>
 If <filename>&lt;libgen.h&gt;</filename> is not included, and <parameter>path</parameter> is <literal>"/"</literal>, or ends with a trailing
 <literal>'/'</literal> character,
@@ -65,12 +64,37 @@ the <function>basename</function> function shall return a pointer to an empty st
 <para>
 In the binary standard, <function>basename</function> is the version described in <filename>&lt;string.h&gt;</filename>.
 </para>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
+-->
+<!-- at least for the time being, we ended up with a simpler version: -->
+<para>
+In the source standard, <function>basename</function> is implemented
+as a macro causing it to behave as described in <xref linkend="std.susv3">,
+and is equivalent to the function <function>__xpg_basename</function>.
+If the macro is undefined, <function>basename</function> from
+the binary standard is used, with differences as described here:
+</para>
+<para>
+The string identified by <parameter>path</parameter> shall not be modified.
+</para>
+<para>
+If <parameter>path</parameter> is <literal>"/"</literal>, or ends with a 
+trailing <literal>'/'</literal> character, the <function>basename</function>
+function shall return a pointer to an empty string.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
 On success, the <function>basename</function> function shall return a pointer to the final component of
 <parameter>path</parameter>. Otherwise, it shall return a null pointer.
-</PARA>
-</REFSECT1>
-</REFENTRY>
+</para>
+</refsect1>
+<refsect1>
+<title>See Also</title>
+<para>
+<simplelist type=inline>
+<member><function>__xpg_basename</function></member>
+</simplelist>
+</para>
+</refsect1>
+</refentry>

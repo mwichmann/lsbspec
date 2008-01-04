@@ -18,7 +18,7 @@ remove a signal from the signal mask and suspend the thread (deprecated)
 <function>sigpause</function>
 </funcdef>
 <paramdef>int
-<parameter>sigmask</parameter>
+<parameter>sig</parameter>
 </paramdef>
 
 </funcprototype>
@@ -32,6 +32,8 @@ The <function>sigpause</function> function is deprecated from the LSB and
 is expected to disappear from a future version of the LSB. Conforming applications
 should use <function>sigsuspend</function> instead.
 </para>
+
+<!-- this was Nick's decription of the glibc implementation:
 <para>
 In the source standard, if <constant>_XOPEN_SOURCE</constant> is defined, the <function>__xpg_sigpause</function>
 function is used, and <function>sigpause</function> shall behave as described in
@@ -41,18 +43,29 @@ If <constant>_XOPEN_SOURCE</constant> is not defined, this function is used.
 <para>
 In the binary standard, <function>sigpause</function> is the version described here.
 </para>
+-->
+<!-- at least for the time being, we ended up with a simpler version: -->
 <para>
-The <function>sigpause</function> shall block those signals indicated by
-<parameter>sigmask</parameter> and suspend execution of the thread until
-a signal is delivered. When a signal is delivered, the original signal
-mask shall be restored.
+In the source standard, <function>sigpause</function> is implemented
+as a macro causing it to behave as described in <xref linkend="std.susv3">,
+and is equivalent to the function <function>__xpg_sigpause</function>.
+If the macro is undefined, <function>sigpause</function> from
+the binary standard is used, with differences as described here:
 </para>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
-The <function>sigpause</function> function shall suspend execution of the thread until a signal is received,
-whereupon it shall return <returnvalue>-1</returnvalue> and set <varname>errno</varname> to <errorname>EINTR</errorname>.
-</PARA>
-</REFSECT1>
-</REFENTRY>
+
+<para>
+The <function>sigpause</function> function shall block those signals
+indicated by <parameter>sig</parameter> and suspend execution of the
+thread until a signal is delivered. When a signal is delivered,
+the original signal mask shall be restored.
+</para>
+</refsect1>
+<refsect1>
+<title>See Also</title>
+<para>
+<simplelist type=inline>
+<member><function>__xpg_sigpause</function></member>
+</simplelist>
+</para>
+</refsect1>
+</refentry>

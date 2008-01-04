@@ -5,7 +5,7 @@
 <REFNAMEDIV>
 <REFNAME>strerror_r</REFNAME>
 <REFPURPOSE>
-reentrant version of strerror
+return string describing error number
 </REFPURPOSE>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
@@ -28,6 +28,7 @@ reentrant version of strerror
 <REFSECT1>
 <TITLE>Description
 </TITLE>
+<!-- this was Nick's decription of the glibc implementation:
 <PARA>
 If the symbol <symbol>_XOPEN_SOURCE</symbol> is defined with a value of <literal>600</literal>, or the
 symbol <symbol>_POSIX_C_SOURCE</symbol> is defined with a value of <literal>200112L</literal>, the
@@ -36,17 +37,24 @@ and is equivalent to the function <function>__xpg_strerror_r</function>. Otherwi
 the <function>strerror_r</function> function shall behave as specified in
 <xref linkend="std.susv3">, except as described below.
 </para>
-<refsect2>
-<title>Returns String, not Error Value</title>
+-->
+<!-- at least for the time being, we ended up with a simpler version: -->
+<para>
+In the source standard, <function>strerror_r</function> is implemented
+as a macro causing it to behave as described in <xref linkend="std.susv3">,
+and is equivalent to the function <function>__xpg_strerror_r</function>.
+If the macro is undefined, <function>strerror_r</function> from
+the binary standard is used, with differences as described here.
+</para>
+
 <para>
 The <function>strerror_r</function> function shall return a pointer to
 the string corresponding to <parameter>errno</parameter>. 
 The returned pointer may point within 
-the buffer <PARAMETER>buf</PARAMETER> (at most 
-<PARAMETER>buflen</PARAMETER> bytes).
-</PARA>
-</refsect2>
-</REFSECT1>
+the buffer <parameter>buf</parameter> (at most 
+<parameter>buflen</parameter> bytes).
+</para>
+</refsect1>
 <refsect1>
 <title>Return Value</title>
 <para>
@@ -55,11 +63,6 @@ to the generated message string (determined by the setting of the
 <envar>LC_MESSAGES</envar> category in the current locale).
 Otherwise, <function>strerror_r</function> shall return the string
 corresponding to <returnvalue>"Unknown error"</returnvalue>.
-</para>
-<para>
-In the binary standard, <function>strerror_r</function> shall be the version
-that does not conform to <xref linkend="std.susv3">, while <function>__xpg_strerror_r</function>
-shall be the conforming version.
 </para>
 </refsect1>
 <refsect1>
@@ -70,5 +73,5 @@ shall be the conforming version.
 </simplelist>
 </para>
 </refsect1>
-</REFENTRY>
+</refentry>
 
