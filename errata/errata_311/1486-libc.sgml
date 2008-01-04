@@ -1,0 +1,141 @@
+Specification: LSB Core Generic
+Edition of Specification: 3.1 Update 1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1486
+
+Rationale: the interface sigpause, documented in ISO POSIX (2003),
+does not behave as documented. The implementation contains an
+alternative interface, __xpg_sigpause, which matches the behavior
+of the ISO POSIX (2003) specification for sigpause. As a transitional
+fix, __xpg_sigpause is added and made the default behavior when
+an application calls sigpause; the sigpause interface is retained
+for binary compatibility with older applications.
+
+
+In Table 13-7. libc - Signal Handling Function Interfaces
+
+Add:
+
+   __xpg_sigpause [LSB]
+
+Change:
+
+   sigpause [SUSv3]
+
+To:
+
+   sigpause [LSB]
+
+Add new table:
+
+   Table 13-8. libc - Signal Handling Deprecated Function Interfaces
+   sigpause [LSB]
+
+
+In 13.4.43. signal.h
+
+Add:
+
+#define sigpause __xpg_sigpause
+
+Delete:
+
+extern int sigpause(int);
+
+Add:
+
+extern int __xpg_sigpause(int);
+
+
+13.5. Interface Definitions for libc, Table of Contents
+
+Add:
+
+   __xpg_sigpause -- remove a signal from the signal mask and
+          suspend the thread
+
+Add:
+
+   sigpause -- remove a signal from the signal mask and suspend
+          the thread (deprecated)
+
+Add:
+
+__xpg_sigpause
+
+Name
+
+   __xpg_sigpause -- remove a signal from the signal mask and
+   suspend the thread
+
+Synopsis
+
+   #include <signal.h>
+
+   int __xpg_sigpause(int sig);
+
+Description
+
+   The __xpg_sigpause() function shall implement the sigpause()
+   described in ISO POSIX (2003).
+
+   This function is not in the source standard, it is only in the
+   binary standard.
+
+Return Value
+
+   See ISO POSIX (2003).
+
+
+Add:
+
+sigpause
+
+Name
+
+   sigpause -- remove a signal from the signal mask and suspend
+   the thread (deprecated)
+
+Synopsis
+
+   #include <signal.h>
+
+   int sigpause(int sig);
+
+Description
+
+   The sigpause() function is deprecated from the LSB and is
+   expected to disappear from a future version of the LSB.
+   Conforming applications should use sigsuspend() instead.
+
+   In the source standard, sigpause() is implemented as a macro
+   causing it to behave as described in ISO POSIX (2003), and is
+   equivalent to the function __xpg_sigpause(). If the macro is
+   undefined, sigpause() from the binary standard is used, with
+   differences as described here:
+
+   The sigpause() function shall block those signals indicated by
+   sig and suspend execution of the thread until a signal is
+   delivered. When a signal is delivered, the original signal mask
+   shall be restored.
+
+See Also
+
+   __xpg_sigpause()
+
+
+In Table A-1. libc Function Interfaces,
+
+Add:
+
+   __xpg_sigpause[LSB] 
+
+Change:
+
+   sigpause[SUSv3]
+
+To:
+
+   sigpause[LSB]
+

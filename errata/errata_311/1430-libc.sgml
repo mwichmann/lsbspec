@@ -1,0 +1,148 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1430
+
+Rationale: the interface basename, documented in ISO POSIX (2003),
+does not behave as documented. The implementation contains an
+alternative interface, __xpg_basename, which matches the behavior
+of the ISO POSIX (2003) specification for basename. As a transitional
+fix, __xpg_basename is added and made the default behavior when
+an application calls basename; the basename interface is retained
+for binary compatibility with older applications.
+
+
+In Table 13-30. libc - Standard Library Function Interfaces
+
+Add:
+
+   __xpg_basename [LSB]
+
+Change:
+
+   basename [SUSv3]
+
+To:
+
+   basename [LSB]
+
+
+Add:
+
+   Table 13-31. libc - Standard Library Deprecated Function Interfaces
+   basename [LSB]
+
+
+In 13.4.17. libgen.h
+
+Add:
+
+#define basename __xpg_basename
+
+Delete:
+
+extern char *basename(char *);
+
+Add:
+
+extern char *__xpg_basename(char *);
+
+
+
+13.5. Interface Definitions for libc, Table of Contents
+
+Add:
+
+   __xpg_basename -- return the last component of a file name
+
+Add:
+
+   basename -- return the last component of a file name 
+          the thread
+
+Add:
+
+__xpg_basename
+
+Name
+
+   __xpg_basename -- return the last component of a file name
+
+Synopsis
+
+   #include <libgen.h>
+
+   char * __xpg_basename(const char * path);
+
+Description
+
+   The __xpg_basename() function shall return a pointer to the
+   final component of the pathname named by path, as described in
+   ISO POSIX (2003) basename().
+
+   This function is not in the source standard, it is only in the
+   binary standard.
+
+Return Value
+
+   See ISO POSIX (2003).
+
+
+Add:
+
+basename
+
+Name
+
+   basename -- return the last component of a file name
+
+Synopsis
+
+   #include <libgen.h>
+
+   char * basename(const char * path);
+
+Description
+
+   The basename() shall return a pointer to the final component of
+   the pathname named by path.
+
+   In the source standard, basename() is implemented as a macro
+   causing it to behave as described in ISO POSIX (2003), and is
+   equivalent to the function __xpg_basename(). If the macro is
+   undefined, basename() from the binary standard is used, with
+   differences as described here:
+
+   The string identified by path shall not be modified.
+
+   If path is "/", or ends with a trailing '/' character, the
+   basename() function shall return a pointer to an empty string.
+
+Return Value
+
+   On success, the basename() function shall return a pointer to
+   the final component of path. Otherwise, it shall return a null
+   pointer.
+
+See Also
+
+   __xpg_basename()
+
+
+
+In Table A-1. libc Function Interfaces,
+
+Add:
+
+   __xpg_basename[LSB] 
+
+Change:
+
+   basename[SUSv3]
+
+To:
+
+   basename[LSB]
+
