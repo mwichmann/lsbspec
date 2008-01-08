@@ -1,0 +1,98 @@
+Specification: LSB Core Generic
+Edition of Specification: 3.1 Update 1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1698
+
+Rationale: the C library function __cxa_finalize needs to be part of the
+binary specification to complete the description of mandatory termination
+processing that also includes the __cxa_atexit function.  Applications do
+not call this function, but it is required to be provided by the
+implementation.
+
+
+In 13.3.19.1. Interfaces for Standard Library,
+   Table 13-30. libc - Standard Library Function Interfaces,
+
+Add:
+
+   __cxa_finalize [LSB]
+
+
+
+In 13.5. Interface Definitions for libc,
+Table of Contents
+
+Add:
+              __cxa_finalize -- call destructors of global (or
+                      local static) C++ objects and exit functions
+                      registered with atexit
+
+
+in body of section, 
+
+Add:
+
+__cxa_finalize
+
+Name
+
+   __cxa_finalize -- call destructors of global (or local static)
+   C++ objects and exit functions registered with atexit
+
+Synopsis
+
+   void __cxa_finalize(void * d);
+
+Description
+
+   As described in the Itanium® C++ ABI, the C runtime library
+   shall maintain a list of termination function entries
+   containing the following information:
+
+     * A pointer to a termination function.
+     * An operand to be passed to the function.
+     * A handle identifying the home shared library of the entry.
+
+   The list is populated by entries of two kinds:
+
+     * Destructors of global (or local static) C++ objects that
+       require destruction on exit.
+     * Functions registered by the user with atexit().
+
+   In the former case an entry consists of a pointer to the
+   destructor, a pointer to the corresponding object and a handle
+   for the home shared library of the object. In the latter case
+   the pointer to the function is the pointer passed to atexit(),
+   while the other pointers are NULL.
+
+   When __cxa_finalize(d) is called, it shall walk the termination
+   function list, calling each in turn if d matches the handle of
+   the termination function entry. If d is NULL, it shall call all
+   the termination funtions. Multiple calls to __cxa_finalize
+   shall not result in calling termination function entries
+   multiple times; the implementation may either remove entries or
+   mark them finished. The termination functions shall always be
+   called in the reverse order of their registration (i.e. the
+   most recently registered function shall be called first).
+
+   An application shall not call __cxa_finalize() directly. The
+   implementation shall arrange for__cxa_finalize() to be called
+   during early shared library unload (e.g. dlclose()) with a
+   handle to the shared library. When the main program calls exit,
+   the implementation shall cause any remaining
+   __cxa_atexit-registered functions to be called, either by
+   calling __cxa_finalize(NULL), or by walking the registration
+   list itself.
+
+   __cxa_finalize() is not in the source standard; it is only in
+   the binary standard.
+
+
+In A.1. libc,
+
+Table A-1. libc Function Interfaces,
+
+Add:
+
+   __cxa_finalize[LSB]

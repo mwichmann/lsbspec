@@ -50,7 +50,7 @@ MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_
 	uselocale.sgml newlocale.sgml duplocale.sgml freelocale.sgml \
 	fscanf.sgml fwscanf.sgml scanf.sgml sscanf.sgml swscanf.sgml \
 	vfscanf.sgml vfwscanf.sgml vscanf.sgml vsscanf.sgml vswscanf.sgml \
-	vwscanf.sgml wscanf.sgml
+	vwscanf.sgml wscanf.sgml __cxa_finalize.sgml
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
