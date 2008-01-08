@@ -64,8 +64,8 @@ m4_dnl the way it is supposed to for the different architectures
 m4_dnl since this file is copied from generic to each archLSB
 m4_dnl
 m4_ifelse(ARCH,`All', 
-	`define(`TBLTARGET',`"tbl-glsb-stdlib"')', 
-	`define(`TBLTARGET',`"tbl-archlsb-stdlib"')')
+	`m4_define(`TBLTARGET',`"tbl-glsb-stdlib"')', 
+	`m4_define(`TBLTARGET',`"tbl-archlsb-stdlib"')')
 m4_ifelse(ARCH,`All',
 `
 The libraries listed in <XREF LINKEND='TBLTARGET`> shall
