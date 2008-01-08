@@ -1,0 +1,82 @@
+<refentry id="baselib---cxa_finalize">
+<refmeta>
+<refentrytitle>__cxa_finalize</refentrytitle>
+<refmiscinfo></refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>__cxa_finalize</refname>
+<refpurpose>call destructors of global (or local static) C++
+objects and exit functions registered with atexit
+</refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcprototype>
+<funcdef>void
+<function>__cxa_finalize</function>
+</funcdef>
+<paramdef>void *
+<parameter>d</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>As described in the Itanium&reg; C++ ABI, the C runtime library shall
+maintain a list of termination function entries containing the
+following information:</para>
+
+<itemizedlist>
+<listitem><para>
+A pointer to a termination function.
+</para></listitem>
+<listitem><para>
+An operand to be passed to the function.
+</para></listitem>
+<listitem><para>
+A handle identifying the home shared library of the
+entry.
+</para></listitem>
+</itemizedlist>
+
+<para>The list is populated by entries of two kinds:</para>
+
+<itemizedlist>
+<listitem><para>
+Destructors of global (or local static) C++ objects that require
+destruction on exit.
+</para></listitem>
+<listitem><para>
+Functions registered by the user with atexit().
+</para></listitem>
+</itemizedlist>
+
+<para>In the former case an entry consists of a pointer to the destructor,
+a pointer to the corresponding object and a handle for the home shared
+library of the object. In the latter case the pointer to the function
+is the pointer passed to atexit(), while the other pointers are NULL.</para>
+
+<para>When __cxa_finalize(d) is called, it shall walk the termination function
+list, calling each in turn if d matches the handle of the termination
+function entry. If d is NULL, it shall call all the termination
+funtions. Multiple calls to __cxa_finalize shall not result in calling
+termination function entries multiple times; the implementation may either
+remove entries or mark them finished. The termination functions shall
+always be called in the reverse order of their registration (i.e. the
+most recently registered function shall be called first).</para>
+
+<para>An application shall not call __cxa_finalize() directly. The
+implementation shall arrange for__cxa_finalize() to be called during
+early shared library unload (e.g. dlclose()) with a handle to the shared
+library. When the main program calls exit, the implementation shall cause
+any remaining __cxa_atexit-registered functions to be called, either by
+calling __cxa_finalize(NULL), or by walking the registration list
+itself.</para>
+
+<para>__cxa_finalize() is not in the source standard; it is only in the binary
+standard.</para>
+
+</refsect1>
+</refentry>
