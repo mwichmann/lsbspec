@@ -11,6 +11,14 @@ print STDERR "mklibsgmltable -a <archname> -v <lsbversion> [-f] [-m modname ] [[
 die;
 }
 
+sub quotify($)
+{
+	my ($str) = @_;
+	$str =~ s/,/','/g;
+	$str = "'" . $str . "'";
+	return $str;
+}
+
 # Uncomment to trace SQL statments
 #$trace=1;
 
@@ -76,7 +84,8 @@ if( $future ) {
 	$select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
 }
 if( $module ) {
-	$select.= "AND Mname='".$module."' ";
+
+	$select.= "AND Mname IN (".quotify($module).") ";
 }
 if( $inclib ) {
 	$select.= "AND Lname IN (".$inclib.") ";
