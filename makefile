@@ -15,7 +15,7 @@ DB2PDF=sgmltools -b pdf
 all::
 	find . -name '*.m4' | xargs touch
 	find . -name '*.sed' | xargs touch
-	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done
 
 all:: intlists
 
@@ -30,25 +30,25 @@ intlists:
 	./mkintlist -A X86-64 -v `cat ./LSB/version.AMD64` >intlist.AMD64.txt
 
 gensrc:
-	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) gensrc);done
 
 source:
-	for dir in $(SUBDIRS);do (cd $$dir && make source);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) source);done
 
 autobuild:
 	find . -name '*.m4' | xargs touch
 	find . -name '*.sed' | xargs touch
-	for dir in $(SUBDIRS);do (cd $$dir && make autobuild);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) autobuild);done
 	tar czf LSBrtfs.tar.gz `find book booksets -name '*.rtf' -o -name '*.eps'`
 
 relbuild: intlists
 	find . -name '*.m4' | xargs touch
 	find . -name '*.sed' | xargs touch
-	for dir in $(DOCDIRS);do (cd $$dir && make gensrc source);done
+	for dir in $(DOCDIRS);do (cd $$dir && $(MAKE) gensrc source);done
 
 clean::
-	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) clean);done
 
 spotless::
-	for dir in $(SUBDIRS);do (cd $$dir && make spotless);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) spotless);done
 
