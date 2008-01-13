@@ -2,19 +2,19 @@
 SUBDIRS= libxml2
 
 all:
-	for dir in $(SUBDIRS);do (cd $$dir && make all);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done
 
 gensrc:
-	for dir in $(SUBDIRS);do (cd $$dir && make gensrc);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) gensrc);done
 
 source:
-	for dir in $(SUBDIRS);do (cd $$dir && make source);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) source);done
 
 clean:
-	for dir in $(SUBDIRS);do (cd $$dir && make clean);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) clean);done
 	rm -f $(HTML)
 
 spotless:
-	for dir in $(SUBDIRS);do (cd $$dir && make spotless);done
+	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) spotless);done
 	rm -f $(HTML)
 
