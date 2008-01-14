@@ -3,9 +3,7 @@
 
 FILES=libfreetype.sgml
 TABLES= freetype.sgml 
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
+MANPAGES=FT_Get_X11_Font_Format.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -22,5 +20,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-libfreetype.sgml: freetype.sgml
-#libfreetype.sgml: $(MANPAGES)
+libfreetype.sgml: freetype.sgml $(MANPAGES)

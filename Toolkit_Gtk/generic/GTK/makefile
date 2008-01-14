@@ -1,8 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-#MANPAGES=_XtCopyFromArg.sgml _XtInheritTranslations.sgml _XtInherit.sgml \
-	_XtIsSubclassOf.sgml
+MANPAGES=gtk_button_set_image.sgml gtk_button_get_image.sgml
 
 FILES=GTK.sgml
 TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml
@@ -35,6 +34,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-
-GTK.sgml: libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml
-#GTK.sgml: $(MANPAGES)
+GTK.sgml: $(TABLES) $(MANPAGES)
