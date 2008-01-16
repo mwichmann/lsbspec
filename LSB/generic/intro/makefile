@@ -8,9 +8,6 @@ TABLES= standards.sgml references.sgml glibraries.sgml pslibs.sgml cxxstandards.
 # FIX THIS: there's got to be a better way than listing each spec
 EXCLSPECS="'LSB','Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','OGL','ISOCXX','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi','ATK','Pango','fontconfig','libJPEG','libXML2','Png12','QtCore','QtGui','QtXml','QtNetwork','QtOpenGL','QtSql','QtSvg','qt-mt','xrender','freetype','xft','ALSA','PPD','PPDUpdate','PerlLang','PerlFunc','PerlMod','PerlOp','PerlSyn','PerlFun','PerlMan','PythonLib','Python','XdgMenu','XdgDesktop','XdgIcon','XdgBasedir','xdg-utils'"
 
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
-
 .m4.sgml:
 	m4 -P -Uindex -Uformat -DARCH=All -DCORE=1 $*.m4 >$@
 
