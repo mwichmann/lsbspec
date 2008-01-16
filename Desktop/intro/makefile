@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=intro.sgml
-TABLES=standards.sgml
+TABLES=standards.sgml references.sgml libraries.sgml
 
 .cpp.sgml:
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
@@ -31,4 +31,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-intro.sgml: standards.sgml glibraries.sgml elibraries.sgml xlibraries.sgml
+intro.sgml: $(TABLES)
