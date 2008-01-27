@@ -1,0 +1,346 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Omission
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1390
+
+Rationale: the interefaces in the POSIX group Spawn (SPN), documented in
+ISO POSIX (2003), were omitted from this specification.
+
+
+In LSB Core Generic:
+
+Add new section:
+
+13.3.6. Posix Spawn Option
+     __________________________________________________________
+
+13.3.6.1. Interfaces for Posix Spawn Option
+
+   An LSB conforming implementation shall provide the generic
+   functions for Posix Spawn Option specified in Table 13-12, with
+   the full mandatory functionality as described in the referenced
+   underlying specification.
+
+   Table 13-12. libc - Posix Spawn Option Function Interfaces
+   posix_spawn [SUSv3] posix_spawn_file_actions_addclose [SUSv3]
+   posix_spawn_file_actions_adddup2 [SUSv3]
+   posix_spawn_file_actions_addopen [SUSv3]
+   posix_spawn_file_actions_destroy [SUSv3]
+   posix_spawn_file_actions_init [SUSv3] posix_spawnattr_destroy
+   [SUSv3] posix_spawnattr_getflags [SUSv3]
+   posix_spawnattr_getpgroup [SUSv3] posix_spawnattr_getschedparam
+   [SUSv3] posix_spawnattr_getschedpolicy [SUSv3]
+   posix_spawnattr_getsigdefault [SUSv3]
+   posix_spawnattr_getsigmask [SUSv3] posix_spawnattr_init [SUSv3]
+   posix_spawnattr_setflags [SUSv3] posix_spawnattr_setpgroup
+   [SUSv3]
+   posix_spawnattr_setschedparam [SUSv3]
+   posix_spawnattr_setschedpolicy [SUSv3]
+   posix_spawnattr_setsigdefault [SUSv3]
+   posix_spawnattr_setsigmask [SUSv3]
+   posix_spawnp [SUSv3]
+
+
+Add new header:
+
+13.4.44. spawn.h
+
+#define POSIX_SPAWN_RESETIDS    0x01
+#define POSIX_SPAWN_SETPGROUP   0x02
+#define POSIX_SPAWN_SETSIGDEF   0x04
+#define POSIX_SPAWN_SETSIGMASK  0x08
+#define POSIX_SPAWN_SETSCHEDPARAM       0x10
+#define POSIX_SPAWN_SETSCHEDULER        0x20
+
+typedef struct {
+    int __allocated;
+    int __used;
+    struct __spawn_action *__actions;
+    int __pad[16];
+} posix_spawn_file_actions_t;
+typedef struct {
+    short __flags;
+    pid_t __pgrp;
+    sigset_t __sd;
+    sigset_t __ss;
+    struct sched_param __sp;
+    int __policy;
+    int __pad[16];
+} posix_spawnattr_t;
+extern int posix_spawn(pid_t *, const char *,
+                       const posix_spawn_file_actions_t *,
+                       const posix_spawnattr_t *, char *const,
+                       char *const);
+extern int posix_spawn_file_actions_addclose(posix_spawn_file_actions_t*,
+                                             int);
+extern int posix_spawn_file_actions_adddup2(posix_spawn_file_actions_t *,
+                                            int, int);
+extern int posix_spawn_file_actions_addopen(posix_spawn_file_actions_t *,
+                                            int, const char *, int,
+                                            mode_t);
+extern int posix_spawn_file_actions_destroy(posix_spawn_file_actions_t *);
+extern int posix_spawn_file_actions_init(posix_spawn_file_actions_t *);
+extern int posix_spawnattr_destroy(posix_spawnattr_t *);
+extern int posix_spawnattr_getflags(const posix_spawnattr_t *,
+                                    short int *);
+extern int posix_spawnattr_getpgroup(const posix_spawnattr_t *, pid_t *);
+extern int posix_spawnattr_getschedparam(const posix_spawnattr_t *,
+                                         struct sched_param *);
+extern int posix_spawnattr_getschedpolicy(const posix_spawnattr_t *,
+                                          int *);
+extern int posix_spawnattr_getsigdefault(const posix_spawnattr_t *,
+                                         sigset_t *);
+extern int posix_spawnattr_getsigmask(const posix_spawnattr_t *,
+                                      sigset_t *);
+extern int posix_spawnattr_init(posix_spawnattr_t *);
+extern int posix_spawnattr_setflags(posix_spawnattr_t *, short int);
+extern int posix_spawnattr_setpgroup(posix_spawnattr_t *, pid_t);
+extern int posix_spawnattr_setschedparam(posix_spawnattr_t *,
+                                         const struct sched_param *);
+extern int posix_spawnattr_setschedpolicy(posix_spawnattr_t *, int);
+extern int posix_spawnattr_setsigdefault(posix_spawnattr_t *,
+                                         const sigset_t *);
+extern int posix_spawnattr_setsigmask(posix_spawnattr_t *,
+                                      const sigset_t *);
+extern int posix_spawnp(pid_t *, const char *,
+                        const posix_spawn_file_actions_t *,
+                        const posix_spawnattr_t *, char *const,
+                        char *const);
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   posix_spawn[SUSv3]
+   posix_spawn_file_actions_addclose[SUSv3]
+   posix_spawn_file_actions_adddup2[SUSv3]
+   posix_spawn_file_actions_addopen[SUSv3]
+   posix_spawn_file_actions_destroy[SUSv3]
+   posix_spawn_file_actions_init[SUSv3]
+   posix_spawnattr_destroy[SUSv3]
+   posix_spawnattr_getflags[SUSv3]
+   posix_spawnattr_getpgroup[SUSv3]
+   posix_spawnattr_getschedparam[SUSv3]
+   posix_spawnattr_getschedpolicy[SUSv3]
+   posix_spawnattr_getsigdefault[SUSv3]
+   posix_spawnattr_getsigmask[SUSv3]
+   posix_spawnattr_init[SUSv3]
+   posix_spawnattr_setflags[SUSv3]
+   posix_spawnattr_setpgroup[SUSv3]
+   posix_spawnattr_setschedparam[SUSv3]
+   posix_spawnattr_setschedpolicy[SUSv3]
+   posix_spawnattr_setsigdefault[SUSv3]
+   posix_spawnattr_setsigmask[SUSv3]
+   posix_spawnp [SUSv3]
+
+
+====
+
+In LSB Core IA32, PPC32, S390, IA64, S390X:
+
+
+Add new section:
+
+11.2.6. Posix Spawn Option
+     __________________________________________________________
+
+11.2.6.1. Interfaces for Posix Spawn Option
+
+   An LSB conforming implementation shall provide the architecture
+   specific functions for Posix Spawn Option specified in Table
+   11-12, with the full mandatory functionality as described in
+   the referenced underlying specification.
+
+   Table 11-12. libc - Posix Spawn Option Function Interfaces
+   posix_spawn(GLIBC_2.2) [SUSv3]
+   posix_spawn_file_actions_addclose(GLIBC_2.2) [SUSv3]
+   posix_spawn_file_actions_adddup2(GLIBC_2.2) [SUSv3]
+   posix_spawn_file_actions_addopen(GLIBC_2.2) [SUSv3]
+   posix_spawn_file_actions_destroy(GLIBC_2.2) [SUSv3]
+   posix_spawn_file_actions_init(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_destroy(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_getflags(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_getpgroup(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_getschedparam(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_getschedpolicy(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_getsigdefault(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_getsigmask(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_init(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_setflags(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_setpgroup(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_setschedparam(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_setschedpolicy(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_setsigdefault(GLIBC_2.2) [SUSv3]
+   posix_spawnattr_setsigmask(GLIBC_2.2) [SUSv3]
+   posix_spawnp(GLIBC_2.2) [SUSv3]
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   posix_spawn(GLIBC_2.2)[SUSv3]
+   posix_spawn_file_actions_addclose(GLIBC_2.2)[SUSv3]
+   posix_spawn_file_actions_adddup2(GLIBC_2.2)[SUSv3]
+   posix_spawn_file_actions_addopen(GLIBC_2.2)[SUSv3]
+   posix_spawn_file_actions_destroy(GLIBC_2.2)[SUSv3]
+   posix_spawn_file_actions_init(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_destroy(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_getflags(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_getpgroup(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_getschedparam(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_getschedpolicy(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_getsigdefault(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_getsigmask(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_init(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_setflags(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_setpgroup(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_setschedparam(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_setschedpolicy(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_setsigdefault(GLIBC_2.2)[SUSv3]
+   posix_spawnattr_setsigmask(GLIBC_2.2)[SUSv3]
+   posix_spawnp(GLIBC_2.2)[SUSv3]
+
+
+====
+
+In LSB Core PPC64
+
+
+Add new section:
+
+11.2.6. Posix Spawn Option
+     __________________________________________________________
+
+11.2.6.1. Interfaces for Posix Spawn Option
+
+   An LSB conforming implementation shall provide the architecture
+   specific functions for Posix Spawn Option specified in Table
+   11-12, with the full mandatory functionality as described in
+   the referenced underlying specification.
+
+   Table 11-12. libc - Posix Spawn Option Function Interfaces
+   posix_spawn(GLIBC_2.3) [SUSv3]
+   posix_spawn_file_actions_addclose(GLIBC_2.3) [SUSv3]
+   posix_spawn_file_actions_adddup2(GLIBC_2.3) [SUSv3]
+   posix_spawn_file_actions_addopen(GLIBC_2.3) [SUSv3]
+   posix_spawn_file_actions_destroy(GLIBC_2.3) [SUSv3]
+   posix_spawn_file_actions_init(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_destroy(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_getflags(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_getpgroup(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_getschedparam(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_getschedpolicy(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_getsigdefault(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_getsigmask(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_init(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_setflags(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_setpgroup(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_setschedparam(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_setschedpolicy(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_setsigdefault(GLIBC_2.3) [SUSv3]
+   posix_spawnattr_setsigmask(GLIBC_2.3) [SUSv3]
+   posix_spawnp(GLIBC_2.3) [SUSv3]
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   posix_spawn(GLIBC_2.3)[SUSv3]
+   posix_spawn_file_actions_addclose(GLIBC_2.3)[SUSv3]
+   posix_spawn_file_actions_adddup2(GLIBC_2.3)[SUSv3]
+   posix_spawn_file_actions_addopen(GLIBC_2.3)[SUSv3]
+   posix_spawn_file_actions_destroy(GLIBC_2.3)[SUSv3]
+   posix_spawn_file_actions_init(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_destroy(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_getflags(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_getpgroup(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_getschedparam(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_getschedpolicy(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_getsigdefault(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_getsigmask(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_init(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_setflags(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_setpgroup(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_setschedparam(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_setschedpolicy(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_setsigdefault(GLIBC_2.3)[SUSv3]
+   posix_spawnattr_setsigmask(GLIBC_2.3)[SUSv3]
+   posix_spawnp(GLIBC_2.3)[SUSv3]
+
+
+====
+
+In LSB Core AMD64:
+
+
+Add new section:
+
+11.2.6. Posix Spawn Option
+     __________________________________________________________
+
+11.2.6.1. Interfaces for Posix Spawn Option
+
+   An LSB conforming implementation shall provide the architecture
+   specific functions for Posix Spawn Option specified in Table
+   11-12, with the full mandatory functionality as described in
+   the referenced underlying specification.
+
+   Table 11-12. libc - Posix Spawn Option Function Interfaces
+   posix_spawn(GLIBC_2.2.5.5) [SUSv3]
+   posix_spawn_file_actions_addclose(GLIBC_2.2.5) [SUSv3]
+   posix_spawn_file_actions_adddup2(GLIBC_2.2.5) [SUSv3]
+   posix_spawn_file_actions_addopen(GLIBC_2.2.5) [SUSv3]
+   posix_spawn_file_actions_destroy(GLIBC_2.2.5) [SUSv3]
+   posix_spawn_file_actions_init(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_destroy(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_getflags(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_getpgroup(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_getschedparam(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_getschedpolicy(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_getsigdefault(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_getsigmask(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_init(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_setflags(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_setpgroup(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_setschedparam(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_setschedpolicy(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_setsigdefault(GLIBC_2.2.5) [SUSv3]
+   posix_spawnattr_setsigmask(GLIBC_2.2.5) [SUSv3]
+   posix_spawnp(GLIBC_2.2.5) [SUSv3]
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   posix_spawn(GLIBC_2.2.5)[SUSv3]
+   posix_spawn_file_actions_addclose(GLIBC_2.2.5)[SUSv3]
+   posix_spawn_file_actions_adddup2(GLIBC_2.2.5)[SUSv3]
+   posix_spawn_file_actions_addopen(GLIBC_2.2.5)[SUSv3]
+   posix_spawn_file_actions_destroy(GLIBC_2.2.5)[SUSv3]
+   posix_spawn_file_actions_init(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_destroy(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_getflags(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_getpgroup(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_getschedparam(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_getschedpolicy(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_getsigdefault(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_getsigmask(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_init(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_setflags(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_setpgroup(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_setschedparam(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_setschedpolicy(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_setsigdefault(GLIBC_2.2.5)[SUSv3]
+   posix_spawnattr_setsigmask(GLIBC_2.2.5)[SUSv3]
+   posix_spawnp(GLIBC_2.2.5)[SUSv3]
+

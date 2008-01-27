@@ -1,0 +1,99 @@
+Specification: LSB Core Generic
+Edition of Specification: 3.1 Update 1
+Type: Omission
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1388
+
+Rationale: the interefaces in the POSIX group Message Queue (MSG)
+documented in ISO POSIX (2003), were omitted from this specification.
+
+In LSB Core Generic:
+
+In 13.17. Interfaces for librt
+
+Add:
+
+13.17.4. Message Queues
+     __________________________________________________________
+
+13.17.4.1. Interfaces for Message Queues
+
+   An LSB conforming implementation shall provide the generic
+   functions for Message Queues specified in Table 13-50, with the
+   full mandatory functionality as described in the referenced
+   underlying specification.
+
+   Table 13-50. librt - Message Queues Function Interfaces
+   mq_close(GLIBC_2.3.4) [SUSv3] mq_getattr(GLIBC_2.3.4) [SUSv3]
+   mq_notify(GLIBC_2.3.4) [SUSv3] mq_open(GLIBC_2.3.4) [SUSv3]
+   mq_receive(GLIBC_2.3.4) [SUSv3] mq_send(GLIBC_2.3.4) [SUSv3]
+   mq_setattr(GLIBC_2.3.4) [SUSv3] mq_timedreceive(GLIBC_2.3.4) [SUSv3]
+   mq_timedsend(GLIBC_2.3.4) [SUSv3] mq_unlink(GLIBC_2.3.4) [SUSv3]
+
+Add new section:
+
+13.18. Data Definitions for librt
+
+   This section defines global identifiers and their values that
+   are associated with interfaces contained in librt. These
+   definitions are organized into groups that correspond to system
+   headers. This convention is used as a convenience for the
+   reader, and does not imply the existence of these headers, or
+   their content. Where an interface is defined as requiring a
+   particular system header file all of the data definitions for
+   that system header file presented here shall be in effect.
+
+   This section gives data definitions to promote binary
+   application portability, not to repeat source interface
+   definitions available elsewhere. System providers and
+   application developers should use this ABI to supplement - not
+   to replace - source interface definition specifications.
+
+   This specification uses the ISO C (1999) C Language as the
+   reference programming language, and data definitions are
+   specified in ISO C format. The C language is used here as a
+   convenient notation. Using a C language description of these
+   data objects does not preclude their use by other programming
+   languages.
+     __________________________________________________________
+
+13.18.1. mqueue.h
+
+typedef int mqd_t;
+struct mq_attr {
+    long int mq_flags;
+    long int mq_maxmsg;
+    long int mq_msgsize;
+    long int mq_curmsgs;
+    long int __pad[4];
+};
+extern int mq_close(mqd_t);
+extern int mq_getattr(mqd_t, struct mq_attr *);
+extern int mq_notify(mqd_t, const struct sigevent *);
+extern mqd_t mq_open(const char *, int, ...);
+extern ssize_t mq_receive(mqd_t, char *, size_t, unsigned int *);
+extern int mq_send(mqd_t, const char *, size_t, unsigned int);
+extern int mq_setattr(mqd_t, const struct mq_attr *, struct mq_attr *);
+extern ssize_t mq_timedreceive(mqd_t, char *, size_t, unsigned int *,
+                               const struct timespec *);
+extern int mq_timedsend(mqd_t, const char *, size_t, unsigned int,
+                        const struct timespec *);
+extern int mq_unlink(const char *);
+
+
+In A.8. librt
+   Table A-11. librt Function Interfaces
+
+Add:
+
+   mq_close(GLIBC_2.3.4)[SUSv3]
+   mq_getattr(GLIBC_2.3.4)[SUSv3]
+   mq_notify(GLIBC_2.3.4)[SUSv3]
+   mq_open(GLIBC_2.3.4)[SUSv3]
+   mq_receive(GLIBC_2.3.4)[SUSv3]
+   mq_send(GLIBC_2.3.4)[SUSv3]
+   mq_setattr(GLIBC_2.3.4)[SUSv3]
+   mq_timedreceive(GLIBC_2.3.4)[SUSv3]
+   mq_timedsend(GLIBC_2.3.4)[SUSv3]
+   mq_unlink(GLIBC_2.3.4)[SUSv3]
+

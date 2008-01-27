@@ -1,0 +1,230 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Omission
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1578
+
+Rationale: the intereface mremap, widely used by applications and
+present in all implementations, was omitted from this specification.
+
+
+In LSB Core Generic:
+
+
+In 13.3.2.1. Interfaces for System Calls
+In Table 13-3. libc - System Calls Function Interfaces
+
+Add:
+
+   mremap [LSB]
+
+
+In 3.4.54. sys/mman.h
+
+Add:
+
+extern void *mremap(void *, size_t, size_t, int);
+
+
+In 13.5. Interface Definitions for libc
+
+Add to Table of Contents:
+
+   mremap -- remap a virtual memory address
+
+Add:
+
+mremap
+
+Name
+
+   mremap -- remap a virtual memory address
+
+Synopsis
+
+   #include <sys/mman.h>
+
+   void * mremap(void * old_address, size_t old_size, size_t
+   new_size, int flags);
+
+Description
+
+   The mremap() function expands (or shrinks) an existing memory
+   mapping, potentially moving it at the same time, depending on
+   the flags argument and the available virtual address space.
+
+   old_address is the old address of the virtual memory block to
+   be resized. Note that old_address must be page aligned.
+   old_size is the old size of the virtual memory block. new_size
+   is the requested size of the virtual memory block after the
+   resize.
+
+   In Linux the memory is divided into pages. A user process has
+   (one or) several linear virtual memory segments. Each virtual
+   memory segment has one or more mappings to real memory pages
+   (in the page table). Each virtual memory segment has its own
+   protection (access rights), which may cause a segmentation
+   violation if the memory is accessed incorrectly (e.g., writing
+   to a read-only segment). Accessing virtual memory outside of
+   the segments will also cause a segmentation violation.
+
+   mremap() uses the Linux page table scheme. mremap() changes the
+   mapping between virtual addresses and memory pages. This can be
+   used to implement a very efficient form of realloc().
+
+   The flags bit-mask argument may be 0, or include the following
+   flag:
+
+   MREMAP_MAYMOVE
+
+   By default, if there is not sufficient space to expand a
+   mapping at its current location, then mremap() fails. If this
+   flag is specified, then the kernel is permitted to relocate the
+   mapping to a new virtual address, if necessary. If the mapping
+   is relocated, then absolute pointers into the old mapping
+   location become invalid (offsets relative to the starting
+   address of the mapping should be employed).
+   MREMAP_FIXED
+
+   This flag serves a similar purpose to the MAP_FIXED flag of
+   mmap(). If this flag is specified, then mremap()accepts a fifth
+   argument, void *new_address, which specifies a pagealigned
+   address to which the mapping must be moved. Any previous
+   mapping at the address range specified by new_address and
+   new_size is unmapped. If MREMAP_FIXED is specified, then
+   MREMAP_MAYMOVE must also be specified.
+
+   If the memory segment specified by old_address and old_size is
+   locked (using mlock() or similar), then this lock is maintained
+   when the segment is resized and/or relocated. As a consequence,
+   the amount of memory locked by the process may change.
+
+Return Value
+
+   The mremap() function returns a pointer to the new virtual
+   memory area on success. On error, the value MAP_FAILED is
+   returned, and errno is set appropriately.
+
+Errors
+
+   EAGAIN
+
+   The caller tried to expand a memory segment that is locked, but
+   this was not possible without exceeding the RLIMIT_MEMLOCK
+   resource limit.
+   EFAULT
+
+   "Segmentation fault." Some address in the range old_address to
+   old_address+old_size is an invalid virtual memory address for
+   this process. You can also get EFAULT even if there exist
+   mappings that cover the whole address space requested, but
+   those mappings are of different types.
+   EINVAL
+
+   An invalid argument was given. Possible causes are: old_address
+   was not page aligned; a value other than MREMAP_MAYMOVE or
+   MREMAP_FIXED was specified in flags; new_size was zero;
+   new_size or new_address was invalid; or the new address range
+   specified by new_address and new_size overlapped the old
+   address range specified by old_address and old_size; or
+   MREMAP_FIXED was specified without also specifying
+   MREMAP_MAYMOVE.
+   ENOMEM
+
+   The memory area cannot be expanded at the current virtual
+   address, and the MREMAP_MAYMOVE flag is not set in flags, or,
+   there is not enough (virtual) memory available.
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   mremap[LSB]
+
+
+====
+
+In LSB Core IA32, PPC32, S390:
+
+
+In 11.2.2.1. Interfaces for System Calls
+In Table 11-3. libc - System Calls Function Interfaces
+
+Add:
+
+   mremap(GLIBC_2.0) [LSB]
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   mremap(GLIBC_2.0)[LSB]
+
+
+====
+
+In LSB Core IA64, S390X:
+
+
+In 11.2.2.1. Interfaces for System Calls
+In Table 11-3. libc - System Calls Function Interfaces
+
+Add:
+
+   mremap(GLIBC_2.2) [LSB]
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   mremap(GLIBC_2.2)[LSB]
+
+
+====
+
+In LSB Core PPC64:
+
+
+In 11.2.2.1. Interfaces for System Calls
+In Table 11-3. libc - System Calls Function Interfaces
+
+Add:
+
+   mremap(GLIBC_2.3) [LSB]
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   mremap(GLIBC_2.3)[LSB]
+
+
+====
+
+In LSB Core AMD64:
+
+
+In 11.2.2.1. Interfaces for System Calls
+In Table 11-3. libc - System Calls Function Interfaces
+
+Add:
+
+   mremap(GLIBC_2.2.5) [LSB]
+
+
+In A.1. libc
+In Table A-1. libc Function Interfaces
+
+Add:
+
+   mremap(GLIBC_2.2.5)[LSB]
+

@@ -1,0 +1,248 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Omission
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=893
+
+Rationale: the interefaces in the POSIX groups Barriers (BAR), Spinlocks
+(SPI), and Thread CPU-Time Clocks (TCT), documented in ISO POSIX (2003),
+were omitted from this specification.
+
+In LSB Core Generic:
+
+In 13.9.1.1. Interfaces for Advanced Realtime Threads,
+
+Replace
+
+   No external functions are defined for libpthread - Advanced
+   Realtime Threads in this part of the specification. See also
+   the relevant architecture specific part of ISO/IEC 23360.
+
+With
+
+   An LSB conforming implementation shall provide the generic
+   functions for Advanced Realtime Threads specified in Table
+   13-39, with the full mandatory functionality as described in
+   the referenced underlying specification.
+
+   Table 13-39. libpthread - Advanced Realtime Threads Function Interfaces
+   pthread_barrier_destroy [SUSv3]
+   pthread_barrier_init [SUSv3]
+   pthread_barrier_wait [SUSv3]
+   pthread_barrierattr_destroy [SUSv3]
+   pthread_barrierattr_getpshared(GLIBC_2.3.3) [SUSv3]
+   pthread_barrierattr_init [SUSv3]
+   pthread_barrierattr_setpshared [SUSv3]
+   pthread_getcpuclockid [SUSv3]
+   pthread_spin_destroy [SUSv3]
+   pthread_spin_init [SUSv3]
+   pthread_spin_lock [SUSv3] 
+   pthread_spin_trylock [SUSv3]
+   pthread_spin_unlock [SUSv3]
+
+
+In 13.10.2. semaphore.h
+
+Add:
+
+#define __SIZEOF_PTHREAD_BARRIERATTR_T  4
+
+typedef volatile int pthread_spinlock_t;
+typedef union {
+    char __size[__SIZEOF_PTHREAD_BARRIERATTR_T];
+    int __align;
+} pthread_barrierattr_t;
+
+extern int pthread_barrier_destroy(pthread_barrier_t *);
+extern int pthread_barrier_init(pthread_barrier_t *,
+                                const pthread_barrierattr_t *,
+                                unsigned int);
+extern int pthread_barrier_wait(pthread_barrier_t *);
+extern int pthread_barrierattr_destroy(pthread_barrierattr_t *);
+extern int pthread_barrierattr_init(pthread_barrierattr_t *);
+extern int pthread_barrierattr_getpshared(const pthread_barrierattr_t *, int *);
+extern int pthread_barrierattr_setpshared(pthread_barrierattr_t *, int);
+extern int pthread_getcpuclockid(pthread_t, clockid_t *);
+extern int pthread_spin_destroy(pthread_spinlock_t *);
+extern int pthread_spin_init(pthread_spinlock_t *, int);
+extern int pthread_spin_lock(pthread_spinlock_t *);
+extern int pthread_spin_trylock(pthread_spinlock_t *);
+extern int pthread_spin_unlock(pthread_spinlock_t *);
+
+
+In A.7. libpthread,
+In Table A-10. libpthread Function Interfaces,
+
+Add:
+
+   pthread_barrier_destroy[SUSv3]
+   pthread_barrier_init[SUSv3]
+   pthread_barrier_wait[SUSv3]
+   pthread_barrierattr_destroy[SUSv3]
+   pthread_barrierattr_getpshared(GLIBC_2.3.3)[SUSv3]
+   pthread_barrierattr_init[SUSv3]
+   pthread_barrierattr_setpshared[SUSv3]
+   pthread_getcpuclockid[SUSv3]
+   pthread_spin_destroy[SUSv3]
+   pthread_spin_init[SUSv3]
+   pthread_spin_lock[SUSv3]
+   pthread_spin_trylock[SUSv3]
+   pthread_spin_unlock[SUSv3]
+
+====
+
+In LSB Core IA32, PPC32, S390, IA64, S390X:
+
+In 11.7.2.1. Interfaces for Advanced Realtime Threads
+
+Replace
+
+   No external functions are defined for libpthread - Advanced
+   Realtime Threads in this part of the specification. See also
+   the generic specification, ISO/IEC 23360 Part 1.
+
+With
+
+   An LSB conforming implementation shall provide the architecture
+   specific functions for Advanced Realtime Threads specified in
+   Table 11-39, with the full mandatory functionality as described
+   in the referenced underlying specification.
+
+   Table 11-39. libpthread - Advanced Realtime Threads Function Interfaces
+   pthread_barrier_destroy(GLIBC_2.2) [SUSv3]
+   pthread_barrier_init(GLIBC_2.2) [SUSv3]
+   pthread_barrier_wait(GLIBC_2.2) [SUSv3]
+   pthread_barrierattr_destroy(GLIBC_2.2) [SUSv3]
+   pthread_barrierattr_init(GLIBC_2.2) [SUSv3]
+   pthread_barrierattr_setpshared(GLIBC_2.2) [SUSv3]
+   pthread_getcpuclockid(GLIBC_2.2) [SUSv3]
+   pthread_spin_destroy(GLIBC_2.2) [SUSv3]
+   pthread_spin_init(GLIBC_2.2) [SUSv3]
+   pthread_spin_lock(GLIBC_2.2) [SUSv3]
+   pthread_spin_trylock(GLIBC_2.2) [SUSv3]
+   pthread_spin_unlock(GLIBC_2.2) [SUSv3]
+
+
+In A.6. libpthread,
+In Table A-8. libpthread Function Interfaces,
+
+Add:
+
+   pthread_barrier_destroy(GLIBC_2.2)[SUSv3]
+   pthread_barrier_init(GLIBC_2.2)[SUSv3]
+   pthread_barrier_wait(GLIBC_2.2)[SUSv3]
+   pthread_barrierattr_destroy(GLIBC_2.2)[SUSv3]
+   pthread_barrierattr_init(GLIBC_2.2)[SUSv3]
+   pthread_barrierattr_setpshared(GLIBC_2.2)[SUSv3]
+   pthread_getcpuclockid(GLIBC_2.2)[SUSv3]
+   pthread_spin_destroy(GLIBC_2.2)[SUSv3]
+   pthread_spin_init(GLIBC_2.2)[SUSv3]
+   pthread_spin_lock(GLIBC_2.2)[SUSv3]
+   pthread_spin_trylock(GLIBC_2.2)[SUSv3]
+   pthread_spin_unlock(GLIBC_2.2)[SUSv3]
+
+
+====
+
+In LSB Core PPC64:
+
+In 11.7.2.1. Interfaces for Advanced Realtime Threads
+
+Replace
+
+   No external functions are defined for libpthread - Advanced
+   Realtime Threads in this part of the specification. See also
+   the generic specification, ISO/IEC 23360 Part 1.
+
+With
+
+   An LSB conforming implementation shall provide the architecture
+   specific functions for Advanced Realtime Threads specified in
+   Table 11-39, with the full mandatory functionality as described
+   in the referenced underlying specification.
+
+   Table 11-39. libpthread - Advanced Realtime Threads Function Interfaces
+   pthread_barrier_destroy(GLIBC_2.3) [SUSv3]
+   pthread_barrier_init(GLIBC_2.3) [SUSv3]
+   pthread_barrier_wait(GLIBC_2.3) [SUSv3]
+   pthread_barrierattr_destroy(GLIBC_2.3) [SUSv3]
+   pthread_barrierattr_init(GLIBC_2.3) [SUSv3]
+   pthread_barrierattr_setpshared(GLIBC_2.3) [SUSv3]
+   pthread_getcpuclockid(GLIBC_2.3) [SUSv3]
+   pthread_spin_destroy(GLIBC_2.3) [SUSv3]
+   pthread_spin_init(GLIBC_2.3) [SUSv3]
+   pthread_spin_lock(GLIBC_2.3) [SUSv3]
+   pthread_spin_trylock(GLIBC_2.3) [SUSv3]
+   pthread_spin_unlock(GLIBC_2.3) [SUSv3]
+
+
+In A.6. libpthread,
+In Table A-8. libpthread Function Interfaces,
+
+Add:
+
+   pthread_barrier_destroy(GLIBC_2.3)[SUSv3]
+   pthread_barrier_init(GLIBC_2.3)[SUSv3]
+   pthread_barrier_wait(GLIBC_2.3)[SUSv3]
+   pthread_barrierattr_destroy(GLIBC_2.3)[SUSv3]
+   pthread_barrierattr_init(GLIBC_2.3)[SUSv3]
+   pthread_barrierattr_setpshared(GLIBC_2.3)[SUSv3]
+   pthread_getcpuclockid(GLIBC_2.3)[SUSv3]
+   pthread_spin_destroy(GLIBC_2.3)[SUSv3]
+   pthread_spin_init(GLIBC_2.3)[SUSv3]
+   pthread_spin_lock(GLIBC_2.3)[SUSv3]
+   pthread_spin_trylock(GLIBC_2.3)[SUSv3]
+   pthread_spin_unlock(GLIBC_2.3)[SUSv3]
+
+====
+
+In LSB Core AMD64:
+
+In 11.7.2.1. Interfaces for Advanced Realtime Threads
+
+Replace
+
+   No external functions are defined for libpthread - Advanced
+   Realtime Threads in this part of the specification. See also
+   the generic specification, ISO/IEC 23360 Part 1.
+
+With
+
+   An LSB conforming implementation shall provide the architecture
+   specific functions for Advanced Realtime Threads specified in
+   Table 11-39, with the full mandatory functionality as described
+   in the referenced underlying specification.
+
+   Table 11-39. libpthread - Advanced Realtime Threads Function Interfaces
+   pthread_barrier_destroy(GLIBC_2.2.5) [SUSv3]
+   pthread_barrier_init(GLIBC_2.2.5) [SUSv3]
+   pthread_barrier_wait(GLIBC_2.2.5) [SUSv3]
+   pthread_barrierattr_destroy(GLIBC_2.2.5) [SUSv3]
+   pthread_barrierattr_init(GLIBC_2.2.5) [SUSv3]
+   pthread_barrierattr_setpshared(GLIBC_2.2.5) [SUSv3]
+   pthread_getcpuclockid(GLIBC_2.2.5) [SUSv3]
+   pthread_spin_destroy(GLIBC_2.2.5) [SUSv3]
+   pthread_spin_init(GLIBC_2.2.5) [SUSv3]
+   pthread_spin_lock(GLIBC_2.2.5) [SUSv3]
+   pthread_spin_trylock(GLIBC_2.2.5) [SUSv3]
+   pthread_spin_unlock(GLIBC_2.2.5) [SUSv3]
+
+
+In A.6. libpthread,
+In Table A-8. libpthread Function Interfaces,
+
+Add:
+
+   pthread_barrier_destroy(GLIBC_2.2.5)[SUSv3]
+   pthread_barrier_init(GLIBC_2.2.5)[SUSv3]
+   pthread_barrier_wait(GLIBC_2.2.5)[SUSv3]
+   pthread_barrierattr_destroy(GLIBC_2.2.5)[SUSv3]
+   pthread_barrierattr_init(GLIBC_2.2.5)[SUSv3]
+   pthread_barrierattr_setpshared(GLIBC_2.2.5)[SUSv3]
+   pthread_getcpuclockid(GLIBC_2.2.5)[SUSv3]
+   pthread_spin_destroy(GLIBC_2.2.5)[SUSv3]
+   pthread_spin_init(GLIBC_2.2.5)[SUSv3]
+   pthread_spin_lock(GLIBC_2.2.5)[SUSv3]
+   pthread_spin_trylock(GLIBC_2.2.5)[SUSv3]
+   pthread_spin_unlock(GLIBC_2.2.5)[SUSv3]
