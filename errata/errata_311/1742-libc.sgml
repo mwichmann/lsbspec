@@ -1,0 +1,192 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Editorial
+Status: Unapproved, new text
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1742
+
+Rationale: the gethostbyname2_r() has proven to be widely used in code
+that cannot be easily modified.  It is present in all implementations.
+Since the getaddrinfo() family is regarded as preferred for manipulating
+network addresses, it is added to this specification at LSB 3.2, with a
+status indicated as deprecated and subject to removal in future versions.
+
+
+In LSB Core Generic:
+
+
+In 13.3.16.1. Interfaces for System Database Interface
+
+Add to Table 13-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyaddr2_r [LSB]
+
+
+Add to Table 13-26. libc - System Database Interface Deprecated Function Interfaces
+   gethostbyaddr2_r [LSB] 
+   gethostbyname_r [LSB] 
+
+
+In 13.4.23. netdb.h
+
+Add:
+
+extern int gethostbyname2_r(const char *, int, struct hostent *, char *,
+                            size_t, struct hostent **, int *);
+
+
+In 13.5. Interface Definitions for libc
+
+Add to Table of Contents:
+
+   gethostbyname2_r -- find network host database entry matching
+          host name (DEPRECATED)
+
+Add:
+
+gethostbyname2_r
+
+Name
+
+   gethostbyname2_r -- find network host database entry matching
+   host name (DEPRECATED)
+
+Synopsis
+
+   int gethostbyname2_r(const char * restrict name, int af, struct
+   hostent * restrict result_buf, char * restrict buf, size_t
+   buflen, struct hostent ** restrict result, int * restrict
+   h_errnop);
+
+Description
+
+     Note: The gethostbyname2_r() function is deprecated;
+     applications should use getaddrinfo() instead.
+
+   The gethostbyname2_r() function shall search the network host
+   database for an entry with name name. gethostbyname2_r() is a
+   reentrant version of gethostbyname2(). These functions are
+   similar to the gethostbyname() and gethostbyname_r() functions
+   but additionally allow the search to be restricted to a
+   particular address family specified by af.
+
+   The application must provide a buffer for the
+   gethostbyname2_r() function to use during the lookup process.
+   The buffer is referenced by buf, and is of size buflen. If the
+   buffer is not of sufficient size, gethostbyname_r() may fail
+   and return ERANGE. If a matching entry is found in the
+   database, gethostbyname_r() shall copy the relevant information
+   to the application-supplied hostent structure referenced by
+   result_buf, and return a pointer to this structure in *result.
+   If no matching entry is found, *result shall be set to a null
+   pointer. Additional error information shall be set in the
+   variable referenced by h_errnop.
+
+Return Value
+
+   On success, the gethostbyname2_r() function shall return zero.
+   If the return value was ERANGE, the size of the buffer buf,
+   indicated by buflen, was too small. If the gethostbyname2_r()
+   function returns returns any other value, then the variable
+   referenced by h_errnop shall be set to indicate the cause as
+   for gethostbyname_r().
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyaddr2_r[LSB]
+
+
+====
+
+In LSB Core IA32, PPC32, S390:
+
+In 11.2.16.1. Interfaces for System Database Interface
+
+Add to Table 11-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.1.2) [LSB]
+
+
+Add to Table 11-26. libc - System Database Interface Deprecated Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.1.2) [LSB]
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.1.2)[LSB]
+
+
+====
+
+In LSB Core IA64, S390X:
+
+In 11.2.16.1. Interfaces for System Database Interface
+
+Add to Table 11-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.2) [LSB]
+
+
+Add to Table 11-26. libc - System Database Interface Deprecated Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.2) [LSB]
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.2)[LSB]
+
+
+====
+
+In LSB Core PPC64:
+
+In 11.2.16.1. Interfaces for System Database Interface
+
+Add to Table 11-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.3) [LSB]
+
+
+Add to Table 11-26. libc - System Database Interface Deprecated Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.3) [LSB]
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.3)[LSB]
+
+
+====
+
+In LSB Core AMD64:
+
+In 11.2.16.1. Interfaces for System Database Interface
+
+Add to Table 11-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.2.5) [LSB]
+
+
+Add to Table 11-26. libc - System Database Interface Deprecated Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.2.5) [LSB]
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyname2_r(GLIBC_2.2.5)[LSB]
+

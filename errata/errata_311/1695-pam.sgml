@@ -1,0 +1,128 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1695
+
+Rationale: the interfaces pam_getenv and pam_putenv, present in all
+implementations and widely used, were omitted from this specification.
+
+
+In LSB Core Generic:
+
+
+In 13.20.1.1. Interfaces for Pluggable Authentication API
+In Table 13-54. libpam - Pluggable Authentication API Function Interfaces
+
+Add:
+
+   pam_getenv [LSB]
+   pam_putenv [LSB]
+
+
+In 13.21.1. security/pam_appl.h
+
+Add:
+
+extern const char *pam_getenv(const pam_handle_t *, const char *);
+extern int pam_putenv(const pam_handle_t *, const char *);
+
+
+In 13.22. Interface Definitions for libpam
+
+Add to Table of Contents:
+
+   pam_getenv -- get a PAM environment variable
+   pam_putenv -- Add, replace or delete a PAM environment variable
+
+
+Add:
+
+pam_getenv
+
+Name
+
+   pam_getenv -- get a PAM environment variable
+
+Synopsis
+
+   #include <security/pam_appl.h>
+
+   const char * pam_getenv(const pam_handle_t * pamh, const char *
+   name);
+
+Description
+
+   The pam_getenv() function shall search the environment
+   associated with the PAM handle pamh for the environment
+   variable name. If the specified environment variable cannot be
+   found, a null pointer shall be returned. The application shall
+   ensure that it does not modify the string pointed to by the
+   pam_getenv() function.
+
+Return Value
+
+   On success, pam_getenv() returns a pointer to a string of the
+   form name=value.
+
+
+Add:
+
+pam_putenv
+
+Name
+
+   pam_putenv -- Add, replace or delete a PAM environment variable
+
+Synopsis
+
+   #include <security/pam_appl.h>
+
+   int pam_putenv(const pam_handle_t * pamh, const char *
+   name_value);
+
+Description
+
+   The pam_putenv() function shall modify the environment list
+   associated with pamh. If name_value contains an '=' character,
+   the characters to the left of the first '=' character represent
+   the name, and the remaining characters after the '=' represent
+   the value.
+
+   If the name environment variable exists in the environment
+   associated with pamh, it shall be modified to have the value
+   value. Otherwise, the name shall be added to the environment
+   associated with pamh with the value value.
+
+   If there is no '=' character in name_value, the variable in the
+   environment associated with pamh named name_value shall be
+   deleted.
+
+Return Value
+
+   On success, the pam_putenv() function shall return PAM_SUCCESS.
+   Otherwise the return value indicates the error:
+
+   PAM_PERM_DENIED
+
+   The name_value argument is a null pointer.
+   PAM_BAD_ITEM
+
+   The PAM environment varable named name_value does not exist and
+   therefore cannot be deleted.
+   PAM_ABORT
+
+   The PAM handle identifed by pamh is corrupt.
+   PAM_BUF_ERR
+
+   Memory buffer error.
+
+
+In A.6. libpam
+
+Add to Table A-9. libpam Function Interfaces:
+
+   pam_getenv[LSB]
+   pam_putenv[LSB]
+

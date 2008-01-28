@@ -1,0 +1,276 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Editorial
+Status: Unapproved, new text
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1634
+
+Rationale: the gethostbyname_r() function was withdrawn at LSB 3.0.
+However, this interface has proven widely used in code that cannot be
+easily modified and its removal was regarded as premature. Is is present
+in all implementation. It is restored to this specification at LSB 3.2.
+
+The related function gethostbyaddr_r(), which has never appeared in
+this specification, was also discovered to be needed in the short term,
+and is added.
+
+Since the getaddrinfo() family is regarded as preferred for manipulating
+network addresses, both of these interfaces are indicated as deprecated
+and subject to removal in future versions.
+
+
+In LSB Core Generic:
+
+
+In 13.3.16.1. Interfaces for System Database Interface
+
+Add to Table 13-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyaddr_r [LSB]
+   gethostbyname_r [LSB] 
+
+
+Add to Table 13-26. libc - System Database Interface Deprecated Function Interfaces
+   gethostbyaddr_r [LSB]
+   gethostbyname_r [LSB]
+
+
+In 13.4.23. netdb.h
+
+Add:
+
+extern int gethostbyname2_r(const char *, int, struct hostent *, char *,
+                            size_t, struct hostent **, int *);
+extern int gethostbyaddr_r(const void *, socklen_t, int, struct hostent*,
+                           char *, size_t, struct hostent **, int *);
+extern int gethostbyname_r(const char *, struct hostent *, char *, size_t,
+                           struct hostent **, int *);
+
+
+In 13.5. Interface Definitions for libc
+
+Add to Table of Contents:
+
+   gethostbyaddr_r -- find network host database entry matching
+          host name (DEPRECATED)
+
+   gethostbyname_r -- find network host database entry matching
+          host name (DEPRECATED)
+
+
+Add:
+
+gethostbyaddr_r
+
+Name
+
+   gethostbyaddr_r -- find network host database entry matching
+   host name (DEPRECATED)
+
+Synopsis
+
+   #include <netdb.h>
+
+   int gethostbyaddr_r(const void * restrict addr, socklen_t len,
+   int type, struct hostent * restrict result_buf, char * restrict
+   buf, size_t buflen, struct hostent * * restrict result, int *
+   h_errnop);
+
+Description
+
+     Note: The gethostbyaddr_r() function is deprecated;
+     applications should use getaddrinfo() instead.
+
+   gethostbyaddr_r() is a reentrant version of gethostbyaddr()
+   that searches the network host database for a host address
+   match.
+
+   The gethostbyaddr_r() function shall search the network host
+   database for an entry of address family type with the host with
+   address addr. The len argument contains the length of the
+   address referenced by addr.
+
+   If type is AF_INET, the addr argument shall be an in_addr
+   structure. If type is AF_INET6, the addr argument shall be an
+   in6_addr structure. If type is any other value, the behavior is
+   unspecified.
+
+   The application must provide a buffer for the gethostbyaddr_r()
+   to use during the lookup process. The buffer is referenced by
+   buf, and is of size buflen. If the buffer is not of sufficient
+   size, gethostbyaddr_r() may fail and return ERANGE. If a
+   matching entry is found in the database, gethostbyaddr_r()
+   shall copy the relevant information to the application supplied
+   hostent structure referenced by result_buf, and return a
+   pointer to this structure in *result. If no matching entry is
+   found, *result shall be set to a null pointer. Additional error
+   information shall be set in the variable referenced by
+   h_errnop.
+
+Return Value
+
+   On success, the gethostbyaddr_r() function shall return zero.
+   If the return value was ERANGE, the size of the buffer buf,
+   indicated by buflen, was too small. If the gethostbyaddr_r()
+   function returns returns any other value, then the variable
+   referenced by h_errnop shall be set to indicate the cause as
+   for gethostbyaddr().
+
+
+Add:
+
+gethostbyname_r
+
+Name
+
+   gethostbyname_r -- find network host database entry matching
+   host name (DEPRECATED)
+
+Synopsis
+
+   int gethostbyname_r(const char * restrict name, struct hostent
+   * restrict result_buf, char * restrict buf, size_t buflen,
+   struct hostent ** restrict result, int * restrict h_errnop);
+
+Description
+
+     Note: The gethostbyname_r() function is deprecated;
+     applications should use getaddrinfo() instead.
+
+   gethostbyname_r() is a reentrant version of gethostbyname()
+   that searches the network host database for a host name match.
+
+   The gethostbyname_r() function shall search the network host
+   database for an entry with name name.
+
+   The application must provide a buffer for the gethostbyname_r()
+   to use during the lookup process. The buffer is referenced by
+   buf, and is of size buflen. If the buffer is not of sufficient
+   size, gethostbyname_r() may fail and return ERANGE. If a
+   matching entry is found in the database, gethostbyname_r()
+   shall copy the relevant information to the application supplied
+   hostent structure referenced by result_buf, and return a
+   pointer to this structure in *result. If no matching entry is
+   found, *result shall be set to a null pointer. Additional error
+   information shall be set in the variable referenced by
+   h_errnop.
+
+Return Value
+
+   On success, the gethostbyname_r() function shall return zero.
+   If the return value was ERANGE, the size of the buffer buf,
+   indicated by buflen, was too small. If the gethostbyname_r()
+   function returns returns any other value, then the variable
+   referenced by h_errnop shall be set to indicate the cause as
+   for gethostbyname().
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyaddr_r[LSB]
+   gethostbyname_r[LSB]
+
+====
+
+In LSB Core IA32, PPC32, S390:
+
+
+In 11.2.16.1. Interfaces for System Database Interface
+
+Add to Table 11-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.1.2) [LSB]
+   gethostbyname_r(GLIBC_2.1.2) [LSB] 
+
+Add to Table 11-26. libc - System Database Interface Deprecated Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.1.2) [LSB]
+   gethostbyname_r(GLIBC_2.1.2) [LSB]
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.1.2)[LSB]
+   gethostbyname_r(GLIBC_2.1.2)[LSB]
+
+====
+
+In LSB Core IA64, S390X:
+
+
+In 11.2.16.1. Interfaces for System Database Interface
+
+Add to Table 11-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.2) [LSB]
+   gethostbyname_r(GLIBC_2.2) [LSB] 
+
+Add to Table 11-26. libc - System Database Interface Deprecated Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.2) [LSB]
+   gethostbyname_r(GLIBC_2.2) [LSB]
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.2)[LSB]
+   gethostbyname_r(GLIBC_2.2)[LSB]
+
+
+====
+
+In LSB Core PPC64:
+
+
+In 11.2.16.1. Interfaces for System Database Interface
+
+Add to Table 11-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.3) [LSB]
+   gethostbyname_r(GLIBC_2.3) [LSB] 
+
+Add to Table 11-26. libc - System Database Interface Deprecated Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.3) [LSB]
+   gethostbyname_r(GLIBC_2.3) [LSB]
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.3)[LSB]
+   gethostbyname_r(GLIBC_2.3)[LSB]
+
+
+====
+
+In LSB Core AMD64:
+
+
+In 11.2.16.1. Interfaces for System Database Interface
+
+Add to Table 11-25. libc - System Database Interface Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.2.5) [LSB]
+   gethostbyname_r(GLIBC_2.2.5) [LSB] 
+
+Add to Table 11-26. libc - System Database Interface Deprecated Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.2.5) [LSB]
+   gethostbyname_r(GLIBC_2.2.5) [LSB]
+
+
+In A.1. libc
+
+Add to Table A-1. libc Function Interfaces:
+
+   gethostbyaddr_r(GLIBC_2.2.5)[LSB]
+   gethostbyname_r(GLIBC_2.2.5)[LSB]
+
