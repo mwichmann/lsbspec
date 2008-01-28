@@ -1,0 +1,695 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, AMD64, PPC32, PPC64, S390, S390X
+Edition of Specification: 3.1 Update 1
+Type: Editorial
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1767
+
+Rationale: several areas of this specification relating to the set of
+ISOC99 math macros fpclassify, signbit, isfinite, isnan and isinf were
+found to be incorrectly or incompletely specified.
+
+The HUGE_VALL constant was incorrectly defined as generic, while
+its value is architecture specific.
+
+The internal __signbit and __signbitf interfaces, used by the macros,
+were omitted from the S390, S390X and AMD64 architecutures.
+
+The isfinite, isinf and isnan macros were incorrectly defined
+as generic.
+
+The internal interfaces __finite, __finitef, __finitel, __signbit
+and __signbitf were icorrectly shown as specified by ISOC99, which
+contains no such definitions, and so were effectively unspecified.
+
+
+In LSB Core Generic:
+
+
+In 13.6.1.1. Interfaces for Math
+
+Change:
+
+   Table 13-25. libm - Math Function Interfaces
+   ...
+   __finite [ISOC99] __finitef [ISOC99] __finitel [ISOC99]
+   __signbit [ISOC99] __signbitf [ISOC99]
+
+To:
+
+   Table 13-34. libm - Math Function Interfaces
+   ...
+   __finite [LSB] __finitef [LSB] __finitel [LSB]
+   __signbit [LSB] __signbitf [LSB]
+
+
+In 13.7.3. math.h
+
+Delete:
+
+#define HUGE_VALL       0x1.0p32767L
+
+
+Delete:
+
+#define isfinite(x)     \
+        (sizeof (x) == sizeof (float) ? __finitef (x) : sizeof (x) == sizeof (double)? __finite (x) : __finitel (x))
+#define isinf(x)        \
+        (sizeof (x) == sizeof (float) ? __isinff (x): sizeof (x) == sizeof (double) ? __isinf (x) : __isinfl (x))
+#define isnan(x)        \
+        (sizeof (x) == sizeof (float) ? __isnanf (x)  : sizeof (x) == sizeof (double) ? __isnan (x) : __isnanl (x))
+
+
+In 13.8. Interface Definitions for libm
+
+Add to Table of Contents:
+
+   __finite -- test for infinity
+   __finitef -- test for infinity
+   __finitel -- test for infinity
+   __signbit -- test sign of floating point value
+   __signbitf -- test sign of floating point value
+
+
+Add:
+
+__finite
+
+Name
+
+   __finite -- test for infinity
+
+Synopsis
+
+   #include <math.h>
+
+   int __finite(double arg);
+
+Description
+
+   __finite() has the same specification as isfinite() in ISO
+   POSIX (2003), except that the argument type for __finite() is
+   known to be double.
+
+   __finite() is not in the source standard; it is only in the
+   binary standard.
+
+
+Add:
+
+__finitef
+
+Name
+
+   __finitef -- test for infinity
+
+Synopsis
+
+   #include <math.h>
+
+   int __finitef(float arg);
+
+Description
+
+   __finitef() has the same specification as isfinite() in ISO
+   POSIX (2003) except that the argument type for __finitef() is
+   known to be float.
+
+   __finitef() is not in the source standard; it is only in the
+   binary standard.
+
+
+Add:
+
+__finitel
+
+Name
+
+   __finitel -- test for infinity
+
+Synopsis
+
+   #include <math.h>
+
+   int __finitel(long double arg);
+
+Description
+
+   __finitel() has the same specification as isfinite() in the ISO
+   POSIX (2003), except that the argument type for __finitel() is
+   known to be long double.
+
+   __finitel() is not in the source standard; it is only in the
+   binary standard.
+
+
+Add:
+
+__signbit
+
+Name
+
+   __signbit -- test sign of floating point value
+
+Synopsis
+
+   #include <math.h>
+
+   int __signbit(double arg);
+
+Description
+
+   __signbit() has the same specification as signbit() in ISO
+   POSIX (2003), except that the argument type for __signbit() is
+   known to be double.
+
+   __signbit() is not in the source standard; it is only in the
+   binary standard.
+
+
+Add:
+
+__signbitf
+
+Name
+
+   __signbitf -- test sign of floating point value
+
+Synopsis
+
+   #include <math.h>
+
+   int __signbitf(float arg);
+
+Description
+
+   __signbitf() has the same specification as signbit() in ISO
+   POSIX (2003), except that the argument type for __signbitf() is
+   known to be float.
+
+   __signbitf() is not in the source standard; it is only in the
+   binary standard.
+
+
+In A.4. libm
+
+In Table A-5. libm Function Interfaces:
+
+Change:
+
+   __finite[ISOC99]
+   __finitef[ISOC99]
+   __finitel[ISOC99]
+   __signbit[ISOC99]
+   __signbitf[ISOC99]
+
+To:
+
+   __finite[LSB]
+   __finitef[LSB]
+   __finitel[LSB]
+   __signbit[LSB]
+   __signbitf[LSB]
+
+
+====
+
+In LSB Core IA32
+
+In 11.4.1.1. Interfaces for Math
+
+Change
+
+   Table 11-25. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.1) [ISOC99]
+   __finitef(GLIBC_2.1) [ISOC99]
+   __finitel(GLIBC_2.1) [ISOC99]
+   __signbit(GLIBC_2.1) [ISOC99]
+   __signbitf(GLIBC_2.1) [ISOC99]
+
+To:
+
+   Table 11-34. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.1) [LSB]
+   __finitef(GLIBC_2.1) [LSB]
+   __finitel(GLIBC_2.1) [LSB]
+   __signbit(GLIBC_2.1) [LSB]
+   __signbitf(GLIBC_2.1) [LSB]
+
+
+In 11.5.3. math.h
+
+Add:
+
+#define isfinite(x)     \
+     (sizeof (x) == sizeof (float) ? __finitef (x) : sizeof (x) == sizeof (double)? __finite (x) : __finitel (x))
+#define isinf(x)        \
+     (sizeof (x) == sizeof (float) ? __isinff (x): sizeof (x) == sizeof(double) ? __isinf (x) : __isinfl (x))
+#define isnan(x)        \
+     (sizeof (x) == sizeof (float) ? __isnanf (x)  : sizeof (x) == sizeof (double) ? __isnan (x) : __isnanl (x))
+
+#define HUGE_VALL       0x1.0p32767L
+
+
+In A.5. libm
+
+Change:
+
+   Table A-2. libm Function Interfaces
+   ...
+   __finite[ISOC99]
+   __finitef[ISOC99]
+   __finitel[ISOC99]
+   __signbit[ISOC99]
+   __signbitf[ISOC99]
+
+To:
+
+   Table A-6. libm Function Interfaces
+   ...
+   __finite(GLIBC_2.1)[LSB]
+   __finitef(GLIBC_2.1)[LSB]
+   __finitel(GLIBC_2.1)[LSB]
+   __signbit(GLIBC_2.1)[LSB]
+   __signbitf(GLIBC_2.1)[LSB]
+
+NOTE: prior to LSB 3.2 interfaces that did not list LSB as the governing
+specification did not appear in the Appendices in the architecture
+specifications so the entries listed above had the noted values but did
+not actually display.
+
+====
+
+In LSB Core IA64
+
+In 11.4.1.1. Interfaces for Math
+
+Change
+
+   Table 11-25. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.2) [ISOC99]
+   __finitef(GLIBC_2.2) [ISOC99]
+   __finitel(GLIBC_2.2) [ISOC99]
+   __signbit(GLIBC_2.2) [ISOC99]
+   __signbitf(GLIBC_2.2) [ISOC99]
+
+To:
+
+   Table 11-34. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.2) [LSB]
+   __finitef(GLIBC_2.2) [LSB]
+   __finitel(GLIBC_2.2) [LSB]
+   __signbit(GLIBC_2.2) [LSB]
+   __signbitf(GLIBC_2.2) [LSB]
+
+
+In 11.5.3. math.h
+
+Add:
+
+#define isfinite(x)     \
+     (sizeof (x) == sizeof (float) ? __finitef (x) : sizeof (x) == sizeof (double)? __finite (x) : __finitel (x))
+#define isinf(x)        \
+     (sizeof (x) == sizeof (float) ? __isinff (x): sizeof (x) == sizeof(double) ? __isinf (x) : __isinfl (x))
+#define isnan(x)        \
+     (sizeof (x) == sizeof (float) ? __isnanf (x)  : sizeof (x) == sizeof (double) ? __isnan (x) : __isnanl (x))
+
+#define HUGE_VALL       0x1.0p32767L
+
+
+In A.5. libm
+
+Change:
+
+   Table A-2. libm Function Interfaces
+   ...
+   __finite[ISOC99]
+   __finitef[ISOC99]
+   __finitel[ISOC99]
+   __signbit[ISOC99]
+   __signbitf[ISOC99]
+
+To:
+
+   Table A-6. libm Function Interfaces
+   ...
+   __finite(GLIBC_2.2)[LSB]
+   __finitef(GLIBC_2.2)[LSB]
+   __finitel(GLIBC_2.2)[LSB]
+   __signbit(GLIBC_2.2)[LSB]
+   __signbitf(GLIBC_2.2)[LSB]
+
+NOTE: prior to LSB 3.2 interfaces that did not list LSB as the
+governing specification did not appear in the Appendices in the architecture
+specifications so the entries listed above had the noted values but did not
+actually display.
+
+====
+
+In LSB Core AMD64:
+
+In 11.4.1.1. Interfaces for Math
+
+Change
+
+   Table 11-25. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.2.5) [ISOC99]
+   __finitef(GLIBC_2.2.5) [ISOC99]
+   __finitel(GLIBC_2.2.5) [ISOC99]
+
+To:
+
+   Table 11-34. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.2.5) [LSB]
+   __finitef(GLIBC_2.2.5) [LSB]
+   __finitel(GLIBC_2.2.5) [LSB]
+
+Add:
+
+   __signbit(GLIBC_2.2.5) [LSB]
+   __signbitf(GLIBC_2.2.5) [LSB]
+
+
+In 11.5.3. math.h
+
+Add:
+
+#define isfinite(x)     \
+     (sizeof (x) == sizeof (float) ? __finitef (x) : sizeof (x) == sizeof (double)? __finite (x) : __finitel (x))
+#define isinf(x)        \
+     (sizeof (x) == sizeof (float) ? __isinff (x): sizeof (x) == sizeof(double) ? __isinf (x) : __isinfl (x))
+#define isnan(x)        \
+     (sizeof (x) == sizeof (float) ? __isnanf (x)  : sizeof (x) == sizeof (double) ? __isnan (x) : __isnanl (x))
+
+#define HUGE_VALL       0x1.0p32767L
+
+
+In A.5. libm
+
+Change:
+
+   Table A-2. libm Function Interfaces
+   ...
+   __finite[ISOC99]
+   __finitef[ISOC99]
+   __finitel[ISOC99]
+
+To:
+
+   Table A-6. libm Function Interfaces
+   ...
+   __finite(GLIBC_2.2.5)[LSB]
+   __finitef(GLIBC_2.2.5)[LSB]
+   __finitel(GLIBC_2.2.5)[LSB]
+
+Add:
+
+   __signbit(GLIBC_2.2.5)[LSB]
+   __signbitf(GLIBC_2.2.5)[LSB]
+
+NOTE: prior to LSB 3.2 interfaces that did not list LSB as the governing
+specification did not appear in the Appendices in the architecture
+specifications so the entries listed above had the noted values but did
+not actually display.
+
+====
+
+In LSB Core PPC32:
+
+In 11.4.1.1. Interfaces for Math
+
+Change
+
+   Table 11-25. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.1) [ISOC99]
+   __finitef(GLIBC_2.1) [ISOC99]
+   __finitel(GLIBC_2.1) [ISOC99]
+   __signbit(GLIBC_2.1) [ISOC99]
+   __signbitf(GLIBC_2.1) [ISOC99]
+
+To:
+
+   Table 11-34. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.1) [LSB]
+   __finitef(GLIBC_2.1) [LSB]
+   __finitel(GLIBC_2.1) [LSB]
+   __signbit(GLIBC_2.1) [LSB]
+   __signbitf(GLIBC_2.1) [LSB]
+
+
+In 11.5.3. math.h
+
+Add:
+
+#define isfinite(x)     \
+     (sizeof (x) == sizeof (float) ? __finitef (x) : __finite (x))
+#define isinf(x)        \
+     (sizeof (x) == sizeof (float) ? __isinff (x) : __isinf (x))
+#define isnan(x)        \
+     (sizeof (x) == sizeof (float) ? __isnanf (x) : __isnan (x))
+
+#define HUGE_VALL       0x1.0p2047L
+
+
+In A.5. libm
+
+Change:
+
+   Table A-2. libm Function Interfaces
+   ...
+   __finite[ISOC99]
+   __finitef[ISOC99]
+   __finitel[ISOC99]
+   __signbit[ISOC99]
+   __signbitf[ISOC99]
+
+To:
+
+   Table A-6. libm Function Interfaces
+   ...
+   __finite(GLIBC_2.1)[LSB]
+   __finitef(GLIBC_2.1)[LSB]
+   __finitel(GLIBC_2.1)[LSB]
+   __signbit(GLIBC_2.1)[LSB]
+   __signbitf(GLIBC_2.1)[LSB]
+
+NOTE: prior to LSB 3.2 interfaces that did not list LSB as the governing
+specification did not appear in the Appendices in the architecture
+specifications so the entries listed above had the noted values but did
+not actually display.
+
+====
+
+In LSB Core PPC64:
+
+In 11.4.1.1. Interfaces for Math
+
+Change
+
+   Table 11-25. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.3) [ISOC99]
+   __finitef(GLIBC_2.3) [ISOC99]
+   __finitel(GLIBC_2.3) [ISOC99]
+   __signbit(GLIBC_2.3) [ISOC99]
+   __signbitf(GLIBC_2.3) [ISOC99]
+
+To:
+
+   Table 11-34. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.3) [LSB]
+   __finitef(GLIBC_2.3) [LSB]
+   __finitel(GLIBC_2.3) [LSB]
+   __signbit(GLIBC_2.3) [LSB]
+   __signbitf(GLIBC_2.3) [LSB]
+
+
+In 11.5.3. math.h
+
+Add:
+
+#define isfinite(x)     \
+     (sizeof (x) == sizeof (float) ? __finitef (x) : __finite (x))
+#define isinf(x)        \
+     (sizeof (x) == sizeof (float) ? __isinff (x) : __isinf (x))
+#define isnan(x)        \
+     (sizeof (x) == sizeof (float) ? __isnanf (x) : __isnan (x))
+
+#define HUGE_VALL       0x1.0p2047L
+
+
+In A.5. libm
+
+Change:
+
+   Table A-2. libm Function Interfaces
+   ...
+   __finite[ISOC99]
+   __finitef[ISOC99]
+   __finitel[ISOC99]
+   __signbit[ISOC99]
+   __signbitf[ISOC99]
+
+To:
+
+   Table A-6. libm Function Interfaces
+   ...
+   __finite(GLIBC_2.3)[LSB]
+   __finitef(GLIBC_2.3)[LSB]
+   __finitel(GLIBC_2.3)[LSB]
+   __signbit(GLIBC_2.3)[LSB]
+   __signbitf(GLIBC_2.3)[LSB]
+
+NOTE: prior to LSB 3.2 interfaces that did not list LSB as the governing
+specification did not appear in the Appendices in the architecture
+specifications so the entries listed above had the noted values but did
+not actually display.
+
+====
+
+In LSB Core S390:
+
+In 11.4.1.1. Interfaces for Math
+
+Change
+
+   Table 11-25. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.1) [ISOC99]
+   __finitef(GLIBC_2.1) [ISOC99]
+   __finitel(GLIBC_2.1) [ISOC99]
+
+To:
+
+   Table 11-34. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.1) [LSB]
+   __finitef(GLIBC_2.1) [LSB]
+   __finitel(GLIBC_2.1) [LSB]
+
+Add:
+
+   __signbit(GLIBC_2.1) [LSB]
+   __signbitf(GLIBC_2.1) [LSB]
+
+
+In 11.5.3. math.h
+
+Add:
+
+#define isfinite(x)     \
+     (sizeof (x) == sizeof (float) ? __finitef (x) : __finite (x))
+#define isinf(x)        \
+     (sizeof (x) == sizeof (float) ? __isinff (x) : __isinf (x))
+#define isnan(x)        \
+     (sizeof (x) == sizeof (float) ? __isnanf (x) : __isnan (x))
+
+#define HUGE_VALL       0x1.0p32767L
+
+
+In A.5. libm
+
+Change:
+
+   Table A-2. libm Function Interfaces
+   ...
+   __finite[ISOC99]
+   __finitef[ISOC99]
+   __finitel[ISOC99]
+
+To:
+
+   Table A-6. libm Function Interfaces
+   ...
+   __finite(GLIBC_2.1)[LSB]
+   __finitef(GLIBC_2.1)[LSB]
+   __finitel(GLIBC_2.1)[LSB]
+
+Add:
+
+   __signbit(GLIBC_2.1)[LSB]
+   __signbitf(GLIBC_2.1)[LSB]
+
+NOTE: prior to LSB 3.2 interfaces that did not list LSB as the governing
+specification did not appear in the Appendices in the architecture
+specifications so the entries listed above had the noted values but did
+not actually display.
+
+====
+
+In LSB Core S390X:
+
+In 11.4.1.1. Interfaces for Math
+
+Change
+
+   Table 11-25. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.2) [ISOC99]
+   __finitef(GLIBC_2.2) [ISOC99]
+   __finitel(GLIBC_2.2) [ISOC99]
+
+To:
+
+   Table 11-34. libm - Math Function Interfaces
+   ...
+   __finite(GLIBC_2.2) [LSB]
+   __finitef(GLIBC_2.2) [LSB]
+   __finitel(GLIBC_2.2) [LSB]
+
+Add:
+
+   __signbit(GLIBC_2.2) [LSB]
+   __signbitf(GLIBC_2.2) [LSB]
+
+
+In 11.5.3. math.h
+
+Add:
+
+#define isfinite(x)     \
+     (sizeof (x) == sizeof (float) ? __finitef (x) : __finite (x))
+#define isinf(x)        \
+     (sizeof (x) == sizeof (float) ? __isinff (x) : __isinf (x))
+#define isnan(x)        \
+     (sizeof (x) == sizeof (float) ? __isnanf (x) : __isnan (x))
+
+#define HUGE_VALL       0x1.0p32767L
+
+
+In A.5. libm
+
+Change:
+
+   Table A-2. libm Function Interfaces
+   ...
+   __finite[ISOC99]
+   __finitef[ISOC99]
+   __finitel[ISOC99]
+
+To:
+
+   Table A-6. libm Function Interfaces
+   ...
+   __finite(GLIBC_2.2)[LSB]
+   __finitef(GLIBC_2.2)[LSB]
+   __finitel(GLIBC_2.2)[LSB]
+
+Add:
+
+   __signbit(GLIBC_2.2)[LSB]
+   __signbitf(GLIBC_2.2)[LSB]
+
+NOTE: prior to LSB 3.2 interfaces that did not list LSB as the governing
+specification did not appear in the Appendices in the architecture
+specifications so the entries listed above had the noted values but did
+not actually display.
