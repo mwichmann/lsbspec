@@ -1,56 +1,83 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES=__assert_fail.sgml __ctype_b_loc.sgml __ctype_tolower_loc.sgml __ctype_toupper_loc.sgml \
-	__cxa_atexit.sgml __environ.sgml \
-	__fpclassify.sgml __fpclassifyf.sgml __h_errno_location.sgml \
-	__errno_location.sgml __fpending.sgml __getpgid.sgml __mempcpy.sgml \
-	__rawmemchr.sgml __sysconf.sgml _environ.sgml _IO_feof.sgml \
-	_IO_getc.sgml _IO_putc.sgml _IO_puts.sgml __libc_start_main.sgml \
-	__lxstat.sgml \
-	_nl_msg_cat_cntr.sgml _obstack_begin.sgml _obstack_newchunk.sgml \
-	__stpcpy.sgml __strtod_internal.sgml __strtol_internal.sgml _sys_errlist.sgml \
-	__timezone.sgml __tzname.sgml __xstat.sgml __xstat64.sgml \
-	__xpg_basename.sgml  __xpg_sigpause.sgml  __xpg_strerror_r.sgml \
-	_sys_siglist.sgml __xmknod.sgml acct.sgml adjtime.sgml adjtimex.sgml \
-	bindtextdomain.sgml cfmakeraw.sgml \
-	creat.sgml fopen.sgml freopen.sgml \
-	cfsetspeed.sgml daemon.sgml dcgettext.sgml dladdr.sgml endutent.sgml \
-	err.sgml error.sgml errx.sgml flock.sgml fcntl.sgml getdomainname.sgml \
-	gethostbyname_r.sgml gethostbyaddr_r.sgml getloadavg.sgml getopt.sgml getopt_long.sgml \
-	getopt_long_only.sgml getservbyname.sgml getservent.sgml \
-	gettext.sgml getutent.sgml getutent_r.sgml glob64.sgml \
-	getgrouplist.sgml htons.sgml inet_aton.sgml inet_ntoa.sgml \
-	initgroups.sgml ioctl.sgml iswctype.sgml kill.sgml llabs.sgml \
-	link.sgml mbsnrtowcs.sgml memmem.sgml memrchr.sgml \
-	mkstemp64.sgml ntohs.sgml obstack_free.sgml opterr.sgml \
-	optind.sgml optopt.sgml regexec.sgml readdir64_r.sgml posix_fadvise64.sgml \
-	posix_fallocate64.sgml psignal.sgml putwchar.sgml pwrite64.sgml sem_timedwait.sgml \
-	setbuffer.sgml setegid.sgml seteuid.sgml setgroups.sgml \
-	sethostid.sgml sethostname.sgml setsockopt.sgml \
-	setutent.sgml getsockopt.sgml sched_setscheduler.sgml \
-	sigandset.sgml sigblock.sgml siggetmask.sgml sigisemptyset.sgml sigorset.sgml \
-	sigpause.sgml sigreturn.sgml sigsetmask.sgml sigvec.sgml sockio.sgml stime.sgml stpcpy.sgml \
-	stpncpy.sgml strcasestr.sgml strerror_r.sgml strfry.sgml strndup.sgml \
-	strnlen.sgml strsep.sgml strsignal.sgml strtok_r.sgml strtoq.sgml strtouq.sgml \
-	strverscmp.sgml system.sgml textdomain.sgml unlink.sgml \
-	svc_register.sgml svc_run.sgml \
-	ttyio.sgml vasprintf.sgml vdprintf.sgml \
-	verrx.sgml wait4.sgml warn.sgml warnx.sgml wcpcpy.sgml wcpncpy.sgml \
-	wcscasecmp.sgml wcsdup.sgml wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml \
-	wcstoq.sgml wcstouq.sgml ngettext.sgml dgettext.sgml dngettext.sgml \
-	dcgettext.sgml dcngettext.sgml bind_textdomain_codeset.sgml \
-	pmap_getport.sgml pmap_set.sgml svc_run.sgml __register_atfork.sgml \
-	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml dladdr.sgml \
-	dlopen.sgml dlsym.sgml wait3.sgml utmpname.sgml \
-	pam_acct_mgmt.sgml pam_authenticate.sgml pam_chauthtok.sgml pam_close_session.sgml \
-	pam_end.sgml pam_fail_delay.sgml pam_getenvlist.sgml pam_get_item.sgml \
-	pam_open_session.sgml pam_setcred.sgml pam_set_item.sgml pam_start.sgml pam_strerror.sgml \
-	pam_getenv.sgml pam_putenv.sgml \
-	uselocale.sgml newlocale.sgml duplocale.sgml freelocale.sgml \
-	fscanf.sgml fwscanf.sgml scanf.sgml sscanf.sgml swscanf.sgml \
+# this list needs to be updated as new manpages are added
+# it may be easier to manage if left ordered by library
+MANPAGES= _IO_feof.sgml _IO_getc.sgml _IO_putc.sgml _IO_puts.sgml \
+	__assert_fail.sgml __ctype_b_loc.sgml __ctype_get_mb_cur_max.sgml \
+	__ctype_tolower_loc.sgml __ctype_toupper_loc.sgml \
+	__cxa_atexit.sgml __cxa_finalize.sgml \
+	__daylight.sgml __environ.sgml __errno_location.sgml \
+	__fpending.sgml __fxstat.sgml __fxstat64.sgml \
+	__getpagesize.sgml __getpgid.sgml __h_errno_location.sgml \
+	__isinf.sgml __isinff.sgml __isinfl.sgml __isnan.sgml \
+	__isnanf.sgml __isnanl.sgml __libc_current_sigrtmax.sgml \
+	__libc_current_sigrtmin.sgml __libc_start_main.sgml \
+	__lxstat.sgml __lxstat64.sgml __mempcpy.sgml __rawmemchr.sgml \
+	__register_atfork.sgml __sigsetjmp.sgml __stpcpy.sgml  \
+	__strdup.sgml __strtok_r.sgml \
+	__strtod_internal.sgml __strtof_internal.sgml __strtol_internal.sgml \
+	__strtold_internal.sgml __strtoll_internal.sgml \
+	__strtoul_internal.sgml __strtoull_internal.sgml \
+	__sysconf.sgml __sysv_signal.sgml __timezone.sgml __tzname.sgml \
+	__wcstod_internal.sgml __wcstof_internal.sgml __wcstol_internal.sgml \
+	__wcstold_internal.sgml __wcstoul_internal.sgml \
+	__xmknod.sgml __xpg_basename.sgml __xpg_sigpause.sgml \
+	__xpg_strerror_r.sgml __xstat.sgml __xstat64.sgml \
+	_environ.sgml _nl_msg_cat_cntr.sgml _sys_errlist.sgml \
+	_sys_siglist.sgml acct.sgml adjtime.sgml asprintf.sgml basename.sgml \
+	bind_textdomain_codeset.sgml bindresvport.sgml \
+	bindtextdomain.sgml cfmakeraw.sgml cfsetspeed.sgml daemon.sgml \
+	dcgettext.sgml dcngettext.sgml dgettext.sgml dngettext.sgml \
+	duplocale.sgml endutent.sgml err.sgml error.sgml errx.sgml \
+	fcntl.sgml fflush_unlocked.sgml fgetwc_unlocked.sgml \
+	flock.sgml freelocale.sgml fscanf.sgml fstatfs.sgml fstatfs64.sgml \
+	fwscanf.sgml getdomainname.sgml getdtablesize.sgml getgrouplist.sgml \
+	gethostbyaddr_r.sgml gethostbyname2.sgml gethostbyname2_r.sgml \
+	gethostbyname_r.sgml getloadavg.sgml getopt.sgml getopt_long.sgml \
+	getopt_long_only.sgml getpagesize.sgml getsockopt.sgml gettext.sgml \
+	getutent.sgml getutent_r.sgml glob64.sgml globfree64.sgml \
+	inet_aton.sgml initgroups.sgml ioctl.sgml kill.sgml link.sgml \
+	mbsnrtowcs.sgml memmem.sgml memrchr.sgml mremap.sgml newlocale.sgml \
+	ngettext.sgml pmap_getport.sgml pmap_set.sgml pmap_unset.sgml \
+	posix_fadvise64.sgml posix_fallocate64.sgml psignal.sgml \
+	readdir64_r.sgml regexec.sgml scanf.sgml sched_setscheduler.sgml \
+	setbuffer.sgml setgroups.sgml sethostname.sgml setsockopt.sgml \
+	setutent.sgml sigandset.sgml sigisemptyset.sgml sigorset.sgml \
+	sigpause.sgml sigreturn.sgml sscanf.sgml statfs.sgml statfs64.sgml \
+	stime.sgml stpcpy.sgml stpncpy.sgml strcasestr.sgml strerror_r.sgml \
+	strndup.sgml strnlen.sgml strptime.sgml strsep.sgml strsignal.sgml \
+	strtoq.sgml strtouq.sgml svc_register.sgml svc_run.sgml \
+	svc_sendreply.sgml svctcp_create.sgml svcudp_create.sgml \
+	swscanf.sgml sysconf.sgml system.sgml textdomain.sgml unlink.sgml \
+	uselocale.sgml utmpname.sgml vasprintf.sgml vdprintf.sgml verrx.sgml \
 	vfscanf.sgml vfwscanf.sgml vscanf.sgml vsscanf.sgml vswscanf.sgml \
-	vwscanf.sgml wscanf.sgml __cxa_finalize.sgml
+	vsyslog.sgml vwscanf.sgml wait4.sgml waitpid.sgml warn.sgml \
+	warnx.sgml wcpcpy.sgml wcpncpy.sgml wcscasecmp.sgml wcsdup.sgml \
+	wcsncasecmp.sgml wcsnlen.sgml wcsnrtombs.sgml wcstoq.sgml \
+	wcstouq.sgml wscanf.sgml xdr_u_int.sgml xdrstdio_create.sgml \
+	dladdr.sgml dlopen.sgml dlsym.sgml \
+	__finite.sgml __finitef.sgml __finitel.sgml  \
+	__fpclassify.sgml __fpclassifyf.sgml __signbit.sgml __signbitf.sgml \
+	clog10.sgml clog10f.sgml clog10l.sgml \
+	drem.sgml dremf.sgml dreml.sgml \
+	exp10.sgml exp10f.sgml exp10l.sgml \
+	fedisableexcept.sgml feenableexcept.sgml fegetexcept.sgml \
+	finite.sgml finitef.sgml finitel.sgml \
+	gamma.sgml gammaf.sgml gammal.sgml \
+	j0f.sgml j0l.sgml j1f.sgml j1l.sgml jnf.sgml jnl.sgml \
+	lgamma_r.sgml lgammaf_r.sgml lgammal_r.sgml \
+	pow10.sgml pow10f.sgml pow10l.sgml \
+	scalbf.sgml scalbl.sgml \
+	significand.sgml significandf.sgml significandl.sgml \
+	sincos.sgml sincosf.sgml sincosl.sgml \
+	y0f.sgml y0l.sgml y1f.sgml y1l.sgml ynf.sgml ynl.sgml \
+	pam_acct_mgmt.sgml pam_authenticate.sgml pam_chauthtok.sgml \
+	pam_close_session.sgml pam_end.sgml pam_fail_delay.sgml \
+	pam_get_item.sgml pam_getenv.sgml pam_getenvlist.sgml \
+	pam_open_session.sgml pam_putenv.sgml pam_set_item.sgml \
+	pam_setcred.sgml pam_start.sgml pam_strerror.sgml \
+	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml \
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
