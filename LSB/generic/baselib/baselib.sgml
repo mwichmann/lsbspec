@@ -11767,9 +11767,9 @@ the host with address <parameter>addr</parameter>. The <parameter>len</parameter
 </PARA>
 <PARA>
 If <parameter>type</parameter> is <constant>AF_INET</constant>, the <parameter>addr</parameter> argument shall be an
-<varname>in_addr</varname> structure. 
+<structname>in_addr</structname> structure. 
 If <parameter>type</parameter> is <constant>AF_INET6</constant>, the <parameter>addr</parameter> argument shall be an
-<varname>in6_addr</varname> structure. 
+<structname>in6_addr</structname> structure. 
 If <parameter>type</parameter> is any other value, the behavior is unspecified.
 </PARA>
 <PARA>
@@ -11778,7 +11778,7 @@ the lookup process. The buffer is referenced by <parameter>buf</parameter>, and 
 If the buffer is not of sufficient size, <function>gethostbyaddr_r</function> may fail and return
 <errorcode>ERANGE</errorcode>.
 If a matching entry is found in the database, <function>gethostbyaddr_r</function> shall
-copy the relevant information to the application supplied <varname>hostent</varname> structure referenced by 
+copy the relevant information to the application supplied <structname>hostent</structname> structure referenced by 
 <parameter>result_buf</parameter>, and return a pointer to this structure in *<parameter>result</parameter>.
 If no matching entry is found, *<parameter>result</parameter> shall be set to a null pointer.
 Additional error information shall be set in the variable referenced by <parameter>h_errnop</parameter>.
@@ -11834,7 +11834,7 @@ applications should use <function>getaddrinfo</function> instead.
 <PARA>
 The <function>gethostbyname2</function> function shall search the
 network host database for an entry with name <parameter>name</parameter>.
-This function is similar to the <FUNCTION>gethostbyname</FUNCTION>
+This function is similar to the <function>gethostbyname</function>
 function but additionally allows the search to be restricted to
 a particular address family specified by <parameter>af</parameter>.
 </PARA>
@@ -11842,15 +11842,21 @@ a particular address family specified by <parameter>af</parameter>.
 <REFSECT1>
 <TITLE>Return Value</TITLE>
 <PARA>
-On success, the <function>gethostbyname_r</function> function shall
-return zero. If the return value was <errorcode>ERANGE</errorcode>,
-the size of the buffer <parameter>buf</parameter>, indicated
-by <parameter>buflen</parameter>, was too small.
-If the <function>gethostbyname_r</function> function returns returns any other
-value, then the variable referenced by <parameter>h_errnop</parameter>
-shall be set to indicate the cause as for <function>gethostbyname</function>.
+On success, the <function>gethostbyname_r</function> function shall return
+a pointer to a <structname>hostent</structname> structure if the requested
+entry was found, and a null pointer otherwise.
 </PARA>
-
+<PARA>
+On unsuccessful completion, <function>gethostbyname_r</function> shall
+set <varname>h_errno</varname>
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+The <function>gethostbyname_r</function> shall set <varname>h_errno</varname>
+as for <function>gethostbyname</function> in <XREF LINKEND="std.SUSv3">.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -11915,7 +11921,7 @@ may fail and return <errorcode>ERANGE</errorcode>.
 If a matching entry is found in the database, 
 <function>gethostbyname_r</function> shall
 copy the relevant information to the application-supplied
-<varname>hostent</varname> structure referenced by 
+<structname>hostent</structname> structure referenced by 
 <parameter>result_buf</parameter>, and return a pointer to this
 structure in *<parameter>result</parameter>.
 If no matching entry is found, *<parameter>result</parameter> shall
@@ -11994,7 +12000,7 @@ the lookup process. The buffer is referenced by <parameter>buf</parameter>, and 
 If the buffer is not of sufficient size, <function>gethostbyname_r</function> may fail and return
 <errorcode>ERANGE</errorcode>.
 If a matching entry is found in the database, <function>gethostbyname_r</function> shall
-copy the relevant information to the application supplied <varname>hostent</varname> structure referenced by 
+copy the relevant information to the application supplied <structname>hostent</structname> structure referenced by 
 <parameter>result_buf</parameter>, and return a pointer to this structure in *<parameter>result</parameter>.
 If no matching entry is found, *<parameter>result</parameter> shall be set to a null pointer.
 Additional error information shall be set in the variable referenced by <parameter>h_errnop</parameter>.
@@ -20120,7 +20126,7 @@ None.
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Wed Nov 14 15:35:00 2007 -->
+<!--    at Sat Feb  2 01:24:09 2008 -->
 <SECT1 ID=libm>
 <TITLE>Interfaces for libm</TITLE>
 <PARA>
@@ -22012,9 +22018,8 @@ the set of all currently enabled exceptions.
 <refsect1>
 <title>Return Value</title>
 <para>
-The <function>mremap</function> function returns 
-the set of all currently enabled exceptions  on success.
-On error, -1 is returned.
+The <function>fegetexcept</function> function returns 
+the set of all currently enabled exceptions.
 </para>
 </refsect1>
 
@@ -23170,7 +23175,7 @@ The <FUNCTION>significand</FUNCTION> function shall return the mantissa of
 <parameter>x</parameter> &equiv; <symbol>sig</symbol> &times; 2<superscript>n</superscript>
 scaled such that 1 &le; <symbol>sig</symbol> &lt; 2.
 <note><para>
-This function is intended for testing confomance to <xref linkend=std.fltpnt>, and its use is not otherwise
+This function is intended for testing conformance to <xref linkend=std.fltpnt>, and its use is not otherwise
 recommended.
 </para><para>
 This function is equivalent to <literal>scalb(x, (double)-ilogb(x))</literal>.
@@ -23234,7 +23239,7 @@ The <FUNCTION>significandf</FUNCTION> function shall return the mantissa of
 <parameter>x</parameter> &equiv; <symbol>sig</symbol> &times; 2<superscript>n</superscript>
 scaled such that 1 &le; <symbol>sig</symbol> &lt; 2.
 <note><para>
-This function is intended for testing confomance to <xref linkend=std.fltpnt>, and its use is not otherwise
+This function is intended for testing conformance to <xref linkend=std.fltpnt>, and its use is not otherwise
 recommended.
 </para><para>
 This function is equivalent to <literal>scalb(x, (double)-ilogb(x))</literal>.
@@ -23298,7 +23303,7 @@ The <FUNCTION>significandl</FUNCTION> function shall return the mantissa of
 <parameter>x</parameter> &equiv; <symbol>sig</symbol> &times; 2<superscript>n</superscript>
 scaled such that 1 &le; <symbol>sig</symbol> &lt; 2.
 <note><para>
-This function is intended for testing confomance to <xref linkend=std.fltpnt>, and its use is not otherwise
+This function is intended for testing conformance to <xref linkend=std.fltpnt>, and its use is not otherwise
 recommended.
 </para><para>
 This function is equivalent to <literal>scalb(x, (double)-ilogb(x))</literal>.
