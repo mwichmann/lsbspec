@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Getopt::Long;
-use Mysql;
+use DBI;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
@@ -28,18 +28,20 @@ if( !$lsbversion ) { usage(); }
 #
 # 2) Establish connection to the database
 #
-$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+$dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
+    or die "Couldn't connect to database: ".DBI->errstr;
 
 #
 # 3) get the data
 #
 $select = "SELECT * FROM RpmTag ";
-$select.= "WHERE Rgroup=".$Dbh->quote($groupname);
+$select.= "WHERE Rgroup=".$dbh->quote($groupname);
 $select.= " AND (Rappearedin IS NOT NULL and Rappearedin <= '$lsbversion' and Rappearedin<>'') ";
 $select.= " AND (Rwithdrawnin IS NULL OR Rwithdrawnin > '$lsbversion') ";
 $select.= " ORDER BY Rtag ";
 print STDERR $select,"\n" if $trace;
-$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
@@ -47,7 +49,7 @@ printf("<!--    by \$Header: mkrpmtagtable 1.2 2005-05-11 21:46:31 nick Exp $- -
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
-if($sth->numrows) {
+if($sth->rows) {
 	print "<TABLE>\n";
 	print "<TITLE>$title</TITLE>\n";
 	print "<TGROUP COLS=5>\n";
@@ -61,44 +63,48 @@ if($sth->numrows) {
 	print "</ROW>\n";
 	print "</THEAD>\n";
 	print "<TBODY>\n";
-	for(1..$sth->numrows) {
+	for(1..$sth->rows) {
 		print "<ROW>";
-		%entry=$sth->fetchhash;
-		printf "<ENTRY><CONSTANT>%s</CONSTANT></ENTRY>",$entry{'Rname'};
-		printf "<ENTRY>%s</ENTRY>",$entry{'Rtag'};
-		printf "<ENTRY>%s</ENTRY>",$entry{'Rtype'};
-		if( $entry{'Rcount'} ) {
-			printf "<ENTRY>%s</ENTRY>",$entry{'Rcount'};
+		$entry=$sth->fetchrow_hashref;
+		printf "<ENTRY><CONSTANT>%s</CONSTANT></ENTRY>",$entry->{'Rname'};
+		printf "<ENTRY>%s</ENTRY>",$entry->{'Rtag'};
+		printf "<ENTRY>%s</ENTRY>",$entry->{'Rtype'};
+		if( $entry->{'Rcount'} ) {
+			printf "<ENTRY>%s</ENTRY>",$entry->{'Rcount'};
 		} else {
 			printf "<ENTRY></ENTRY>";
 		}
-		printf "<ENTRY>%s</ENTRY>",$entry{'Rstatus'};
+		printf "<ENTRY>%s</ENTRY>",$entry->{'Rstatus'};
 		print "</ROW>\n";
 	}
 	print "</TBODY>\n";
 	print "</TGROUP>\n";
 	print "</TABLE>\n";
 }
+$sth->finish;
 
 $select = "SELECT * FROM RpmTag ";
-$select.= "WHERE Rgroup=".$Dbh->quote($groupname);
+$select.= "WHERE Rgroup=".$dbh->quote($groupname);
 $select.= " AND (Rappearedin IS NOT NULL and Rappearedin <= '$lsbversion' and Rappearedin<>'') ";
 $select.= " AND (Rwithdrawnin IS NULL OR Rwithdrawnin > '$lsbversion') ";
 $select.= " ORDER BY Rtag ";
 #print $select,"\n";
-$sth = $Dbh->query($select) || die $Dbh->errmsg();
+$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
-if($sth->numrows) {
+if($sth->rows) {
 	print "<VARIABLELIST>\n";
-	for(1..$sth->numrows) {
+	for(1..$sth->rows) {
 		print "<VARLISTENTRY>";
-		%entry=$sth->fetchhash;
-		printf "<TERM><CONSTANT>%s</CONSTANT></TERM>",$entry{'Rname'};
-		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry{'Rdescription'};
+		$entry=$sth->fetchrow_hashref;
+		printf "<TERM><CONSTANT>%s</CONSTANT></TERM>",$entry->{'Rname'};
+		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry->{'Rdescription'};
 		print "</VARLISTENTRY>\n";
 	}
 print "</VARIABLELIST>\n";
 }
+$sth->finish;
+$dbh->disconnect;
 
 printf("<!-- End of text generated from database -->\n");
 printf("<!--    by \$Header: mkrpmtagtable 1.2 2005-05-11 21:46:31 nick Exp $- -->\n");
