@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Getopt::Long;
-use Mysql;
+use DBI;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
@@ -30,19 +30,22 @@ if( !$lsbversion ) { usage(); }
 #
 # 2) Establish connection to the database
 #
-$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+$dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
+    or die "Couldn't connect to database: ".DBI->errstr;
 
 #
 # 3) get & print the architecture info
 #
 $select = "SELECT * FROM Architecture WHERE ";
-$select.= "Architecture.Aname=".$Dbh->quote($archname);
+$select.= "Architecture.Aname=".$dbh->quote($archname);
 print STDERR $select,"\n" if $trace;
-$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
-%entry=$sth->fetchhash;
-$Aid=$entry{'Aid'};
-$Aname=$entry{'Aname'};
+$entry=$sth->fetchrow_hashref;
+$sth->finish;
+$Aid=$entry->{'Aid'};
+$Aname=$entry->{'Aname'};
 
 if( not $Aname ) {
 	die "Unsupported architecture";
@@ -56,12 +59,13 @@ $select.= "FROM ElfSections ";
 $select.= "LEFT JOIN ArchES ON AESesid=ESid ";
 $select.= "INNER JOIN Standard on AESstd=Sid ";
 $select.= "LEFT JOIN SectionTypes ON STid=AEStype ";
-$select.= "WHERE Sname=".$Dbh->quote($stdname);
+$select.= "WHERE Sname=".$dbh->quote($stdname);
 $select.= " AND AESaid=$Aid";
 $select.= " AND (AESappearedin <= '$lsbversion' and AESappearedin<>'') ";
 $select.= " AND (AESwithdrawnin IS NULL OR AESwithdrawnin > '$lsbversion')";
 $select.= " ORDER BY ElfSections.ESname ";
-$sth = $Dbh->query($select) || die $Dbh->errmsg();
+$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
@@ -69,7 +73,7 @@ printf("<!--    by \$Header: mksectiontable 1.14 2006-02-14 02:07:22 nick Exp $-
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
-if($sth->numrows) {
+if($sth->rows) {
 	print "<TABLE>\n";
 	print "<TITLE>$title</TITLE>\n";
 	print "<TGROUP COLS=3>\n";
@@ -81,41 +85,45 @@ if($sth->numrows) {
 	print "</ROW>\n";
 	print "</THEAD>\n";
 	print "<TBODY>\n";
-	for(1..$sth->numrows) {
+	for(1..$sth->rows) {
 		print "<ROW>";
-		%entry=$sth->fetchhash;
-		printf "<ENTRY>%s</ENTRY>",$entry{'ESname'};
-		printf "<ENTRY>%s</ENTRY>",$entry{'STname'};
-		printf "<ENTRY>%s</ENTRY>",$entry{'AESattributes'};
+		$entry=$sth->fetchrow_hashref;
+		printf "<ENTRY>%s</ENTRY>",$entry->{'ESname'};
+		printf "<ENTRY>%s</ENTRY>",$entry->{'STname'};
+		printf "<ENTRY>%s</ENTRY>",$entry->{'AESattributes'};
 		print "</ROW>\n";
 	}
 	print "</TBODY>\n";
 	print "</TGROUP>\n";
 	print "</TABLE>\n";
 }
+$sth->finish;
 
 $select = "SELECT * ";
 $select.= "FROM Standard,ElfSections ";
 $select.= "LEFT JOIN ArchES ON AESesid=ESid ";
-$select.= "WHERE AESstd=Sid and Sname=".$Dbh->quote($stdname);
+$select.= "WHERE AESstd=Sid and Sname=".$dbh->quote($stdname);
 $select.= " AND AESaid=$Aid";
 $select.= " AND (AESappearedin <= '$lsbversion' and AESappearedin<>'') ";
 $select.= " AND (AESwithdrawnin IS NULL OR AESwithdrawnin > '$lsbversion')";
 $select.= " ORDER BY ElfSections.ESname ";
 #print $select,"\n";
-$sth = $Dbh->query($select) || die $Dbh->errmsg();
+$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
-if($sth->numrows) {
+if($sth->rows) {
 	print "<VARIABLELIST>\n";
-	for(1..$sth->numrows) {
+	for(1..$sth->rows) {
 		print "<VARLISTENTRY>";
-		%entry=$sth->fetchhash;
-		printf "<TERM>%s</TERM>",$entry{'ESname'};
-		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry{'AESdescription'};
+		$entry=$sth->fetchrow_hashref;
+		printf "<TERM>%s</TERM>",$entry->{'ESname'};
+		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry->{'AESdescription'};
 		print "</VARLISTENTRY>\n";
 	}
 print "</VARIABLELIST>\n";
 }
+$sth->finish;
+$dbh->disconnect;
 
 printf("<!-- End of text generated from database -->\n");
 printf("<!--    by \$Header: mksectiontable 1.14 2006-02-14 02:07:22 nick Exp $- -->\n");

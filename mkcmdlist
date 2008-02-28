@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Getopt::Long;
-use Mysql;
+use DBI;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
@@ -26,11 +26,12 @@ if( !$lsbversion ) { usage(); }
 #
 # 2) Establish connection to the database
 #
-$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+my $dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
+    or die "Couldn't connect to database: ".DBI->errstr;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: mkcmdlist 1.3 2006/01/20 13:19:39 pradosh Exp $- -->\n");
+printf("<!--    by \$Header: mkcmdlist,v 1.5 2007/10/26 16:56:05 ches Exp $- -->\n");
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
@@ -54,12 +55,18 @@ $select.= "AND Cbuiltin != 'Yes' ";
 $select.= "AND Sname='LSB' " ;
 $select.= "ORDER BY Cname";
 print STDERR $select,"\n" if $trace;
-$cth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-for(1..$cth->numrows) {
-	%entry=$cth->fetchhash;
-	print "m4_include(".$entry{'Cname'}.".sgml)\n";
+
+$cth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$cth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+
+for(1..$cth->rows) {
+        $entry = $cth->fetchrow_hashref() or die "Fetchrow failed on $select query: ".DBI->errstr;
+        print "m4_include(".$entry->{'Cname'}.".sgml)\n";
 }
+
+$cth->finish;
+$dbh->disconnect;
 
 print "</SECT1>\n";
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: mkcmdlist 1.3 2006/01/20 13:19:39 pradosh Exp $- -->\n");
+printf("<!--    by \$Header: mkcmdlist,v 1.5 2007/10/26 16:56:05 ches Exp $- -->\n");

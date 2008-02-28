@@ -2,7 +2,7 @@
 
 use CGI;
 use Carp;
-use Mysql;
+use DBI;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
@@ -13,49 +13,54 @@ $query = new CGI(%ARGV);
 #}
 #exit;
 
-$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+$dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
+    or die "Couldn't connect to database: ".DBI->errstr;
 
 foreach $lib ( $query->param('nLname') ) {
 	local(*where);
 	local(*where2);
 	$select  ="SELECT DISTINCT Interface.Iname ";
 	$select .="FROM Interface,LibInt,Library ";
-
+	
 	push(@where,"Library.Lname='$lib'");
 	push(@where,"LibInt.LIlib=Library.Lid");
 	push(@where,"LibInt.LIint=Interface.Iid");
-
+	
 	#push(@where,"Interface.Iname NOT LIKE '\\_\\_%'");
-
+	
 	if( scalar(@where) > 0 ) {
 		$select .= " WHERE ".join(" AND ",@where);
 		}
 	$select .=" ORDER BY Interface.Iname ";
 	#printf STDERR $select,"\n";
-	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 	#printf STDERR "numrows=%d\n", $sth->numrows;
-	for(1..$sth->numrows) {
-		%entry=$sth->fetchhash;
-		$exclude{$entry{'Iname'}}=$_;
+	for(1..$sth->rows) {
+		$entry = $sth->fetchrow_hashref;
+		$exclude{$entry->{'Iname'}}=$_;
 	}
+	$sth->finish;
 	$select  ="SELECT DISTINCT Mangle.Mname ";
 	$select .="FROM Mangle,Library ";
-
+	
 	push(@where2,"Library.Lname='$lib'");
 	push(@where2,"Mangle.Mlib=Library.Lid");
-
+	
 	if( scalar(@where2) > 0 ) {
 		$select .= " WHERE ".join(" AND ",@where2);
 		}
 	$select .=" ORDER BY Mangle.Mname ";
 	#printf STDERR $select,"\n";
-	$sth2 = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	$sth2 = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+	$sth2->execute or die "Couldn't execute $select query: ".DBI->errstr;
 	#printf STDERR "numrows=%d\n", $sth->numrows;
-	for(1..$sth2->numrows) {
-		%entry=$sth2->fetchhash;
-		$exclude{$entry{'Mname'}}=$_;
-		#print $entry{'Mname'}."<BR>";
+	for(1..$sth2->rows) {
+		$entry = $sth2->fetchrow_hashref;
+		$exclude{$entry->{'Mname'}}=$_;
+		#print $entry->{'Mname'}."<BR>";
 	}
+	$sth2->finish;
 }
 
 $numentry=0;
@@ -64,27 +69,29 @@ foreach $lib ( $query->param('Lname') ) {
 	local(*where2);
 	$select  ="SELECT DISTINCT Interface.Iname ";
 	$select .="FROM Interface,LibInt,Library ";
-
+	
 	push(@where3,"Library.Lname='$lib'");
 	push(@where3,"LibInt.LIlib=Library.Lid");
 	push(@where3,"LibInt.LIint=Interface.Iid");
-
+	
 	#push(@where3,"Interface.Iname NOT LIKE '\\_\\_%'");
-
+	
 	if( scalar(@where3) > 0 ) {
 		$select .= " WHERE ".join(" AND ",@where3);
-		}
+	}
 	$select .=" ORDER BY Interface.Iname ";
 	#printf STDERR $select,"\n";
-	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 	#printf STDERR "numrows=%d\n", $sth->numrows;
-
-	for(1..$sth->numrows) {
-		%entry=$sth->fetchhash;
-		if ( ! $exclude{$entry{'Iname'}} ) {
-			$entry[$numentry++]=$entry{'Iname'};
+	
+	for(1..$sth->rows) {
+		$entry = $sth->fetchrow_hashref;
+		if ( ! $exclude{$entry->{'Iname'}} ) {
+			$tentry[$numentry++]=$entry->{'Iname'};
 		}
 	}
+	$sth->finish;
 }
 
 print "<HTML>\n";
@@ -93,11 +100,11 @@ print "<TABLE>\n";
 $inc=($numentry+4)/5;
 for(1..$inc) {
 	print "<TR>";
-	printf "<TD>%s</TD>",$entry[$_];
-	printf "<TD>%s</TD>",$entry[$_+$inc];
-	printf "<TD>%s</TD>",$entry[$_+(2*$inc)];
-	printf "<TD>%s</TD>",$entry[$_+(3*$inc)];
-	printf "<TD>%s</TD>",$entry[$_+(4*$inc)];
+	printf "<TD>%s</TD>",$tentry[$_];
+	printf "<TD>%s</TD>",$tentry[$_+$inc];
+	printf "<TD>%s</TD>",$tentry[$_+(2*$inc)];
+	printf "<TD>%s</TD>",$tentry[$_+(3*$inc)];
+	printf "<TD>%s</TD>",$tentry[$_+(4*$inc)];
 	print "</TR>\n";
 }
 print "</TABLE>\n";

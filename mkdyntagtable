@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Getopt::Long;
-use Mysql;
+use DBI;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
@@ -32,19 +32,22 @@ if( !$lsbversion ) { usage(); }
 #
 # 2) Establish connection to the database
 #
-$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+my $dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
+    or die "Couldn't connect to database: ".DBI->errstr;
 
 #
 # 3) get & print the architecture info
 #
 $select = "SELECT * FROM Architecture WHERE ";
-$select.= "Architecture.Aname=".$Dbh->quote($archname);
+$select.= "Architecture.Aname=".$dbh->quote($archname);
 print STDERR $select,"\n" if $trace;
-$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
-%entry=$sth->fetchhash;
-$Aid=$entry{'Aid'};
-$Aname=$entry{'Aname'};
+$entry=$sth->fetchrow_hashref or die "Fetchrow failed on $select query: ".DBI->errstr;
+$Aid=$entry->{'Aid'};
+$Aname=$entry->{'Aname'};
+$sth->finish;
 
 if( not $Aname ) {
 	die "Unsupported architecture";
@@ -54,13 +57,14 @@ $select = "SELECT DEname,ADEdescription ";
 $select.= "FROM DynamicEntries ";
 $select.= "LEFT JOIN ArchDE ON ADEdeid=DEid ";
 $select.= "LEFT JOIN Standard ON ADEstd=Sid ";
-$select.= "WHERE Sname=".$Dbh->quote($stdname)." ";
+$select.= "WHERE Sname=".$dbh->quote($stdname)." ";
 $select.= "AND ADEaid=$Aid ";
 $select.= "AND (ADEappearedin <= '$lsbversion' and ADEappearedin<>'') ";
 $select.= "AND (ADEwithdrawnin IS NULL OR ADEwithdrawnin > '$lsbversion')";
 $select.= " ORDER BY DynamicEntries.DEname ";
-# print $select,"\n";
-$sth = $Dbh->query($select) || die $Dbh->errmsg();
+print STDERR $select,"\n" if $trace;
+$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
 printf("<!-- Start of text generated from database -->\n");
 printf("<!-- generated from the LSB specification database -->\n");
@@ -68,16 +72,19 @@ printf("<!--    by \$Header: mkdyntagtable 1.6 2002/11/26 03:12:51 anderson Exp 
 my $now_string = localtime;
 printf("<!--    at %s -->\n", $now_string );
 
-if($sth->numrows) {
+if($sth->rows) {
 	print "<VARIABLELIST>\n";
-	for(1..$sth->numrows) {
+	for(1..$sth->rows) {
 		print "<VARLISTENTRY>\n";
-		%entry=$sth->fetchhash;
-		printf "<TERM>%s</TERM>\n",$entry{'DEname'};
-		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>\n",$entry{'ADEdescription'};
+		$entry=$sth->fetchrow_hashref or die "Fetchrow failed on $select query: ".DBI->errstr;
+		printf "<TERM>%s</TERM>\n",$entry->{'DEname'};
+		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>\n",$entry->{'ADEdescription'};
 		print "</VARLISTENTRY>\n";
 	}
 print "</VARIABLELIST>\n";
 }
 printf("<!-- End of text generated from database -->\n");
 printf("<!--    by \$Header: mkdyntagtable 1.6 2002/11/26 03:12:51 anderson Exp $- -->\n");
+
+$sth->finish;
+$dbh->disconnect;

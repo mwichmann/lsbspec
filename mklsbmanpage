@@ -8,7 +8,7 @@
 #     call them "arg1", "arg2" etc
 #
 
-use Mysql;
+use DBI;
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 use strict;
 use Getopt::Long;
@@ -111,9 +111,9 @@ sub funcprototype($)
 sub displaytyperef($)
 {
 	my ($param) = @_;
-	my($select,$sth,%type);
-	my ($tselect, $tmselect, $Tid, $tmh, %tmentry, $nameonly);
-	my ($tth, $TMtypeid, $th, %entry);
+	my($select,$sth,$type);
+	my ($tselect, $tmselect, $Tid, $tmh, $tmentry, $nameonly);
+	my ($tth, $TMtypeid, $th, $entry);
 	my $retval = "";
 
 	if( $$param{'Ttype'} eq "Intrinsic" ) {
@@ -128,23 +128,27 @@ sub displaytyperef($)
 
 	if( $$param{'Ttype'} eq "Const" ) {
 		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." AND ATaid IN(1,$Aid) GROUP BY Tid";
-		$sth = $dbh->query($select) || die $dbh->errmsg();
-		%type=$sth->fetchhash;
-		if( $type{'Ttype'} eq "Pointer" ) {
-			$retval .= displaytyperef(\%type);
+		$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+		$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+		$type=$sth->fetchrow_hashref;
+		$sth->finish;
+		if( $type->{'Ttype'} eq "Pointer" ) {
+			$retval .= displaytyperef($type);
 			$retval .= "const ";
 		} else {
 			$retval .= "const ";
-			$retval .= displaytyperef(\%type);
+			$retval .= displaytyperef($type);
 		}
 		return $retval;
 	}
 
 	if( $$param{'Ttype'} eq "Pointer" ) {
 		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." AND ATaid IN(1,$Aid) GROUP BY Tid";
-		$sth = $dbh->query($select) || die $dbh->errmsg();
-		%type=$sth->fetchhash;
-		$retval .= displaytyperef(\%type);
+		$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+		$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+		$type=$sth->fetchrow_hashref;
+		$sth->finish;
+		$retval .= displaytyperef($type);
 		$retval .= " *";
 		return $retval;
 	}
@@ -172,14 +176,16 @@ sub displaytyperef($)
 	if( $$param{'Ttype'} eq "Array" ) {
 		my $basetype=$$param{'ATbasetype'};
 		$tselect="SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$basetype AND ATaid IN(1,$Aid) GROUP BY Tid";
-		$tth = $dbh->query($tselect) || die $dbh->errmsg();
-		%type=$tth->fetchhash;
+		$tth = $dbh->prepare($tselect) or die "Couldn't prepare $tselect query: ".DBI->errstr;
+		$tth->execute or die "Couldn't execute $tselect query: ".DBI->errstr;
+		$type=$tth->fetchrow_hashref;
+		$tth->finish;
 		if( !$nameonly ) {
 			$nameonly=1;
-			$retval .= displaytyperef(\%type);
+			$retval .= displaytyperef($type);
 			$nameonly=0;
 		} else {
-			$retval .= displaytyperef(\%type);
+			$retval .= displaytyperef($type);
 		}
 		if( $$param{'Tname'} =~ "fptr" ) {
 			$$param{'Tname'} =~ s/fptr-//;
@@ -189,10 +195,12 @@ sub displaytyperef($)
 
 	if( $$param{'Ttype'} eq "FuncPtr" ) {
 		$select = "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=".$$param{'ATbasetype'}." AND ATaid IN(1,$Aid) GROUP BY Tid";
-		$sth = $dbh->query($select) || die $dbh->errmsg();
-		%type=$sth->fetchhash;
+		$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+		$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+		$type=$sth->fetchrow_hashref;
+		$sth->finish;
 		$Tid=$$param{'Tid'};
-		$retval .= displaytyperef(\%type);
+		$retval .= displaytyperef($type);
 		$retval .= "(*";
 		if( $$param{'Tname'} =~ "fptr" ) {
 			$$param{'Tname'} =~ s/fptr-//;
@@ -204,28 +212,32 @@ sub displaytyperef($)
 
 		$tmselect="SELECT * FROM TypeMember WHERE TMmemberof=$Tid AND TMaid in(1,$Aid) ";
 		$tmselect.=" ORDER BY TMposition";
-		$tmh = $dbh->query($tmselect) || die $dbh->errmsg();
-		if($tmh->numrows == 0) {
+		$tmh = $dbh->prepare($tmselect) or die "Couldn't prepare $tmselect query: ".DBI->errstr;
+		$tmh->execute or die "Couldn't execute $tmselect query: ".DBI->errstr;
+		if($tmh->rows == 0) {
 			$retval .= "void";
 		}
-		for(1..$tmh->numrows) {
-			%tmentry=$tmh->fetchhash;
-			$TMtypeid=$tmentry{'TMtypeid'};
+		for(1..$tmh->rows) {
+			$tmentry=$tmh->fetchrow_hashref;
+			$TMtypeid=$tmentry->{'TMtypeid'};
 			$tselect="SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$TMtypeid AND ATaid IN(1,$Aid) GROUP BY Tid";
-			$th = $dbh->query($tselect) || die $dbh->errmsg();
-			%entry=$th->fetchhash;
+			$th = $dbh->prepare($tselect) or die "Couldn't prepare $tselect query: ".DBI->errstr;
+			$th->execute or die "Couldn't execute $tselect query: ".DBI->errstr;
+			$entry=$th->fetchrow_hashref;
+			$th->finish;
 			$nameonly=1;
-			displaytype(\%entry);
-			#print $tmentry{'TMname'};
-			if( $tmentry{'TMarray'} ) {
-				$retval .= "[".$tmentry{'TMarray'}."]";
+			displaytype($entry);
+			#print $tmentry->{'TMname'};
+			if( $tmentry->{'TMarray'} ) {
+				$retval .= "[".$tmentry->{'TMarray'}."]";
 			}
-			if( $_ != $tmh->numrows ) {
+			if( $_ != $tmh->rows ) {
 				$retval .= ",";
 			}
 			$nameonly=0;
 		}
-
+		$tmh->finish;
+		
 		$retval .= ")\n";
 		return $retval;
 	}
@@ -245,8 +257,8 @@ sub trim($)
 
 my @args;
 die "Invalid database" if (!defined($LSBDB) || $LSBDB eq "");
-$dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD)
-	|| die $Mysql::db_errstr;
+$dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
+    or die "Couldn't connect to database: ".DBI->errstr;
 
 sub mksynop($)
 {
@@ -270,33 +282,35 @@ sub mksynop($)
 	$sql .= "OR ( (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 	$sql .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ) ";
 
-	my $sth = $dbh->query($sql);
-	if ($sth->numrows() > 0) {
-		my %entry = $sth->fetchhash();
+	my $sth = $dbh->prepare($sql) or die "Couldn't prepare $sql query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $sql query: ".DBI->errstr;
+	if ($sth->rows() > 0) {
+		my $entry = $sth->fetchrow_hashref;
+		$sth->finish;
 
-		my $type = displaytyperef(\%entry);
-		my $hdr = sprintf("#include &lt;%s&gt;",$entry{'Hname'});
+		my $type = displaytyperef($entry);
+		my $hdr = sprintf("#include &lt;%s&gt;",$entry->{'Hname'});
 		#
 		# and now the args ...
 		#
 		my $pos = 0;
-		my $Iid = $entry{'Iid'};
+		my $Iid = $entry->{'Iid'};
 		$sql = "select * from Parameter, Type ";
 		$sql .= "left join ArchType on ATtid=Tid ";
 		$sql .= "where Pint=$Iid and Ptype=Tid AND ATaid IN(1,$Aid) ";
 		$sql .= "group by Ppos,ATtid order by Ppos";
-		$sth = $dbh->query($sql) ||
-			die $dbh->errmsg();
+		my $sth = $dbh->prepare($sql) or die "Couldn't prepare $sql query: ".DBI->errstr;
+		$sth->execute or die "Couldn't execute $sql query: ".DBI->errstr;
 		my $argno = 0;
-		if ($sth->numrows == 0) {
+		if ($sth->rows == 0) {
 			# a void ...
 			push(@args, {	'type'	=> undef,
 					'name'	=> "irrelevant",
 				    });
 		}
-		while ((%entry = $sth->fetchhash())) {
+		while (($entry = $sth->fetchrow_hashref)) {
 			my $argname = sprintf("arg%d", $argno++);
-			my $argtype = displaytyperef(\%entry);
+			my $argtype = displaytyperef($entry);
 
 			push(@args, {	'type' => $argtype,
 					'name' => $argname,
@@ -306,6 +320,7 @@ sub mksynop($)
 	} else {
 		printf "%s: no such interface\n", $func;
 	}
+	$sth->finish;
 }
 
 sub refmeta($$)
@@ -355,10 +370,12 @@ if( !$arch ) {
 }
 else {
 	my $select="SELECT Aid FROM Architecture WHERE Aname='$arch'";
-	my $th = $dbh->query($select) || die $dbh->errmsg();
-	my %entry=$th->fetchhash;
-	if( $entry{'Aid'} ) {
-		$Aid = $entry{'Aid'};
+	my $th = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+	$th->execute or die "Couldn't execute $select query: ".DBI->errstr;
+	my $entry=$th->fetchrow_hashref;
+	$th->finish;
+	if( $entry->{'Aid'} ) {
+		$Aid = $entry->{'Aid'};
 	}
 	else {
 		die "Illegal architecture\n";
@@ -375,3 +392,5 @@ section('Description', $interface);
 section('Return Value', $interface);
 section('Errors', $interface);
 printf "</refentry>\n";
+
+$dbh->disconnect;
