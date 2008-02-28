@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Getopt::Long;
-use Mysql;
+use DBI;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
@@ -26,19 +26,22 @@ if( !$lsbversion ) { usage(); }
 #
 # 2) Establish connection to the database
 #
-$Dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) || die $Mysql::db_errstr;
+$dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
+    or die "Couldn't connect to database: ".DBI->errstr;
 
 #
 # 3) get & print the architecture info
 #
 $select = "SELECT * FROM Architecture WHERE ";
-$select.= "Architecture.Aname=".$Dbh->quote($archname);
+$select.= "Architecture.Aname=".$dbh->quote($archname);
 print STDERR $select,"\n" if $trace;
-$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
+$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
-%entry=$sth->fetchhash;
-$Aid=$entry{'Aid'};
-$Aname=$entry{'Aname'};
+$entry=$sth->fetchrow_hashref;
+$Aid=$entry->{'Aid'};
+$Aname=$entry->{'Aname'};
+$sth->finish;
 
 #print "<APPENDIX ID=app-A>\n";
 #print "<TITLE>Alphabetical Listing of Interfaces</TITLE>\n";
@@ -52,12 +55,14 @@ $select.= "(ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
 $select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
 $select.= "AND ALaid=$Aid ";
 print STDERR $select,"\n" if $trace;
-$lth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-for(1..$lth->numrows) {
+$lth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$lth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
-%entry=$lth->fetchhash;
-$Lid=$entry{'Lid'};
-$Lname=$entry{'Lname'};
+for(1..$lth->rows) {
+
+$entry=$lth->fetchrow_hashref;
+$Lid=$entry->{'Lid'};
+$Lname=$entry->{'Lname'};
 
 $select = "SELECT Iname,Istandard,Isrcbin,Ideprecatedsince,Vname ";
 #$select.= "FROM Interface,LGInt,LibGroup ";
@@ -82,8 +87,12 @@ if( $Aid!=1 ) {
 	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') )";
 }
 $select.= "ORDER BY Iname";
-$inh = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-if( $inh->numrows == 0) { next; }
+$inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+$inh->execute or die "Couldn't execute $select query: ".DBI->errstr;
+if( $inh->rows == 0) {
+	$inh->finish;
+	next;
+}
 
 print "$Lname Function Interfaces\n";
 
@@ -95,15 +104,16 @@ print "$Lname Function Interfaces\n";
 	local(*symver);
 	local(*entry);
 	print STDERR $select,"\n" if $trace;
-	for(1..$inh->numrows) {
-		%entry=$inh->fetchhash;
-		print $entry{'Iname'}."(".$entry{'Vname'}.")";
-		if( $entry{'Ideprecatedsince'} and $entry{'Ideprecatedsince'} le $lsbversion ) {
+	for(1..$inh->rows) {
+		$entry=$inh->fetchrow_hashref;
+		print $entry->{'Iname'}."(".$entry->{'Vname'}.")";
+		if( $entry->{'Ideprecatedsince'} and $entry->{'Ideprecatedsince'} le $lsbversion ) {
 			print " *Deprecated*";
 			}
 		print "\n";
 	}
 }
+$inh->finish;
 
 #
 # 8) Make a table of data interfaces
@@ -128,15 +138,19 @@ print "$Lname Function Interfaces\n";
 		$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ";
 	}
 	$select.= "ORDER BY Iname";
-		
+	
 	print STDERR $select,"\n" if $trace;
-	$sth = $Dbh->query($select) || die $select."\n".$Dbh->errmsg();
-	if ($sth->numrows > 0 ) {
+	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+	if ($sth->rows > 0 ) {
 	print "$Lname Data Interfaces\n";
-		for(1..$sth->numrows) {
-			%datasym=$sth->fetchhash;
-			print $datasym{'Iname'}."(".$datasym{'Vname'}.")\n";
+		for(1..$sth->rows) {
+			$datasym=$sth->fetchrow_hashref;
+			print $datasym->{'Iname'}."(".$datasym->{'Vname'}.")\n";
 		}
 	}
+	$sth->finish;
 }
 }
+$lth->finish;
+$dbh->disconnect;
