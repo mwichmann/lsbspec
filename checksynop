@@ -11,7 +11,7 @@
 #
 # 
 use XML::Simple;
-use Mysql;
+use DBI;
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 use File::Temp qw(tempfile);
 use Data::Dumper;
@@ -20,8 +20,8 @@ use Getopt::Long;
 
 my $lsbversion;
 my $verbose = 1;
-my $dbh = Mysql->connect($LSBDBHOST,$LSBDB,$LSBUSER, $LSBDBPASSWD) 
-	|| die $Mysql::db_errstr;
+my $dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
+    or die "Couldn't connect to database: ".DBI->errstr;
 
 sub usage()
 {
@@ -105,13 +105,16 @@ sub checksynopsis($$)
 	$sql .= "OR ( (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 	$sql .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ) ";
 
-	my $sth = $dbh->query($sql) || die $dbh->errmsg();
-	if ($sth->numrows() == 0) {
+	my $sth = $dbh->prepare($sql) or die "Couldn't prepare $sql query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $sql query: ".DBI->errstr;
+	if ($sth->rows() == 0) {
+		$sth->finish;
 		printf STDERR "%s: no such interface\n", $funcname;
 		return;
 	}
-	my %entry = $sth->fetchhash();
-	my $dbtype = displaytyperef(\%entry);
+	my $entry = $sth->fetchrow_hashref();
+	$sth->finish;
+	my $dbtype = displaytyperef($entry);
 	$dbtype = "void" if ($dbtype eq "");
 	if ($dbtype ne $functype) {
 		$fail++;
@@ -126,13 +129,15 @@ sub checksynopsis($$)
 	# AND are all the params in the database also in the doc?
 	#
 	my @dbtypes = ();
-	my $Iid = $entry{'Iid'};
+	my $Iid = $entry->{'Iid'};
 	$sql = "select * from Type, Parameter ";
 	$sql .= "where Pint=$Iid and Ptype=Tid order by Ppos";
-	$sth = $dbh->query($sql);
-	while ((%entry = $sth->fetchhash())) {
-		push (@dbtypes, displaytyperef(\%entry));
+	$sth = $dbh->prepare($sql) or die "Couldn't prepare $sql query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $sql query: ".DBI->errstr;
+	while (($entry = $sth->fetchrow_hashref())) {
+		push (@dbtypes, displaytyperef($entry));
 	}
+	$sth->finish;
 	my $pos = 0;
 	foreach my $arg (@$args) {
 		my $argtype = trim($arg->{'content'});
@@ -194,9 +199,9 @@ sub convert_to_xml($)
 sub displaytyperef($)
 {
 my ($param) = @_;
-my($select,$sth,%type);
-my ($tselect, $tmselect, $Tid, $tmh, %tmentry, $nameonly);
-my ($tth, $TMtypeid, $th, %entry);
+my($select,$sth,$type);
+my ($tselect, $tmselect, $Tid, $tmh, $tmentry, $nameonly);
+my ($tth, $TMtypeid, $th, $entry);
 my $retval = "";
 
 if( $$param{'Pconst'} eq "Yes" ) {
@@ -215,23 +220,27 @@ if( $$param{'Ttype'} eq "Literal" ) {
 
 if( $$param{'Ttype'} eq "Const" ) {
 	$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
-	$sth = $dbh->query($select) || die $dbh->errmsg();
-	%type=$sth->fetchhash;
-	if( $type{'Ttype'} eq "Pointer" ) {
-		$retval .= displaytyperef(\%type);
+	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+	$type = $sth->fetchrow_hashref;
+	$sth->finish;
+	if( $type->{'Ttype'} eq "Pointer" ) {
+		$retval .= displaytyperef($type);
 		$retval .= "const ";
 	} else {
 		$retval .= "const ";
-		$retval .= displaytyperef(\%type);
+		$retval .= displaytyperef($type);
 	}
 	return $retval;
 	}
 
 if( $$param{'Ttype'} eq "Pointer" ) {
 	$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
-	$sth = $dbh->query($select) || die $dbh->errmsg();
-	%type=$sth->fetchhash;
-	$retval .= displaytyperef(\%type);
+	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+	$type = $sth->fetchrow_hashref;
+	$sth->finish;
+	$retval .= displaytyperef($type);
 	$retval .= " *";
 	return $retval;
 	}
@@ -259,14 +268,16 @@ if( $$param{'Ttype'} eq "Enum" ) {
 if( $$param{'Ttype'} eq "Array" ) {
 	my $basetype=$$param{'Tbasetype'};
 	$tselect="SELECT * FROM Type WHERE Tid=$basetype";
-	$tth = $dbh->query($tselect) || die $dbh->errmsg();
-	%type=$tth->fetchhash;
+	$tth = $dbh->prepare($tselect) or die "Couldn't prepare $tselect query: ".DBI->errstr;
+	$tth->execute or die "Couldn't execute $tselect query: ".DBI->errstr;
+	$type = $tth->fetchrow_hashref;
+	$tth->finish;
 	if( !$nameonly ) {
 		$nameonly=1;
-		$retval .= displaytyperef(\%type);
+		$retval .= displaytyperef($type);
 		$nameonly=0;
 	} else {
-		$retval .= displaytyperef(\%type);
+		$retval .= displaytyperef($type);
 		}
 	if( $$param{'Tname'} =~ "fptr" ) {
 		$$param{'Tname'} =~ s/fptr-//;
@@ -276,10 +287,12 @@ if( $$param{'Ttype'} eq "Array" ) {
 
 if( $$param{'Ttype'} eq "FuncPtr" ) {
 	$select = "SELECT * FROM Type WHERE Tid=".$$param{'Tbasetype'};
-	$sth = $dbh->query($select) || die $dbh->errmsg();
-	%type=$sth->fetchhash;
+	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+	$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+	$type = $sth->fetchrow_hashref;
+	$sth->finish;
 	$Tid=$$param{'Tid'};
-	$retval .= displaytyperef(\%type);
+	$retval .= displaytyperef($type);
 	$retval .= "(*";
 	if( $$param{'Tname'} =~ "fptr" ) {
 		$$param{'Tname'} =~ s/fptr-//;
@@ -291,28 +304,32 @@ if( $$param{'Ttype'} eq "FuncPtr" ) {
 
 	$tmselect="SELECT * FROM TypeMember WHERE TMmemberof=$Tid";
 	$tmselect.=" ORDER BY TMposition";
-	$tmh = $dbh->query($tmselect) || die $dbh->errmsg();
-	if($tmh->numrows == 0) {
+	$tmh = $dbh->prepare($tmselect) or die "Couldn't prepare $tmselect query: ".DBI->errstr;
+	$tmh->execute or die "Couldn't execute $tmselect query: ".DBI->errstr;
+	if($tmh->rows == 0) {
 		$retval .= "void";
-		}
-	for(1..$tmh->numrows) {
-		%tmentry=$tmh->fetchhash;
-		$TMtypeid=$tmentry{'TMtypeid'};
+	}
+	for(1..$tmh->rows) {
+		$tmentry = $tmh->fetchrow_hashref;
+		$TMtypeid=$tmentry->{'TMtypeid'};
 		$tselect="SELECT * FROM Type WHERE Tid=$TMtypeid";
-		$th = $dbh->query($tselect) || die $dbh->errmsg();
-		%entry=$th->fetchhash;
+		$th = $dbh->prepare($tselect) or die "Couldn't prepare $tselect query: ".DBI->errstr;
+		$th->execute or die "Couldn't execute $tselect query: ".DBI->errstr;
+		$entry = $th->fetchrow_hashref;
+		$th->finish;
 		$nameonly=1;
-		displaytype(\%entry);
-		#print $tmentry{'TMname'};
-		if( $tmentry{'TMarray'} ) {
-			$retval .= "[".$tmentry{'TMarray'}."]";
+		displaytype($entry);
+		#print $tmentry->{'TMname'};
+		if( $tmentry->{'TMarray'} ) {
+			$retval .= "[".$tmentry->{'TMarray'}."]";
 			}
-		if( $_ != $tmh->numrows ) {
+		if( $_ != $tmh->rows ) {
 			$retval .= ",";
 			}
 		$nameonly=0;
-		}
-
+	}
+	$tmh->finish;
+	
 	$retval .= ")\n";
 	return $retval;
 	}
@@ -331,3 +348,5 @@ sub trim($)
 	$str =~ s/ *$//s;
 	return $str;
 }
+
+$dbh->disconnect;
