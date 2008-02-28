@@ -14,7 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkstandardsgmltable -a All -s "'LSB'" >standards.sgml
-	../../mklibsgmltable -a All -v `cat ../../LSB/version.generic` -m LSB_Graphics >glibraries.sgml
+	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Graphics >glibraries.sgml
 
 
 clean:

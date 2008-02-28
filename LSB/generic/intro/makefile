@@ -17,9 +17,9 @@ gensrc:
 	../../../mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) >standards.sgml
 	../../../mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) >references.sgml
 	../../../mkstandardsgmltable -s "'LSB','ISOCXX','CXXABI','SUSV3','ISOC99'" >cxxstandards.sgml
-	../../../mklibsgmltable -a All -v `cat ../../../LSB/version.generic` -m "LSB_Core" >glibraries.sgml
-	../../../mklibsgmltable -a None -v `cat ../../../LSB/version.generic` -m "LSB_Core" >pslibs.sgml
-	../../../mklibsgmltable -a All -v `cat ../../../LSB/version.generic` -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
+	../../../mklibsgmltable -a All -v `cat ../../../LSB/target_version.generic` -m "LSB_Core" >glibraries.sgml
+	../../../mklibsgmltable -a None -v `cat ../../../LSB/target_version.generic` -m "LSB_Core" >pslibs.sgml
+	../../../mklibsgmltable -a All -v `cat ../../../LSB/target_version.generic` -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
 
 clean:
 	rm -f $(FILES)

@@ -13,7 +13,7 @@ TABLES= libqt_mt.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/version.generic` -c 2 -l libqt-mt >libqt_mt.sgml
+	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 2 -l libqt-mt >libqt_mt.sgml
 
 clean:
 	rm -f $(FILES)
