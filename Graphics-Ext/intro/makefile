@@ -14,7 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkstandardsgmltable -a All -s "'ISOC99','Png12','libJPEG','fontconfig','freetype','xft','xrender'" >standards.sgml
-	../../mklibsgmltable -v `cat ../../LSB/version.generic` -a All -m LSB_Graphics_Ext >libraries.sgml
+	../../mklibsgmltable -v `cat ../../LSB/target_version.generic` -a All -m LSB_Graphics_Ext >libraries.sgml
 
 
 clean:

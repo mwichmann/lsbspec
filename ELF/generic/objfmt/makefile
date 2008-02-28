@@ -16,8 +16,8 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../../../mksecttypestable -a All -s 'ABIUpdate' -t 'ELF Section Types' >elfsecttypes.sgml
 	../../../mksecttypestable -a All -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
-	../../../mksectiontable -a All -s 'ABIUpdate' -t 'ELF Special Sections' -v `cat ../../../LSB/version.generic` >elfsect.sgml
-	../../../mksectiontable -a All -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/version.generic` >linuxsect.sgml
+	../../../mksectiontable -a All -s 'ABIUpdate' -t 'ELF Special Sections' -v `cat ../../../LSB/target_version.generic` >elfsect.sgml
+	../../../mksectiontable -a All -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/target_version.generic` >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)
@@ -27,5 +27,5 @@ spotless: clean
 
 
 objfmt.sgml: abinote.sgml ehframehdr.sgml elfsect.sgml elfsecttypes.sgml
-objfmt.sgml: linuxsect.sgml linuxsecttypes.sgml symversion.sgml dwarfext.sgml
+objfmt.sgml: linuxsect.sgml linuxsecttypes.sgml symtarget_version.sgml dwarfext.sgml
 objfmt.sgml: ehframe.sgml dwarfenc.sgml

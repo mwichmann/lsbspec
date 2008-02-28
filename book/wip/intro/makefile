@@ -14,8 +14,8 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../../mkstandardsgmltable -a All >standards.sgml
-	../../../mklibsgmltable -a All -v `cat ../../../LSB/version.generic` -f >libraries.sgml
-	../../../mklibsgmltable -a None -v `cat ../../../LSB/version.generic` >pslibs.sgml
+	../../../mklibsgmltable -a All -v `cat ../../../LSB/target_version.generic` -f >libraries.sgml
+	../../../mklibsgmltable -a None -v `cat ../../../LSB/target_version.generic` >pslibs.sgml
 
 clean:
 	rm -f $(FILES)

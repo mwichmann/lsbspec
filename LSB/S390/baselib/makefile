@@ -26,13 +26,13 @@ TABLES=
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
 gensrc: $(MANPAGES)
-	../../../mklibspec -a S390 -l libc -v `cat ../../version.S390` >libc.sgml
-	../../../mklibspec -a S390 -l libm -v `cat ../../version.S390` >libm.sgml
-	../../../mklibspec -a S390 -l libpthread -v `cat ../../version.S390` >libpthread.sgml
-	../../../mklibspec -a S390 -l libdl -v `cat ../../version.S390` >libdl.sgml
-	../../../mklibspec -a S390 -l libcrypt -v `cat ../../version.S390` >libcrypt.sgml
-	../../../mklibspec -a S390 -l libgcc_s -v `cat ../../version.S390` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../../mklibspec -a S390 -c 1 -l libstdcxx -d -v `cat ../../version.S390` | ../../../fixc++spec >libstdcxx.sgml
+	../../../mklibspec -a S390 -l libc -v `cat ../../target_version.S390` >libc.sgml
+	../../../mklibspec -a S390 -l libm -v `cat ../../target_version.S390` >libm.sgml
+	../../../mklibspec -a S390 -l libpthread -v `cat ../../target_version.S390` >libpthread.sgml
+	../../../mklibspec -a S390 -l libdl -v `cat ../../target_version.S390` >libdl.sgml
+	../../../mklibspec -a S390 -l libcrypt -v `cat ../../target_version.S390` >libcrypt.sgml
+	../../../mklibspec -a S390 -l libgcc_s -v `cat ../../target_version.S390` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	../../../mklibspec -a S390 -c 1 -l libstdcxx -d -v `cat ../../target_version.S390` | ../../../fixc++spec >libstdcxx.sgml
 
 _Unwind_%.sgml: 
 	cp ../../generic/baselib/$@ .

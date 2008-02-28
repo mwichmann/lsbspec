@@ -26,13 +26,13 @@ TABLES=
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
 gensrc: $(MANPAGES)
-	../../../mklibspec -a PPC64 -l libc -v `cat ../../version.PPC64` >libc.sgml
-	../../../mklibspec -a PPC64 -l libm -v `cat ../../version.PPC64` >libm.sgml
-	../../../mklibspec -a PPC64 -l libpthread -v `cat ../../version.PPC64` >libpthread.sgml
-	../../../mklibspec -a PPC64 -l libdl -v `cat ../../version.PPC64` >libdl.sgml
-	../../../mklibspec -a PPC64 -l libcrypt -v `cat ../../version.PPC64` >libcrypt.sgml
-	../../../mklibspec -a PPC64 -l libgcc_s -v `cat ../../version.PPC64` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../../mklibspec -a PPC64 -c 1 -l libstdcxx -d -v `cat ../../version.PPC64` | ../../../fixc++spec >libstdcxx.sgml
+	../../../mklibspec -a PPC64 -l libc -v `cat ../../target_version.PPC64` >libc.sgml
+	../../../mklibspec -a PPC64 -l libm -v `cat ../../target_version.PPC64` >libm.sgml
+	../../../mklibspec -a PPC64 -l libpthread -v `cat ../../target_version.PPC64` >libpthread.sgml
+	../../../mklibspec -a PPC64 -l libdl -v `cat ../../target_version.PPC64` >libdl.sgml
+	../../../mklibspec -a PPC64 -l libcrypt -v `cat ../../target_version.PPC64` >libcrypt.sgml
+	../../../mklibspec -a PPC64 -l libgcc_s -v `cat ../../target_version.PPC64` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	../../../mklibspec -a PPC64 -c 1 -l libstdcxx -d -v `cat ../../target_version.PPC64` | ../../../fixc++spec >libstdcxx.sgml
 
 _Unwind_%.sgml: 
 	cp ../../generic/baselib/$@ .

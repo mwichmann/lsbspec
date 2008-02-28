@@ -26,13 +26,13 @@ TABLES=
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
 gensrc: $(MANPAGES)
-	../../../mklibspec -a IA32 -l libc -v `cat ../../version.IA32` >libc.sgml
-	../../../mklibspec -a IA32 -l libm -v `cat ../../version.IA32` >libm.sgml
-	../../../mklibspec -a IA32 -l libpthread -v `cat ../../version.IA32` >libpthread.sgml
-	../../../mklibspec -a IA32 -l libdl -v `cat ../../version.IA32` >libdl.sgml
-	../../../mklibspec -a IA32 -l libcrypt -v `cat ../../version.IA32` >libcrypt.sgml
-	../../../mklibspec -a IA32 -l libgcc_s -v `cat ../../version.IA32` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../../mklibspec -a IA32 -c 1 -l libstdcxx -d -v `cat ../../version.IA32` | ../../../fixc++spec >libstdcxx.sgml
+	../../../mklibspec -a IA32 -l libc -v `cat ../../target_version.IA32` >libc.sgml
+	../../../mklibspec -a IA32 -l libm -v `cat ../../target_version.IA32` >libm.sgml
+	../../../mklibspec -a IA32 -l libpthread -v `cat ../../target_version.IA32` >libpthread.sgml
+	../../../mklibspec -a IA32 -l libdl -v `cat ../../target_version.IA32` >libdl.sgml
+	../../../mklibspec -a IA32 -l libcrypt -v `cat ../../target_version.IA32` >libcrypt.sgml
+	../../../mklibspec -a IA32 -l libgcc_s -v `cat ../../target_version.IA32` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	../../../mklibspec -a IA32 -c 1 -l libstdcxx -d -v `cat ../../target_version.IA32` | ../../../fixc++spec >libstdcxx.sgml
 
 _Unwind_%.sgml: 
 	cp ../../generic/baselib/$@ .

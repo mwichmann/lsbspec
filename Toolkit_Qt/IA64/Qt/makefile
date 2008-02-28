@@ -13,13 +13,13 @@ TABLES= libQtCore.sgml libQtGui.sgml libQtSql.sgml libQtOpenGL.sgml libQtXml.sgm
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a IA64 -v `cat ../../../LSB/version.IA64` -c 2 -l libQtCore >libQtCore.sgml
-	../../../mklibspec -a IA64 -v `cat ../../../LSB/version.IA64` -c 2 -l libQtGui >libQtGui.sgml
-	../../../mklibspec -a IA64 -v `cat ../../../LSB/version.IA64` -c 2 -l libQtSql >libQtSql.sgml
-	../../../mklibspec -a IA64 -v `cat ../../../LSB/version.IA64` -c 2 -l libQtOpenGL >libQtOpenGL.sgml
-	../../../mklibspec -a IA64 -v `cat ../../../LSB/version.IA64` -c 2 -l libQtXml >libQtXml.sgml
-	../../../mklibspec -a IA64 -v `cat ../../../LSB/version.IA64` -c 2 -l libQtSvg >libQtSvg.sgml
-	../../../mklibspec -a IA64 -v `cat ../../../LSB/version.IA64` -c 2 -l libQtNetwork >libQtNetwork.sgml
+	../../../mklibspec -a IA64 -v `cat ../../../LSB/target_version.IA64` -c 2 -l libQtCore >libQtCore.sgml
+	../../../mklibspec -a IA64 -v `cat ../../../LSB/target_version.IA64` -c 2 -l libQtGui >libQtGui.sgml
+	../../../mklibspec -a IA64 -v `cat ../../../LSB/target_version.IA64` -c 2 -l libQtSql >libQtSql.sgml
+	../../../mklibspec -a IA64 -v `cat ../../../LSB/target_version.IA64` -c 2 -l libQtOpenGL >libQtOpenGL.sgml
+	../../../mklibspec -a IA64 -v `cat ../../../LSB/target_version.IA64` -c 2 -l libQtXml >libQtXml.sgml
+	../../../mklibspec -a IA64 -v `cat ../../../LSB/target_version.IA64` -c 2 -l libQtSvg >libQtSvg.sgml
+	../../../mklibspec -a IA64 -v `cat ../../../LSB/target_version.IA64` -c 2 -l libQtNetwork >libQtNetwork.sgml
 
 clean:
 	rm -f $(FILES)

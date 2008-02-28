@@ -14,7 +14,7 @@ all: $(FILES) $(TABLES)
 
 gensrc:
 	../../mkstandardsgmltable -a All -s "'ALSA','ISOC99'" >standards.sgml
-	../../mklibsgmltable -a All -v `cat ../../LSB/version.generic` -m LSB_Multimedia >libraries.sgml
+	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Multimedia >libraries.sgml
 
 
 clean:

@@ -26,13 +26,13 @@ TABLES=
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
 gensrc: $(MANPAGES)
-	../../../mklibspec -a x86-64 -l libc -v `cat ../../version.AMD64` >libc.sgml
-	../../../mklibspec -a x86-64 -l libm -v `cat ../../version.AMD64` >libm.sgml
-	../../../mklibspec -a x86-64 -l libpthread -v `cat ../../version.AMD64` >libpthread.sgml
-	../../../mklibspec -a x86-64 -l libdl -v `cat ../../version.AMD64` >libdl.sgml
-	../../../mklibspec -a x86-64 -l libcrypt -v `cat ../../version.AMD64` >libcrypt.sgml
-	../../../mklibspec -a x86-64 -l libgcc_s -v `cat ../../version.AMD64` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../../mklibspec -a x86-64 -c 1 -l libstdcxx -d -v `cat ../../version.AMD64` | ../../../fixc++spec >libstdcxx.sgml
+	../../../mklibspec -a x86-64 -l libc -v `cat ../../target_version.AMD64` >libc.sgml
+	../../../mklibspec -a x86-64 -l libm -v `cat ../../target_version.AMD64` >libm.sgml
+	../../../mklibspec -a x86-64 -l libpthread -v `cat ../../target_version.AMD64` >libpthread.sgml
+	../../../mklibspec -a x86-64 -l libdl -v `cat ../../target_version.AMD64` >libdl.sgml
+	../../../mklibspec -a x86-64 -l libcrypt -v `cat ../../target_version.AMD64` >libcrypt.sgml
+	../../../mklibspec -a x86-64 -l libgcc_s -v `cat ../../target_version.AMD64` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	../../../mklibspec -a x86-64 -c 1 -l libstdcxx -d -v `cat ../../target_version.AMD64` | ../../../fixc++spec >libstdcxx.sgml
 
 _Unwind_%.sgml: 
 	cp ../../generic/baselib/$@ .
