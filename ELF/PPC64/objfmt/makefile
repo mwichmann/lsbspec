@@ -16,8 +16,8 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../../../mksecttypestable -a PPC64 -s 'PPC64 ABI' -t 'ELF Section Types' >elfsecttypes.sgml
 	../../../mksecttypestable -a PPC64 -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
-	../../../mksectiontable -a PPC64 -s 'PPC64 ABI' -t 'ELF Special Sections' -v `cat ../../../LSB/version.PPC64` >elfsect.sgml
-	../../../mksectiontable -a PPC64 -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/version.PPC64` >linuxsect.sgml
+	../../../mksectiontable -a PPC64 -s 'PPC64 ABI' -t 'ELF Special Sections' -v `cat ../../../LSB/target_version.PPC64` >elfsect.sgml
+	../../../mksectiontable -a PPC64 -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/target_version.PPC64` >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)

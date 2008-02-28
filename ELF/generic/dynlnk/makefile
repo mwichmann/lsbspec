@@ -13,8 +13,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkdyntagtable -a All -s 'ABIUpdate' -v `cat ../../../LSB/version.generic` -c 4 >dyntag.sgml
-	../../../mkdyntagtable -a All -s 'LSB' -v `cat ../../../LSB/version.generic` -d >linuxtag.sgml
+	../../../mkdyntagtable -a All -s 'ABIUpdate' -v `cat ../../../LSB/target_version.generic` -c 4 >dyntag.sgml
+	../../../mkdyntagtable -a All -s 'LSB' -v `cat ../../../LSB/target_version.generic` -d >linuxtag.sgml
 
 clean:
 	rm -f $(FILES)
