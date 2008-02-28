@@ -16,8 +16,8 @@ all: $(FILES) $(TABLES)
 gensrc:
 	../../../mksecttypestable -a IA32 -s 'IA32-ABI-4' -t 'ELF Section Types' >elfsecttypes.sgml
 	../../../mksecttypestable -a IA32 -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
-	../../../mksectiontable -a IA32 -s 'IA32-ABI-4' -t 'ELF Special Sections' -v `cat ../../../LSB/version.IA32` >elfsect.sgml
-	../../../mksectiontable -a IA32 -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/version.IA32` >linuxsect.sgml
+	../../../mksectiontable -a IA32 -s 'IA32-ABI-4' -t 'ELF Special Sections' -v `cat ../../../LSB/target_version.IA32` >elfsect.sgml
+	../../../mksectiontable -a IA32 -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/target_version.IA32` >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)

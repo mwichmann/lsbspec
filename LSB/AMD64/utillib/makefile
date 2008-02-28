@@ -13,9 +13,9 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a x86-64 -l libz -v `cat ../../version.AMD64` >libz.sgml
-	../../../mklibspec -a x86-64 -l libncurses -v `cat ../../version.AMD64` >libcurses.sgml
-	../../../mklibspec -a x86-64 -l libutil -v `cat ../../version.AMD64` >libutil.sgml
+	../../../mklibspec -a x86-64 -l libz -v `cat ../../target_version.AMD64` >libz.sgml
+	../../../mklibspec -a x86-64 -l libncurses -v `cat ../../target_version.AMD64` >libcurses.sgml
+	../../../mklibspec -a x86-64 -l libutil -v `cat ../../target_version.AMD64` >libutil.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,7 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES= png_access_version_number.sgml\
+MANPAGES= png_access_target_version_number.sgml\
 png_check_sig.sgml\
 png_create_info_struct.sgml\
 png_create_read_struct.sgml\
@@ -112,7 +112,7 @@ TABLES= png.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/version.generic` -c 3 -l libpng12 >png.sgml
+	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libpng12 >png.sgml
 
 clean:
 	rm -f $(FILES)
