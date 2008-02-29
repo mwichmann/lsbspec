@@ -1,7 +1,7 @@
 <!-- Start of text generated from database -->
 <!-- generated from the LSB specification database -->
 <!--    by $Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp 0 -->
-<!--    at Wed Feb  6 07:01:36 2008 -->
+<!--    at Fri Feb 29 06:34:04 2008 -->
 <SECT1 ID=libc>
 <TITLE>Interfaces for libc</TITLE>
 <PARA>
@@ -412,7 +412,7 @@ in future releases of this specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>fstatfs</primary></indexterm>fstatfs(GLIBC_2.0) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>fstatfs</primary></indexterm>fstatfs <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getdtablesize</primary></indexterm>getdtablesize <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getpagesize</primary></indexterm>getpagesize <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getwd</primary></indexterm>getwd <LINK LINKEND="REFSTD.libc.4">[SUSv3]</LINK></ENTRY>
@@ -2082,7 +2082,7 @@ in future releases of this specification.
 <TBODY>
 <ROW>
 <ENTRY><indexterm><primary>basename</primary></indexterm>basename <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>getdomainname</primary></indexterm>getdomainname(GLIBC_2.0) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>getdomainname</primary></indexterm>getdomainname <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>inet_aton</primary></indexterm>inet_aton <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -2153,12 +2153,12 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 extern uint32_t htonl(uint32_t);
 extern uint16_t htons(uint16_t);
 extern in_addr_t inet_addr(const char *);
-extern int inet_aton(const char *, struct in_addr *);
 extern char *inet_ntoa(struct in_addr);
-extern const char *inet_ntop(int, const void *, char *, socklen_t);
-extern int inet_pton(int, const char *, void *);
 extern uint32_t ntohl(uint32_t);
 extern uint16_t ntohs(uint16_t);
+extern const char *inet_ntop(int, const void *, char *, socklen_t);
+extern int inet_pton(int, const char *, void *);
+extern int inet_aton(const char *, struct in_addr *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2204,8 +2204,8 @@ extern int tolower(int);
 extern int toupper(int);
 extern int isblank(int);
 extern const unsigned short **__ctype_b_loc(void);
-extern const int32_t **__ctype_toupper_loc(void);
 extern const int32_t **__ctype_tolower_loc(void);
+extern const int32_t **__ctype_toupper_loc(void);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2230,7 +2230,6 @@ struct dirent64 {
     unsigned char d_type;
     char d_name[256];
 };
-extern int readdir64_r(DIR *, struct dirent64 *, struct dirent64 **);
 extern void rewinddir(DIR *);
 extern void seekdir(DIR *, long int);
 extern long int telldir(DIR *);
@@ -2239,6 +2238,7 @@ extern DIR *opendir(const char *);
 extern struct dirent *readdir(DIR *);
 extern struct dirent64 *readdir64(DIR *);
 extern int readdir_r(DIR *, struct dirent *, struct dirent **);
+extern int readdir64_r(DIR *, struct dirent64 *, struct dirent64 **);
 </SCREEN>
 </SECT2>
 <!-- empty header file All/endian.h -->
@@ -2451,15 +2451,15 @@ struct flock64 {
 #define F_SETOWN	8
 #define F_GETOWN	9
 
-extern int posix_fadvise(int, off_t, off_t, int);
-extern int posix_fallocate(int, off_t, off_t);
-extern int posix_fadvise64(int, off64_t, off64_t, int);
-extern int posix_fallocate64(int, off64_t, off64_t);
 extern int creat(const char *, mode_t);
 extern int creat64(const char *, mode_t);
 extern int fcntl(int, int, ...);
 extern int open(const char *, int, ...);
 extern int open64(const char *, int, ...);
+extern int posix_fadvise(int, off_t, off_t, int);
+extern int posix_fallocate(int, off_t, off_t);
+extern int posix_fadvise64(int, off64_t, off64_t, int);
+extern int posix_fallocate64(int, off64_t, off64_t);
 </SCREEN>
 </SECT2>
 <!-- missing header file All/features.h -->
@@ -2784,9 +2784,9 @@ extern char *__xpg_basename(char *);
 
 extern char *bindtextdomain(const char *, const char *);
 extern char *dcgettext(const char *, const char *, int);
-extern char *dgettext(const char *, const char *);
 extern char *gettext(const char *);
 extern char *textdomain(const char *);
+extern char *dgettext(const char *, const char *);
 extern char *bind_textdomain_codeset(const char *, const char *);
 extern char *dcngettext(const char *, const char *, const char *,
 			unsigned long int, int);
@@ -3124,17 +3124,10 @@ struct addrinfo {
 #define EAI_SERVICE	-8
 #define EAI_ADDRFAMILY	-9
 
-extern int gethostbyname2_r(const char *, int, struct hostent *, char *,
-			    size_t, struct hostent **, int *);
 extern void endprotoent(void);
 extern void endservent(void);
-extern void freeaddrinfo(struct addrinfo *);
-extern const char *gai_strerror(int);
-extern int getaddrinfo(const char *, const char *, const struct addrinfo *,
-		       struct addrinfo **);
 extern struct hostent *gethostbyaddr(const void *, socklen_t, int);
 extern struct hostent *gethostbyname(const char *);
-extern struct hostent *gethostbyname2(const char *, int);
 extern struct protoent *getprotobyname(const char *);
 extern struct protoent *getprotobynumber(int);
 extern struct protoent *getprotoent(void);
@@ -3144,8 +3137,15 @@ extern struct servent *getservent(void);
 extern void setprotoent(int);
 extern void setservent(int);
 extern int *__h_errno_location(void);
+extern void freeaddrinfo(struct addrinfo *);
+extern const char *gai_strerror(int);
+extern int getaddrinfo(const char *, const char *, const struct addrinfo *,
+		       struct addrinfo **);
+extern struct hostent *gethostbyname2(const char *, int);
 extern int gethostbyaddr_r(const void *, socklen_t, int, struct hostent *,
 			   char *, size_t, struct hostent **, int *);
+extern int gethostbyname2_r(const char *, int, struct hostent *, char *,
+			    size_t, struct hostent **, int *);
 extern int gethostbyname_r(const char *, struct hostent *, char *, size_t,
 			   struct hostent **, int *);
 </SCREEN>
@@ -3328,9 +3328,9 @@ extern struct passwd *getpwent(void);
 extern struct passwd *getpwnam(const char *);
 extern struct passwd *getpwuid(uid_t);
 extern void setpwent(void);
-extern int getpwnam_r(const char *, struct passwd *, char *, size_t,
-		      struct passwd **);
 extern int getpwuid_r(uid_t, struct passwd *, char *, size_t,
+		      struct passwd **);
+extern int getpwnam_r(const char *, struct passwd *, char *, size_t,
 		      struct passwd **);
 </SCREEN>
 </SECT2>
@@ -3710,10 +3710,6 @@ struct xp_ops {
     void (*xp_destroy) (SVCXPRT * __xprt);
 };
 extern void svc_getreqset(fd_set *);
-extern bool_t svc_register(SVCXPRT *, rpcprog_t, rpcvers_t,
-			   __dispatch_fn_t, rpcprot_t);
-extern void svc_run(void);
-extern bool_t svc_sendreply(SVCXPRT *, xdrproc_t, caddr_t);
 extern void svcerr_auth(SVCXPRT *, enum auth_stat);
 extern void svcerr_decode(SVCXPRT *);
 extern void svcerr_noproc(SVCXPRT *);
@@ -3721,6 +3717,10 @@ extern void svcerr_noprog(SVCXPRT *);
 extern void svcerr_progvers(SVCXPRT *, rpcvers_t, rpcvers_t);
 extern void svcerr_systemerr(SVCXPRT *);
 extern void svcerr_weakauth(SVCXPRT *);
+extern bool_t svc_register(SVCXPRT *, rpcprog_t, rpcvers_t,
+			   __dispatch_fn_t, rpcprot_t);
+extern void svc_run(void);
+extern bool_t svc_sendreply(SVCXPRT *, xdrproc_t, caddr_t);
 extern SVCXPRT *svctcp_create(int, u_int, u_int);
 extern SVCXPRT *svcudp_create(int);
 </SCREEN>
@@ -3778,7 +3778,6 @@ struct xdr_discrim {
     int value;
     xdrproc_t proc;
 };
-extern void xdrstdio_create(XDR *, FILE *, enum xdr_op);
 extern bool_t xdr_array(XDR *, caddr_t *, u_int *, u_int, u_int,
 			xdrproc_t);
 extern bool_t xdr_bool(XDR *, bool_t *);
@@ -3796,7 +3795,6 @@ extern bool_t xdr_reference(XDR *, caddr_t *, u_int, xdrproc_t);
 extern bool_t xdr_short(XDR *, short *);
 extern bool_t xdr_string(XDR *, char **, u_int);
 extern bool_t xdr_u_char(XDR *, u_char *);
-extern bool_t xdr_u_int(XDR *, u_int *);
 extern bool_t xdr_u_long(XDR *, u_long *);
 extern bool_t xdr_u_short(XDR *, u_short *);
 extern bool_t xdr_union(XDR *, enum_t *, char *,
@@ -3810,6 +3808,8 @@ extern void xdrrec_create(XDR *, u_int, u_int, caddr_t,
 			  , int (*proc) (char *p1, char *p2, int p3)
     );
 extern bool_t xdrrec_eof(XDR *);
+extern bool_t xdr_u_int(XDR *, u_int *);
+extern void xdrstdio_create(XDR *, FILE *, enum xdr_op);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3866,10 +3866,10 @@ extern void *lsearch(const void *, void *, size_t *, size_t,
 		     __compar_fn_t);
 extern void remque(void *);
 extern void hdestroy(void);
-extern void *tdelete(const void *, void **, __compar_fn_t);
 extern void *tfind(const void *, void *const *, __compar_fn_t);
 extern void *tsearch(const void *, void **, __compar_fn_t);
 extern void twalk(const void *, __action_fn_t);
+extern void *tdelete(const void *, void **, __compar_fn_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4389,7 +4389,6 @@ extern int ungetc(int, FILE *);
 extern int vsnprintf(char *, size_t, const char *, va_list);
 extern int vsprintf(char *, const char *, va_list);
 extern void flockfile(FILE *);
-extern int asprintf(char **, const char *, ...);
 extern int fgetpos64(FILE *, fpos64_t *);
 extern FILE *fopen64(const char *, const char *);
 extern int fsetpos64(FILE *, const fpos64_t *);
@@ -4399,10 +4398,11 @@ extern int getc_unlocked(FILE *);
 extern void setbuffer(FILE *, char *, size_t);
 extern int vasprintf(char **, const char *, va_list);
 extern int vdprintf(int, const char *, va_list);
+extern size_t __fpending(FILE *);
+extern int asprintf(char **, const char *, ...);
 extern int vfscanf(FILE *, const char *, va_list);
 extern int vscanf(const char *, va_list);
 extern int vsscanf(const char *, const char *, va_list);
-extern size_t __fpending(FILE *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4456,7 +4456,6 @@ extern int abs(int);
 extern double atof(const char *);
 extern int atoi(const char *);
 extern long int atol(const char *);
-extern long long int atoll(const char *);
 extern void *bsearch(const void *, const void *, size_t, size_t,
 		     __compar_fn_t);
 extern div_t div(int, int);
@@ -4472,7 +4471,6 @@ extern int grantpt(int);
 extern long int jrand48(unsigned short);
 extern char *l64a(long int);
 extern long int labs(long int);
-extern void lcong48(unsigned short);
 extern ldiv_t ldiv(long int, long int);
 extern long long int llabs(long long int);
 extern lldiv_t lldiv(long long int, long long int);
@@ -4487,7 +4485,6 @@ extern char *ptsname(int);
 extern int putenv(char *);
 extern void qsort(void *, size_t, size_t, const __compar_fn_t);
 extern int rand(void);
-extern int rand_r(unsigned int *);
 extern unsigned short *seed48(unsigned short);
 extern void srand48(long int);
 extern int unlockpt(int);
@@ -4516,11 +4513,14 @@ extern void _Exit(int);
 extern size_t __ctype_get_mb_cur_max(void);
 extern char **environ;
 extern char *realpath(const char *, char *);
-extern int setenv(const char *, const char *, int);
-extern int unsetenv(const char *);
 extern int getloadavg(double, int);
 extern int mkstemp64(char *);
 extern int posix_memalign(void **, size_t, size_t);
+extern int rand_r(unsigned int *);
+extern void lcong48(unsigned short);
+extern int setenv(const char *, const char *, int);
+extern int unsetenv(const char *);
+extern long long int atoll(const char *);
 extern int posix_openpt(int);
 </SCREEN>
 </SECT2>
@@ -4658,8 +4658,6 @@ extern key_t ftok(const char *, int);
 #define MS_SYNC	4
 #define MAP_ANON	MAP_ANONYMOUS
 
-extern void *mremap(void *, size_t, size_t, int);
-extern int posix_madvise(void *, size_t, int);
 extern int msync(void *, size_t, int);
 extern int mlock(const void *, size_t);
 extern int mlockall(int);
@@ -4671,6 +4669,8 @@ extern int munmap(void *, size_t);
 extern void *mmap64(void *, size_t, int, int, int, off64_t);
 extern int shm_open(const char *, int, mode_t);
 extern int shm_unlink(const char *);
+extern void *mremap(void *, size_t, size_t, int);
+extern int posix_madvise(void *, size_t, int);
 </SCREEN>
 </SECT2>
 <!-- empty header file All/sys/mmap.h -->
@@ -4785,9 +4785,9 @@ extern int getpriority(__priority_which_t, id_t);
 extern int getrlimit64(id_t, struct rlimit64 *);
 extern int setpriority(__priority_which_t, id_t, int);
 extern int setrlimit(__rlimit_resource_t, const struct rlimit *);
-extern int setrlimit64(__rlimit_resource_t, const struct rlimit64 *);
 extern int getrlimit(__rlimit_resource_t, struct rlimit *);
 extern int getrusage(int, struct rusage *);
+extern int setrlimit64(__rlimit_resource_t, const struct rlimit64 *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4840,11 +4840,11 @@ extern int semop(int, struct sembuf *, size_t);
 #define SHM_LOCK	11
 #define SHM_UNLOCK	12
 
-extern int __getpagesize(void);
 extern void *shmat(int, const void *, int);
 extern int shmctl(int, int, struct shmid_ds *);
 extern int shmdt(const void *);
 extern int shmget(key_t, size_t, int);
+extern int __getpagesize(void);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4968,8 +4968,6 @@ struct msghdr {
 #define MSG_CTRUNC	8
 
 extern int bind(int, const struct sockaddr *, socklen_t);
-extern int getnameinfo(const struct sockaddr *, socklen_t, char *,
-		       socklen_t, char *, socklen_t, unsigned int);
 extern int getsockname(int, struct sockaddr *, socklen_t *);
 extern int listen(int, int);
 extern int setsockopt(int, int, int, const void *, socklen_t);
@@ -4988,6 +4986,8 @@ extern int getsockopt(int, int, int, void *, socklen_t *);
 extern int shutdown(int, int);
 extern int socket(int, int, int);
 extern int socketpair(int, int, int, int);
+extern int getnameinfo(const struct sockaddr *, socklen_t, char *,
+		       socklen_t, char *, socklen_t, unsigned int);
 extern int sockatmark(int);
 </SCREEN>
 </SECT2>
@@ -5280,10 +5280,10 @@ typedef enum {
     P_PID,
     P_PGID
 } idtype_t;
-extern int waitid(idtype_t, id_t, siginfo_t *, int);
 extern pid_t wait(int *);
 extern pid_t waitpid(pid_t, int *, int);
 extern pid_t wait4(pid_t, int *, int, struct rusage *);
+extern int waitid(idtype_t, id_t, siginfo_t *, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -5337,8 +5337,8 @@ extern pid_t wait4(pid_t, int *, int, struct rusage *);
 
 extern void closelog(void);
 extern void openlog(const char *, int, int);
-extern int setlogmask(int);
 extern void syslog(int, const char *, ...);
+extern int setlogmask(int);
 extern void vsyslog(int, const char *, va_list);
 </SCREEN>
 </SECT2>
@@ -5473,13 +5473,9 @@ struct itimerspec {
     struct timespec it_value;
 };
 
-extern int __daylight;
-extern long int __timezone;
-extern char *__tzname[];
 extern char *asctime(const struct tm *);
 extern clock_t clock(void);
 extern char *ctime(const time_t *);
-extern char *ctime_r(const time_t *, char *);
 extern double difftime(time_t, time_t);
 extern struct tm *getdate(const char *);
 extern int getdate_err;
@@ -5495,6 +5491,10 @@ extern int daylight;
 extern long int timezone;
 extern char *tzname[];
 extern void tzset(void);
+extern int __daylight;
+extern long int __timezone;
+extern char *__tzname[];
+extern char *ctime_r(const time_t *, char *);
 extern char *asctime_r(const struct tm *, char *);
 extern struct tm *gmtime_r(const time_t *, struct tm *);
 extern struct tm *localtime_r(const time_t *, struct tm *);
@@ -5823,7 +5823,6 @@ typedef long long int off64_t;
 #define F_TLOCK	2
 #define F_TEST	3
 
-extern int getdtablesize(void);
 extern char **__environ;
 extern pid_t __getpgid(pid_t);
 extern void _exit(int);
@@ -5842,10 +5841,8 @@ extern int execv(const char *, char *const);
 extern int execvp(const char *, char *const);
 extern int fdatasync(int);
 extern int ftruncate64(int, off64_t);
-extern int getdomainname(char *, size_t);
 extern long int gethostid(void);
 extern char *getlogin(void);
-extern int getlogin_r(char *, size_t);
 extern int getopt(int, char *const, const char *);
 extern pid_t getpgrp(void);
 extern pid_t getsid(pid_t);
@@ -5928,9 +5925,12 @@ extern int getpagesize(void);
 extern pid_t getppid(void);
 extern int isatty(int);
 extern loff_t lseek64(int, loff_t, int);
-extern ssize_t pread64(int, void *, size_t, off64_t);
 extern ssize_t pwrite64(int, const void *, size_t, off64_t);
 extern int ttyname_r(int, char *, size_t);
+extern ssize_t pread64(int, void *, size_t, off64_t);
+extern int getlogin_r(char *, size_t);
+extern int getdtablesize(void);
+extern int getdomainname(char *, size_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -5975,12 +5975,12 @@ struct exit_status {
 extern void endutent(void);
 extern struct utmp *getutent(void);
 extern void setutent(void);
-extern int getutent_r(struct utmp *, struct utmp **);
-extern int utmpname(const char *);
 extern int login_tty(int);
 extern void login(const struct utmp *);
 extern int logout(const char *);
 extern void logwtmp(const char *, const char *, const char *);
+extern int getutent_r(struct utmp *, struct utmp **);
+extern int utmpname(const char *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -6073,7 +6073,6 @@ extern int fwide(FILE *, int);
 extern int fwprintf(FILE *, const wchar_t *, ...);
 extern int fwscanf(FILE *, const wchar_t *, ...);
 extern wint_t getwc(FILE *);
-extern wint_t getwchar(void);
 extern wint_t putwc(wchar_t, FILE *);
 extern wint_t putwchar(wchar_t);
 extern int swprintf(wchar_t *, size_t, const wchar_t *, ...);
@@ -6089,6 +6088,7 @@ extern size_t wcsftime(wchar_t *, size_t, const wchar_t *,
 		       const struct tm *);
 extern int wprintf(const wchar_t *, ...);
 extern int wscanf(const wchar_t *, ...);
+extern wint_t getwchar(void);
 </SCREEN>
 </SECT2>
 <SECT2>

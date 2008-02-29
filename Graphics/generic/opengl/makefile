@@ -4,10 +4,7 @@
 MANPAGES=
 
 FILES=opengl.sgml
-TABLES= libGL.sgml
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
+TABLES= libGL.sgml libGLU.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -15,7 +12,8 @@ TABLES= libGL.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -l libGL >libGL.sgml
+	../../../mklibspec -a All -v `cat ../../../LSB/version.generic` -l libGL >libGL.sgml
+	../../../mklibspec -a All -v `cat ../../../LSB/version.generic` -l libGLU >libGLU.sgml
 
 clean:
 	rm -f $(FILES)
@@ -24,5 +22,5 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-opengl.sgml: libGL.sgml
+opengl.sgml: libGL.sgml libGLU.sgml
 opengl.sgml: $(MANPAGES)
