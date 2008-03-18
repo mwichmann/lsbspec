@@ -572,11 +572,8 @@ $Aname=$entry->{'Aname'};
 $safelibname=$libname;
 $safelibname =~ s/_/-/g;
 
-printf("<!-- Start of text generated from database -->\n");
-printf("<!-- generated from the LSB specification database -->\n");
-printf("<!--    by \$Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp $- -->\n");
-my $now_string = localtime;
-printf("<!--    at %s -->\n", $now_string );
+printf("<!-- Start of generated text - do not edit! -->\n");
+printf("<!-- generated from the LSB specification database by mklibspec -->\n");
 
 print "<SECT1 ID=", $safelibname, ">\n";
 print "<TITLE>Interfaces for ", $libname, "</TITLE>\n";
@@ -777,6 +774,8 @@ local ($data_def_header);
 $data_def_header = 0;
 $select = "SELECT DISTINCT Hname,Hid FROM Header ";
 $select.= "WHERE Hlib=$Lid ";
+$select.= "AND Happearedin <= '$lsbversion' AND Happearedin <>'' ";
+$select.= "AND (Hwithdrawnin IS NULL OR Hwithdrawnin > '$lsbversion')";
 $select.= "ORDER BY Hname";
 $hdh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 $hdh->execute or die "Couldn't execute $select query: ".DBI->errstr;
@@ -896,4 +895,3 @@ $dbh->disconnect;
 
 printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
 printf("<!-- End of text generated from database -->\n");
-printf("<!--    by \$Header: mklibspec 1.82 2006/03/29 19:10:18 mats Exp $- -->\n");

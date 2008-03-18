@@ -1,5 +1,8 @@
 
-DOCDIRS=ELF Graphics LSB Packaging Graphics-Ext Toolkit_Gtk Toolkit_Qt3 Toolkit_Qt XML Desktop
+DOCDIRS=ELF LSB Packaging Graphics Graphics-Ext \
+	Toolkit_Gtk Toolkit_Qt3 Toolkit_Qt XML Desktop \
+	Languages Multimedia Perl Printing Python TrialUse TUM
+
 SUBDIRS= $(DOCDIRS)
 
 # These commands are those found on sourceforge.net. Please create your own
