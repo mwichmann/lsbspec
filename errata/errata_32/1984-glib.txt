@@ -1,0 +1,98 @@
+Specification: LSB Desktop Generic
+Edition of Specification: 3.2
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1984
+
+Rationale: in glib, four interfaces (g_atomic_int_exchange_and_add,
+g_atomic_int_add, g_atomic_int_compare_and_exchange and
+g_atomic_pointer_compare_and_exchange) need to be marked by the "volatile"
+type qualifier. Additionally, fields in two structures, GObject and
+GClosure, contain fields which need to be so marked.  This qualifier
+was omitted in error.
+
+
+In 15.3.1. glib-2.0/glib.h
+
+Change:
+
+extern gint g_atomic_int_exchange_and_add(gint *, gint);
+
+To:
+
+extern gint g_atomic_int_exchange_and_add(gint * volatile, gint);
+
+Change:
+
+extern gboolean g_atomic_pointer_compare_and_exchange(gpointer *, gpointer,
+                                                      gpointer);
+
+To:
+
+extern gboolean g_atomic_pointer_compare_and_exchange(gpointer * volatile,
+                                                      gpointer, gpointer);
+
+Change:
+
+extern gboolean g_atomic_int_compare_and_exchange(gint *, gint, gint);
+
+To:
+
+extern gboolean g_atomic_int_compare_and_exchange(gint * volatile, gint, gint);
+
+Change:
+
+extern void g_atomic_int_add(gint *, gint);
+
+To:
+
+extern void g_atomic_int_add(gint * volatile, gint);
+
+
+In 15.5.1. glib-2.0/glib-object.h
+
+Change:
+
+typedef struct _GObject {
+    GTypeInstance g_type_instance;
+    guint ref_count;
+    GData *qdata;
+} GObject;
+
+To:
+
+typedef struct _GObject {
+    GTypeInstance g_type_instance;
+    volatile guint ref_count;
+    GData *qdata;
+} GObject;
+
+Change:
+
+typedef struct _GClosure {
+    guint ref_count:15;
+    guint meta_marshal:1;
+    guint n_guards:1;
+    guint n_fnotifiers:2;
+    guint n_inotifiers:8;
+    guint in_inotify:1;
+    guint floating:1;
+    guint derivative_flag:1;
+    guint in_marshal:1;
+    guint is_invalid:1;
+...
+
+To:
+
+typedef struct _GClosure {
+    volatile guint ref_count:15;
+    volatile guint meta_marshal:1;
+    volatile guint n_guards:1;
+    volatile guint n_fnotifiers:2;
+    volatile guint n_inotifiers:8;
+    volatile guint in_inotify:1;
+    volatile guint floating:1;
+    volatile guint derivative_flag:1;
+    volatile guint in_marshal:1;
+    volatile guint is_invalid:1;
+
