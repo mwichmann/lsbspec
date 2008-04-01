@@ -1,0 +1,91 @@
+#!/usr/bin/perl
+#
+# generate list of modules for an interpreted language
+# which have to be defined in LSB.  That is, they're either
+# unique to LSB or extend the referenced standard
+#
+
+use DBI;
+use Getopt::Long;
+use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
+
+sub usage() {
+    print STDERR "mkilmodlist -v <lsbversion> -l <language> ]\n";
+    die;
+}
+
+# Uncomment to trace SQL statments
+#$trace=1;
+
+#
+# 1) process the arguments
+#
+GetOptions(
+    "l=s" => \$language,
+    "v=s" => \$lsbversion
+);
+if ( !$language ) { usage(); }
+if ( !$lsbversion ) { usage(); }
+
+#
+# 2) Establish connection to the database
+#
+my $dbh = DBI->connect( 'DBI:mysql:database=' . $LSBDB . ';host=' . $LSBDBHOST,
+    $LSBUSER, $LSBDBPASSWD )
+  or die "Couldn't connect to database: " . DBI->errstr;
+
+#
+# 3) sanity check that the language name is valid
+#
+$select = "SELECT ILid FROM InterpretedLanguage WHERE ILname=\"$language\"";
+print STDERR $select, "\n" if $trace;
+$cth = $dbh->prepare($select)
+  or die "Couldn't prepare $select query: " . DBI->errstr;
+$cth->execute or die "Couldn't execute $select query: " . DBI->errstr;
+if ($cth->rows == 0) {
+    print "Unknown language\n";
+    die;
+}
+
+printf("<!-- Start of generated text - do not edit! -->\n");
+printf("<!-- generated from the LSB specification database by mkilmodlist -->\n");
+
+print "<SECT1 ID=modbehav>\n";
+print "<TITLE>Module Behavior</TITLE>\n";
+print "<PARA>\n";
+print "This section contains descriptions $language modules whose\n";
+print "specified behavior in the LSB contradicts or extends the standards\n";
+print "referenced. It also contains modules only required by the LSB\n";
+print "and not specified by other standards.\n";
+print "</PARA>\n";
+
+#
+# 4) get & print the module info
+#
+$select  = "SELECT * FROM InterpretedLanguageModule ";
+$select .= "LEFT JOIN InterpretedLanguage ON ILMlanguage=ILid ";
+$select .= "LEFT JOIN Standard ON Sid=ILstandard ";
+$select .= "WHERE ILname = '$language' ";
+$select .= "AND ILappearedin <= '$lsbversion' AND ILappearedin <>'' ";
+$select .= "AND (ILwithdrawnin IS NULL OR ILwithdrawnin > '$lsbversion') ";
+$select .= "AND ILMappearedin <= '$lsbversion' AND ILMappearedin <>'' ";
+$select .= "AND (ILMwithdrawnin IS NULL OR ILMwithdrawnin > '$lsbversion') ";
+$select .= "AND Sname='LSB' ";
+$select .= "ORDER BY ILMname";
+print STDERR $select, "\n" if $trace;
+
+$cth = $dbh->prepare($select)
+  or die "Couldn't prepare $select query: " . DBI->errstr;
+$cth->execute or die "Couldn't execute $select query: " . DBI->errstr;
+
+for ( 1 .. $cth->rows ) {
+    $entry = $cth->fetchrow_hashref()
+      or die "Fetchrow failed on $select query: " . DBI->errstr;
+    print "m4_include(" . $entry->{'ILMname'} . ".sgml)\n";
+}
+
+$cth->finish;
+$dbh->disconnect;
+
+print "</SECT1>\n";
+printf("<!-- End of text generated from database -->\n");

@@ -2,8 +2,8 @@
 .SUFFIXES: .sgml .m4
 
 FILES= python.sgml
-
-TABLES=
+TABLES=modules.sgml #modman.sgml
+BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -11,7 +11,8 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	@:
+	../../mkilmodtable  -v `cat ../../LSB/target_version.generic` -l "Python" > modules.sgml
+	#../../mkilmodlist -v `cat ../../LSB/target_version.generic` -l "Python" > modman.sgml
 
 clean:
 	rm -f $(FILES)
@@ -20,4 +21,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-python.sgml:python.m4 modules.sgml command.sgml
+python.sgml: $(TABLES) $(BASEFILES)
