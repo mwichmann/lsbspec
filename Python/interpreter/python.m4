@@ -38,9 +38,15 @@ shall be present and shall operate as defined in
 </PARA>
 </SECT1>
 
+<SECT1 ID="pymodules" XRefLabel="Python Modules">
+<TITLE>Python Modules</TITLE>
 m4_include(modules.sgml)
+</SECT1>
 
+<SECT1 ID=pycommand XRefLabel="Python Command">
+<TITLE>Python Interpreter Command</TITLE>
 m4_include(command.sgml)
+</SECT1>
 
 </CHAPTER>
 </PART>

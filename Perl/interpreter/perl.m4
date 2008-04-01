@@ -39,18 +39,18 @@ shall be present and shall operate as defined in
 </PARA>
 </SECT1>
 
+<SECT1 ID="perlymodules" XRefLabel="Perl Modules">
+<TITLE>Perl Modules</TITLE>
 m4_include(modules.sgml)
+</SECT1>
 
 <SECT1 ID=perlcommand XRefLabel="Perl Command">
 <TITLE>Perl Interpreter Command</TITLE>
-
 <PARA>
 The <command>perl</command> command is described in
 <xref linkend="std.PerlMan">.
 </PARA>
-
 </SECT1>
-
 
 </CHAPTER>
 </PART>
