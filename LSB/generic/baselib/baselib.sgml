@@ -479,7 +479,7 @@ in future releases of this specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>fstatfs</primary></indexterm>fstatfs <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>fstatfs</primary></indexterm>fstatfs(GLIBC_2.0) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getdtablesize</primary></indexterm>getdtablesize <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getpagesize</primary></indexterm>getpagesize <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getwd</primary></indexterm>getwd <LINK LINKEND="REFSTD.libc.4">[SUSv3]</LINK></ENTRY>
@@ -2149,7 +2149,7 @@ in future releases of this specification.
 <TBODY>
 <ROW>
 <ENTRY><indexterm><primary>basename</primary></indexterm>basename <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>getdomainname</primary></indexterm>getdomainname <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>getdomainname</primary></indexterm>getdomainname(GLIBC_2.0) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>inet_aton</primary></indexterm>inet_aton <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -24806,9 +24806,10 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 
 struct _Unwind_Context;
 
-typedef void *_Unwind_Ptr;
-typedef unsigned int _Unwind_Word;
-typedef u_int64_t _Unwind_Exception_Class;
+typedef unsigned int _Unwind_Ptr __attribute__ (((__mode__(__pointer__))));
+typedef unsigned int _Unwind_Word __attribute__ (((__mode__(__word__))));
+typedef unsigned int _Unwind_Exception_Class
+    __attribute__ (((__mode__(__DI__))));
 
 typedef enum {
     _URC_NO_REASON = 0,
@@ -24822,15 +24823,15 @@ typedef enum {
     _URC_CONTINUE_UNWIND = 8
 } _Unwind_Reason_Code;
 
-typedef void (*_Unwind_Exception_Cleanup_Fn) (enum,
+typedef void (*_Unwind_Exception_Cleanup_Fn) (_Unwind_Reason_Code,
 					      struct _Unwind_Exception *);
 
 struct _Unwind_Exception {
-    u_int64_t exception_class;
+    _Unwind_Exception_Class exception_class;
     _Unwind_Exception_Cleanup_Fn exception_cleanup;
-    u_int64_t private_1;
-    u_int64_t private_2;
-};
+    _Unwind_Word private_1;
+    _Unwind_Word private_2;
+} __attribute__ ((__aligned__(16)));
 
 #define _UA_SEARCH_PHASE	1
 #define _UA_END_OF_STACK	16
