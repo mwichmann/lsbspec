@@ -1,7 +1,7 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-MANPAGES= png_access_target_version_number.sgml\
+MANPAGES= \
 png_check_sig.sgml\
 png_create_info_struct.sgml\
 png_create_read_struct.sgml\
