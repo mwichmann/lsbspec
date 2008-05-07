@@ -242,7 +242,7 @@ sub output_classinfo($)
 	    	            		}
 		            		else {
                                     	    printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-                                	}					
+                                	}
 				} else {
 					printf "Unspecified";
 					}
@@ -251,7 +251,7 @@ sub output_classinfo($)
 				$lastpos=$ventry->{'VTpos'};
 			}
 			$vsth->finish;
-			
+
 			print "</TBODY>\n";
 			print "</TGROUP>\n";
 			print "</TABLE>\n";
@@ -332,7 +332,7 @@ sub output_classinfo($)
 			}
 			$vsth->finish;
 		}
-		
+
 		print "</TBODY>\n";
 		print "</TGROUP>\n";
 		print "</TABLE>\n";
@@ -383,7 +383,7 @@ sub getinterfaces($$$$)
 	local($where);
 	local($safeLname)=$Lname;
 	$safeLname =~ s/_/-/g;
-	
+
 	if ($type eq "functions" || $type eq "methods") {
 		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
 		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
@@ -417,12 +417,15 @@ sub getinterfaces($$$$)
 	else {
 		die "Unknown type $type";
 	}
-	$select = "SELECT DISTINCT Iname, AIarch, Vname, Istandard, Sname FROM Interface ";
+	$select = "SELECT DISTINCT Iname, AIarch, Vname, ISsid, Sname FROM Interface ";
 	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
 	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 	$select.= "LEFT JOIN Version ON Vid=AIversion ";
-	$select.= "LEFT JOIN Standard ON Sid=Istandard ";
+	$select.= "LEFT JOIN IntStd ON ISiid=Iid ";
+	$select.= "LEFT JOIN Standard ON Sid=ISsid ";
 	$select.= "$where ";
+	$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+	$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 	$select.= "ORDER BY Iname";
 	print STDERR $select,"\n" if $trace;
 	$inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
@@ -437,7 +440,7 @@ sub getinterfaces($$$$)
 		if( $entry->{'AIarch'} == $Aid ) {
 			$symver[$i]=$entry->{'Vname'};
 		}
-		$stdnum[$i]=$entry->{'Istandard'};
+		$stdnum[$i]=$entry->{'ISsid'};
 		$stdname[$i]=$entry->{'Sname'};
 	}
 	$inh->finish;
@@ -639,13 +642,16 @@ if(open(DESC,"<$Lname.txt" )) {
 #
 print "<PARA>\n";
 $select = "SELECT DISTINCT Sname,Sid FROM Standard ";
-$select.= "LEFT JOIN Interface ON Sid=Istandard ";
+$select.= "LEFT JOIN IntStd ON ISsid=Sid ";
+$select.= "LEFT JOIN Interface ON Iid=ISiid ";
 $select.= "LEFT JOIN LGInt ON LGIint=Iid ";
 $select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
 $select.= "LEFT JOIN ArchInt ON AIint=Iid ";
 $select.= "WHERE LGlib=$Lid ";
-$select.= "AND ( (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
-$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ";
+$select.= "AND (AIappearedin <= '$lsbversion' AND AIappearedin<>'') ";
+$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
+$select.= "AND (ISappearedin <= '$lsbversion' AND ISappearedin<>'') ";
+$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 $select.= "AND AIarch=$Aid ";
 $select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
@@ -775,7 +781,7 @@ $data_def_header = 0;
 $select = "SELECT DISTINCT Hname,Hid FROM Header ";
 $select.= "WHERE Hlib=$Lid ";
 $select.= "AND Happearedin <= '$lsbversion' AND Happearedin <>'' ";
-$select.= "AND (Hwithdrawnin IS NULL OR Hwithdrawnin > '$lsbversion')";
+$select.= "AND (Hwithdrawnin IS NULL OR Hwithdrawnin > '$lsbversion') ";
 $select.= "ORDER BY Hname";
 $hdh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 $hdh->execute or die "Couldn't execute $select query: ".DBI->errstr;
@@ -784,7 +790,7 @@ if( $hdh->rows ) {
 		local(*entry);
 		$entry=$hdh->fetchrow_hashref;
 		$Hname=$entry->{'Hname'};
-		$headroot="../../../build_env/headers/$archname/".$Hname;
+		$headroot="../../../build_env/headers/$archname/$lsbversion/".$Hname;
 		$headname=$headroot.".defs";
 		if (!open(HEADER,"<".$headname) &&
 			!open(HEADER,"<../".$headname)) {
@@ -829,21 +835,22 @@ $hdh->finish;
 # List the Interface Definitions of things specified by the LSB document.
 #
 
-$select = "SELECT Iname,Istandard FROM Interface ";
+$select = "SELECT Iname,ISsid FROM Interface ";
 $select.= "LEFT JOIN LGInt ON Iid=LGIint ";
 $select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
 $select.= "LEFT JOIN Library ON Lid=LGlib ";
-$select.= "LEFT JOIN Standard ON Sid=Istandard ";
+$select.= "LEFT JOIN IntStd ON ISiid=Iid ";
+$select.= "LEFT JOIN Standard ON Sid=ISsid ";
 $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "WHERE Lid=$Lid AND AIarch=$Aid ";
 $select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
+$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 # Don't try to include the description of generic interfaces
 # into the arch specific document
 if( $Aid!=1 ) {
 	$select.= "AND Iid NOT IN ";
-#	$select.= "(SELECT Iid FROM Interface";
-#	$select.= " LEFT JOIN ArchInt ON Iid=AIint";
 	$select.= "(SELECT DISTINCT AIint FROM ArchInt";
 	$select.= " WHERE AIarch=1 ";
 	$select.= " AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
