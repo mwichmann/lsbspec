@@ -100,17 +100,20 @@ $entry=$lth->fetchrow_hashref;
 $Lid=$entry->{'Lid'};
 $Lname=$entry->{'Lname'};
 
-$select = "SELECT Iname,Istandard,Vname,Sname ";
+$select = "SELECT Iname,ISsid,Vname,Sname ";
 $select.= "FROM Interface ";
 $select.= "INNER JOIN LGInt ON Iid=LGIint ";
 $select.= "INNER JOIN LibGroup ON LGIlibg=LGid ";
 $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "LEFT JOIN Version ON Vid=AIversion ";
-$select.= "LEFT JOIN Standard ON Sid=Istandard ";
+$select.= "LEFT JOIN IntStd ON ISiid=Iid ";
+$select.= "LEFT JOIN Standard ON Sid=ISsid ";
 $select.= "WHERE Itype='Function' ";
 $select.= "AND LGlib=$Lid AND AIarch=$Aid ";
 $select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
+$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 $select.= "ORDER BY Iname";
 $inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 $inh->execute or die "Couldn't execute $select query: ".DBI->errstr;
@@ -130,8 +133,11 @@ print "</PARA>\n";
 print "<PARA>\n";
 $select = "SELECT DISTINCT Sname,Sid FROM Standard,LibGroup,LGInt,Interface ";
 $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
-$select.= "WHERE Sid=Istandard AND Iid=LGIint AND LGIlibg=LGid ";
+$select.= "LEFT JOIN IntStd ON Iid=ISiid ";
+$select.= "WHERE Sid=ISsid AND Iid=LGIint AND LGIlibg=LGid ";
 $select.= "AND LGlib=$Lid AND AIarch=$Aid ";
+$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 $select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
 $lsh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
@@ -146,7 +152,7 @@ if( $lsh->rows) {
 		$entry=$lsh->fetchrow_hashref;
 		$refname[$_] = $entry->{'Sname'};
 		print "<MEMBER>\n";
-		printf "<XREF LINKEND=\"STD.%s\"> [%s]\n", 
+		printf "<XREF LINKEND=\"STD.%s\"> [%s]\n",
 		makeid($entry->{'Sname'}), $entry->{'Sname'};
 		print "</MEMBER>\n";
 	}
@@ -171,14 +177,17 @@ print "<TBODY>\n";
 	local(*entry);
 	local(*xrefs);
 	local(*refs);
-	# we did the following query back at step 4, 
+	# we did the following query back at step 4,
 	# and the results are still there waiting to be fetched ...
-	#$select = "SELECT Iname,Istandard,Vname,Sname ";
+	#$select = "SELECT Iname,ISsid,Vname,Sname ";
 	#$select.= "FROM Interface,LGInt,LibGroup ";
 	#$select.= "LEFT JOIN Version ON Vid=Iversion ";
-	#$select.= "LEFT JOIN Standard ON Sid=Istandard ";
+	#$select.= "LEFT JOIN IntStd ON ISiid=Iid ";
+	#$select.= "LEFT JOIN Standard ON Sid=ISsid ";
 	#$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
 	#$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istdstatus='Included' ";
+	#$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+	#$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 	#$select.= "ORDER BY Iname";
 	#$inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 	#$inh->execute or die "Couldn't execute $select query: ".DBI->errstr;
@@ -186,7 +195,7 @@ print "<TBODY>\n";
 	for(1..$inh->rows) {
 		$entry=$inh->fetchrow_hashref;
 		$entry[$_]=$entry->{'Iname'};
-		$std[$_]=$entry->{'Istandard'};
+		$std[$_]=$entry->{'ISsid'};
 		$xrefs[$_]=sprintf ("std.%s", makeid($entry->{'Sname'}));
 		$refs[$_]=sprintf "[%s]", $entry->{'Sname'};
 		$symver[$_]=$entry->{'Vname'};
@@ -244,17 +253,20 @@ print "</TABLE>\n";
 	local(*std);
 	local(*xrefs);
 	local(*refs);
-	$select = "SELECT Iname,Istandard,Vname,Sname ";
+	$select = "SELECT Iname,ISsid,Vname,Sname ";
 	$select.= "FROM Interface ";
 	$select.= "INNER JOIN LGInt ON Iid=LGIint ";
 	$select.= "INNER JOIN LibGroup ON LGIlibg=LGid ";
 	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
+	$select.= "LEFT JOIN IntStd ON Iid=ISiid ";
 	$select.= "LEFT JOIN Version ON Vid=AIversion ";
-	$select.= "LEFT JOIN Standard ON Sid=Istandard ";
+	$select.= "LEFT JOIN Standard ON Sid=ISsid ";
 	$select.= "WHERE Itype='Data' ";
 	$select.= "AND LGlib=$Lid AND AIarch=$Aid ";
 	$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
+	$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+	$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 	$select.= "ORDER BY Iname";
 	print STDERR $select,"\n" if $trace;
 	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
@@ -263,7 +275,7 @@ print "</TABLE>\n";
 		for(1..$sth->rows) {
 			$datasym=$sth->fetchrow_hashref;
 			$datasym[$_]=$datasym->{'Iname'};
-			$std[$_]=$datasym->{'Istandard'};
+			$std[$_]=$datasym->{'ISsid'};
 			$xrefs[$_]=sprintf ("std.%s", makeid($datasym->{'Sname'}));
 			$refs[$_]=sprintf "[%s]", $datasym->{'Sname'};
 			$symver[$_]=$datasym->{'Vname'};
