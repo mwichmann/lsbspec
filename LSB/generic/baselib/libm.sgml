@@ -685,6 +685,9 @@ extern long double complex ctanl(long double complex);
 </PARA>
 <SCREEN>
 
+extern int fedisableexcept(int);
+extern int feenableexcept(int);
+extern int fegetexcept(void);
 extern int feclearexcept(int);
 extern int fegetenv(fenv_t *);
 extern int fegetexceptflag(fexcept_t *, int);
@@ -696,9 +699,6 @@ extern int fesetexceptflag(const fexcept_t *, int);
 extern int fesetround(int);
 extern int fetestexcept(int);
 extern int feupdateenv(const fenv_t *);
-extern int fedisableexcept(int);
-extern int feenableexcept(int);
-extern int fegetexcept(void);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -724,7 +724,7 @@ struct exception {
 #define FP_SUBNORMAL	3
 #define FP_NORMAL	4
 
-#define isnormal(x)	(fpclassify (x) == FP_NORMAL)
+#define isnormal(x)	(fpclassify (x) == FP_NORMAL)	/* Return nonzero value if X is neither zero, subnormal, Inf, n */
 
 #define HUGE_VAL	0x1.0p2047
 #define HUGE_VALF	0x1.0p255f
@@ -745,22 +745,35 @@ struct exception {
 #define M_PI	3.14159265358979323846
 #define INFINITY	HUGE_VALF
 
-#define MATH_ERRNO	1
-#define MATH_ERREXCEPT	2
+#define MATH_ERRNO	1	/* errno set by math functions. */
+#define MATH_ERREXCEPT	2	/* Exceptions raised by math functions. */
 
 #define isunordered(u, v)	\
-	(__extension__({ __typeof__(u) __u = (u); __typeof__(v) __v = (v);fpclassify (__u) == FP_NAN || fpclassify (__v) == FP_NAN; }))
+	(__extension__({ __typeof__(u) __u = (u); __typeof__(v) __v = (v);fpclassify (__u) == FP_NAN || fpclassify (__v) == FP_NAN; }))	/* Return nonzero value if arguments are unordered. */
 #define islessgreater(x, y)	\
-	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; (__x &lt; __y || __y &lt; __x); }))
+	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; (__x &lt; __y || __y &lt; __x); }))	/* Return nonzero value if either X is less than Y or Y is less */
 #define isless(x,y)	\
-	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; __x &lt; __y; }))
+	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; __x &lt; __y; }))	/* Return nonzero value if X is less than Y. */
 #define islessequal(x, y)	\
-	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; __x &lt;= __y; }))
+	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; __x &lt;= __y; }))	/* Return nonzero value if X is less than or equal to Y. */
 #define isgreater(x,y)	\
-	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; __x > __y; }))
+	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; __x > __y; }))	/* Return nonzero value if X is greater than Y. */
 #define isgreaterequal(x,y)	\
-	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; __x >= __y; }))
+	(__extension__({ __typeof__(x) __x = (x); __typeof__(y) __y = (y);!isunordered (__x, __y) &amp;&amp; __x >= __y; }))	/* Return nonzero value if X is greater than or equal to Y. */
 
+extern int __finite(double);
+extern int __finitef(float);
+extern int __finitel(long double);
+extern int __isinf(double);
+extern int __isinff(float);
+extern int __isinfl(long double);
+extern int __isnan(double);
+extern int __isnanf(float);
+extern int __isnanl(long double);
+extern int __signbit(double);
+extern int __signbitf(float);
+extern int __fpclassify(double);
+extern int __fpclassifyf(float);
 extern int signgam;
 extern double copysign(double, double);
 extern int finite(double);
@@ -809,6 +822,7 @@ extern double tanh(double);
 extern double y0(double);
 extern double y1(double);
 extern double yn(int, double);
+extern double drem(double, double);
 extern float copysignf(float, float);
 extern long double copysignl(long double, long double);
 extern int finitef(float);
@@ -853,6 +867,15 @@ extern float erfcf(float);
 extern long double erfcl(long double);
 extern float erff(float);
 extern long double erfl(long double);
+extern double exp10(double);
+extern float exp10f(float);
+extern long double exp10l(long double);
+extern double exp2(double);
+extern float exp2f(float);
+extern float expf(float);
+extern long double expl(long double);
+extern float expm1f(float);
+extern long double expm1l(long double);
 extern float fabsf(float);
 extern long double fabsl(long double);
 extern double fdim(double, double);
@@ -894,6 +917,17 @@ extern long long int llrintl(long double);
 extern long long int llround(double);
 extern long long int llroundf(float);
 extern long long int llroundl(long double);
+extern float log10f(float);
+extern long double log10l(long double);
+extern float log1pf(float);
+extern long double log1pl(long double);
+extern double log2(double);
+extern float log2f(float);
+extern long double log2l(long double);
+extern float logbf(float);
+extern long double logbl(long double);
+extern float logf(float);
+extern long double logl(long double);
 extern long int lrint(double);
 extern long int lrintf(float);
 extern long int lrintl(long double);
@@ -956,40 +990,6 @@ extern float y1f(float);
 extern long double y1l(long double);
 extern float ynf(int, float);
 extern long double ynl(int, long double);
-extern int __isinf(double);
-extern int __isinff(float);
-extern int __isinfl(long double);
-extern int __isnan(double);
-extern int __isnanf(float);
-extern int __isnanl(long double);
-extern float expf(float);
-extern long double expl(long double);
-extern float log10f(float);
-extern long double log10l(long double);
-extern float logf(float);
-extern long double logl(long double);
-extern int __finite(double);
-extern int __finitef(float);
-extern int __finitel(long double);
-extern int __signbit(double);
-extern int __signbitf(float);
-extern int __fpclassify(double);
-extern int __fpclassifyf(float);
-extern double exp2(double);
-extern float exp2f(float);
-extern float expm1f(float);
-extern long double expm1l(long double);
-extern float log1pf(float);
-extern long double log1pl(long double);
-extern double log2(double);
-extern float log2f(float);
-extern long double log2l(long double);
-extern float logbf(float);
-extern long double logbl(long double);
-extern double drem(double, double);
-extern double exp10(double);
-extern float exp10f(float);
-extern long double exp10l(long double);
 </SCREEN>
 </SECT2>
 </SECT1>

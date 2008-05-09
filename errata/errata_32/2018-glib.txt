@@ -1,0 +1,44 @@
+Specification: LSB Desktop Generic
+Specification: LSB Desktop IA32, IA64, PPC32, PPC64, S390, S390X, AMD64
+Edition of Specification: 3.2
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2018
+
+Rationale: the G_BREAKPOINT macro as described in this specification
+contains low-level instructions specific to the IA32 and x86_64
+architectures.  The macro needs to be described in an architecture-
+specific way.
+
+
+In LSB Desktop generic:
+
+
+In 15.3.1. glib-2.0/glib.h
+
+Delete:
+
+#define G_BREAKPOINT()   \
+        G_STMT_START{ __asm__ __volatile__ ("int $03"); }G_STMT_END
+
+
+===
+
+In LSB Desktop IA32, AMD64
+
+In 6.3.1. glib-2.0/glib.h
+
+Add:
+
+#define G_BREAKPOINT()  G_STMT_START{ __asm__ __volatile__ ("int $03");}G_STMT_END
+
+
+===
+
+In LSB Desktop IA64, PPC32, PPC64, S390, S390X
+
+In 6.3.1. glib-2.0/glib.h
+
+Add:
+
+#define G_BREAKPOINT()  G_STMT_START{ raise (SIGTRAP); }G_STMT_END

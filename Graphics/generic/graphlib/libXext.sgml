@@ -436,6 +436,212 @@ extern int XeviQueryVersion(Display *, int *, int *);
 </PARA>
 <SCREEN>
 
+typedef struct _XkbProperty {
+    char *name;
+    char *value;
+} XkbPropertyRec;
+typedef struct _XkbProperty *XkbPropertyPtr;
+typedef struct _XkbColor {
+    unsigned int pixel;
+    char *spec;
+} XkbColorRec;
+typedef struct _XkbColor *XkbColorPtr;
+typedef struct _XkbPoint {
+    short x;
+    short y;
+} XkbPointRec;
+typedef struct _XkbPoint *XkbPointPtr;
+typedef struct _XkbBounds {
+    short x1;
+    short y1;
+    short x2;
+    short y2;
+} XkbBoundsRec;
+typedef struct _XkbBounds *XkbBoundsPtr;
+typedef struct _XkbOutline {
+    unsigned short num_points;
+    unsigned short sz_points;
+    unsigned short corner_radius;
+    XkbPointPtr points;
+} XkbOutlineRec;
+typedef struct _XkbOutline *XkbOutlinePtr;
+typedef struct _XkbShape {
+    Atom name;
+    unsigned short num_outlines;
+    unsigned short sz_outlines;
+    XkbOutlinePtr outlines;
+    XkbOutlinePtr approx;
+    XkbOutlinePtr primary;
+    XkbBoundsRec bounds;
+} XkbShapeRec;
+typedef struct _XkbShape *XkbShapePtr;
+typedef struct _XkbShapeDoodad {
+    Atom name;
+    unsigned char type;
+    unsigned char priority;
+    short top;
+    short left;
+    short angle;
+    unsigned short color_ndx;
+    unsigned short shape_ndx;
+} XkbShapeDoodadRec;
+typedef struct _XkbShapeDoodad *XkbShapeDoodadPtr;
+typedef struct _XkbTextDoodad {
+    Atom name;
+    unsigned char type;
+    unsigned char priority;
+    short top;
+    short left;
+    short angle;
+    short width;
+    short height;
+    unsigned short color_ndx;
+    char *text;
+    char *font;
+} XkbTextDoodadRec;
+typedef struct _XkbTextDoodad *XkbTextDoodadPtr;
+typedef struct _XkbIndicatorDoodad {
+    Atom name;
+    unsigned char type;
+    unsigned char priority;
+    short top;
+    short left;
+    short angle;
+    unsigned short shape_ndx;
+    unsigned short on_color_ndx;
+    unsigned short off_color_ndx;
+} XkbIndicatorDoodadRec;
+typedef struct _XkbIndicatorDoodad *XkbIndicatorDoodadPtr;
+typedef struct _XkbLogoDoodad {
+    Atom name;
+    unsigned char type;
+    unsigned char priority;
+    short top;
+    short left;
+    short angle;
+    unsigned short color_ndx;
+    unsigned short shape_ndx;
+    char *logo_name;
+} XkbLogoDoodadRec;
+typedef struct _XkbLogoDoodad *XkbLogoDoodadPtr;
+typedef struct _XkbAnyDoodad {
+    Atom name;
+    unsigned char type;
+    unsigned char priority;
+    short top;
+    short left;
+    short angle;
+} XkbAnyDoodadRec;
+typedef struct _XkbAnyDoodad *XkbAnyDoodadPtr;
+union _XkbDoodad {
+    XkbAnyDoodadRec any;
+    XkbShapeDoodadRec shape;
+    XkbTextDoodadRec text;
+    XkbIndicatorDoodadRec indicator;
+    XkbLogoDoodadRec logo;
+};
+typedef union _XkbDoodad {
+    XkbAnyDoodadRec any;
+    XkbShapeDoodadRec shape;
+    XkbTextDoodadRec text;
+    XkbIndicatorDoodadRec indicator;
+    XkbLogoDoodadRec logo;
+} XkbDoodadRec;
+typedef union _XkbDoodad *XkbDoodadPtr;
+typedef struct _XkbKey {
+    XkbKeyNameRecname;
+    short gap;
+    unsigned char shape_ndx;
+    unsigned char color_ndx;
+} XkbKeyRec;
+typedef struct _XkbKey *XkbKeyPtr;
+typedef struct _XkbRow {
+    short top;
+    short left;
+    unsigned short num_keys;
+    unsigned short sz_keys;
+    int vertical;
+    XkbKeyPtr keys;
+    XkbBoundsRec bounds;
+} XkbRowRec;
+typedef struct _XkbRow *XkbRowPtr;
+typedef struct _XkbSection {
+    Atom name;
+    unsigned char priority;
+    short top;
+    short left;
+    unsigned short width;
+    unsigned short height;
+    short angle;
+    unsigned short num_rows;
+    unsigned short num_doodads;
+    unsigned short num_overlays;
+    unsigned short sz_rows;
+    unsigned short sz_doodads;
+    unsigned short sz_overlays;
+    XkbRowPtr rows;
+    XkbDoodadPtr doodads;
+    XkbBoundsRec bounds;
+    struct _XkbOverlay *overlays;
+} XkbSectionRec;
+typedef struct _XkbOverlay **XkbSectionPtr;
+typedef struct _XkbOverlayKey {
+    XkbKeyNameRecover;
+    XkbKeyNameRecunder;
+} XkbOverlayKeyRec;
+typedef struct _XkbOverlayKey *XkbOverlayKeyPtr;
+typedef struct _XkbOverlayRow {
+    unsigned short row_under;
+    unsigned short num_keys;
+    unsigned short sz_keys;
+    XkbOverlayKeyPtr keys;
+} XkbOverlayRowRec;
+typedef struct _XkbOverlayRow *XkbOverlayRowPtr;
+typedef struct _XkbOverlay {
+    Atom name;
+    XkbSectionPtr section_under;
+    unsigned short num_rows;
+    unsigned short sz_rows;
+    XkbOverlayRowPtr rows;
+    XkbBoundsPtr bounds;
+} XkbOverlayRec;
+typedef struct _XkbOverlay *XkbOverlayPtr;
+typedef struct _XkbGeometry {
+    Atom name;
+    unsigned short width_mm;
+    unsigned short height_mm;
+    char *label_font;
+    XkbColorPtr label_color;
+    XkbColorPtr base_color;
+    unsigned short sz_properties;
+    unsigned short sz_colors;
+    unsigned short sz_shapes;
+    unsigned short sz_sections;
+    unsigned short sz_doodads;
+    unsigned short sz_key_aliases;
+    unsigned short num_properties;
+    unsigned short num_colors;
+    unsigned short num_shapes;
+    unsigned short num_sections;
+    unsigned short num_doodads;
+    unsigned short num_key_aliases;
+    XkbPropertyPtr properties;
+    XkbColorPtr colors;
+    XkbShapePtr shapes;
+    XkbSectionPtr sections;
+    XkbDoodadPtr doodads;
+     XkbKeyAliasPtrkey_aliases;
+} XkbGeometryRec;
+typedef struct _XkbGeometrySizes {
+    unsigned int which;
+    unsigned short num_properties;
+    unsigned short num_colors;
+    unsigned short num_shapes;
+    unsigned short num_sections;
+    unsigned short num_doodads;
+    unsigned short num_key_aliases;
+} XkbGeometrySizesRec;
+typedef struct _XkbGeometrySizes *XkbGeometrySizesPtr;
 extern int XkbAllocGeomColors(XkbGeometryPtr, int);
 extern int XkbAllocGeomDoodads(XkbGeometryPtr, int);
 extern int XkbAllocGeomKeyAliases(XkbGeometryPtr, int);
@@ -481,6 +687,24 @@ extern int XkbSetGeometry(Display *, unsigned int, XkbGeometryPtr);
 </PARA>
 <SCREEN>
 
+typedef unsigned long int ShmSeg;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Drawable drawable;
+    int major_code;
+    int minor_code;
+    ShmSeg shmseg;
+    unsigned long int offset;
+} XShmCompletionEvent;
+typedef struct {
+    ShmSeg shmseg;
+    int shmid;
+    char *shmaddr;
+    int readOnly;
+} XShmSegmentInfo;
 extern int XShmAttach(Display *, XShmSegmentInfo *);
 extern XImage *XShmCreateImage(Display *, Visual *, unsigned int, int,
 			       char *, XShmSegmentInfo *, unsigned int,
@@ -505,6 +729,24 @@ extern int XShmQueryVersion(Display *, int *, int *, int *);
 </PARA>
 <SCREEN>
 
+typedef Drawable XdbeBackBuffer;
+typedef unsigned char XdbeSwapAction;
+typedef struct {
+    Window swap_window;
+    XdbeSwapAction swap_action;
+} XdbeSwapInfo;
+typedef struct {
+    Window window;
+} XdbeBackBufferAttributes;
+typedef struct {
+    int type;
+    Display *display;
+    XdbeBackBuffer buffer;
+    unsigned long int serial;
+    unsigned char error_code;
+    unsigned char request_code;
+    unsigned char minor_code;
+} XdbeBufferError;
 extern XdbeBackBuffer XdbeAllocateBackBufferName(Display *, Window,
 						 XdbeSwapAction);
 extern int XdbeBeginIdiom(Display *);
@@ -525,6 +767,11 @@ extern int XdbeSwapBuffers(Display *, XdbeSwapInfo *, int);
 </PARA>
 <SCREEN>
 
+#define DPMSModeOn	0
+#define DPMSModeStandby	1
+#define DPMSModeSuspend	2
+#define DPMSModeOff	3
+
 extern int DPMSCapable(Display *);
 extern int DPMSDisable(Display *);
 extern int DPMSEnable(Display *);
@@ -542,6 +789,23 @@ extern int DPMSSetTimeouts(Display *, CARD16, CARD16, CARD16);
 </PARA>
 <SCREEN>
 
+#define XSecurityAuthorizationName	"XC-QUERY-SECURITY-1"
+#define XSecurityAuthorizationRevokedMask	(1&lt;&lt;0)
+#define XSecurityTimeout	(1&lt;&lt;0)
+#define XSecurityTrustLevel	(1&lt;&lt;1)
+#define XSecurityGroup	(1&lt;&lt;2)
+#define XSecurityEventMask	(1&lt;&lt;3)
+#define XSecurityAllAuthorizationAttributes	(XSecurityTimeout | XSecurityTrustLevel | XSecurityGroup | XSecurityEventMask)
+#define XSecurityAuthorizationRevoked	0
+#define XSecurityBadAuthorization	0
+#define XSecurityClientTrusted	0
+#define XSecurityBadAuthorizationProtocol	1
+#define XSecurityClientUntrusted	1
+#define XSecurityNumberEvents	1
+#define XSecurityAuthorizationNameLen	19
+#define XSecurityNumberErrors	2
+#define XSecurityAllEventMasks	XSecurityAuthorizationRevokedMask
+
 typedef unsigned long int XSecurityAuthorization;
 typedef struct {
     unsigned int timeout;
@@ -549,6 +813,13 @@ typedef struct {
     XID group;
     long int event_mask;
 } XSecurityAuthorizationAttributes;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    XSecurityAuthorization auth_id;
+} XSecurityAuthorizationRevokedEvent;
 extern Xauth *XSecurityAllocXauth(void);
 extern void XSecurityFreeXauth(Xauth *);
 extern Xauth *XSecurityGenerateAuthorization(Display *, Xauth *,
@@ -565,6 +836,20 @@ extern int XSecurityRevokeAuthorization(Display *, XSecurityAuthorization);
 </PARA>
 <SCREEN>
 
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int kind;
+    int x;
+    int y;
+    unsigned int width;
+    unsigned int height;
+    Time time;
+    int shaped;
+} XShapeEvent;
 extern void XShapeCombineMask(Display *, Window, int, int, int, Pixmap,
 			      int);
 extern void XShapeCombineRectangles(Display *, Window, int, int, int,
@@ -591,6 +876,69 @@ extern void XShapeSelectInput(Display *, Window, unsigned long int);
 </PARA>
 <SCREEN>
 
+#define SYNC_NAME	"SYNC"
+#define _XSyncValueIsPositive(v)	(((v).hi&amp;0x80000000)?0:1)
+#define _XSyncValueIsNegative(v)	(((v).hi&amp;0x80000000)?1:0)
+#define _XSyncValueLessThan(a,b)	((a).hi&lt;(b).hi||((a).hi==(b).hi&amp;&amp;(a).lo&lt;(b).lo)))
+#define _XSyncValueLessOrEqual(a,b)	((a).hi&lt;(b).hi||((a).hi==(b).hi&amp;&amp;(a).lo&lt;=(b).lo)))
+#define _XSyncValueGreaterThan(a,b)	((a).hi>(b).hi||((a).hi==(b).hi&amp;&amp;(a).lo>(b).lo)))
+#define _XSyncValueGreaterOrEqual(a,b)	((a).hi>(b).hi||((a).hi==(b).hi&amp;&amp;(a).lo>=(b).lo)))
+#define _XSyncValueEqual(a,b)	((a).lo==(b).lo&amp;&amp;(a).hi==(b).hi))
+#define _XSyncValueIsZero(a)	((a).lo==0&amp;&amp;(a).hi==0)
+#define _XSyncIntToValue(pv,i)	((pv)->hi=((i&lt;0)?~0:0),(pv)->lo=(i)))
+#define _XSyncMaxValue(pv)	((pv)->hi=0x7fffffff,(pv)->lo=0xffffffff)
+#define _XSyncMinValue(pv)	((pv)->hi=0x80000000,(pv)->lo=0)
+#define _XSyncIntsToValue(pv,l,h)	((pv)->lo=(l),(pv)->hi=(h)))
+#define _XSyncValueHigh32(v)	((v).hi)
+#define _XSyncValueLow32(v)	((v).lo)
+#define XSyncCACounter	(1L&lt;&lt;0)
+#define XSyncCAValueType	(1L&lt;&lt;1)
+#define XSyncCAValue	(1L&lt;&lt;2)
+#define XSyncCATestType	(1L&lt;&lt;3)
+#define XSyncCADelta	(1L&lt;&lt;4)
+#define XSyncCAEvents	(1L&lt;&lt;5)
+#define XSyncAlarmNotifyMask	(1L&lt;&lt;XSyncAlarmNotify)
+#define XSyncNumberErrors	(XSyncBadAlarm+1)
+#define SYNC_MINOR_VERSION	0
+#define XSyncCounterNotify	0
+#define X_SyncInitialize	0
+#define XSyncBadCounter	0L
+#define XSyncAlarmNotify	1
+#define X_SyncListSystemCounters	1
+#define X_SyncQueryAlarm	10
+#define X_SyncDestroyAlarm	11
+#define X_SyncSetPriority	12
+#define X_SyncGetPriority	13
+#define XSyncBadAlarm	1L
+#define X_SyncCreateCounter	2
+#define XSyncNumberEvents	2L
+#define SYNC_MAJOR_VERSION	3
+#define X_SyncSetCounter	3
+#define X_SyncChangeCounter	4
+#define X_SyncQueryCounter	5
+#define X_SyncDestroyCounter	6
+#define X_SyncAwait	7
+#define X_SyncCreateAlarm	8
+#define X_SyncChangeAlarm	9
+#define XSyncIntsToValue(pv,l,h)	_XSyncIntsToValue(pv,l,h))
+#define XSyncIntToValue(pv,i)	_XSyncIntToValue(pv,i))
+#define XSyncMaxValue(pv)	_XSyncMaxValue(pv)
+#define XSyncMinValue(pv)	_XSyncMinValue(pv)
+#define XSyncValueAdd(presult,a,b,poverflow)	_XSyncValueAdd(presult,a,b,poverflow)
+#define XSyncValueEqual(a,b)	_XSyncValueEqual(a,b))
+#define XSyncValueGreaterOrEqual(a,b)	_XSyncValueGreaterOrEqual(a,b))
+#define XSyncValueGreaterThan(a,b)	_XSyncValueGreaterThan(a,b))
+#define XSyncValueHigh32(v)	_XSyncValueHigh32(v)
+#define XSyncValueIsNegative(v)	_XSyncValueIsNegative(v)
+#define XSyncValueIsPositive(v)	_XSyncValueIsPositive(v)
+#define XSyncValueIsZero(a)	_XSyncValueIsZero(a)
+#define XSyncValueLessOrEqual(a,b)	_XSyncValueLessOrEqual(a,b))
+#define XSyncValueLessThan(a,b)	_XSyncValueLessThan(a,b))
+#define XSyncValueLow32(v)	_XSyncValueLow32(v)
+#define XSyncValueSubtract(presult,a,b,poverflow)	_XSyncValueSubtract(presult,a,b,poverflow)
+#define _XSyncValueAdd(presult,a,b,poverflow)	{intt=(a).lo;Boolsigna=XSyncValueIsNegative(a);Boolsignb=XSyncValueIsNegative(b);((presult)->lo=(a).lo+(b).lo);((presult)->hi=(a
+#define _XSyncValueSubtract(presult,a,b,poverflow)	{intt=(a).lo;Boolsigna=XSyncValueIsNegative(a);Boolsignb=XSyncValueIsNegative(b);((presult)->lo=(a).lo-(b).lo);((presult)->hi=(a
+
 typedef struct _XSyncSystemCounter {
     char *name;
     XSyncCounter counter;
@@ -612,6 +960,47 @@ typedef struct {
     int events;
     XSyncAlarmState state;
 } XSyncAlarmAttributes;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    XSyncCounter counter;
+    XSyncValue wait_value;
+    XSyncValue counter_value;
+    Time time;
+    int count;
+    int destroyed;
+} XSyncCounterNotifyEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    XSyncAlarm alarm;
+    XSyncValue counter_value;
+    XSyncValue alarm_value;
+    Time time;
+    XSyncAlarmState state;
+} XSyncAlarmNotifyEvent;
+typedef struct {
+    int type;
+    Display *display;
+    XSyncAlarm alarm;
+    unsigned long int serial;
+    unsigned char error_code;
+    unsigned char request_code;
+    unsigned char minor_code;
+} XSyncAlarmError;
+typedef struct {
+    int type;
+    Display *display;
+    XSyncCounter counter;
+    unsigned long int serial;
+    unsigned char error_code;
+    unsigned char request_code;
+    unsigned char minor_code;
+} XSyncCounterError;
 
 typedef XID XSyncCounter;
 typedef XID XSyncAlarm;
@@ -619,16 +1008,31 @@ typedef struct _XSyncValue {
     int hi;
     unsigned int lo;
 } XSyncValue;
+enum {
+    XSyncAbsolute,
+    XSyncRelative
+};
 typedef enum {
     XSyncAbsolute,
     XSyncRelative
 } XSyncValueType;
+enum {
+    XSyncPositiveTransition,
+    XSyncNegativeTransition,
+    XSyncPositiveComparison,
+    XSyncNegativeComparison
+};
 typedef enum {
     XSyncPositiveTransition,
     XSyncNegativeTransition,
     XSyncPositiveComparison,
     XSyncNegativeComparison
 } XSyncTestType;
+enum {
+    XSyncAlarmActive,
+    XSyncAlarmInactive,
+    XSyncAlarmDestroyed
+};
 typedef enum {
     XSyncAlarmActive,
     XSyncAlarmInactive,
