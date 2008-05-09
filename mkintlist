@@ -64,24 +64,20 @@ $entry=$lth->fetchrow_hashref;
 $Lid=$entry->{'Lid'};
 $Lname=$entry->{'Lname'};
 
-$select = "SELECT Iname,Istandard,Isrcbin,Ideprecatedsince,Vname ";
-#$select.= "FROM Interface,LGInt,LibGroup ";
+$select = "SELECT Iname,Ideprecatedsince,Vname ";
 $select.= "FROM Interface ";
-$select.= "INNER JOIN LGInt ON LGIint=Iid ";
-$select.= "INNER JOIN LibGroup ON LGlib=$Lid ";
+$select.= "LEFT JOIN LGInt ON LGIint=Iid ";
+$select.= "LEFT JOIN LibGroup ON LGIlibg=LGid ";
 $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "LEFT JOIN Version ON Vid=AIversion ";
-#$select.= "WHERE Iid=LGIint AND LGIlibg=LGid AND Itype='Function' ";
-$select.= "WHERE LGIlibg=LGid AND Itype='Function' ";
-#$select.= "AND LGlib=$Lid AND Iarch=$Aid ";
+$select.= "WHERE LGlib=$Lid AND Itype='Function' ";
 $select.= "AND AIarch=$Aid ";
 $select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
 # Include only arch specific interfaces
 if( $Aid!=1 ) {
 	$select.= "AND Iid NOT IN ";
-	$select.= "(SELECT Iid FROM Interface";
-	$select.= " LEFT JOIN ArchInt ON Iid=AIint";
+	$select.= "(SELECT AIint FROM ArchInt ";
 	$select.= " WHERE AIarch=1 ";
 	$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') )";
@@ -131,14 +127,13 @@ $inh->finish;
 	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
 	if( $Aid!=1 ) {
 		$select.= "AND Iid NOT IN ";
-		$select.= "(SELECT Iid FROM Interface";
-		$select.= " LEFT JOIN ArchInt ON Iid=AIint";
+		$select.= "(SELECT AIint FROM ArchInt ";
 		$select.= " WHERE AIarch=1 ";
 		$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
 		$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ";
 	}
 	$select.= "ORDER BY Iname";
-	
+
 	print STDERR $select,"\n" if $trace;
 	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 	$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;

@@ -167,22 +167,12 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 <SECT2>
 <TITLE>zlib.h</TITLE>
 <PARA>
-In addition to the values below, the <filename>zlib.h</filename> 
-header shall define the
-<constant>ZLIB_VERSION</constant> macro. This macro may be used
-to check that the version of the library at run time matches that
-at compile time.
-</PARA>
-<PARA>
-See also the <FUNCTION>zlibVersion</FUNCTION> function, which returns
-the library version at run time. The first character of the version 
-at compile time should always match the first character at run time.
 </PARA>
 <SCREEN>
 
 #define Z_NULL	0
-#define MAX_WBITS	15
-#define MAX_MEM_LEVEL	9
+#define MAX_WBITS	15	/* 32K LZ77 window */
+#define MAX_MEM_LEVEL	9	/* Maximum value for memLevel in deflateInit2 */
 #define deflateInit2(strm,level,method,windowBits,memLevel,strategy)	\
 	deflateInit2_((strm),(level),(method),(windowBits),(memLevel),(strategy),ZLIB_VERSION,sizeof(z_stream))
 #define deflateInit(strm,level)	\
@@ -5695,16 +5685,16 @@ extern void wsyncup(WINDOW *);
 extern void wtimeout(WINDOW *, int);
 extern int wtouchln(WINDOW *, int, int, int);
 extern int wvline(WINDOW *, chtype, int);
+extern char *unctrl(chtype);
+extern int COLORS;
+extern int COLOR_PAIRS;
+extern chtype acs_map[];
 extern WINDOW *curscr;
 extern WINDOW *stdscr;
 extern int COLS;
 extern int LINES;
 extern int touchline(WINDOW *, int, int);
 extern int touchwin(WINDOW *);
-extern char *unctrl(chtype);
-extern int COLORS;
-extern int COLOR_PAIRS;
-extern chtype acs_map[];
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -5718,6 +5708,10 @@ extern int tigetflag(const char *);
 extern int tigetnum(const char *);
 extern char *tigetstr(const char *);
 extern char *tparm(const char *, ...);
+extern TERMINAL *set_curterm(TERMINAL *);
+extern int del_curterm(TERMINAL *);
+extern int restartterm(char *, int, int *);
+extern int setupterm(char *, int, int *);
 extern char *tgetstr(char *, char **);
 extern char *tgoto(const char *, int, int);
 extern int tgetent(char *, const char *);
@@ -5725,10 +5719,6 @@ extern int tgetflag(char *);
 extern int tgetnum(char *);
 extern int tputs(const char *, int, int (*)(int)
     );
-extern int setupterm(char *, int, int *);
-extern TERMINAL *set_curterm(TERMINAL *);
-extern int del_curterm(TERMINAL *);
-extern int restartterm(char *, int, int *);
 extern TERMINAL *cur_term;
 </SCREEN>
 </SECT2>
