@@ -1,0 +1,64 @@
+Specification: LSB Core Generic
+Edition of Specification: 3.2
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2093
+
+Rationale: additional errors and incomplete descriptions were
+discovered in the getgrouplist() function, after the changes in
+bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=1639
+were applied to edition 3.1.1 of this specification.
+
+In section 13.5. Interface Definitions for libc
+
+section Description,
+
+Change:
+
+   shall also be included.
+
+to:
+
+   shall also be included in the values returned in groups. It is
+   expected that group would be specified as the user's primary
+   group from the password file (obtainable via getpwnam() or a
+   similar function).
+
+
+section Return Value,
+
+Change:
+
+   If on entry the value referenced by ngroups was less than to
+   the number of supplementary group identifiers, getgrouplist()
+   shall return -1. The initial *ngroups entries in groups may be
+   overwritten.
+
+to:
+
+   If on entry the value referenced by ngroups was less than the
+   number of supplementary group identifiers, getgrouplist() shall
+   return -1. The initial ngroups entries in groups shall be
+   overwritten.
+
+
+Change:
+
+   If user does not refer to a valid user on the system,
+   getgrouplist() shall return 1, and set the value referenced by
+   ngroups to 1, reflecting the group supplied as group.
+
+to:
+
+   If the number of groups exceeds the input ngroups value, then
+   as well as returning -1, ngroups shall be set to the number of
+   groups that would have been placed in groups if it had been
+   large enough.
+
+     Note: In such a case, the caller can use the information
+     returned to make a further getgrouplist() call with a
+     correctly sized groups array.
+
+   If user does not refer to a valid user on the system, then the
+   behavior of this function is undefined.
+
