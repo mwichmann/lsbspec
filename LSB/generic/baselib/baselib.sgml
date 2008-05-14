@@ -11657,11 +11657,16 @@ fill in the array <parameter>groups</parameter> with
 the supplementary groups for the user specified
 by <parameter>user</parameter>. On entry, 
 <parameter>ngroups</parameter> shall refer to an integer
-containing the maximum number of <type>gid_t</type>
-members in the <parameter>groups</parameter> array.
-The group <parameter>group</parameter> shall also be included.
+containing the maximum number of 
+elements in the <parameter>groups</parameter> array.
+The group <parameter>group</parameter> shall also be included
+in the values returned in <parameter>groups</parameter>.
+It is expected that <parameter>group</parameter> would be specified as the
+user's primary group from the password file (obtainable
+via <function>getpwnam</function> or a similar function).
 </PARA>
 </REFSECT1>
+
 <REFSECT1><TITLE>Return Value</TITLE>
 <PARA>
 If on entry the value referenced by <parameter>ngroups</parameter>
@@ -11674,18 +11679,30 @@ referenced by <parameter>ngroups</parameter> to this value.
 </PARA>
 <PARA>
 If on entry the value referenced by <parameter>ngroups</parameter>
-was less than to the number of supplementary
+was less than the number of supplementary
 group identifiers, <function>getgrouplist</function> shall return
-<constant>-1</constant>. The initial <parameter>*ngroups</parameter>
-entries in
-<parameter>groups</parameter> may be overwritten.
+<constant>-1</constant>. The initial <parameter>ngroups</parameter>
+entries in <parameter>groups</parameter> shall be overwritten.
 </PARA>
 <PARA>
-If <parameter>user</parameter> does not refer to a valid
-user on the system, <function>getgrouplist</function> shall
-return <constant>1</constant>, and set the value referenced by
-<parameter>ngroups</parameter> to <constant>1</constant>,
-reflecting the group supplied as <parameter>group</parameter>.
+If the number of groups exceeds the input
+<parameter>ngroups</parameter> value, then as well as returning
+<constant>-1</constant>, <parameter>ngroups</parameter> shall be set
+to the number of groups that would have been placed in
+<parameter>groups</parameter> if it had been large enough.
+
+<note>
+<para>
+In such a case, the caller can use the information returned to make a
+further <function>getgrouplist</function> call with a correctly sized
+<parameter>groups</parameter> array.
+</para>
+</note>
+
+</PARA>
+<PARA>
+If <parameter>user</parameter> does not refer to a valid user on the system,
+then the behavior of this function is undefined.
 </PARA>
 </REFSECT1>
 <REFSECT1>
