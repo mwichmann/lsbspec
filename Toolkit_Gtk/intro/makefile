@@ -13,7 +13,7 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'Glib','Gobject','ATK','Pango','Gdk-pixbuf','Gdk','Gtk','ISOC99','ATK 1.10','Gdk 2.8','Gdk-pixbuf 2.8','Glib 2.8','Gobject 2.8','Gtk 2.8','Pango 1.10'" > standards.sgml
+	../../mkstandardsgmltable -a All -s "'ISOC99','ATK 1.10','Gdk 2.8','Gdk-pixbuf 2.8','Glib 2.8','Gobject 2.8','Gtk 2.8','Pango 1.10'" > standards.sgml
 	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Toolkit_Gtk >libraries.sgml
 
 
