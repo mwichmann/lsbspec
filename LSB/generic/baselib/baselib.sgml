@@ -1872,7 +1872,7 @@ in future releases of this specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>fstatfs64</primary></indexterm>fstatfs64 <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>fstatfs64</primary></indexterm>fstatfs64(GLIBC_2.1) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>statfs64</primary></indexterm>statfs64 <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
@@ -2322,6 +2322,7 @@ struct dirent64 {
     char d_name[256];
 };
 extern int readdir64_r(DIR *, struct dirent64 *, struct dirent64 **);
+extern int dirfd(DIR *);
 extern void rewinddir(DIR *);
 extern void seekdir(DIR *, long int);
 extern long int telldir(DIR *);
@@ -2330,6 +2331,7 @@ extern DIR *opendir(const char *);
 extern struct dirent *readdir(DIR *);
 extern struct dirent64 *readdir64(DIR *);
 extern int readdir_r(DIR *, struct dirent *, struct dirent **);
+extern DIR *fdopendir(int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2551,6 +2553,8 @@ extern int creat64(const char *, mode_t);
 extern int fcntl(int, int, ...);
 extern int open(const char *, int, ...);
 extern int open64(const char *, int, ...);
+extern int openat(int, const char *, int, ...);
+extern int openat64(int, const char *, int, ...);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2563,16 +2567,30 @@ extern int open64(const char *, int, ...);
 #define MM_NRECOV	128	/* Non-recoverable error. */
 #define MM_UTIL	16		/* Condition detected by utility. */
 #define MM_SOFT	2		/* Source of the condition is software. */
+#define MM_PRINT	256	/* Display message in standard error. */
 #define MM_OPSYS	32	/* Condition detected by operating system. */
 #define MM_FIRM	4		/* Source of the condition is firmware. */
+#define MM_CONSOLE	512	/* Display message on system console. */
 #define MM_RECOVER	64	/* Recoverable error. */
 #define MM_APPL	8		/* Condition detected by application. */
 
 #define MM_NOSEV	0	/* No severity level provided for the message. */
 #define MM_HALT	1		/* Error causing application to halt. */
 #define MM_ERROR	2	/* Application has encountered a non-fatal fault. */
+#define MM_WARNING	3	/* Application has detected unusual non-error condition. */
+#define MM_INFO	4		/* Informative message. */
 
+#define MM_NULLACT	((char *) 0)
 #define MM_NULLLBL	((char *) 0)
+#define MM_NULLTAG	((char *) 0)
+#define MM_NULLTXT	((char *) 0)
+#define MM_NULLMC	((long int) 0)
+#define MM_NULLSEV	0
+
+#define MM_NOTOK	-1	/* The function failed completely. */
+#define MM_OK	0		/* The function succeeded. */
+#define MM_NOMSG	1	/* The function was unable to generate a message on standard error, but otherwise succeeded. */
+#define MM_NOCON	4	/* The function was unable to generate a console message, but otherwise succeeded. */
 
 extern int fmtmsg(long int, const char *, int, const char *, const char *,
 		  const char *);
@@ -4455,6 +4473,10 @@ typedef struct _IO_FILE FILE;
 #define _IOLBF	1
 #define _IONBF	2
 
+extern FILE *open_memstream(char **, size_t *);
+extern ssize_t getdelim(char **, size_t *, int, FILE *);
+extern ssize_t getline(char **, size_t *, FILE *);
+extern FILE *fmemopen(void *, size_t, const char *);
 extern char *const _sys_errlist[];
 extern void clearerr(FILE *);
 extern int fclose(FILE *);
@@ -4532,6 +4554,18 @@ extern int vfscanf(FILE *, const char *, va_list);
 extern int vscanf(const char *, va_list);
 extern int vsscanf(const char *, const char *, va_list);
 extern size_t __fpending(FILE *);
+extern char *__fgets_chk(char *, size_t, int, struct _IO_FILE *);
+extern int __vsprintf_chk(char *, int, size_t, const char *, va_list);
+extern int __vfprintf_chk(FILE *, int, const char *, va_list);
+extern int __vprintf_chk(int, const char *, va_list);
+extern int __printf_chk(int, const char *, ...);
+extern int __vsnprintf_chk(char *, size_t, int, size_t, const char *,
+			   va_list);
+extern int __snprintf_chk(char *, size_t, int, size_t, const char *, ...);
+extern int __sprintf_chk(char *, int, size_t, const char *, ...);
+extern int __fprintf_chk(FILE *, int, const char *, ...);
+extern int dprintf(int, const char *, ...);
+extern int renameat(int, const char *, int, const char *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4651,6 +4685,9 @@ extern int getloadavg(double, int);
 extern int mkstemp64(char *);
 extern int posix_memalign(void **, size_t, size_t);
 extern int posix_openpt(int);
+extern char *__realpath_chk(const char *, char *, size_t);
+extern int __wctomb_chk(char *, wchar_t, size_t);
+extern char *mkdtemp(char *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4699,6 +4736,15 @@ extern char *stpcpy(char *, const char *);
 extern char *stpncpy(char *, const char *, size_t);
 extern void *memrchr(const void *, int, size_t);
 extern char *__xpg_strerror_r(int, char *, size_t);
+extern void *__memmove_chk(void *, const void *, size_t, size_t);
+extern char *__strcat_chk(char *, const char *, size_t);
+extern char *__strncat_chk(char *, const char *, size_t, size_t);
+extern char *__strncpy_chk(char *, const char *, size_t, size_t);
+extern char *__stpcpy_chk(char *, const char *, size_t);
+extern char *__strcpy_chk(char *, const char *, size_t);
+extern void *__memset_chk(void *, int, size_t, size_t);
+extern void *__mempcpy_chk(void *, const void *, size_t, size_t);
+extern void *__memcpy_chk(void *, const void *, size_t, size_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -5123,6 +5169,9 @@ extern int shutdown(int, int);
 extern int socket(int, int, int);
 extern int socketpair(int, int, int, int);
 extern int sockatmark(int);
+extern ssize_t __recv_chk(int, void *, size_t, size_t, int);
+extern ssize_t __recvfrom_chk(int, void *, size_t, size_t, int,
+			      struct sockaddr *, socklen_t *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -5182,6 +5231,12 @@ extern int mkfifo(const char *, mode_t);
 extern int chmod(const char *, mode_t);
 extern int fchmod(int, mode_t);
 extern mode_t umask(mode_t);
+extern int mkfifoat(int, const char *, mode_t);
+extern int mkdirat(int, const char *, mode_t);
+extern int fchmodat(int, const char *, mode_t, int);
+extern int __fxstatat(int, int, const char *, struct stat *, int);
+extern int __fxstatat64(int, int, const char *, struct stat64 *, int);
+extern int __xmknodat(int, int, const char *, mode_t, dev_t *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -5247,6 +5302,7 @@ extern int setitimer(__itimer_which_t, const struct itimerval *,
 extern int adjtime(const struct timeval *, struct timeval *);
 extern int gettimeofday(struct timeval *, struct timezone *);
 extern int utimes(const char *, const struct timeval *);
+extern int futimesat(int, const char *, const struct timeval);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -5478,6 +5534,8 @@ extern void openlog(const char *, int, int);
 extern int setlogmask(int);
 extern void syslog(int, const char *, ...);
 extern void vsyslog(int, const char *, va_list);
+extern void __syslog_chk(int, int, const char *, ...);
+extern void __vsyslog_chk(int, int, const char *, va_list);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -6105,6 +6163,15 @@ extern loff_t lseek64(int, loff_t, int);
 extern ssize_t pread64(int, void *, size_t, off64_t);
 extern ssize_t pwrite64(int, const void *, size_t, off64_t);
 extern int ttyname_r(int, char *, size_t);
+extern char *__getcwd_chk(char *, size_t, size_t);
+extern ssize_t __read_chk(int, void *, size_t, size_t);
+extern ssize_t __readlink_chk(const char *, void *, size_t, size_t);
+extern int readlinkat(int, const char *, char *, size_t);
+extern int linkat(int, const char *, int, const char *, int);
+extern int unlinkat(int, const char *, int);
+extern int fchownat(int, const char *, uid_t, gid_t, int);
+extern int symlinkat(const char *, int, const char *);
+extern int faccessat(int, const char *, int, int);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -6266,6 +6333,13 @@ extern size_t wcsftime(wchar_t *, size_t, const wchar_t *,
 		       const struct tm *);
 extern int wprintf(const wchar_t *, ...);
 extern int wscanf(const wchar_t *, ...);
+extern int __fwprintf_chk(FILE *, int, const wchar_t *, ...);
+extern int __swprintf_chk(wchar_t *, size_t, int, size_t, const wchar_t *,
+			  ...);
+extern wchar_t *__wcscat_chk(wchar_t *, const wchar_t *, size_t);
+extern wchar_t *__wcscpy_chk(wchar_t *, const wchar_t *, size_t);
+extern wchar_t *__wcsncpy_chk(wchar_t *, const wchar_t *, size_t, size_t);
+extern wchar_t *__wmemmove_chk(wchar_t *, const wchar_t *, size_t, size_t);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -7684,7 +7758,7 @@ copy given number of bytes of source to destination
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>2 April 2001</DATE>
+<DATE>5 June 2008</DATE>
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
@@ -7704,15 +7778,26 @@ copy given number of bytes of source to destination
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
-<DATE>2 April 2001</DATE>
+<DATE>5 June 2008</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
 <FUNCTION>__mempcpy</FUNCTION> copies <PARAMETER>n</PARAMETER> 
 bytes of <PARAMETER>src</PARAMETER> to <PARAMETER>dest</PARAMETER>,
-returning a pointer to the byte after 
-the last written byte.
+returning a pointer to the byte after the last written byte.
+</PARA>
+<PARA>
+If copying takes place between objects that overlap, the behavior is
+undefined.
+</PARA>
+<PARA>
+If either <PARAMETER>dest</PARAMETER> or <PARAMETER>src</PARAMETER> 
+is a null pointer, the behavior is undefined.
+</PARA>
+<PARA>
+If <PARAMETER>n</PARAMETER> is <LITERAL>0</LITERAL> and the other parameters
+are valid, the return value is <PARAMETER>dest</PARAMETER>.
 </PARA>
 <PARA>
 <FUNCTION>__mempcpy</FUNCTION> is not in the source standard; 
@@ -7720,7 +7805,6 @@ it is only in the binary standard.
 </PARA>
 </REFSECT1>
 </REFENTRY>
-
 
 <REFENTRY ID="baselib---rawmemchr"> <REFMETA>
 <REFENTRYTITLE>__rawmemchr</REFENTRYTITLE>
