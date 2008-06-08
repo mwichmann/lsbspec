@@ -1079,10 +1079,6 @@ underlying specification.
 <TGROUP COLS=2>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>g_access</primary></indexterm>g_access <LINK LINKEND="REFSTD.libglib.2.0.1">[Glib 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>g_chdir</primary></indexterm>g_chdir <LINK LINKEND="REFSTD.libglib.2.0.1">[Glib 2.8]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>g_dir_close</primary></indexterm>g_dir_close <LINK LINKEND="REFSTD.libglib.2.0.1">[Glib 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>g_dir_open</primary></indexterm>g_dir_open <LINK LINKEND="REFSTD.libglib.2.0.1">[Glib 2.8]</LINK></ENTRY>
 </ROW>
@@ -1113,10 +1109,6 @@ underlying specification.
 <ROW>
 <ENTRY><indexterm><primary>g_mapped_file_new</primary></indexterm>g_mapped_file_new <LINK LINKEND="REFSTD.libglib.2.0.1">[Glib 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>g_mkstemp</primary></indexterm>g_mkstemp <LINK LINKEND="REFSTD.libglib.2.0.1">[Glib 2.8]</LINK></ENTRY>
-</ROW>
-<ROW>
-<ENTRY><indexterm><primary>g_rmdir</primary></indexterm>g_rmdir <LINK LINKEND="REFSTD.libglib.2.0.1">[Glib 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>g_unlink</primary></indexterm>g_unlink <LINK LINKEND="REFSTD.libglib.2.0.1">[Glib 2.8]</LINK></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -3602,7 +3594,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define G_PDP_ENDIAN	3412
 #define G_BIG_ENDIAN	4321
 #define GLIB_MICRO_VERSION	6
-#define GLIB_MINOR_VERSION	6
+#define GLIB_MINOR_VERSION	8
 #define G_SEARCHPATH_SEPARATOR	:
 #define G_SEARCHPATH_SEPARATOR_S	":"
 #define GLIB_SYSDEF_POLLIN	=1
@@ -5519,6 +5511,8 @@ extern gint g_snprintf(gchar *, gulong, const gchar *, ...);
 </PARA>
 <SCREEN>
 
+#define g_access	access
+#define g_chdir	chdir
 #define g_chmod	chmod
 #define g_creat	creat
 #define g_fopen	fopen
@@ -5528,12 +5522,9 @@ extern gint g_snprintf(gchar *, gulong, const gchar *, ...);
 #define g_open	open
 #define g_remove	remove
 #define g_rename	rename
+#define g_rmdir	rmdir
 #define g_stat	stat
-
-extern int g_access(const gchar *, int);
-extern int g_chdir(const gchar *);
-extern int g_unlink(const gchar *);
-extern int g_rmdir(const gchar *);
+#define g_unlink	unlink
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -7029,7 +7020,10 @@ typedef enum {
     G_PARAM_CONSTRUCT = 4,
     G_PARAM_CONSTRUCT_ONLY = 8,
     G_PARAM_LAX_VALIDATION = 16,
-    G_PARAM_PRIVATE = 32
+    G_PARAM_PRIVATE = 32,
+    G_PARAM_STATIC_NAME,
+    G_PARAM_STATIC_NICK,
+    G_PARAM_STATIC_BLURB
 } GParamFlags;
 typedef struct _GParamSpec {
     GTypeInstance g_type_instance;
@@ -8370,7 +8364,7 @@ underlying specification.
 <ENTRY><indexterm><primary>atk_registry_get_factory_type</primary></indexterm>atk_registry_get_factory_type <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>atk_registry_get_type</primary></indexterm>atk_registry_get_type <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
+<ENTRY><indexterm><primary>atk_registry_get_type</primary></indexterm>atk_registry_get_type <LINK LINKEND="REFSTD.libatk.1.0.2">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>atk_registry_set_factory_type</primary></indexterm>atk_registry_set_factory_type <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -8395,7 +8389,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>atk_relation_set_get_relation_by_type</primary></indexterm>atk_relation_set_get_relation_by_type <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
-<ENTRY><indexterm><primary>atk_relation_set_get_type</primary></indexterm>atk_relation_set_get_type <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
+<ENTRY><indexterm><primary>atk_relation_set_get_type</primary></indexterm>atk_relation_set_get_type <LINK LINKEND="REFSTD.libatk.1.0.2">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>atk_relation_set_new</primary></indexterm>atk_relation_set_new <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
@@ -8606,7 +8600,7 @@ underlying specification.
 <ENTRY><indexterm><primary>atk_value_get_minimum_value</primary></indexterm>atk_value_get_minimum_value <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>atk_value_get_type</primary></indexterm>atk_value_get_type <LINK LINKEND="REFSTD.libatk.1.0.2">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>atk_value_get_type</primary></indexterm>atk_value_get_type <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
 <ENTRY><indexterm><primary>atk_value_set_current_value</primary></indexterm>atk_value_set_current_value <LINK LINKEND="REFSTD.libatk.1.0.1">[ATK 1.10]</LINK></ENTRY>
 </ROW>
 </TBODY>
@@ -9919,7 +9913,7 @@ underlying specification.
 <ENTRY><indexterm><primary>pango_color_free</primary></indexterm>pango_color_free <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>pango_color_get_type</primary></indexterm>pango_color_get_type <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pango_color_get_type</primary></indexterm>pango_color_get_type <LINK LINKEND="REFSTD.libpango.1.0.1">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pango_color_parse</primary></indexterm>pango_color_parse <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -10107,7 +10101,7 @@ underlying specification.
 <ENTRY><indexterm><primary>pango_fontset_get_metrics</primary></indexterm>pango_fontset_get_metrics <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>pango_fontset_get_type</primary></indexterm>pango_fontset_get_type <LINK LINKEND="REFSTD.libpango.1.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pango_fontset_get_type</primary></indexterm>pango_fontset_get_type <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pango_get_log_attrs</primary></indexterm>pango_get_log_attrs <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -10392,7 +10386,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>pango_stretch_get_type</primary></indexterm>pango_stretch_get_type <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pango_style_get_type</primary></indexterm>pango_style_get_type <LINK LINKEND="REFSTD.libpango.1.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pango_style_get_type</primary></indexterm>pango_style_get_type <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>pango_tab_align_get_type</primary></indexterm>pango_tab_align_get_type <LINK LINKEND="REFSTD.libpango.1.0.2">[Pango 1.10]</LINK></ENTRY>
@@ -12156,7 +12150,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define GDK_PIXBUF_SIMPLE_ANIM(object)	(G_TYPE_CHECK_INSTANCE_CAST ((object), GDK_TYPE_PIXBUF_SIMPLE_ANIM, GdkPixbufSimpleAnim))
 #define GDK_IS_PIXBUF_SIMPLE_ANIM(object)	(G_TYPE_CHECK_INSTANCE_TYPE ((object), GDK_TYPE_PIXBUF_SIMPLE_ANIM))
 #define GDK_PIXBUF_SIMPLE_ANIM_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GDK_TYPE_PIXBUF_SIMPLE_ANIM, GdkPixbufSimpleAnimClass))
-#define GDK_PIXBUF_VERSION	"2.6.10"
+#define GDK_PIXBUF_VERSION	"2.8.11"
 #define GDK_PIXBUF_VAR	extern
 #define GDK_PIXBUF_ERROR	gdk_pixbuf_error_quark ()
 
@@ -12658,7 +12652,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_atom_name</primary></indexterm>gdk_atom_name <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gdk_axis_use_get_type</primary></indexterm>gdk_axis_use_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gdk_axis_use_get_type</primary></indexterm>gdk_axis_use_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.2">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_beep</primary></indexterm>gdk_beep <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
@@ -12674,7 +12668,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_color_free</primary></indexterm>gdk_color_free <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gdk_color_get_type</primary></indexterm>gdk_color_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.2">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gdk_color_get_type</primary></indexterm>gdk_color_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_color_hash</primary></indexterm>gdk_color_hash <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
@@ -12826,7 +12820,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_drag_abort</primary></indexterm>gdk_drag_abort <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gdk_drag_action_get_type</primary></indexterm>gdk_drag_action_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.2">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gdk_drag_action_get_type</primary></indexterm>gdk_drag_action_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_drag_begin</primary></indexterm>gdk_drag_begin <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
@@ -12978,7 +12972,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_events_pending</primary></indexterm>gdk_events_pending <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gdk_extension_mode_get_type</primary></indexterm>gdk_extension_mode_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.2">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gdk_extension_mode_get_type</primary></indexterm>gdk_extension_mode_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_fill_get_type</primary></indexterm>gdk_fill_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
@@ -13090,7 +13084,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_input_set_extension_events</primary></indexterm>gdk_input_set_extension_events <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gdk_input_source_get_type</primary></indexterm>gdk_input_source_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gdk_input_source_get_type</primary></indexterm>gdk_input_source_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.2">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_join_style_get_type</primary></indexterm>gdk_join_style_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
@@ -13221,7 +13215,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gdk_property_get</primary></indexterm>gdk_property_get <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gdk_property_state_get_type</primary></indexterm>gdk_property_state_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gdk_property_state_get_type</primary></indexterm>gdk_property_state_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.2">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gdk_query_depths</primary></indexterm>gdk_query_depths <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -13333,7 +13327,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gdk_screen_get_toplevel_windows</primary></indexterm>gdk_screen_get_toplevel_windows <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gdk_screen_get_type</primary></indexterm>gdk_screen_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gdk_screen_get_type</primary></indexterm>gdk_screen_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.2">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gdk_screen_get_width</primary></indexterm>gdk_screen_get_width <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -13462,7 +13456,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_window_begin_resize_drag</primary></indexterm>gdk_window_begin_resize_drag <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gdk_window_class_get_type</primary></indexterm>gdk_window_class_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gdk_window_class_get_type</primary></indexterm>gdk_window_class_get_type <LINK LINKEND="REFSTD.libgdk.x11.2.0.2">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gdk_window_clear</primary></indexterm>gdk_window_clear <LINK LINKEND="REFSTD.libgdk.x11.2.0.1">[Gdk 2.8]</LINK></ENTRY>
@@ -15814,10 +15808,6 @@ extern GdkColormap *gdk_screen_get_rgba_colormap(GdkScreen *);
 extern GdkVisual *gdk_screen_get_rgba_visual(GdkScreen *);
 extern void gdk_window_move_region(GdkWindow *, GdkRegion *, gint, gint);
 extern void gdk_window_set_urgency_hint(GdkWindow *, gboolean);
-extern guint32 gdk_x11_display_get_user_time(GdkDisplay *);
-extern void gdk_x11_display_set_cursor_theme(GdkDisplay *, const gchar *,
-					     const gint);
-extern void gdk_x11_window_move_to_current_desktop(GdkWindow *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -17255,6 +17245,10 @@ extern void gdk_synthesize_window_state(GdkWindow *, GdkWindowState,
 extern Display *gdk_x11_display_get_xdisplay(GdkDisplay *);
 extern Atom gdk_x11_atom_to_xatom_for_display(GdkDisplay *, GdkAtom);
 extern Cursor gdk_x11_cursor_get_xcursor(GdkCursor *);
+extern guint32 gdk_x11_display_get_user_time(GdkDisplay *);
+extern void gdk_x11_display_set_cursor_theme(GdkDisplay *, const gchar *,
+					     const gint);
+extern void gdk_x11_window_move_to_current_desktop(GdkWindow *);
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -17598,7 +17592,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_arrow_set</primary></indexterm>gtk_arrow_set <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_arrow_type_get_type</primary></indexterm>gtk_arrow_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_arrow_type_get_type</primary></indexterm>gtk_arrow_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_aspect_frame_get_type</primary></indexterm>gtk_aspect_frame_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -17931,7 +17925,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_color_button_get_title</primary></indexterm>gtk_color_button_get_title <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_color_button_get_type</primary></indexterm>gtk_color_button_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_color_button_get_type</primary></indexterm>gtk_color_button_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_color_button_get_use_alpha</primary></indexterm>gtk_color_button_get_use_alpha <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -17963,7 +17957,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_color_selection_get_previous_color</primary></indexterm>gtk_color_selection_get_previous_color <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_color_selection_get_type</primary></indexterm>gtk_color_selection_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_color_selection_get_type</primary></indexterm>gtk_color_selection_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_color_selection_is_adjusting</primary></indexterm>gtk_color_selection_is_adjusting <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -18022,7 +18016,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_combo_box_get_row_span_column</primary></indexterm>gtk_combo_box_get_row_span_column <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_combo_box_get_type</primary></indexterm>gtk_combo_box_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_combo_box_get_type</primary></indexterm>gtk_combo_box_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_combo_box_get_wrap_width</primary></indexterm>gtk_combo_box_get_wrap_width <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -18151,7 +18145,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_delete_type_get_type</primary></indexterm>gtk_delete_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_dest_defaults_get_type</primary></indexterm>gtk_dest_defaults_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_dest_defaults_get_type</primary></indexterm>gtk_dest_defaults_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_dialog_add_action_widget</primary></indexterm>gtk_dialog_add_action_widget <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -18159,7 +18153,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_dialog_add_buttons</primary></indexterm>gtk_dialog_add_buttons <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_dialog_flags_get_type</primary></indexterm>gtk_dialog_flags_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_dialog_flags_get_type</primary></indexterm>gtk_dialog_flags_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_dialog_get_has_separator</primary></indexterm>gtk_dialog_get_has_separator <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -18310,7 +18304,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_entry_completion_get_text_column</primary></indexterm>gtk_entry_completion_get_text_column <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_entry_completion_get_type</primary></indexterm>gtk_entry_completion_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_entry_completion_get_type</primary></indexterm>gtk_entry_completion_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_entry_completion_insert_action_markup</primary></indexterm>gtk_entry_completion_insert_action_markup <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -18651,7 +18645,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_font_selection_dialog_get_preview_text</primary></indexterm>gtk_font_selection_dialog_get_preview_text <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_font_selection_dialog_get_type</primary></indexterm>gtk_font_selection_dialog_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_font_selection_dialog_get_type</primary></indexterm>gtk_font_selection_dialog_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_font_selection_dialog_new</primary></indexterm>gtk_font_selection_dialog_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -18679,7 +18673,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_frame_get_shadow_type</primary></indexterm>gtk_frame_get_shadow_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_frame_get_type</primary></indexterm>gtk_frame_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_frame_get_type</primary></indexterm>gtk_frame_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_frame_new</primary></indexterm>gtk_frame_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -18807,7 +18801,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_icon_set_get_sizes</primary></indexterm>gtk_icon_set_get_sizes <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_icon_set_get_type</primary></indexterm>gtk_icon_set_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_icon_set_get_type</primary></indexterm>gtk_icon_set_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_icon_set_new</primary></indexterm>gtk_icon_set_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -18882,7 +18876,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_icon_theme_append_search_path</primary></indexterm>gtk_icon_theme_append_search_path <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_icon_theme_error_get_type</primary></indexterm>gtk_icon_theme_error_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_icon_theme_error_get_type</primary></indexterm>gtk_icon_theme_error_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_icon_theme_error_quark</primary></indexterm>gtk_icon_theme_error_quark <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -19082,7 +19076,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_image_get_storage_type</primary></indexterm>gtk_image_get_storage_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_image_get_type</primary></indexterm>gtk_image_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_image_get_type</primary></indexterm>gtk_image_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_image_menu_item_get_image</primary></indexterm>gtk_image_menu_item_get_image <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -19159,7 +19153,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_item_deselect</primary></indexterm>gtk_item_deselect <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_item_get_type</primary></indexterm>gtk_item_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_item_get_type</primary></indexterm>gtk_item_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_item_select</primary></indexterm>gtk_item_select <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -19275,7 +19269,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_list_store_clear</primary></indexterm>gtk_list_store_clear <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_list_store_get_type</primary></indexterm>gtk_list_store_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_list_store_get_type</primary></indexterm>gtk_list_store_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_list_store_insert</primary></indexterm>gtk_list_store_insert <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -19346,7 +19340,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_menu_detach</primary></indexterm>gtk_menu_detach <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_menu_direction_type_get_type</primary></indexterm>gtk_menu_direction_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_menu_direction_type_get_type</primary></indexterm>gtk_menu_direction_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_menu_get_accel_group</primary></indexterm>gtk_menu_get_accel_group <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -19463,7 +19457,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_message_dialog_set_markup</primary></indexterm>gtk_message_dialog_set_markup <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_message_type_get_type</primary></indexterm>gtk_message_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_message_type_get_type</primary></indexterm>gtk_message_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_metric_type_get_type</primary></indexterm>gtk_metric_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
@@ -19779,7 +19773,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_rc_find_pixmap_in_path</primary></indexterm>gtk_rc_find_pixmap_in_path <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_rc_flags_get_type</primary></indexterm>gtk_rc_flags_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_rc_flags_get_type</primary></indexterm>gtk_rc_flags_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_rc_get_default_files</primary></indexterm>gtk_rc_get_default_files <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -19962,7 +19956,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_separator_get_type</primary></indexterm>gtk_separator_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_separator_menu_item_get_type</primary></indexterm>gtk_separator_menu_item_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_separator_menu_item_get_type</primary></indexterm>gtk_separator_menu_item_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_separator_menu_item_new</primary></indexterm>gtk_separator_menu_item_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -20083,7 +20077,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_spin_type_get_type</primary></indexterm>gtk_spin_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_state_type_get_type</primary></indexterm>gtk_state_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_state_type_get_type</primary></indexterm>gtk_state_type_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_statusbar_get_context_id</primary></indexterm>gtk_statusbar_get_context_id <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -20190,7 +20184,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_target_list_unref</primary></indexterm>gtk_target_list_unref <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_tearoff_menu_item_get_type</primary></indexterm>gtk_tearoff_menu_item_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_tearoff_menu_item_get_type</primary></indexterm>gtk_tearoff_menu_item_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_tearoff_menu_item_new</primary></indexterm>gtk_tearoff_menu_item_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -20275,7 +20269,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_text_buffer_get_text</primary></indexterm>gtk_text_buffer_get_text <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_text_buffer_get_type</primary></indexterm>gtk_text_buffer_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_text_buffer_get_type</primary></indexterm>gtk_text_buffer_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_text_buffer_insert</primary></indexterm>gtk_text_buffer_insert <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -20330,7 +20324,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_text_child_anchor_new</primary></indexterm>gtk_text_child_anchor_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_text_direction_get_type</primary></indexterm>gtk_text_direction_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_text_direction_get_type</primary></indexterm>gtk_text_direction_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_text_iter_backward_char</primary></indexterm>gtk_text_iter_backward_char <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -20850,7 +20844,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_tooltips_get_info_from_tip_window</primary></indexterm>gtk_tooltips_get_info_from_tip_window <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_tooltips_get_type</primary></indexterm>gtk_tooltips_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_tooltips_get_type</primary></indexterm>gtk_tooltips_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_tooltips_new</primary></indexterm>gtk_tooltips_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -20866,7 +20860,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_tree_drag_source_drag_data_get</primary></indexterm>gtk_tree_drag_source_drag_data_get <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_tree_drag_source_get_type</primary></indexterm>gtk_tree_drag_source_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_tree_drag_source_get_type</primary></indexterm>gtk_tree_drag_source_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_tree_drag_source_row_draggable</primary></indexterm>gtk_tree_drag_source_row_draggable <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -21306,7 +21300,7 @@ underlying specification.
 <ENTRY><indexterm><primary>gtk_tree_view_get_selection</primary></indexterm>gtk_tree_view_get_selection <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_tree_view_get_type</primary></indexterm>gtk_tree_view_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_tree_view_get_type</primary></indexterm>gtk_tree_view_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_tree_view_get_vadjustment</primary></indexterm>gtk_tree_view_get_vadjustment <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -21455,14 +21449,14 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_viewport_set_vadjustment</primary></indexterm>gtk_viewport_set_vadjustment <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_visibility_get_type</primary></indexterm>gtk_visibility_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_visibility_get_type</primary></indexterm>gtk_visibility_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_vpaned_get_type</primary></indexterm>gtk_vpaned_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_vpaned_new</primary></indexterm>gtk_vpaned_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>gtk_vruler_get_type</primary></indexterm>gtk_vruler_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_vruler_get_type</primary></indexterm>gtk_vruler_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gtk_vruler_new</primary></indexterm>gtk_vruler_new <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -21515,7 +21509,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_widget_event</primary></indexterm>gtk_widget_event <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
-<ENTRY><indexterm><primary>gtk_widget_flags_get_type</primary></indexterm>gtk_widget_flags_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.1">[Gobject 2.8]</LINK></ENTRY>
+<ENTRY><indexterm><primary>gtk_widget_flags_get_type</primary></indexterm>gtk_widget_flags_get_type <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>gtk_widget_freeze_child_notify</primary></indexterm>gtk_widget_freeze_child_notify <LINK LINKEND="REFSTD.libgtk.x11.2.0.2">[Gtk 2.8]</LINK></ENTRY>
@@ -23829,10 +23823,10 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 	G_STMT_START{ (GTK_WIDGET_FLAGS (wid) |= (flag)); }G_STMT_END
 #define GTK_SIGNAL_FUNC(f)	((GtkSignalFunc) (f))
 #define GTK_INTERFACE_AGE	(10)
-#define GTK_MICRO_VERSION	(10)
+#define GTK_MICRO_VERSION	(11)
 #define GTK_MAJOR_VERSION	(2)
-#define GTK_MINOR_VERSION	(6)
 #define GTK_BINARY_AGE	(610)
+#define GTK_MINOR_VERSION	(8)
 #define GTK_TEXT_VIEW_PRIORITY_VALIDATE	(GDK_PRIORITY_REDRAW + 5)
 #define GTK_TYPE_ABOUT_DIALOG	(gtk_about_dialog_get_type ())
 #define GTK_TYPE_ACCEL_FLAGS	(gtk_accel_flags_get_type())
@@ -24111,6 +24105,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define GTK_STOCK_FIND	"gtk-find"
 #define GTK_STOCK_FIND_AND_REPLACE	"gtk-find-and-replace"
 #define GTK_STOCK_FLOPPY	"gtk-floppy"
+#define GTK_STOCK_FULLSCREEN	"gtk-fullscreen"
 #define GTK_STOCK_GO_BACK	"gtk-go-back"
 #define GTK_STOCK_GO_DOWN	"gtk-go-down"
 #define GTK_STOCK_GO_FORWARD	"gtk-go-forward"
@@ -24124,12 +24119,14 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define GTK_STOCK_HOME	"gtk-home"
 #define GTK_STOCK_INDENT	"gtk-indent"
 #define GTK_STOCK_INDEX	"gtk-index"
+#define GTK_STOCK_INFO	"gtk-info"
 #define GTK_STOCK_ITALIC	"gtk-italic"
 #define GTK_STOCK_JUMP_TO	"gtk-jump-to"
 #define GTK_STOCK_JUSTIFY_CENTER	"gtk-justify-center"
 #define GTK_STOCK_JUSTIFY_FILL	"gtk-justify-fill"
 #define GTK_STOCK_JUSTIFY_LEFT	"gtk-justify-left"
 #define GTK_STOCK_JUSTIFY_RIGHT	"gtk-justify-right"
+#define GTK_STOCK_LEAVE_FULLSCREEN	"gtk-leave-fullscreen"
 #define GTK_STOCK_MEDIA_FORWARD	"gtk-media-forward"
 #define GTK_STOCK_MEDIA_NEXT	"gtk-media-next"
 #define GTK_STOCK_MEDIA_PAUSE	"gtk-media-pause"

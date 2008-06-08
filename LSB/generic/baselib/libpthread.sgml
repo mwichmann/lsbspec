@@ -32,6 +32,9 @@ The behavior of the interfaces in this library is specified by the following spe
 <MEMBER ID='REFSTD.libpthread.3'>
 [SUSv3] <XREF LINKEND="std.SUSv3">
 </MEMBER>
+<MEMBER ID='REFSTD.libpthread.4'>
+[SUSv4] <XREF LINKEND="std.SUSv4">
+</MEMBER>
 </SIMPLELIST>
 </PARA>
 <!-- debug: database interface name Realtime Threads -->
@@ -65,12 +68,18 @@ underlying specification.
 <ENTRY><indexterm><primary>pthread_attr_setschedpolicy</primary></indexterm>pthread_attr_setschedpolicy <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pthread_attr_setscope</primary></indexterm>pthread_attr_setscope <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pthread_getschedparam</primary></indexterm>pthread_getschedparam <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pthread_setschedparam</primary></indexterm>pthread_setschedparam <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_mutex_getprioceiling</primary></indexterm>pthread_mutex_getprioceiling(GLIBC_2.4) <LINK LINKEND="REFSTD.libpthread.4">[SUSv4]</LINK></ENTRY>
 </ROW>
 <ROW>
+<ENTRY><indexterm><primary>pthread_mutex_setprioceiling</primary></indexterm>pthread_mutex_setprioceiling(GLIBC_2.4) <LINK LINKEND="REFSTD.libpthread.4">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_mutexattr_getprioceiling</primary></indexterm>pthread_mutexattr_getprioceiling(GLIBC_2.4) <LINK LINKEND="REFSTD.libpthread.4">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_mutexattr_getprotocol</primary></indexterm>pthread_mutexattr_getprotocol(GLIBC_2.4) <LINK LINKEND="REFSTD.libpthread.4">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_mutexattr_setprioceiling</primary></indexterm>pthread_mutexattr_setprioceiling(GLIBC_2.4) <LINK LINKEND="REFSTD.libpthread.4">[SUSv4]</LINK></ENTRY>
+</ROW>
+<ROW>
+<ENTRY><indexterm><primary>pthread_mutexattr_setprotocol</primary></indexterm>pthread_mutexattr_setprotocol(GLIBC_2.4) <LINK LINKEND="REFSTD.libpthread.4">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_setschedparam</primary></indexterm>pthread_setschedparam <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pthread_setschedprio</primary></indexterm>pthread_setschedprio(GLIBC_2.3.4) <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
-<ENTRY></ENTRY>
-<ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 </TBODY>
@@ -324,11 +333,11 @@ underlying specification.
 <ENTRY><indexterm><primary>lseek64</primary></indexterm>lseek64 <LINK LINKEND="REFSTD.libpthread.1">[LFS]</LINK></ENTRY>
 <ENTRY><indexterm><primary>open64</primary></indexterm>open64 <LINK LINKEND="REFSTD.libpthread.1">[LFS]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pread</primary></indexterm>pread <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pread64</primary></indexterm>pread64 <LINK LINKEND="REFSTD.libpthread.1">[LFS]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pread64</primary></indexterm>pread64 <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>pwrite</primary></indexterm>pwrite <LINK LINKEND="REFSTD.libpthread.3">[SUSv3]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pwrite64</primary></indexterm>pwrite64 <LINK LINKEND="REFSTD.libpthread.1">[LFS]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pwrite64</primary></indexterm>pwrite64 <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
@@ -488,6 +497,14 @@ extern int pthread_mutex_timedlock(pthread_mutex_t *,
 				   const struct timespec *);
 extern int pthread_barrierattr_getpshared(const pthread_barrierattr_t *,
 					  int *);
+extern int pthread_mutexattr_getprioceiling(const pthread_mutexattr_t *,
+					    int *);
+extern int pthread_mutexattr_getprotocol(const pthread_mutexattr_t *,
+					 int *);
+extern int pthread_mutexattr_setprioceiling(pthread_mutexattr_t *, int);
+extern int pthread_mutexattr_setprotocol(pthread_mutexattr_t *, int);
+extern int pthread_mutex_getprioceiling(pthread_mutex_t * const, int *);
+extern int pthread_mutex_setprioceiling(pthread_mutex_t *, int, int *);
 extern void _pthread_cleanup_pop(struct _pthread_cleanup_buffer *, int);
 extern void _pthread_cleanup_push(struct _pthread_cleanup_buffer *,
 				  void (*__pshared) (void *)
@@ -630,5 +647,8 @@ in the referenced base document.
 </PARA>
 m4_include(_pthread_cleanup_pop.sgml)
 m4_include(_pthread_cleanup_push.sgml)
+<!-- MISSING DEFINITION FOR pread64 -->
+<!-- Lets just hope nobody notices -->
+m4_include(pwrite64.sgml)
 </SECT1>
 <!-- End of text generated from database -->
