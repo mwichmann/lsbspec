@@ -353,11 +353,43 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 <SCREEN>
 
 #define __SIZEOF_PTHREAD_BARRIER_T	32
+#define __SIZEOF_PTHREAD_MUTEX_T	40
+#define __SIZEOF_PTHREAD_ATTR_T	56
+#define __SIZEOF_PTHREAD_RWLOCK_T	56
 
 typedef union {
     char __size[__SIZEOF_PTHREAD_BARRIER_T];
     long int __align;
 } pthread_barrier_t;
+
+typedef struct __pthread_internal_list __pthread_list_t;
+struct __pthread_mutex_s {
+    int __lock;
+    unsigned int __count;
+    int __owner;
+    unsigned int __nusers;
+    int __kind;
+    int __spins;
+    __pthread_list_t __list;
+};
+
+typedef union {
+    struct {
+	int __lock;
+	unsigned int __nr_readers;
+	unsigned int __readers_wakeup;
+	unsigned int __writer_wakeup;
+	unsigned int __nr_readers_queued;
+	unsigned int __nr_writers_queued;
+	int __writer;
+	int __pad1;
+	unsigned long int __pad2;
+	unsigned long int __pad3;
+	unsigned int __flags;
+    } __data;
+    char __size[__SIZEOF_PTHREAD_RWLOCK_T];
+    long int __align;
+} pthread_rwlock_t;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -366,10 +398,7 @@ typedef union {
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+#define __SIZEOF_SEM_T	32
 </SCREEN>
 </SECT2>
 </SECT1>
