@@ -558,7 +558,7 @@ in future releases of this specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>fstatfs</primary></indexterm>fstatfs <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>fstatfs</primary></indexterm>fstatfs(GLIBC_2.0) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getdtablesize</primary></indexterm>getdtablesize <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getpagesize</primary></indexterm>getpagesize <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getwd</primary></indexterm>getwd <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
@@ -2405,7 +2405,7 @@ in future releases of this specification.
 <TBODY>
 <ROW>
 <ENTRY><indexterm><primary>basename</primary></indexterm>basename <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>getdomainname</primary></indexterm>getdomainname <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>getdomainname</primary></indexterm>getdomainname(GLIBC_2.0) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>inet_aton</primary></indexterm>inet_aton <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>tmpnam</primary></indexterm>tmpnam <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
 </ROW>
@@ -16223,7 +16223,7 @@ create a unique temporary file (Large File Support)
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
-<DATE>2 April 2001</DATE>
+<DATE>19 April 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
 <FUNCSYNOPSISINFO>
@@ -16240,31 +16240,41 @@ create a unique temporary file (Large File Support)
 </REFSYNOPSISDIV>
 <REFSECT1>
 <REFSECT1INFO>
-<DATE>2 April 2001</DATE>
+<DATE>19 June 2008</DATE>
 </REFSECT1INFO>
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>mkstemp64</FUNCTION> generates a unique temporary file
+<FUNCTION>mkstemp64</FUNCTION> shall generates a unique temporary file
 name from <PARAMETER>template</PARAMETER>. The last six characters
 of template shall be <LITERAL>XXXXXX</LITERAL> and these are replaced 
-with a string that makes the file name unique.
+with a string that makes the file name unique; the file is
+then created and an open file descriptor returned as described
+for <function>mkstemp</function>.
 </PARA>
 <PARA>
-<FUNCTION>mkstemp64</FUNCTION> is a 64-bit version of 
-<FUNCTION>mkstemp</FUNCTION>.
+<FUNCTION>mkstemp64</FUNCTION> is a large-file version of
+the <FUNCTION>mkstemp</FUNCTION> function as defined in
+<XREF LINKEND=STD.SUSv3>.
+The only difference is 
+that the temporary file is opened with <function>open64</function>
+instead of with <function>open</function>.
 </PARA>
 </REFSECT1>
 <REFSECT1>
-<TITLE>Return Value
-</TITLE>
+<TITLE>Return Value</TITLE>
 <PARA>
-On success, <FUNCTION>mkstemp64</FUNCTION> returns the file 
-descriptor <VARNAME>fd</VARNAME> of the temporary file; on error
-<PARAMETER>-1</PARAMETER> is returned.
+On success, <function>mkstemp64</function> returns the file
+descriptor of the temporary file.  Otherwise <function>mkstemp64</function>
+shall return <RETURNVALUE>-1</RETURNVALUE> and
+set <VARNAME>errno</VARNAME> to indicate the error.
 </PARA>
-<!--	  LDP GENERAL PUBLIC LICENSE  -->
-<!--        Version 1a, November 1998   -->
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+See <function>mkstemp</function> for possible error values.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
@@ -16660,8 +16670,80 @@ bindtextdomain, bind_textdomain_codeset
 
 <!-- MISSING DEFINITION FOR nrand48_r -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR openat64 -->
-<!-- Lets just hope nobody notices -->
+<refentry id="baselib-openat64"> 
+<refmeta>
+<refentrytitle>openat64</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>openat64</refname>
+<refpurpose>
+open a file relative to a directory file descriptor (Large File Support)
+</refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+<refsynopsisdivinfo>
+<date>19 June 2008</date>
+</refsynopsisdivinfo>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;fcntl.h&gt;
+</funcsynopsisinfo>
+<funcprototype>
+ <funcdef>int
+  <function>openat64</function></funcdef>
+ <paramdef>int 
+  <parameter><replaceable>fd</replaceable></parameter></paramdef>
+ <paramdef>const char *
+  <parameter><replaceable>path</replaceable></parameter></paramdef>
+ <paramdef>int 
+  <parameter><replaceable>oflag</replaceable></parameter></paramdef>
+ <varargs>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<refsect1info>
+<date>19 June 2008</date>
+</refsect1info>
+<title>Description</title>
+<para>
+<function>openat64</function> shall establish a connection
+between a file and a file descriptor. It shall be identical
+<function>open64</function> except in the case where
+<parameter>path</parameter> specifies a relative path. In
+this case, the file to be opened shall be determined relative to
+the directory associated with the file descriptor
+<parameter>fd</parameter> instead of the current working directory.
+</para>
+<para>
+<function>openat64</function> is a large-file version of
+the <function>openat</function> function as defined in
+<xref linkend=std.SUSv4>.
+It differs from <function>openat</function> in the
+same way that <function>open64</function> differs from
+<function>open</function>, that the open is done in
+large-file mode.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>openat64</function> returns a new
+file descriptor.
+Otherwise <function>openat64</function>
+shall return <RETURNVALUE>-1</RETURNVALUE> and
+set <VARNAME>errno</VARNAME> to indicate the error.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+See <function>openat</function> for possible error values.
+</para>
+</refsect1>
+</refentry>
+
 <REFENTRY ID="baselib-pmap-getport-3"> <REFMETA>
 <REFENTRYTITLE>pmap_getport</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -26666,8 +26748,76 @@ source standard; it is only in the binary standard.
 </REFENTRY>
 
 
-<!-- MISSING DEFINITION FOR pread64 -->
-<!-- Lets just hope nobody notices -->
+<REFENTRY ID="baselib-pread64"> <REFMETA> <REFENTRYTITLE>pread64</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>pread64</REFNAME>
+<REFPURPOSE>
+read from a file (Large File Support)
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>19 June 2008</DATE>
+</REFSYNOPSISDIVINFO>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;unistd.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>ssize_t 
+  <FUNCTION>pread64</FUNCTION></FUNCDEF>
+ <PARAMDEF>int 
+  <PARAMETER><REPLACEABLE>fd</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>void *
+  <PARAMETER><REPLACEABLE>buf</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>size_t 
+  <PARAMETER><REPLACEABLE>count</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>off64_t 
+  <PARAMETER><REPLACEABLE>offset</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>19 June 2008</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+<FUNCTION>pread64</FUNCTION> shall read <PARAMETER>count</PARAMETER> 
+bytes into <PARAMETER>buf</PARAMETER> from the file associated with the
+open file descriptor <PARAMETER>fd</PARAMETER>, at the 
+position specified by <PARAMETER>offset</PARAMETER>, without changing 
+the file position.
+</PARA>
+<PARA>
+<FUNCTION>pread64</FUNCTION> is a large-file version of
+the <FUNCTION>pread</FUNCTION> function as defined in
+<XREF LINKEND=STD.SUSv3>.
+It differs from <function>pread</function>
+in that the <parameter>offset</parameter> parameter is an
+<type>off64_t</type> instead of an <type>off_t</type>
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Return Value</TITLE>
+<PARA>
+On success, <FUNCTION>pread64</FUNCTION> shall return the number 
+of bytes actually read. Otherwise <function>pread64</function>
+shall return <RETURNVALUE>-1</RETURNVALUE> and
+set <VARNAME>errno</VARNAME> to indicate the error.
+</PARA>
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+See <function>pread</function> for possible error values.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
 <REFENTRY ID="baselib-pwrite64"> <REFMETA>
 <REFENTRYTITLE>pwrite64</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -26694,7 +26844,7 @@ write on a file (Large File Support)
  <PARAMDEF>const void *
   <PARAMETER><REPLACEABLE>buf</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>size_t 
-  <PARAMETER><REPLACEABLE>nbytes</REPLACEABLE></PARAMETER></PARAMDEF>
+  <PARAMETER><REPLACEABLE>count</REPLACEABLE></PARAMETER></PARAMDEF>
  <PARAMDEF>off64_t 
   <PARAMETER><REPLACEABLE>offset</REPLACEABLE></PARAMETER></PARAMDEF>
 </FUNCPROTOTYPE>
@@ -26707,26 +26857,36 @@ write on a file (Large File Support)
 <TITLE>Description
 </TITLE>
 <PARA>
-<FUNCTION>pwrite64</FUNCTION> writes <PARAMETER>nbytes</PARAMETER> 
-of <PARAMETER>buf</PARAMETER> to <PARAMETER>fd</PARAMETER> at the 
-position specified as <PARAMETER>offset</PARAMETER> without changing 
+<FUNCTION>pwrite64</FUNCTION> shall write <PARAMETER>count</PARAMETER> 
+bytes from <PARAMETER>buf</PARAMETER> to the file associated with the
+open file descriptor <PARAMETER>fd</PARAMETER>, at the 
+position specified by <PARAMETER>offset</PARAMETER>, without changing 
 the file position.
 </PARA>
 <PARA>
-<FUNCTION>pwrite64</FUNCTION> is a 64-bit version of 
-<FUNCTION>pwrite</FUNCTION>.
+<FUNCTION>pwrite64</FUNCTION> is a large-file version of
+the <FUNCTION>pwrite</FUNCTION> function as defined in
+<XREF LINKEND=STD.SUSv3>.
+It differs from <function>pwrite</function>
+in that the <parameter>offset</parameter> parameter is an
+<type>off64_t</type> instead of an <type>off_t</type>
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
 </TITLE>
 <PARA>
-On success, <FUNCTION>pwrite64</FUNCTION> returns the number written. 
-On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
-the global variable <VARNAME>errno</VARNAME> is set appropriately.
+On success, <FUNCTION>pwrite64</FUNCTION> shall return the number 
+of bytes actually written. Otherwise <function>pwrite</function>
+shall return <RETURNVALUE>-1</RETURNVALUE> and
+set <VARNAME>errno</VARNAME> to indicate the error.
 </PARA>
-<!--	  LDP GENERAL PUBLIC LICENSE  -->
-<!--        Version 1a, November 1998   -->
+</REFSECT1>
+<REFSECT1>
+<TITLE>Errors</TITLE>
+<PARA>
+See <function>pwrite</function> for possible error values.
+</PARA>
 </REFSECT1>
 </REFENTRY>
 
