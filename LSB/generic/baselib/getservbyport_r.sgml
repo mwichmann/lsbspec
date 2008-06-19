@@ -1,0 +1,83 @@
+<REFENTRY ID="baselib-getservbyport_r"> <REFMETA>
+<REFENTRYTITLE>getservbyport_r</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>getservbyport_r
+</REFNAME>
+<REFPURPOSE>
+retrieve information from the network services database by service port, reentrantly
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>17 June 2008</DATE>
+</REFSYNOPSISDIVINFO>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;netdb.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int
+  <FUNCTION>getservbyport_r</FUNCTION></FUNCDEF>
+ <PARAMDEF>int
+  <PARAMETER>port</PARAMETER></PARAMDEF>
+ <PARAMDEF>const char *
+  <PARAMETER>proto</PARAMETER></PARAMDEF>
+ <PARAMDEF>struct servent *
+  <PARAMETER>result_buf</PARAMETER></PARAMDEF>
+ <PARAMDEF>char *
+  <PARAMETER>buf</PARAMETER></PARAMDEF>
+ <PARAMDEF>size_t
+  <PARAMETER>buflen</PARAMETER></PARAMDEF>
+ <PARAMDEF>struct servent * *
+  <PARAMETER>result</PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<TITLE>Description
+</TITLE>
+<PARA>
+The <FUNCTION>getservbyport_r</FUNCTION> function is a reentrant version 
+of the <FUNCTION>getservbyport</FUNCTION> function.
+</PARA>
+<PARA>
+The <function>getservbyport_r</function> function shall search the network services database
+for an entry with the port <parameter>port</parameter>.
+The <PARAMETER>proto</PARAMETER> parameter 
+shall restrict the search to entries with the specified protocol. 
+If <PARAMETER>proto</PARAMETER> is <LITERAL>NULL</LITERAL>, 
+<FUNCTION>getservbyport_r</FUNCTION> may return entries with any protocol.
+</PARA>
+<PARA>
+The application must provide a buffer for the <function>getservbyport_r</function> to use during
+the lookup process. The buffer is referenced by <parameter>buf</parameter>, and is of size <parameter>buflen</parameter>.
+If the buffer is not of sufficient size, <function>getservbyport_r</function> may fail and return
+<errorcode>ERANGE</errorcode>.
+If a matching entry is found in the database, <function>getservbyport_r</function> shall
+copy the relevant information to the application-supplied <structname>servent</structname> structure referenced by 
+<parameter>result_buf</parameter>, and return a pointer to this structure in *<parameter>result</parameter>.
+If no matching entry is found, *<parameter>result</parameter> shall be set to a null pointer.
+Additional error information shall be set in the variable referenced by <parameter>h_errnop</parameter>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, the <function>getservbyport_r</function> function shall return zero. If the 
+return value was 
+<errorcode>ERANGE</errorcode>,
+the size of the buffer <parameter>buf</parameter>, indicated by <parameter>buflen</parameter>, was too small.
+If the <function>getservbyport_r</function> function returns returns any other
+value, then the variable referenced by <parameter>h_errnop</parameter> shall be set to indicate the cause as
+for <function>getservbyport</function>.
+</PARA>
+</REFSECT1>
+
+
+</REFENTRY>

@@ -1,0 +1,157 @@
+<REFENTRY ID="baselib-inotify_add_watch"> <REFMETA>
+<REFENTRYTITLE>inotify_add_watch</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>inotify_add_watch
+</REFNAME>
+<REFPURPOSE>
+add a watch to a watch list
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/inotify.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>inotify_add_watch</FUNCTION></FUNCDEF>
+ <PARAMDEF>int
+  <PARAMETER>fd</PARAMETER></PARAMDEF>
+ <PARAMDEF>const char *
+  <PARAMETER>path</PARAMETER></PARAMDEF>
+ <PARAMDEF>uint32_t
+  <PARAMETER>mask</PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<TITLE>Description
+</TITLE>
+<PARA>
+<FUNCTION>inotify_add_watch</FUNCTION> shall add a watch to,
+or modify an existing watch on,
+the watch list of the inotify instance 
+specified by the file descriptor <PARAMETER>fd</PARAMETER>,
+for the file specified by <PARAMETER>path</PARAMETER>,
+to monitor the events specified by the bitmask <PARAMETER>mask</PARAMETER>.
+The caller must have read access to the file.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>
+Return Value
+</TITLE>
+<PARA>
+On success, <function>inotify_add_watch</function> 
+shall return the unique, non-negative watch descriptor
+associated with the file <PARAMETER>path</PARAMETER>
+and the inotify instance specified by the file descriptor <PARAMETER>fd</PARAMETER>.
+</PARA>
+<PARA>
+If <PARAMETER>path</PARAMETER> was already on the watch list, 
+then <function>inotify_add_watch</function> shall return
+the existing watch descriptor.
+</PARA>
+<PARA>
+If <PARAMETER>path</PARAMETER> was not already on the watch list, 
+then <function>inotify_add_watch</function>
+shall allocate a new watch descriptor.
+</PARA>
+<PARA>
+On failure, <function>inotify_add_watch</function> shall return <LITERAL>-1</LITERAL>
+and set <varname>errno</varname> to an appropriate value.
+</PARA>
+</REFSECT1>
+    
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+EACCESS  
+</TERM>
+<LISTITEM>
+<PARA>
+The caller does not have read access to <PARAMETER>path</PARAMETER>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EBADF 
+</TERM>
+<LISTITEM>
+<PARA>
+The file descriptor <PARAMETER>fd</PARAMETER> is invalid.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT 
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>path</PARAMETER> is outside of 
+the address space accessible by the process.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+<PARAMETER>mask</PARAMETER> contains no legal events, or 
+<PARAMETER>fd</PARAMETER> is not a valid inotify file descriptor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOMEM 
+</TERM>
+<LISTITEM>
+<PARA>
+There is not enough kernel memory available.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOSPC 
+</TERM>
+<LISTITEM>
+<PARA>
+The maximum number of watches has been created for this user, 
+or the kernel cannot allocate a resource.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>See Also</TITLE>
+<PARA>
+<simplelist type=inline>
+<member><function>inotify_init</function></member>
+<member><function>inotify_rm_watch</function></member>
+</simplelist>
+</PARA>
+</REFSECT1>
+</REFENTRY>
