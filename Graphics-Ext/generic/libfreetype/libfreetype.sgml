@@ -306,6 +306,11 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 
 #define FT_BEGIN_HEADER
 #define FT_END_HEADER
+#define FT_ERRORDEF_(e,v,s)	 \
+	FT_ERRORDEF( FT_ERR_CAT( FT_ERR_PREFIX, e ), v + FT_ERR_BASE, s )
+#define FT_NOERRORDEF_(e,v,s)	 \
+	FT_ERRORDEF( FT_ERR_CAT( FT_ERR_PREFIX, e ), v, s )
+#define FT_ERR_BASE	0
 #define FT_CONFIG_CONFIG_H	&lt;freetype/config/ftconfig.h>
 #define FT_CONFIG_MODULES_H	&lt;freetype/config/ftmodule.h>
 #define FT_CONFIG_OPTIONS_H	&lt;freetype/config/ftoption.h>
@@ -351,9 +356,15 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define FT_TRUETYPE_TABLES_H	&lt;freetype/tttables.h>
 #define FT_TRUETYPE_TAGS_H	&lt;freetype/tttags.h>
 #define FT_TRUETYPE_UNPATENTED_H	&lt;freetype/ttunpat.h>
+#define FT_ERRORDEF(e,v,s)	e = v,
+#define FT_ERROR_START_LIST	enum {
 #define FT_CACHE_CHARMAP_H	FT_CACHE_H
 #define FT_CACHE_IMAGE_H	FT_CACHE_H
 #define FT_CACHE_SMALL_BITMAPS_H	FT_CACHE_H
+#define FT_ERR_PREFIX	FT_Err_
+#define FT_ERROR_END_LIST	FT_ERR_CAT( FT_ERR_PREFIX, Max ) };
+#define FT_ERR_CAT(x,y)	FT_ERR_XCAT( x, y )
+#define FT_ERR_XCAT(x,y)	x ## y
 </SCREEN>
 </SECT2>
 <!-- empty header file All/freetype/config/ftmodule.h -->
@@ -738,25 +749,6 @@ extern void FT_Bitmap_New(FT_Bitmap *);
 extern FT_Error FT_Bitmap_Copy(FT_Library, const FT_Bitmap *, FT_Bitmap);
 extern FT_Error FT_Bitmap_Embolden(FT_Library, FT_Bitmap *, FT_Pos,
 				   FT_Pos);
-</SCREEN>
-</SECT2>
-<SECT2>
-<TITLE>freetype/fterrdef.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-#define FT_ERRORDEF_(e,v,s)	 \
-	FT_ERRORDEF( FT_ERR_CAT( FT_ERR_PREFIX, e ), v + FT_ERR_BASE, s )
-#define FT_NOERRORDEF_(e,v,s)	 \
-	FT_ERRORDEF( FT_ERR_CAT( FT_ERR_PREFIX, e ), v, s )
-#define FT_ERR_BASE	0
-#define FT_ERRORDEF(e,v,s)	e = v,
-#define FT_ERROR_START_LIST	enum {
-#define FT_ERR_PREFIX	FT_Err_
-#define FT_ERROR_END_LIST	FT_ERR_CAT( FT_ERR_PREFIX, Max ) };
-#define FT_ERR_CAT(x,y)	FT_ERR_XCAT( x, y )
-#define FT_ERR_XCAT(x,y)	x ## y
 </SCREEN>
 </SECT2>
 <SECT2>
