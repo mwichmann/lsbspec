@@ -51,7 +51,7 @@ $sth->finish;
 # 4) get & print the library info
 #
 $select = "SELECT * FROM Library LEFT JOIN ArchLib ON ALlid=Lid WHERE ";
-$select.= "(ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
+$select.= "(ALappearedin <= '$lsbversion' AND ALappearedin >'' ";
 $select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
 $select.= "AND ALaid=$Aid ";
 print STDERR $select,"\n" if $trace;
@@ -64,7 +64,7 @@ $entry=$lth->fetchrow_hashref;
 $Lid=$entry->{'Lid'};
 $Lname=$entry->{'Lname'};
 
-$select = "SELECT Iname,Ideprecatedsince,Vname ";
+$select = "SELECT Iname,AIdeprecatedsince,Vname ";
 $select.= "FROM Interface ";
 $select.= "LEFT JOIN LGInt ON LGIint=Iid ";
 $select.= "LEFT JOIN LibGroup ON LGIlibg=LGid ";
@@ -72,14 +72,14 @@ $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "LEFT JOIN Version ON Vid=AIversion ";
 $select.= "WHERE LGlib=$Lid AND Itype='Function' ";
 $select.= "AND AIarch=$Aid ";
-$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin > '') ";
 $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
 # Include only arch specific interfaces
 if( $Aid!=1 ) {
 	$select.= "AND Iid NOT IN ";
 	$select.= "(SELECT AIint FROM ArchInt ";
 	$select.= " WHERE AIarch=1 ";
-	$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin > '') ";
 	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') )";
 }
 $select.= "ORDER BY Iname";
@@ -103,7 +103,7 @@ print "$Lname Function Interfaces\n";
 	for(1..$inh->rows) {
 		$entry=$inh->fetchrow_hashref;
 		print $entry->{'Iname'}."(".$entry->{'Vname'}.")";
-		if( $entry->{'Ideprecatedsince'} and $entry->{'Ideprecatedsince'} le $lsbversion ) {
+		if( $entry->{'AIdeprecatedsince'} and $entry->{'AIdeprecatedsince'} le $lsbversion ) {
 			print " *Deprecated*";
 			}
 		print "\n";
