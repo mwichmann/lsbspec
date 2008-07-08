@@ -1,0 +1,181 @@
+<REFENTRY ID="baselib-sendfile"> <REFMETA>
+<REFENTRYTITLE>sendfile</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>sendfile
+</REFNAME>
+<REFPURPOSE>
+transfer data between two file descriptors
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>30 June 2008</DATE>
+</REFSYNOPSISDIVINFO>
+<FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/sendfile.h&gt;
+</FUNCSYNOPSISINFO>
+<FUNCPROTOTYPE>
+ <FUNCDEF>ssize_t<FUNCTION>sendfile</FUNCTION></FUNCDEF>
+ <PARAMDEF>int
+  <PARAMETER>out_fd</PARAMETER></PARAMDEF>
+ <PARAMDEF>int
+  <PARAMETER>in_fd</PARAMETER></PARAMDEF>
+ <PARAMDEF>off_t *
+  <PARAMETER>offset</PARAMETER></PARAMDEF>
+ <PARAMDEF>size_t
+  <PARAMETER>count</PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<REFSECT1INFO>
+<DATE>30 June 2008</DATE>
+</REFSECT1INFO>
+<TITLE>Description
+</TITLE>
+<PARA>
+The <FUNCTION>sendfile</FUNCTION> function shall copy data 
+between the file descriptor <PARAMETER>in_fd</PARAMETER>, which must not be a socket, 
+and the file descriptor <PARAMETER>out_fd</PARAMETER>, which must be a socket. 
+<PARAMETER>in_fd</PARAMETER> should be opened for reading, 
+and <PARAMETER>out_fd</PARAMETER> should be opened for writing. 
+</PARA>
+<PARA>
+The <PARAMETER>offset</PARAMETER> parameter points to 
+a variable set to the file offset at which 
+<FUNCTION>sendfile</FUNCTION> shall start reading from <PARAMETER>in_fd</PARAMETER>, 
+unless it is <LITERAL>NULL</LITERAL>. 
+On exit, this variable shall contain the offset of 
+the byte immediately after the last byte read. 
+<FUNCTION>sendfile</FUNCTION> shall not change the current file offset 
+of <PARAMETER>in_fd</PARAMETER>, unless it is <LITERAL>NULL</LITERAL>. 
+In that case, <FUNCTION>sendfile</FUNCTION> shall adjust the current file offset 
+to show how many bytes were read.
+</PARA>
+<PARA>
+The <PARAMETER>count</PARAMETER> parameter specifies how many bytes to copy.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+On success, <FUNCTION>sendfile</FUNCTION> shall return 
+the number of bytes written to <PARAMETER>out_fd</PARAMETER>. 
+</PARA>
+<PARA>
+On failure, <FUNCTION>sendfile</FUNCTION> shall return 
+<LITERAL>-1</LITERAL> and set <VARNAME>errno</VARNAME> appropriately, as follows. 
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+EAGAIN
+</TERM>
+<LISTITEM>
+<PARA>
+Non-blocking I/O with <CONSTANT>O_NONBLOCK</CONSTANT> 
+has been chosen, but the write would block.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EBADF
+</TERM>
+<LISTITEM>
+<PARA>
+The input file is not open for reading, 
+or the output file is not open for writing.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT
+</TERM>
+<LISTITEM>
+<PARA>
+Bad address.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+An <FUNCTION>mmap</FUNCTION>-like operation is unavailable for 
+<PARAMETER>in_fd</PARAMETER>, or file descriptor is locked or invalid.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EIO
+</TERM>
+<LISTITEM>
+<PARA>
+There was an unspecified error while reading.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOMEM
+</TERM>
+<LISTITEM>
+<PARA>
+There is not enough memory to read from <PARAMETER>in_fd</PARAMETER>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Notes
+</TITLE>
+<PARA>
+<FUNCTION>sendfile</FUNCTION> is usually faster than combining 
+<FUNCTION>read</FUNCTION> and <FUNCTION>write</FUNCTION> calls, 
+because it is part of the kernel. 
+However, if it fails with <CONSTANT>EINVAL</CONSTANT>, 
+falling back to <FUNCTION>read</FUNCTION> and <FUNCTION>write</FUNCTION> may be advisable.
+</PARA>
+<PARA>
+It is advisable for performance reasons to use the 
+<CONSTANT>TCP_CORK</CONSTANT> option of the <FUNCTION>tcp</FUNCTION> function 
+when sending header data with file contents to a TCP socket. 
+This minimizes the number of packets.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>See Also
+</TITLE>
+<PARA>
+<FUNCTION>mmap</FUNCTION>, <FUNCTION>open</FUNCTION>, 
+<FUNCTION>socket</FUNCTION>, <FUNCTION>splice</FUNCTION>.
+</PARA>
+</REFSECT1>
+</REFENTRY>
