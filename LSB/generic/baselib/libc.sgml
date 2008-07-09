@@ -2459,6 +2459,12 @@ extern uint16_t ntohs(uint16_t);
 </PARA>
 <SCREEN>
 
+#ifdef NDEBUG
+#define assert(expr) ((void)0)
+#else
+#define assert(expr)	((void) ((expr) ? 0 : (__assert_fail (#expr, __FILE__, __LINE__, __PRETTY_FUNCTION__), 0)))
+#endif
+
 extern void __assert_fail(const char *, const char *, unsigned int,
 			  const char *);
 </SCREEN>
@@ -2549,9 +2555,8 @@ extern int alphasort64(const struct dirent64 **, const struct dirent64 **);
 extern int dirfd(DIR *);
 extern void rewinddir(DIR *);
 extern int scandir(const char *, struct dirent ***,
-		   int (*d_name) (const struct dirent *)
-		   , int (*d_name) (const struct dirent *,
-				    const struct dirent *)
+		   int (*)(const struct dirent *)
+		   , int (*)(const struct dirent *, const struct dirent *)
     );
 extern void seekdir(DIR *, long int);
 extern long int telldir(DIR *);
@@ -2561,9 +2566,9 @@ extern struct dirent *readdir(DIR *);
 extern struct dirent64 *readdir64(DIR *);
 extern int readdir_r(DIR *, struct dirent *, struct dirent **);
 extern int scandir64(const char *, struct dirent64 ***,
-		     int (*d_name) (const struct dirent64 *)
-		     , int (*d_name) (const struct dirent64 *,
-				      const struct dirent64 *)
+		     int (*)(const struct dirent64 *)
+		     , int (*)(const struct dirent64 *,
+			       const struct dirent64 *)
     );
 extern DIR *fdopendir(int);
 </SCREEN>
@@ -2745,17 +2750,13 @@ extern int *__errno_location(void);
 #define O_EXCL	0200
 #define O_APPEND	02000
 #define O_ASYNC	020000
-#define O_DIRECTORY	0200000
 #define O_NOCTTY	0400
 #define O_NDELAY	04000
 #define O_NONBLOCK	04000
-#define O_NOFOLLOW	0400000
 #define FD_CLOEXEC	1
 #define POSIX_FADV_RANDOM	1
 #define POSIX_FADV_SEQUENTIAL	2
 #define POSIX_FADV_WILLNEED	3
-#define POSIX_FADV_DONTNEED	4
-#define POSIX_FADV_NOREUSE	5
 
 struct flock {
     short l_type;
@@ -2982,10 +2983,9 @@ typedef struct {
     int (*gl_lstat) (const char *, struct stat *);
     int (*gl_stat) (const char *, struct stat *);
 } glob64_t;
-extern int glob(const char *, int, int (*gl_stat) (const char *p1, int p2)
+extern int glob(const char *, int, int (*)(const char *p1, int p2)
 		, glob_t *);
-extern int glob64(const char *, int,
-		  int (*gl_stat) (const char *p1, int p2)
+extern int glob64(const char *, int, int (*)(const char *p1, int p2)
 		  , glob64_t *);
 extern void globfree(glob_t *);
 extern void globfree64(glob64_t *);
@@ -3038,6 +3038,9 @@ extern iconv_t iconv_open(const char *, const char *);
 <SCREEN>
 
 typedef lldiv_t imaxdiv_t;
+
+#define __PDP_ENDIAN	3412
+#define PDP_ENDIAN	__PDP_ENDIAN
 
 extern intmax_t strtoimax(const char *, char **, int);
 extern uintmax_t strtoumax(const char *, char **, int);
@@ -3187,6 +3190,7 @@ extern char *ngettext(const char *, const char *, unsigned long int);
 #define OPEN_MAX	256
 #define _POSIX_PATH_MAX	256
 #define _POSIX_SEM_NSEMS_MAX	256
+#define NGROUPS_MAX	32
 #define _POSIX2_EXPR_NEST_MAX	32
 #define _POSIX_DELAYTIMER_MAX	32
 #define _POSIX_MQ_PRIO_MAX	32
@@ -3564,6 +3568,7 @@ typedef uint32_t in_addr_t;
 #define INADDR_NONE	((in_addr_t) 0xffffffff)
 #define INADDR_BROADCAST	(0xffffffff)
 #define INADDR_ANY	0
+#define INADDR_LOOPBACK	0x7f000001	/* 127.0.0.1 */
 
 #define s6_addr16	in6_u.u6_addr16
 #define s6_addr32	in6_u.u6_addr32
@@ -3580,6 +3585,7 @@ struct in6_addr {
 #define IN6ADDR_ANY_INIT	{ { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } } }
 #define IN6ADDR_LOOPBACK_INIT	{ { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 } } }
 
+#define IN_MULTICAST(a)	((((in_addr_t)(a))&amp;0xf0000000)==0xe0000000)
 #define INET_ADDRSTRLEN	16
 
 struct sockaddr_in {
@@ -3589,7 +3595,19 @@ struct sockaddr_in {
     unsigned char sin_zero[8];
 };
 
+#define IN6_IS_ADDR_LINKLOCAL(a)	((((const uint32_t *) (a))[0] &amp; htonl (0xffc00000)) == htonl (0xfe800000))
+#define IN6_IS_ADDR_SITELOCAL(a)	((((const uint32_t *) (a))[0] &amp; htonl (0xffc00000)) == htonl (0xfec00000))
 #define IN6_ARE_ADDR_EQUAL(a,b)	((((const uint32_t *) (a))[0] == ((const uint32_t *) (b))[0]) &amp;&amp; (((const uint32_t *) (a))[1] == ((const uint32_t *) (b))[1]) &amp;&amp; (((const uint32_t *) (a))[2] == ((const uint32_t *) (b))[2]) &amp;&amp; (((const uint32_t *) (a))[3] == ((const uint32_t *) (b))[3]))
+#define IN6_IS_ADDR_V4COMPAT(a)	((((const uint32_t *) (a))[0] == 0) &amp;&amp; (((const uint32_t *) (a))[1] == 0) &amp;&amp; (((const uint32_t *) (a))[2] == 0) &amp;&amp; (ntohl (((const uint32_t *) (a))[3]) > 1))
+#define IN6_IS_ADDR_V4MAPPED(a)	((((const uint32_t *) (a))[0] == 0) &amp;&amp; (((const uint32_t *) (a))[1] == 0) &amp;&amp; (((const uint32_t *) (a))[2] == htonl (0xffff)))
+#define IN6_IS_ADDR_UNSPECIFIED(a)	(((const uint32_t *) (a))[0] == 0 &amp;&amp; ((const uint32_t *) (a))[1] == 0 &amp;&amp; ((const uint32_t *) (a))[2] == 0 &amp;&amp; ((const uint32_t *) (a))[3] == 0)
+#define IN6_IS_ADDR_LOOPBACK(a)	(((const uint32_t *) (a))[0] == 0 &amp;&amp; ((const uint32_t *) (a))[1] == 0 &amp;&amp; ((const uint32_t *) (a))[2] == 0 &amp;&amp; ((const uint32_t *) (a))[3] == htonl (1))
+#define IN6_IS_ADDR_MULTICAST(a)	(((const uint8_t *) (a))[0] == 0xff)
+#define IN6_IS_ADDR_MC_NODELOCAL(a)	(IN6_IS_ADDR_MULTICAST(a) &amp;&amp; ((((const uint8_t *) (a))[1] &amp; 0xf) == 0x1))
+#define IN6_IS_ADDR_MC_LINKLOCAL(a)	(IN6_IS_ADDR_MULTICAST(a) &amp;&amp; ((((const uint8_t *) (a))[1] &amp; 0xf) == 0x2))
+#define IN6_IS_ADDR_MC_SITELOCAL(a)	(IN6_IS_ADDR_MULTICAST(a) &amp;&amp; ((((const uint8_t *) (a))[1] &amp; 0xf) == 0x5))
+#define IN6_IS_ADDR_MC_ORGLOCAL(a)	(IN6_IS_ADDR_MULTICAST(a) &amp;&amp; ((((const uint8_t *) (a))[1] &amp; 0xf) == 0x8))
+#define IN6_IS_ADDR_MC_GLOBAL(a)	(IN6_IS_ADDR_MULTICAST(a) &amp;&amp; ((((const uint8_t *) (a))[1] &amp; 0xf) == 0xe))
 #define INET6_ADDRSTRLEN	46
 
 struct sockaddr_in6 {
@@ -3616,6 +3634,8 @@ struct sockaddr_in6 {
 #define IP_ADD_MEMBERSHIP	35	/* add an IP group membership */
 #define IP_DROP_MEMBERSHIP	36	/* drop an IP group membership */
 #define IP_OPTIONS	4	/* IP per-packet options */
+#define IPV6_ADD_MEMBERSHIP	IPV6_JOIN_GROUP
+#define IPV6_DROP_MEMBERSHIP	IPV6_LEAVE_GROUP
 
 struct ipv6_mreq {
     struct in6_addr ipv6mr_multiaddr;
@@ -4255,8 +4275,8 @@ extern bool_t xdr_void(void);
 extern bool_t xdr_wrapstring(XDR *, char **);
 extern void xdrmem_create(XDR *, caddr_t, u_int, enum xdr_op);
 extern void xdrrec_create(XDR *, u_int, u_int, caddr_t,
-			  int (*proc) (char *p1, char *p2, int p3)
-			  , int (*proc) (char *p1, char *p2, int p3)
+			  int (*)(char *p1, char *p2, int p3)
+			  , int (*)(char *p1, char *p2, int p3)
     );
 extern bool_t xdrrec_eof(XDR *);
 </SCREEN>
@@ -4381,21 +4401,30 @@ extern int _setjmp(jmp_buf);
 #define _SIGSET_NWORDS	(1024/(8*sizeof(unsigned long)))
 #define SIGRTMAX	(__libc_current_sigrtmax ())
 #define SIGRTMIN	(__libc_current_sigrtmin ())
+#define NSIG	65
 #define SIG_BLOCK	0	/* Block signals. */
 #define SIG_UNBLOCK	1	/* Unblock signals. */
 #define SIG_SETMASK	2	/* Set the set of blocked signals. */
-#define NSIG	65
 
 typedef int sig_atomic_t;
 
 typedef void (*sighandler_t) (int);
 
 #define SIG_HOLD	((sighandler_t) 2)	/* Request that signal be held. */
-#define SIG_ERR	((sighandler_t)-1)	/* Return value from signal() in case of error. */
 #define SIG_DFL	((sighandler_t)0)	/* Request for default signal handling. */
 #define SIG_IGN	((sighandler_t)1)	/* Request that signal be ignored. */
+#define SIG_ERR	((sighandler_t)-1)	/* Return value from signal() in case of error. */
 
 #define SIGHUP	1		/* Hangup. */
+#define SIGINT	2		/* Terminal interrupt signal. */
+#define SIGQUIT	3		/* Terminal quit signal. */
+#define SIGILL	4		/* Illegal instruction. */
+#define SIGTRAP	5		/* Trace/breakpoint trap. */
+#define SIGABRT	6		/* Process abort signal. */
+#define SIGIOT	6		/* IOT trap */
+#define SIGBUS	7		/* Access to an undefined portion of a memory object. */
+#define SIGFPE	8		/* Erroneous arithmetic operation. */
+#define SIGKILL	9		/* Kill (cannot be caught or ignored). */
 #define SIGUSR1	10		/* User-defined signal 1. */
 #define SIGSEGV	11		/* Invalid memory reference. */
 #define SIGUSR2	12		/* User-defined signal 2. */
@@ -4404,9 +4433,9 @@ typedef void (*sighandler_t) (int);
 #define SIGTERM	15		/* Termination signal. */
 #define SIGSTKFLT	16	/* Stack fault. */
 #define SIGCHLD	17		/* Child process terminated, stopped, or continued. */
+#define SIGCLD	SIGCHLD		/* Same as SIGCHLD */
 #define SIGCONT	18		/* Continue executing, if stopped. */
 #define SIGSTOP	19		/* Stop executing (cannot be caught or ignored). */
-#define SIGINT	2		/* Terminal interrupt signal. */
 #define SIGTSTP	20		/* Terminal stop signal. */
 #define SIGTTIN	21		/* Background process attempting read. */
 #define SIGTTOU	22		/* Background process attempting write. */
@@ -4417,19 +4446,10 @@ typedef void (*sighandler_t) (int);
 #define SIGPROF	27		/* Profiling timer expired. */
 #define SIGWINCH	28	/* Window size change. */
 #define SIGIO	29		/* I/O now possible. */
-#define SIGQUIT	3		/* Terminal quit signal. */
+#define SIGPOLL	SIGIO		/* Pollable event. */
 #define SIGPWR	30		/* Power failure restart */
 #define SIGSYS	31		/* Bad system call. */
 #define SIGUNUSED	31
-#define SIGILL	4		/* Illegal instruction. */
-#define SIGTRAP	5		/* Trace/breakpoint trap. */
-#define SIGABRT	6		/* Process abort signal. */
-#define SIGIOT	6		/* IOT trap */
-#define SIGBUS	7		/* Access to an undefined portion of a memory object. */
-#define SIGFPE	8		/* Erroneous arithmetic operation. */
-#define SIGKILL	9		/* Kill (cannot be caught or ignored). */
-#define SIGCLD	SIGCHLD		/* Same as SIGCHLD */
-#define SIGPOLL	SIGIO		/* Pollable event. */
 
 #define SV_ONSTACK	(1&lt;&lt;0)	/* Take the signal on the signal stack. */
 #define SV_INTERRUPT	(1&lt;&lt;1)	/* Do not restart system calls. */
@@ -4565,14 +4585,16 @@ typedef struct {
     unsigned long int sig[_SIGSET_NWORDS];
 } sigset_t;
 
-#define SA_NOCLDSTOP	0x00000001	/* Don't send SIGCHLD when children stop. */
-#define SA_NOCLDWAIT	0x00000002	/* Don't create zombie on child death. */
-#define SA_SIGINFO	0x00000004	/* Invoke signal-catching function with three arguments instead of one. */
-#define SA_ONSTACK	0x08000000	/* Use signal stack by using `sa_restorer`. */
-#define SA_RESTART	0x10000000	/* Restart syscall on signal return. */
 #define SA_INTERRUPT	0x20000000
-#define SA_NODEFER	0x40000000	/* Don't automatically block the signal when its handler is being executed. */
+#define sa_handler	__sigaction_handler._sa_handler
+#define sa_sigaction	__sigaction_handler._sa_sigaction
+#define SA_ONSTACK	0x08000000	/* Use signal stack by using `sa_restorer`. */
 #define SA_RESETHAND	0x80000000	/* Reset to SIG_DFL on entry to handler. */
+#define SA_NOCLDSTOP	0x00000001	/* Don't send SIGCHLD when children stop. */
+#define SA_SIGINFO	0x00000004	/* Invoke signal-catching function with three arguments instead of one. */
+#define SA_NODEFER	0x40000000	/* Don't automatically block the signal when its handler is being executed. */
+#define SA_RESTART	0x10000000	/* Restart syscall on signal return. */
+#define SA_NOCLDWAIT	0x00000002	/* Don't create zombie on child death. */
 #define SA_NOMASK	SA_NODEFER
 #define SA_ONESHOT	SA_RESETHAND
 
@@ -5354,10 +5376,15 @@ typedef unsigned long int nfds_t;
 #define RLIMIT_CPU	0
 #define RUSAGE_SELF	0
 #define RLIMIT_FSIZE	1
+#define RLIMIT_LOCKS	10
+#define RLIM_NLIMITS	11
 #define RLIMIT_DATA	2
 #define RLIMIT_STACK	3
 #define RLIMIT_CORE	4
+#define RLIMIT_RSS	5
+#define RLIMIT_NPROC	6
 #define RLIMIT_NOFILE	7
+#define RLIMIT_MEMLOCK	8
 #define RLIMIT_AS	9
 
 typedef unsigned long int rlim_t;
@@ -5568,6 +5595,7 @@ struct msghdr {
 #define SO_NO_CHECK	11
 #define SO_PRIORITY	12
 #define SO_LINGER	13
+#define SO_BSDCOMPAT	14
 #define SO_REUSEADDR	2
 #define SO_TYPE	3
 #define SO_ACCEPTCONN	30
@@ -7036,8 +7064,7 @@ m4_include(bindresvport.sgml)
 m4_include(bindtextdomain.sgml)
 m4_include(cfmakeraw.sgml)
 m4_include(cfsetspeed.sgml)
-<!-- MISSING DEFINITION FOR clearerr_unlocked -->
-<!-- Lets just hope nobody notices -->
+m4_include(clearerr_unlocked.sgml)
 m4_include(daemon.sgml)
 m4_include(dcgettext.sgml)
 m4_include(dcngettext.sgml)
@@ -7059,39 +7086,27 @@ m4_include(err.sgml)
 m4_include(error.sgml)
 m4_include(errx.sgml)
 m4_include(fcntl.sgml)
-<!-- MISSING DEFINITION FOR feof_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR ferror_unlocked -->
-<!-- Lets just hope nobody notices -->
+m4_include(feof_unlocked.sgml)
+m4_include(ferror_unlocked.sgml)
 m4_include(fflush_unlocked.sgml)
-<!-- MISSING DEFINITION FOR fgetc_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR fgets_unlocked -->
-<!-- Lets just hope nobody notices -->
+m4_include(fgetc_unlocked.sgml)
+m4_include(fgets_unlocked.sgml)
 m4_include(fgetwc_unlocked.sgml)
-<!-- MISSING DEFINITION FOR fgetws_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR fileno_unlocked -->
-<!-- Lets just hope nobody notices -->
+m4_include(fgetws_unlocked.sgml)
+m4_include(fileno_unlocked.sgml)
 m4_include(flock.sgml)
-<!-- MISSING DEFINITION FOR fputc_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR fputs_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR fputwc_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR fputws_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR fread_unlocked -->
-<!-- Lets just hope nobody notices -->
+m4_include(fputc_unlocked.sgml)
+m4_include(fputs_unlocked.sgml)
+m4_include(fputwc_unlocked.sgml)
+m4_include(fputws_unlocked.sgml)
+m4_include(fread_unlocked.sgml)
 m4_include(freelocale.sgml)
 m4_include(fscanf.sgml)
 m4_include(fstatfs.sgml)
 m4_include(fstatfs64.sgml)
 <!-- MISSING DEFINITION FOR futimesat -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR fwrite_unlocked -->
-<!-- Lets just hope nobody notices -->
+m4_include(fwrite_unlocked.sgml)
 m4_include(fwscanf.sgml)
 m4_include(getdomainname.sgml)
 m4_include(getdtablesize.sgml)
@@ -7119,10 +7134,8 @@ m4_include(getsockopt.sgml)
 m4_include(gettext.sgml)
 m4_include(getutent.sgml)
 m4_include(getutent_r.sgml)
-<!-- MISSING DEFINITION FOR getwc_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR getwchar_unlocked -->
-<!-- Lets just hope nobody notices -->
+m4_include(getwc_unlocked.sgml)
+m4_include(getwchar_unlocked.sgml)
 m4_include(glob64.sgml)
 m4_include(globfree64.sgml)
 m4_include(hcreate_r.sgml)
@@ -7162,10 +7175,8 @@ m4_include(pmap_unset.sgml)
 m4_include(posix_fadvise64.sgml)
 m4_include(posix_fallocate64.sgml)
 m4_include(psignal.sgml)
-<!-- MISSING DEFINITION FOR putwc_unlocked -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR putwchar_unlocked -->
-<!-- Lets just hope nobody notices -->
+m4_include(putwc_unlocked.sgml)
+m4_include(putwchar_unlocked.sgml)
 m4_include(random_r.sgml)
 m4_include(readdir64_r.sgml)
 m4_include(regexec.sgml)
@@ -7177,10 +7188,8 @@ m4_include(scanf.sgml)
 m4_include(sched_setscheduler.sgml)
 <!-- MISSING DEFINITION FOR seed48_r -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR sendfile -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR sendfile64 -->
-<!-- Lets just hope nobody notices -->
+m4_include(sendfile.sgml)
+m4_include(sendfile64.sgml)
 m4_include(setbuffer.sgml)
 m4_include(setgroups.sgml)
 m4_include(sethostname.sgml)

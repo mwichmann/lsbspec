@@ -302,13 +302,6 @@ typedef enum {
     HTTP_ENCODE_LENGTH = 0,
     HTTP_ENCODE_CHUNKED = 1
 } http_encoding_t;
-typedef unsigned int md5_word_t;
-typedef unsigned char md5_byte_t;
-typedef struct md5_state_s {
-    md5_word_t count[2];
-    md5_word_t abcd[4];
-    md5_byte_t buf[64];
-} md5_state_t;
 typedef enum {
     IPP_JOB_PENDING = 3,
     IPP_JOB_HELD = 4,
@@ -377,36 +370,7 @@ typedef enum {
     IPP_PRINTER_IS_DEACTIVATED = 1290
 } ipp_status_t;
 
-typedef struct {
-    int fd;
-    int blocking;
-    int error;
-    time_t activity;
-    http_state_t state;
-    http_status_t status;
-    http_version_t version;
-    http_keepalive_t keep_alive;
-    struct sockaddr_in hostaddr;
-    char hostname[256];
-    char fields[27][256];
-    char *data;
-    http_encoding_t data_encoding;
-    int data_remaining;
-    int used;
-    char buffer[2048];
-    int auth_type;
-    md5_state_t md5_state;
-    char nonce[256];
-    int nonce_count;
-    void *tls;
-    http_encryption_t encryption;
-    fd_set *input_set;
-    http_status_t expect;
-    char *cookie;
-    char authstring[256];
-    char userpass[256];
-    int digest_tries;
-} http_t;
+typedef struct _http_s http_t;
 extern void cupsLangFree(cups_lang_t *);
 extern void cupsSetEncryption(http_encryption_t);
 extern cups_dest_t *cupsGetDest(const char *, const char *, int,
@@ -424,7 +388,7 @@ extern void cupsSetServer(const char *);
 extern const char *cupsGetPassword(const char *);
 extern void cupsSetDests(int, cups_dest_t *);
 extern int cupsParseOptions(const char *, int, cups_option_t * *);
-extern void cupsSetPasswordCB(const char *(*digest_tries) (const char *)
+extern void cupsSetPasswordCB(const char *(*)(const char *)
     );
 extern void cupsSetUser(const char *);
 extern cups_lang_t *cupsLangGet(const char *);
@@ -3316,11 +3280,7 @@ typedef enum {
     CUPS_RASTER_READ = 0,
     CUPS_RASTER_WRITE = 1
 } cups_mode_t;
-typedef struct {
-    unsigned int sync;
-    int fd;
-    cups_mode_t mode;
-} cups_raster_t;
+typedef struct _cups_raster_s cups_raster_t;
 typedef enum {
     CUPS_ADVANCE_NONE = 0,
     CUPS_ADVANCE_FILE = 1,

@@ -571,6 +571,10 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define getparyx(win,y,x)	\
 	(y=(win)?(win)->_pary:ERR,x=(win)?(win)->_parx:ERR)
 
+#define __NCURSES_H	1
+#define NCURSES_EXPORT(type)	type
+#define NCURSES_EXPORT_VAR(type)	type
+
 #define WA_ALTCHARSET	A_ALTCHARSET
 #define WA_ATTRIBUTES	A_ATTRIBUTES
 #define WA_BLINK	A_BLINK
@@ -656,6 +660,7 @@ struct _win_st {
     cchar_t _bkgrnd;
 };
 
+#define KEY_F(n)	(KEY_F0+(n))
 #define KEY_CODE_YES	0400
 #define KEY_BREAK	0401
 #define KEY_MIN	0401
@@ -934,7 +939,7 @@ extern int refresh(void);
 extern int resetty(void);
 extern int reset_prog_mode(void);
 extern int reset_shell_mode(void);
-extern int ripoffline(int, int (*_bkgrnd) (WINDOW *, int)
+extern int ripoffline(int, int (*)(WINDOW *, int)
     );
 extern int savetty(void);
 extern int scanw(const char *, ...);
@@ -974,7 +979,7 @@ extern int ungetch(int);
 extern int untouchwin(WINDOW *);
 extern void use_env(bool);
 extern int vidattr(chtype);
-extern int vidputs(chtype, int (*_bkgrnd) (int)
+extern int vidputs(chtype, int (*)(int)
     );
 extern int vline(chtype, int);
 extern int vwprintw(WINDOW *, char *, va_list);
