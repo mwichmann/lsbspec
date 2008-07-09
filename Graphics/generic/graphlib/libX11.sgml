@@ -1825,9 +1825,7 @@ typedef union _XkbEvent {
 } XkbEvent;
 typedef struct _XkbKbdDpyState XkbKbdDpyStateRec;
 typedef struct _XkbKbdDpyState *XkbKbdDpyStatePtr;
-Atom(*core) (void);
 typedef Atom(*XkbInternAtomFunc) (void);
-char *(*XkbInternAtomFunc) (void);
 typedef char *(*XkbGetAtomNameFunc) (void);
 extern int XkbAllocClientMap(XkbDescPtr, unsigned int, unsigned int);
 extern int XkbAllocCompatMap(XkbDescPtr, unsigned int, unsigned int);
@@ -2026,12 +2024,6 @@ typedef struct _XcmsFunctionSet {
     XcmsScreenInitProc screenInitProc;
     XcmsScreenFreeProc screenFreeProc;
 } XcmsFunctionSet;
-int (*screenFreeProc) (void);
-int (*screenFreeProc) (void);
-int (*screenFreeProc) (void);
-void (*screenFreeProc) (void);
-int (*screenFreeProc) (void);
-int (*screenFreeProc) (void);
 
 typedef unsigned long int XcmsColorFormat;
 typedef double XcmsFloat;
@@ -2320,32 +2312,15 @@ typedef struct _XIMHotKeyTriggers {
 } XIMHotKeyTriggers;
 typedef unsigned long int XIMHotKeyState;
 typedef struct XIMValuesList;
-int (*key) (struct _XExtData * extension);
-struct _XImage *(*key) (void);
-int (*key) (void);
-unsigned long int (*key) (void);
-int (*key) (void);
-struct _XImage *(*key) (void);
-int (*key) (void);
-XID(*key) (void);
-int (*key) (void);
 enum;
-void (*key) (void);
-int (*key) (void);
-void (*key) (void);
 enum;
 typedef enum XIMCaretDirection;
 enum;
 typedef enum XIMCaretStyle;
 enum;
 typedef enum XIMStatusDataType;
-int (*key) (void);
-int (*key) (void);
-int (*key) (void);
 typedef int (*XErrorHandler) (void);
-int (*XErrorHandler) (void);
 typedef int (*XIOErrorHandler) (void);
-void (*XIOErrorHandler) (void);
 typedef void (*XConnectionWatchProc) (void);
 enum {
     XOMOrientation_LTR_TTB,
@@ -2790,7 +2765,7 @@ extern int XChangeProperty(Display *, Window, Atom, Atom, int, int,
 extern int XChangeSaveSet(Display *, Window, int);
 extern int XChangeWindowAttributes(Display *, Window, unsigned long int,
 				   XSetWindowAttributes *);
-extern int XCheckIfEvent(Display *, XEvent *, int (*XIDProc) (void)
+extern int XCheckIfEvent(Display *, XEvent *, int (*)(void)
 			 , XPointer);
 extern int XCheckMaskEvent(Display *, long int, XEvent *);
 extern int XCheckTypedEvent(Display *, int, XEvent *);
@@ -2905,20 +2880,72 @@ extern int XDrawText(Display *, Drawable, GC, int, int, XTextItem *, int);
 extern int XDrawText16(Display *, Drawable, GC, int, int, XTextItem16 *,
 		       int);
 extern XExtData **XEHeadOfExtensionList(XEDataObject);
-extern int XESetBeforeFlush(void);
-extern int *XESetCloseDisplay(void);
-extern int XESetCopyGC(void);
-extern int XESetCreateFont(void);
-extern int XESetCreateGC(void);
-extern int XESetError(void);
-extern int XESetErrorString(void);
-extern int XESetEventToWire(void);
-extern int XESetFlushGC(void);
-extern int XESetFreeFont(void);
-extern int XESetFreeGC(void);
-extern int XESetPrintErrorValues(void);
-extern int XESetWireToError(void);
-extern int XESetWireToEvent(void);
+extern
+    void (*XESetBeforeFlush
+	  (Display *, int,
+	   void (*XESetBeforeFlush) (Display *, XExtCodes *, const char *,
+				     long int)
+	  )) (Display *, XExtCodes *, const char *, long int);
+extern
+    int (*XESetCloseDisplay
+	 (Display *, int, int (*XESetCloseDisplay) (Display *, XExtCodes *)
+	 )) (Display *, XExtCodes *);
+extern
+    int (*XESetCopyGC
+	 (Display *, int, int (*XESetCopyGC) (Display *, GC, XExtCodes *)
+	 )) (Display *, GC, XExtCodes *);
+extern
+    int (*XESetCreateFont
+	 (Display *, int,
+	  int (*XESetCreateFont) (Display *, XFontStruct *, XExtCodes *)
+	 )) (Display *, XFontStruct *, XExtCodes *);
+extern
+    int (*XESetCreateGC
+	 (Display *, int, int (*XESetCreateGC) (Display *, GC, XExtCodes *)
+	 )) (Display *, GC, XExtCodes *);
+extern
+    int (*XESetError
+	 (Display *, int,
+	  int (*XESetError) (Display *, xError *, XExtCodes *, int *)
+	 )) (Display *, xError *, XExtCodes *, int *);
+extern char
+    *(*XESetErrorString
+      (Display *, int,
+       char *(*XESetErrorString) (Display *, int, XExtCodes *, char *, int)
+      )) (Display *, int, XExtCodes *, char *, int);
+extern
+    int (*XESetEventToWire
+	 (Display *, int,
+	  int (*XESetEventToWire) (Display *, XEvent *, xEvent *)
+	 )) (Display *, XEvent *, xEvent *);
+extern
+    int (*XESetFlushGC
+	 (Display *, int, int (*XESetFlushGC) (Display *, GC, XExtCodes *)
+	 )) (Display *, GC, XExtCodes *);
+extern
+    int (*XESetFreeFont
+	 (Display *, int,
+	  int (*XESetFreeFont) (Display *, XFontStruct *, XExtCodes *)
+	 )) (Display *, XFontStruct *, XExtCodes *);
+extern
+    int (*XESetFreeGC
+	 (Display *, int, int (*XESetFreeGC) (Display *, GC, XExtCodes *)
+	 )) (Display *, GC, XExtCodes *);
+extern
+    void (*XESetPrintErrorValues
+	  (Display *, int,
+	   void (*XESetPrintErrorValues) (Display *, XErrorEvent *, void *)
+	  )) (Display *, XErrorEvent *, void *);
+extern
+    int (*XESetWireToError
+	 (Display *, int,
+	  int (*XESetWireToError) (Display *, XErrorEvent *, xError *)
+	 )) (Display *, XErrorEvent *, xError *);
+extern
+    int (*XESetWireToEvent
+	 (Display *, int,
+	  int (*XESetWireToEvent) (Display *, XEvent *, xEvent *)
+	 )) (Display *, XEvent *, xEvent *);
 extern int XEnableAccessControl(Display *);
 extern long int XEventMaskOfScreen(Screen *);
 extern int XEventsQueued(Display *, int);
@@ -3010,7 +3037,7 @@ extern int XHeightMMOfScreen(Screen *);
 extern int XHeightOfScreen(Screen *);
 extern XIM XIMOfIC(XIC);
 extern int XIconifyWindow(Display *, Window, int);
-extern int XIfEvent(Display *, XEvent *, int (*XIDProc) (void)
+extern int XIfEvent(Display *, XEvent *, int (*)(void)
 		    , XPointer);
 extern int XImageByteOrder(Display *);
 extern XExtCodes *XInitExtension(Display *, const char *);
@@ -3069,7 +3096,7 @@ extern int XParseColor(Display *, Colormap, const char *, XColor *);
 extern int XParseGeometry(const char *, int *, int *, unsigned int *,
 			  unsigned int *);
 extern int XPeekEvent(Display *, XEvent *);
-extern int XPeekIfEvent(Display *, XEvent *, int (*XIDProc) (void)
+extern int XPeekIfEvent(Display *, XEvent *, int (*)(void)
 			, XPointer);
 extern int XPending(Display *);
 extern int XPlanesOfScreen(Screen *);
@@ -3140,8 +3167,7 @@ extern int XSelectInput(Display *, Window, long int);
 extern int XSendEvent(Display *, Window, int, long int, XEvent *);
 extern char *XServerVendor(Display *);
 extern int XSetAccessControl(Display *, int);
-extern int (*XSetAfterFunction(void))
- (Display *);
+extern int (*XSetAfterFunction(Display *)) (void);
 extern int XSetArcMode(Display *, GC, int);
 extern void XSetAuthorization(char *, int, char *, int);
 extern int XSetBackground(Display *, GC, unsigned long int);
@@ -3199,8 +3225,7 @@ extern int XStoreNamedColor(Display *, Colormap, const char *,
 extern KeySym XStringToKeysym(const char *);
 extern int XSupportsLocale(void);
 extern int XSync(Display *, int);
-extern int (*XSynchronize(void))
- (Display *);
+extern int (*XSynchronize(Display *)) (void);
 extern int XTextExtents(XFontStruct *, const char *, int, int *, int *,
 			int *, XCharStruct *);
 extern int XTextExtents16(XFontStruct *, XChar2b *, int, int *, int *,
@@ -3394,11 +3419,11 @@ extern XrmQuark XrmUniqueQuark(void);
 #define IsPFKey(keysym)	(((KeySym)(keysym)>=XK_KP_F1)&amp;&amp;((KeySym)(keysym)&lt;=XK_KP_F4))
 #define IsKeypadKey(keysym)	(((KeySym)(keysym)>=XK_KP_Space)&amp;&amp;((KeySym)(keysym)&lt;=XK_KP_E
 #define IsMiscFunctionKey(keysym)	(((KeySym)(keysym)>=XK_Select)&amp;&amp;((KeySym)(keysym)&lt;=XK_Break)
-#define XAddPixel(ximage,value)	((*((ximage)->f.add_pixel))((ximage),(value))))
+#define XAddPixel(ximage,value)	((*((ximage)->f.add_pixel))((ximage), (value)))
 #define XDestroyImage(ximage)	((*((ximage)->f.destroy_image))((ximage)))
-#define XGetPixel(ximage,x,y)	((*((ximage)->f.get_pixel))((ximage),(x),(y))))
-#define XPutPixel(ximage,x,y,pixel)	((*((ximage)->f.put_pixel))((ximage),(x),(y),(pixe)
-#define XSubImage(ximage,x,y,width,height)	((*((ximage)->f.sub_image))((ximage),(x),(y)
+#define XGetPixel(ximage,x,y)	((*((ximage)->f.get_pixel))((ximage), (x), (y)))
+#define XPutPixel(ximage,x,y,pixel)	((*((ximage)->f.put_pixel))((ximage), (x), (y), (pixel)))
+#define XSubImage(ximage,x,y,width,height)	((*((ximage)->f.sub_image))((ximage), (x), (y), (width), (height)))
 #define XStringToContext(string)	((XContext)XrmStringToQuark(string))
 #define XUniqueContext()	((XContext)XrmUniqueQuark())
 #define ReleaseByFreeingColormap	((XID)1L)
@@ -3483,7 +3508,7 @@ enum {
     XStdICCTextStyle,
     XUTF8StringStyle
 };
-extern int XAddPixel(void);
+extern int XAddPixel(XImage *, long int);
 extern XClassHint *XAllocClassHint(void);
 extern XIconSize *XAllocIconSize(void);
 extern XSizeHints *XAllocSizeHints(void);
@@ -3502,7 +3527,7 @@ extern int XFindContext(Display *, XID, XContext, XPointer *);
 extern int XGetClassHint(Display *, Window, XClassHint *);
 extern int XGetIconSizes(Display *, Window, XIconSize * *, int *);
 extern int XGetNormalHints(Display *, Window, XSizeHints *);
-extern unsigned long int XGetPixel(void);
+extern unsigned long int XGetPixel(XImage *, int, int);
 extern int XGetRGBColormaps(Display *, Window, XStandardColormap * *,
 			    int *, Atom);
 extern int XGetSizeHints(Display *, Window, XSizeHints *, Atom);
@@ -3526,7 +3551,7 @@ extern int XMatchVisualInfo(Display *, int, int, int, XVisualInfo *);
 extern int XOffsetRegion(Region, int, int);
 extern int XPointInRegion(Region, int, int);
 extern Region XPolygonRegion(XPoint *, int, int);
-extern int XPutPixel(void);
+extern int XPutPixel(XImage *, int, int, unsigned long int);
 extern int XRectInRegion(Region, int, int, unsigned int, unsigned int);
 extern int XSaveContext(Display *, XID, XContext, const char *);
 extern int XSetClassHint(Display *, Window, XClassHint *);
@@ -3554,7 +3579,7 @@ extern void XSetWMSizeHints(Display *, Window, XSizeHints *, Atom);
 extern int XSetZoomHints(Display *, Window, XSizeHints *);
 extern int XShrinkRegion(Region, int, int);
 extern int XStringListToTextProperty(char **, int, XTextProperty *);
-extern XImage *XSubImage(void);
+extern XImage *XSubImage(XImage *, int, int, unsigned int, unsigned int);
 extern int XSubtractRegion(Region, Region, Region);
 extern int XTextPropertyToStringList(XTextProperty *, char ***, int *);
 extern int XUnionRectWithRegion(XRectangle *, Region, Region);
