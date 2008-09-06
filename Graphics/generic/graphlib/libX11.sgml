@@ -1310,6 +1310,8 @@ typedef XID KeySym;
 #define FamilyInternet	0
 #define FamilyDECnet	1
 #define FamilyChaos	2
+#define FamilyServerInterpreted	5
+#define FamilyInternet6	6	/* IPv6 */
 
 #define PropModeReplace	0
 #define PropertyNewValue	0
@@ -1825,8 +1827,8 @@ typedef union _XkbEvent {
 } XkbEvent;
 typedef struct _XkbKbdDpyState XkbKbdDpyStateRec;
 typedef struct _XkbKbdDpyState *XkbKbdDpyStatePtr;
-typedef Atom(*XkbInternAtomFunc) (void);
-typedef char *(*XkbGetAtomNameFunc) (void);
+typedef Atom(*XkbInternAtomFunc) (Display *, const char *, int);
+typedef char *(*XkbGetAtomNameFunc) (Display *, Atom);
 extern int XkbAllocClientMap(XkbDescPtr, unsigned int, unsigned int);
 extern int XkbAllocCompatMap(XkbDescPtr, unsigned int, unsigned int);
 extern int XkbAllocControls(XkbDescPtr, unsigned int);
@@ -1970,6 +1972,7 @@ extern int XkbVirtualModsToReal(XkbDescPtr, unsigned int, unsigned int *);
 #define FamilyWild	(65535)
 #define LOCK_SUCCESS	0
 #define LOCK_ERROR	1
+#define _Xauth_h	1
 #define LOCK_TIMEOUT	2
 
 typedef struct xauth {
@@ -2019,12 +2022,6 @@ extern Xauth *XauReadAuth(FILE *);
 #define XcmsSuccess	1
 #define XcmsSuccessWithCompression	2
 
-typedef struct _XcmsFunctionSet {
-    XcmsColorSpace **DDColorSpaces;
-    XcmsScreenInitProc screenInitProc;
-    XcmsScreenFreeProc screenFreeProc;
-} XcmsFunctionSet;
-
 typedef unsigned long int XcmsColorFormat;
 typedef double XcmsFloat;
 typedef struct {
@@ -2073,19 +2070,21 @@ typedef struct {
     XcmsFloat pad2;
     XcmsFloat pad3;
 } XcmsPad;
-
-typedef union {
-    XcmsRGB RGB;
-    XcmsRGBi RGBi;
-    XcmsCIEXYZ CIEXYZ;
-    XcmsCIEuvY CIEuvY;
-    XcmsCIExyY CIExyY;
-    XcmsCIELab CIELab;
-    XcmsCIELuv CIELuv;
-    XcmsTekHVC TekHVC;
-    XcmsPad Pad;
+typedef struct {
+    union {
+	XcmsRGB RGB;
+	XcmsRGBi RGBi;
+	XcmsCIEXYZ CIEXYZ;
+	XcmsCIEuvY CIEuvY;
+	XcmsCIExyY CIExyY;
+	XcmsCIELab CIELab;
+	XcmsCIELuv CIELuv;
+	XcmsTekHVC TekHVC;
+	XcmsPad Pad;
+    } spec;
+    unsigned long int pixel;
+    XcmsColorFormat format;
 } XcmsColor;
-
 typedef struct _XcmsPerScrnInfo {
     XcmsColor screenWhitePt;
     XPointer functionSet;
@@ -2093,14 +2092,6 @@ typedef struct _XcmsPerScrnInfo {
     unsigned char state;
     char pad[1];
 } XcmsPerScrnInfo;
-
-typedef int (*XcmsCompressionProc) (void);
-typedef int (*XcmsWhiteAdjustProc) (void);
-typedef int (*XcmsScreenInitProc) (void);
-typedef void (*XcmsScreenFreeProc) (void);
-typedef int (*XcmsConversionProc) (void);
-typedef int (*XcmsParseStringProc) (void);
-
 typedef struct _XcmsCCC {
     Display *dpy;
     int screenNumber;
@@ -2112,10 +2103,6 @@ typedef struct _XcmsCCC {
     XPointer whitePtAdjClientData;
     XcmsPerScrnInfo *pPerScrnInfo;
 } XcmsCCCRec;
-typedef struct _XcmsCCC *XcmsCCC;
-
-typedef XcmsConversionProc *XcmsFuncListPtr;
-
 typedef struct _XcmsColorSpace {
     char *prefix;
     XcmsColorFormat id;
@@ -2124,6 +2111,27 @@ typedef struct _XcmsColorSpace {
     XcmsFuncListPtr from_CIEXYZ;
     int inverse_flag;
 } XcmsColorSpace;
+typedef struct _XcmsFunctionSet {
+    XcmsColorSpace **DDColorSpaces;
+    XcmsScreenInitProc screenInitProc;
+    XcmsScreenFreeProc screenFreeProc;
+} XcmsFunctionSet;
+typedef struct _XcmsCCC *XcmsCCC;
+typedef int (*XcmsCompressionProc) (XcmsCCC, XcmsColor *, unsigned int,
+				    unsigned int, int *);
+typedef int (*XcmsWhiteAdjustProc) (XcmsCCC, XcmsColor *, XcmsColor *,
+				    XcmsColorFormat, XcmsColor *,
+				    unsigned int, int *);
+typedef int (*XcmsScreenInitProc) (Display *, int, XcmsPerScrnInfo *);
+typedef void (*XcmsScreenFreeProc) (XPointer);
+typedef int (*XcmsDIConversionProc) (XcmsCCC, XcmsColor *, XcmsColor *,
+				     unsigned int);
+typedef XcmsDIConversionProc XcmsConversionProc;
+typedef int (*XcmsParseStringProc) (char *, XcmsColor *);
+typedef XcmsConversionProc *XcmsFuncListPtr;
+typedef int (*XcmsDDConversionProc) (XcmsCCC, XcmsColor *, unsigned int,
+				     int *);
+
 extern int XcmsAddColorSpace(XcmsColorSpace *);
 extern int XcmsAddFunctionSet(XcmsFunctionSet *);
 extern int XcmsAllocColor(Display *, Colormap, XcmsColor *,
@@ -2235,18 +2243,69 @@ extern Visual *XcmsVisualOfCCC(XcmsCCC);
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>X11/Xfuncproto.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define NARROWPROTO
+#define NeedWidePrototypes	0
+#define NeedFunctionPrototypes	1
+#define NeedNestedPrototypes	1
+#define NeedVarargsPrototypes	1
+#define FUNCPROTO	15
+#define _Xconst	const
+#ifdef __cplusplus
+#define _XFUNCPROTOBEGIN extern "C" {
+#else
+#define _XFUNCPROTOBEGIN
+#endif
+#define _X_INLINE	inline
+#define _X_SENTINEL(x)	__attribute__ ((__sentinel__(x)))
+#define _X_DEPRECATED	__attribute__((deprecated))
+#define _X_EXPORT	__attribute__((visibility("default")))
+#define _X_HIDDEN	__attribute__((visibility("hidden")))
+#define _X_INTERNAL	__attribute__((visibility("internal")))
+#define _X_ATTRIBUTE_PRINTF(x,y)	__attribute__((__format__(__printf__,x,y)))
+#define _X_UNLIKELY(x)	__builtin_expect(!!(x), 0)
+#define _X_LIKELY(x)	__builtin_expect(!!(x), 1)
+#ifdef __cplusplus
+#define _XFUNCPROTOEND }
+#else
+#define _XFUNCPROTOEND
+#endif
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>X11/Xlib.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-struct _XDisplay;
-typedef struct XColor;
+typedef char *XPointer;
+typedef struct {
+    unsigned long int pixel;
+    unsigned short red;
+    unsigned short green;
+    unsigned short blue;
+    char flags;
+    char pad;
+} XColor;
+typedef struct _XDisplay Display;
+typedef struct {
+    int type;
+    Display *display;
+    XID resourceid;
+    unsigned long int serial;
+    unsigned char error_code;
+    unsigned char request_code;
+    unsigned char minor_code;
+} XErrorEvent;
+typedef struct _XIM *XIM;
+typedef struct _XIC *XIC;
 typedef void *XVaNestedList;
-typedef struct XIMCallback;
-typedef struct XICCallback;
 typedef unsigned long int XIMFeedback;
-struct _XIMText {
+typedef struct _XIMText {
     unsigned short length;
     XIMFeedback *feedback;
     int encoding_is_wchar;
@@ -2254,15 +2313,14 @@ struct _XIMText {
 	char *multi_byte;
 	wchar_t *wide_char;
     } string;
-};
-typedef union XIMText;
+} XIMText;
 typedef unsigned long int XIMPreeditState;
 typedef struct _XIMPreeditStateNotifyCallbackStruct {
     XIMPreeditState state;
 } XIMPreeditStateNotifyCallbackStruct;
 typedef unsigned long int XIMResetState;
 typedef unsigned long int XIMStringConversionFeedback;
-struct _XIMStringConversionText {
+typedef struct _XIMStringConversionText {
     unsigned short length;
     XIMStringConversionFeedback *feedback;
     int encoding_is_wchar;
@@ -2270,8 +2328,7 @@ struct _XIMStringConversionText {
 	char *mbs;
 	wchar_t *wcs;
     } string;
-};
-typedef union XIMStringConversionText;
+} XIMStringConversionText;
 typedef unsigned short XIMStringConversionPosition;
 typedef unsigned short XIMStringConversionType;
 typedef unsigned short XIMStringConversionOperation;
@@ -2293,14 +2350,13 @@ typedef struct _XIMPreeditCaretCallbackStruct {
     XIMCaretDirection direction;
     XIMCaretStyle style;
 } XIMPreeditCaretCallbackStruct;
-struct _XIMStatusDrawCallbackStruct {
+typedef struct _XIMStatusDrawCallbackStruct {
     XIMStatusDataType type;
     union {
 	XIMText *text;
 	Pixmap bitmap;
     } data;
-};
-typedef union XIMStatusDrawCallbackStruct;
+} XIMStatusDrawCallbackStruct;
 typedef struct _XIMHotKeyTrigger {
     KeySym keysym;
     int modifier;
@@ -2311,47 +2367,39 @@ typedef struct _XIMHotKeyTriggers {
     XIMHotKeyTrigger *key;
 } XIMHotKeyTriggers;
 typedef unsigned long int XIMHotKeyState;
-typedef struct XIMValuesList;
-enum;
-enum;
-typedef enum XIMCaretDirection;
-enum;
-typedef enum XIMCaretStyle;
-enum;
-typedef enum XIMStatusDataType;
-typedef int (*XErrorHandler) (void);
-typedef int (*XIOErrorHandler) (void);
-typedef void (*XConnectionWatchProc) (void);
-enum {
-    XOMOrientation_LTR_TTB,
-    XOMOrientation_RTL_TTB,
-    XOMOrientation_TTB_LTR,
-    XOMOrientation_TTB_RTL,
-    XOMOrientation_Context
-};
-enum {
-    XIMForwardChar,
-    XIMBackwardChar,
-    XIMForwardWord,
-    XIMBackwardWord,
-    XIMCaretUp,
-    XIMCaretDown,
-    XIMNextLine,
-    XIMPreviousLine,
-    XIMLineStart,
-    XIMLineEnd,
-    XIMAbsolutePosition,
-    XIMDontChange
-};
-enum {
-    XIMIsInvisible,
-    XIMIsPrimary,
-    XIMIsSecondary
-};
-enum {
-    XIMTextType,
-    XIMBitmapType
-};
+typedef struct {
+    unsigned short count_values;
+    char **supported_values;
+} XIMValuesList;
+typedef void (*XIMProc) (XIM, XPointer, XPointer);
+typedef int (*XICProc) (XIC, XPointer, XPointer);
+typedef enum {
+    XIMForwardChar = 0,
+    XIMBackwardChar = 1,
+    XIMForwardWord = 2,
+    XIMBackwardWord = 3,
+    XIMCaretUp = 4,
+    XIMCaretDown = 5,
+    XIMNextLine = 6,
+    XIMPreviousLine = 7,
+    XIMLineStart = 8,
+    XIMLineEnd = 9,
+    XIMAbsolutePosition = 10,
+    XIMDontChange = 11
+} XIMCaretDirection;
+typedef enum {
+    XIMIsInvisible = 0,
+    XIMIsPrimary = 1,
+    XIMIsSecondary = 2
+} XIMCaretStyle;
+typedef enum {
+    XIMTextType = 0,
+    XIMBitmapType = 1
+} XIMStatusDataType;
+typedef int (*XErrorHandler) (Display *, XErrorEvent *);
+typedef int (*XIOErrorHandler) (Display *);
+typedef void (*XConnectionWatchProc) (Display *, XPointer, int, int,
+				      XPointer *);
 
 #define XNArea	"area"
 #define XNAreaNeeded	"areaNeeded"
@@ -2405,7 +2453,7 @@ enum {
 #define XNStringConversionCallback	"stringConversionCallback"
 #define XNVisiblePosition	"visiblePosition"
 #define XNVaNestedList	"XNVaNestedList"
-#define ScreenOfDisplay(dpy,scr)	(&amp;((_XPrivDisplay)dpy)->screens[scr]))
+#define ScreenOfDisplay(dpy,scr)	(&amp;((_XPrivDisplay)dpy)->screens[scr])
 #define BitmapBitOrder(dpy)	(((_XPrivDisplay)dpy)->bitmap_bit_order)
 #define BitmapPad(dpy)	(((_XPrivDisplay)dpy)->bitmap_pad)
 #define BitmapUnit(dpy)	(((_XPrivDisplay)dpy)->bitmap_unit)
@@ -2424,7 +2472,7 @@ enum {
 #define XAllocID(dpy)	((*((_XPrivDisplay)dpy)->resource_alloc)((dpy)))
 #define DoesBackingStore(s)	((s)->backing_store)
 #define BlackPixelOfScreen(s)	((s)->black_pixel)
-#define DefaultColormapOfScreen(s)	((s)->cmap))
+#define DefaultColormapOfScreen(s)	((s)->cmap)
 #define DefaultGCOfScreen(s)	((s)->default_gc)
 #define DisplayOfScreen(s)	((s)->display)
 #define HeightOfScreen(s)	((s)->height)
@@ -2436,7 +2484,7 @@ enum {
 #define DefaultDepthOfScreen(s)	((s)->root_depth)
 #define PlanesOfScreen(s)	((s)->root_depth)
 #define EventMaskOfScreen(s)	((s)->root_input_mask)
-#define DefaultVisualOfScreen(s)	((s)->root_visual))
+#define DefaultVisualOfScreen(s)	((s)->root_visual)
 #define DoesSaveUnders(s)	((s)->save_unders)
 #define WhitePixelOfScreen(s)	((s)->white_pixel)
 #define WidthOfScreen(s)	((s)->width)
@@ -2465,21 +2513,21 @@ enum {
 #define XIMTertiary	(1L&lt;&lt;7)
 #define XIMVisibleToForward	(1L&lt;&lt;8)
 #define XIMVisibleToBackword	(1L&lt;&lt;9)
-#define DisplayCells(dpy,scr)	(DefaultVisual(dpy,scr)->map_entries))
+#define DisplayCells(dpy,scr)	(DefaultVisual(dpy,scr)->map_entries)
 #define CellsOfScreen(s)	(DefaultVisualOfScreen((s))->map_entries)
 #define DefaultRootWindow(dpy)	(ScreenOfDisplay(dpy,DefaultScreen(dpy))->root)
-#define BlackPixel(dpy,scr)	(ScreenOfDisplay(dpy,scr)->black_pixel))
-#define DefaultColormap(dpy,scr)	(ScreenOfDisplay(dpy,scr)->cmap))
-#define DefaultGC(dpy,scr)	(ScreenOfDisplay(dpy,scr)->default_gc))
-#define DisplayHeight(dpy,scr)	(ScreenOfDisplay(dpy,scr)->height))
-#define DisplayHeightMM(dpy,scr)	(ScreenOfDisplay(dpy,scr)->mheight))
-#define DisplayWidthMM(dpy,scr)	(ScreenOfDisplay(dpy,scr)->mwidth))
-#define RootWindow(dpy, scr)	(ScreenOfDisplay(dpy,scr)->root))
-#define DefaultDepth(dpy,scr)	(ScreenOfDisplay(dpy,scr)->root_depth))
-#define DisplayPlanes(dpy,scr)	(ScreenOfDisplay(dpy,scr)->root_depth))
-#define DefaultVisual(dpy,scr)	(ScreenOfDisplay(dpy,scr)->root_visual))
-#define WhitePixel(dpy,scr)	(ScreenOfDisplay(dpy,scr)->white_pixel))
-#define DisplayWidth(dpy,scr)	(ScreenOfDisplay(dpy,scr)->width))
+#define BlackPixel(dpy,scr)	(ScreenOfDisplay(dpy,scr)->black_pixel)
+#define DefaultColormap(dpy,scr)	(ScreenOfDisplay(dpy,scr)->cmap)
+#define DefaultGC(dpy,scr)	(ScreenOfDisplay(dpy,scr)->default_gc)
+#define DisplayHeight(dpy,scr)	(ScreenOfDisplay(dpy,scr)->height)
+#define DisplayHeightMM(dpy,scr)	(ScreenOfDisplay(dpy,scr)->mheight)
+#define DisplayWidthMM(dpy,scr)	(ScreenOfDisplay(dpy,scr)->mwidth)
+#define RootWindow(dpy, scr)	(ScreenOfDisplay(dpy,scr)->root)
+#define DefaultDepth(dpy,scr)	(ScreenOfDisplay(dpy,scr)->root_depth)
+#define DisplayPlanes(dpy,scr)	(ScreenOfDisplay(dpy,scr)->root_depth)
+#define DefaultVisual(dpy,scr)	(ScreenOfDisplay(dpy,scr)->root_visual)
+#define WhitePixel(dpy,scr)	(ScreenOfDisplay(dpy,scr)->white_pixel)
+#define DisplayWidth(dpy,scr)	(ScreenOfDisplay(dpy,scr)->width)
 #define XBufferOverflow	-1
 #define False	0
 #define QueuedAlready	0
@@ -2505,9 +2553,9 @@ enum {
 #define XLookupKeySym	3
 #define XLookupBoth	4
 #define XlibSpecificationRelease	6
+#define Bool	int
+#define Status	int
 #define DefaultScreenOfDisplay(dpy)	ScreenOfDisplay(dpy,DefaultScreen(dpy))
-
-typedef char *XPointer;
 
 typedef struct _XExtData {
     int number;
@@ -2515,28 +2563,152 @@ typedef struct _XExtData {
     int (*free_private) (struct _XExtData * extension);
     XPointer private_data;
 } XExtData;
-typedef struct XExtCodes;
+typedef struct {
+    int extension;
+    int major_opcode;
+    int first_event;
+    int first_error;
+} XExtCodes;
 
-typedef struct XPixmapFormatValues;
+typedef struct {
+    int depth;
+    int bits_per_pixel;
+    int scanline_pad;
+} XPixmapFormatValues;
 
-typedef struct XGCValues;
+typedef struct {
+    int function;
+    unsigned long int plane_mask;
+    unsigned long int foreground;
+    unsigned long int background;
+    int line_width;
+    int line_style;
+    int cap_style;
+    int join_style;
+    int fill_style;
+    int fill_rule;
+    int arc_mode;
+    Pixmap tile;
+    Pixmap stipple;
+    int ts_x_origin;
+    int ts_y_origin;
+    Font font;
+    int subwindow_mode;
+    int graphics_exposures;
+    int clip_x_origin;
+    int clip_y_origin;
+    Pixmap clip_mask;
+    int dash_offset;
+    char dashes;
+} XGCValues;
 
 struct _XGC;
 typedef struct _XGC *GC;
 
-typedef struct Visual;
+typedef struct {
+    XExtData *ext_data;
+    VisualID visualid;
+    int c_class;
+    unsigned long int red_mask;
+    unsigned long int green_mask;
+    unsigned long int blue_mask;
+    int bits_per_rgb;
+    int map_entries;
+} Visual;
 
-typedef struct Depth;
+typedef struct {
+    int depth;
+    int nvisuals;
+    Visual *visuals;
+} Depth;
 
-typedef struct Screen;
+typedef struct {
+    XExtData *ext_data;
+    struct _XDisplay *display;
+    Window root;
+    int width;
+    int height;
+    int mwidth;
+    int mheight;
+    int ndepths;
+    Depth *depths;
+    int root_depth;
+    Visual *root_visual;
+    GC default_gc;
+    Colormap cmap;
+    unsigned long int white_pixel;
+    unsigned long int black_pixel;
+    int max_maps;
+    int min_maps;
+    int backing_store;
+    int save_unders;
+    long int root_input_mask;
+} Screen;
 
-typedef struct ScreenFormat;
+typedef struct {
+    XExtData *ext_data;
+    int depth;
+    int bits_per_pixel;
+    int scanline_pad;
+} ScreenFormat;
 
-typedef struct XSetWindowAttributes;
-typedef struct XWindowAttributes;
+typedef struct {
+    Pixmap background_pixmap;
+    unsigned long int background_pixel;
+    Pixmap border_pixmap;
+    unsigned long int border_pixel;
+    int bit_gravity;
+    int win_gravity;
+    int backing_store;
+    unsigned long int backing_planes;
+    unsigned long int backing_pixel;
+    int save_under;
+    long int event_mask;
+    long int do_not_propagate_mask;
+    int override_redirect;
+    Colormap colormap;
+    Cursor cursor;
+} XSetWindowAttributes;
+typedef struct {
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    int depth;
+    Visual *visual;
+    Window root;
+    int c_class;
+    int bit_gravity;
+    int win_gravity;
+    int backing_store;
+    unsigned long int backing_planes;
+    unsigned long int backing_pixel;
+    int save_under;
+    Colormap colormap;
+    int map_installed;
+    int map_state;
+    long int all_event_masks;
+    long int your_event_mask;
+    long int do_not_propagate_mask;
+    int override_redirect;
+    Screen *screen;
+} XWindowAttributes;
 
-typedef struct XHostAddress;
+typedef struct {
+    int family;
+    int length;
+    char *address;
+} XHostAddress;
 
+struct funcs {
+    struct _XImage *(*create_image) (void);
+    int (*destroy_image) (void);
+    unsigned long int (*get_pixel) (void);
+    int (*put_pixel) (void);
+    struct _XImage *(*sub_image) (void);
+    int (*add_pixel) (void);
+};
 typedef struct _XImage {
     int width;
     int height;
@@ -2556,73 +2728,471 @@ typedef struct _XImage {
     XPointer obdata;
     struct funcs f;
 } XImage;
-struct funcs {
-    struct _XImage *(*create_image) (void);
-    int (*destroy_image) (void);
-    unsigned long int (*get_pixel) (void);
-    int (*put_pixel) (void);
-    struct _XImage *(*sub_image) (void);
-    int (*add_pixel) (void);
-};
 
-typedef struct XWindowChanges;
+typedef struct {
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    Window sibling;
+    int stack_mode;
+} XWindowChanges;
 
-typedef struct XSegment;
-typedef struct XPoint;
-typedef struct XRectangle;
-typedef struct XArc;
+typedef struct {
+    short x1;
+    short y1;
+    short x2;
+    short y2;
+} XSegment;
+typedef struct {
+    short x;
+    short y;
+} XPoint;
+typedef struct {
+    short x;
+    short y;
+    unsigned short width;
+    unsigned short height;
+} XRectangle;
+typedef struct {
+    short x;
+    short y;
+    unsigned short width;
+    unsigned short height;
+    short angle1;
+    short angle2;
+} XArc;
 
-typedef struct XKeyboardControl;
+typedef struct {
+    int key_click_percent;
+    int bell_percent;
+    int bell_pitch;
+    int bell_duration;
+    int led;
+    int led_mode;
+    int key;
+    int auto_repeat_mode;
+} XKeyboardControl;
 
-typedef struct XKeyboardState;
+typedef struct {
+    int key_click_percent;
+    int bell_percent;
+    unsigned int bell_pitch;
+    unsigned int bell_duration;
+    unsigned long int led_mask;
+    int global_auto_repeat;
+    char auto_repeats[32];
+} XKeyboardState;
 
-typedef struct XTimeCoord;
+typedef struct {
+    Time time;
+    short x;
+    short y;
+} XTimeCoord;
 
-typedef struct XModifierKeymap;
+typedef struct {
+    int max_keypermod;
+    KeyCode *modifiermap;
+} XModifierKeymap;
 
-typedef struct _XDisplay Display;
-typedef struct _XrmHashBucketRec **_XPrivDisplay;
+typedef struct {
+    XExtData *ext_data;
+    struct _XPrivate *private1;
+    int fd;
+    int private2;
+    int proto_major_version;
+    int proto_minor_version;
+    char *vendor;
+    XID private3;
+    XID private4;
+    XID private5;
+    int private6;
+     XID(*resource_alloc) (struct _XDisplay *);
+    int byte_order;
+    int bitmap_unit;
+    int bitmap_pad;
+    int bitmap_bit_order;
+    int nformats;
+    ScreenFormat *pixmap_format;
+    int private8;
+    int release;
+    struct _XPrivate *private9;
+    struct _XPrivate *private10;
+    int qlen;
+    unsigned long int last_request_read;
+    unsigned long int request;
+    XPointer private11;
+    XPointer private12;
+    XPointer private13;
+    XPointer private14;
+    unsigned int max_request_size;
+    struct _XrmHashBucketRec *db;
+    int (*private15) (struct _XDisplay *);
+    char *display_name;
+    int default_screen;
+    int nscreens;
+    Screen *screens;
+    unsigned long int motion_buffer;
+    unsigned long int private16;
+    int min_keycode;
+    int max_keycode;
+    XPointer private17;
+    XPointer private18;
+    int private19;
+    char *xdefaults;
+} *_XPrivDisplay;
 
-typedef struct XKeyEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Window root;
+    Window subwindow;
+    Time time;
+    int x;
+    int y;
+    int x_root;
+    int y_root;
+    unsigned int state;
+    unsigned int keycode;
+    int same_screen;
+} XKeyEvent;
 typedef XKeyEvent XKeyPressedEvent;
 typedef XKeyEvent XKeyReleasedEvent;
-typedef struct XButtonEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Window root;
+    Window subwindow;
+    Time time;
+    int x;
+    int y;
+    int x_root;
+    int y_root;
+    unsigned int state;
+    unsigned int button;
+    int same_screen;
+} XButtonEvent;
 typedef XButtonEvent XButtonPressedEvent;
 typedef XButtonEvent XButtonReleasedEvent;
-typedef struct XMotionEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Window root;
+    Window subwindow;
+    Time time;
+    int x;
+    int y;
+    int x_root;
+    int y_root;
+    unsigned int state;
+    char is_hint;
+    int same_screen;
+} XMotionEvent;
 typedef XMotionEvent XPointerMovedEvent;
-typedef struct XCrossingEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Window root;
+    Window subwindow;
+    Time time;
+    int x;
+    int y;
+    int x_root;
+    int y_root;
+    int mode;
+    int detail;
+    int same_screen;
+    int focus;
+    unsigned int state;
+} XCrossingEvent;
 typedef XCrossingEvent XEnterWindowEvent;
 typedef XCrossingEvent XLeaveWindowEvent;
-typedef struct XFocusChangeEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int mode;
+    int detail;
+} XFocusChangeEvent;
 typedef XFocusChangeEvent XFocusInEvent;
 typedef XFocusChangeEvent XFocusOutEvent;
-typedef struct XKeymapEvent;
-typedef struct XExposeEvent;
-typedef struct XGraphicsExposeEvent;
-typedef struct XNoExposeEvent;
-typedef struct XVisibilityEvent;
-typedef struct XCreateWindowEvent;
-typedef struct XDestroyWindowEvent;
-typedef struct XUnmapEvent;
-typedef struct XMapEvent;
-typedef struct XMapRequestEvent;
-typedef struct XReparentEvent;
-typedef struct XConfigureEvent;
-typedef struct XGravityEvent;
-typedef struct XResizeRequestEvent;
-typedef struct XConfigureRequestEvent;
-typedef struct XCirculateEvent;
-typedef struct XCirculateRequestEvent;
-typedef struct XPropertyEvent;
-typedef struct XSelectionClearEvent;
-typedef struct XSelectionRequestEvent;
-typedef struct XSelectionEvent;
-typedef struct XColormapEvent;
-typedef union XClientMessageEvent;
-typedef struct XMappingEvent;
-typedef struct XErrorEvent;
-typedef struct XAnyEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    char key_vector[32];
+} XKeymapEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int x;
+    int y;
+    int width;
+    int height;
+    int count;
+} XExposeEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Drawable drawable;
+    int x;
+    int y;
+    int width;
+    int height;
+    int count;
+    int major_code;
+    int minor_code;
+} XGraphicsExposeEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Drawable drawable;
+    int major_code;
+    int minor_code;
+} XNoExposeEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int state;
+} XVisibilityEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window parent;
+    Window window;
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    int override_redirect;
+} XCreateWindowEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+} XDestroyWindowEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int from_configure;
+} XUnmapEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int override_redirect;
+} XMapEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window parent;
+    Window window;
+} XMapRequestEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    Window parent;
+    int x;
+    int y;
+    int override_redirect;
+} XReparentEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    Window above;
+    int override_redirect;
+} XConfigureEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int x;
+    int y;
+} XGravityEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int width;
+    int height;
+} XResizeRequestEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window parent;
+    Window window;
+    int x;
+    int y;
+    int width;
+    int height;
+    int border_width;
+    Window above;
+    int detail;
+    unsigned long int value_mask;
+} XConfigureRequestEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window event;
+    Window window;
+    int place;
+} XCirculateEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window parent;
+    Window window;
+    int place;
+} XCirculateRequestEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Atom atom;
+    Time time;
+    int state;
+} XPropertyEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Atom selection;
+    Time time;
+} XSelectionClearEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window owner;
+    Window requestor;
+    Atom selection;
+    Atom target;
+    Atom property;
+    Time time;
+} XSelectionRequestEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window requestor;
+    Atom selection;
+    Atom target;
+    Atom property;
+    Time time;
+} XSelectionEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Colormap colormap;
+    int c_new;
+    int state;
+} XColormapEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Atom message_type;
+    int format;
+    union {
+	char b[20];
+	short s[10];
+	long int l[5];
+    } data;
+} XClientMessageEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    int request;
+    int first_keycode;
+    int count;
+} XMappingEvent;
+typedef struct {
+    int type;
+    unsigned long int serial;
+    int send_event;
+    Display *display;
+    Window window;
+} XAnyEvent;
 
 union _XEvent {
     int type;
@@ -2695,37 +3265,114 @@ typedef union _XEvent {
     long int pad[1];
 } XEvent;
 
-typedef struct XCharStruct;
+typedef struct {
+    short lbearing;
+    short rbearing;
+    short width;
+    short ascent;
+    short descent;
+    unsigned short attributes;
+} XCharStruct;
 
-typedef struct XFontProp;
-typedef struct XFontStruct;
-typedef struct XFontSetExtents;
+typedef struct {
+    Atom name;
+    unsigned long int card32;
+} XFontProp;
+typedef struct {
+    XExtData *ext_data;
+    Font fid;
+    unsigned int direction;
+    unsigned int min_char_or_byte2;
+    unsigned int max_char_or_byte2;
+    unsigned int min_byte1;
+    unsigned int max_byte1;
+    int all_chars_exist;
+    unsigned int default_char;
+    int n_properties;
+    XFontProp *properties;
+    XCharStruct min_bounds;
+    XCharStruct max_bounds;
+    XCharStruct *per_char;
+    int ascent;
+    int descent;
+} XFontStruct;
+typedef struct {
+    XRectangle max_ink_extent;
+    XRectangle max_logical_extent;
+} XFontSetExtents;
 
-typedef struct XTextItem;
-typedef struct XChar2b;
-typedef struct XTextItem16;
+typedef struct {
+    char *chars;
+    int nchars;
+    int delta;
+    Font font;
+} XTextItem;
+typedef struct {
+    unsigned char byte1;
+    unsigned char byte2;
+} XChar2b;
+typedef struct {
+    XChar2b *chars;
+    int nchars;
+    int delta;
+    Font font;
+} XTextItem16;
 
-typedef union XEDataObject;
+typedef union {
+    Display *display;
+    GC gc;
+    Visual *visual;
+    Screen *screen;
+    ScreenFormat *pixmap_format;
+    XFontStruct *font;
+} XEDataObject;
 
 typedef struct _XOM *XOM;
 typedef struct _XOC *XOC;
 typedef struct _XOC *XFontSet;
 
-typedef struct XmbTextItem;
-typedef struct XwcTextItem;
+typedef struct {
+    char *chars;
+    int nchars;
+    int delta;
+    XFontSet font_set;
+} XmbTextItem;
+typedef struct {
+    wchar_t *chars;
+    int nchars;
+    int delta;
+    XFontSet font_set;
+} XwcTextItem;
 
-typedef struct XOMCharSetList;
-typedef struct XOMOrientation;
-typedef struct XOMFontInfo;
+typedef struct {
+    int charset_count;
+    char **charset_list;
+} XOMCharSetList;
 typedef enum XOrientation;
+typedef struct {
+    int num_font;
+    XFontStruct **font_struct_list;
+    char **font_name_list;
+} XOMFontInfo;
+typedef struct {
+    int num_orientation;
+    XOrientation *orientation;
+} XOMOrientation;
 
-typedef struct _XIM *XIM;
-typedef struct _XIC *XIC;
 typedef unsigned long int XIMStyle;
-typedef struct XIMStyles;
-typedef void (*XIMProc) (void);
-typedef int (*XICProc) (void);
-typedef void (*XIDProc) (void);
+typedef struct {
+    unsigned short count_styles;
+    XIMStyle *supported_styles;
+} XIMStyles;
+typedef struct {
+    XPointer client_data;
+    XIMProc callback;
+} XIMCallback;
+typedef struct {
+    XPointer client_data;
+    XICProc callback;
+} XICCallback;
+typedef void (*XIDProc) (Display *, XPointer, XPointer);
 extern int XActivateScreenSaver(Display *);
 extern int XAddConnectionWatch(Display *, XConnectionWatchProc, XPointer);
 extern XExtCodes *XAddExtension(Display *);
@@ -2765,7 +3412,8 @@ extern int XChangeProperty(Display *, Window, Atom, Atom, int, int,
 extern int XChangeSaveSet(Display *, Window, int);
 extern int XChangeWindowAttributes(Display *, Window, unsigned long int,
 				   XSetWindowAttributes *);
-extern int XCheckIfEvent(Display *, XEvent *, int (*)(void)
+extern int XCheckIfEvent(Display *, XEvent *,
+			 int (*)(Display *, XEvent *, XPointer)
 			 , XPointer);
 extern int XCheckMaskEvent(Display *, long int, XEvent *);
 extern int XCheckTypedEvent(Display *, int, XEvent *);
@@ -3037,7 +3685,8 @@ extern int XHeightMMOfScreen(Screen *);
 extern int XHeightOfScreen(Screen *);
 extern XIM XIMOfIC(XIC);
 extern int XIconifyWindow(Display *, Window, int);
-extern int XIfEvent(Display *, XEvent *, int (*)(void)
+extern int XIfEvent(Display *, XEvent *,
+		    int (*)(Display *, XEvent *, XPointer)
 		    , XPointer);
 extern int XImageByteOrder(Display *);
 extern XExtCodes *XInitExtension(Display *, const char *);
@@ -3096,7 +3745,8 @@ extern int XParseColor(Display *, Colormap, const char *, XColor *);
 extern int XParseGeometry(const char *, int *, int *, unsigned int *,
 			  unsigned int *);
 extern int XPeekEvent(Display *, XEvent *);
-extern int XPeekIfEvent(Display *, XEvent *, int (*)(void)
+extern int XPeekIfEvent(Display *, XEvent *,
+			int (*)(Display *, XEvent *, XPointer)
 			, XPointer);
 extern int XPending(Display *);
 extern int XPlanesOfScreen(Screen *);
@@ -3167,7 +3817,9 @@ extern int XSelectInput(Display *, Window, long int);
 extern int XSendEvent(Display *, Window, int, long int, XEvent *);
 extern char *XServerVendor(Display *);
 extern int XSetAccessControl(Display *, int);
-extern int (*XSetAfterFunction(Display *)) (void);
+extern
+    int (*XSetAfterFunction(Display *, int (*XSetAfterFunction) (Display *)
+	 )) (Display *);
 extern int XSetArcMode(Display *, GC, int);
 extern void XSetAuthorization(char *, int, char *, int);
 extern int XSetBackground(Display *, GC, unsigned long int);
@@ -3188,6 +3840,7 @@ extern int XSetFunction(Display *, GC, int);
 extern int XSetGraphicsExposures(Display *, GC, int);
 extern void XSetICFocus(XIC);
 extern char *XSetICValues(XIC, ...);
+extern char *XSetIMValues(XIM, ...);
 extern XIOErrorHandler XSetIOErrorHandler(XIOErrorHandler);
 extern int XSetIconName(Display *, Window, const char *);
 extern int XSetInputFocus(Display *, Window, int, Time);
@@ -3225,7 +3878,7 @@ extern int XStoreNamedColor(Display *, Colormap, const char *,
 extern KeySym XStringToKeysym(const char *);
 extern int XSupportsLocale(void);
 extern int XSync(Display *, int);
-extern int (*XSynchronize(Display *)) (void);
+extern int (*XSynchronize(Display *, int)) (Display *);
 extern int XTextExtents(XFontStruct *, const char *, int, int *, int *,
 			int *, XCharStruct *);
 extern int XTextExtents16(XFontStruct *, XChar2b *, int, int *, int *,
@@ -3297,26 +3950,1988 @@ extern int XwcTextPerCharExtents(XFontSet, wchar_t *, int, XRectangle *,
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>X11/Xmd.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define B16
+#define B32
+#define NEXTPTR(p,t)	(((t *)(p)) + 1)
+#define _SIZEOF(x)	sz_ ##x
+#define SIZEOF(x)	_SIZEOF(x)
+
+typedef unsigned short CARD16;
+typedef unsigned char CARD8;
+typedef CARD8 BOOL;
+typedef unsigned char BYTE;
+typedef CARD32 BITS32;
+typedef CARD16 BITS16;
+typedef int INT32;
+typedef short int INT16;
+typedef signed char INT8;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>X11/Xproto.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define ELFlagFocus	(1&lt;&lt;0)
+#define ELFlagSameScreen	(1&lt;&lt;1)
+#define XEventSize	(sizeof(xEvent))
+#define X_Error	0
+#define xFalse	0
+#define X_CreateWindow	1
+#define X_Reply	1
+#define xTrue	1
+#define X_UnmapWindow	10
+#define X_ChangeKeyboardMapping	100
+#define X_GetKeyboardMapping	101
+#define X_ChangeKeyboardControl	102
+#define X_GetKeyboardControl	103
+#define X_Bell	104
+#define X_ChangePointerControl	105
+#define X_GetPointerControl	106
+#define X_SetScreenSaver	107
+#define X_GetScreenSaver	108
+#define X_ChangeHosts	109
+#define X_UnmapSubwindows	11
+#define X_ListHosts	110
+#define X_SetAccessControl	111
+#define X_SetCloseDownMode	112
+#define X_KillClient	113
+#define X_RotateProperties	114
+#define X_ForceScreenSaver	115
+#define X_SetPointerMapping	116
+#define X_GetPointerMapping	117
+#define X_SetModifierMapping	118
+#define X_GetModifierMapping	119
+#define X_ConfigureWindow	12
+#define sz_xAllocColorCellsReq	12
+#define sz_xAllocNamedColorReq	12
+#define sz_xArc	12
+#define sz_xChangeGCReq	12
+#define sz_xChangePointerControlReq	12
+#define sz_xChangeWindowAttributesReq	12
+#define sz_xCharInfo	12
+#define sz_xColorItem	12
+#define sz_xConfigureWindowReq	12
+#define sz_xConnClientPrefix	12
+#define sz_xCopyColormapAndFreeReq	12
+#define sz_xDeletePropertyReq	12
+#define sz_xFreeColorsReq	12
+#define sz_xLookupColorReq	12
+#define sz_xOpenFontReq	12
+#define sz_xPolyArcReq	12
+#define sz_xPolyFillArcReq	12
+#define sz_xPolyFillRectangleReq	12
+#define sz_xPolyLineReq	12
+#define sz_xPolyPointReq	12
+#define sz_xPolyRectangleReq	12
+#define sz_xPolySegmentReq	12
+#define sz_xQueryBestSizeReq	12
+#define sz_xRotatePropertiesReq	12
+#define sz_xSetClipRectanglesReq	12
+#define sz_xSetDashesReq	12
+#define sz_xSetInputFocusReq	12
+#define sz_xSetScreenSaverReq	12
+#define sz_xUngrabButtonReq	12
+#define sz_xUngrabKeyReq	12
+#define X_NoOperation	127
+#define X_CirculateWindow	13
+#define X_GetGeometry	14
+#define X_QueryTree	15
+#define X_InternAtom	16
+#define sz_xAllocColorPlanesReq	16
+#define sz_xAllocColorReq	16
+#define sz_xChangeActivePointerGrabReq	16
+#define sz_xClearAreaReq	16
+#define sz_xCopyGCReq	16
+#define sz_xCreateColormapReq	16
+#define sz_xCreateGCReq	16
+#define sz_xCreatePixmapReq	16
+#define sz_xFillPolyReq	16
+#define sz_xGetMotionEventsReq	16
+#define sz_xGrabKeyReq	16
+#define sz_xGrabKeyboardReq	16
+#define sz_xImageText16Req	16
+#define sz_xImageText8Req	16
+#define sz_xImageTextReq	16
+#define sz_xPolyText16Req	16
+#define sz_xPolyText8Req	16
+#define sz_xPolyTextReq	16
+#define sz_xReparentWindowReq	16
+#define sz_xSetSelectionOwnerReq	16
+#define sz_xStoreNamedColorReq	16
+#define sz_xTranslateCoordsReq	16
+#define X_GetAtomName	17
+#define X_ChangeProperty	18
+#define X_DeleteProperty	19
+#define X_ChangeWindowAttributes	2
+#define sz_xTextElt	2
+#define X_GetProperty	20
+#define sz_xGetImageReq	20
+#define sz_xRecolorCursorReq	20
+#define X_ListProperties	21
+#define X_SetSelectionOwner	22
+#define X_GetSelectionOwner	23
+#define X_ConvertSelection	24
+#define sz_xChangePropertyReq	24
+#define sz_xConvertSelectionReq	24
+#define sz_xGetPropertyReq	24
+#define sz_xGrabButtonReq	24
+#define sz_xGrabPointerReq	24
+#define sz_xPropIconSize	24
+#define sz_xPutImageReq	24
+#define sz_xVisualType	24
+#define sz_xWarpPointerReq	24
+#define X_SendEvent	25
+#define X_GrabPointer	26
+#define X_UngrabPointer	27
+#define X_GrabButton	28
+#define sz_xCopyAreaReq	28
+#define X_UngrabButton	29
+#define X_GetWindowAttributes	3
+#define X_ChangeActivePointerGrab	30
+#define X_GrabKeyboard	31
+#define X_UngrabKeyboard	32
+#define sz_xAllocColorCellsReply	32
+#define sz_xAllocColorPlanesReply	32
+#define sz_xAllocColorReply	32
+#define sz_xAllocNamedColorReply	32
+#define sz_xConnSetup	32
+#define sz_xCopyPlaneReq	32
+#define sz_xCreateCursorReq	32
+#define sz_xCreateGlyphCursorReq	32
+#define sz_xCreateWindowReq	32
+#define sz_xError	32
+#define sz_xEvent	32
+#define sz_xGenericReply	32
+#define sz_xGetAtomNameReply	32
+#define sz_xGetFontPathReply	32
+#define sz_xGetGeometryReply	32
+#define sz_xGetImageReply	32
+#define sz_xGetInputFocusReply	32
+#define sz_xGetKeyboardMappingReply	32
+#define sz_xGetModifierMappingReply	32
+#define sz_xGetMotionEventsReply	32
+#define sz_xGetPointerControlReply	32
+#define sz_xGetPointerMappingReply	32
+#define sz_xGetPropertyReply	32
+#define sz_xGetScreenSaverReply	32
+#define sz_xGetSelectionOwnerReply	32
+#define sz_xGrabKeyboardReply	32
+#define sz_xGrabPointerReply	32
+#define sz_xInternAtomReply	32
+#define sz_xKeymapEvent	32
+#define sz_xListExtensionsReply	32
+#define sz_xListFontsReply	32
+#define sz_xListHostsReply	32
+#define sz_xListInstalledColormapsReply	32
+#define sz_xListPropertiesReply	32
+#define sz_xLookupColorReply	32
+#define sz_xQueryBestSizeReply	32
+#define sz_xQueryColorsReply	32
+#define sz_xQueryExtensionReply	32
+#define sz_xQueryPointerReply	32
+#define sz_xQueryTextExtentsReply	32
+#define sz_xQueryTreeReply	32
+#define sz_xReply	32
+#define sz_xSetMappingReply	32
+#define sz_xSetModifierMappingReply	32
+#define sz_xSetPointerMappingReply	32
+#define sz_xTranslateCoordsReply	32
+#define X_GrabKey	33
+#define X_UngrabKey	34
+#define X_AllowEvents	35
+#define X_GrabServer	36
+#define X_UngrabServer	37
+#define X_QueryPointer	38
+#define X_GetMotionEvents	39
+#define X_DestroyWindow	4
+#define sz_xBellReq	4
+#define sz_xChangeModeReq	4
+#define sz_xForceScreenSaverReq	4
+#define sz_xHostEntry	4
+#define sz_xListHostsReq	4
+#define sz_xPoint	4
+#define sz_xReq	4
+#define sz_xSetAccessControlReq	4
+#define sz_xSetCloseDownModeReq	4
+#define sz_xSetModifierMappingReq	4
+#define sz_xSetPointerMappingReq	4
+#define X_TranslateCoords	40
+#define sz_xQueryKeymapReply	40
+#define sz_xWindowRoot	40
+#define X_WarpPointer	41
+#define X_SetInputFocus	42
+#define X_GetInputFocus	43
+#define X_QueryKeymap	44
+#define sz_xGetWindowAttributesReply	44
+#define sz_xSendEventReq	44
+#define X_OpenFont	45
+#define X_CloseFont	46
+#define X_QueryFont	47
+#define X_QueryTextExtents	48
+#define X_ListFonts	49
+#define X_DestroySubwindows	5
+#define X_ListFontsWithInfo	50
+#define X_SetFontPath	51
+#define X_GetFontPath	52
+#define sz_xGetKeyboardControlReply	52
+#define X_CreatePixmap	53
+#define X_FreePixmap	54
+#define X_CreateGC	55
+#define X_ChangeGC	56
+#define X_CopyGC	57
+#define X_SetDashes	58
+#define X_SetClipRectangles	59
+#define X_ChangeSaveSet	6
+#define X_FreeGC	60
+#define sz_xListFontsWithInfoReply	60
+#define sz_xQueryFontReply	60
+#define X_TCP_PORT	6000
+#define X_ClearArea	61
+#define X_CopyArea	62
+#define X_CopyPlane	63
+#define X_PolyPoint	64
+#define X_PolyLine	65
+#define X_PolySegment	66
+#define X_PolyRectangle	67
+#define X_PolyArc	68
+#define X_FillPoly	69
+#define X_ReparentWindow	7
+#define X_PolyFillRectangle	70
+#define X_PolyFillArc	71
+#define X_PutImage	72
+#define X_GetImage	73
+#define X_PolyText8	74
+#define X_PolyText16	75
+#define X_ImageText8	76
+#define X_ImageText16	77
+#define X_CreateColormap	78
+#define X_FreeColormap	79
+#define X_MapWindow	8
+#define sz_xAllowEventsReq	8
+#define sz_xChangeHostsReq	8
+#define sz_xChangeKeyboardControlReq	8
+#define sz_xChangeKeyboardMappingReq	8
+#define sz_xChangeSaveSetReq	8
+#define sz_xCirculateWindowReq	8
+#define sz_xConnSetupPrefix	8
+#define sz_xDepth	8
+#define sz_xFontProp	8
+#define sz_xGetKeyboardMappingReq	8
+#define sz_xInternAtomReq	8
+#define sz_xListFontsReq	8
+#define sz_xListFontsWithInfoReq	8
+#define sz_xPixmapFormat	8
+#define sz_xQueryColorsReq	8
+#define sz_xQueryExtensionReq	8
+#define sz_xQueryTextExtentsReq	8
+#define sz_xRectangle	8
+#define sz_xResourceReq	8
+#define sz_xSegment	8
+#define sz_xSetFontPathReq	8
+#define sz_xStoreColorsReq	8
+#define sz_xTimecoord	8
+#define sz_xrgb	8
+#define X_CopyColormapAndFree	80
+#define X_InstallColormap	81
+#define X_UninstallColormap	82
+#define X_ListInstalledColormaps	83
+#define X_AllocColor	84
+#define X_AllocNamedColor	85
+#define X_AllocColorCells	86
+#define X_AllocColorPlanes	87
+#define X_FreeColors	88
+#define X_StoreColors	89
+#define X_MapSubwindows	9
+#define X_StoreNamedColor	90
+#define X_QueryColors	91
+#define X_LookupColor	92
+#define X_CreateCursor	93
+#define X_CreateGlyphCursor	94
+#define X_FreeCursor	95
+#define X_RecolorCursor	96
+#define X_QueryBestSize	97
+#define X_QueryExtension	98
+#define X_ListExtensions	99
+#define Atom	CARD32
+#define Colormap	CARD32
+#define Cursor	CARD32
+#define Drawable	CARD32
+#define Font	CARD32
+#define GContext	CARD32
+#define KeySym	CARD32
+#define Pixmap	CARD32
+#define Time	CARD32
+#define VisualID	CARD32
+#define Window	CARD32
+#define KeyCode	CARD8
+
+typedef struct _xEvent {
+    union {
+	struct {
+	    BYTE type;
+	    BYTE detail;
+	    CARD16 sequenceNumber;
+	} u;
+	struct {
+	    CARD32 pad00;
+	    CARD32 time;
+	    CARD32 root;
+	    CARD32 event;
+	    CARD32 child;
+	    INT16 rootX;
+	    INT16 rootY;
+	    INT16 eventX;
+	    INT16 eventY;
+	    KeyButMask state;
+	    BOOL sameScreen;
+	    BYTE pad1;
+	} keyButtonPointer;
+	struct {
+	    CARD32 pad00;
+	    CARD32 time;
+	    CARD32 root;
+	    CARD32 event;
+	    CARD32 child;
+	    INT16 rootX;
+	    INT16 rootY;
+	    INT16 eventX;
+	    INT16 eventY;
+	    KeyButMask state;
+	    BYTE mode;
+	    BYTE flags;
+	} enterLeave;
+	struct {
+	    CARD32 pad00;
+	    CARD32 window;
+	    BYTE mode;
+	    BYTE pad1;
+	    BYTE pad2;
+	    BYTE pad3;
+	} focus;
+	struct {
+	    CARD32 pad00;
+	    CARD32 window;
+	    CARD16 x;
+	    CARD16 y;
+	    CARD16 width;
+	    CARD16 height;
+	    CARD16 count;
+	    CARD16 pad2;
+	} expose;
+	struct {
+	    CARD32 pad00;
+	    CARD32 drawable;
+	    CARD16 x;
+	    CARD16 y;
+	    CARD16 width;
+	    CARD16 height;
+	    CARD16 minorEvent;
+	    CARD16 count;
+	    BYTE majorEvent;
+	    BYTE pad1;
+	    BYTE pad2;
+	    BYTE pad3;
+	} graphicsExposure;
+	struct {
+	    CARD32 pad00;
+	    CARD32 drawable;
+	    CARD16 minorEvent;
+	    BYTE majorEvent;
+	    BYTE bpad;
+	} noExposure;
+	struct {
+	    CARD32 pad00;
+	    CARD32 window;
+	    CARD8 state;
+	    BYTE pad1;
+	    BYTE pad2;
+	    BYTE pad3;
+	} visibility;
+	struct {
+	    CARD32 pad00;
+	    CARD32 parent;
+	    CARD32 window;
+	    INT16 x;
+	    INT16 y;
+	    CARD16 width;
+	    CARD16 height;
+	    CARD16 borderWidth;
+	    BOOL override;
+	    BYTE bpad;
+	} createNotify;
+	struct {
+	    CARD32 pad00;
+	    CARD32 event;
+	    CARD32 window;
+	} destroyNotify;
+	struct {
+	    CARD32 pad00;
+	    CARD32 event;
+	    CARD32 window;
+	    BOOL fromConfigure;
+	    BYTE pad1;
+	    BYTE pad2;
+	    BYTE pad3;
+	} unmapNotify;
+	struct {
+	    CARD32 pad00;
+	    CARD32 event;
+	    CARD32 window;
+	    BOOL override;
+	    BYTE pad1;
+	    BYTE pad2;
+	    BYTE pad3;
+	} mapNotify;
+	struct {
+	    CARD32 pad00;
+	    CARD32 parent;
+	    CARD32 window;
+	} mapRequest;
+	struct {
+	    CARD32 pad00;
+	    CARD32 event;
+	    CARD32 window;
+	    CARD32 parent;
+	    INT16 x;
+	    INT16 y;
+	    BOOL override;
+	    BYTE pad1;
+	    BYTE pad2;
+	    BYTE pad3;
+	} reparent;
+	struct {
+	    CARD32 pad00;
+	    CARD32 event;
+	    CARD32 window;
+	    CARD32 aboveSibling;
+	    INT16 x;
+	    INT16 y;
+	    CARD16 width;
+	    CARD16 height;
+	    CARD16 borderWidth;
+	    BOOL override;
+	    BYTE bpad;
+	} configureNotify;
+	struct {
+	    CARD32 pad00;
+	    CARD32 parent;
+	    CARD32 window;
+	    CARD32 sibling;
+	    INT16 x;
+	    INT16 y;
+	    CARD16 width;
+	    CARD16 height;
+	    CARD16 borderWidth;
+	    CARD16 valueMask;
+	    CARD32 pad1;
+	} configureRequest;
+	struct {
+	    CARD32 pad00;
+	    CARD32 event;
+	    CARD32 window;
+	    INT16 x;
+	    INT16 y;
+	    CARD32 pad1;
+	    CARD32 pad2;
+	    CARD32 pad3;
+	    CARD32 pad4;
+	} gravity;
+	struct {
+	    CARD32 pad00;
+	    CARD32 window;
+	    CARD16 width;
+	    CARD16 height;
+	} resizeRequest;
+	struct {
+	    CARD32 pad00;
+	    CARD32 event;
+	    CARD32 window;
+	    CARD32 parent;
+	    BYTE place;
+	    BYTE pad1;
+	    BYTE pad2;
+	    BYTE pad3;
+	} circulate;
+	struct {
+	    CARD32 pad00;
+	    CARD32 window;
+	    CARD32 atom;
+	    CARD32 time;
+	    BYTE state;
+	    BYTE pad1;
+	    CARD16 pad2;
+	} property;
+	struct {
+	    CARD32 pad00;
+	    CARD32 time;
+	    CARD32 window;
+	    CARD32 atom;
+	} selectionClear;
+	struct {
+	    CARD32 pad00;
+	    CARD32 time;
+	    CARD32 owner;
+	    CARD32 requestor;
+	    CARD32 selection;
+	    CARD32 target;
+	    CARD32 property;
+	} selectionRequest;
+	struct {
+	    CARD32 pad00;
+	    CARD32 time;
+	    CARD32 requestor;
+	    CARD32 selection;
+	    CARD32 target;
+	    CARD32 property;
+	} selectionNotify;
+	struct {
+	    CARD32 pad00;
+	    CARD32 window;
+	    CARD32 colormap;
+	    BOOL c_new;
+	    BYTE state;
+	    BYTE pad1;
+	    BYTE pad2;
+	} colormap;
+	struct {
+	    CARD32 pad00;
+	    CARD8 request;
+	    CARD8 firstKeyCode;
+	    CARD8 count;
+	    BYTE pad1;
+	} mappingNotify;
+	struct {
+	    CARD32 pad00;
+	    CARD32 window;
+	    union {
+		struct {
+		    CARD32 type;
+		    INT32 longs0;
+		    INT32 longs1;
+		    INT32 longs2;
+		    INT32 longs3;
+		    INT32 longs4;
+		} l;
+		struct {
+		    CARD32 type;
+		    INT16 shorts0;
+		    INT16 shorts1;
+		    INT16 shorts2;
+		    INT16 shorts3;
+		    INT16 shorts4;
+		    INT16 shorts5;
+		    INT16 shorts6;
+		    INT16 shorts7;
+		    INT16 shorts8;
+		    INT16 shorts9;
+		} s;
+		struct {
+		    CARD32 type;
+		    INT8 bytes[20];
+		} b;
+	    } u;
+	} clientMessage;
+    } u;
+} xEvent;
+typedef struct {
+    BYTE type;
+    BYTE errorCode;
+    CARD16 sequenceNumber;
+    CARD32 resourceID;
+    CARD16 minorCode;
+    CARD8 majorCode;
+    BYTE pad1;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xError;
+typedef CARD16 KeyButMask;
+typedef struct {
+    CARD8 byteOrder;
+    BYTE pad;
+    CARD16 majorVersion;
+    CARD16 minorVersion;
+    CARD16 nbytesAuthProto;
+    CARD16 nbytesAuthString;
+    CARD16 pad2;
+} xConnClientPrefix;
+typedef struct {
+    CARD8 success;
+    BYTE lengthReason;
+    CARD16 majorVersion;
+    CARD16 minorVersion;
+    CARD16 length;
+} xConnSetupPrefix;
+typedef struct {
+    CARD32 release;
+    CARD32 ridBase;
+    CARD32 ridMask;
+    CARD32 motionBufferSize;
+    CARD16 nbytesVendor;
+    CARD16 maxRequestSize;
+    CARD8 numRoots;
+    CARD8 numFormats;
+    CARD8 imageByteOrder;
+    CARD8 bitmapBitOrder;
+    CARD8 bitmapScanlineUnit;
+    CARD8 bitmapScanlinePad;
+    CARD8 minKeyCode;
+    CARD8 maxKeyCode;
+    CARD32 pad2;
+} xConnSetup;
+typedef struct {
+    CARD8 depth;
+    CARD8 bitsPerPixel;
+    CARD8 scanLinePad;
+    CARD8 pad1;
+    CARD32 pad2;
+} xPixmapFormat;
+typedef struct {
+    CARD8 depth;
+    CARD8 pad1;
+    CARD16 nVisuals;
+    CARD32 pad2;
+} xDepth;
+typedef struct {
+    CARD32 visualID;
+    CARD8 c_class;
+    CARD8 bitsPerRGB;
+    CARD16 colormapEntries;
+    CARD32 redMask;
+    CARD32 greenMask;
+    CARD32 blueMask;
+    CARD32 pad;
+} xVisualType;
+typedef struct {
+    CARD32 windowId;
+    CARD32 defaultColormap;
+    CARD32 whitePixel;
+    CARD32 blackPixel;
+    CARD32 currentInputMask;
+    CARD16 pixWidth;
+    CARD16 pixHeight;
+    CARD16 mmWidth;
+    CARD16 mmHeight;
+    CARD16 minInstalledMaps;
+    CARD16 maxInstalledMaps;
+    CARD32 rootVisualID;
+    CARD8 backingStore;
+    BOOL saveUnders;
+    CARD8 rootDepth;
+    CARD8 nDepths;
+} xWindowRoot;
+typedef struct {
+    CARD32 time;
+    INT16 x;
+    INT16 y;
+} xTimecoord;
+typedef struct {
+    CARD8 family;
+    BYTE pad;
+    CARD16 length;
+} xHostEntry;
+typedef struct {
+    INT16 leftSideBearing;
+    INT16 rightSideBearing;
+    INT16 characterWidth;
+    INT16 ascent;
+    INT16 descent;
+    CARD16 attributes;
+} xCharInfo;
+typedef struct {
+    CARD32 name;
+    CARD32 value;
+} xFontProp;
+typedef struct {
+    CARD8 len;
+    INT8 delta;
+} xTextElt;
+typedef struct {
+    CARD32 pixel;
+    CARD16 red;
+    CARD16 green;
+    CARD16 blue;
+    CARD8 flags;
+    CARD8 pad;
+} xColorItem;
+typedef struct {
+    CARD16 red;
+    CARD16 green;
+    CARD16 blue;
+    CARD16 pad;
+} xrgb;
+typedef unsigned char KEYCODE;
+typedef struct {
+    BYTE type;
+    BYTE data1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 data00;
+    CARD32 data01;
+    CARD32 data02;
+    CARD32 data03;
+    CARD32 data04;
+    CARD32 data05;
+} xGenericReply;
+typedef struct {
+    BYTE type;
+    CARD8 backingStore;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 visualID;
+    CARD16 c_class;
+    CARD8 bitGravity;
+    CARD8 winGravity;
+    CARD32 backingBitPlanes;
+    CARD32 backingPixel;
+    BOOL saveUnder;
+    BOOL mapInstalled;
+    CARD8 mapState;
+    BOOL override;
+    CARD32 colormap;
+    CARD32 allEventMasks;
+    CARD32 yourEventMask;
+    CARD16 doNotPropagateMask;
+    CARD16 pad;
+} xGetWindowAttributesReply;
+typedef struct {
+    BYTE type;
+    CARD8 depth;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 root;
+    INT16 x;
+    INT16 y;
+    CARD16 width;
+    CARD16 height;
+    CARD16 borderWidth;
+    CARD16 pad1;
+    CARD32 pad2;
+    CARD32 pad3;
+} xGetGeometryReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 root;
+    CARD32 parent;
+    CARD16 nChildren;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+} xQueryTreeReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 atom;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+} xInternAtomReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nameLength;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xGetAtomNameReply;
+typedef struct {
+    BYTE type;
+    CARD8 format;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 propertyType;
+    CARD32 bytesAfter;
+    CARD32 nItems;
+    CARD32 pad1;
+    CARD32 pad2;
+    CARD32 pad3;
+} xGetPropertyReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nProperties;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xListPropertiesReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 owner;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+} xGetSelectionOwnerReply;
+typedef struct {
+    BYTE type;
+    BYTE status;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 pad1;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+} xGrabPointerReply;
+typedef xGrabPointerReply xGrabKeyboardReply;
+typedef struct {
+    BYTE type;
+    BOOL sameScreen;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 root;
+    CARD32 child;
+    INT16 rootX;
+    INT16 rootY;
+    INT16 winX;
+    INT16 winY;
+    CARD16 mask;
+    CARD16 pad1;
+    CARD32 pad;
+} xQueryPointerReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 nEvents;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+} xGetMotionEventsReply;
+typedef struct {
+    BYTE type;
+    BOOL sameScreen;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 child;
+    INT16 dstX;
+    INT16 dstY;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+} xTranslateCoordsReply;
+typedef struct {
+    BYTE type;
+    CARD8 revertTo;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 focus;
+    CARD32 pad1;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+} xGetInputFocusReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    BYTE map[32];
+} xQueryKeymapReply;
+typedef struct _xQueryFontReply {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    xCharInfo minBounds;
+    CARD32 walign1;
+    xCharInfo maxBounds;
+    CARD32 walign2;
+    CARD16 minCharOrByte2;
+    CARD16 maxCharOrByte2;
+    CARD16 defaultChar;
+    CARD16 nFontProps;
+    CARD8 drawDirection;
+    CARD8 minByte1;
+    CARD8 maxByte1;
+    BOOL allCharsExist;
+    INT16 fontAscent;
+    INT16 fontDescent;
+    CARD32 nCharInfos;
+} xQueryFontReply;
+typedef struct {
+    BYTE type;
+    CARD8 drawDirection;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    INT16 fontAscent;
+    INT16 fontDescent;
+    INT16 overallAscent;
+    INT16 overallDescent;
+    INT32 overallWidth;
+    INT32 overallLeft;
+    INT32 overallRight;
+    CARD32 pad;
+} xQueryTextExtentsReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nFonts;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xListFontsReply;
+typedef struct {
+    BYTE type;
+    CARD8 nameLength;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    xCharInfo minBounds;
+    CARD32 walign1;
+    xCharInfo maxBounds;
+    CARD32 walign2;
+    CARD16 minCharOrByte2;
+    CARD16 maxCharOrByte2;
+    CARD16 defaultChar;
+    CARD16 nFontProps;
+    CARD8 drawDirection;
+    CARD8 minByte1;
+    CARD8 maxByte1;
+    BOOL allCharsExist;
+    INT16 fontAscent;
+    INT16 fontDescent;
+    CARD32 nReplies;
+} xListFontsWithInfoReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nPaths;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xGetFontPathReply;
+typedef struct {
+    BYTE type;
+    CARD8 depth;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 visual;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xGetImageReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nColormaps;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xListInstalledColormapsReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 red;
+    CARD16 green;
+    CARD16 blue;
+    CARD16 pad2;
+    CARD32 pixel;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+} xAllocColorReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 pixel;
+    CARD16 exactRed;
+    CARD16 exactGreen;
+    CARD16 exactBlue;
+    CARD16 screenRed;
+    CARD16 screenGreen;
+    CARD16 screenBlue;
+    CARD32 pad2;
+    CARD32 pad3;
+} xAllocNamedColorReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nPixels;
+    CARD16 nMasks;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xAllocColorCellsReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nPixels;
+    CARD16 pad2;
+    CARD32 redMask;
+    CARD32 greenMask;
+    CARD32 blueMask;
+    CARD32 pad3;
+    CARD32 pad4;
+} xAllocColorPlanesReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nColors;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xQueryColorsReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 exactRed;
+    CARD16 exactGreen;
+    CARD16 exactBlue;
+    CARD16 screenRed;
+    CARD16 screenGreen;
+    CARD16 screenBlue;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+} xLookupColorReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 width;
+    CARD16 height;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xQueryBestSizeReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    BOOL present;
+    CARD8 major_opcode;
+    CARD8 first_event;
+    CARD8 first_error;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xQueryExtensionReply;
+typedef struct {
+    BYTE type;
+    CARD8 nExtensions;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xListExtensionsReply;
+typedef struct {
+    BYTE type;
+    CARD8 success;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xSetMappingReply;
+typedef xSetMappingReply xSetPointerMappingReply;
+typedef xSetMappingReply xSetModifierMappingReply;
+typedef struct {
+    BYTE type;
+    CARD8 nElts;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xGetPointerMappingReply;
+typedef struct {
+    BYTE type;
+    CARD8 keySymsPerKeyCode;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xGetKeyboardMappingReply;
+typedef struct {
+    BYTE type;
+    CARD8 numKeyPerModifier;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 pad1;
+    CARD32 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+} xGetModifierMappingReply;
+typedef struct {
+    BYTE type;
+    BOOL globalAutoRepeat;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD32 ledMask;
+    CARD8 keyClickPercent;
+    CARD8 bellPercent;
+    CARD16 bellPitch;
+    CARD16 bellDuration;
+    CARD16 pad;
+    BYTE map[32];
+} xGetKeyboardControlReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 accelNumerator;
+    CARD16 accelDenominator;
+    CARD16 threshold;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+} xGetPointerControlReply;
+typedef struct {
+    BYTE type;
+    BYTE pad1;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 timeout;
+    CARD16 interval;
+    BOOL preferBlanking;
+    BOOL allowExposures;
+    CARD16 pad2;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+} xGetScreenSaverReply;
+typedef struct {
+    BYTE type;
+    BOOL enabled;
+    CARD16 sequenceNumber;
+    CARD32 length;
+    CARD16 nHosts;
+    CARD16 pad1;
+    CARD32 pad3;
+    CARD32 pad4;
+    CARD32 pad5;
+    CARD32 pad6;
+    CARD32 pad7;
+} xListHostsReply;
+typedef struct {
+    BYTE type;
+    BYTE map[31];
+} xKeymapEvent;
+typedef struct _xReq {
+    CARD8 reqType;
+    CARD8 data;
+    CARD16 length;
+} xReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 id;
+} xResourceReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 depth;
+    CARD16 length;
+    CARD32 wid;
+    CARD32 parent;
+    INT16 x;
+    INT16 y;
+    CARD16 width;
+    CARD16 height;
+    CARD16 borderWidth;
+    CARD16 c_class;
+    CARD32 visual;
+    CARD32 mask;
+} xCreateWindowReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 window;
+    CARD32 valueMask;
+} xChangeWindowAttributesReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE mode;
+    CARD16 length;
+    CARD32 window;
+} xChangeSaveSetReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 window;
+    CARD32 parent;
+    INT16 x;
+    INT16 y;
+} xReparentWindowReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 pad;
+    CARD16 length;
+    CARD32 window;
+    CARD16 mask;
+    CARD16 pad2;
+} xConfigureWindowReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 direction;
+    CARD16 length;
+    CARD32 window;
+} xCirculateWindowReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL onlyIfExists;
+    CARD16 length;
+    CARD16 nbytes;
+    CARD16 pad;
+} xInternAtomReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 mode;
+    CARD16 length;
+    CARD32 window;
+    CARD32 property;
+    CARD32 type;
+    CARD8 format;
+    BYTE pad[3];
+    CARD32 nUnits;
+} xChangePropertyReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 window;
+    CARD32 property;
+} xDeletePropertyReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL c_delete;
+    CARD16 length;
+    CARD32 window;
+    CARD32 property;
+    CARD32 type;
+    CARD32 longOffset;
+    CARD32 longLength;
+} xGetPropertyReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 window;
+    CARD32 selection;
+    CARD32 time;
+} xSetSelectionOwnerReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 requestor;
+    CARD32 selection;
+    CARD32 target;
+    CARD32 property;
+    CARD32 time;
+} xConvertSelectionReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL ownerEvents;
+    CARD16 length;
+    CARD32 grabWindow;
+    CARD16 eventMask;
+    BYTE pointerMode;
+    BYTE keyboardMode;
+    CARD32 confineTo;
+    CARD32 cursor;
+    CARD32 time;
+} xGrabPointerReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL ownerEvents;
+    CARD16 length;
+    CARD32 grabWindow;
+    CARD16 eventMask;
+    BYTE pointerMode;
+    BYTE keyboardMode;
+    CARD32 confineTo;
+    CARD32 cursor;
+    CARD8 button;
+    BYTE pad;
+    CARD16 modifiers;
+} xGrabButtonReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 button;
+    CARD16 length;
+    CARD32 grabWindow;
+    CARD16 modifiers;
+    CARD16 pad;
+} xUngrabButtonReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cursor;
+    CARD32 time;
+    CARD16 eventMask;
+    CARD16 pad2;
+} xChangeActivePointerGrabReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL ownerEvents;
+    CARD16 length;
+    CARD32 grabWindow;
+    CARD32 time;
+    BYTE pointerMode;
+    BYTE keyboardMode;
+    CARD16 pad;
+} xGrabKeyboardReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL ownerEvents;
+    CARD16 length;
+    CARD32 grabWindow;
+    CARD16 modifiers;
+    CARD8 key;
+    BYTE pointerMode;
+    BYTE keyboardMode;
+    BYTE pad1;
+    BYTE pad2;
+    BYTE pad3;
+} xGrabKeyReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 key;
+    CARD16 length;
+    CARD32 grabWindow;
+    CARD16 modifiers;
+    CARD16 pad;
+} xUngrabKeyReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 mode;
+    CARD16 length;
+    CARD32 time;
+} xAllowEventsReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 window;
+    CARD32 start;
+    CARD32 stop;
+} xGetMotionEventsReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 srcWid;
+    CARD32 dstWid;
+    INT16 srcX;
+    INT16 srcY;
+} xTranslateCoordsReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 srcWid;
+    CARD32 dstWid;
+    INT16 srcX;
+    INT16 srcY;
+    CARD16 srcWidth;
+    CARD16 srcHeight;
+    INT16 dstX;
+    INT16 dstY;
+} xWarpPointerReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 revertTo;
+    CARD16 length;
+    CARD32 focus;
+    CARD32 time;
+} xSetInputFocusReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 fid;
+    CARD16 nbytes;
+    BYTE pad1;
+    BYTE pad2;
+} xOpenFontReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL oddLength;
+    CARD16 length;
+    CARD32 fid;
+} xQueryTextExtentsReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD16 maxNames;
+    CARD16 nbytes;
+} xListFontsReq;
+typedef xListFontsReq xListFontsWithInfoReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD16 nFonts;
+    BYTE pad1;
+    BYTE pad2;
+} xSetFontPathReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 depth;
+    CARD16 length;
+    CARD32 pid;
+    CARD32 drawable;
+    CARD16 width;
+    CARD16 height;
+} xCreatePixmapReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 gc;
+    CARD32 drawable;
+    CARD32 mask;
+} xCreateGCReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 gc;
+    CARD32 mask;
+} xChangeGCReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 srcGC;
+    CARD32 dstGC;
+    CARD32 mask;
+} xCopyGCReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 gc;
+    CARD16 dashOffset;
+    CARD16 nDashes;
+} xSetDashesReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE ordering;
+    CARD16 length;
+    CARD32 gc;
+    INT16 xOrigin;
+    INT16 yOrigin;
+} xSetClipRectanglesReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL exposures;
+    CARD16 length;
+    CARD32 window;
+    INT16 x;
+    INT16 y;
+    CARD16 width;
+    CARD16 height;
+} xClearAreaReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 srcDrawable;
+    CARD32 dstDrawable;
+    CARD32 gc;
+    INT16 srcX;
+    INT16 srcY;
+    INT16 dstX;
+    INT16 dstY;
+    CARD16 width;
+    CARD16 height;
+} xCopyAreaReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 srcDrawable;
+    CARD32 dstDrawable;
+    CARD32 gc;
+    INT16 srcX;
+    INT16 srcY;
+    INT16 dstX;
+    INT16 dstY;
+    CARD16 width;
+    CARD16 height;
+    CARD32 bitPlane;
+} xCopyPlaneReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE coordMode;
+    CARD16 length;
+    CARD32 drawable;
+    CARD32 gc;
+} xPolyPointReq;
+typedef xPolyPointReq xPolyLineReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 drawable;
+    CARD32 gc;
+} xPolySegmentReq;
+typedef xPolySegmentReq xPolyArcReq;
+typedef xPolySegmentReq xPolyRectangleReq;
+typedef xPolySegmentReq xPolyFillRectangleReq;
+typedef xPolySegmentReq xPolyFillArcReq;
+typedef struct _FillPolyReq {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 drawable;
+    CARD32 gc;
+    BYTE shape;
+    BYTE coordMode;
+    CARD16 pad1;
+} xFillPolyReq;
+typedef struct _PutImageReq {
+    CARD8 reqType;
+    CARD8 format;
+    CARD16 length;
+    CARD32 drawable;
+    CARD32 gc;
+    CARD16 width;
+    CARD16 height;
+    INT16 dstX;
+    INT16 dstY;
+    CARD8 leftPad;
+    CARD8 depth;
+    CARD16 pad;
+} xPutImageReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 format;
+    CARD16 length;
+    CARD32 drawable;
+    INT16 x;
+    INT16 y;
+    CARD16 width;
+    CARD16 height;
+    CARD32 planeMask;
+} xGetImageReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 pad;
+    CARD16 length;
+    CARD32 drawable;
+    CARD32 gc;
+    INT16 x;
+    INT16 y;
+} xPolyTextReq;
+typedef xPolyTextReq xPolyText8Req;
+typedef xPolyTextReq xPolyText16Req;
+typedef struct {
+    CARD8 reqType;
+    BYTE nChars;
+    CARD16 length;
+    CARD32 drawable;
+    CARD32 gc;
+    INT16 x;
+    INT16 y;
+} xImageTextReq;
+typedef xImageTextReq xImageText8Req;
+typedef xImageTextReq xImageText16Req;
+typedef struct {
+    CARD8 reqType;
+    BYTE alloc;
+    CARD16 length;
+    CARD32 mid;
+    CARD32 window;
+    CARD32 visual;
+} xCreateColormapReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 mid;
+    CARD32 srcCmap;
+} xCopyColormapAndFreeReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cmap;
+    CARD16 red;
+    CARD16 green;
+    CARD16 blue;
+    CARD16 pad2;
+} xAllocColorReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cmap;
+    CARD16 nbytes;
+    BYTE pad1;
+    BYTE pad2;
+} xAllocNamedColorReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL contiguous;
+    CARD16 length;
+    CARD32 cmap;
+    CARD16 colors;
+    CARD16 planes;
+} xAllocColorCellsReq;
+typedef struct {
+    CARD8 reqType;
+    BOOL contiguous;
+    CARD16 length;
+    CARD32 cmap;
+    CARD16 colors;
+    CARD16 red;
+    CARD16 green;
+    CARD16 blue;
+} xAllocColorPlanesReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cmap;
+    CARD32 planeMask;
+} xFreeColorsReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cmap;
+} xStoreColorsReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 flags;
+    CARD16 length;
+    CARD32 cmap;
+    CARD32 pixel;
+    CARD16 nbytes;
+    BYTE pad1;
+    BYTE pad2;
+} xStoreNamedColorReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cmap;
+} xQueryColorsReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cmap;
+    CARD16 nbytes;
+    BYTE pad1;
+    BYTE pad2;
+} xLookupColorReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cid;
+    CARD32 source;
+    CARD32 mask;
+    CARD16 foreRed;
+    CARD16 foreGreen;
+    CARD16 foreBlue;
+    CARD16 backRed;
+    CARD16 backGreen;
+    CARD16 backBlue;
+    CARD16 x;
+    CARD16 y;
+} xCreateCursorReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cid;
+    CARD32 source;
+    CARD32 mask;
+    CARD16 sourceChar;
+    CARD16 maskChar;
+    CARD16 foreRed;
+    CARD16 foreGreen;
+    CARD16 foreBlue;
+    CARD16 backRed;
+    CARD16 backGreen;
+    CARD16 backBlue;
+} xCreateGlyphCursorReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 cursor;
+    CARD16 foreRed;
+    CARD16 foreGreen;
+    CARD16 foreBlue;
+    CARD16 backRed;
+    CARD16 backGreen;
+    CARD16 backBlue;
+} xRecolorCursorReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 c_class;
+    CARD16 length;
+    CARD32 drawable;
+    CARD16 width;
+    CARD16 height;
+} xQueryBestSizeReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD16 nbytes;
+    BYTE pad1;
+    BYTE pad2;
+} xQueryExtensionReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 numKeyPerModifier;
+    CARD16 length;
+} xSetModifierMappingReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 nElts;
+    CARD16 length;
+} xSetPointerMappingReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD8 firstKeyCode;
+    CARD8 count;
+    CARD16 pad1;
+} xGetKeyboardMappingReq;
+typedef struct {
+    CARD8 reqType;
+    CARD8 keyCodes;
+    CARD16 length;
+    CARD8 firstKeyCode;
+    CARD8 keySymsPerKeyCode;
+    CARD16 pad1;
+} xChangeKeyboardMappingReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 mask;
+} xChangeKeyboardControlReq;
+typedef struct {
+    CARD8 reqType;
+    INT8 percent;
+    CARD16 length;
+} xBellReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    INT16 accelNum;
+    INT16 accelDenum;
+    INT16 threshold;
+    BOOL doAccel;
+    BOOL doThresh;
+} xChangePointerControlReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    INT16 timeout;
+    INT16 interval;
+    BYTE preferBlank;
+    BYTE allowExpose;
+    CARD16 pad2;
+} xSetScreenSaverReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE mode;
+    CARD16 length;
+    CARD8 hostFamily;
+    BYTE pad;
+    CARD16 hostLength;
+} xChangeHostsReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+} xListHostsReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE mode;
+    CARD16 length;
+} xChangeModeReq;
+typedef xChangeModeReq xSetAccessControlReq;
+typedef xChangeModeReq xSetCloseDownModeReq;
+typedef xChangeModeReq xForceScreenSaverReq;
+typedef struct {
+    CARD8 reqType;
+    BYTE pad;
+    CARD16 length;
+    CARD32 window;
+    CARD16 nAtoms;
+    INT16 nPositions;
+} xRotatePropertiesReq;
+
+typedef union {
+    xGenericReply generic;
+    xGetGeometryReply geom;
+    xQueryTreeReply tree;
+    xInternAtomReply atom;
+    xGetAtomNameReply atomName;
+    xGetPropertyReply property;
+    xListPropertiesReply listProperties;
+    xGetSelectionOwnerReply selection;
+    xGrabPointerReply grabPointer;
+    xGrabKeyboardReply grabKeyboard;
+    xQueryPointerReply pointer;
+    xGetMotionEventsReply motionEvents;
+    xTranslateCoordsReply coords;
+    xGetInputFocusReply inputFocus;
+    xQueryTextExtentsReply textExtents;
+    xListFontsReply fonts;
+    xGetFontPathReply fontPath;
+    xGetImageReply image;
+    xListInstalledColormapsReply colormaps;
+    xAllocColorReply allocColor;
+    xAllocNamedColorReply allocNamedColor;
+    xAllocColorCellsReply colorCells;
+    xAllocColorPlanesReply colorPlanes;
+    xQueryColorsReply colors;
+    xLookupColorReply lookupColor;
+    xQueryBestSizeReply bestSize;
+    xQueryExtensionReply extension;
+    xListExtensionsReply extensions;
+    xSetModifierMappingReply setModifierMapping;
+    xGetModifierMappingReply getModifierMapping;
+    xSetPointerMappingReply setPointerMapping;
+    xGetKeyboardMappingReply getKeyboardMapping;
+    xGetPointerMappingReply getPointerMapping;
+    xGetPointerControlReply pointerControl;
+    xGetScreenSaverReply screenSaver;
+    xListHostsReply hosts;
+    xError error;
+    xEvent event;
+} xReply;
+typedef struct {
+    CARD8 reqType;
+    BOOL propagate;
+    CARD16 length;
+    CARD32 destination;
+    CARD32 eventMask;
+    xEvent event;
+} xSendEventReq;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>X11/Xresource.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
+#define NULLQUARK	((XrmQuark) 0)
+
 typedef int XrmQuark;
 typedef int *XrmQuarkList;
 typedef char *XrmString;
-enum {
-    XrmBindTightly,
-    XrmBindLoosely
-};
 typedef enum {
     XrmBindTightly,
     XrmBindLoosely
 } XrmBinding;
-enum {
-    XrmBindTightly,
-    XrmBindLoosely
-};
 typedef enum *XrmBindingList;
 typedef XrmQuark XrmName;
 typedef XrmQuarkList XrmNameList;
@@ -3333,17 +5948,8 @@ typedef struct {
 } *XrmValuePtr;
 typedef struct _XrmHashBucketRec *XrmHashBucket;
 typedef XrmHashBucket *XrmHashTable;
+typedef XrmHashTable XrmSearchList[];
 typedef struct _XrmHashBucketRec *XrmDatabase;
-enum {
-    XrmoptionNoArg,
-    XrmoptionIsArg,
-    XrmoptionStickyArg,
-    XrmoptionSepArg,
-    XrmoptionResArg,
-    XrmoptionSkipArg,
-    XrmoptionSkipLine,
-    XrmoptionSkipNArgs
-};
 typedef enum {
     XrmoptionNoArg,
     XrmoptionIsArg,
@@ -3370,7 +5976,11 @@ extern void XrmCombineDatabase(XrmDatabase, XrmDatabase *, int);
 extern int XrmCombineFileDatabase(const char *, XrmDatabase *, int);
 extern void XrmDestroyDatabase(XrmDatabase);
 extern int XrmEnumerateDatabase(XrmDatabase, XrmNameList, XrmClassList,
-				int, int, XPointer);
+				int, int (*)(XrmDatabase *, XrmBindingList,
+					     XrmQuarkList,
+					     XrmRepresentation *,
+					     XrmValue *, XPointer)
+				, XPointer);
 extern XrmDatabase XrmGetDatabase(Display *);
 extern XrmDatabase XrmGetFileDatabase(const char *);
 extern int XrmGetResource(XrmDatabase, const char *, const char *, char **,
@@ -3419,11 +6029,6 @@ extern XrmQuark XrmUniqueQuark(void);
 #define IsPFKey(keysym)	(((KeySym)(keysym)>=XK_KP_F1)&amp;&amp;((KeySym)(keysym)&lt;=XK_KP_F4))
 #define IsKeypadKey(keysym)	(((KeySym)(keysym)>=XK_KP_Space)&amp;&amp;((KeySym)(keysym)&lt;=XK_KP_E
 #define IsMiscFunctionKey(keysym)	(((KeySym)(keysym)>=XK_Select)&amp;&amp;((KeySym)(keysym)&lt;=XK_Break)
-#define XAddPixel(ximage,value)	((*((ximage)->f.add_pixel))((ximage), (value)))
-#define XDestroyImage(ximage)	((*((ximage)->f.destroy_image))((ximage)))
-#define XGetPixel(ximage,x,y)	((*((ximage)->f.get_pixel))((ximage), (x), (y)))
-#define XPutPixel(ximage,x,y,pixel)	((*((ximage)->f.put_pixel))((ximage), (x), (y), (pixel)))
-#define XSubImage(ximage,x,y,width,height)	((*((ximage)->f.sub_image))((ximage), (x), (y), (width), (height)))
 #define XStringToContext(string)	((XContext)XrmStringToQuark(string))
 #define XUniqueContext()	((XContext)XrmUniqueQuark())
 #define ReleaseByFreeingColormap	((XID)1L)
@@ -3486,28 +6091,96 @@ extern XrmQuark XrmUniqueQuark(void);
 #define IconicState	3
 #define InactiveState	4
 
-typedef struct XSizeHints;
-typedef struct XWMHints;
-typedef struct XTextProperty;
-typedef struct XIconSize;
-typedef struct XClassHint;
+typedef struct {
+    long int flags;
+    int x;
+    int y;
+    int width;
+    int height;
+    int min_width;
+    int min_height;
+    int max_width;
+    int max_height;
+    int width_inc;
+    int height_inc;
+    struct {
+	int x;
+	int y;
+    } min_aspect;
+    struct {
+	int x;
+	int y;
+    } max_aspect;
+    int base_width;
+    int base_height;
+    int win_gravity;
+} XSizeHints;
+typedef struct {
+    long int flags;
+    int input;
+    int initial_state;
+    Pixmap icon_pixmap;
+    Window icon_window;
+    int icon_x;
+    int icon_y;
+    Pixmap icon_mask;
+    XID window_group;
+} XWMHints;
+typedef struct {
+    unsigned char *value;
+    Atom encoding;
+    int format;
+    unsigned long int nitems;
+} XTextProperty;
+typedef struct {
+    int min_width;
+    int min_height;
+    int max_width;
+    int max_height;
+    int width_inc;
+    int height_inc;
+} XIconSize;
+typedef struct {
+    char *res_name;
+    char *res_class;
+} XClassHint;
 typedef struct _XComposeStatus {
     XPointer compose_ptr;
     int chars_matched;
 } XComposeStatus;
 typedef struct _XRegion *Region;
-typedef struct XVisualInfo;
-typedef struct XStandardColormap;
+typedef struct {
+    Visual *visual;
+    VisualID visualid;
+    int screen;
+    int depth;
+    int c_class;
+    unsigned long int red_mask;
+    unsigned long int green_mask;
+    unsigned long int blue_mask;
+    int colormap_size;
+    int bits_per_rgb;
+} XVisualInfo;
+typedef struct {
+    Colormap colormap;
+    unsigned long int red_max;
+    unsigned long int red_mult;
+    unsigned long int green_max;
+    unsigned long int green_mult;
+    unsigned long int blue_max;
+    unsigned long int blue_mult;
+    unsigned long int base_pixel;
+    VisualID visualid;
+    XID killid;
+} XStandardColormap;
 typedef int XContext;
-enum;
-typedef enum XICCEncodingStyle;
-enum {
-    XStringStyle,
-    XCompoundTextStyle,
-    XTextStyle,
-    XStdICCTextStyle,
-    XUTF8StringStyle
-};
+typedef enum {
+    XStringStyle = 0,
+    XCompoundTextStyle = 1,
+    XTextStyle = 2,
+    XStdICCTextStyle = 3,
+    XUTF8StringStyle = 4
+} XICCEncodingStyle;
 extern int XAddPixel(XImage *, long int);
 extern XClassHint *XAllocClassHint(void);
 extern XIconSize *XAllocIconSize(void);

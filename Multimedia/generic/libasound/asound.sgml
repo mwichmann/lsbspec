@@ -2134,6 +2134,7 @@ underlying specification.
 </SECT3>
 </SECT2>
 </SECT1>
+<!-- empty header file All/alsa/asoundlib.h -->
 <SECT1 ID=libasound-ddefs>
 <TITLE>Data Definitions for libasound</TITLE>
 <PARA>
@@ -2291,9 +2292,11 @@ typedef enum _snd_ctl_type {
 typedef struct _snd_hctl snd_hctl_t;
 typedef struct _snd_sctl snd_sctl_t;
 typedef struct _snd_hctl_elem snd_hctl_elem_t;
-typedef int (*snd_hctl_compare_t) (void);
-typedef int (*snd_hctl_callback_t) (void);
-typedef int (*snd_hctl_elem_callback_t) (void);
+typedef int (*snd_hctl_compare_t) (const snd_hctl_elem_t *,
+				   const snd_hctl_elem_t *);
+typedef int (*snd_hctl_callback_t) (snd_hctl_t *, unsigned int,
+				    snd_hctl_elem_t *);
+typedef int (*snd_hctl_elem_callback_t) (snd_hctl_elem_t *, unsigned int);
 extern int snd_async_add_ctl_handler(snd_async_handler_t * *, snd_ctl_t *,
 				     snd_async_callback_t, void *);
 extern snd_ctl_t *snd_async_handler_get_ctl(snd_async_handler_t *);
@@ -2569,7 +2572,8 @@ typedef struct snd_ctl_ext {
 #define SND_ERROR_ALISP_NIL	(SND_ERROR_BEGIN+1)
 #define SND_ERROR_BEGIN	500000
 
-typedef void (*snd_lib_error_handler_t) (void);
+typedef void (*snd_lib_error_handler_t) (const char *, int, const char *,
+					 int, const char *, ...);
 extern int snd_lib_error_set_handler(snd_lib_error_handler_t);
 extern const char *snd_strerror(int);
 </SCREEN>
@@ -2581,7 +2585,7 @@ extern const char *snd_strerror(int);
 <SCREEN>
 
 typedef struct _snd_async_handler snd_async_handler_t;
-typedef void (*snd_async_callback_t) (void);
+typedef void (*snd_async_callback_t) (snd_async_handler_t *);
 typedef struct timespec snd_htimestamp_t;
 typedef struct timeval snd_timestamp_t;
 extern const char *snd_asoundlib_version(void);
@@ -2727,50 +2731,7 @@ extern int snd_input_stdio_open(snd_input_t * *, const char *,
 				const char *);
 </SCREEN>
 </SECT2>
-<SECT2>
-<TITLE>alsa/instr.h</TITLE>
-<PARA>
-</PARA>
-<SCREEN>
-
-#define SND_SEQ_INSTR_ID_DLS1	"DLS1"
-#define SND_SEQ_INSTR_ID_DLS2	"DLS2"
-#define SND_SEQ_INSTR_ID_GUS_PATCH	"GUS Patch"
-#define SND_SEQ_INSTR_ID_INTERWAVE	"Interwave FFFF"
-#define SND_SEQ_INSTR_ID_OPL2_3	"OPL2/3 FM"
-#define SND_SEQ_INSTR_ID_OPL4	"OPL4"
-#define SND_SEQ_INSTR_ID_SIMPLE	"Simple Wave"
-#define SND_SEQ_INSTR_ID_SOUNDFONT	"SoundFont"
-#define SND_SEQ_INSTR_QUERY_FOLLOW_ALIAS	(1&lt;&lt;0)
-#define SND_SEQ_INSTR_TYPE0_DLS1	(1&lt;&lt;0)
-#define SND_SEQ_INSTR_TYPE1_SIMPLE	(1&lt;&lt;0)
-#define SND_SEQ_INSTR_TYPE2_OPL2_3	(1&lt;&lt;0)
-#define SND_SEQ_INSTR_TYPE0_DLS2	(1&lt;&lt;1)
-#define SND_SEQ_INSTR_TYPE1_SOUNDFONT	(1&lt;&lt;1)
-#define SND_SEQ_INSTR_TYPE2_OPL4	(1&lt;&lt;1)
-#define SND_SEQ_INSTR_TYPE1_GUS_PATCH	(1&lt;&lt;2)
-#define SND_SEQ_INSTR_TYPE1_INTERWAVE	(1&lt;&lt;3)
-#define SND_SEQ_INSTR_ATYPE_DATA	0
-#define SND_SEQ_INSTR_FREE_CMD_ALL	0
-#define SND_SEQ_INSTR_GET_CMD_FULL	0
-#define SND_SEQ_INSTR_PUT_CMD_CREATE	0
-#define SND_SEQ_INSTR_ATYPE_ALIAS	1
-#define SND_SEQ_INSTR_FREE_CMD_PRIVATE	1
-#define SND_SEQ_INSTR_GET_CMD_PARTIAL	1
-#define SND_SEQ_INSTR_PUT_CMD_REPLACE	1
-#define SND_SEQ_INSTR_FREE_CMD_CLUSTER	2
-#define SND_SEQ_INSTR_PUT_CMD_MODIFY	2
-#define SND_SEQ_INSTR_FREE_CMD_SINGLE	3
-#define SND_SEQ_INSTR_PUT_CMD_ADD	3
-#define SND_SEQ_INSTR_PUT_CMD_REMOVE	4
-
-typedef void snd_instr_fm_t;
-typedef struct sndrv_seq_instr_header snd_instr_header_t;
-typedef void snd_instr_iwffff_t;
-typedef void snd_instr_simple_t;
-typedef struct _snd_iwffff_handle snd_iwffff_handle_t;
-</SCREEN>
-</SECT2>
+<!-- empty header file All/alsa/instr.h -->
 <SECT2>
 <TITLE>alsa/mixer.h</TITLE>
 <PARA>
@@ -2784,10 +2745,14 @@ typedef enum _snd_mixer_elem_type {
     SND_MIXER_ELEM_LAST
 } snd_mixer_elem_type_t;
 typedef struct _snd_mixer_class snd_mixer_class_t;
-typedef int (*snd_mixer_compare_t) (void);
-typedef int (*snd_mixer_elem_callback_t) (void);
-typedef int (*snd_mixer_callback_t) (void);
-typedef int (*snd_mixer_event_t) (void);
+typedef int (*snd_mixer_compare_t) (const snd_mixer_elem_t *,
+				    const snd_mixer_elem_t *);
+typedef int (*snd_mixer_elem_callback_t) (snd_mixer_elem_t *,
+					  unsigned int);
+typedef int (*snd_mixer_callback_t) (snd_mixer_t *, unsigned int,
+				     snd_mixer_elem_t *);
+typedef int (*snd_mixer_event_t) (snd_mixer_class_t *, unsigned int,
+				  snd_hctl_elem_t *, snd_mixer_elem_t *);
 typedef enum _snd_mixer_selem_channel_id {
     SND_MIXER_SCHN_UNKNOWN = -1,
     SND_MIXER_SCHN_FRONT_LEFT,
@@ -3080,7 +3045,7 @@ typedef enum _snd_pcm_format {
     SND_PCM_FORMAT_IEC958_SUBFRAME = 18
 } snd_pcm_format_t;
 typedef struct _snd_pcm_hook snd_pcm_hook_t;
-typedef int (*snd_pcm_hook_func_t) (void);
+typedef int (*snd_pcm_hook_func_t) (snd_pcm_hook_t *);
 typedef enum _snd_pcm_hook_type {
     SND_PCM_HOOK_TYPE_HW_PARAMS,
     SND_PCM_HOOK_TYPE_HW_FREE = 1,
@@ -4035,9 +4000,6 @@ typedef struct snd_seq_connect {
     snd_seq_addr_t sender;
     snd_seq_addr_t dest;
 } snd_seq_connect_t;
-typedef struct snd_seq_ev_cluster {
-    snd_seq_instr_cluster_t cluster;
-} snd_seq_ev_cluster_t;
 typedef struct snd_seq_ev_ctrl {
     unsigned char channel;
     unsigned char unused[3];
@@ -4049,13 +4011,6 @@ typedef struct snd_seq_ev_ext {
     void *ptr;
 } __attribute__ ((packed))
     snd_seq_ev_ext_t;
-typedef struct snd_seq_ev_instr_begin {
-    int timeout;
-} snd_seq_ev_instr_begin_t;
-typedef struct snd_seq_ev_loop {
-    unsigned int start;
-    unsigned int end;
-} snd_seq_ev_loop_t;
 typedef struct snd_seq_ev_note {
     unsigned char channel;
     unsigned char note;
@@ -4081,31 +4036,6 @@ typedef struct snd_seq_ev_raw32 {
 typedef struct snd_seq_ev_raw8 {
     unsigned char d[12];
 } snd_seq_ev_raw8_t;
-typedef struct snd_seq_ev_sample_control {
-    unsigned char channel;
-    unsigned char unused[3];
-    union {
-	snd_seq_ev_sample_t sample;
-	snd_seq_ev_cluster_t cluster;
-	snd_seq_position_t position;
-	snd_seq_stop_mode_t stop_mode;
-	snd_seq_frequency_t frequency;
-	snd_seq_ev_volume_t volume;
-	snd_seq_ev_loop_t loop;
-	unsigned char raw8[8];
-    } param;
-} snd_seq_ev_sample_control_t;
-typedef struct snd_seq_ev_sample {
-    unsigned int std;
-    short unsigned int bank;
-    short unsigned int prg;
-} snd_seq_ev_sample_t;
-typedef struct snd_seq_ev_volume {
-    short int volume;
-    short int lr;
-    short int fr;
-    short int du;
-} snd_seq_ev_volume_t;
 typedef struct snd_seq_event {
     snd_seq_event_type_t type;
     unsigned char flags;
@@ -4125,20 +4055,9 @@ typedef struct snd_seq_event {
 	snd_seq_addr_t addr;
 	snd_seq_connect_t connect;
 	snd_seq_result_t result;
-	snd_seq_ev_instr_begin_t instr_begin;
-	snd_seq_ev_sample_control_t sample;
     } data;
 } snd_seq_event_t;
 typedef unsigned char snd_seq_event_type_t;
-typedef int snd_seq_frequency_t;
-typedef unsigned int snd_seq_instr_cluster_t;
-typedef struct snd_seq_instr {
-    snd_seq_instr_cluster_t cluster;
-    unsigned int std;
-    short unsigned int bank;
-    short unsigned int prg;
-} snd_seq_instr_t;
-typedef unsigned int snd_seq_position_t;
 typedef struct snd_seq_queue_skew {
     unsigned int value;
     unsigned int base;
@@ -4155,11 +4074,6 @@ typedef struct snd_seq_result {
     int event;
     int result;
 } snd_seq_result_t;
-typedef enum snd_seq_stop_mode {
-    SND_SEQ_SAMPLE_STOP_IMMEDIATELY,
-    SND_SEQ_SAMPLE_STOP_VENVELOPE = 1,
-    SND_SEQ_SAMPLE_STOP_LOOP = 2
-} snd_seq_stop_mode_t;
 typedef unsigned int snd_seq_tick_time_t;
 typedef union snd_seq_timestamp {
     snd_seq_tick_time_t tick;

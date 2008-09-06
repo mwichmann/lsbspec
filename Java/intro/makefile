@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=intro.sgml
-TABLES=standards.sgml
+TABLES=references.sgml
 
 .cpp.sgml:
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
@@ -10,12 +10,10 @@ TABLES=standards.sgml
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
 
-all: $(FILES) $(TABLES)
+all: $(FILES) #$(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'LSB'" >standards.sgml
-	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Graphics >glibraries.sgml
-
+	../../mkstandardsgmltable -a All -s "'Java','JavaCmd','JavaVM'" >references.sgml
 
 clean:
 	rm -f $(FILES)
@@ -23,5 +21,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-
-intro.sgml: standards.sgml glibraries.sgml
+intro.sgml: references.sgml

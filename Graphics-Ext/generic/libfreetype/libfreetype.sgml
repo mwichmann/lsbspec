@@ -746,7 +746,7 @@ extern FT_Error FT_Bitmap_Done(FT_Library, FT_Bitmap *);
 extern FT_Error FT_Bitmap_Convert(FT_Library, const FT_Bitmap *,
 				  FT_Bitmap *, FT_Int);
 extern void FT_Bitmap_New(FT_Bitmap *);
-extern FT_Error FT_Bitmap_Copy(FT_Library, const FT_Bitmap *, FT_Bitmap);
+extern FT_Error FT_Bitmap_Copy(FT_Library, const FT_Bitmap *, FT_Bitmap *);
 extern FT_Error FT_Bitmap_Embolden(FT_Library, FT_Bitmap *, FT_Pos,
 				   FT_Pos);
 </SCREEN>
@@ -862,15 +862,13 @@ typedef struct FT_Glyph_Class_ {
     FT_Glyph_PrepareFunc glyph_prepare;
 } FT_Glyph_Class;
 typedef struct FT_GlyphRec_ *FT_Glyph;
-typedef FT_Error(*FT_Glyph_InitFunc) (FT_Glyph, FT_Glyph, FT_GlyphSlot,
-				      FT_GlyphSlot);
+typedef FT_Error(*FT_Glyph_InitFunc) (FT_Glyph, FT_GlyphSlot);
 typedef void (*FT_Glyph_DoneFunc) (FT_Glyph);
 typedef FT_Error(*FT_Glyph_CopyFunc) (FT_Glyph, FT_Glyph);
 typedef void (*FT_Glyph_TransformFunc) (FT_Glyph, FT_Matrix *,
 					FT_Vector *);
 typedef void (*FT_Glyph_GetBBoxFunc) (FT_Glyph, FT_BBox *);
-typedef FT_Error(*FT_Glyph_PrepareFunc) (FT_Glyph, FT_Glyph, FT_GlyphSlot,
-					 FT_GlyphSlot);
+typedef FT_Error(*FT_Glyph_PrepareFunc) (FT_Glyph, FT_GlyphSlot);
 typedef enum FT_Glyph_BBox_Mode_ {
     FT_GLYPH_BBOX_UNSCALED = 0,
     FT_GLYPH_BBOX_SUBPIXELS = 0,
@@ -991,8 +989,7 @@ typedef struct FT_Span_ {
     unsigned short len;
     unsigned char coverage;
 } FT_Span;
-typedef void (*FT_SpanFunc) (int, int, int, int, FT_Span *, FT_Span *,
-			     void *, void *);
+typedef void (*FT_SpanFunc) (int, int, FT_Span *, void *);
 typedef int (*FT_Raster_BitTest_Func) (int, int, void *);
 typedef void (*FT_Raster_BitSet_Func) (int, int, void *);
 typedef struct FT_Raster_Params_ {
@@ -1006,9 +1003,7 @@ typedef struct FT_Raster_Params_ {
     void *user;
     FT_BBox clip_box;
 } FT_Raster_Params;
-typedef int (*FT_Raster_RenderFunc) (FT_Raster, FT_Raster,
-				     FT_Raster_Params *,
-				     FT_Raster_Params *);
+typedef int (*FT_Raster_RenderFunc) (FT_Raster, FT_Raster_Params *);
 typedef void (*FT_Raster_DoneFunc) (FT_Raster);
 typedef struct FT_Raster_Funcs_ {
     FT_Glyph_Format glyph_format;
@@ -1241,10 +1236,8 @@ extern FT_Error FT_Get_PFR_Kerning(FT_Face, FT_UInt, FT_UInt, FT_Vector *);
 #define FTRenderer_setMode	FT_Renderer_SetModeFunc
 #define FTRenderer_transform	FT_Renderer_TransformFunc
 
-typedef FT_Error(*FT_Renderer_RenderFunc) (FT_Renderer, FT_Renderer,
-					   FT_GlyphSlot, FT_GlyphSlot,
-					   FT_UInt, FT_UInt, FT_Vector *,
-					   FT_Vector *);
+typedef FT_Error(*FT_Renderer_RenderFunc) (FT_Renderer, FT_GlyphSlot,
+					   FT_UInt, FT_Vector *);
 typedef FT_Error(*FT_Renderer_TransformFunc) (FT_Renderer, FT_GlyphSlot,
 					      FT_Matrix *, FT_Vector *);
 typedef void (*FT_Renderer_GetCBoxFunc) (FT_Renderer, FT_GlyphSlot,

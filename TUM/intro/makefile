@@ -10,7 +10,7 @@ TABLES=references.sgml
 all: $(FILES) #$(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'xdg-utils'" >references.sgml
+	../../mkstandardsgmltable -a All -s "'xdg-utils','Java','JavaCmd','JavaVM'" >references.sgml
 
 clean:
 	rm -f $(FILES)

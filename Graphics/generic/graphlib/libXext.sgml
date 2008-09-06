@@ -46,6 +46,22 @@ The behavior of the interfaces in this library is specified by the following spe
 </MEMBER>
 </SIMPLELIST>
 </PARA>
+<!-- debug: database interface name libXext interfaces -->
+<SECT2>
+<!--libgroup-->
+<TITLE>libXext interfaces</TITLE>
+<PARA>
+</PARA>
+
+
+<SECT3>
+<TITLE>Interfaces for libXext interfaces</TITLE>
+<PARA>
+No external functions are defined for libXext - libXext interfaces
+in this part of the specification. See also the relevant architecture specific part of this specification.
+</PARA>
+</SECT3>
+</SECT2>
 <!-- debug: database interface name X Shape Extension -->
 <SECT2>
 <!--libgroup-->
@@ -424,7 +440,7 @@ typedef struct {
     unsigned int num_colormap_conflicts;
     VisualID *colormap_conflicts;
 } ExtendedVisualInfo;
-extern int XeviGetVisualInfo(Display *, Visual *, int,
+extern int XeviGetVisualInfo(Display *, VisualID *, int,
 			     ExtendedVisualInfo * *, int *);
 extern int XeviQueryExtension(Display *);
 extern int XeviQueryVersion(Display *, int *, int *);
@@ -687,6 +703,17 @@ extern int XkbSetGeometry(Display *, unsigned int, XkbGeometryPtr);
 </PARA>
 <SCREEN>
 
+#define X_ShmQueryVersion	0
+#define X_ShmAttach	1
+#define X_ShmDetach	2
+#define X_ShmPutImage	3
+#define X_ShmGetImage	4
+#define X_ShmCreatePixmap	5
+#define ShmCompletion	0
+#define ShmNumberEvents	(ShmCompletion + 1)
+#define BadShmSeg	0
+#define ShmNumberErrors	(BadShmSeg + 1)
+
 typedef unsigned long int ShmSeg;
 typedef struct {
     int type;
@@ -762,6 +789,51 @@ extern int XdbeSwapBuffers(Display *, XdbeSwapInfo *, int);
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>X11/extensions/Xdbeproto.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define DbeNumberErrors	(DbeBadBuffer + 1)
+#define DBE_MINOR_VERSION	0
+#define DbeBadBuffer	0
+#define DbeNumberEvents	0
+#define X_DbeGetVersion	0
+#define XdbeUndefined	0
+#define DBE_MAJOR_VERSION	1
+#define X_DbeAllocateBackBufferName	1
+#define XdbeBackground	1
+#define X_DbeDeallocateBackBufferName	2
+#define XdbeUntouched	2
+#define X_DbeSwapBuffers	3
+#define XdbeCopied	3
+#define X_DbeBeginIdiom	4
+#define X_DbeEndIdiom	5
+#define X_DbeGetVisualInfo	6
+#define X_DbeGetBackBufferAttributes	7
+#define DBE_PROTOCOL_NAME	"DOUBLE-BUFFER"
+
+typedef CARD8 xDbeSwapAction;
+typedef CARD32 xDbeBackBuffer;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>X11/extensions/Xext.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define X_EXTENSION_MISSING	"missing"
+#define X_EXTENSION_UNKNOWN	"unknown"
+
+extern
+    int (*XSetExtensionErrorHandler
+	 (int (*XSetExtensionErrorHandler) (Display *, char *, char *)
+	 )) (Display *, char *, char *);
+extern int XMissingExtension(Display *, const char *);
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>X11/extensions/dpms.h</TITLE>
 <PARA>
 </PARA>
@@ -781,6 +853,82 @@ extern int DPMSGetVersion(Display *, int *, int *);
 extern int DPMSInfo(Display *, CARD16 *, BOOL *);
 extern int DPMSQueryExtension(Display *, int *, int *);
 extern int DPMSSetTimeouts(Display *, CARD16, CARD16, CARD16);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>X11/extensions/extutil.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define XextHasExtension(i)	((i) &amp;&amp; ((i)->codes))
+#define XEXT_ERROR_STRING_PROTO(proc)	\
+        char *proc(Display *dpy, int code, XExtCodes *codes, char *buf, int n)
+#define XEXT_CLOSE_DISPLAY_PROTO(proc)	\
+        int proc(Display *dpy, XExtCodes *codes)
+#define XEXT_FIND_DISPLAY_PROTO(proc)	\
+        XExtDisplayInfo *proc(Display *dpy)
+#define XextCheckExtension(dpy,i,name,val)	\
+  if (!XextHasExtension(i)) { XMissingExtension (dpy, name); return val; }
+#define XextSimpleCheckExtension(dpy,i,name)	\
+  if (!XextHasExtension(i)) { XMissingExtension (dpy, name); return; }
+#define XEXT_GENERATE_ERROR_STRING(proc,extname,nerr,errl)	\
+char *proc (Display *dpy, int code, XExtCodes *codes, char *buf, int n) \
+{ \
+    code -= codes->first_error; \
+    if (code >= 0 &amp;&amp; code &lt; nerr) { \
+        char tmp[256]; \
+        sprintf (tmp, "%s.%d", extname, code); \
+        XGetErrorDatabaseText (dpy, "XProtoError", tmp, errl[code], buf, n); \
+        return buf; \
+    } \
+    return (char *)0; \
+}
+#define XEXT_GENERATE_CLOSE_DISPLAY(proc,extinfo)	\
+int proc (Display *dpy, XExtCodes *codes) \
+{ \
+    return XextRemoveDisplay (extinfo, dpy); \
+}
+#define XEXT_GENERATE_FIND_DISPLAY(proc,extinfo,extname,hooks,nev,data)	\
+XExtDisplayInfo *proc (Display *dpy) \
+{ \
+XExtDisplayInfo *dpyinfo; \
+    if (!extinfo) { if (!(extinfo = XextCreateExtension())) return NULL; } \
+    if (!(dpyinfo = XextFindDisplay (extinfo, dpy))) \
+      dpyinfo = XextAddDisplay (extinfo,dpy,extname,hooks,nev,data); \
+    return dpyinfo; \
+}
+
+typedef struct _XExtDisplayInfo {
+    struct _XExtDisplayInfo *next;
+    Display *display;
+    XExtCodes *codes;
+    XPointer data;
+} XExtDisplayInfo;
+typedef struct _XExtensionInfo {
+    XExtDisplayInfo *head;
+    XExtDisplayInfo *cur;
+    int ndisplays;
+} XExtensionInfo;
+typedef struct _XExtensionHooks {
+    int (*create_gc) (Display *, GC, XExtCodes *);
+    int (*copy_gc) (Display *, GC, XExtCodes *);
+    int (*flush_gc) (Display *, GC, XExtCodes *);
+    int (*free_gc) (Display *, GC, XExtCodes *);
+    int (*create_font) (Display *, XFontStruct *, XExtCodes *);
+    int (*free_font) (Display *, XFontStruct *, XExtCodes *);
+    int (*close_display) (Display *, XExtCodes *);
+    int (*wire_to_event) (Display *, XEvent *, xEvent *);
+    int (*event_to_wire) (Display *, XEvent *, xEvent *);
+    int (*error) (Display *, xError *, XExtCodes *, int *);
+    char *(*error_string) (Display *, int, XExtCodes *, char *, int);
+} XExtensionHooks;
+extern XExtDisplayInfo *XextAddDisplay(XExtensionInfo *, Display *, char *,
+				       XExtensionHooks *, int, XPointer);
+extern XExtensionInfo *XextCreateExtension(void);
+extern void XextDestroyExtension(XExtensionInfo *);
+extern XExtDisplayInfo *XextFindDisplay(XExtensionInfo *, Display *);
+extern int XextRemoveDisplay(XExtensionInfo *, Display *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -836,6 +984,27 @@ extern int XSecurityRevokeAuthorization(Display *, XSecurityAuthorization);
 </PARA>
 <SCREEN>
 
+#define X_ShapeQueryVersion	0
+#define X_ShapeRectangles	1
+#define X_ShapeMask	2
+#define X_ShapeCombine	3
+#define X_ShapeOffset	4
+#define X_ShapeQueryExtents	5
+#define X_ShapeSelectInput	6
+#define X_ShapeInputSelected	7
+#define X_ShapeGetRectangles	8
+#define ShapeSet	0
+#define ShapeUnion	1
+#define ShapeIntersect	2
+#define ShapeSubtract	3
+#define ShapeInvert	4
+#define ShapeBounding	0
+#define ShapeClip	1
+#define ShapeInput	2
+#define ShapeNotifyMask	(1L &lt;&lt; 0)
+#define ShapeNotify	0
+#define ShapeNumberEvents	(ShapeNotify + 1)
+
 typedef struct {
     int type;
     unsigned long int serial;
@@ -875,6 +1044,28 @@ extern void XShapeSelectInput(Display *, Window, unsigned long int);
 <PARA>
 </PARA>
 <SCREEN>
+
+typedef XID XSyncCounter;
+typedef XID XSyncAlarm;
+typedef struct _XSyncValue {
+    int hi;
+    unsigned int lo;
+} XSyncValue;
+typedef enum {
+    XSyncAbsolute,
+    XSyncRelative
+} XSyncValueType;
+typedef enum {
+    XSyncPositiveTransition,
+    XSyncNegativeTransition,
+    XSyncPositiveComparison,
+    XSyncNegativeComparison
+} XSyncTestType;
+typedef enum {
+    XSyncAlarmActive,
+    XSyncAlarmInactive,
+    XSyncAlarmDestroyed
+} XSyncAlarmState;
 
 #define SYNC_NAME	"SYNC"
 #define _XSyncValueIsPositive(v)	(((v).hi&amp;0x80000000)?0:1)
@@ -920,22 +1111,6 @@ extern void XShapeSelectInput(Display *, Window, unsigned long int);
 #define X_SyncAwait	7
 #define X_SyncCreateAlarm	8
 #define X_SyncChangeAlarm	9
-#define XSyncIntsToValue(pv,l,h)	_XSyncIntsToValue(pv,l,h))
-#define XSyncIntToValue(pv,i)	_XSyncIntToValue(pv,i))
-#define XSyncMaxValue(pv)	_XSyncMaxValue(pv)
-#define XSyncMinValue(pv)	_XSyncMinValue(pv)
-#define XSyncValueAdd(presult,a,b,poverflow)	_XSyncValueAdd(presult,a,b,poverflow)
-#define XSyncValueEqual(a,b)	_XSyncValueEqual(a,b))
-#define XSyncValueGreaterOrEqual(a,b)	_XSyncValueGreaterOrEqual(a,b))
-#define XSyncValueGreaterThan(a,b)	_XSyncValueGreaterThan(a,b))
-#define XSyncValueHigh32(v)	_XSyncValueHigh32(v)
-#define XSyncValueIsNegative(v)	_XSyncValueIsNegative(v)
-#define XSyncValueIsPositive(v)	_XSyncValueIsPositive(v)
-#define XSyncValueIsZero(a)	_XSyncValueIsZero(a)
-#define XSyncValueLessOrEqual(a,b)	_XSyncValueLessOrEqual(a,b))
-#define XSyncValueLessThan(a,b)	_XSyncValueLessThan(a,b))
-#define XSyncValueLow32(v)	_XSyncValueLow32(v)
-#define XSyncValueSubtract(presult,a,b,poverflow)	_XSyncValueSubtract(presult,a,b,poverflow)
 #define _XSyncValueAdd(presult,a,b,poverflow)	{intt=(a).lo;Boolsigna=XSyncValueIsNegative(a);Boolsignb=XSyncValueIsNegative(b);((presult)->lo=(a).lo+(b).lo);((presult)->hi=(a
 #define _XSyncValueSubtract(presult,a,b,poverflow)	{intt=(a).lo;Boolsigna=XSyncValueIsNegative(a);Boolsignb=XSyncValueIsNegative(b);((presult)->lo=(a).lo-(b).lo);((presult)->hi=(a
 
@@ -1001,43 +1176,6 @@ typedef struct {
     unsigned char request_code;
     unsigned char minor_code;
 } XSyncCounterError;
-
-typedef XID XSyncCounter;
-typedef XID XSyncAlarm;
-typedef struct _XSyncValue {
-    int hi;
-    unsigned int lo;
-} XSyncValue;
-enum {
-    XSyncAbsolute,
-    XSyncRelative
-};
-typedef enum {
-    XSyncAbsolute,
-    XSyncRelative
-} XSyncValueType;
-enum {
-    XSyncPositiveTransition,
-    XSyncNegativeTransition,
-    XSyncPositiveComparison,
-    XSyncNegativeComparison
-};
-typedef enum {
-    XSyncPositiveTransition,
-    XSyncNegativeTransition,
-    XSyncPositiveComparison,
-    XSyncNegativeComparison
-} XSyncTestType;
-enum {
-    XSyncAlarmActive,
-    XSyncAlarmInactive,
-    XSyncAlarmDestroyed
-};
-typedef enum {
-    XSyncAlarmActive,
-    XSyncAlarmInactive,
-    XSyncAlarmDestroyed
-} XSyncAlarmState;
 extern int XSyncAwait(Display *, XSyncWaitCondition *, int);
 extern int XSyncChangeAlarm(Display *, XSyncAlarm, unsigned long int,
 			    XSyncAlarmAttributes *);

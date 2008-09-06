@@ -1,0 +1,221 @@
+<PART ID="java">
+<TITLE>Java Interpreter</TITLE>
+
+<CHAPTER ID="java-int">
+<TITLE>Java Interpreter</TITLE>
+
+<SECT1 ID="javaintro">
+<TITLE>Introduction</TITLE>
+<PARA>
+The Java intrepreter API is described in the
+<xref linkend="std.Java">,
+with the following requirements for an LSB conforming runtime.
+</PARA>
+</SECT1>
+
+<SECT1 ID="java-location">
+<TITLE>Java Interpreter Location</TITLE>
+<PARA>
+The Java interpreter binary, or a link to the binary, 
+shall exist at <filename>/usr/bin/java</filename>.
+</PARA>
+</SECT1>
+
+<SECT1 ID="java-version">
+<TITLE>Java Interpreter Version</TITLE>
+<PARA>
+The default installed Java version shall be Java 6 Platform Standard Edition or greater.
+Applications can depend on the Java 6 Platform SE interfaces.
+</PARA>
+</SECT1>
+
+<SECT1 ID="java-oper" XRefLabel="Operators and Functions">
+<TITLE>Operators and Functions</TITLE>
+<PARA>
+Core Java operators, subroutines, and built-in functions
+shall be present and shall operate as defined in 
+<xref linkend="std.Java">.
+</PARA>
+</SECT1>
+
+<SECT1 ID=java-command XRefLabel="Java Command">
+<TITLE>Java Interpreter Command</TITLE>
+<PARA>
+This section contains a description of the 
+<command>java</command> command.
+</PARA>
+
+<REFENTRY id="java-man">
+<REFMETA>
+<REFENTRYTITLE>java</REFENTRYTITLE>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>java</REFNAME>
+<REFPURPOSE>
+launch a Java application
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<REFSYNOPSISDIV>
+<CMDSYNOPSIS>
+<COMMAND>java</COMMAND>
+<ARG>-?</ARG>
+<ARG>-Dproperty=value</ARG>
+<ARG>-classpath</ARG>
+<ARG>-cp</ARG>
+<ARG>-help</ARG>
+<ARG>-jar file.jar</ARG>
+<ARG>-version</ARG>
+<ARG rep=repeat>arguments</ARG>
+</CMDSYNOPSIS>
+</REFSYNOPSISDIV>
+
+<REFSECT1>
+<TITLE>Description</TITLE>
+<PARA>
+The <COMMAND>java</COMMAND> tool shall launch a Java application. 
+It does this by starting a
+Java runtime environment, loading a specified class, and invoking that
+class's main method.
+</PARA>
+<PARA>
+The method must be declared public and static, it must not return any
+value, and it must accept a String array as a parameter. The method
+declaration must look like the following:
+</PARA>
+<PARA>
+<literal>
+public static void main(String args[])
+</literal>
+</para>
+<PARA>
+By default, the first non-option argument is the name of the class to
+be invoked. A fully-qualified class name should be used. If the
+<parameter>-jar</parameter> option is specified, the first non-option
+argument is the name of a JAR archive containing class and resource
+files for the application, with the startup class indicated by the
+Main-Class manifest header.
+</PARA>
+<PARA>
+The Java runtime shall search for the startup class, and other classes
+used, in three sets of locations: the bootstrap class path, the
+installed extensions, and the user class path.
+</PARA>
+<PARA>
+Non-option arguments after the class name or JAR file name are passed
+to the main function.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Option and Operand Handling</TITLE>
+<variablelist>
+
+<varlistentry>
+<term><parameter>-?</parameter></term>
+<listitem><para>This option works in the same way as the 
+<parameter>-help</parameter> option.</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><parameter>-classpath classpath</parameter></term>
+<listitem>
+<para>
+Specifies a list of directories, JAR archives, and ZIP archives to
+search for class files. Class path entries are separated by
+colons (<literal>:</literal>). Specifying <parameter>-classpath</parameter>
+or <parameter>-cp</parameter> overrides any setting of
+the <envar>CLASSPATH</envar> environment variable.
+</para>
+<para>
+If <parameter>-classpath</parameter> and <parameter>-cp</parameter> 
+are not used and <envar>CLASSPATH</envar> is not set, the
+user class path consists of the current directory (<filename>.</filename>).
+</para>
+<para>
+As a special convenience, a class path element containing a basename
+of <filename>*</filename> is considered equivalent to specifying a list of all the files
+in the directory with the extension <filename>.jar</filename> 
+or <filename>.JAR</filename> (a Java program
+cannot tell the difference between the two invocations).
+For example, if directory foo contains <filename>a.jar</filename>
+and <filename>b.JAR</filename>, then the
+class path element <literal>foo/*</literal> is expanded to 
+<literal>A.jar:b.JAR</literal>, except that
+the order of jar files is unspecified. All jar files in the specified directory, 
+even hidden ones, are included in the list. A classpath entry consisting simply 
+of <filename>*</filename> expands to a list of all the jar
+files in the current directory. The <envar>CLASSPATH</envar> environment variable,
+where defined, will be similarly expanded. Any classpath wildcard
+expansion occurs before the Java virtual machine is started -- no
+Java program will ever see unexpanded wildcards except by querying
+the environment, for example, by invoking 
+<function>System.getenv("CLASSPATH")</function>.
+</para></listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><parameter>-cp classpath</parameter></term>
+<listitem><para>
+Works in the same way as the <parameter>-classpath</parameter> option.
+</para></listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><parameter>-Dproperty=value</parameter></term>
+<listitem><para>
+Sets a system property value.
+</para></listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><parameter>-help</parameter></term>
+<listitem><para>Displays usage information and exits.
+</para></listitem>
+</varlistentry>
+
+
+
+<varlistentry>
+<term><parameter>-jar</parameter></term>
+<listitem><para>
+Executes a program encapsulated in a JAR file. The first argument
+is the name of a JAR file instead of a startup class name. In
+order for this option to work, the manifest of the JAR file must
+contain a line of the form 
+<literal>Main-Class: classname</literal>. Here, <replaceable>classname</replaceable>
+identifies the class having the 
+<function>public static void main(String[] args)</function> 
+method that serves as your application's starting point.
+</para>
+<para> 
+When you use this option, the JAR file is the source of all user
+classes, and other user class path settings are ignored.
+</para>
+<para> 
+Note that JAR files that can be run with the <parameter>-jar</parameter> option can
+have their execute permissions set so they can be run without using
+<parameter>-jar</parameter>.
+</para></listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><parameter>-version</parameter></term>
+<listitem><para>Displays version information and exits.
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</REFSECT1>
+
+</REFENTRY>
+
+
+</SECT1>
+
+</CHAPTER>
+</PART>

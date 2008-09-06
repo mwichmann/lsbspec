@@ -2966,14 +2966,16 @@ struct FTW {
     int level;
 };
 
-typedef int (*__ftw_func_t) (char *__filename, struct stat * __status,
-			     int __flag);
-typedef int (*__ftw64_func_t) (char *__filename, struct stat64 * __status,
-			       int __flag);
-typedef int (*__nftw_func_t) (char *__filename, struct stat * __status,
-			      int __flag, struct FTW * __info);
-typedef int (*__nftw64_func_t) (char *__filename, struct stat64 * __status,
-				int __flag, struct FTW * __info);
+typedef int (*__ftw_func_t) (const char *__filename,
+			     const struct stat * __status, int __flag);
+typedef int (*__ftw64_func_t) (const char *__filename,
+			       const struct stat64 * __status, int __flag);
+typedef int (*__nftw_func_t) (const char *__filename,
+			      const struct stat * __status, int __flag,
+			      struct FTW * __info);
+typedef int (*__nftw64_func_t) (const char *__filename,
+				const struct stat64 * __status, int __flag,
+				struct FTW * __info);
 extern int ftw(const char *, __ftw_func_t, int);
 extern int ftw64(const char *, __ftw64_func_t, int);
 extern int nftw(const char *, __nftw_func_t, int, int);
@@ -4039,8 +4041,8 @@ extern struct CLIENT *clntudp_bufcreate(struct sockaddr_in *, u_long,
 					u_int, u_int);
 extern struct CLIENT *clntudp_create(struct sockaddr_in *, u_long, u_long,
 				     struct timeval, int *);
-extern int callrpc(char *, u_long, u_long, u_long, xdrproc_t, char *,
-		   xdrproc_t, char *);
+extern int callrpc(const char *, const u_long, const u_long, const u_long,
+		   const xdrproc_t, const char *, const xdrproc_t, char *);
 extern struct CLIENT *clnt_create(const char *, const u_long, const u_long,
 				  const char *);
 extern void clnt_pcreateerror(const char *);
@@ -4386,7 +4388,7 @@ extern int sched_setparam(pid_t, const struct sched_param *);
 extern int sched_setscheduler(pid_t, int, const struct sched_param *);
 extern int sched_yield(void);
 extern int sched_getaffinity(pid_t, size_t, cpu_set_t *);
-extern int sched_setaffinity(pid_t, size_t, cpu_set_t * const);
+extern int sched_setaffinity(pid_t, size_t, const cpu_set_t *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4416,7 +4418,8 @@ struct hsearch_data {
     unsigned int filled;
 };
 
-typedef void (*__action_fn_t) (void *__nodep, VISIT __value, int __level);
+typedef void (*__action_fn_t) (const void *__nodep, VISIT __value,
+			       int __level);
 extern int hcreate_r(size_t, struct hsearch_data *);
 extern void hdestroy_r(struct hsearch_data *);
 extern int hsearch_r(ENTRY, ACTION, ENTRY * *, struct hsearch_data *);
@@ -5367,7 +5370,7 @@ extern key_t ftok(const char *, int);
 #define POSIX_MADV_DONTNEED	4
 #define MAP_ANON	MAP_ANONYMOUS
 
-extern void *mremap(void *, size_t, size_t, int);
+extern void *mremap(void *, size_t, size_t, int, ...);
 extern int posix_madvise(void *, size_t, int);
 extern int msync(void *, size_t, int);
 extern int mlock(const void *, size_t);
@@ -6716,8 +6719,8 @@ extern ssize_t pwrite64(int, const void *, size_t, off64_t);
 extern int ttyname_r(int, char *, size_t);
 extern char *__getcwd_chk(char *, size_t, size_t);
 extern ssize_t __read_chk(int, void *, size_t, size_t);
-extern ssize_t __readlink_chk(const char *, void *, size_t, size_t);
-extern int readlinkat(int, const char *, char *, size_t);
+extern ssize_t __readlink_chk(const char *, char *, size_t, size_t);
+extern ssize_t readlinkat(int, const char *, char *, size_t);
 extern int linkat(int, const char *, int, const char *, int);
 extern int unlinkat(int, const char *, int);
 extern int fchownat(int, const char *, uid_t, gid_t, int);
@@ -23659,14 +23662,6 @@ extern int feupdateenv(const fenv_t *);
 #define DOMAIN	1
 #define SING	2
 
-struct exception {
-    int type;
-    char *name;
-    double arg1;
-    double arg2;
-    double retval;
-};
-
 #define FP_NAN	0
 #define FP_INFINITE	1
 #define FP_ZERO	2
@@ -28696,8 +28691,8 @@ extern int pam_acct_mgmt(pam_handle_t *, int);
 extern int pam_open_session(pam_handle_t *, int);
 extern int pam_close_session(pam_handle_t *, int);
 extern int pam_chauthtok(pam_handle_t *, int);
-extern const char *pam_getenv(const pam_handle_t *, const char *);
-extern int pam_putenv(const pam_handle_t *, const char *);
+extern const char *pam_getenv(pam_handle_t *, const char *);
+extern int pam_putenv(pam_handle_t *, const char *);
 </SCREEN>
 </SECT2>
 </SECT1>

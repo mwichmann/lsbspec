@@ -292,7 +292,7 @@ struct _IceConn {
     unsigned int free_asap:1;
     unsigned int unused1:2;
     unsigned char unused2:8;
-    enum IceConnectStatus connection_status;
+    IceConnectStatus connection_status;
     unsigned char my_ice_version_index;
     struct _XtransConnInfo *trans_conn;
     long unsigned int send_sequence;
@@ -354,60 +354,41 @@ typedef struct {
     int minor_version;
     IcePoProcessMsgProc process_msg_proc;
 } IcePoVersionRec;
-typedef (*IcePoAuthProc) (IceConn, IcePointer *, int, int, int, IcePointer,
-			  int *, IcePointer *, char **);
-typedef (*IcePaAuthProc) (IceConn, IcePointer *, int, int, IcePointer,
-			  int *, IcePointer *, char **);
-enum IceAcceptStatus {
-    IceAcceptSuccess = 0,
-    IceAcceptFailure = 1,
-    IceAcceptBadMalloc = 2
-};
+typedef IcePoAuthStatus(*IcePoAuthProc) (IceConn, IcePointer *, int, int,
+					 int, IcePointer, int *,
+					 IcePointer *, char **);
+typedef IcePaAuthStatus(*IcePaAuthProc) (IceConn, IcePointer *, int, int,
+					 IcePointer, int *, IcePointer *,
+					 char **);
+typedef enum IceAcceptStatus;
 struct _IceListenObj;
 typedef struct _IceListenObj *IceListenObj;
-enum IceConnectStatus {
-    IceConnectPending = 0,
-    IceConnectAccepted = 1,
-    IceConnectRejected = 2,
-    IceConnectIOError = 3
-};
+typedef enum IceConnectStatus;
 typedef void (*IceIOErrorProc) (IceConn);
 typedef int (*IceProtocolSetupProc) (IceConn, int, int, char *, char *,
 				     IcePointer *, char **);
 typedef void (*IceProtocolActivateProc) (IceConn, IcePointer);
 typedef int (*IceHostBasedAuthProc) (char *);
 typedef void (*IcePingReplyProc) (IceConn, IcePointer);
-enum IceProcessMessagesStatus {
-    IceProcessMessagesSuccess = 0,
-    IceProcessMessagesIOError = 1,
-    IceProcessMessagesConnectionClosed = 2
-};
-enum IceCloseStatus {
-    IceClosedNow = 0,
-    IceClosedASAP = 1,
-    IceConnectionInUse = 2,
-    IceStartedShutdownNegotiation = 3
-};
-enum IceProtocolSetupStatus {
-    IceProtocolSetupSuccess = 0,
-    IceProtocolSetupFailure = 1,
-    IceProtocolSetupIOError = 2,
-    IceProtocolAlreadyActive = 3
-};
+typedef enum IceProcessMessagesStatus;
+typedef enum IceCloseStatus;
+typedef enum IceProtocolSetupStatus;
 typedef void (*IceWatchProc) (IceConn, IcePointer, int, IcePointer *);
 typedef void (*IceIOErrorHandler) (IceConn);
 typedef void (*IceErrorHandler) (IceConn, int, int, long unsigned int, int,
 				 int, IcePointer);
-extern IceConn IceAcceptConnection(IceListenObj, enum IceAcceptStatus *);
+typedef enum IcePoAuthStatus;
+typedef enum IcePaAuthStatus;
+extern IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus *);
 extern int IceAddConnectionWatch(IceWatchProc, IcePointer);
 extern char *IceAllocScratch(IceConn, long unsigned int);
 extern void IceAppLockConn(IceConn);
 extern void IceAppUnlockConn(IceConn);
 extern int IceCheckShutdownNegotiation(IceConn);
-extern enum IceCloseStatus IceCloseConnection(IceConn);
+extern IceCloseStatus IceCloseConnection(IceConn);
 extern char *IceComposeNetworkIdList(int, IceListenObj *);
 extern int IceConnectionNumber(IceConn);
-extern enum IceConnectStatus IceConnectionStatus(IceConn);
+extern IceConnectStatus IceConnectionStatus(IceConn);
 extern char *IceConnectionString(IceConn);
 extern int IceFlush(IceConn);
 extern void IceFreeListenObjs(int, IceListenObj *);
@@ -425,14 +406,13 @@ extern int IceListenForWellKnownConnections(char *, int *,
 extern IceConn IceOpenConnection(char *, IcePointer, int, int, int,
 				 char *);
 extern int IcePing(IceConn, IcePingReplyProc, IcePointer);
-extern enum IceProcessMessagesStatus IceProcessMessages(IceConn,
-							IceReplyWaitInfo *,
-							int *);
+extern IceProcessMessagesStatus IceProcessMessages(IceConn,
+						   IceReplyWaitInfo *,
+						   int *);
 extern int IceProtocolRevision(IceConn);
-extern enum IceProtocolSetupStatus IceProtocolSetup(IceConn, int,
-						    IcePointer, int, int *,
-						    int *, char **,
-						    char **, int, char *);
+extern IceProtocolSetupStatus IceProtocolSetup(IceConn, int, IcePointer,
+					       int, int *, int *, char **,
+					       char **, int, char *);
 extern int IceProtocolShutdown(IceConn, int);
 extern int IceProtocolVersion(IceConn);
 extern int IceRegisterForProtocolReply(char *, char *, char *, int,
@@ -501,6 +481,11 @@ extern char *IceVendor(IceConn);
 #define sz_icePingReplyMsg	8
 #define sz_iceProtocolReplyMsg	8
 #define sz_iceWantToCloseMsg	8
+
+typedef iceErrorMsg icePingMsg;
+typedef iceErrorMsg icePingReplyMsg;
+typedef iceErrorMsg iceWantToCloseMsg;
+typedef iceErrorMsg iceNoCloseMsg;
 </SCREEN>
 </SECT2>
 <SECT2>
