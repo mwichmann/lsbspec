@@ -10,7 +10,7 @@ TABLES=references.sgml libraries.sgml
 all: $(FILES) #$(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'ALSA','ISOC99','xdg-utils'" >references.sgml
+	../../mkstandardsgmltable -a All -s "'xdg-utils','ALSA','ISOC99','Java','JavaCmd','JavaVM'" >references.sgml
 	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Multimedia >libraries.sgml
 
 clean:
