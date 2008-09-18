@@ -2292,6 +2292,8 @@ extern Visual *XcmsVisualOfCCC(XcmsCCC);
 </PARA>
 <SCREEN>
 
+struct _XDisplay;
+
 typedef char *XPointer;
 typedef struct {
     unsigned long int pixel;
@@ -3960,6 +3962,239 @@ extern int XwcTextPerCharExtents(XFontSet, wchar_t *, int, XRectangle *,
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>X11/Xlibint.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define NEED_EVENTS
+#define NEED_REPLIES
+#define UNLOCKED
+#define WORD64ALIGN
+#define min(a,b)	(((a) &lt; (b)) ? (a) : (b))
+#define max(a,b)	(((a) > (b)) ? (a) : (b))
+#define CI_NONEXISTCHAR(cs)	(((cs)->width == 0) &amp;&amp; (((cs)->rbearing|(cs)->lbearing| (cs)->ascent|(cs)->descent) == 0))
+#define XAllocIDs(dpy,ids,n)	(*(dpy)->idlist_alloc)(dpy,ids,n)
+#define XlibDisplayIOError	(1L &lt;&lt; 0)
+#define XlibDisplayClosing	(1L &lt;&lt; 1)
+#define XlibDisplayNoXkb	(1L &lt;&lt; 2)
+#define XlibDisplayPrivSync	(1L &lt;&lt; 3)
+#define XlibDisplayProcConni	(1L &lt;&lt; 4)
+#define XlibDisplayReadEvents	(1L &lt;&lt; 5)
+#define XlibDisplayReply	(1L &lt;&lt; 5)
+#define XlibDisplayWriting	(1L &lt;&lt; 6)
+#define XlibDisplayDfltRMDB	(1L &lt;&lt; 7)
+#define LOCKED	1
+#define WRCTSPERBATCH	10
+#define PTSPERBATCH	1024
+#define ZLNSPERBATCH	1024
+#define BUFSIZE	2048
+#define FARCSPERBATCH	256
+#define FRCTSPERBATCH	256
+#define XCONN_CHECK_FREQ	256
+#define ZRCTSPERBATCH	256
+#define WLNSPERBATCH	50
+#define Xcalloc(nelem,elsize)	calloc((nelem), (elsize))
+#define CI_GET_DEFAULT_INFO_1D(fs,cs)	CI_GET_CHAR_INFO_1D (fs, fs->default_char, NULL, cs)
+#define CURSORFONT	"cursor"
+#define Data16(dpy,data,len)	Data((dpy), (char *)(data), (len))
+#define PackData16(dpy,data,len)	Data16 (dpy, data, len)
+#define PackData32(dpy,data,len)	Data32 (dpy, data, len)
+#define _XFopenFile(path,mode)	fopen(path,mode)
+#define Xfree(ptr)	free((ptr))
+#define LockDisplay(d)	if ((d)->lock_fns) (*(d)->lock_fns->lock_display)(d)
+#define UnlockDisplay(d)	if ((d)->lock_fns) (*(d)->lock_fns->unlock_display)(d)
+#define FlushGC(dpy,gc)	if ((gc)->dirty) _XFlushGCCache((dpy), (gc))
+#define SetReqLen(req,n,badlen)	if ((req->length + n) > (unsigned)65535) { if (dpy->bigreq_size) { MakeBigReq(req,n) } else { n = badlen; req->length += n; } } else req->length += n
+#define BufAlloc(type,ptr,n)	if (dpy->bufptr + (n) > dpy->bufmax) _XFlush (dpy); ptr = (type) dpy->bufptr; (void)ptr; dpy->bufptr += (n);
+#define SyncHandle()	if (dpy->synchandler) (*dpy->synchandler)(dpy)
+#define _XCreateMutex(lock)	if (_XCreateMutex_fn) (*_XCreateMutex_fn)(lock);
+#define _XFreeMutex(lock)	if (_XFreeMutex_fn) (*_XFreeMutex_fn)(lock);
+#define _XLockMutex(lock)	if (_XLockMutex_fn) (*_XLockMutex_fn)(lock)
+#define _XUnlockMutex(lock)	if (_XUnlockMutex_fn) (*_XUnlockMutex_fn)(lock)
+#define Xmalloc(size)	malloc((size))
+#define _XOpenFile(path,flags)	open(path,flags)
+#define _XOpenFileMode(path,flags,mode)	open(path,flags,mode)
+#define PackData(dpy,data,len)	PackData16 (dpy, data, len)
+#define Xrealloc(ptr,size)	realloc((ptr), (size))
+#define GetReqExtra(name,n,req)	WORD64ALIGN if ((dpy->bufptr + SIZEOF(x ##name ##Req) + n) > dpy->bufmax) _XFlush(dpy); req = (x ##name ##Req *)(dpy->last_req = dpy->bufptr); req->reqType = X_ ##name; req->length = (SIZEOF(x ##name ##Req) + n)>>2; dpy->bufptr += SIZEOF(x ##name ##Req) + n; dpy->request++
+#define GetReq(name,req)	WORD64ALIGN if ((dpy->bufptr + SIZEOF(x ##name ##Req)) > dpy->bufmax) _XFlush(dpy); req = (x ##name ##Req *)(dpy->last_req = dpy->bufptr); req->reqType = X_ ##name; req->length = (SIZEOF(x ##name ##Req))>>2; dpy->bufptr += SIZEOF(x ##name ##Req); dpy->request++
+#define GetEmptyReq(name,req)	WORD64ALIGN if ((dpy->bufptr + SIZEOF(xReq)) > dpy->bufmax) _XFlush(dpy); req = (xReq *) (dpy->last_req = dpy->bufptr); req->reqType = X_ ##name; req->length = 1; dpy->bufptr += SIZEOF(xReq); dpy->request++
+#define GetResReq(name,rid,req)	WORD64ALIGN if ((dpy->bufptr + SIZEOF(xResourceReq)) > dpy->bufmax) _XFlush(dpy); req = (xResourceReq *) (dpy->last_req = dpy->bufptr); req->reqType = X_ ##name; req->length = 2; req->id = (rid); dpy->bufptr += SIZEOF(xResourceReq); dpy->request++
+#define _XBCOPYFUNC	_Xbcopy
+#define Data32(dpy,data,len)	_XData32(dpy, (long *)data, len)
+#define _XRead16(dpy,data,len)	_XRead((dpy), (char *)(data), (len))
+#define _XRead16Pad(dpy,data,len)	_XReadPad((dpy), (char *)(data), (len))
+#define OneDataCard32(dpy,dstaddr,srcvar)	{ *(CARD32 *)(dstaddr) = (srcvar); }
+#define MakeBigReq(req,n)	{ CARD64 _BRdat; CARD32 _BRlen = req->length - 1; req->length = 0; _BRdat = ((CARD32 *)req)[_BRlen]; memmove(((char *)req) + 8, ((char *)req) + 4, _BRlen &lt;&lt; 2); ((CARD32 *)req)[1] = _BRlen + n + 2; Data32(dpy, &amp;_BRdat, 4); }
+#define CI_GET_CHAR_INFO_1D(fs,col,def,cs)	{ cs = def; if (col >= fs->min_char_or_byte2 &amp;&amp; col &lt;= fs->max_char_or_byte2) { if (fs->per_char == NULL) { cs = &amp;fs->min_bounds; } else { cs = &amp;fs->per_char[(col - fs->min_char_or_byte2)]; if (CI_NONEXISTCHAR(cs)) cs = def; } } }
+#define CI_GET_CHAR_INFO_2D(fs,row,col,def,cs)	{ cs = def; if (row >= fs->min_byte1 &amp;&amp; row &lt;= fs->max_byte1 &amp;&amp; col >= fs->min_char_or_byte2 &amp;&amp; col &lt;= fs->max_char_or_byte2) { if (fs->per_char == NULL) { cs = &amp;fs->min_bounds; } else { cs = &amp;fs->per_char[((row - fs->min_byte1) * (fs->max_char_or_byte2 - fs->min_char_or_byte2 + 1)) + (col - fs->min_char_or_byte2)]; if (CI_NONEXISTCHAR(cs)) cs = def; } } }
+#define DeqAsyncHandler(dpy,handler)	{ if (dpy->async_handlers == (handler)) dpy->async_handlers = (handler)->next; else _XDeqAsyncHandler(dpy, handler); }
+#define Data(dpy,data,len)	{ if (dpy->bufptr + (len) &lt;= dpy->bufmax) { memcpy(dpy->bufptr, data, (int)len); dpy->bufptr += ((len) + 3) &amp; ~3; } else _XSend(dpy, data, len); }
+#define CI_GET_DEFAULT_INFO_2D(fs,cs)	{ unsigned int r = (fs->default_char >> 8); unsigned int c = (fs->default_char &amp; 0xff); CI_GET_CHAR_INFO_2D (fs, r, c, NULL, cs); }
+
+typedef struct _XSQEvent {
+    struct _XSQEvent *next;
+    XEvent event;
+    unsigned long int qserial_num;
+} _XQEvent;
+typedef struct _LockInfoRec *LockInfoPtr;
+typedef struct _XInternalAsync {
+    struct _XInternalAsync *next;
+    int (*handler) (Display *, xReply *, char *, int, XPointer);
+    XPointer data;
+} _XAsyncHandler;
+typedef struct _XAsyncEState {
+    unsigned long int min_sequence_number;
+    unsigned long int max_sequence_number;
+    unsigned char error_code;
+    unsigned char major_opcode;
+    unsigned short minor_opcode;
+    unsigned char last_error_received;
+    int error_count;
+} _XAsyncErrorState;
+typedef void (*FreeFuncType) (Display *);
+typedef int (*FreeModmapType) (XModifierKeymap *);
+typedef struct _XFreeFuncs {
+    FreeFuncType atoms;
+    FreeModmapType modifiermap;
+    FreeFuncType key_bindings;
+    FreeFuncType context_db;
+    FreeFuncType defaultCCCs;
+    FreeFuncType clientCmaps;
+    FreeFuncType intensityMaps;
+    FreeFuncType im_filters;
+    FreeFuncType xkb;
+} _XFreeFuncRec;
+typedef int (*CreateGCType) (Display *, GC, XExtCodes *);
+typedef int (*CopyGCType) (Display *, GC, XExtCodes *);
+typedef int (*FlushGCType) (Display *, GC, XExtCodes *);
+typedef int (*FreeGCType) (Display *, GC, XExtCodes *);
+typedef int (*CreateFontType) (Display *, XFontStruct *, XExtCodes *);
+typedef int (*FreeFontType) (Display *, XFontStruct *, XExtCodes *);
+typedef int (*CloseDisplayType) (Display *, XExtCodes *);
+typedef int (*ErrorType) (Display *, xError *, XExtCodes *, int *);
+typedef char *(*ErrorStringType) (Display *, int, XExtCodes *, char *,
+				  int);
+typedef void (*PrintErrorType) (Display *, XErrorEvent *, void *);
+typedef void (*BeforeFlushType) (Display *, XExtCodes *, const char *,
+				 long int);
+typedef struct _XExten {
+    struct _XExten *next;
+    XExtCodes codes;
+    CreateGCType create_GC;
+    CopyGCType copy_GC;
+    FlushGCType flush_GC;
+    FreeGCType free_GC;
+    CreateFontType create_Font;
+    FreeFontType free_Font;
+    CloseDisplayType close_display;
+    ErrorType error;
+    ErrorStringType error_string;
+    char *name;
+    PrintErrorType error_values;
+    BeforeFlushType before_flush;
+    struct _XExten *next_flush;
+} _XExtension;
+typedef void (*_XInternalConnectionProc) (Display *, int, XPointer);
+struct _XDisplay {
+    XExtData *ext_data;
+    struct _XFreeFuncs *free_funcs;
+    int fd;
+    int conn_checker;
+    int proto_major_version;
+    int proto_minor_version;
+    char *vendor;
+    XID resource_base;
+    XID resource_mask;
+    XID resource_id;
+    int resource_shift;
+     XID(*resource_alloc) (struct _XDisplay *);
+    int byte_order;
+    int bitmap_unit;
+    int bitmap_pad;
+    int bitmap_bit_order;
+    int nformats;
+    ScreenFormat *pixmap_format;
+    int vnumber;
+    int release;
+    struct _XSQEvent *head;
+    struct _XSQEvent *tail;
+    int qlen;
+    unsigned long int last_request_read;
+    unsigned long int request;
+    char *last_req;
+    char *buffer;
+    char *bufptr;
+    char *bufmax;
+    unsigned int max_request_size;
+    struct _XrmHashBucketRec *db;
+    int (*synchandler) (struct _XDisplay *);
+    char *display_name;
+    int default_screen;
+    int nscreens;
+    Screen *screens;
+    unsigned long int motion_buffer;
+    unsigned long int flags;
+    int min_keycode;
+    int max_keycode;
+    KeySym *keysyms;
+    XModifierKeymap *modifiermap;
+    int keysyms_per_keycode;
+    char *xdefaults;
+    char *scratch_buffer;
+    unsigned long int scratch_length;
+    int ext_number;
+    struct _XExten *ext_procs;
+    int (*event_vec) (Display *, XEvent *, xEvent *)
+     event_vec[128];
+    int (*wire_vec) (Display *, XEvent *, xEvent *)
+     wire_vec[128];
+    KeySym lock_meaning;
+    struct _XLockInfo *lock;
+    struct _XInternalAsync *async_handlers;
+    unsigned long int bigreq_size;
+    struct _XLockPtrs *lock_fns;
+    void (*idlist_alloc) (Display *, XID *, int);
+    struct _XKeytrans *key_bindings;
+    Font cursor_font;
+    struct _XDisplayAtoms *atoms;
+    unsigned int mode_switch;
+    unsigned int num_lock;
+    struct _XContextDB *context_db;
+    int (*error_vec) (Display *, XErrorEvent *, xError *)
+    * error_vec;
+    struct {
+	XPointer defaultCCCs;
+	XPointer clientCmaps;
+	XPointer perVisualIntensityMaps;
+    } cms;
+    struct _XIMFilter *im_filters;
+    struct _XSQEvent *qfree;
+    unsigned long int next_event_serial_num;
+    struct _XExten *flushes;
+    struct _XConnectionInfo *im_fd_info;
+    int im_fd_length;
+    struct _XConnWatchInfo *conn_watchers;
+    int watcher_count;
+    XPointer filedes;
+    int (*savedsynchandler) (Display *);
+    XID resource_max;
+    int xcmisc_opcode;
+    struct _XkbInfoRec *xkb_info;
+    struct _XtransConnInfo *trans_conn;
+};
+struct _XGC {
+    XExtData *ext_data;
+    GContext gid;
+    int rects;
+    int dashes;
+    unsigned long int dirty;
+    XGCValues values;
+};
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>X11/Xmd.h</TITLE>
 <PARA>
 </PARA>
@@ -3980,6 +4215,20 @@ typedef CARD16 BITS16;
 typedef int INT32;
 typedef short int INT16;
 typedef signed char INT8;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>X11/Xosdefs.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#ifndef MAXPATHLEN
+#define MAXPATHLEN	4096
+#endif
+#ifndef PATH_MAX
+#define PATH_MAX	4096
+#endif
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4269,18 +4518,6 @@ typedef signed char INT8;
 #define X_QueryBestSize	97
 #define X_QueryExtension	98
 #define X_ListExtensions	99
-#define Atom	CARD32
-#define Colormap	CARD32
-#define Cursor	CARD32
-#define Drawable	CARD32
-#define Font	CARD32
-#define GContext	CARD32
-#define KeySym	CARD32
-#define Pixmap	CARD32
-#define Time	CARD32
-#define VisualID	CARD32
-#define Window	CARD32
-#define KeyCode	CARD8
 
 typedef struct _xEvent {
     union {
@@ -5928,6 +6165,38 @@ typedef struct {
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>X11/Xprotostr.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+typedef struct _xSegment {
+    INT16 x1;
+    INT16 y1;
+    INT16 x2;
+    INT16 y2;
+} xSegment;
+typedef struct _xPoint {
+    INT16 x;
+    INT16 y;
+} xPoint;
+typedef struct _xRectangle {
+    INT16 x;
+    INT16 y;
+    CARD16 width;
+    CARD16 height;
+} xRectangle;
+typedef struct _xArc {
+    INT16 x;
+    INT16 y;
+    CARD16 width;
+    CARD16 height;
+    INT16 angle1;
+    INT16 angle2;
+} xArc;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>X11/Xresource.h</TITLE>
 <PARA>
 </PARA>
@@ -6723,6 +6992,9 @@ for the libICE library
 <PARA>
 The behavior of the interfaces in this library is specified by the following specifications:<SIMPLELIST COLUMNS=1>
 <MEMBER ID='REFSTD.libICE.1'>
+[LSB] <XREF LINKEND="std.LSB">
+</MEMBER>
+<MEMBER ID='REFSTD.libICE.2'>
 [XICE] <XREF LINKEND="std.XICE">
 </MEMBER>
 </SIMPLELIST>
@@ -6749,82 +7021,82 @@ underlying specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>IceAcceptConnection</primary></indexterm>IceAcceptConnection <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceAddConnectionWatch</primary></indexterm>IceAddConnectionWatch <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceAllocScratch</primary></indexterm>IceAllocScratch <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceAppLockConn</primary></indexterm>IceAppLockConn <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceAcceptConnection</primary></indexterm>IceAcceptConnection <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceAddConnectionWatch</primary></indexterm>IceAddConnectionWatch <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceAllocScratch</primary></indexterm>IceAllocScratch <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceAppLockConn</primary></indexterm>IceAppLockConn <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceAppUnlockConn</primary></indexterm>IceAppUnlockConn <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceAuthFileName</primary></indexterm>IceAuthFileName <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceCheckShutdownNegotiation</primary></indexterm>IceCheckShutdownNegotiation <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceCloseConnection</primary></indexterm>IceCloseConnection <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceAppUnlockConn</primary></indexterm>IceAppUnlockConn <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceAuthFileName</primary></indexterm>IceAuthFileName <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceCheckShutdownNegotiation</primary></indexterm>IceCheckShutdownNegotiation <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceCloseConnection</primary></indexterm>IceCloseConnection <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceComposeNetworkIdList</primary></indexterm>IceComposeNetworkIdList <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceConnectionNumber</primary></indexterm>IceConnectionNumber <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceConnectionStatus</primary></indexterm>IceConnectionStatus <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceConnectionString</primary></indexterm>IceConnectionString <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceComposeNetworkIdList</primary></indexterm>IceComposeNetworkIdList <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceConnectionNumber</primary></indexterm>IceConnectionNumber <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceConnectionStatus</primary></indexterm>IceConnectionStatus <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceConnectionString</primary></indexterm>IceConnectionString <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceFlush</primary></indexterm>IceFlush <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceFreeAuthFileEntry</primary></indexterm>IceFreeAuthFileEntry <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceFreeListenObjs</primary></indexterm>IceFreeListenObjs <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceGenerateMagicCookie</primary></indexterm>IceGenerateMagicCookie <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceFlush</primary></indexterm>IceFlush <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceFreeAuthFileEntry</primary></indexterm>IceFreeAuthFileEntry <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceFreeListenObjs</primary></indexterm>IceFreeListenObjs <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceGenerateMagicCookie</primary></indexterm>IceGenerateMagicCookie <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceGetAuthFileEntry</primary></indexterm>IceGetAuthFileEntry <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceGetConnectionContext</primary></indexterm>IceGetConnectionContext <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceGetInBufSize</primary></indexterm>IceGetInBufSize <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceGetListenConnectionNumber</primary></indexterm>IceGetListenConnectionNumber <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceGetAuthFileEntry</primary></indexterm>IceGetAuthFileEntry <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceGetConnectionContext</primary></indexterm>IceGetConnectionContext <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceGetInBufSize</primary></indexterm>IceGetInBufSize <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceGetListenConnectionNumber</primary></indexterm>IceGetListenConnectionNumber <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceGetListenConnectionString</primary></indexterm>IceGetListenConnectionString <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceGetOutBufSize</primary></indexterm>IceGetOutBufSize <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceInitThreads</primary></indexterm>IceInitThreads <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceLastReceivedSequenceNumber</primary></indexterm>IceLastReceivedSequenceNumber <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceGetListenConnectionString</primary></indexterm>IceGetListenConnectionString <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceGetOutBufSize</primary></indexterm>IceGetOutBufSize <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceInitThreads</primary></indexterm>IceInitThreads <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceLastReceivedSequenceNumber</primary></indexterm>IceLastReceivedSequenceNumber <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceLastSentSequenceNumber</primary></indexterm>IceLastSentSequenceNumber <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceListenForConnections</primary></indexterm>IceListenForConnections <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceListenForWellKnownConnections</primary></indexterm>IceListenForWellKnownConnections <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceLockAuthFile</primary></indexterm>IceLockAuthFile <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceLastSentSequenceNumber</primary></indexterm>IceLastSentSequenceNumber <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceListenForConnections</primary></indexterm>IceListenForConnections <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceListenForWellKnownConnections</primary></indexterm>IceListenForWellKnownConnections <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceLockAuthFile</primary></indexterm>IceLockAuthFile <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceOpenConnection</primary></indexterm>IceOpenConnection <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IcePing</primary></indexterm>IcePing <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceProcessMessages</primary></indexterm>IceProcessMessages <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceProtocolRevision</primary></indexterm>IceProtocolRevision <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceOpenConnection</primary></indexterm>IceOpenConnection <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IcePing</primary></indexterm>IcePing <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceProcessMessages</primary></indexterm>IceProcessMessages <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceProtocolRevision</primary></indexterm>IceProtocolRevision <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceProtocolSetup</primary></indexterm>IceProtocolSetup <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceProtocolShutdown</primary></indexterm>IceProtocolShutdown <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceProtocolVersion</primary></indexterm>IceProtocolVersion <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceReadAuthFileEntry</primary></indexterm>IceReadAuthFileEntry <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceProtocolSetup</primary></indexterm>IceProtocolSetup <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceProtocolShutdown</primary></indexterm>IceProtocolShutdown <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceProtocolVersion</primary></indexterm>IceProtocolVersion <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceReadAuthFileEntry</primary></indexterm>IceReadAuthFileEntry <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceRegisterForProtocolReply</primary></indexterm>IceRegisterForProtocolReply <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceRegisterForProtocolSetup</primary></indexterm>IceRegisterForProtocolSetup <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceRelease</primary></indexterm>IceRelease <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceRemoveConnectionWatch</primary></indexterm>IceRemoveConnectionWatch <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceRegisterForProtocolReply</primary></indexterm>IceRegisterForProtocolReply <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceRegisterForProtocolSetup</primary></indexterm>IceRegisterForProtocolSetup <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceRelease</primary></indexterm>IceRelease <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceRemoveConnectionWatch</primary></indexterm>IceRemoveConnectionWatch <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceSetErrorHandler</primary></indexterm>IceSetErrorHandler <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceSetHostBasedAuthProc</primary></indexterm>IceSetHostBasedAuthProc <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceSetIOErrorHandler</primary></indexterm>IceSetIOErrorHandler <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceSetPaAuthData</primary></indexterm>IceSetPaAuthData <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceSetErrorHandler</primary></indexterm>IceSetErrorHandler <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceSetHostBasedAuthProc</primary></indexterm>IceSetHostBasedAuthProc <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceSetIOErrorHandler</primary></indexterm>IceSetIOErrorHandler <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceSetPaAuthData</primary></indexterm>IceSetPaAuthData <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceSetShutdownNegotiation</primary></indexterm>IceSetShutdownNegotiation <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceSwapping</primary></indexterm>IceSwapping <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceUnlockAuthFile</primary></indexterm>IceUnlockAuthFile <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY><indexterm><primary>IceVendor</primary></indexterm>IceVendor <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceSetShutdownNegotiation</primary></indexterm>IceSetShutdownNegotiation <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceSwapping</primary></indexterm>IceSwapping <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceUnlockAuthFile</primary></indexterm>IceUnlockAuthFile <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>IceVendor</primary></indexterm>IceVendor <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>IceWriteAuthFileEntry</primary></indexterm>IceWriteAuthFileEntry <LINK LINKEND="REFSTD.libICE.1">[XICE]</LINK></ENTRY>
-<ENTRY></ENTRY>
-<ENTRY></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY><indexterm><primary>IceWriteAuthFileEntry</primary></indexterm>IceWriteAuthFileEntry <LINK LINKEND="REFSTD.libICE.2">[XICE]</LINK></ENTRY>
+<ENTRY><indexterm><primary>_IceRead</primary></indexterm>_IceRead <LINK LINKEND="REFSTD.libICE.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>_IceReadSkip</primary></indexterm>_IceReadSkip <LINK LINKEND="REFSTD.libICE.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>_IceWrite</primary></indexterm>_IceWrite <LINK LINKEND="REFSTD.libICE.1">[LSB]</LINK></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -7158,6 +7430,10 @@ extern char *IceVendor(IceConn);
 #define IceReadData16(_iceConn,_swap,_bytes,_pData)	{ _IceRead (_iceConn, (unsigned long) (_bytes), (char *) _pData) }
 #define IceReadData32(_iceConn,_swap,_bytes,_pData)	{ _IceRead (_iceConn, (unsigned long) (_bytes), (char *) _pData) }
 #define IceReadMessageHeader(_iceConn,_headerSize,_msgType,_pMsg)	{ _IceRead (_iceConn, (unsigned long) (_headerSize - SIZEOF (iceMsg)), _iceConn->inbufptr) _pMsg = (_msgType *) (_iceConn->inbuf) _iceConn->inbufptr += (_headerSize - SIZEOF (iceMsg)) }
+
+extern void _IceWrite(IceConn, unsigned long int, char *);
+extern void _IceReadSkip(IceConn, unsigned long int);
+extern int _IceRead(IceConn, unsigned long int, char *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -7224,6 +7500,25 @@ extern void IceUnlockAuthFile(char *);
 extern int IceWriteAuthFileEntry(FILE *, IceAuthFileEntry *);
 </SCREEN>
 </SECT2>
+</SECT1>
+<SECT1 ID=libICEman>
+<TITLE>Interface Definitions for libICE</TITLE>
+<PARA>
+The interfaces defined on the following pages are included in libICE and are defined
+by this specification.
+Unless otherwise noted, these interfaces shall be included
+in the source standard.
+</PARA>
+<PARA>
+Other interfaces listed in <XREF LINKEND=libICE> shall behave as described
+in the referenced base document.
+</PARA>
+<!-- MISSING DEFINITION FOR _IceRead -->
+<!-- Lets just hope nobody notices -->
+<!-- MISSING DEFINITION FOR _IceReadSkip -->
+<!-- Lets just hope nobody notices -->
+<!-- MISSING DEFINITION FOR _IceWrite -->
+<!-- Lets just hope nobody notices -->
 </SECT1>
 <!-- End of text generated from database -->
 
@@ -7848,6 +8143,7 @@ extern WidgetClass compositeWidgetClass;
 <SCREEN>
 
 #define XtInheritGeometryManager	((XtGeometryHandler) _XtInherit)
+#define XtInheritChangeManaged	((XtWidgetProc) _XtInherit)
 #define XtInheritDeleteChild	((XtWidgetProc) _XtInherit)
 #define XtInheritInsertChild	((XtWidgetProc) _XtInherit)
 #define _XtCompositeP_h	1
@@ -7961,6 +8257,9 @@ extern widgetClass;
 </PARA>
 <SCREEN>
 
+#define XtInheritSetValuesAlmost	((XtAlmostProc) _XtInherit)
+#define XtInheritRealize	((XtRealizeProc) _XtInherit)
+#define XtInheritResize	((XtWidgetProc) _XtInherit)
 #define _XtCoreP_h	1
 
 typedef struct _CorePart {
@@ -8257,6 +8556,7 @@ typedef struct {
     Widget enable_widget;
 } XtPopdownIDRec;
 typedef XtPopdownIDRec *XtPopdownID;
+typedef void (*XtCreatePopupChildProc) (Widget);
 typedef struct {
     String type;
     Widget widget;
@@ -8737,12 +9037,48 @@ extern Boolean _XtIsSubclassOf(Widget, WidgetClass, WidgetClass, XtEnum);
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>X11/IntrinsicI.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define CALLGEOTAT(f)
+#define XTERROR_PREFIX	""
+#define XTWARNING_PREFIX	""
+#define XtStackAlloc(size,stack_cache_array)	((size) &lt;= sizeof(stack_cache_array) ? (XtPointer)(stack_cache_array) : XtMalloc((unsigned)(size)))
+#define XtWindowOfObject(object)	((XtIsWidget(object) ? (object) : _XtWindowedAncestor(object)) ->core.window)
+#define XtIsSensitive(object)	(XtIsRectObj(object) ? ((object)->core.sensitive &amp;&amp; (object)->core.ancestor_sensitive) : False)
+#define XtIsManaged(object)	(XtIsRectObj(object) ? (object)->core.managed : False)
+#define XtScreenOfObject(object)	(XtIsWidget(object) ? (object)->core.screen : _XtIsHookObject(object) ? ((HookObject)(object))->hooks.screen : _XtWindowedAncestor(object)->core.screen)
+#define XtDisplayOfObject(object)	(XtIsWidget(object) ? (object)->core.screen->display : _XtIsHookObject(object) ? ((HookObject)(object))->hooks.screen->display : _XtWindowedAncestor(object)->core.screen->display)
+#define XFILESEARCHPATHDEFAULT	"/usr/lib/X11/%L/%T/%N%S:/usr/lib/X11/%l/%T/%N%S:/usr/lib/X11/%T/%N%S"
+#define ERRORDB	"/usr/lib/X11/XtErrorDB"
+#define RectObjClassFlag	0x02
+#define WidgetClassFlag	0x04
+#define CompositeClassFlag	0x08
+#define ConstraintClassFlag	0x10
+#define ShellClassFlag	0x20
+#define WMShellClassFlag	0x40
+#define TopLevelClassFlag	0x80
+#define _XtintrinsicI_h	1
+#define XtBZero(dst,size)	bzero((char *) (dst), (int) (size))
+#define XtMemmove(dst,src,size)	if ((char *)(dst) != (char *)(src)) { (void) memcpy((char *) (dst), (char *) (src), (int) (size)); }
+#define XtMemcmp(b1,b2,size)	memcmp((char *) (b1), (char *) (b2), (int) (size))
+#define _XBCOPYFUNC	_XtBcopy
+#define XtStackFree(pointer,stack_cache_array)	{ if ((pointer) != ((XtPointer)(stack_cache_array))) XtFree(pointer); }
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>X11/IntrinsicP.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
+#define XtVersion	(XT_VERSION * 1000 + XT_REVISION)
+#define XtVersionDontCheck	0
 #define _XtintrinsicP_h	1
+#define XT_VERSION	11
+#define XT_REVISION	6
 
 typedef struct {
     long int xrm_name;
@@ -8834,7 +9170,65 @@ extern WidgetClass objectClass;
 #define _XtObjectP_h_	1
 #define XtObjectExtensionVersion	1L
 
-typedef struct _ObjectClassRec ObjectClassRec;
+typedef struct _ObjectPart {
+    Widget self;
+    WidgetClass widget_class;
+    Widget parent;
+    XrmName xrm_name;
+    Boolean being_destroyed;
+    XtCallbackList destroy_callbacks;
+    XtPointer constraints;
+} ObjectPart;
+typedef struct _ObjectRec {
+    ObjectPart object;
+} ObjectRec;
+typedef struct _ObjectClassPart {
+    WidgetClass superclass;
+    String class_name;
+    Cardinal widget_size;
+    XtProc class_initialize;
+    XtWidgetClassProc class_part_initialize;
+    XtEnum class_inited;
+    XtInitProc initialize;
+    XtArgsProc initialize_hook;
+    XtProc obj1;
+    XtPointer obj2;
+    Cardinal obj3;
+    XtResourceList resources;
+    Cardinal num_resources;
+    XrmClass xrm_class;
+    Boolean obj4;
+    XtEnum obj5;
+    Boolean obj6;
+    Boolean obj7;
+    XtWidgetProc destroy;
+    XtProc obj8;
+    XtProc obj9;
+    XtSetValuesFunc set_values;
+    XtArgsFunc set_values_hook;
+    XtProc obj10;
+    XtArgsProc get_values_hook;
+    XtProc obj11;
+    XtVersionType version;
+    XtPointer callback_private;
+    String obj12;
+    XtProc obj13;
+    XtProc obj14;
+    XtPointer extension;
+} ObjectClassPart;
+typedef struct {
+    XtPointer next_extension;
+    XrmQuark record_type;
+    long int version;
+    Cardinal record_size;
+    XtAllocateProc allocate;
+    XtDeallocateProc deallocate;
+} ObjectClassExtensionRec;
+typedef ObjectClassExtensionRec *ObjectClassExtension;
+
+typedef struct _ObjectClassRec {
+    ObjectClassPart object_class;
+} ObjectClassRec;
 extern ObjectClassRec objectClassRec;
 </SCREEN>
 </SECT2>
@@ -8844,6 +9238,120 @@ extern ObjectClassRec objectClassRec;
 </PARA>
 <SCREEN>
 
+#define XtNiconName	((char*)&amp;XtShellStrings[0])
+#define XtCDiscardCommand	((char*)&amp;XtShellStrings[1001])
+#define XtNenvironment	((char*)&amp;XtShellStrings[1016])
+#define XtCEnvironment	((char*)&amp;XtShellStrings[1028])
+#define XtNinteractCallback	((char*)&amp;XtShellStrings[1040])
+#define XtNvisual	((char*)&amp;XtShellStrings[104])
+#define XtNjoinSession	((char*)&amp;XtShellStrings[1057])
+#define XtCJoinSession	((char*)&amp;XtShellStrings[1069])
+#define XtNprogramPath	((char*)&amp;XtShellStrings[1081])
+#define XtCProgramPath	((char*)&amp;XtShellStrings[1093])
+#define XtNresignCommand	((char*)&amp;XtShellStrings[1105])
+#define XtCResignCommand	((char*)&amp;XtShellStrings[1119])
+#define XtCVisual	((char*)&amp;XtShellStrings[111])
+#define XtNrestartCommand	((char*)&amp;XtShellStrings[1133])
+#define XtCRestartCommand	((char*)&amp;XtShellStrings[1148])
+#define XtNrestartStyle	((char*)&amp;XtShellStrings[1163])
+#define XtCRestartStyle	((char*)&amp;XtShellStrings[1176])
+#define XtNsaveCallback	((char*)&amp;XtShellStrings[1189])
+#define XtNtitleEncoding	((char*)&amp;XtShellStrings[118])
+#define XtNsaveCompleteCallback	((char*)&amp;XtShellStrings[1202])
+#define XtNsessionID	((char*)&amp;XtShellStrings[1223])
+#define XtCSessionID	((char*)&amp;XtShellStrings[1233])
+#define XtNshutdownCommand	((char*)&amp;XtShellStrings[1243])
+#define XtCShutdownCommand	((char*)&amp;XtShellStrings[1259])
+#define XtNerrorCallback	((char*)&amp;XtShellStrings[1275])
+#define XtCTitleEncoding	((char*)&amp;XtShellStrings[132])
+#define XtNsaveUnder	((char*)&amp;XtShellStrings[146])
+#define XtCSaveUnder	((char*)&amp;XtShellStrings[156])
+#define XtNtransient	((char*)&amp;XtShellStrings[166])
+#define XtCTransient	((char*)&amp;XtShellStrings[176])
+#define XtNoverrideRedirect	((char*)&amp;XtShellStrings[186])
+#define XtNiconPixmap	((char*)&amp;XtShellStrings[18])
+#define XtCOverrideRedirect	((char*)&amp;XtShellStrings[203])
+#define XtNtransientFor	((char*)&amp;XtShellStrings[220])
+#define XtCTransientFor	((char*)&amp;XtShellStrings[233])
+#define XtNiconNameEncoding	((char*)&amp;XtShellStrings[246])
+#define XtCIconNameEncoding	((char*)&amp;XtShellStrings[263])
+#define XtNallowShellResize	((char*)&amp;XtShellStrings[280])
+#define XtCAllowShellResize	((char*)&amp;XtShellStrings[297])
+#define XtCIconPixmap	((char*)&amp;XtShellStrings[29])
+#define XtNcreatePopupChildProc	((char*)&amp;XtShellStrings[314])
+#define XtCCreatePopupChildProc	((char*)&amp;XtShellStrings[335])
+#define XtNtitle	((char*)&amp;XtShellStrings[356])
+#define XtCTitle	((char*)&amp;XtShellStrings[362])
+#define XtNargc	((char*)&amp;XtShellStrings[373])
+#define XtCArgc	((char*)&amp;XtShellStrings[378])
+#define XtNargv	((char*)&amp;XtShellStrings[383])
+#define XtCArgv	((char*)&amp;XtShellStrings[388])
+#define XtNiconX	((char*)&amp;XtShellStrings[393])
+#define XtCIconX	((char*)&amp;XtShellStrings[399])
+#define XtNiconY	((char*)&amp;XtShellStrings[405])
+#define XtNiconWindow	((char*)&amp;XtShellStrings[40])
+#define XtCIconY	((char*)&amp;XtShellStrings[411])
+#define XtNinput	((char*)&amp;XtShellStrings[417])
+#define XtCInput	((char*)&amp;XtShellStrings[423])
+#define XtNiconic	((char*)&amp;XtShellStrings[429])
+#define XtCIconic	((char*)&amp;XtShellStrings[436])
+#define XtNinitialState	((char*)&amp;XtShellStrings[443])
+#define XtCInitialState	((char*)&amp;XtShellStrings[456])
+#define XtNgeometry	((char*)&amp;XtShellStrings[469])
+#define XtCGeometry	((char*)&amp;XtShellStrings[478])
+#define XtNbaseWidth	((char*)&amp;XtShellStrings[487])
+#define XtCBaseWidth	((char*)&amp;XtShellStrings[497])
+#define XtNbaseHeight	((char*)&amp;XtShellStrings[507])
+#define XtCBaseHeight	((char*)&amp;XtShellStrings[518])
+#define XtCIconWindow	((char*)&amp;XtShellStrings[51])
+#define XtNwinGravity	((char*)&amp;XtShellStrings[529])
+#define XtCWinGravity	((char*)&amp;XtShellStrings[540])
+#define XtNminWidth	((char*)&amp;XtShellStrings[551])
+#define XtCMinWidth	((char*)&amp;XtShellStrings[560])
+#define XtNminHeight	((char*)&amp;XtShellStrings[569])
+#define XtCMinHeight	((char*)&amp;XtShellStrings[579])
+#define XtNmaxWidth	((char*)&amp;XtShellStrings[589])
+#define XtCMaxWidth	((char*)&amp;XtShellStrings[598])
+#define XtNmaxHeight	((char*)&amp;XtShellStrings[607])
+#define XtCMaxHeight	((char*)&amp;XtShellStrings[617])
+#define XtNwidthInc	((char*)&amp;XtShellStrings[627])
+#define XtNiconMask	((char*)&amp;XtShellStrings[62])
+#define XtCWidthInc	((char*)&amp;XtShellStrings[636])
+#define XtNheightInc	((char*)&amp;XtShellStrings[645])
+#define XtCHeightInc	((char*)&amp;XtShellStrings[655])
+#define XtNminAspectY	((char*)&amp;XtShellStrings[665])
+#define XtCMinAspectY	((char*)&amp;XtShellStrings[676])
+#define XtNmaxAspectY	((char*)&amp;XtShellStrings[687])
+#define XtCMaxAspectY	((char*)&amp;XtShellStrings[698])
+#define XtNminAspectX	((char*)&amp;XtShellStrings[709])
+#define XtCIconMask	((char*)&amp;XtShellStrings[71])
+#define XtCMinAspectX	((char*)&amp;XtShellStrings[720])
+#define XtNmaxAspectX	((char*)&amp;XtShellStrings[731])
+#define XtCMaxAspectX	((char*)&amp;XtShellStrings[742])
+#define XtNwmTimeout	((char*)&amp;XtShellStrings[753])
+#define XtCWmTimeout	((char*)&amp;XtShellStrings[763])
+#define XtNwaitForWm	((char*)&amp;XtShellStrings[773])
+#define XtCWaitForWm	((char*)&amp;XtShellStrings[783])
+#define XtNwaitforwm	((char*)&amp;XtShellStrings[793])
+#define XtCWaitforwm	((char*)&amp;XtShellStrings[803])
+#define XtNwindowGroup	((char*)&amp;XtShellStrings[80])
+#define XtNclientLeader	((char*)&amp;XtShellStrings[813])
+#define XtCClientLeader	((char*)&amp;XtShellStrings[826])
+#define XtNwindowRole	((char*)&amp;XtShellStrings[839])
+#define XtCWindowRole	((char*)&amp;XtShellStrings[850])
+#define XtNurgency	((char*)&amp;XtShellStrings[861])
+#define XtCUrgency	((char*)&amp;XtShellStrings[869])
+#define XtNcancelCallback	((char*)&amp;XtShellStrings[877])
+#define XtNcloneCommand	((char*)&amp;XtShellStrings[892])
+#define XtCCloneCommand	((char*)&amp;XtShellStrings[905])
+#define XtNconnection	((char*)&amp;XtShellStrings[918])
+#define XtCConnection	((char*)&amp;XtShellStrings[929])
+#define XtCWindowGroup	((char*)&amp;XtShellStrings[92])
+#define XtNcurrentDirectory	((char*)&amp;XtShellStrings[940])
+#define XtCCurrentDirectory	((char*)&amp;XtShellStrings[957])
+#define XtNdieCallback	((char*)&amp;XtShellStrings[974])
+#define XtNdiscardCommand	((char*)&amp;XtShellStrings[986])
+#define XtCIconName	((char*)&amp;XtShellStrings[9])
 #define _XtShell_h	1
 
 extern char XtShellStrings[];
@@ -8854,6 +9362,272 @@ extern WidgetClass shellWidgetClass;
 extern WidgetClass topLevelShellWidgetClass;
 extern WidgetClass transientShellWidgetClass;
 extern WidgetClass wmShellWidgetClass;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>X11/ShellP.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define _XtShellPositionValid	((Boolean)(1&lt;&lt;0))
+#define _XtShellNotReparented	((Boolean)(1&lt;&lt;1))
+#define _XtShellPPositionOK	((Boolean)(1&lt;&lt;2))
+#define _XtShellGeometryParsed	((Boolean)(1&lt;&lt;3))
+#define XtInheritRootGeometryManager	((XtGeometryHandler)_XtInherit)
+#define XtShellExtensionVersion	1L
+
+typedef struct {
+    XtPointer extension;
+} ShellClassPart;
+typedef struct {
+    XtPointer next_extension;
+    XrmQuark record_type;
+    long int version;
+    Cardinal record_size;
+    XtGeometryHandler root_geometry_manager;
+} ShellClassExtensionRec;
+typedef ShellClassExtensionRec *ShellClassExtension;
+typedef struct _ShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+} ShellClassRec;
+typedef struct {
+    char *geometry;
+    XtCreatePopupChildProc create_popup_child_proc;
+    XtGrabKind grab_kind;
+    Boolean spring_loaded;
+    Boolean popped_up;
+    Boolean allow_shell_resize;
+    Boolean client_specified;
+    Boolean save_under;
+    Boolean override_redirect;
+    XtCallbackList popup_callback;
+    XtCallbackList popdown_callback;
+    Visual *visual;
+} ShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+} ShellRec;
+typedef ShellRec *ShellWidget;
+typedef struct {
+    XtPointer extension;
+} OverrideShellClassPart;
+typedef struct _OverrideShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    OverrideShellClassPart override_shell_class;
+} OverrideShellClassRec;
+typedef struct {
+    int frabjous;
+} OverrideShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    OverrideShellPart override;
+} OverrideShellRec;
+typedef OverrideShellRec *OverrideShellWidget;
+typedef struct {
+    XtPointer extension;
+} WMShellClassPart;
+typedef struct _WMShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+} WMShellClassRec;
+struct _OldXSizeHints {
+    long int flags;
+    int x;
+    int y;
+    int width;
+    int height;
+    int min_width;
+    int min_height;
+    int max_width;
+    int max_height;
+    int width_inc;
+    int height_inc;
+    struct {
+	int x;
+	int y;
+    } min_aspect;
+    struct {
+	int x;
+	int y;
+    } max_aspect;
+};
+typedef struct {
+    char *title;
+    int wm_timeout;
+    Boolean wait_for_wm;
+    Boolean transient;
+    Boolean urgency;
+    Widget client_leader;
+    String window_role;
+    struct _OldXSizeHints size_hints;
+    XWMHints wm_hints;
+    int base_width;
+    int base_height;
+    int win_gravity;
+    Atom title_encoding;
+} WMShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+} WMShellRec;
+typedef WMShellRec *WMShellWidget;
+typedef struct {
+    XtPointer extension;
+} TransientShellClassPart;
+typedef struct _TransientShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+    TransientShellClassPart transient_shell_class;
+} TransientShellClassRec;
+typedef struct {
+    Widget transient_for;
+} TransientShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+    TransientShellPart transient;
+} TransientShellRec;
+typedef TransientShellRec *TransientShellWidget;
+typedef struct {
+    XtPointer extension;
+} TopLevelShellClassPart;
+typedef struct _TopLevelShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+    TopLevelShellClassPart top_level_shell_class;
+} TopLevelShellClassRec;
+typedef struct {
+    char *icon_name;
+    Boolean iconic;
+    Atom icon_name_encoding;
+} TopLevelShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+    TopLevelShellPart topLevel;
+} TopLevelShellRec;
+typedef TopLevelShellRec *TopLevelShellWidget;
+typedef struct {
+    XtPointer extension;
+} ApplicationShellClassPart;
+typedef struct _ApplicationShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+    TopLevelShellClassPart top_level_shell_class;
+    ApplicationShellClassPart application_shell_class;
+} ApplicationShellClassRec;
+typedef struct {
+    char *c_class;
+    XrmClass xrm_class;
+    int argc;
+    char **argv;
+} ApplicationShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+    TopLevelShellPart topLevel;
+    ApplicationShellPart application;
+} ApplicationShellRec;
+typedef ApplicationShellRec *ApplicationShellWidget;
+typedef struct {
+    XtPointer extension;
+} SessionShellClassPart;
+typedef struct _SessionShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+    TopLevelShellClassPart top_level_shell_class;
+    ApplicationShellClassPart application_shell_class;
+    SessionShellClassPart session_shell_class;
+} SessionShellClassRec;
+typedef struct _XtSaveYourselfRec *XtSaveYourself;
+typedef struct {
+    SmcConn connection;
+    String session_id;
+    char **restart_command;
+    char **clone_command;
+    char **discard_command;
+    char **resign_command;
+    char **shutdown_command;
+    char **environment;
+    String current_dir;
+    String program_path;
+    unsigned char restart_style;
+    unsigned char checkpoint_state;
+    Boolean join_session;
+    XtCallbackList save_callbacks;
+    XtCallbackList interact_callbacks;
+    XtCallbackList cancel_callbacks;
+    XtCallbackList save_complete_callbacks;
+    XtCallbackList die_callbacks;
+    XtCallbackList error_callbacks;
+    XtSaveYourself save;
+    XtInputId input_id;
+    XtPointer ses20;
+    XtPointer ses19;
+    XtPointer ses18;
+    XtPointer ses17;
+    XtPointer ses16;
+    XtPointer ses15;
+    XtPointer ses14;
+    XtPointer ses13;
+    XtPointer ses12;
+    XtPointer ses11;
+    XtPointer ses10;
+    XtPointer ses9;
+    XtPointer ses8;
+    XtPointer ses7;
+    XtPointer ses6;
+    XtPointer ses5;
+    XtPointer ses4;
+    XtPointer ses3;
+    XtPointer ses2;
+    XtPointer ses1;
+} SessionShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+    TopLevelShellPart topLevel;
+    ApplicationShellPart application;
+    SessionShellPart session;
+} SessionShellRec;
+typedef SessionShellRec *SessionShellWidget;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -9286,6 +10060,35 @@ struct _EventSeqRec {
 typedef struct _EventSeqRec *EventSeqPtr;
 typedef struct _TMBranchHeadRec *TMBranchHead;
 typedef unsigned int _XtTranslateOp;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>X11/VendorP.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+typedef struct {
+    XtPointer extension;
+} VendorShellClassPart;
+typedef struct _VendorShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+} VendorShellClassRec;
+typedef struct {
+    int vendor_specific;
+} VendorShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+} VendorShellRec;
+typedef VendorShellRec *VendorShellWidget;
 </SCREEN>
 </SECT2>
 </SECT1>

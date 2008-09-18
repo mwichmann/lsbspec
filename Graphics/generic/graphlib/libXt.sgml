@@ -618,6 +618,7 @@ extern WidgetClass compositeWidgetClass;
 <SCREEN>
 
 #define XtInheritGeometryManager	((XtGeometryHandler) _XtInherit)
+#define XtInheritChangeManaged	((XtWidgetProc) _XtInherit)
 #define XtInheritDeleteChild	((XtWidgetProc) _XtInherit)
 #define XtInheritInsertChild	((XtWidgetProc) _XtInherit)
 #define _XtCompositeP_h	1
@@ -731,6 +732,9 @@ extern widgetClass;
 </PARA>
 <SCREEN>
 
+#define XtInheritSetValuesAlmost	((XtAlmostProc) _XtInherit)
+#define XtInheritRealize	((XtRealizeProc) _XtInherit)
+#define XtInheritResize	((XtWidgetProc) _XtInherit)
 #define _XtCoreP_h	1
 
 typedef struct _CorePart {
@@ -1027,6 +1031,7 @@ typedef struct {
     Widget enable_widget;
 } XtPopdownIDRec;
 typedef XtPopdownIDRec *XtPopdownID;
+typedef void (*XtCreatePopupChildProc) (Widget);
 typedef struct {
     String type;
     Widget widget;
@@ -1507,12 +1512,48 @@ extern Boolean _XtIsSubclassOf(Widget, WidgetClass, WidgetClass, XtEnum);
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>X11/IntrinsicI.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define CALLGEOTAT(f)
+#define XTERROR_PREFIX	""
+#define XTWARNING_PREFIX	""
+#define XtStackAlloc(size,stack_cache_array)	((size) &lt;= sizeof(stack_cache_array) ? (XtPointer)(stack_cache_array) : XtMalloc((unsigned)(size)))
+#define XtWindowOfObject(object)	((XtIsWidget(object) ? (object) : _XtWindowedAncestor(object)) ->core.window)
+#define XtIsSensitive(object)	(XtIsRectObj(object) ? ((object)->core.sensitive &amp;&amp; (object)->core.ancestor_sensitive) : False)
+#define XtIsManaged(object)	(XtIsRectObj(object) ? (object)->core.managed : False)
+#define XtScreenOfObject(object)	(XtIsWidget(object) ? (object)->core.screen : _XtIsHookObject(object) ? ((HookObject)(object))->hooks.screen : _XtWindowedAncestor(object)->core.screen)
+#define XtDisplayOfObject(object)	(XtIsWidget(object) ? (object)->core.screen->display : _XtIsHookObject(object) ? ((HookObject)(object))->hooks.screen->display : _XtWindowedAncestor(object)->core.screen->display)
+#define XFILESEARCHPATHDEFAULT	"/usr/lib/X11/%L/%T/%N%S:/usr/lib/X11/%l/%T/%N%S:/usr/lib/X11/%T/%N%S"
+#define ERRORDB	"/usr/lib/X11/XtErrorDB"
+#define RectObjClassFlag	0x02
+#define WidgetClassFlag	0x04
+#define CompositeClassFlag	0x08
+#define ConstraintClassFlag	0x10
+#define ShellClassFlag	0x20
+#define WMShellClassFlag	0x40
+#define TopLevelClassFlag	0x80
+#define _XtintrinsicI_h	1
+#define XtBZero(dst,size)	bzero((char *) (dst), (int) (size))
+#define XtMemmove(dst,src,size)	if ((char *)(dst) != (char *)(src)) { (void) memcpy((char *) (dst), (char *) (src), (int) (size)); }
+#define XtMemcmp(b1,b2,size)	memcmp((char *) (b1), (char *) (b2), (int) (size))
+#define _XBCOPYFUNC	_XtBcopy
+#define XtStackFree(pointer,stack_cache_array)	{ if ((pointer) != ((XtPointer)(stack_cache_array))) XtFree(pointer); }
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>X11/IntrinsicP.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
+#define XtVersion	(XT_VERSION * 1000 + XT_REVISION)
+#define XtVersionDontCheck	0
 #define _XtintrinsicP_h	1
+#define XT_VERSION	11
+#define XT_REVISION	6
 
 typedef struct {
     long int xrm_name;
@@ -1604,7 +1645,65 @@ extern WidgetClass objectClass;
 #define _XtObjectP_h_	1
 #define XtObjectExtensionVersion	1L
 
-typedef struct _ObjectClassRec ObjectClassRec;
+typedef struct _ObjectPart {
+    Widget self;
+    WidgetClass widget_class;
+    Widget parent;
+    XrmName xrm_name;
+    Boolean being_destroyed;
+    XtCallbackList destroy_callbacks;
+    XtPointer constraints;
+} ObjectPart;
+typedef struct _ObjectRec {
+    ObjectPart object;
+} ObjectRec;
+typedef struct _ObjectClassPart {
+    WidgetClass superclass;
+    String class_name;
+    Cardinal widget_size;
+    XtProc class_initialize;
+    XtWidgetClassProc class_part_initialize;
+    XtEnum class_inited;
+    XtInitProc initialize;
+    XtArgsProc initialize_hook;
+    XtProc obj1;
+    XtPointer obj2;
+    Cardinal obj3;
+    XtResourceList resources;
+    Cardinal num_resources;
+    XrmClass xrm_class;
+    Boolean obj4;
+    XtEnum obj5;
+    Boolean obj6;
+    Boolean obj7;
+    XtWidgetProc destroy;
+    XtProc obj8;
+    XtProc obj9;
+    XtSetValuesFunc set_values;
+    XtArgsFunc set_values_hook;
+    XtProc obj10;
+    XtArgsProc get_values_hook;
+    XtProc obj11;
+    XtVersionType version;
+    XtPointer callback_private;
+    String obj12;
+    XtProc obj13;
+    XtProc obj14;
+    XtPointer extension;
+} ObjectClassPart;
+typedef struct {
+    XtPointer next_extension;
+    XrmQuark record_type;
+    long int version;
+    Cardinal record_size;
+    XtAllocateProc allocate;
+    XtDeallocateProc deallocate;
+} ObjectClassExtensionRec;
+typedef ObjectClassExtensionRec *ObjectClassExtension;
+
+typedef struct _ObjectClassRec {
+    ObjectClassPart object_class;
+} ObjectClassRec;
 extern ObjectClassRec objectClassRec;
 </SCREEN>
 </SECT2>
@@ -1614,6 +1713,120 @@ extern ObjectClassRec objectClassRec;
 </PARA>
 <SCREEN>
 
+#define XtNiconName	((char*)&amp;XtShellStrings[0])
+#define XtCDiscardCommand	((char*)&amp;XtShellStrings[1001])
+#define XtNenvironment	((char*)&amp;XtShellStrings[1016])
+#define XtCEnvironment	((char*)&amp;XtShellStrings[1028])
+#define XtNinteractCallback	((char*)&amp;XtShellStrings[1040])
+#define XtNvisual	((char*)&amp;XtShellStrings[104])
+#define XtNjoinSession	((char*)&amp;XtShellStrings[1057])
+#define XtCJoinSession	((char*)&amp;XtShellStrings[1069])
+#define XtNprogramPath	((char*)&amp;XtShellStrings[1081])
+#define XtCProgramPath	((char*)&amp;XtShellStrings[1093])
+#define XtNresignCommand	((char*)&amp;XtShellStrings[1105])
+#define XtCResignCommand	((char*)&amp;XtShellStrings[1119])
+#define XtCVisual	((char*)&amp;XtShellStrings[111])
+#define XtNrestartCommand	((char*)&amp;XtShellStrings[1133])
+#define XtCRestartCommand	((char*)&amp;XtShellStrings[1148])
+#define XtNrestartStyle	((char*)&amp;XtShellStrings[1163])
+#define XtCRestartStyle	((char*)&amp;XtShellStrings[1176])
+#define XtNsaveCallback	((char*)&amp;XtShellStrings[1189])
+#define XtNtitleEncoding	((char*)&amp;XtShellStrings[118])
+#define XtNsaveCompleteCallback	((char*)&amp;XtShellStrings[1202])
+#define XtNsessionID	((char*)&amp;XtShellStrings[1223])
+#define XtCSessionID	((char*)&amp;XtShellStrings[1233])
+#define XtNshutdownCommand	((char*)&amp;XtShellStrings[1243])
+#define XtCShutdownCommand	((char*)&amp;XtShellStrings[1259])
+#define XtNerrorCallback	((char*)&amp;XtShellStrings[1275])
+#define XtCTitleEncoding	((char*)&amp;XtShellStrings[132])
+#define XtNsaveUnder	((char*)&amp;XtShellStrings[146])
+#define XtCSaveUnder	((char*)&amp;XtShellStrings[156])
+#define XtNtransient	((char*)&amp;XtShellStrings[166])
+#define XtCTransient	((char*)&amp;XtShellStrings[176])
+#define XtNoverrideRedirect	((char*)&amp;XtShellStrings[186])
+#define XtNiconPixmap	((char*)&amp;XtShellStrings[18])
+#define XtCOverrideRedirect	((char*)&amp;XtShellStrings[203])
+#define XtNtransientFor	((char*)&amp;XtShellStrings[220])
+#define XtCTransientFor	((char*)&amp;XtShellStrings[233])
+#define XtNiconNameEncoding	((char*)&amp;XtShellStrings[246])
+#define XtCIconNameEncoding	((char*)&amp;XtShellStrings[263])
+#define XtNallowShellResize	((char*)&amp;XtShellStrings[280])
+#define XtCAllowShellResize	((char*)&amp;XtShellStrings[297])
+#define XtCIconPixmap	((char*)&amp;XtShellStrings[29])
+#define XtNcreatePopupChildProc	((char*)&amp;XtShellStrings[314])
+#define XtCCreatePopupChildProc	((char*)&amp;XtShellStrings[335])
+#define XtNtitle	((char*)&amp;XtShellStrings[356])
+#define XtCTitle	((char*)&amp;XtShellStrings[362])
+#define XtNargc	((char*)&amp;XtShellStrings[373])
+#define XtCArgc	((char*)&amp;XtShellStrings[378])
+#define XtNargv	((char*)&amp;XtShellStrings[383])
+#define XtCArgv	((char*)&amp;XtShellStrings[388])
+#define XtNiconX	((char*)&amp;XtShellStrings[393])
+#define XtCIconX	((char*)&amp;XtShellStrings[399])
+#define XtNiconY	((char*)&amp;XtShellStrings[405])
+#define XtNiconWindow	((char*)&amp;XtShellStrings[40])
+#define XtCIconY	((char*)&amp;XtShellStrings[411])
+#define XtNinput	((char*)&amp;XtShellStrings[417])
+#define XtCInput	((char*)&amp;XtShellStrings[423])
+#define XtNiconic	((char*)&amp;XtShellStrings[429])
+#define XtCIconic	((char*)&amp;XtShellStrings[436])
+#define XtNinitialState	((char*)&amp;XtShellStrings[443])
+#define XtCInitialState	((char*)&amp;XtShellStrings[456])
+#define XtNgeometry	((char*)&amp;XtShellStrings[469])
+#define XtCGeometry	((char*)&amp;XtShellStrings[478])
+#define XtNbaseWidth	((char*)&amp;XtShellStrings[487])
+#define XtCBaseWidth	((char*)&amp;XtShellStrings[497])
+#define XtNbaseHeight	((char*)&amp;XtShellStrings[507])
+#define XtCBaseHeight	((char*)&amp;XtShellStrings[518])
+#define XtCIconWindow	((char*)&amp;XtShellStrings[51])
+#define XtNwinGravity	((char*)&amp;XtShellStrings[529])
+#define XtCWinGravity	((char*)&amp;XtShellStrings[540])
+#define XtNminWidth	((char*)&amp;XtShellStrings[551])
+#define XtCMinWidth	((char*)&amp;XtShellStrings[560])
+#define XtNminHeight	((char*)&amp;XtShellStrings[569])
+#define XtCMinHeight	((char*)&amp;XtShellStrings[579])
+#define XtNmaxWidth	((char*)&amp;XtShellStrings[589])
+#define XtCMaxWidth	((char*)&amp;XtShellStrings[598])
+#define XtNmaxHeight	((char*)&amp;XtShellStrings[607])
+#define XtCMaxHeight	((char*)&amp;XtShellStrings[617])
+#define XtNwidthInc	((char*)&amp;XtShellStrings[627])
+#define XtNiconMask	((char*)&amp;XtShellStrings[62])
+#define XtCWidthInc	((char*)&amp;XtShellStrings[636])
+#define XtNheightInc	((char*)&amp;XtShellStrings[645])
+#define XtCHeightInc	((char*)&amp;XtShellStrings[655])
+#define XtNminAspectY	((char*)&amp;XtShellStrings[665])
+#define XtCMinAspectY	((char*)&amp;XtShellStrings[676])
+#define XtNmaxAspectY	((char*)&amp;XtShellStrings[687])
+#define XtCMaxAspectY	((char*)&amp;XtShellStrings[698])
+#define XtNminAspectX	((char*)&amp;XtShellStrings[709])
+#define XtCIconMask	((char*)&amp;XtShellStrings[71])
+#define XtCMinAspectX	((char*)&amp;XtShellStrings[720])
+#define XtNmaxAspectX	((char*)&amp;XtShellStrings[731])
+#define XtCMaxAspectX	((char*)&amp;XtShellStrings[742])
+#define XtNwmTimeout	((char*)&amp;XtShellStrings[753])
+#define XtCWmTimeout	((char*)&amp;XtShellStrings[763])
+#define XtNwaitForWm	((char*)&amp;XtShellStrings[773])
+#define XtCWaitForWm	((char*)&amp;XtShellStrings[783])
+#define XtNwaitforwm	((char*)&amp;XtShellStrings[793])
+#define XtCWaitforwm	((char*)&amp;XtShellStrings[803])
+#define XtNwindowGroup	((char*)&amp;XtShellStrings[80])
+#define XtNclientLeader	((char*)&amp;XtShellStrings[813])
+#define XtCClientLeader	((char*)&amp;XtShellStrings[826])
+#define XtNwindowRole	((char*)&amp;XtShellStrings[839])
+#define XtCWindowRole	((char*)&amp;XtShellStrings[850])
+#define XtNurgency	((char*)&amp;XtShellStrings[861])
+#define XtCUrgency	((char*)&amp;XtShellStrings[869])
+#define XtNcancelCallback	((char*)&amp;XtShellStrings[877])
+#define XtNcloneCommand	((char*)&amp;XtShellStrings[892])
+#define XtCCloneCommand	((char*)&amp;XtShellStrings[905])
+#define XtNconnection	((char*)&amp;XtShellStrings[918])
+#define XtCConnection	((char*)&amp;XtShellStrings[929])
+#define XtCWindowGroup	((char*)&amp;XtShellStrings[92])
+#define XtNcurrentDirectory	((char*)&amp;XtShellStrings[940])
+#define XtCCurrentDirectory	((char*)&amp;XtShellStrings[957])
+#define XtNdieCallback	((char*)&amp;XtShellStrings[974])
+#define XtNdiscardCommand	((char*)&amp;XtShellStrings[986])
+#define XtCIconName	((char*)&amp;XtShellStrings[9])
 #define _XtShell_h	1
 
 extern char XtShellStrings[];
@@ -1624,6 +1837,272 @@ extern WidgetClass shellWidgetClass;
 extern WidgetClass topLevelShellWidgetClass;
 extern WidgetClass transientShellWidgetClass;
 extern WidgetClass wmShellWidgetClass;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>X11/ShellP.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define _XtShellPositionValid	((Boolean)(1&lt;&lt;0))
+#define _XtShellNotReparented	((Boolean)(1&lt;&lt;1))
+#define _XtShellPPositionOK	((Boolean)(1&lt;&lt;2))
+#define _XtShellGeometryParsed	((Boolean)(1&lt;&lt;3))
+#define XtInheritRootGeometryManager	((XtGeometryHandler)_XtInherit)
+#define XtShellExtensionVersion	1L
+
+typedef struct {
+    XtPointer extension;
+} ShellClassPart;
+typedef struct {
+    XtPointer next_extension;
+    XrmQuark record_type;
+    long int version;
+    Cardinal record_size;
+    XtGeometryHandler root_geometry_manager;
+} ShellClassExtensionRec;
+typedef ShellClassExtensionRec *ShellClassExtension;
+typedef struct _ShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+} ShellClassRec;
+typedef struct {
+    char *geometry;
+    XtCreatePopupChildProc create_popup_child_proc;
+    XtGrabKind grab_kind;
+    Boolean spring_loaded;
+    Boolean popped_up;
+    Boolean allow_shell_resize;
+    Boolean client_specified;
+    Boolean save_under;
+    Boolean override_redirect;
+    XtCallbackList popup_callback;
+    XtCallbackList popdown_callback;
+    Visual *visual;
+} ShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+} ShellRec;
+typedef ShellRec *ShellWidget;
+typedef struct {
+    XtPointer extension;
+} OverrideShellClassPart;
+typedef struct _OverrideShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    OverrideShellClassPart override_shell_class;
+} OverrideShellClassRec;
+typedef struct {
+    int frabjous;
+} OverrideShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    OverrideShellPart override;
+} OverrideShellRec;
+typedef OverrideShellRec *OverrideShellWidget;
+typedef struct {
+    XtPointer extension;
+} WMShellClassPart;
+typedef struct _WMShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+} WMShellClassRec;
+struct _OldXSizeHints {
+    long int flags;
+    int x;
+    int y;
+    int width;
+    int height;
+    int min_width;
+    int min_height;
+    int max_width;
+    int max_height;
+    int width_inc;
+    int height_inc;
+    struct {
+	int x;
+	int y;
+    } min_aspect;
+    struct {
+	int x;
+	int y;
+    } max_aspect;
+};
+typedef struct {
+    char *title;
+    int wm_timeout;
+    Boolean wait_for_wm;
+    Boolean transient;
+    Boolean urgency;
+    Widget client_leader;
+    String window_role;
+    struct _OldXSizeHints size_hints;
+    XWMHints wm_hints;
+    int base_width;
+    int base_height;
+    int win_gravity;
+    Atom title_encoding;
+} WMShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+} WMShellRec;
+typedef WMShellRec *WMShellWidget;
+typedef struct {
+    XtPointer extension;
+} TransientShellClassPart;
+typedef struct _TransientShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+    TransientShellClassPart transient_shell_class;
+} TransientShellClassRec;
+typedef struct {
+    Widget transient_for;
+} TransientShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+    TransientShellPart transient;
+} TransientShellRec;
+typedef TransientShellRec *TransientShellWidget;
+typedef struct {
+    XtPointer extension;
+} TopLevelShellClassPart;
+typedef struct _TopLevelShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+    TopLevelShellClassPart top_level_shell_class;
+} TopLevelShellClassRec;
+typedef struct {
+    char *icon_name;
+    Boolean iconic;
+    Atom icon_name_encoding;
+} TopLevelShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+    TopLevelShellPart topLevel;
+} TopLevelShellRec;
+typedef TopLevelShellRec *TopLevelShellWidget;
+typedef struct {
+    XtPointer extension;
+} ApplicationShellClassPart;
+typedef struct _ApplicationShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+    TopLevelShellClassPart top_level_shell_class;
+    ApplicationShellClassPart application_shell_class;
+} ApplicationShellClassRec;
+typedef struct {
+    char *c_class;
+    XrmClass xrm_class;
+    int argc;
+    char **argv;
+} ApplicationShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+    TopLevelShellPart topLevel;
+    ApplicationShellPart application;
+} ApplicationShellRec;
+typedef ApplicationShellRec *ApplicationShellWidget;
+typedef struct {
+    XtPointer extension;
+} SessionShellClassPart;
+typedef struct _SessionShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+    TopLevelShellClassPart top_level_shell_class;
+    ApplicationShellClassPart application_shell_class;
+    SessionShellClassPart session_shell_class;
+} SessionShellClassRec;
+typedef struct _XtSaveYourselfRec *XtSaveYourself;
+typedef struct {
+    SmcConn connection;
+    String session_id;
+    char **restart_command;
+    char **clone_command;
+    char **discard_command;
+    char **resign_command;
+    char **shutdown_command;
+    char **environment;
+    String current_dir;
+    String program_path;
+    unsigned char restart_style;
+    unsigned char checkpoint_state;
+    Boolean join_session;
+    XtCallbackList save_callbacks;
+    XtCallbackList interact_callbacks;
+    XtCallbackList cancel_callbacks;
+    XtCallbackList save_complete_callbacks;
+    XtCallbackList die_callbacks;
+    XtCallbackList error_callbacks;
+    XtSaveYourself save;
+    XtInputId input_id;
+    XtPointer ses20;
+    XtPointer ses19;
+    XtPointer ses18;
+    XtPointer ses17;
+    XtPointer ses16;
+    XtPointer ses15;
+    XtPointer ses14;
+    XtPointer ses13;
+    XtPointer ses12;
+    XtPointer ses11;
+    XtPointer ses10;
+    XtPointer ses9;
+    XtPointer ses8;
+    XtPointer ses7;
+    XtPointer ses6;
+    XtPointer ses5;
+    XtPointer ses4;
+    XtPointer ses3;
+    XtPointer ses2;
+    XtPointer ses1;
+} SessionShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+    TopLevelShellPart topLevel;
+    ApplicationShellPart application;
+    SessionShellPart session;
+} SessionShellRec;
+typedef SessionShellRec *SessionShellWidget;
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2056,6 +2535,35 @@ struct _EventSeqRec {
 typedef struct _EventSeqRec *EventSeqPtr;
 typedef struct _TMBranchHeadRec *TMBranchHead;
 typedef unsigned int _XtTranslateOp;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>X11/VendorP.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+typedef struct {
+    XtPointer extension;
+} VendorShellClassPart;
+typedef struct _VendorShellClassRec {
+    CoreClassPart core_class;
+    CompositeClassPart composite_class;
+    ShellClassPart shell_class;
+    WMShellClassPart wm_shell_class;
+    VendorShellClassPart vendor_shell_class;
+} VendorShellClassRec;
+typedef struct {
+    int vendor_specific;
+} VendorShellPart;
+typedef struct {
+    CorePart core;
+    CompositePart composite;
+    ShellPart shell;
+    WMShellPart wm;
+    VendorShellPart vendor;
+} VendorShellRec;
+typedef VendorShellRec *VendorShellWidget;
 </SCREEN>
 </SECT2>
 </SECT1>
