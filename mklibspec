@@ -148,6 +148,30 @@ sub output_classinfo($)
 		#
 		local $tblref = sprintf "cls-%s", nmhash($$class{'CIvtable'});
 
+        $GenericVtable = 1;
+        if( $Aid > 1 ) {
+            # Do we really have arch-specific vtable entries?
+            # If not, we can simply refer to the generic spec
+            $checkArchSpecific = "SELECT VTviid FROM Vtable ";
+            $checkArchSpecific.= "WHERE VTcid=".$$class{'CIid'}." ";
+            $checkArchSpecific.= "AND VTarch=$Aid ";
+            $checkArchSpecific.= "LIMIT 1";
+            $vtarchsth = $dbh->prepare($checkArchSpecific) or die "Couldn't prepare $checkArchSpecific query: ".DBI->errstr;
+            $vtarchsth->execute or die "Couldn't execute $checkArchSpecific query: ".DBI->errstr;
+            if( $vtarchsth->rows ) {
+                $GenericVtable = 0;
+            }
+            $vtarchsth->finish;
+        }
+
+        if( $GenericVtable and $Aid > 1 ) {
+            print "<PARA>\n";
+            print "The virtual table for the $classname class\n";
+                    #XXX
+                #print "is described in the relevant architecture specific part of &ISOSTD;.\n";
+            print "is described in the generic part of this specification.\n";
+            print "</PARA>\n";
+        } else {
 		$select = "SELECT * FROM ClassVtab ";
 		$select.= "LEFT JOIN ArchClass ON ACcid = CVcid ";
 		$select.= "AND ACpos = CVpos ";
@@ -156,6 +180,7 @@ sub output_classinfo($)
 		$select.= "ORDER BY CVpos";
 		$vtsth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 		$vtsth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+
 		if( $vtsth->rows ) {
 			print "<PARA>\n";
 			print "The virtual table for the $classname class\n";
@@ -169,11 +194,13 @@ sub output_classinfo($)
 			print "is described in the relevant architecture specific part of this specification.\n";
 			print "</PARA>\n";
 		}
+
 		for(1..$vtsth->rows) {
 			$classvtab = $vtsth->fetchrow_hashref;
 			print "<!--classdata-->\n";
 			printf "<TABLE id=\"$tblref-%d\">\n", $classvtab->{'CVpos'};
 			print "<TITLE>";
+
 			if( $classvtab->{'CVpos'} == 0 ) {
 				print "Primary ";
 			} else {
@@ -258,6 +285,7 @@ sub output_classinfo($)
 		}
 		$vtsth->finish
 	}
+    }
 
 
 	#
