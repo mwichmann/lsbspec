@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=intro.sgml
-TABLES=standards.sgml
+TABLES=standards.sgml libraries.sgml
 
 .cpp.sgml:
 	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@

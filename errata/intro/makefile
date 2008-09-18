@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=intro.sgml
-TABLES=
+TABLES=standards.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
