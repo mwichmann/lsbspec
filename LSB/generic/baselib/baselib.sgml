@@ -15445,12 +15445,19 @@ If <PARAMETER>path</PARAMETER> was not already on the watch list,
 then <function>inotify_add_watch</function>
 shall allocate a new watch descriptor.
 </PARA>
+<para>
+<function>inotify_add_watch</function> shall not work recursively. 
+Monitoring subdirectories of <parameter>path</parameter>
+shall require adding watches to them.
+</para>
 <PARA>
 On failure, <function>inotify_add_watch</function> shall return <LITERAL>-1</LITERAL>
 and set <varname>errno</varname> to an appropriate value.
 </PARA>
 </REFSECT1>
-    
+
+
+
 <REFSECT1>
 <TITLE>Errors
 </TITLE>
@@ -15524,8 +15531,385 @@ or the kernel cannot allocate a resource.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
-
 </VARIABLELIST>
+</REFSECT1>
+
+
+<REFSECT1>
+<TITLE>
+Application Usage
+</TITLE>
+
+<REFSECT2>
+<TITLE>
+Reading
+</TITLE>
+
+<PARA>
+The function <function>read</function> can be used 
+to determine which inotify events have occurred. 
+A blocking file descriptor will make 
+<function>read</function> block until at least one event has occurred.
+</PARA>
+<PARA>
+If successful, <function>read</function> will return at least one 
+of the following <varname>inotify_event</varname> structures in a buffer:
+</PARA>
+
+<PARA>
+<informalexample>
+  <programlisting>
+struct inotify_event {
+    int      wd;
+    uint32_t mask;
+    uint32_t cookie;
+    uint32_t len;
+    char     path[];
+};
+  </programlisting>
+</informalexample>
+</PARA>
+
+<PARA>
+<varname>wd</varname> is a watch descriptor that 
+specifies the watch associated with the event.
+It is obtained from a previous invocation of 
+<function>inotify_add_watch</function>.
+</PARA>
+<PARA>
+<varname>mask</varname> is a bit mask describing inotify events. 
+See the section on masks below.
+</PARA>
+<PARA>
+<varname>cookie</varname> is an integer associating related inotify events.
+The integer value is unique, and currently
+only enables the application to associate 
+<constant>IN_MOVE_FROM</constant> and
+<constant>IN_MOVE_TO</constant> rename events.
+</PARA>
+<PARA>
+<varname>len</varname> is a count of the bytes in <varname>path</varname>, 
+including null bytes. 
+This means that the total length of an <varname>inotify_event</varname> 
+structure is
+<informalexample>
+  <programlisting>
+sizeof(inotify_event)+len
+  </programlisting>
+</informalexample>
+</PARA>
+<PARA>
+<varname>path</varname> is only returned when an event occurs for a file within
+a watched directory. This string is null-terminated, and it may contain 
+more null bytes so that future reads will be aligned properly on an
+address boundary.
+</PARA>
+<PARA>
+In kernels before 2.6.21, <function>read</function> 
+returns <literal>0</literal> when the buffer given to it is too small
+to return data about the next event. In subsequent kernels, it fails with the 
+error <constant>EINVAL</constant>.
+</PARA>
+<PARA>
+For a given file descriptor, the inotify events are returned in an ordered queue.
+Events on a file descriptor will always be returned in the correct order of occurrence.
+If two or more inotify events for a given file descriptor have identical values for all
+fields, then only one <varname>inotify_event</varname> 
+will be returned to represent all of them.
+</PARA>
+<PARA>
+The number of bytes that can be read from an inotify file descriptor
+can be determined by making a 
+<constant>FIONREAD</constant> <function>ioctl</function> call.
+</PARA>
+</REFSECT2>
+
+<REFSECT2>
+<TITLE>
+Masks
+</TITLE>
+<PARA>
+The <parameter>mask</parameter> argument of 
+<function>inotify_add_watch</function> and the <varname>mask</varname> field of the 
+<varname>inotify_event</varname> structure are bit masks that specify inotify events. 
+The bits in the list below can be set in the <parameter>mask</parameter> argument of 
+<function>inotify_add_watch</function> and returned in the 
+<varname>mask</varname> field of <varname>inotify_event</varname>.
+</PARA>
+
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+IN_ACCESS
+</TERM>
+<LISTITEM>
+<PARA>
+File was read.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_ALL_EVENTS
+</TERM>
+<LISTITEM>
+<PARA>
+Bit mask of all events in this list.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_ATTRIB
+</TERM>
+<LISTITEM>
+<PARA>
+File's metadata changed (including timestamps and permissions).
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_CLOSE
+</TERM>
+<LISTITEM>
+<PARA>
+Same as
+<informalexample>
+  <programlisting>
+IN_CLOSE_WRITE | IN_CLOSE_NOWRITE
+  </programlisting>
+</informalexample>
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_CLOSE_WRITE
+</TERM>
+<LISTITEM>
+<PARA>
+File that was opened for writing was closed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_CLOSE_NOWRITE
+</TERM>
+<LISTITEM>
+<PARA>
+File that was not opened for writing was closed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_CREATE
+</TERM>
+<LISTITEM>
+<PARA>
+File or directory was created in a watched directory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_DELETE
+</TERM>
+<LISTITEM>
+<PARA>
+File or directory was deleted in a watched directory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_DELETE_SELF
+</TERM>
+<LISTITEM>
+<PARA>
+Watched file or directory was deleted.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_MODIFY
+</TERM>
+<LISTITEM>
+<PARA>
+File was changed.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_MOVE
+</TERM>
+<LISTITEM>
+<PARA>
+Same as
+<informalexample>
+  <programlisting>
+IN_MOVED_FROM | IN_MOVED_TO
+  </programlisting>
+</informalexample>
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+
+<VARLISTENTRY>
+<TERM>
+IN_MOVE_SELF
+</TERM>
+<LISTITEM>
+<PARA>
+Watched file or directory was moved
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_MOVED_FROM
+</TERM>
+<LISTITEM>
+<PARA>
+File was moved out of watched directory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_MOVED_TO
+</TERM>
+<LISTITEM>
+<PARA>
+File was moved into watched directory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_OPEN
+</TERM>
+<LISTITEM>
+<PARA>
+File was opened.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+
+<PARA>
+All of the events above, except for 
+<constant>IN_DELETE_SELF</constant> and <constant>IN_MOVE_SELF</constant>, 
+cause the name field of the <varname>inotify_event</varname> structure to contain 
+the name of the file or directory being monitored.
+</PARA>
+
+<PARA>
+The following bit is valid for <function>inotify_add_watch</function> only.
+</PARA>
+
+<PARA>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+IN_ONESHOT
+</TERM>
+<LISTITEM>
+<PARA>
+Monitor path for an event, and then remove it from the watch list.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</PARA>
+
+<PARA>
+The following bits are valid for the <varname>inotify_event</varname> structure only.
+</PARA>
+
+<PARA>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+IN_IGNORED
+</TERM>
+<LISTITEM>
+<PARA>
+Watch was removed, either explicitly (via <function>inotify_rm_watch</function>) 
+or implicitly (file deletion or file system unmounting).
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_ISDIR
+</TERM>
+<LISTITEM>
+<PARA>
+Object being watched is a directory.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_Q_OVERFLOW
+</TERM>
+<LISTITEM>
+<PARA>
+The event queue overflowed (<parameter>wd</parameter> is set to <literal>-1</literal>).
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+IN_UNMOUNT
+</TERM>
+<LISTITEM>
+<PARA>
+File system of object being watched was unmounted.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT2>
+
+<REFSECT2>
+<TITLE>Notes
+</TITLE>
+<PARA>
+It is possible to monitor file descriptors with the functions <function>epoll</function>, 
+<function>poll</function>, and <function>select</function>.
+</PARA>
+<PARA>
+When all of the file descriptors that point to an inotify instance
+have been closed, the instance and its associated resources and 
+watches are freed by the kernel.
+</PARA>
+</REFSECT2>
 </REFSECT1>
 
 <REFSECT1>
