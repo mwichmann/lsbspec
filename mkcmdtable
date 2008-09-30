@@ -131,7 +131,17 @@ sub lsbCommands {
 		$tbl = "tbl-cmds";
 		$MainTitle = "Commands And Utilities";
 	}
-	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command  LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid WHERE ModCmd.MCmid=$moduleid AND Standard.Sid=Command.Cstandard AND (MCappearedin<>'' AND MCappearedin<='$lsbversion' AND (MCwithdrawnin IS NULL OR MCwithdrawnin>'$lsbversion') ) AND $builtinCheck ORDER BY Sname");
+	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command
+                          LEFT JOIN ModCmd ON Command.Cid=ModCmd.MCcid
+                          LEFT JOIN CmdStd ON CScid=Cid
+                          WHERE ModCmd.MCmid=$moduleid
+                          AND Standard.Sid=CSsid
+                          AND MCappearedin > '' AND MCappearedin<='$lsbversion'
+                          AND (MCwithdrawnin IS NULL OR MCwithdrawnin>'$lsbversion')
+                          AND CSappearedin > '' AND CSappearedin<='$lsbversion'
+                          AND (CSwithdrawnin IS NULL OR CSwithdrawnin>'$lsbversion')
+                          AND $builtinCheck
+                          ORDER BY Sname");
 	$sth->execute;
 
 	if ($sth->rows > 0) {
@@ -148,7 +158,15 @@ sub lsbCommands {
 
 	printf("</PARA>\n");
 
-	$sth = $dbh->prepare("SELECT Cname, Cstandard, Sfull, Sid, Sname FROM Command LEFT JOIN ModCmd ON Command.cid=ModCmd.MCcid LEFT JOIN Standard ON Command.Cstandard=Standard.Sid WHERE (MCappearedin<>'' AND MCappearedin<='$lsbversion' AND (MCwithdrawnin IS NULL OR MCwithdrawnin>'$lsbversion') ) AND $builtinCheck AND ModCmd.MCmid=$moduleid ORDER BY Command.Cname");
+	$sth = $dbh->prepare("SELECT Cname, CSsid, Sfull, Sid, Sname FROM Command
+                            LEFT JOIN ModCmd ON Command.Cid=ModCmd.MCcid
+                            LEFT JOIN CmdStd ON CScid=Cid
+                            LEFT JOIN Standard ON CSsid=Standard.Sid
+                            WHERE MCappearedin > '' AND MCappearedin<='$lsbversion'
+                            AND (MCwithdrawnin IS NULL OR MCwithdrawnin>'$lsbversion')
+                            AND $builtinCheck
+                            AND ModCmd.MCmid=$moduleid
+                            ORDER BY Command.Cname");
 	$sth->execute;
 
 	if ($sth->rows < 1) {
@@ -187,7 +205,7 @@ sub lsbCommands {
 		#
 		die "OVERFLOW!!! $idx > " . $totalrows * 5 unless ($idx <= $totalrows*5);
 
-		$ref = $permutation{$field->{'Cstandard'}};
+		$ref = $permutation{$field->{'CSsid'}};
 
 		#$ftid = sprintf("std-fn-%s-%s",  
 		#	$field[1], $permutation{$field[1]});
