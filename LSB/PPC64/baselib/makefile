@@ -8,7 +8,7 @@ UNWINDPAGES= _Unwind_DeleteException.sgml _Unwind_Find_FDE.sgml \
 	     _Unwind_GetTextRelBase.sgml _Unwind_RaiseException.sgml \
 	     _Unwind_Resume.sgml _Unwind_SetGR.sgml _Unwind_SetIP.sgml
 
-MANPAGES= $(UNWINDPAGES)
+MANPAGES= $(UNWINDPAGES) __nldbl_nexttowardf.sgml
 
 LIBS=libc.sgml libm.sgml libgcc_s.sgml libpthread.sgml libdl.sgml \
 	libcrypt.sgml libstdcxx.sgml
@@ -35,6 +35,9 @@ gensrc: $(MANPAGES)
 	../../../mklibspec -a PPC64 -c 1 -l libstdcxx -d -v `cat ../../target_version.PPC64` | ../../../fixc++spec >libstdcxx.sgml
 
 _Unwind_%.sgml: 
+	cp ../../generic/baselib/$@ .
+
+__nldbl_nexttowardf.sgml:
 	cp ../../generic/baselib/$@ .
 
 clean:
