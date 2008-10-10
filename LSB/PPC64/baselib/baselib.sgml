@@ -703,7 +703,7 @@ underlying specification.
 <ENTRY><indexterm><primary>vdprintf</primary></indexterm>vdprintf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>vfprintf</primary></indexterm>vfprintf(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
+<ENTRY><indexterm><primary>vfprintf</primary></indexterm>vfprintf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>vprintf</primary></indexterm>vprintf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>vsnprintf</primary></indexterm>vsnprintf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>vsprintf</primary></indexterm>vsprintf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
@@ -1224,7 +1224,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>fwide</primary></indexterm>fwide(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
-<ENTRY><indexterm><primary>fwprintf</primary></indexterm>fwprintf(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
+<ENTRY><indexterm><primary>fwprintf</primary></indexterm>fwprintf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>fwscanf</primary></indexterm>fwscanf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getwc</primary></indexterm>getwc(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
 </ROW>
@@ -1255,7 +1255,7 @@ underlying specification.
 <ROW>
 <ENTRY><indexterm><primary>ungetwc</primary></indexterm>ungetwc(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>vfwprintf</primary></indexterm>vfwprintf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
-<ENTRY><indexterm><primary>vfwscanf</primary></indexterm>vfwscanf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>vfwscanf</primary></indexterm>vfwscanf(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>vswprintf</primary></indexterm>vswprintf(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.5">[SUSv3]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -1425,7 +1425,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>__strtol_internal</primary></indexterm>__strtol_internal(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>__strtold_internal</primary></indexterm>__strtold_internal(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>__strtold_internal</primary></indexterm>__strtold_internal(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>__strtoll_internal</primary></indexterm>__strtoll_internal(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>__strtoul_internal</primary></indexterm>__strtoul_internal(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 </ROW>
@@ -2135,7 +2135,7 @@ underlying specification.
 <ENTRY><indexterm><primary>__isnanf</primary></indexterm>__isnanf(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>__isnanl</primary></indexterm>__isnanl(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>__isnanl</primary></indexterm>__isnanl(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>__nldbl___syslog_chk</primary></indexterm>__nldbl___syslog_chk(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>__nldbl___vsyslog_chk</primary></indexterm>__nldbl___vsyslog_chk(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>__nldbl_syslog</primary></indexterm>__nldbl_syslog(GLIBC_2.4) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
@@ -2741,23 +2741,87 @@ enum {
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+struct timestamp {
+    u_int8_t len;
+    u_int8_t ptr;
+    unsigned int overflow:4;
+    unsigned int flags:4;
+    u_int32_t data[9];
+};
+struct iphdr {
+    unsigned int version:4;
+    unsigned int ihl:4;
+    u_int8_t tos;
+    u_int16_t tot_len;
+    u_int16_t id;
+    u_int16_t frag_off;
+    u_int8_t ttl;
+    u_int8_t protocol;
+    u_int16_t check;
+    u_int32_t saddr;
+    u_int32_t daddr;
+};
+struct ip {
+    unsigned int ip_v:4;
+    unsigned int ip_hl:4;
+    u_int8_t ip_tos;
+    u_short ip_len;
+    u_short ip_id;
+    u_short ip_off;
+    u_int8_t ip_ttl;
+    u_int8_t ip_p;
+    u_short ip_sum;
+    struct in_addr ip_src;
+    struct in_addr ip_dst;
+};
+struct ip_timestamp {
+    u_int8_t ipt_len;
+    u_int8_t ipt_code;
+    u_int8_t ipt_ptr;
+    unsigned int ipt_flg:4;
+    unsigned int ipt_oflw:4;
+    u_int32_t data[9];
+};
 </SCREEN>
 </SECT2>
-<!-- missing header file PPC64/netinet/ip6.h -->
+<SECT2>
+<TITLE>netinet/ip6.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define IP6_ALERT_MLD	0x0000
+#define IP6F_MORE_FRAG	0x0001
+#define IP6_ALERT_RSVP	0x0001
+#define IP6_ALERT_AN	0x0002
+#define IP6F_RESERVED_MASK	0x0006
+#define IP6F_OFF_MASK	0xfff8
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>netinet/tcp.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-/*
- * This header is architecture neutral
- * Please refer to the generic specification for details
- */
+struct tcphdr {
+    uint16_t source;
+    uint16_t dest;
+    uint32_t seq;
+    uint32_t ack_seq;
+    uint16_t doff:4;
+    uint16_t res1:4;
+    uint16_t res2:2;
+    uint16_t urg:1;
+    uint16_t ack:1;
+    uint16_t psh:1;
+    uint16_t rst:1;
+    uint16_t syn:1;
+    uint16_t fin:1;
+    uint16_t window;
+    uint16_t check;
+    uint16_t urg_ptr;
+};
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3949,7 +4013,7 @@ underlying specification.
 <ROW>
 <ENTRY><indexterm><primary>cacosh</primary></indexterm>cacosh(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>cacoshf</primary></indexterm>cacoshf(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
-<ENTRY><indexterm><primary>cacoshl</primary></indexterm>cacoshl(GLIBC_2.4) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
+<ENTRY><indexterm><primary>cacoshl</primary></indexterm>cacoshl(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>cacosl</primary></indexterm>cacosl(GLIBC_2.4) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -4129,7 +4193,7 @@ underlying specification.
 <ROW>
 <ENTRY><indexterm><primary>finite</primary></indexterm>finite(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>finitef</primary></indexterm>finitef(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>finitel</primary></indexterm>finitel(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>finitel</primary></indexterm>finitel(GLIBC_2.4) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>floor</primary></indexterm>floor(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -4152,7 +4216,7 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>fmodf</primary></indexterm>fmodf(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
-<ENTRY><indexterm><primary>fmodl</primary></indexterm>fmodl(GLIBC_2.4) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
+<ENTRY><indexterm><primary>fmodl</primary></indexterm>fmodl(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>frexp</primary></indexterm>frexp(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>frexpf</primary></indexterm>frexpf(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 </ROW>
@@ -4267,7 +4331,7 @@ underlying specification.
 <ROW>
 <ENTRY><indexterm><primary>pow10</primary></indexterm>pow10(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pow10f</primary></indexterm>pow10f(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pow10l</primary></indexterm>pow10l(GLIBC_2.4) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pow10l</primary></indexterm>pow10l(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>powf</primary></indexterm>powf(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -4319,7 +4383,7 @@ underlying specification.
 <ENTRY><indexterm><primary>sinhf</primary></indexterm>sinhf(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>sinhl</primary></indexterm>sinhl(GLIBC_2.4) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
+<ENTRY><indexterm><primary>sinhl</primary></indexterm>sinhl(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>sinl</primary></indexterm>sinl(GLIBC_2.4) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>sqrt</primary></indexterm>sqrt(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>sqrtf</primary></indexterm>sqrtf(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
@@ -4436,7 +4500,7 @@ in future releases of this specification.
 <ROW>
 <ENTRY><indexterm><primary>drem</primary></indexterm>drem(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>dremf</primary></indexterm>dremf(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>dreml</primary></indexterm>dreml(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>dreml</primary></indexterm>dreml(GLIBC_2.4) <LINK LINKEND="REFSTD.libm.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>erfcl</primary></indexterm>erfcl(GLIBC_2.3) <LINK LINKEND="REFSTD.libm.2">[SUSv3]</LINK></ENTRY>
 </ROW>
 <ROW>
@@ -4660,8 +4724,42 @@ in the source standard.
 Other interfaces listed in <XREF LINKEND=libm> shall behave as described
 in the referenced base document. For interfaces referencing LSB and not listed below, please see the generic part of the specification.
 </PARA>
-<!-- MISSING DEFINITION FOR __fpclassifyl -->
-<!-- Lets just hope nobody notices -->
+<REFENTRY ID="baselib---fpclassifyl"> <REFMETA>
+<REFENTRYTITLE>__fpclassifyl</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__fpclassifyl</REFNAME>
+<REFPURPOSE>
+Classify real floating type
+</REFPURPOSE>
+</REFNAMEDIV>
+<REFSYNOPSISDIV>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>int 
+  <FUNCTION>__fpclassifyl</FUNCTION></FUNCDEF>
+ <PARAMDEF>long double 
+  <PARAMETER><REPLACEABLE>arg</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+<REFSECT1>
+<TITLE>Description
+</TITLE>
+<PARA>
+<FUNCTION>__fpclassifyl</FUNCTION> has the same specification as 
+<FUNCTION>fpclassify</FUNCTION> in <XREF LINKEND="STD.SUSV3">,
+except that the argument 
+type for <FUNCTION>__fpclassifyl</FUNCTION> is known to be long double.
+</PARA>
+<PARA>
+<FUNCTION>__fpclassifyl</FUNCTION> is not in the source standard; 
+it is only in the binary standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
 <REFENTRY ID="baselib---nldbl-nexttowardf"> <REFMETA>
 <REFENTRYTITLE>__nldbl_nexttowardf</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -4731,8 +4829,48 @@ and therefore also uses 64-bit calculations.
 
 </REFENTRY>
 
-<!-- MISSING DEFINITION FOR __signbitl -->
-<!-- Lets just hope nobody notices -->
+<REFENTRY ID="baselib---signbitl"> <REFMETA>
+<REFENTRYTITLE>__signbitl</REFENTRYTITLE>
+<REFMISCINFO>Base Libraries</REFMISCINFO>
+</REFMETA>
+<REFNAMEDIV>
+<REFNAME>__signbitl</REFNAME>
+<REFPURPOSE>
+test sign of floating point value
+</REFPURPOSE>
+</REFNAMEDIV>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;math.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>__signbitl</function>
+</funcdef>
+<paramdef>long double
+<parameter>arg</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<REFSECT1>
+<TITLE>Description
+</TITLE>
+<PARA>
+<FUNCTION>__signbitl</FUNCTION> has the same specification as 
+<FUNCTION>signbit</FUNCTION> in <XREF LINKEND="STD.SUSV3">,
+except that the argument 
+type for <FUNCTION>__signbitl</FUNCTION> is known to be long double.
+</PARA>
+<PARA>
+<FUNCTION>__signbitl</FUNCTION> is not in the source standard; 
+it is only in the binary standard.
+</PARA>
+</REFSECT1>
+</REFENTRY>
+
 </SECT1>
 <!-- End of text generated from database -->
 
