@@ -27,8 +27,10 @@ provide interfaces for creating rich graphical user interface applications.
 <TERM>Pango</TERM>
 <listitem><para>Pango is a library for internationalized text handling. It centers around the PangoLayout object, representing a paragraph of text. Pango provides the engine for GtkTextView, GtkLabel, GtkEntry, and other widgets that display text.</para>
 <para>libpango-1.0</para>
+<para>libpangocairo-1.0</para>
 <para>libpangoxft-1.0</para>
-<para>libpangoft2-1.0</para></listitem>
+<para>libpangoft2-1.0</para>
+</listitem>
 </VARLISTENTRY>
 <VARLISTENTRY>
 <TERM>GdkPixbuf</TERM>
@@ -94,6 +96,7 @@ m4_include(libGmodule.sgml)
 m4_include(libGthread.sgml)
 m4_include(libAtk.sgml)
 m4_include(libPango.sgml)
+m4_include(libPangoCairo.sgml)
 m4_include(libPangoxft.sgml)
 m4_include(libPangoft2.sgml)
 m4_include(libGdk_pixbuf.sgml)

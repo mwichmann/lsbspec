@@ -1,14 +1,9 @@
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
-#MANPAGES=_XtCopyFromArg.sgml _XtInheritTranslations.sgml _XtInherit.sgml \
-	_XtIsSubclassOf.sgml
-
+MANPAGES=
 FILES=GTK.sgml
-TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
+TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml libPangoCairo.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -28,6 +23,7 @@ gensrc:
 	../../../mklibspec -a PPC64 -v `cat ../../../LSB/target_version.PPC64` -c 2 -l libgdk_pixbuf_xlib-2.0 >libGdk_pixbuf_xlib.sgml
 	../../../mklibspec -a PPC64 -v `cat ../../../LSB/target_version.PPC64` -c 2 -l libgdk-x11-2.0 >libGdk-x11.sgml
 	../../../mklibspec -a PPC64 -v `cat ../../../LSB/target_version.PPC64` -c 2 -l libgtk-x11-2.0 >libGtk-x11.sgml
+	../../../mklibspec -a PPC64 -v `cat ../../../LSB/target_version.PPC64` -c 2 -l libpangocairo-1.0 >libPangoCairo.sgml
 
 clean:
 	rm -f $(FILES)
@@ -35,6 +31,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-
-GTK.sgml: libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml
-#GTK.sgml: $(MANPAGES)
+GTK.sgml: $(TABLES) $(MANPAGES)
