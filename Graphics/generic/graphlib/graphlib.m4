@@ -20,6 +20,8 @@ m4_include(libXext.sgml)
 
 m4_include(libXi.sgml)
 
+m4_include(libXtst.sgml)
+
 </CHAPTER>
 
 </PART>
