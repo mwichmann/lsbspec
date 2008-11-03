@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
-TABLES=references.sgml libraries.sgml
+TABLES=references.sgml libraries.sgml slibraries.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -10,8 +10,9 @@ TABLES=references.sgml libraries.sgml
 all: $(FILES) #$(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'xdg-utils','ALSA','ISOC99','Java','JavaCmd','JavaVM'" >references.sgml
+	../../mkstandardsgmltable -a All -s "'xdg-utils','ALSA','ISOC99','NSS SSL','NSPR','Java','JavaCmd','JavaVM'" >references.sgml
 	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Multimedia >libraries.sgml
+	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Security >slibraries.sgml
 
 clean:
 	rm -f $(FILES)
@@ -19,4 +20,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-intro.sgml: references.sgml libraries.sgml
+intro.sgml: $(TABLES)
