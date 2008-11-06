@@ -17,7 +17,7 @@ In this Chapter "System" means an "LSB conforming implementation" and
 <PARA>
 The system shall grant to the application read and execute              
 permissions on files needed to use all system interfaces (ABIs)                 
-required by the LSB specification.
+required by the this specification.
 </PARA>
 
 </SECT1>
@@ -190,10 +190,10 @@ particularly with respect to its security.
 <SECT1>
 <title>Mandatory Optional Behaviors</title>
 <para>This section specifies behaviors in which there is optional
-behavior in one of the standards on which the LSB relies, and where
-the LSB requires a specific behavior.
+behavior in one of the standards on which this specification relies,
+and where this specification requires a specific behavior.
 <note><para>
-The LSB does not require the kernel to be Linux; the set of mandated 
+This specification does not require the kernel to be Linux; the set of mandated 
 options reflects current existing practice, but may be modified in
 future releases.
 </para></note>
@@ -265,7 +265,7 @@ argument shall fail.  See also <xref linkend="baselib-unlink-3">.
 <note>
 <para>
 Linux allows <FUNCTION>rename</FUNCTION> on a directory without
-having write access, but the LSB does not require this.</para>
+having write access, but this specification does not require this behavior.</para>
 </note>
 </para>
 <SECT2 id=addl-behaviors-test>
@@ -336,6 +336,33 @@ as described as optional behavior in <XREF linkend="std.susv3">.
 
 
 </SECT2>
+</SECT1>
+<SECT1>
+<title>Optional Mandatory Behaviors</title>
+<para>This section specifies behaviors that are mandatory
+in one of the standards on which this specification relies, but which
+are optional in this specification.
+</para>
+<para>
+<CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>
+describes the behavior of the file access time, available as the
+<structfield>st_atime</structfield> field of the <structname>stat</structname>
+and <structname>stat64</structname> structures.  An LSB conforming
+implementation need not update this information every time a
+file is accessed. 
+</para>
+<para>
+Note that a subsequent edition of the POSIX standard
+no longer mandates updating of <structfield>st_atime</structfield> but
+the older edition is still the guiding standard for this specification,
+thus this exception is needed.
+</para>
+</SECT1>
+<SECT1>
+<title>Executable Scripts</title>
+<para>
+LSB conforming implementations shall support executable scripts.
+</para>
 </SECT1>
 </CHAPTER>
 
