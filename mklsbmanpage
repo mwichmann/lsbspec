@@ -293,6 +293,7 @@ sub mksynop($) {
     my $sql = "select * from Interface ";
     $sql .= "left join ArchInt on Iid=AIint ";
     $sql .= "left join Type on Tid=Ireturn ";
+    $sql .= "left join ArchType on ATtid=Tid ";
     $sql .= "left join Header on Hid=Iheader ";
     $sql .= "where ";
     $sql .= "Iname='$func' and ";
@@ -371,11 +372,14 @@ sub refmeta($$) {
 
 sub namediv($$) {
     my ( $lib, $interface ) = @_;
+    # id= terms cannot contain underscores, translate
+    my $idstring = $interface;
+    $idstring =~ tr/_/-/;
     print "\n";
     print "<refnamediv>\n";
     print "<refname>$interface</refname>\n";
     print "<refpurpose>INSERT PURPOSE HERE</refpurpose>\n";
-    print "<indexterm id=\"ix-$lib-$interface-1\">\n";
+    print "<indexterm id=\"ix-$lib-$idstring-1\">\n";
     print "\t<primary>$interface</primary></indexterm>\n";
     print "</refnamediv>\n";
 }
@@ -420,7 +424,10 @@ else {
 
 my $lib       = $ARGV[0];
 my $interface = $ARGV[1];
-printf "<refentry id=\"%s-%s-1\">\n\n", $lib, $interface;
+# id= terms cannot contain underscores, translate
+my $idstring = $interface;
+$idstring =~ tr/_/-/;
+printf "<refentry id=\"%s-%s-1\">\n\n", $lib, $idstring;
 refmeta( $lib, $interface );
 namediv( $lib, $interface );
 mksynop($interface);

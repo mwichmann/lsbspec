@@ -1,12 +1,12 @@
-<PART ID="tocexecenv">
+<PART id="tocexecenv">
 <TITLE>Execution Environment</TITLE>
 
 m4_include(fhs.sgml)
 
-<CHAPTER id=execstuff>
+<CHAPTER id="execstuff">
 <TITLE>Additional Recommendations</TITLE>
 <!--
-<SECT1 id=permissions-must>
+<SECT1 id="permissions-must">
 <TITLE>Minimal granted Directory and File permissions</TITLE>
 
 <PARA>
@@ -23,10 +23,10 @@ required by the this specification.
 </SECT1>
 -->
 
-<SECT1 id=permissions-should>
+<SECT1 id="permissions-should">
 <TITLE>Recommendations for applications on ownership and permissions</TITLE>
 
-<SECT2 id=permissions-dirwrite>
+<SECT2 id="permissions-dirwrite">
 <TITLE>Directory Write Permissions</TITLE>
 
 <PARA>
@@ -55,7 +55,7 @@ deletion mode as described for the XSI option for <xref linkend="std.susv3">..
 </SECT2>
 
  
-<SECT2 id=permissions-filewrite>
+<SECT2 id="permissions-filewrite">
 <TITLE>File Write Permissions</TITLE>
 
 <PARA>
@@ -64,7 +64,7 @@ any file that it does not itself create.
 </PARA>
 </SECT2>
          
-<SECT2 id=permissions-fileread>
+<SECT2 id="permissions-fileread">
 <TITLE>File Read and execute Permissions</TITLE>
  
 <PARA>
@@ -74,7 +74,7 @@ every file and directory.
  
 </SECT2>
 
-<SECT2 id=permissions-sbits>
+<SECT2 id="permissions-sbits">
 <TITLE>SUID and SGID Permissions </TITLE>
  
 <PARA>
@@ -97,7 +97,7 @@ are likely to cause problems with such security policies.
 </NOTE>
 </SECT2>
  
-<SECT2 id=priviledged-users>
+<SECT2 id="priviledged-users">
 <TITLE>Privileged users</TITLE>
 
 <PARA>
@@ -122,7 +122,7 @@ harder or even impossible.
 
 </SECT2>
 
-<SECT2 id=changing-permissions>
+<SECT2 id="changing-permissions">
 <TITLE>Changing permissions</TITLE>
 
 <PARA>
@@ -136,7 +136,7 @@ installation if the permissions on these files is inappropriate.
 
 </SECT2>
 
-<SECT2 id=permission-media>
+<SECT2 id="permission-media">
 <TITLE>Removable Media (Cdrom, Floppy, etc.)</TITLE>
 
 <para>
@@ -159,7 +159,7 @@ possibility to control what the application can do.
 
 </SECT2>
  
-<SECT2 id=permission-installers>
+<SECT2 id="permission-installers">
 <TITLE>Installable applications</TITLE>
 
 <PARA>
@@ -268,7 +268,7 @@ Linux allows <FUNCTION>rename</FUNCTION> on a directory without
 having write access, but this specification does not require this behavior.</para>
 </note>
 </para>
-<SECT2 id=addl-behaviors-test>
+<SECT2 id="addl-behaviors-test">
 <TITLE>Special Requirements</TITLE>
 <PARA>
 LSB conforming systems shall enforce certain special additional restrictions
@@ -337,32 +337,149 @@ as described as optional behavior in <XREF linkend="std.susv3">.
 
 </SECT2>
 </SECT1>
-<SECT1>
+<SECT1 id="exec-opt-mandatory">
 <title>Optional Mandatory Behaviors</title>
 <para>This section specifies behaviors that are mandatory
 in one of the standards on which this specification relies, but which
 are optional in this specification.
 </para>
 <para>
-<CITETITLE PUBWORK="BOOK"><XREF LINKEND="STD.SUSv3"></CITETITLE>
-describes the behavior of the file access time, available as the
-<structfield>st_atime</structfield> field of the <structname>stat</structname>
-and <structname>stat64</structname> structures.  An LSB conforming
-implementation need not update this information every time a
-file is accessed. 
+<XREF LINKEND="STD.SUSv3"> describes the behavior of the file access
+time, available as the <structfield>st_atime</structfield> field of
+the <structname>stat</structname> and <structname>stat64</structname>
+structures.  An LSB conforming implementation need not update this
+information every time a file is accessed.
 </para>
+<note>
 <para>
-Note that a subsequent edition of the POSIX standard
-no longer mandates updating of <structfield>st_atime</structfield> but
-the older edition is still the guiding standard for this specification,
-thus this exception is needed.
+A subsequent edition of the POSIX standard no longer mandates updating
+of <structfield>st_atime</structfield> but the older edition is still the
+guiding standard for this specification, thus this exception is needed.
 </para>
+</note>
 </SECT1>
-<SECT1>
+<SECT1 id="executable-scripts">
 <title>Executable Scripts</title>
 <para>
+An executable script is an executable file of which the first two
+characters are <literal>#!</literal> as defined in the portable character
+set. In <XREF LINKEND="STD.SUSv3">, this construct is undefined, but
+reserved for implementations which wish to provide this functionality.
 LSB conforming implementations shall support executable scripts.
 </para>
+
+<para>
+A successful call to a function of the exec family with an executable
+script as the first parameter shall result in a new process, where the
+process image started is that of the interpreter. The path name of the
+interpreter follows the <literal>#!</literal> characters.
+</para>
+
+<para>
+If the executable script has a first line
+<informalexample>
+<programlisting>
+#! interpreter [arg]
+</programlisting>
+</informalexample>
+then <parameter>interpreter</parameter> shall be called with an
+argument array consisting of an unspecified zeroth argument, followed
+by <parameter>arg</parameter> (if present), followed by a path name for
+the script, followed by the arguments following the zeroth argument in
+the exec call of the script.
+</para>
+
+<para>
+The interpreter shall not perform any operations on the first line of
+an executable script.
+</para>
+
+<para>
+The first line of the executable script shall meet all of the following
+criteria otherwise the results are unspecified:
+</para>
+
+<para>
+<orderedlist>
+<listitem><para>
+Is of one of the forms:
+<informalexample>
+<programlisting>
+#!interpreter
+#! interpreter
+#!interpreter arg
+#! interpreter arg
+</programlisting>
+</informalexample>
+</para></listitem>
+
+<listitem><para>
+The <parameter>interpreter</parameter> argument is an absolute pathname
+of an executable file other than an executable script.
+</para></listitem>
+
+<listitem><para>
+Neither the <parameter>interpreter</parameter> argument nor the
+<parameter>arg</parameter> argument, if present, contain any quoting
+characters.
+</para></listitem>
+
+<listitem><para>
+Neither the <parameter>interpreter</parameter> argument nor the
+<parameter>arg</parameter> argument, if present, contain any whitespace
+characters.
+</para></listitem>
+
+<listitem><para>
+The length of the entire line is no longer than 80 bytes.
+</para></listitem>
+</orderedlist>
+</para>
+
+<para>
+If the interpreter is required by this specification to be in a
+specfic named directory, a conforming application must use that
+path for <parameter>interpreter</parameter>, as implementations are
+not prohibited from having other, possibly non-conforming, versions
+of the same interpreter installed on the system.  If the interpreter
+is a required command in this specification, but does not have a
+required path, the application should take special measures to
+insure the appropriate version is selected.  If the interpreter is
+not a required command in this specification, the application must
+make appropriate provisions that the interpreter is available at
+the appropriate path.
+</para>
+
+<note>
+<para>
+In case the path is not specified, it is recommended that an installation
+script for executable scripts use the standard <EnVar>PATH</EnVar>
+returned by a call to the <command>getconf</command> command with the
+argument <parameter>PATH</parameter>, combined with the 
+<command>command</command> command to determine the location of a
+standard command.
+</para>
+<para>
+For example to determine the location of the standard <command>awk</command>
+command:
+<informalexample>
+<programlisting>
+PATH=&grave;getconf PATH&grave; command -v awk
+</programlisting>
+</informalexample>
+</para>
+<para>
+The installation script should ensure that the returned
+pathname is an absolute pathname prior to use, since a shell builtin 
+might be returned for some utilities.
+</para>
+<para>
+Use of the common form <literal>#!/usr/bin/env interpreter</literal>
+is not recommended as the <envar>PATH</envar> will be unknown at execution
+time and an alternative version of <parameter>interpreter</parameter>
+might be selected.
+</para>
+</note>
 </SECT1>
 </CHAPTER>
 
@@ -373,7 +490,7 @@ LSB conforming implementations shall support executable scripts.
 <PARA>
 In order to install a message catalog, the installation procedure 
 shall supply the message catalog in a format readable by the
-<COMMAND>msgfmt</COMMAND> utility, which shall be invoked to compile
+<COMMAND>msgfmt</COMMAND> command, which shall be invoked to compile
 the message catalog into an appropriate binary format on the target system.
 <NOTE>
 <TITLE>Rationale</TITLE>
@@ -424,17 +541,23 @@ optional.</para>
 
 <para>This affects at least the following utilities: 
 <itemizedlist>
-<listitem><para><command>awk</command> (see <xref linkend="awk">)</para></listitem>
-<listitem><para><command>grep</command> (see <xref
-linkend="grep" >) (including <command>egrep</command>,
-see <xref linkend="egrep">)</para></listitem>
-<listitem><para><command>sed</command>
-(see <xref linkend="sed">)</para></listitem>
+<listitem><para>
+<command>awk</command> (see <xref linkend="awk">)
+</para></listitem>
+<listitem><para>
+<command>grep</command> (see <xref linkend="grep" >)
+(including <command>egrep </command>, see <xref linkend="egrep">)
+</para></listitem>
+<listitem><para>
+<command>sed</command> (see <xref linkend="sed">)
+</para></listitem>
 </itemizedlist>
 It also affects the behavior of interfaces in the base libraries, including
 at least 
 <itemizedlist>
-<listitem><para><function>regexec</function> (see <xref linkend="baselib-regexec-2">)</para></listitem>
+<listitem><para>
+<function>regexec</function> (see <xref linkend="baselib-regexec-2">)
+</para></listitem>
 </itemizedlist>
 </para>
 
