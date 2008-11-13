@@ -118,7 +118,7 @@ struct {
         ptrdiff_t       baseobject;
         const char      *typeinfo;
         fptr            virtfuncs[0];
-        };
+};
 </SCREEN>
 </FIGURE>
 <FIGURE ID="CXX-virtualtable-cat2">
@@ -131,9 +131,129 @@ struct {
         ptrdiff_t       baseobject;
         const char      *typeinfo;
         fptr            virtfuncs[0];
-        };
+};
 </SCREEN>
 </FIGURE>
+
+<para>
+This specification describes requirements for virtual tables of C++ classes
+using tables of the following form:
+</para>
+
+<table id="tbl-cxx-vtable">
+<title>Primary vtable for K (example)</title>
+<tgroup cols=2>
+<!--thead>
+</thead-->
+<tbody>
+<row>
+<entry>Base Offset</entry>
+<entry>0</entry>
+</row>
+<row>
+<entry>Virtual Base Offset</entry>
+<entry>0</entry>
+</row>
+<row>
+<entry>RTTI</entry>
+<entry>typeinfo for K</entry>
+</row>
+<row>
+<entry>vfunc[0]:</entry>
+<entry>K::~K()</entry>
+</row>
+<row>
+<entry>vfunc[1]:</entry>
+<entry>K::~K()</entry>
+</row>
+<row>
+<entry>vfunc[2]:</entry>
+<entry>K::m1(int*)</entry>
+</row>
+<row>
+<entry>vfunc[3]:</entry>
+<entry>X::m2()</entry>
+</row>
+<row>
+<entry>vfunc[4]:</entry>
+<entry><function>__cxa_pure_virtual</function></entry>
+</row>
+<row>
+<entry>vfunc[5]:</entry>
+<entry>NULL or X::m4(int)</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<para>
+Each row starting from 'vfunc[i]:' refers to a vtable entry 'vfunc[i]' of a
+class K, which is an entry for a virtual function A::m, where A is a base class
+of the class K as described in the <XREF LINKEND="std.CXXABI">.
+This specification requires implementations to interpret the vtable
+entry information in the following way:
+</para>
+
+<orderedlist>
+<listitem>
+<para>
+A conforming implementation shall contain a vtable of the class K
+in the specified shared library;
+</para>
+</listitem>
+<listitem>
+<para>
+The corresponding entry of this vtable 'vfunc[i]'
+shall be an entry for the virtual function A::m;
+</para>
+</listitem>
+<listitem>
+<para>
+If the second column of the row contains <function>__cxa_pure_virtual</function>
+the corresponding vtable entry of a LSB-conforming implementation
+shall contain <function>__cxa_pure_virtual</function> or 'Y::m',
+where Y is the class K, the class A or
+a base class of the class K derived from the class A.
+<footnote>
+<para>
+In this case virtual function A::m in class K is considered
+to be specified as pure virtual by this specification.
+</para>
+</footnote>
+</para>
+</listitem>
+<listitem>
+<para>
+If the second column of the row contains 'X::m'
+the corresponding vtable entry of a LSB-conforming implementation
+shall contain 'Y::m', where Y is the class K, the class X
+or a base class of the class K derived from the class X.
+</para>
+</listitem>
+<listitem>
+<para>
+If the second column of the row contains 'NULL or X::m'
+the corresponding vtable entry of a LSB-conforming implementation
+shall contain NULL or 'Y::m', where Y is the class K, the class X
+or a base class of the class K derived from the class X.
+<footnote>
+<para>
+In this case virtual function A::m in class K is considered
+to be specified as inline by this specification.
+</para>
+</footnote>
+</para>
+</listitem>
+</orderedlist>
+
+<para>
+An application may use any non-pure virtual function
+specified in this specification, and can expect the
+specified behavior irrespective of which particular
+method implements this functionality.
+An application may not use inline virtual functions at the
+binary level since its vtable entry may be <constant>NULL</constant>.
+</para>
 </SECT3>
 <SECT3 ID="RTTI">
 <TITLE>Run-Time Type Information</TITLE>
@@ -152,7 +272,7 @@ Run-Time Type Information Prefix
 struct {
        void      *basevtable;
        char      *name;
-       };
+};
 </SCREEN>
 </FIGURE>
 <FIGURE ID="CXX-RTTI-class">
@@ -164,7 +284,7 @@ struct {
        void      *basevtable;
        char      *name;
        void      *basetypeinfo[0];
-       };
+};
 </SCREEN>
 </FIGURE>
 <FIGURE ID="CXX-RTTI-siclass">
@@ -177,7 +297,7 @@ struct {
        char      *name;
        void      *basetype;
        void      *basetypeinfo[0];
-       };
+};
 </SCREEN>
 </FIGURE>
 <FIGURE ID="CXX-RTTI-vmiclass">
@@ -188,7 +308,7 @@ Run-Time Type Information for classes with multiple inheritance
 struct base_type_info {
        char    *base_type;
        unsigned long   offset_flags;
-       };
+};
 
 struct {
        void    *basevtable;
@@ -196,7 +316,7 @@ struct {
        unsigned int    flags;
        unsigned int    base_count;
        struct base_type_info base_info[0];
-       };
+};
 </SCREEN>
 </FIGURE>
 <FIGURE ID="CXX-RTTI-pointerclass">
@@ -210,7 +330,7 @@ struct {
        unsigned int    flags;
        void    *pointee;
        void    *basetypeinfo[0];
-       };
+};
 </SCREEN>
 </FIGURE>
 <FIGURE ID="CXX-RTTI-ptomemberclass">
@@ -225,7 +345,7 @@ struct {
        void    *pointee;
        void    *context;
        void    *basetypeinfo[0];
-       };
+};
 </SCREEN>
 </FIGURE>
 </SECT3>
@@ -246,7 +366,7 @@ Construction Virtual Table Prefix
 <SCREEN>
 struct {
        ????
-       };
+};
 </SCREEN>
 </FIGURE>
 </SECT3>
@@ -261,7 +381,7 @@ Virtual Type Table Prefix
 <SCREEN>
 struct {
        ???
-       };
+};
 </SCREEN>
 </FIGURE>
 </SECT3>
