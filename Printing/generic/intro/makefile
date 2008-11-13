@@ -1,11 +1,8 @@
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
-TABLES=standards.sgml
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
+TABLES=standards.sgml libraries.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -13,9 +10,8 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All -t Standard -s "'PPD','PPDUpdate','ISOC99'" >standards.sgml
+	../../../mkstandardsgmltable -a All -t Standard -s "'PPD','PPDUpdate','ISOC99','FHS'" >standards.sgml
 	../../../mklibsgmltable -a All -v `cat ../../../LSB/target_version.generic` -m LSB_Printing >libraries.sgml
-
 
 clean:
 	rm -f $(FILES)
@@ -23,5 +19,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-
-intro.sgml: standards.sgml libraries.sgml
+intro.sgml: $(TABLES)
