@@ -7514,52 +7514,7 @@ the architecture specific parts of &ISOSTD;.
 
 </REFENTRY>
 
-<REFENTRY ID="libutil---lxstat-2"> <REFMETA>
-<REFENTRYTITLE>__lxstat</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>__lxstat
-</REFNAME>
-<REFPURPOSE>inline wrapper around call to lxstat
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>24 April 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
-#include &lt;ctype.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>int 
-  <FUNCTION>__lxstat</FUNCTION></FUNCDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>version</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>char *
-  <PARAMETER><REPLACEABLE>__path</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>struct stat 
-  <PARAMETER>__statbuf</PARAMETER></PARAMDEF>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>24 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-<FUNCTION>__lxstat</FUNCTION> is an inline wrapper around call to 
-<FUNCTION>lxstat</FUNCTION>.
-</PARA>
-<PARA>
-<FUNCTION>__lxstat</FUNCTION> is not in the source standard; 
-it is only in the binary standard.
-</PARA>
-</REFSECT1>
-</REFENTRY>
+<!-- content in __xstat.sgml -->
 
 <!-- content in __xstat64.sgml -->
 
@@ -8599,14 +8554,19 @@ it is only in the binary standard.
 <REFNAMEDIV>
 <REFNAME>__xmknod</REFNAME>
 <REFPURPOSE>
-make block or character special file
+make a special file
 </REFPURPOSE>
+<INDEXTERM id="ix-baselib---xmknod-1">
+        <PRIMARY>__xmknod</PRIMARY></INDEXTERM>
 </REFNAMEDIV>
 <REFSYNOPSISDIV>
 <REFSYNOPSISDIVINFO>
 <DATE>4 March 2001</DATE>
 </REFSYNOPSISDIVINFO>
 <FUNCSYNOPSIS>
+<FUNCSYNOPSISINFO>
+#include &lt;sys/stat.h&gt;
+</FUNCSYNOPSISINFO>
 <FUNCPROTOTYPE>
  <FUNCDEF>int 
   <FUNCTION>__xmknod</FUNCTION></FUNCDEF>
@@ -8629,14 +8589,15 @@ make block or character special file
 </TITLE>
 <PARA>
 The <FUNCTION>__xmknod</FUNCTION> function shall implement the
-<FUNCTION>mknod</FUNCTION> interface from <XREF LINKEND=STD.SUSv3>.
+<FUNCTION>mknod</FUNCTION> interface.
+The behavior of <function>__xmknod</function> 
+for values of <parameter>ver</parameter> other than
+<literal>_MKNOD_VER</literal> is undefined.
+See Data Definitions in the architecture specific part of this 
+specification for the correct value of <literal>_MKNOD_VER</literal>.
 </PARA>
 <PARA>
-The value of <PARAMETER>ver</PARAMETER> shall be <LITERAL>1</LITERAL> or the 
-behavior of <FUNCTION>__xmknod</FUNCTION> is undefined. 
-</PARA>
-<PARA>
-<LITERAL>__xmknod(<LITERAL>1</LITERAL>, 
+<LITERAL>__xmknod(<LITERAL>_MKNOD_VER</LITERAL>, 
 <PARAMETER>path</PARAMETER>, <PARAMETER>mode</PARAMETER>, 
 <PARAMETER>dev</PARAMETER>)</LITERAL> shall behave as
 <LITERAL>mknod(<PARAMETER>path</PARAMETER>, 
@@ -8863,31 +8824,34 @@ The functions
 <function>__xstat</function>,
 <function>__lxstat</function>, and
 <function>__fxstat</function> shall implement
-the <XREF LINKEND=STD.SUSv3> functions
+the functions
 <function>stat</function>,
 <function>lstat</function>, and
 <function>fstat</function> respectively.
 </PARA>
 <PARA>
-<PARAMETER>ver</PARAMETER> shall be <LITERAL>3</LITERAL> or the 
-behavior of these functions is undefined. 
+The behavior of these functions
+for values of <parameter>ver</parameter> other than
+<literal>_STAT_VER</literal> is undefined.
+See Data Definitions in the architecture specific part of this 
+specification for the correct value of <literal>_STAT_VER</literal>.
 </PARA>
 <PARA>
-<LITERAL>__xstat(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<LITERAL>__xstat(<LITERAL>_STAT_VER</LITERAL>, <PARAMETER>path</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> shall implement
 <LITERAL>stat(<PARAMETER>path</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> as specified by 
 <XREF LINKEND=STD.SUSv3>.
 </PARA>
 <PARA>
-<LITERAL>__lxstat(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<LITERAL>__lxstat(<LITERAL>_STAT_VER</LITERAL>, <PARAMETER>path</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> shall implement
 <LITERAL>lstat(<PARAMETER>path</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> as specified by 
 <XREF LINKEND=STD.SUSv3>.
 </PARA>
 <PARA>
-<LITERAL>__fxstat(<LITERAL>3</LITERAL>, <PARAMETER>fildes</PARAMETER>, 
+<LITERAL>__fxstat(<LITERAL>_STAT_VER</LITERAL>, <PARAMETER>fildes</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> shall implement
 <LITERAL>fstat(<PARAMETER>fildes</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> as specified by 
@@ -8975,33 +8939,39 @@ The functions
 <function>__xstat64</function>,
 <function>__lxstat64</function>, and
 <function>__fxstat64</function> shall implement
-the <XREF LINKEND=STD.LFS> functions
+the functions
 <function>stat64</function>,
 <function>lstat64</function>, and
 <function>fstat64</function> respectively.
 </PARA>
 <PARA>
-<PARAMETER>ver</PARAMETER> shall be <LITERAL>3</LITERAL> or the 
-behavior of these functions is undefined. 
+The behavior of these functions
+for values of <parameter>ver</parameter> other than
+<literal>_STAT_VER</literal> is undefined.
+See Data Definitions in the architecture specific part of this 
+specification for the correct value of <literal>_STAT_VER</literal>.
 </PARA>
 <PARA>
-<LITERAL>__xstat64(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<LITERAL>__xstat64(<LITERAL>_STAT_VER</LITERAL>,
+<PARAMETER>path</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> shall behave as
-<LITERAL>stat(<PARAMETER>path</PARAMETER>, 
+<LITERAL>stat64(<PARAMETER>path</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> as specified by 
 <XREF LINKEND=STD.LFS>.
 </PARA>
 <PARA>
-<LITERAL>__lxstat64(<LITERAL>3</LITERAL>, <PARAMETER>path</PARAMETER>, 
+<LITERAL>__lxstat64(<LITERAL>_STAT_VER</LITERAL>,
+<PARAMETER>path</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> shall behave as
-<LITERAL>lstat(<PARAMETER>path</PARAMETER>, 
+<LITERAL>lstat64(<PARAMETER>path</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> as specified by 
 <XREF LINKEND=STD.LFS>.
 </PARA>
 <PARA>
-<LITERAL>__fxstat64(<LITERAL>3</LITERAL>, <PARAMETER>fildes</PARAMETER>, 
+<LITERAL>__fxstat64(<LITERAL>_STAT_VER</LITERAL>,
+<PARAMETER>fildes</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> shall behave as
-<LITERAL>fstat(<PARAMETER>fildes</PARAMETER>, 
+<LITERAL>fstat64(<PARAMETER>fildes</PARAMETER>, 
 <PARAMETER>stat_buf</PARAMETER>)</LITERAL> as specified by 
 <XREF LINKEND=STD.LFS>.
 </PARA>
