@@ -1,16 +1,13 @@
 Specification: LSB Core Generic
-Specification: LSB Core IA32, IA64, PPC32, PPC64, S390, S390X, AMD64
 Edition of Specification: 3.2
 Type: Error
 Status: Unapproved, new text
-Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2423
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2424
 
 Rationale: the specification incorrectly requires that the __xstat,
 __lxstat and __fxstat binary-only functions were to be called with an
-invariant value of 3 or the results are undefined.  Similarly, it requires
-that __xmknod be called with an invariant value of 1 or the results are
-undefined. In fact, these two values vary based on architecture. Some
-other minor corrections are also needed.
+invariant value of 3 or the results are undefined.  In fact, this value
+varies based on architecture.
 
 In LSB Core Generic:
 
@@ -22,55 +19,11 @@ In the interface list remove:
 
    __lxstat -- inline wrapper around call to lxstat
 
-and change:
-
-   __xmknod -- make block or character special file
-
-to:
-
-   __xmknod -- make a special file
- 
 
 In the interface defintions for __lxstat, remove the entire entry.
 This function is covered in the combined __xstat section and should
 not be duplicated.
 
-In the interface definitions for __xmknod,
-Section Name, change:
-
-   __xmknod -- make block or character special file
-
-To:
-
-   __xmknod -- make a special file
-
-Section Synopsis, insert:
- 
-   #include <sys/stat.h>
-
- 
-Section Description, change:
- 
-   The __xmknod() function shall implement the mknod() interface
-   from ISO POSIX (2003).
-
-   The value of ver shall be 1 or the behavior of __xmknod() is
-   undefined.
-
-   __xmknod(1, path, mode, dev) shall behave as mknod(path, mode,
-   dev) as specified by ISO POSIX (2003).
-
-To:
-
-   The __xmknod() function shall implement the mknod() interface.
-   The behavior of __xmknod() for values of ver other than
-   _MKNOD_VER is undefined. See Data Definitions in the
-   architecture specific part of this specification for the
-   correct value of _MKNOD_VER.
-
-   __xmknod(_MKNOD_VER, path, mode, dev) shall behave as
-   mknod(path, mode, dev) as specified by ISO POSIX (2003).
- 
 
 In the interface definitions for __xstat,
 Section Description, change:
@@ -149,20 +102,3 @@ To:
    __fxstat64(_STAT_VER, fildes, stat_buf) shall behave as
    fstat64(fildes, stat_buf) as specified by Large File Support.
  
-
-===
-In LSB Core IA32, PPC32, S390:
-
-In 11.3. Data Definitions for libc.
-In 11.3.48. sys/stat.h, insert:
-
-#define _MKNOD_VER      1
-
-
-===
-In LSB Core IA64, PPC64, S390X, AMD64:
-
-In 11.3. Data Definitions for libc.
-In 11.3.48. sys/stat.h, insert:
-
-#define _MKNOD_VER      0
