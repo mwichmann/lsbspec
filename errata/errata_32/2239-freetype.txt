@@ -1,0 +1,70 @@
+Specification: LSB Desktop Generic
+Edition of Specification: 3.2
+Type: Error
+Status: Unapproved, new text
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2239
+
+Rationale: the function prototypes in Data Definitions for five
+FreeType functions, FT_Glyph_InitFunc(), FT_Glyph_PrepareFunc(),
+FT_SpanFunc(), FT_Raster_RenderFunc(), FT_Renderer_RenderFunc()
+had duplicated parameter entries due to a production error.
+
+
+In 12.2. Data Definitions for libfreetype
+12.2.10. freetype/ftglyph.h
+ 
+Change:
+
+typedef FT_Error(*FT_Glyph_InitFunc) (FT_Glyph, FT_Glyph, FT_GlyphSlot,
+                                      FT_GlyphSlot);
+
+To:
+
+typedef FT_Error(*FT_Glyph_InitFunc) (FT_Glyph, FT_GlyphSlot);
+
+Change:
+
+typedef FT_Error(*FT_Glyph_PrepareFunc) (FT_Glyph, FT_Glyph, FT_GlyphSlot,
+                                         FT_GlyphSlot);
+
+To:
+
+typedef FT_Error(*FT_Glyph_PrepareFunc) (FT_Glyph, FT_GlyphSlot);
+
+
+12.2.11. freetype/ftimage.h
+
+Change:
+
+typedef void (*FT_SpanFunc) (int, int, int, int, FT_Span *, FT_Span *,
+                             void *, void *);
+
+To:
+
+typedef void (*FT_SpanFunc) (int, int, FT_Span *, void *);
+
+Change:
+
+typedef int (*FT_Raster_RenderFunc) (FT_Raster, FT_Raster,
+                                     FT_Raster_Params *,
+                                     FT_Raster_Params *);
+
+To:
+
+typedef int (*FT_Raster_RenderFunc) (FT_Raster, FT_Raster_Params *);
+
+
+12.2.20. freetype/ftrender.h
+
+Change:
+
+typedef FT_Error(*FT_Renderer_RenderFunc) (FT_Renderer, FT_Renderer,
+                                           FT_GlyphSlot, FT_GlyphSlot,
+                                           FT_UInt, FT_UInt, FT_Vector *,
+                                           FT_Vector *);
+
+To:
+
+typedef FT_Error(*FT_Renderer_RenderFunc) (FT_Renderer, FT_GlyphSlot,
+                                           FT_UInt, FT_Vector *);
+
