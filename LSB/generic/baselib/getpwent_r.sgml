@@ -1,0 +1,104 @@
+<refentry id="libc-getpwent-r-1">
+
+<refmeta>
+<refentrytitle>getpwent_r</refentrytitle>
+<refmiscinfo>libc</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>getpwent_r</refname>
+<refpurpose>reentrantly get entry in passwd file</refpurpose>
+<indexterm id="ix-libc-getpwent-r-1">
+	<primary>getpwent_r</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;pwd.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>getpwent_r</function>
+</funcdef>
+<paramdef>struct passwd *
+<parameter>pwbuf</parameter>
+</paramdef>
+<paramdef>char *
+<parameter>buf</parameter>
+</paramdef>
+<paramdef>size_t
+<parameter>buflen</parameter>
+</paramdef>
+<paramdef>struct passwd * *
+<parameter>pwbufp</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+The reentrant interface <function>getpwent_r</function> shall function in the same
+way as the interface <function>getpwent</function>, except that
+<function>getpwent_r</function> shall
+return the user name, user password, GECOS field, home directory, and shell program
+in buffers provided by the caller, rather than as a pointer to static storage.
+</para>
+<para>
+The parameter <parameter>pwbuf</parameter> contains 
+the <type>struct passwd</type> that was read from the stream, if any.
+</para>
+<para>
+The parameter <parameter>buf</parameter> contains 
+additional strings, if any.
+</para>
+<para>
+The parameter <parameter>buflen</parameter> specifies 
+the size of <parameter>buf</parameter>.
+</para>
+<para>
+The parameter <parameter>*pwbufp</parameter> returns 
+a pointer to the <type>struct passwd</type> in <parameter>*pwbuf</parameter>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <FUNCTION>getpwent_r</FUNCTION> shall return <literal>0</literal>,
+and <parameter>*pwbufp</parameter> shall contain a pointer to the result.
+</para>
+<para>
+On failure, <parameter>*pwbufp</parameter> shall contain 
+<literal>NULL</literal>, and <FUNCTION>getpwent_r</FUNCTION>
+shall return an error as follows.
+</para>
+</refsect1>
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+ENOENT
+</TERM>
+<LISTITEM>
+<PARA>
+No more password entries.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ERANGE
+</TERM>
+<LISTITEM>
+<PARA>
+Not enough buffer space. Specify a larger buffer and try again.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+</refentry>

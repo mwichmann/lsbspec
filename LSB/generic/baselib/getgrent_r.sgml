@@ -1,0 +1,105 @@
+<refentry id="libc-getgrent-r-1">
+
+<refmeta>
+<refentrytitle>getgrent_r</refentrytitle>
+<refmiscinfo>libc</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>getgrent_r</refname>
+<refpurpose>reentrantly get entry in group file</refpurpose>
+<indexterm id="ix-libc-getgrent-r-1">
+	<primary>getgrent_r</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;grp.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>getgrent_r</function>
+</funcdef>
+<paramdef>struct group *
+<parameter>gbuf</parameter>
+</paramdef>
+<paramdef>char *
+<parameter>buf</parameter>
+</paramdef>
+<paramdef>size_t
+<parameter>buflen</parameter>
+</paramdef>
+<paramdef>struct group * *
+<parameter>gbufp</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+The reentrant interface <function>getgrent_r</function> shall function in the same
+way as the interface <function>getgrent</function>, except that
+<function>getgrent_r</function> shall
+return the group name, group password, and group members
+in buffers provided by the caller, rather than as a pointer to static storage.
+</para>
+<para>
+The parameter <parameter>gbuf</parameter> contains the 
+<type>struct group</type> that was read from the stream, if any.
+</para>
+<para>
+The parameter <parameter>buf</parameter> contains 
+additional strings, if any.
+</para>
+<para>
+The parameter <parameter>buflen</parameter> specifies 
+the size of <parameter>buf</parameter>.
+</para>
+<para>
+The parameter <parameter>*gbufp</parameter> returns 
+a pointer to the <type>struct group</type> in <parameter>*gbuf</parameter>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <FUNCTION>getgrent_r</FUNCTION> shall return <literal>0</literal>,
+and <parameter>*gbufp</parameter> shall contain a pointer to the result.
+</para>
+<para>
+On failure, <parameter>*gbufp</parameter> shall contain 
+<literal>NULL</literal>, and <FUNCTION>getgrent_r</FUNCTION>
+shall return an error as follows.
+</para>
+</refsect1>
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+ENOENT
+</TERM>
+<LISTITEM>
+<PARA>
+No more group entries.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ERANGE
+</TERM>
+<LISTITEM>
+<PARA>
+Not enough buffer space. Specify a larger buffer and try again.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+</refentry>
