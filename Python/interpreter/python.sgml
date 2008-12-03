@@ -25,7 +25,7 @@ shall exist at <filename>/usr/bin/python</filename>.
 <TITLE>Python Interpreter Version</TITLE>
 <PARA>
 The default installed Python version shall be 2.4.2 or greater.
-Applications can depend on the 2.4 interfaces.
+<!-- removed bug 2385: Applications can depend on the 2.4 interfaces. -->
 </PARA>
 </SECT1>
 

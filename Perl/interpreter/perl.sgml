@@ -25,7 +25,7 @@ shall exist at <filename>/usr/bin/perl</filename>.
 <TITLE>Perl Interpreter Version</TITLE>
 <PARA>
 The default installed Perl version shall be 5.8.8 or greater.
-Applications can depend on the 5.8.8 interfaces.
+<!--removed bug 2385: Applications can depend on the 5.8.8 interfaces. -->
 </PARA>
 </SECT1>
 
