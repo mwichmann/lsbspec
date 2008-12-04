@@ -1,0 +1,70 @@
+Specification: LSB Core Generic
+Specification: LSB Core IA32, IA64, PPC32, PPC64, S390, S390X, AMD64
+Edition of Specification: 3.2
+Type: Error
+Status: Unapproved, new text
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2375
+
+Rationale: the bindresvport() function was incompletely specified,
+and incorrectly listed the EPERM error for a condition for which
+it is not set.
+
+In LSB Core Generic:
+
+In 13.5. Interface Definitions for libc
+
+In entry bindresvport, section Description change:
+
+Change:
+
+   If the process has appropriate privilege, the bindresvport()
+   function shall bind a socket to a privileged IP port.
+
+To:
+
+   If the process has appropriate privilege, the bindresvport()
+   function shall bind a socket to an anonymous privileged IP
+   port, that is, arbitrarily selected from the range 512 through
+   1023.
+
+   If the bind is successful and sin is not NULL, and the port
+   number bound to is returned in the sin_port member of sin. Any
+   caller-supplied value of sin_port is ignored.
+
+   If sin is NULL, the address family is taken to be AF_INET and
+   an available privileged port is bound to. Since there is no
+   sockaddr_in structure, the port number chosen cannot be
+   returned. The getsockname() may be used to query for this
+   information.
+
+
+section Errors, change:
+
+   EPERM
+   The process did not have appropriate privilege.
+
+   EPFNOSUPPORT
+   Address of sin did not match address family of sd.
+
+To:
+
+   bindresvport() may fail in the same way as bind() in ISO POSIX
+   (2003). The following additional or differing failures may
+   occur:
+
+   EADDRINUSE
+   All privileged ports are in use.
+
+   EAFNOSUPPORT
+   The specified address is not a valid address for the address
+   family of the specified socket, or the address family is not
+   supported.
+
+   EPFNOSUPPORT
+   The same meaning as EAFNOSUPPORT. Some older implementations
+   may return this error instead.
+
+     Note: At this time, only AF_INET is supported. Applications
+     should be prepared for either the EAFNOSUPPORT or
+     EPFNOSUPPORT error to be indicated.
+

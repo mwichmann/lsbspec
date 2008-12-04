@@ -1,0 +1,137 @@
+Specification: LSB Desktop generic
+Edition of Specification: 3.2
+Type: Error, Editorial
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2309
+
+Rationale: in the descriptions of png_get_text() and png_set_text(), the
+png_text_struct structure was specified to contain the following fields:
+
+compression
+key
+text
+text_length
+itxt_length
+lang
+lang_key
+
+However, only compression, key, text and text_length are widely in
+use on existing implementations. itxt_length, lang and lang_key
+are removed to match implementations. Some textual changes are
+also included for increased clarity and consistency between the
+two interfaces, but do not change meanings.
+
+
+In LSB Desktop generic:
+
+In 8.3. Interface Definitions for libpng12
+
+Interface png_get_text, section Description
+
+Change: 
+
+   text_ptr[i].compression
+          type of compression used on text. Valid values are:
+
+          PNG_TEXT_COMPRESSION_NONE
+          PNG_TEXT_COMPRESSION_zTXt
+          PNG_ITXT_COMPRESSION_NONE
+          PNG_ITXT_COMPRESSION_zTXt
+
+   text_ptr[i].key
+          keyword for comment. Must contain 1-79 characters.
+
+   text_ptr[i].text
+          text comment for current keyword. Maybe empty.
+
+   text_ptr[i].text_length
+          length of text string after decompression. 0 for iTXt.
+
+To:
+
+   compression
+       type of compression used on text. Valid values are:
+
+       PNG_TEXT_COMPRESSION_NONE
+       PNG_TEXT_COMPRESSION_zTXt
+       PNG_ITXT_COMPRESSION_NONE
+       PNG_ITXT_COMPRESSION_zTXt
+
+   key
+       keyword for comment. Must contain 1-79 characters.
+
+   text
+       text comment for current keyword. May be empty.
+
+   text_length
+       length of text string after decompression. 0 for iTXt.
+
+Remove:
+
+   text_ptr[i].itxt_length
+          length of iTXt string after decompression. 0 for
+          tEXt/zTXt.
+
+   text_ptr[i].lang
+          language of comment. Empty string if language is
+          unknown.
+
+   text_ptr[i].lang_key
+          keyword in UTF-8. Empty string if language is unknown.
+
+section Return Value
+
+Change:
+
+   Returns 0 if png_ptr or info_ptr is NULL, returns number of
+   text chunks otherwise.
+
+To:
+
+   Returns 0 if png_ptr or info_ptr is NULL, returns the number of
+   text chunks otherwise.
+ 
+
+Interface png_get_text, section Description
+
+Change:
+ 
+   png_set_text() shall store information for image comments given
+   in text_ptr to info_ptr. text_ptr is an array of size
+   "num_text" of png_text structure whose member fields include:
+   compression - type of compression used on text. Supported
+   values are: PNG_TEXT_COMPRESSION_NONE PNG_TEXT_COMPRESSION_zTXt
+   PNG_ITXT_COMPRESSION_NONE PNG_ITXT_COMPRESSION_zTXt key -
+   keyword for comment. Must contain 1-79 characters. text - text
+   comments for current keyword. Maybe NULL or empty. text_length
+   - length of text string after decompression. Must be 0 for iTXt
+
+To:
+
+   png_set_text() shall store information for image comments given
+   in text_ptr to info_ptr. text_ptr is an array of size num_text
+   of png_text structures whose member fields include:
+
+   compression
+       type of compression used on text. Valid values are:
+
+       PNG_TEXT_COMPRESSION_NONE
+       PNG_TEXT_COMPRESSION_zTXt
+       PNG_ITXT_COMPRESSION_NONE
+       PNG_ITXT_COMPRESSION_zTXt
+
+   key
+       keyword for comment. Must contain 1-79 characters.
+
+   text
+       text comment for current keyword. May be empty.
+
+   text_length
+       length of text string after decompression. 0 for iTXt.
+
+Remove:
+
+   itxt_length - length of itxt string after decompression. Must
+   be 0 for tEXt/zTXt lang - language of comment. May be NULL or
+   empty if language is unknown. lang_key - translated keyword in
+   UTF-8 coding. Maybe NULL or empty.

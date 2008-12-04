@@ -1,0 +1,102 @@
+Specification: LSB Core Generic
+Edition of Specification: 3.2
+Type: Error
+Status: Unapproved, new text
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2424
+
+Rationale: the specification incorrectly requires that the __xstat,
+__lxstat and __fxstat binary-only functions were to be called with an
+invariant value of 3 or the results are undefined.  In fact, this value
+varies based on architecture.
+
+In LSB Core Generic:
+
+In 13.5. Interface Definitions for libc
+
+In the interface list remove:
+
+   __lxstat -- inline wrapper around call to lxstat
+
+
+In the interface defintions for __lxstat, remove the entire entry.
+This function is covered in the combined __xstat section and should
+not be duplicated.
+
+
+In the interface definitions for __xstat,
+Section Description, change:
+ 
+   The functions __xstat(), __lxstat(), and __fxstat() shall
+   implement the ISO POSIX (2003) functions stat(), lstat(), and
+   fstat() respectively.
+
+   ver shall be 3 or the behavior of these functions is undefined.
+
+   __xstat(3, path, stat_buf) shall implement stat(path, stat_buf)
+   as specified by ISO POSIX (2003).
+
+   __lxstat(3, path, stat_buf) shall implement lstat(path,
+   stat_buf) as specified by ISO POSIX (2003).
+
+   __fxstat(3, fildes, stat_buf) shall implement fstat(fildes,
+   stat_buf) as specified by ISO POSIX (2003).
+
+To:
+
+   The functions __xstat(), __lxstat(), and __fxstat() shall
+   implement the functions stat(), lstat(), and fstat()
+   respectively.
+
+   The behavior of these functions for values of ver other than
+   _STAT_VER is undefined. See Data Definitions in the
+   architecture specific part of this specification for the
+   correct value of _STAT_VER.
+
+   __xstat(_STAT_VER, path, stat_buf) shall implement stat(path,
+   stat_buf) as specified by ISO POSIX (2003).
+
+   __lxstat(_STAT_VER, path, stat_buf) shall implement lstat(path,
+   stat_buf) as specified by ISO POSIX (2003).
+
+   __fxstat(_STAT_VER, fildes, stat_buf) shall implement
+   fstat(fildes, stat_buf) as specified by ISO POSIX (2003).
+ 
+
+In the interface definitions for __xstat64,
+Section Description, change:
+ 
+   The functions __xstat64(), __lxstat64(), and __fxstat64() shall
+   implement the Large File Support functions stat64(), lstat64(),
+   and fstat64() respectively.
+
+   ver shall be 3 or the behavior of these functions is undefined.
+
+   __xstat64(3, path, stat_buf) shall behave as stat(path,
+   stat_buf) as specified by Large File Support.
+
+   __lxstat64(3, path, stat_buf) shall behave as lstat(path,
+   stat_buf) as specified by Large File Support.
+
+   __fxstat64(3, fildes, stat_buf) shall behave as fstat(fildes,
+   stat_buf) as specified by Large File Support.
+
+To:
+
+   The functions __xstat64(), __lxstat64(), and __fxstat64() shall
+   implement the functions stat64(), lstat64(), and fstat64()
+   respectively.
+
+   The behavior of these functions for values of ver other than
+   _STAT_VER is undefined. See Data Definitions in the
+   architecture specific part of this specification for the
+   correct value of _STAT_VER.
+
+   __xstat64(_STAT_VER, path, stat_buf) shall behave as
+   stat64(path, stat_buf) as specified by Large File Support.
+
+   __lxstat64(_STAT_VER, path, stat_buf) shall behave as
+   lstat64(path, stat_buf) as specified by Large File Support.
+
+   __fxstat64(_STAT_VER, fildes, stat_buf) shall behave as
+   fstat64(fildes, stat_buf) as specified by Large File Support.
+ 
