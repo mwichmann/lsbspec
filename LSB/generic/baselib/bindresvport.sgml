@@ -36,9 +36,28 @@ bind socket to privileged IP port
 <PARA>
 If the process has appropriate privilege, the
 <FUNCTION>bindresvport</FUNCTION> function shall bind
-a socket to a privileged IP 
-port.
+a socket to an anonymous privileged IP port,
+that is, arbitrarily selected from the range
+<literal>512</literal> through <literal>1023</literal>.
 </PARA>
+<para>
+If the bind is successful and <parameter>sin</parameter> 
+is not <constant>NULL</constant>, and the port number
+bound to is returned in the <structfield>sin_port</structfield>
+member of <parameter>sin</parameter>.
+Any caller-supplied value of <structfield>sin_port</structfield>
+is ignored.
+</para>
+<para>
+If <parameter>sin</parameter> is <constant>NULL</constant>,
+the address family is taken to be
+<constant>AF_INET</constant> and an available
+privileged port is bound to.
+Since there is no <structname>sockaddr_in</structname>
+structure, the port number chosen cannot be returned.
+The <function>getsockname</function> may be used to
+query for this information.
+</para>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Return Value
@@ -46,20 +65,37 @@ port.
 <PARA>
 On success, <RETURNVALUE>0</RETURNVALUE> is returned. 
 On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
-the global variable <VARNAME>errno</VARNAME> is set appropriately.
+<VARNAME>errno</VARNAME> is set to indicate the error.
 </PARA>
 </REFSECT1>
 <REFSECT1>
 <TITLE>Errors
 </TITLE>
+<para>
+<function>bindresvport</function> may fail in the same
+way as <function>bind</function> in <XREF LINKEND="std.SUSv3">.
+The following additional or differing failures may occur:
+</para>
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM>
-<CONSTANT>EPERM</CONSTANT>
+<CONSTANT>EADDRINUSE</CONSTANT>
 </TERM>
 <LISTITEM>
 <PARA>
-The process did not have appropriate privilege.
+All privileged ports are in use.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>EAFNOSUPPORT</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+The specified address is not a valid address for the
+address family of the specified socket, or the
+address family is not supported.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -69,12 +105,21 @@ The process did not have appropriate privilege.
 </TERM>
 <LISTITEM>
 <PARA>
-Address of <PARAMETER>sin</PARAMETER> did not match address family of
-<PARAMETER>sd</PARAMETER>.
+The same meaning as <CONSTANT>EAFNOSUPPORT</CONSTANT>.
+Some older implementations may return this error instead.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
 </VARIABLELIST>
+<NOTE>
+<PARA>
+At this time, only <CONSTANT>AF_INET</CONSTANT>
+is supported.
+Applications should be prepared for either the
+<CONSTANT>EAFNOSUPPORT</CONSTANT> or
+<CONSTANT>EPFNOSUPPORT</CONSTANT> error to be indicated.
+</PARA>
+</NOTE>
 </REFSECT1>
 </REFENTRY>
 
