@@ -36,14 +36,15 @@ bind socket to privileged IP port
 <PARA>
 If the process has appropriate privilege, the
 <FUNCTION>bindresvport</FUNCTION> function shall bind
-a socket to a privileged IP 
-port (lower than <literal>1024</literal>).
+a socket to an anonymous privileged IP port,
+that is, arbitrarily selected from the range
+<literal>512</literal> through <literal>1023</literal>.
 </PARA>
 <para>
-If <parameter>sin</parameter> is not <constant>NULL</constant>,
-an available privileged port is bound to and the port
-number is returned in the <structfield>sin_port</structfield>.
-member of <parameter>sin</parameter>
+If the bind is successful and <parameter>sin</parameter> 
+is not <constant>NULL</constant>, and the port number
+bound to is returned in the <structfield>sin_port</structfield>
+member of <parameter>sin</parameter>.
 Any caller-supplied value of <structfield>sin_port</structfield>
 is ignored.
 </para>
@@ -54,6 +55,8 @@ the address family is taken to be
 privileged port is bound to.
 Since there is no <structname>sockaddr_in</structname>
 structure, the port number chosen cannot be returned.
+The <function>getsockname</function> may be used to
+query for this information.
 </para>
 </REFSECT1>
 <REFSECT1>
@@ -71,8 +74,19 @@ On error, <RETURNVALUE>-1</RETURNVALUE> is returned and
 <para>
 <function>bindresvport</function> may fail in the same
 way as <function>bind</function> in <XREF LINKEND="std.SUSv3">.
+The following additional or differing failures may occur:
 </para>
 <VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+<CONSTANT>EADDRINUSE</CONSTANT>
+</TERM>
+<LISTITEM>
+<PARA>
+All privileged ports are in use.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
 <VARLISTENTRY>
 <TERM>
 <CONSTANT>EAFNOSUPPORT</CONSTANT>
