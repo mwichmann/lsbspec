@@ -1,0 +1,159 @@
+<refentry id="libc-epoll-wait-1">
+
+<refmeta>
+<refentrytitle>epoll_wait</refentrytitle>
+<refmiscinfo>libc</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>epoll_wait</refname>
+<refpurpose>wait for I/O events on an epoll file descriptor</refpurpose>
+<indexterm id="ix-libc-epoll-wait-1">
+	<primary>epoll_wait</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;sys/epoll.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>epoll_wait</function>
+</funcdef>
+<paramdef>int
+<parameter>epfd</parameter>
+</paramdef>
+<paramdef>struct epoll_event *
+<parameter>events</parameter>
+</paramdef>
+<paramdef>int
+<parameter>maxevents</parameter>
+</paramdef>
+<paramdef>int
+<parameter>timeout</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+The interface <function>epoll_wait</function> shall
+wait for events on the epoll file descriptor specified
+by the parameter <parameter>epfd</parameter>.
+</para>
+<para>
+The parameter <parameter>events</parameter> shall
+refer to an area of memory containing the events
+available to the caller.
+The <varname>data</varname> members of these structures
+shall contain the data set by the
+user with the interface <function>epoll_ctl</function>.
+The <varname>events</varname> members 
+shall contain the event bit field that was returned.
+</para>
+<para>
+The parameter <parameter>maxevents</parameter> shall
+specify the maximum number of events that <function>epoll_wait</function>
+may return. The value of this parameter must be greater
+than <literal>0</literal>.
+</para>
+<para>
+The parameter <parameter>timeout</parameter>
+shall specify the maximum number of milliseconds
+that <function>epoll_wait</function> shall
+wait for events.
+If the value of this parameter
+is <literal>0</literal>, then <function>epoll_wait</function>
+shall return immediately with a return code of <literal>0</literal>,
+even if there are no available events.
+If the value of this parameter
+is <literal>-1</literal>, then <function>epoll_wait</function>
+shall wait indefinitely.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>epoll_wait</function> shall return
+the number of file descriptors that are ready for 
+the I/O that was requested, or else <literal>0</literal>
+if no descriptors became ready during
+<parameter>timeout</parameter>.
+</para>
+<para>
+On failure, <function>epoll_wait</function> shall return
+<literal>-1</literal> and set <varname>errno</varname>
+as follows.
+</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EBADF
+</TERM>
+<LISTITEM>
+<PARA>
+The parameter <parameter>epfd</parameter>
+is not a valid file descriptor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EFAULT
+</TERM>
+<LISTITEM>
+<PARA>
+The area of memory referenced by the parameter
+<parameter>events</parameter> cannot be accessed
+with write permissions.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINTR
+</TERM>
+<LISTITEM>
+<PARA>
+The <parameter>timeout</parameter> expired, or else
+the call was interrupted by a signal handler before
+any requested event.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+The parameter <parameter>epfd</parameter>
+is not a valid epoll file descriptor, or else
+the parameter <parameter>maxevents</parameter>
+is less than or equal to <literal>0</literal>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>See Also
+</TITLE>
+<PARA>
+<FUNCTION>close</FUNCTION>, <FUNCTION>epoll_ctl</FUNCTION>, 
+<FUNCTION>epoll_create</FUNCTION>, <FUNCTION>poll</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+</refentry>
