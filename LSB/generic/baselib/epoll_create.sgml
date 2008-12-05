@@ -1,0 +1,119 @@
+<refentry id="libc-epoll-create-1">
+
+<refmeta>
+<refentrytitle>epoll_create</refentrytitle>
+<refmiscinfo>libc</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>epoll_create</refname>
+<refpurpose>open an epoll file descriptor</refpurpose>
+<indexterm id="ix-libc-epoll-create-1">
+	<primary>epoll_create</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;sys/epoll.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>epoll_create</function>
+</funcdef>
+<paramdef>int
+<parameter>size</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+
+<para>
+The epoll API, which consists of the interfaces
+<function>epoll_create</function>, <function>epoll_ctl</function>,
+and <function>epoll_wait</function>,
+shall support all file descriptors compatible with <function>poll</function>.
+These interfaces shall be usable in either level-triggered or edge-triggered mode.
+In level-triggered mode, epoll has similar semantics to <function>poll</function>,
+and can be used as a faster replacement for it.
+In edge-triggered mode, epoll shall only report events for a file descriptor
+when changes occur on it.
+</para>
+
+<para>
+The <function>epoll_create</function> interface shall
+open an epoll file descriptor
+by allocating an event backing store 
+of approximately size <parameter>size</parameter>.
+The <parameter>size</parameter> parameter
+is a hint to the kernel about how large the event storage
+must be, not a rigidly-defined maximum size.
+</para>
+
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>epoll_create</function> shall return
+the file descriptor, a non-negative integer that
+shall be used for subsequent epoll calls. It must be closed
+with the <function>close</function> function.
+</para>
+<para>
+On failure, <function>epoll_create</function> shall return
+<literal>-1</literal> and set <varname>errno</varname>
+as follows.
+</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+The <parameter>size</parameter> parameter is not positive.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENFILE
+</TERM>
+<LISTITEM>
+<PARA>
+The maximum number of open files has been reached by the system.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOMEM
+</TERM>
+<LISTITEM>
+<PARA>
+Not enough memory to create the kernel object.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>See Also
+</TITLE>
+<PARA>
+<FUNCTION>close</FUNCTION>, <FUNCTION>epoll_ctl</FUNCTION>, 
+<FUNCTION>epoll_wait</FUNCTION>, <FUNCTION>poll</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+</refentry>

@@ -1,0 +1,334 @@
+<refentry id="libc-epoll-ctl-1">
+
+<refmeta>
+<refentrytitle>epoll_ctl</refentrytitle>
+<refmiscinfo>libc</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>epoll_ctl</refname>
+<refpurpose>control an epoll file descriptor</refpurpose>
+<indexterm id="ix-libc-epoll-ctl-1">
+	<primary>epoll_ctl</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;sys/epoll.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>epoll_ctl</function>
+</funcdef>
+<paramdef>int
+<parameter>epfd</parameter>
+</paramdef>
+<paramdef>int
+<parameter>op</parameter>
+</paramdef>
+<paramdef>int
+<parameter>fd</parameter>
+</paramdef>
+<paramdef>struct epoll_event *
+<parameter>event</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+
+
+<para>
+The interface <function>epoll_ctl</function> shall control an epoll file descriptor.
+</para>
+<para>
+The parameter <parameter>epfd</parameter> shall specify
+the epoll file descriptor to control.
+</para>
+<para>
+The parameter <parameter>op</parameter> shall specify
+the operation to perform on the specified target file descriptor.
+</para>
+<para>
+The parameter <parameter>fd</parameter> shall specify
+the target file descriptor on which to perform the
+specified operation.
+</para>
+<para>
+The parameter <parameter>event</parameter> shall specify
+the object associated with the target file descriptor.
+The <varname>events</varname> member of the
+<parameter>event</parameter> parameter is a bit set
+composed of the event types listed below.
+</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>Event types
+</TITLE>
+<VARIABLELIST>
+
+<VARLISTENTRY>
+<TERM>
+EPOLLERR
+</TERM>
+<LISTITEM>
+<PARA>
+An error condition occurred on the target file descriptor.
+It shall not be necessary to set this event in
+<varname>events</varname>;
+this interface
+shall always wait for it.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLLET
+</TERM>
+<LISTITEM>
+<PARA>
+This event shall set edge-triggered behavior
+for the target file descriptor.
+The default epoll behavior shall be level-triggered.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLLHUP
+</TERM>
+<LISTITEM>
+<PARA>
+A hang up occurred on the target file descriptor.
+It shall not be necessary to set this event in
+<varname>events</varname>;
+this interface
+shall always wait for it.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLLIN
+</TERM>
+<LISTITEM>
+<PARA>
+The file is accessible to <function>read</function> operations.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLLONESHOT
+</TERM>
+<LISTITEM>
+<PARA>
+This event shall set one-shot behavior
+for the target file descriptor.
+After <function>epoll_wait</function> retrieves an event,
+the file descriptor shall be disabled and epoll shall not
+report any other events. 
+To reenable the file descriptor with a new event mask,
+the user must invoke <function>epoll_ctl</function>
+with <constant>EPOLL_CTL_MOD</constant> in the
+<parameter>op</parameter> parameter.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLLOUT
+</TERM>
+<LISTITEM>
+<PARA>
+The file is accessible to <function>write</function> operations.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLLPRI
+</TERM>
+<LISTITEM>
+<PARA>
+Urgent data exists for <function>read</function> operations.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLLRDHUP
+</TERM>
+<LISTITEM>
+<PARA>
+A stream socket peer closed the connection,
+or else the peer shut down the writing half
+of the connection.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>Values of the op parameter
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EPOLL_CTL_ADD
+</TERM>
+<LISTITEM>
+<PARA>
+Associate <parameter>event</parameter>
+with the file described by <parameter>fd</parameter>,
+and add <parameter>fd</parameter>
+to the epoll descriptor <parameter>epfd</parameter>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLL_CTL_DEL
+</TERM>
+<LISTITEM>
+<PARA>
+Remove <parameter>fd</parameter> from
+<parameter>epfd</parameter>, and
+ignore <parameter>event</parameter>, which
+can be <literal>NULL</literal>. 
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPOLL_CTL_MOD
+</TERM>
+<LISTITEM>
+<PARA>
+Change the event <parameter>event</parameter>
+associated with <parameter>fd</parameter>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success, <function>epoll_ctl</function> shall return
+<literal>0</literal>.
+</para>
+<para>
+On failure, <function>epoll_ctl</function> shall return
+<literal>-1</literal> and set <varname>errno</varname>
+as follows.
+</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>Errors
+</TITLE>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EBADF
+</TERM>
+<LISTITEM>
+<PARA>
+The parameter <parameter>epfd</parameter> or the
+parameter <parameter>fd</parameter> is an invalid file descriptor.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EEXIST
+</TERM>
+<LISTITEM>
+<PARA>
+The parameter <parameter>op</parameter> was <constant>EPOLL_CTL_ADD</constant>,
+but the file descriptor <parameter>fd</parameter> is already in
+<parameter>epfd</parameter>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+The parameter <parameter>epfd</parameter> is invalid,
+or it is the same as <parameter>fd</parameter>,
+or the operation specified by the parameter <parameter>op</parameter>
+is unsupported.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOENT
+</TERM>
+<LISTITEM>
+<PARA>
+The parameter <parameter>op</parameter> was 
+<constant>EPOLL_CTL_MOD</constant> or <constant>EPOLL_CTL_DEL</constant>,
+but the file descriptor <parameter>fd</parameter> is not in
+<parameter>epfd</parameter>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+ENOMEM
+</TERM>
+<LISTITEM>
+<PARA>
+Not enough memory for the operation specified by the parameter <parameter>op</parameter>.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+EPERM
+</TERM>
+<LISTITEM>
+<PARA>
+The file specified by <parameter>fd</parameter> does not support epoll.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>See Also
+</TITLE>
+<PARA>
+<FUNCTION>close</FUNCTION>, <FUNCTION>epoll_create</FUNCTION>, 
+<FUNCTION>epoll_wait</FUNCTION>, <FUNCTION>poll</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+</refentry>
