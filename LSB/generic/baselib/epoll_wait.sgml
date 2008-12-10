@@ -43,8 +43,9 @@ wait for events on the epoll file descriptor specified
 by the parameter <parameter>epfd</parameter>.
 </para>
 <para>
-The parameter <parameter>events</parameter> shall
-refer to an area of memory containing the events
+Upon success, the output
+parameter <parameter>events</parameter> shall
+refer to an area of memory containing <type>epoll_event</type> structures
 available to the caller.
 The <varname>data</varname> members of these structures
 shall contain the data set by the
@@ -54,8 +55,11 @@ shall contain the event bit field that was returned.
 </para>
 <para>
 The parameter <parameter>maxevents</parameter> shall
-specify the maximum number of events that <function>epoll_wait</function>
-may return. The value of this parameter must be greater
+specify the maximum number of events that 
+<function>epoll_wait</function>
+may return in the output
+parameter <parameter>events</parameter>.
+The value of this parameter should be greater
 than <literal>0</literal>.
 </para>
 <para>
@@ -65,11 +69,12 @@ that <function>epoll_wait</function> shall
 wait for events.
 If the value of this parameter
 is <literal>0</literal>, then <function>epoll_wait</function>
-shall return immediately with a return code of <literal>0</literal>,
-even if there are no available events.
-If the value of this parameter
+shall return immediately, even if no events are available, in which case the 
+return code shall be <literal>0</literal>.
+If the value of <parameter>timeout</parameter>
 is <literal>-1</literal>, then <function>epoll_wait</function>
-shall wait indefinitely.
+shall block
+until either a requested event occurs or the call is interrupted.
 </para>
 </refsect1>
 
@@ -124,9 +129,9 @@ EINTR
 </TERM>
 <LISTITEM>
 <PARA>
-The <parameter>timeout</parameter> expired, or else
-the call was interrupted by a signal handler before
-any requested event.
+The call was interrupted by a signal handler before
+the <parameter>timeout</parameter> expired or 
+any requested event took place.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
