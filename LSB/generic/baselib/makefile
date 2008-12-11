@@ -29,6 +29,7 @@ MANPAGES= sockio.sgml ttyio.sgml \
 	cfmakeraw.sgml cfsetspeed.sgml clearerr_unlocked.sgml daemon.sgml \
 	dcgettext.sgml dcngettext.sgml dgettext.sgml dngettext.sgml \
 	drand48_r.sgml duplocale.sgml endutent.sgml erand48_r.sgml \
+	epoll_create.sgml epoll_ctl.sgml epoll_wait.sgml \
 	err.sgml error.sgml errx.sgml fcntl.sgml feof_unlocked.sgml \
 	ferror_unlocked.sgml fflush_unlocked.sgml fgetc_unlocked.sgml \
 	fgets_unlocked.sgml fgetwc_unlocked.sgml fgetws_unlocked.sgml \
