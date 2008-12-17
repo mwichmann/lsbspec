@@ -23,7 +23,7 @@ convert formatted input from a curses window
 <funcdef>int
 <function>scanw</function>
 </funcdef>
-<paramdef>char *<parameter>fmt</parameter></paramdef>
+<paramdef>const char *<parameter>fmt</parameter></paramdef>
 <paramdef><parameter>...</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>

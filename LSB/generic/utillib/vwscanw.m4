@@ -24,7 +24,7 @@ convert formatted input from a curses window
 <function>vw_scanw</function>
 </funcdef>
 <paramdef>WINDOW *<parameter>win</parameter></paramdef>
-<paramdef>char *<parameter>fmt</parameter></paramdef>
+<paramdef>const char *<parameter>fmt</parameter></paramdef>
 <paramdef>va_list <parameter>vararglist</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>

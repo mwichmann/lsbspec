@@ -25,7 +25,7 @@ convert formatted input from a curses window
 </funcdef>
 <paramdef>int <parameter>y</parameter></paramdef>
 <paramdef>int <parameter>x</parameter></paramdef>
-<paramdef>char *<parameter>fmt</parameter></paramdef>
+<paramdef>const char *<parameter>fmt</parameter></paramdef>
 <paramdef><parameter>...</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
