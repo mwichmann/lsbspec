@@ -1,0 +1,95 @@
+<refentry id="libpng-png-data-freer-1">
+
+<refmeta>
+<refentrytitle>png_data_freer</refentrytitle>
+<refmiscinfo>libpng</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>png_data_freer</refname>
+<refpurpose>change the default behavior for freeing data</refpurpose>
+<indexterm id="ix-libpng-png-data-freer-1">
+	<primary>png_data_freer</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;png.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>void
+<function>png_data_freer</function>
+</funcdef>
+<paramdef>png_structp
+<parameter>png_ptr</parameter>
+</paramdef>
+<paramdef>png_infop
+<parameter>info_ptr</parameter>
+</paramdef>
+<paramdef>int
+<parameter>freer</parameter>
+</paramdef>
+<paramdef>png_uint_32
+<parameter>mask</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+              
+<refsect1>
+<title>Description</title>
+<para>This interface shall change the default behavior for freeing allocated data,
+from only freeing data allocated internally by libpng,
+to either freeing user-allocated data or to not freeing any data at all.
+</para>
+<para>
+This interface can enable deallocation of user data allocated with 
+<function>png_malloc</function> or <function>png_zalloc</function>
+and passed to libpng with one of the png_set_*() interfaces.
+Users can call it both before and after passing the data.
+Calling it after reading PNG data but before passing the data 
+controls whether the user or the interface
+is responsible for the existing data.
+Calling it after passing the data controls whether 
+the user or the interface should deallocate the data.
+</para>
+<para>
+If the user becomes responsible for data allocated by libpng,
+<function>png_free</function> must be called
+to free it. If libpng becomes responsible for user-allocated data,
+the data must only have been allocated with 
+<function>png_malloc</function> or <function>png_zalloc</function>.
+</para>
+
+<para>The parameter <parameter>png_ptr</parameter> shall specify the PNG file.</para>
+<para>The parameter <parameter>info_ptr</parameter> shall specify the PNG info structure.</para>
+<para>The parameter <parameter>freer</parameter> shall specify one of these constants:
+<constant>PNG_DESTROY_WILL_FREE_DATA</constant>,
+<constant>PNG_SET_WILL_FREE_DATA</constant>,
+<constant>PNG_USER_WILL_FREE_DATA</constant>.         
+</para>
+<para>The parameter <parameter>mask</parameter> shall specify the data to free,
+as described under <function>png_free_data</function>.
+</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>Application Usage (informative)
+</TITLE>
+<para>
+A <varname>row_pointers</varname> array allocated in a single block
+must not be freed with
+<function>png_set_rows</function> or <function>png_read_destroy</function>,
+because they would attempt to free the elements of the array as well.
+</para>
+<para>
+Do not free <varname>text_ptr</varname> with libpng
+if some of its members were allocated separately,
+because this will actually only free <varname>text_ptr.key</varname>.
+If responsibility for freeing <varname>text_ptr</varname> moves 
+from libpng to the user, the user
+must not free the members separately.
+</para>
+</REFSECT1>
+
+</refentry>

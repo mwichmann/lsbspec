@@ -1,0 +1,117 @@
+<refentry id="libpng-png-set-unknown-chunks-1">
+
+<refmeta>
+<refentrytitle>png_set_unknown_chunks</refentrytitle>
+<refmiscinfo>libpng</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>png_set_unknown_chunks</refname>
+<refpurpose>insert unknown chunks into a PNG file</refpurpose>
+<indexterm id="ix-libpng-png-set-unknown-chunks-1">
+	<primary>png_set_unknown_chunks</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;png.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>void
+<function>png_set_unknown_chunks</function>
+</funcdef>
+<paramdef>png_structp
+<parameter>png_ptr</parameter>
+</paramdef>
+<paramdef>png_infop
+<parameter>info_ptr</parameter>
+</paramdef>
+<paramdef>png_unknown_chunkp
+<parameter>unknowns</parameter>
+</paramdef>
+<paramdef>int
+<parameter>num_unknowns</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+<para>This interface shall insert unknown chunks into a PNG file.</para>
+<para>The parameter <parameter>png_ptr</parameter> shall specify the PNG file.</para>
+<para>The parameter <parameter>info_ptr</parameter> shall specify the PNG info structure.</para>
+<para>The parameter <parameter>unknowns</parameter> shall specify an array of <type>png_unknown_chunk</type>
+structures containing the unknown chunks, as described under <function>png_get_unknown_chunks</function>.
+The <varname>location</varname> member of a <type>png_unknown_chunk</type> structure can take several
+special values (see below).</para>
+<para>The parameter <parameter>num_unknowns</parameter> shall specify the number of unknown chunks.</para>
+
+<para>The special values for the <varname>location</varname> members 
+of the <type>png_unknown_chunk</type> structures
+are as follows.</para>
+<para>
+
+<para>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+0
+</TERM>
+<LISTITEM>
+<PARA>
+do not write the chunk
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+<constant>PNG_HAVE_IHDR</constant>
+</TERM>
+<LISTITEM>
+<PARA>
+insert chunk before PLTE
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+<constant>PNG_HAVE_PLTE</constant>
+</TERM>
+<LISTITEM>
+<PARA>
+insert chunk before IDAT
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+<VARLISTENTRY>
+<TERM>
+<constant>PNG_AFTER_IDAT</constant>
+</TERM>
+<LISTITEM>
+<PARA>
+insert chunk after IDAT
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+
+</VARIABLELIST>
+</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>Notes
+</TITLE>
+<PARA>
+The <varname>location</varname> member of the <type>png_unknown_chunk</type> structure
+is set automatically depending on how much of the PNG file has been written.
+Its value can be changed after calling this interface.
+The chunk is placed within a location according to its position in the array
+of structures, as described under <function>png_get_unknown_chunks</function>.
+</PARA>
+</REFSECT1>
+
+</refentry>
