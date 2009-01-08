@@ -98,7 +98,36 @@ png_write_info_before_PLTE.sgml\
 png_write_info.sgml\
 png_write_png.sgml\
 png_write_row.sgml\
-png_write_rows.sgml
+png_write_rows.sgml\
+png_convert_from_struct_tm.sgml \
+png_convert_from_time_t.sgml \
+png_create_read_struct_2.sgml \
+png_create_write_struct_2.sgml \
+png_data_freer.sgml \
+png_destroy_info_struct.sgml \
+png_free_data.sgml \
+png_get_header_ver.sgml \
+png_get_unknown_chunks.sgml \
+png_get_user_chunk_ptr.sgml \
+png_info_init_3.sgml \
+png_libpng_ver.sgml \
+png_permit_mng_features.sgml \
+png_set_compression_buffer_size.sgml \
+png_set_compression_mem_level.sgml \
+png_set_compression_method.sgml \
+png_set_compression_strategy.sgml \
+png_set_compression_window_bits.sgml \
+png_set_invert_alpha.sgml \
+png_set_keep_unknown_chunks.sgml \
+png_set_mem_fn.sgml \
+png_set_read_user_chunk_fn.sgml \
+png_set_read_user_transform_fn.sgml \
+png_set_sRGB_gAMA_and_cHRM.sgml \
+png_set_unknown_chunk_location.sgml \
+png_set_unknown_chunks.sgml \
+png_set_write_status_fn.sgml \
+png_set_write_user_transform_fn.sgml \
+png_start_read_image.sgml
 
 FILES=libpng.sgml
 TABLES= png.sgml 
