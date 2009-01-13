@@ -2565,7 +2565,6 @@ typedef void (*XConnectionWatchProc) (Display *, XPointer, int, int,
 #define QueuedAfterReading	1
 #define True	1
 #define XLookupNone	1
-#define X_HAVE_UTF8_STRING	1
 #define XIMInitialState	1L
 #define XIMPreeditEnable	1L
 #define XIMReverse	1L
@@ -7523,12 +7522,182 @@ in the source standard.
 Other interfaces listed in <XREF LINKEND=libICE> shall behave as described
 in the referenced base document.
 </PARA>
-<!-- MISSING DEFINITION FOR _IceRead -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR _IceReadSkip -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR _IceWrite -->
-<!-- Lets just hope nobody notices -->
+<refentry id="libICE--IceRead-1">
+
+<refmeta>
+<refentrytitle>_IceRead</refentrytitle>
+<refmiscinfo>libICE</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>_IceRead</refname>
+<refpurpose>read the specified number of bytes from an ICE connection</refpurpose>
+<indexterm id="ix-libICE--IceRead-1">
+	<primary>_IceRead</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;X11/ICE/ICEmsg.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>_IceRead</function>
+</funcdef>
+<paramdef>IceConn
+<parameter>iceConn</parameter>
+</paramdef>
+<paramdef>unsigned long int
+<parameter>nbytes</parameter>
+</paramdef>
+<paramdef>char *
+<parameter>ptr</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>The interface <function>_IceRead</function> shall read
+the specified number of bytes from an Inter-Client Exchange connection.</para>
+<para>The parameter <parameter>iceConn</parameter> shall specify the Inter-Client Exchange connection.</para>
+<para>The parameter <parameter>nbytes</parameter> shall specify the number of bytes to read.</para>
+<para>The output parameter <parameter>ptr</parameter> shall contain the data that was read.</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>Return Value
+</TITLE>
+<PARA>
+<FUNCTION>_IceRead</FUNCTION> shall return <literal>0</literal>
+if it detects that the connection has closed and this was expected.
+</PARA>
+<PARA>
+In the case of a fatal I/O error,
+<FUNCTION>_IceRead</FUNCTION> shall return <literal>1</literal>.
+</PARA>
+</REFSECT1>
+
+<REFSECT1>
+<TITLE>See Also
+</TITLE>
+<PARA>
+<FUNCTION>_IceReadSkip</FUNCTION>, <FUNCTION>_IceWrite</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+</REFENTRY>
+
+
+<refentry id="libICE--IceReadSkip-1">
+
+<refmeta>
+<refentrytitle>_IceReadSkip</refentrytitle>
+<refmiscinfo>libICE</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>_IceReadSkip</refname>
+<refpurpose>advance to the end of the message when a bad header is read</refpurpose>
+<indexterm id="ix-libICE--IceReadSkip-1">
+	<primary>_IceReadSkip</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;X11/ICE/ICEmsg.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>void
+<function>_IceReadSkip</function>
+</funcdef>
+<paramdef>IceConn
+<parameter>iceConn</parameter>
+</paramdef>
+<paramdef>unsigned long int
+<parameter>nbytes</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>The interface <function>_IceReadSkip</function> shall
+advance to the end of the message when a header with a bad
+major or minor opcode is read, so the next message can
+be processed correctly.
+</para>
+<para>The parameter <parameter>iceConn</parameter> shall specify the Inter-Client Exchange connection.</para>
+<para>The parameter <parameter>nbytes</parameter> shall specify the number of bytes to skip.
+If the number of bytes specified is less than 512,
+the interface shall assume 512 bytes should be skipped.
+</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>See Also
+</TITLE>
+<PARA>
+<FUNCTION>_IceRead</FUNCTION>, <FUNCTION>_IceWrite</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+</REFENTRY>
+
+
+<refentry id="libICE--IceWrite-1">
+
+<refmeta>
+<refentrytitle>_IceWrite</refentrytitle>
+<refmiscinfo>libICE</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>_IceWrite</refname>
+<refpurpose>write the specified number of bytes of data to an ICE connection</refpurpose>
+<indexterm id="ix-libICE--IceWrite-1">
+	<primary>_IceWrite</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;X11/ICE/ICEmsg.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>void
+<function>_IceWrite</function>
+</funcdef>
+<paramdef>IceConn
+<parameter>iceConn</parameter>
+</paramdef>
+<paramdef>unsigned long int
+<parameter>nbytes</parameter>
+</paramdef>
+<paramdef>char *
+<parameter>ptr</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>The interface <function>_IceWrite</function> shall write the specified number of bytes to an Inter-Client Exchange connection.</para>
+<para>The parameter <parameter>iceConn</parameter> shall specify the Inter-Client Exchange connection.</para>
+<para>The parameter <parameter>nbytes</parameter> shall specify the number of bytes of the specified data to write.</para>
+<para>The parameter <parameter>ptr</parameter> shall contain the data to write.</para>
+</refsect1>
+
+<REFSECT1>
+<TITLE>See Also
+</TITLE>
+<PARA>
+<FUNCTION>_IceRead</FUNCTION>, <FUNCTION>_IceReadSkip</FUNCTION>.
+</PARA>
+</REFSECT1>
+
+</REFENTRY>
+
+
 </SECT1>
 <!-- End of text generated from database -->
 
