@@ -17,7 +17,7 @@ MANPAGES= forkpty.sgml login.sgml login_tty.sgml logout.sgml \
 	inchnstr.sgml inchstr.sgml instr.sgml mvinchnstr.sgml mvinchstr.sgml \
 	mvinstr.sgml mvscanw.sgml mvwinchnstr.sgml mvwinchstr.sgml \
 	mvwinstr.sgml mvwscanw.sgml ripoffline.sgml scanw.sgml wscanw.sgml \
-	vw_scanw.sgml vwscanw.sgml winchnstr.sgml winchstr.sgml winstr.sgml 
+	vw_scanw.sgml vwscanw.sgml winchnstr.sgml winchstr.sgml winstr.sgml mvcur.sgml 
 FILES=utillib.sgml
 GENFILES=libz.sgml libcurses.sgml libutil.sgml
 SCANWFILES= mvscanw.sgml mvwscanw.sgml scanw.sgml \
