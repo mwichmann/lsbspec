@@ -1,7 +1,11 @@
 
 .SUFFIXES: .sgml .m4
 
-MANPAGES=gtk_button_set_image.sgml gtk_button_get_image.sgml
+MANPAGES=gtk_button_set_image.sgml gtk_button_get_image.sgml \
+	g_cache_value_foreach.sgml g_type_name_from_class.sgml \
+	g_type_name_from_instance.sgml g_value_set_instance.sgml \
+	gtk_toolbar_get_tooltips.sgml gtk_toolbar_set_tooltips.sgml
+
 FILES=GTK.sgml
 TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml libPangoCairo.sgml
 
