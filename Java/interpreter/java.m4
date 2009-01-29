@@ -7,7 +7,7 @@
 <SECT1 ID="javaintro">
 <TITLE>Introduction</TITLE>
 <PARA>
-The Java intrepreter API is described in the
+The Java interpreter API is described in the
 <xref linkend="std.Java">,
 with the following requirements for an LSB conforming runtime.
 </PARA>

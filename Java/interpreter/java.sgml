@@ -7,7 +7,7 @@
 <SECT1 ID="javaintro">
 <TITLE>Introduction</TITLE>
 <PARA>
-The Java intrepreter API is described in the
+The Java interpreter API is described in the
 <xref linkend="std.Java">,
 with the following requirements for an LSB conforming runtime.
 </PARA>
@@ -73,147 +73,198 @@ launch a Java application
 <REFSECT1>
 <TITLE>Description</TITLE>
 <PARA>
-The <COMMAND>java</COMMAND> tool shall launch a Java application. 
-It does this by starting a
-Java runtime environment, loading a specified class, and invoking that
-class's main method.
+The <COMMAND>java</COMMAND> command 
+shall launch a Java application
+by initializing a Java runtime environment,
+loading the class specified on the command line,
+and calling the main method of that class.
 </PARA>
-<PARA>
-The method must be declared public and static, it must not return any
-value, and it must accept a String array as a parameter. The method
-declaration must look like the following:
-</PARA>
+
+<para>
+The method's declaration must be as follows.
+</para>
+
 <PARA>
 <literal>
 public static void main(String args[])
 </literal>
 </para>
-<PARA>
-By default, the first non-option argument is the name of the class to
-be invoked. A fully-qualified class name should be used. If the
-<parameter>-jar</parameter> option is specified, the first non-option
-argument is the name of a JAR archive containing class and resource
-files for the application, with the startup class indicated by the
-Main-Class manifest header.
-</PARA>
-<PARA>
-The Java runtime shall search for the startup class, and other classes
-used, in three sets of locations: the bootstrap class path, the
-installed extensions, and the user class path.
-</PARA>
-<PARA>
-Non-option arguments after the class name or JAR file name are passed
-to the main function.
-</PARA>
+
+<para>
+By default, the first argument specified 
+that is not an option shall be the
+fully-qualified name of the class to invoke.
+This behavior may be changed by the
+addition of the 
+<parameter>-jar</parameter> option,
+in which case the first argument specified 
+that is not an option shall be 
+the name of a JAR file.
+Any arguments specified 
+after the class name or JAR file name
+that are not command-line options
+are passed to the main function.
+</para>
+
+<para>
+The Java runtime shall search for the 
+classes used, including the startup class,
+in three locations: the bootstrap class path,
+the extensions that are currently installed,
+and the user class path.
+</para>
+
+
 </REFSECT1>
 
 <REFSECT1>
-<TITLE>Option and Operand Handling</TITLE>
+<TITLE>Options</TITLE>
+<PARA>
 <variablelist>
 
 <varlistentry>
 <term><parameter>-?</parameter></term>
-<listitem><para>This option works in the same way as the 
-<parameter>-help</parameter> option.</para></listitem>
+<listitem>
+<para>
+This option is a synonym for
+<parameter>-help</parameter>.
+</para>
+</listitem>
 </varlistentry>
+
 
 <varlistentry>
 <term><parameter>-classpath classpath</parameter></term>
 <listitem>
+
 <para>
-Specifies a list of directories, JAR archives, and ZIP archives to
-search for class files. Class path entries are separated by
-colons (<literal>:</literal>). Specifying <parameter>-classpath</parameter>
-or <parameter>-cp</parameter> overrides any setting of
+This option shall specify 
+a list of locations to search for class files,
+including directories, JAR files, and ZIP files.
+Locations in the class path shall be delimited
+by colons (<literal>:</literal>).
+</para>
+
+<para>
+The <parameter>-classpath</parameter> option
+shall override 
 the <envar>CLASSPATH</envar> environment variable.
+If the <parameter>-classpath</parameter> option
+is not specified and
+<envar>CLASSPATH</envar> is not set,
+then the user class path shall simply consist of
+the current directory (<filename>.</filename>).
 </para>
+
+
 <para>
-If <parameter>-classpath</parameter> and <parameter>-cp</parameter> 
-are not used and <envar>CLASSPATH</envar> is not set, the
-user class path consists of the current directory (<filename>.</filename>).
+The class path element <filename>*</filename>
+shall specify all files in the current directory
+with the extension <filename>.jar</filename>.
+or <filename>.JAR</filename>.
+Example: if the only JAR files in the directory 
+<filename>foo</filename>
+are <filename>bar.jar</filename>
+and <filename>bas.JAR</filename>,
+then the class path element 
+<literal>foo/*</literal> shall be equivalent to
+<literal>bar.jar:bas.JAR</literal>.
+The order of JAR files in this case shall be unspecified.
+The <envar>CLASSPATH</envar> environment variable
+functions in the same way.
 </para>
+
 <para>
-As a special convenience, a class path element containing a basename
-of <filename>*</filename> is considered equivalent to specifying a list of all the files
-in the directory with the extension <filename>.jar</filename> 
-or <filename>.JAR</filename> (a Java program
-cannot tell the difference between the two invocations).
-For example, if directory foo contains <filename>a.jar</filename>
-and <filename>b.JAR</filename>, then the
-class path element <literal>foo/*</literal> is expanded to 
-<literal>A.jar:b.JAR</literal>, except that
-the order of jar files is unspecified. All jar files in the specified directory, 
-even hidden ones, are included in the list. A classpath entry consisting simply 
-of <filename>*</filename> expands to a list of all the jar
-files in the current directory. The <envar>CLASSPATH</envar> environment variable,
-where defined, will be similarly expanded. Any classpath wildcard
-expansion occurs before the Java virtual machine is started -- no
-Java program will ever see unexpanded wildcards except by querying
-the environment, for example, by invoking 
-<function>System.getenv("CLASSPATH")</function>.
-</para></listitem>
+Wildcards in the class path shall be expanded before
+the initialization of the Java virtual machine.
+However, Java programs can examine unexpanded wildcards
+if they query the environment. Example:
+<literal>System.getenv("CLASSPATH")</literal>.
+</para>
+
+</listitem>
 </varlistentry>
 
 
 <varlistentry>
 <term><parameter>-cp classpath</parameter></term>
-<listitem><para>
-Works in the same way as the <parameter>-classpath</parameter> option.
-</para></listitem>
+<listitem>
+<para>
+This option is a synonym for
+<parameter>-classpath</parameter>.
+</para>
+</listitem>
 </varlistentry>
 
 
 <varlistentry>
 <term><parameter>-Dproperty=value</parameter></term>
 <listitem><para>
-Sets a system property value.
+This option shall set the value of a system property.
 </para></listitem>
 </varlistentry>
 
 
 <varlistentry>
 <term><parameter>-help</parameter></term>
-<listitem><para>Displays usage information and exits.
-</para></listitem>
+<listitem>
+<para>
+This option shall display usage information
+for the command, then exit.
+</para>
+</listitem>
 </varlistentry>
 
 
-
 <varlistentry>
-<term><parameter>-jar</parameter></term>
-<listitem><para>
-Executes a program encapsulated in a JAR file. The first argument
-is the name of a JAR file instead of a startup class name. In
-order for this option to work, the manifest of the JAR file must
-contain a line of the form 
-<literal>Main-Class: classname</literal>. Here, <replaceable>classname</replaceable>
-identifies the class having the 
-<function>public static void main(String[] args)</function> 
-method that serves as your application's starting point.
+<term><parameter>-jar jarfile</parameter></term>
+<listitem>
+
+<para>
+This option shall specify a JAR file
+containing a program to execute.
+Its first argument must be the name of a JAR file
+with both class and resource files.
+The JAR file's manifest must contain a line
+of this form:
+<literal>Main-Class: classname</literal>.
+The class name
+<replaceable>classname</replaceable>
+must specify the class containing the main function
+for the application.
 </para>
-<para> 
-When you use this option, the JAR file is the source of all user
-classes, and other user class path settings are ignored.
+
+<para>
+If this option is specified,
+all other user class path settings shall be ignored.
 </para>
+
 <para> 
-Note that JAR files that can be run with the <parameter>-jar</parameter> option can
-have their execute permissions set so they can be run without using
-<parameter>-jar</parameter>.
-</para></listitem>
+JAR files that can be specified with this option
+shall also be runnable without this option
+by setting their execute permissions.
+</para>
+
+</listitem>
 </varlistentry>
 
 
 <varlistentry>
 <term><parameter>-version</parameter></term>
-<listitem><para>Displays version information and exits.
-</para></listitem>
+<listitem>
+
+<para>
+This option shall display version information
+for the command, then exit.
+</para>
+
+</listitem>
 </varlistentry>
 
 </variablelist>
 </REFSECT1>
 
 </REFENTRY>
-
 
 </SECT1>
 
