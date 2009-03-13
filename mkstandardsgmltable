@@ -15,13 +15,13 @@ die;
 
 sub quote($)
 {
-	my ($type) = @_;
-	return $type if ($type =~ /^'.*'$/);
-	my @tlist = split(/,/, $type);
-	foreach $t (@tlist) {
-		$t = "'$t'" if ($t !~ /^'.*'$/);
-	}
-	return join(',', @tlist);
+    my ($type) = @_;
+    return $type if ($type =~ /^'.*'$/);
+    my @tlist = split(/,/, $type);
+    foreach $t (@tlist) {
+        $t = "'$t'" if ($t !~ /^'.*'$/);
+    }
+    return join(',', @tlist);
 }
 
 # Uncomment to trace SQL statments
@@ -31,12 +31,18 @@ sub quote($)
 # 1) process the arguments
 #
 my $Stype="'Standard','Reference'";
-GetOptions(	"a=s" => \$archname, 
-		"s=s" => \$specids, 
-		"x=s" => \$exclids, 
-		"t=s" => \$Stype, 
-	  );
+GetOptions( "a=s" => \$archname,
+        "s=s" => \$specids,
+        "x=s" => \$exclids,
+        "m=s" => \$submodule,
+        "v=s" => \$lsbversion,
+        "t=s" => \$Stype,
+      );
 if( !$archname && !$specids ) { usage(); }
+
+if( $submodule && !$lsbversion ) {
+    die "When specifying submodule name, you should also specify target LSB version.";
+}
 
 #
 # 2) Establish connection to the database
@@ -45,39 +51,89 @@ $dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, 
     or die "Couldn't connect to database: ".DBI->errstr;
 
 #
-# 3) get & print the architecture info
+# 3) get architecture info
 #
 if( $archname ) {
-	$select = "SELECT * FROM Architecture WHERE ";
-	$select.= "Architecture.Aname=".$dbh->quote($archname);
-	print STDERR $select,"\n" if $trace;
-	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-	$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
-	
-	$entry=$sth->fetchrow_hashref;
-	$sth->finish;
-	$Aid=$entry->{'Aid'};
-	
-	if( not $entry->{'Aname'} ) {
-		die "Unsupported architecture";
-	}
+    $select = "SELECT * FROM Architecture WHERE ";
+    $select.= "Architecture.Aname=".$dbh->quote($archname);
+    print STDERR $select,"\n" if $trace;
+    $sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+    $sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+
+    $entry=$sth->fetchrow_hashref;
+    $sth->finish;
+    $Aid=$entry->{'Aid'};
+
+    if( not $entry->{'Aname'} ) {
+        die "Unsupported architecture";
+    }
 } else {
-	$Aid=0;
+    $Aid=0;
+}
+
+#
+# 4) get submodule info
+#
+if( $submodule ) {
+    $select = "SELECT * FROM SubModule WHERE ";
+    $select.= "SMname=".$dbh->quote($submodule);
+    print STDERR $select,"\n" if $trace;
+    $sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
+    $sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+
+    $entry=$sth->fetchrow_hashref;
+    $sth->finish;
+    $SMid=$entry->{'SMid'};
+
+    if( not $entry->{'SMname'} ) {
+        die "Unknown submodule";
+    }
+} else {
+    $SMid=0;
 }
 
 # check Stype is quoted properly
 $Stype = quote($Stype);
 
+#
+# 5) Get Standards. Include those standards that are listed in the $specids
+#    or which assigned to $submodule in the $lsbversion. Exclude entries
+#    listed in the $exclids.
+#
 $select = "SELECT * FROM Standard ";
+if( $SMid ) {
+    $select.= "LEFT JOIN SModStd ON SMSsid=Sid ";
+}
 $select.= "WHERE Stype in ($Stype) ";
 $select.= "AND ( Sarch=$Aid OR Sarch=1 ) ";
-if( $specids ) {
-	$select.= "AND Sname IN ( $specids ) ";
+if( $specids or $exclids or $SMid ) {
+    $select.= "AND (";
 }
 if( $exclids ) {
-	$select.= "AND Sname NOT IN ( $exclids ) ";
+    $select.= "Sname NOT IN ( $exclids ) ";
 }
-# $select .= "AND Sname != 'LSB' ";
+if( $specids ) {
+    $select.= " AND ( " if( $exclids );
+    $select.= "Sname IN ( $specids ) ";
+}
+if( $SMid ) {
+    if( $specids ) {
+        $select.= " OR (";
+    }
+    elsif( $exclids ) {
+        $select.= " AND (";
+    }
+    $select.= " SMSsmid=$SMid ";
+    $select.= "AND SMSappearedin > '' AND SMSappearedin <= '$lsbversion' ";
+    $select.= "AND (SMSwithdrawnin IS NULL OR SMSwithdrawnin > '$lsbversion') ";
+    $select.= " ) " if( $specids or $exclids );
+}
+if( $specids or $exclids or $SMid ) {
+    $select.= ") ";
+    if( $specids and $exclids  ) {
+        $select.= ") ";
+    }
+}
 $select.= "ORDER BY Sshort";
 print STDERR $select,"\n" if $trace;
 
@@ -94,17 +150,17 @@ print "</ROW>";
 print "</THEAD>\n";
 print "<TBODY>\n";
 for(1..$sth->rows) {
-	$entry=$sth->fetchrow_hashref;
-	print "<ROW>";
-	# Don't print the nickname. It may be confusing
-	#printf "<ENTRY>%s</ENTRY>",$entry->{'Sname'};
-	printf "<ENTRY ID=\"std.%s\" XREFLABEL=\"%s\">%s</ENTRY>",makeid($entry->{'Sname'}),$entry->{'Sshort'},$entry->{'Sshort'};
-	printf "<ENTRY>%s</ENTRY>", $entry->{'Sfull'};
-	printf "<ENTRY><ULINK URL=\"%s\">%s</ULINK></ENTRY>",
-					encode_entities($entry->{'Surl'},"%&"), 
-					encode_entities($entry->{'Surl'});
-	#printf "<ENTRY>%s</ENTRY>",$entry->{'Sdescription'};
-	print "</ROW>\n";
+    $entry=$sth->fetchrow_hashref;
+    print "<ROW>";
+    # Don't print the nickname. It may be confusing
+    #printf "<ENTRY>%s</ENTRY>",$entry->{'Sname'};
+    printf "<ENTRY ID=\"std.%s\" XREFLABEL=\"%s\">%s</ENTRY>",makeid($entry->{'Sname'}),$entry->{'Sshort'},$entry->{'Sshort'};
+    printf "<ENTRY>%s</ENTRY>", $entry->{'Sfull'};
+    printf "<ENTRY><ULINK URL=\"%s\">%s</ULINK></ENTRY>",
+                    encode_entities($entry->{'Surl'},"%&"),
+                    encode_entities($entry->{'Surl'});
+    #printf "<ENTRY>%s</ENTRY>",$entry->{'Sdescription'};
+    print "</ROW>\n";
 }
 $sth->finish;
 $dbh->disconnect;
@@ -113,10 +169,10 @@ print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
 
 sub makeid {
-	my ($name) = @_;
-	$name =~ s/\s+/./g;
-	$name =~ s/[^A-Za-z0-9.]+/./g;
-	# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
-	$name =~ s/\.\.+/./g;
-	return $name;
+    my ($name) = @_;
+    $name =~ s/\s+/./g;
+    $name =~ s/[^A-Za-z0-9.]+/./g;
+    # finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
+    $name =~ s/\.\.+/./g;
+    return $name;
 }

@@ -4,9 +4,9 @@
 FILES=intro.sgml
 TABLES=standards.sgml
 
-# Specs not part of the Core spec
-# FIX THIS: there's got to be a better way than listing each spec
-EXCLSPECS="'LSB','Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-shape','X-shm','X-sync','X-test','XICE','XINPUT','XKBlib','OGL','ISOCXX','LANANA','Gdk','Gdk-pixbuf','Glib','Gobject','Gtk','X-evi','ATK','Pango','fontconfig','libJPEG','libXML2','Png12','QtCore','QtGui','QtXml','QtNetwork','QtOpenGL','QtSql','QtSvg','qt-mt','xrender','freetype','xft','ALSA','PPD','PPDUpdate','PerlLang','PerlFunc','PerlMod','PerlOp','PerlSyn','PerlFun','PerlMan','PythonLib','Python','XdgMenu','XdgDesktop','XdgIcon','XdgBasedir','xdg-utils','alsa','ATK 1.10','Gdk 2.8','Gdk-pixbuf 2.8','Glib 2.8','Gobject 2.8','Gtk 2.8','Pango 1.10','OGL ABI','GLU','GLX','Java','JavaCmd','JavaVM','NSS SSL','NSPR','NSS SSL','NSPR'"
+# A trick with the generic spec - we don't want LSB Core Generic to reference itself, but we want to add reference to CXXABI
+EXCLSPECS="'LSB'"
+INCLSPECS="'CXXABI'"
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -14,8 +14,8 @@ EXCLSPECS="'LSB','Xlib','XSM','Xt','X-dbe','X-DPMS','X-Record','X-security','X-s
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) >standards.sgml
-	../../../mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) >references.sgml
+	../../../mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Core -v `cat ../../../LSB/target_version.generic` >standards.sgml
+	../../../mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Core -v `cat ../../../LSB/target_version.generic` >references.sgml
 
 clean:
 	rm -f $(FILES)

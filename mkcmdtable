@@ -132,12 +132,12 @@ sub lsbCommands {
 		$MainTitle = "Commands And Utilities";
 	}
 	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command
-                          LEFT JOIN ModCmd ON Command.Cid=ModCmd.MCcid
+                          LEFT JOIN SModCmd ON Command.Cid=SModCmd.SMCcid
                           LEFT JOIN CmdStd ON CScid=Cid
-                          WHERE ModCmd.MCmid=$moduleid
+                          WHERE SModCmd.SMCsmid=$moduleid
                           AND Standard.Sid=CSsid
-                          AND MCappearedin > '' AND MCappearedin<='$lsbversion'
-                          AND (MCwithdrawnin IS NULL OR MCwithdrawnin>'$lsbversion')
+                          AND SMCappearedin > '' AND SMCappearedin<='$lsbversion'
+                          AND (SMCwithdrawnin IS NULL OR SMCwithdrawnin>'$lsbversion')
                           AND CSappearedin > '' AND CSappearedin<='$lsbversion'
                           AND (CSwithdrawnin IS NULL OR CSwithdrawnin>'$lsbversion')
                           AND $builtinCheck
@@ -159,13 +159,13 @@ sub lsbCommands {
 	printf("</PARA>\n");
 
 	$sth = $dbh->prepare("SELECT Cname, CSsid, Sfull, Sid, Sname FROM Command
-                            LEFT JOIN ModCmd ON Command.Cid=ModCmd.MCcid
+                            LEFT JOIN SModCmd ON Command.Cid=SModCmd.SMCcid
                             LEFT JOIN CmdStd ON CScid=Cid
                             LEFT JOIN Standard ON CSsid=Standard.Sid
-                            WHERE MCappearedin > '' AND MCappearedin<='$lsbversion'
-                            AND (MCwithdrawnin IS NULL OR MCwithdrawnin>'$lsbversion')
+                            WHERE SMCappearedin > '' AND SMCappearedin<='$lsbversion'
+                            AND (SMCwithdrawnin IS NULL OR SMCwithdrawnin>'$lsbversion')
                             AND $builtinCheck
-                            AND ModCmd.MCmid=$moduleid
+                            AND SModCmd.SMCsmid=$moduleid
                             ORDER BY Command.Cname");
 	$sth->execute;
 

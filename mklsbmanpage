@@ -1,17 +1,15 @@
-#! /usr/bin/perl
+#! /usr/bin/perl -I../build_env
 
 #
 # mklsbmanpage
 #   - based on mksynop, write out an entire man page for a given interface.
-#     NB the database does not (currently) hold names for the positional
-#     parameters stored in the Parameter table, so we temporarily
-#     call them "arg1", "arg2" etc
 #
 
 use DBI;
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 use strict;
 use Getopt::Long;
+use specdb;
 
 my $level = 0;
 my $dbh;
@@ -52,6 +50,12 @@ sub tag($$$) {
 
 sub function($) {
     my ($name) = @_;
+    my ($unmangled) = $dbh->selectrow_array("SELECT Iunmangled FROM Interface WHERE Iname='$name' LIMIT 1");
+    if( $unmangled ) {
+        $name = $unmangled;
+        $name =~ s/\(.*$//;
+    }
+
     return tag( "function", $name, 0 );
 }
 
@@ -104,167 +108,6 @@ sub funcprototype($) {
     return tag( "funcprototype", $hdr, 1 );
 }
 
-sub displaytyperef($) {
-    my ($param) = @_;
-    my ( $select, $sth, $type );
-    my ( $tselect, $tmselect, $Tid, $tmh, $tmentry, $nameonly );
-    my ( $tth, $TMtypeid, $th, $entry );
-    my $retval = "";
-
-    if ( $$param{'Ttype'} eq "Intrinsic" ) {
-        $retval .= $$param{'Tname'};
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "Literal" ) {
-        $retval .= $$param{'Tname'};
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "Const" ) {
-        $select =
-            "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid="
-          . $$param{'ATbasetype'}
-          . " AND ATaid IN (1,$Aid) GROUP BY Tid";
-        $sth = $dbh->prepare($select)
-          or die "Couldn't prepare $select query: " . DBI->errstr;
-        $sth->execute or die "Couldn't execute $select query: " . DBI->errstr;
-        $type = $sth->fetchrow_hashref;
-        $sth->finish;
-        if ( $type->{'Ttype'} eq "Pointer" ) {
-            $retval .= displaytyperef($type);
-            $retval .= "const ";
-        }
-        else {
-            $retval .= "const ";
-            $retval .= displaytyperef($type);
-        }
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "Pointer" ) {
-        $select =
-            "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid="
-          . $$param{'ATbasetype'}
-          . " AND ATaid IN (1,$Aid) GROUP BY Tid";
-        $sth = $dbh->prepare($select)
-          or die "Couldn't prepare $select query: " . DBI->errstr;
-        $sth->execute or die "Couldn't execute $select query: " . DBI->errstr;
-        $type = $sth->fetchrow_hashref;
-        $sth->finish;
-        $retval .= displaytyperef($type);
-        $retval .= " *";
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "Struct" ) {
-        $retval .= "struct " . $$param{'Tname'};
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "Typedef" ) {
-        $retval .= $$param{'Tname'};
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "Union" ) {
-        $retval .= "union " . $$param{'Tname'};
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "Enum" ) {
-        $retval .= "enum " . $$param{'Tname'};
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "Array" ) {
-        my $basetype = $$param{'ATbasetype'};
-        $tselect =
-"SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$basetype AND ATaid IN (1,$Aid) GROUP BY Tid";
-        $tth = $dbh->prepare($tselect)
-          or die "Couldn't prepare $tselect query: " . DBI->errstr;
-        $tth->execute or die "Couldn't execute $tselect query: " . DBI->errstr;
-        $type = $tth->fetchrow_hashref;
-        $tth->finish;
-        if ( !$nameonly ) {
-            $nameonly = 1;
-            $retval .= displaytyperef($type);
-            $nameonly = 0;
-        }
-        else {
-            $retval .= displaytyperef($type);
-        }
-        if ( $$param{'Tname'} =~ "fptr" ) {
-            $$param{'Tname'} =~ s/fptr-//;
-        }
-        return $retval;
-    }
-
-    if ( $$param{'Ttype'} eq "FuncPtr" ) {
-        $select =
-            "SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid="
-          . $$param{'ATbasetype'}
-          . " AND ATaid IN (1,$Aid) GROUP BY Tid";
-        $sth = $dbh->prepare($select)
-          or die "Couldn't prepare $select query: " . DBI->errstr;
-        $sth->execute or die "Couldn't execute $select query: " . DBI->errstr;
-        $type = $sth->fetchrow_hashref;
-        $sth->finish;
-        $Tid = $$param{'Tid'};
-        $retval .= displaytyperef($type);
-        $retval .= "(*";
-
-        if ( $$param{'Tname'} =~ "fptr" ) {
-            $$param{'Tname'} =~ s/fptr-//;
-        }
-
-        #print $$param{'Tname'};
-        $retval .= ")";
-
-        $retval .= "(";
-
-        $tmselect =
-"SELECT * FROM TypeMember WHERE TMmemberof=$Tid AND TMaid IN (1,$Aid) ";
-        $tmselect .= " ORDER BY TMposition";
-        $tmh = $dbh->prepare($tmselect)
-          or die "Couldn't prepare $tmselect query: " . DBI->errstr;
-        $tmh->execute or die "Couldn't execute $tmselect query: " . DBI->errstr;
-        if ( $tmh->rows == 0 ) {
-            $retval .= "void";
-        }
-        for ( 1 .. $tmh->rows ) {
-            $tmentry  = $tmh->fetchrow_hashref;
-            $TMtypeid = $tmentry->{'TMtypeid'};
-            $tselect =
-"SELECT * FROM Type left join ArchType on ATtid=Tid WHERE Tid=$TMtypeid AND ATaid IN (1,$Aid) GROUP BY Tid";
-            $th = $dbh->prepare($tselect)
-              or die "Couldn't prepare $tselect query: " . DBI->errstr;
-            $th->execute
-              or die "Couldn't execute $tselect query: " . DBI->errstr;
-            $entry = $th->fetchrow_hashref;
-            $th->finish;
-            $nameonly = 1;
-            displaytype($entry);
-
-            #print $tmentry->{'TMname'};
-            if ( $tmentry->{'TMarray'} ) {
-                $retval .= "[" . $tmentry->{'TMarray'} . "]";
-            }
-            if ( $_ != $tmh->rows ) {
-                $retval .= ",";
-            }
-            $nameonly = 0;
-        }
-        $tmh->finish;
-
-        $retval .= ")\n";
-        return $retval;
-    }
-
-    $retval .= $$param{'Ttype'};
-    return $retval;
-}
-
 sub trim($) {
     my ($str) = @_;
 
@@ -278,6 +121,8 @@ die "Invalid database" if ( !defined($LSBDB) || $LSBDB eq "" );
 $dbh = DBI->connect( 'DBI:mysql:database=' . $LSBDB . ';host=' . $LSBDBHOST,
     $LSBUSER, $LSBDBPASSWD )
   or die "Couldn't connect to database: " . DBI->errstr;
+$specdb::dbh = $dbh;
+specdb::prepareQueries();
 
 sub mksynop($) {
     my ($func) = @_;
@@ -299,7 +144,7 @@ sub mksynop($) {
     $sql .= "Iname='$func' and ";
     $sql .= "Itype='Function' AND ";
     $sql .= "(Isrcbin ='SrcOnly' ";
-    $sql .= "OR ( (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+    $sql .= "OR ( AIappearedin <= '$lsbversion' AND AIappearedin > '' ";
     $sql .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ) ) ";
 
     my $sth = $dbh->prepare($sql)
@@ -308,8 +153,15 @@ sub mksynop($) {
     if ( $sth->rows() > 0 ) {
         my $entry = $sth->fetchrow_hashref;
         $sth->finish;
+        $specdb::TMaid = $Aid;
 
-        my $type = displaytyperef($entry);
+        my $nameonly = 0;
+        if( $entry->{'Ttype'} eq 'FuncPtr' ) {
+            $specdb::funcPtrName = $entry->{'Iname'};
+            $nameonly = 1;
+        }
+
+        my $type = specdb::displaytyperef($entry,$nameonly);
         my $hdr = sprintf( "#include &lt;%s&gt;", $entry->{'Hname'} );
 
         #
@@ -338,8 +190,8 @@ sub mksynop($) {
             );
         }
         while ( ( $entry = $sth->fetchrow_hashref ) ) {
-            my $argname = sprintf( "arg%d", $argno++ );
-            my $argtype = displaytyperef($entry);
+            my $argname = $entry->{'Pname'} ? $entry->{'Pname'} : sprintf( "arg%d", $argno++ );
+            my $argtype = specdb::displaytyperef($entry,0);
 
             push(
                 @args,
@@ -375,9 +227,16 @@ sub namediv($$) {
     # id= terms cannot contain underscores, translate
     my $idstring = $interface;
     $idstring =~ tr/_/-/;
+    my $iname = $interface;
+    my ($unmangled) = $dbh->selectrow_array("SELECT Iunmangled FROM Interface WHERE Iname='$interface' LIMIT 1");
+    if( $unmangled ) {
+	$iname = $unmangled;
+	$iname =~ s/\(.*$//;
+    }
+    
     print "\n";
     print "<refnamediv>\n";
-    print "<refname>$interface</refname>\n";
+    print "<refname>$iname</refname>\n";
     print "<refpurpose>INSERT PURPOSE HERE</refpurpose>\n";
     print "<indexterm id=\"ix-$lib-$idstring-1\">\n";
     print "\t<primary>$interface</primary></indexterm>\n";
@@ -389,9 +248,33 @@ sub section($$) {
     print "<refsect1>\n";
     print "<title>$title</title>\n";
     print "<para>\n";
-    print "INSERT TEXT HERE\n";
+    
+    if( $title eq "Errors" ) {
+	print <<"EOM"
+<VARLISTENTRY>
+<TERM>
+INSERT ERROR CODE HERE
+</TERM>
+<LISTITEM>
+<PARA>
+INSERT ERROR REASON HERE
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</REFSECT1>
+EOM
+	;
+    }
+    elsif( $title eq "See Also" ) {
+	print "<FUNCTION>INSERT TEXT HERE</FUNCTION>,\n";
+	print "<FUNCTION>INSERT TEXT HERE</FUNCTION>.\n";
+    }
+    else {
+        print "INSERT TEXT HERE\n";
+    }
     print "</para>\n";
-    print "</refsect1>\n";
+    print "</refsect1>\n\n";
 }
 
 sub usage() {
@@ -421,6 +304,7 @@ else {
         die "Illegal architecture\n";
     }
 }
+$specdb::ArchId = $Aid;
 
 my $lib       = $ARGV[0];
 my $interface = $ARGV[1];
@@ -434,6 +318,8 @@ mksynop($interface);
 section( 'Description',  $interface );
 section( 'Return Value', $interface );
 section( 'Errors',       $interface );
+section( 'Notes',        $interface );
+section( 'See Also',     $interface );
 printf "</refentry>\n";
 
 $dbh->disconnect;

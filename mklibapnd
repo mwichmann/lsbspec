@@ -68,10 +68,10 @@ print "</PARA>\n";
 $select = "SELECT * FROM Library ";
 $select.= "LEFT JOIN ArchLib ON ALlid=Lid ";
 if( $module ) {
-	$select.= "LEFT JOIN ModLib ON MLlid=Lid ";
-	$select.= "LEFT JOIN SubModule ON MLmid=SMid ";
+	$select.= "LEFT JOIN SModLib ON SMLlid=Lid ";
+	$select.= "LEFT JOIN SubModule ON SMLsmid=SMid ";
 }
-$select.= "WHERE (ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
+$select.= "WHERE (ALappearedin <= '$lsbversion' AND ALappearedin > '' ";
 $select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
 if( $module ) {
 	$select.= "AND SMname='".$module."' ";
@@ -81,7 +81,7 @@ if( $Aid != 1 ) {
 	$select.= "AND (ALaid=$Aid OR (ALaid=1 AND Lid NOT IN ( ";
 	$select.= "SELECT Lid FROM Library ";
 	$select.= "LEFT JOIN ArchLib ON ALlid=Lid ";
-	$select.= "WHERE (ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
+	$select.= "WHERE (ALappearedin <= '$lsbversion' AND ALappearedin > '' ";
 	$select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
 	$select.= "AND ALaid=$Aid ) ) ) ";
 }
@@ -110,9 +110,9 @@ $select.= "LEFT JOIN IntStd ON ISiid=Iid ";
 $select.= "LEFT JOIN Standard ON Sid=ISsid ";
 $select.= "WHERE Itype='Function' ";
 $select.= "AND LGlib=$Lid AND AIarch=$Aid ";
-$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+$select.= "AND AIappearedin <= '$lsbversion' AND AIappearedin > '' ";
 $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
-$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+$select.= "AND ISappearedin <= '$lsbversion' AND ISappearedin > '' ";
 $select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 $select.= "ORDER BY Iname,Vname ";
 $inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
@@ -136,7 +136,7 @@ $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "LEFT JOIN IntStd ON Iid=ISiid ";
 $select.= "WHERE Sid=ISsid AND Iid=LGIint AND LGIlibg=LGid ";
 $select.= "AND LGlib=$Lid AND AIarch=$Aid ";
-$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+$select.= "AND ISappearedin <= '$lsbversion' AND ISappearedin > '' ";
 $select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 $select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
@@ -263,9 +263,9 @@ print "</TABLE>\n";
 	$select.= "LEFT JOIN Standard ON Sid=ISsid ";
 	$select.= "WHERE Itype='Data' ";
 	$select.= "AND LGlib=$Lid AND AIarch=$Aid ";
-	$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$select.= "AND AIappearedin <= '$lsbversion' AND AIappearedin > '' ";
 	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
-	$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+	$select.= "AND ISappearedin <= '$lsbversion' AND ISappearedin > '' ";
 	$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 	$select.= "ORDER BY Iname,Vname";
 	print STDERR $select,"\n" if $trace;
