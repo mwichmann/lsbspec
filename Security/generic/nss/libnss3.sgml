@@ -116,6 +116,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
+#define _BLAPIT_H_
 #define PQG_PBITS_TO_INDEX(bits)	 \
    (((bits) &lt; 512 || (bits) > 1024 || (bits) % 64) ? -1 : \
  (int)((bits)-512)/64)
@@ -165,17 +166,23 @@ typedef struct PQGVerifyStr {
 </PARA>
 <SCREEN>
 
-extern void CERT_DestroyCertificate(CERTCertificate *);
-extern CERTCertificate *CERT_DupCertificate(CERTCertificate *);
+#define _CERT_H_
+
+extern SECCertTimeValidity CERT_CheckCertValidTimes(CERTCertificate * cert,
+						    PRTime t,
+						    PRBool allowOverride);
+extern void CERT_DestroyCertificate(CERTCertificate * cert);
+extern CERTCertificate *CERT_DupCertificate(CERTCertificate * c);
+extern void CERT_FreeNicknames(CERTCertNicknames * nicknames);
+extern CERTCertNicknames *CERT_GetCertNicknames(CERTCertDBHandle * handle,
+						int what, void *wincx);
 extern CERTCertDBHandle *CERT_GetDefaultCertDB(void);
-extern SECStatus CERT_VerifyCertName(CERTCertificate *, const char *);
-extern SECCertTimeValidity CERT_CheckCertValidTimes(CERTCertificate *,
-						    PRTime, PRBool);
-extern SECStatus CERT_VerifyCertNow(CERTCertDBHandle *, CERTCertificate *,
-				    PRBool, SECCertUsage, void *);
-extern CERTCertNicknames *CERT_GetCertNicknames(CERTCertDBHandle *, int,
-						void *);
-extern void CERT_FreeNicknames(CERTCertNicknames *);
+extern SECStatus CERT_VerifyCertName(CERTCertificate * cert,
+				     const char *hostname);
+extern SECStatus CERT_VerifyCertNow(CERTCertDBHandle * handle,
+				    CERTCertificate * cert,
+				    PRBool checkSig,
+				    SECCertUsage certUsage, void *wincx);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -184,6 +191,7 @@ extern void CERT_FreeNicknames(CERTCertNicknames *);
 </PARA>
 <SCREEN>
 
+#define _CERTT_H_
 #define NS_CERT_TYPE_CA	 \
 	( NS_CERT_TYPE_SSL_CA | NS_CERT_TYPE_EMAIL_CA | \
 	NS_CERT_TYPE_OBJECT_SIGNING_CA | EXT_KEY_USAGE_STATUS_RESPONDER )
@@ -623,10 +631,15 @@ typedef struct {
 </PARA>
 <SCREEN>
 
+#define _CMSRECLIST_H
+
 typedef struct NSSCMSRecipientStr {
     int riIndex;
     int subIndex;
-    enum kind;
+    enum {
+	RLIssuerSN,
+	RLSubjKeyID = 1
+    } kind;
     union {
 	CERTIssuerAndSN *issuerAndSN;
 	SECItem *subjectKeyID;
@@ -643,6 +656,8 @@ typedef struct NSSCMSRecipientStr {
 </PARA>
 <SCREEN>
 
+#define _CRYPTOHT_H_
+
 typedef struct SGNContextStr SGNContext;
 typedef struct VFYContextStr VFYContext;
 </SCREEN>
@@ -653,6 +668,7 @@ typedef struct VFYContextStr VFYContext;
 </PARA>
 <SCREEN>
 
+#define _HASHT_H_
 #define MD2_LENGTH	16
 #define MD5_LENGTH	16
 #define SHA1_LENGTH	20
@@ -688,22 +704,42 @@ typedef enum {
 } HASH_HashType;
 </SCREEN>
 </SECT2>
-<!-- empty header file All/nss3/key.h -->
+<SECT2>
+<TITLE>nss3/key.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define _KEY_H_
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>nss3/keyhi.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-extern void SECKEY_DestroyPrivateKey(SECKEYPrivateKey *);
+#define _KEYHI_H_
+
+extern void SECKEY_DestroyPrivateKey(SECKEYPrivateKey * key);
 </SCREEN>
 </SECT2>
-<!-- empty header file All/nss3/keyt.h -->
+<SECT2>
+<TITLE>nss3/keyt.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define _KEYT_H_
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>nss3/keythi.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _KEYTHI_H_
 
 typedef enum {
     nullKey,
@@ -809,8 +845,8 @@ typedef struct {
 </PARA>
 <SCREEN>
 
+#define __nss_h_
 #define NSS_VERSION	"3.11.4"
-#define SECMOD_DB	"secmod.db"
 #define NSS_INIT_READONLY	0x1
 #define NSS_INIT_NOROOTINIT	0x10
 #define NSS_INIT_NOPK11FINALIZE	0x100
@@ -825,19 +861,30 @@ typedef struct {
 #define NSS_VMAJOR	3
 #define NSS_VPATCH	4
 #define NSS_INIT_COOPERATE	NSS_INIT_PK11THREADSAFE | NSS_INIT_PK11RELOAD | NSS_INIT_NOPK11FINALIZE | NSS_INIT_RESERVED
+#define SECMOD_DB	"secmod.db"
 
-extern SECStatus NSS_Init(const char *);
-extern SECStatus NSS_InitReadWrite(const char *);
-extern SECStatus NSS_NoDB_Init(const char *);
+extern SECStatus NSS_Init(const char *configdir);
+extern SECStatus NSS_InitReadWrite(const char *configdir);
+extern SECStatus NSS_NoDB_Init(const char *configdir);
 extern SECStatus NSS_Shutdown(void);
 </SCREEN>
 </SECT2>
-<!-- empty header file All/nss3/nssb64.h -->
+<SECT2>
+<TITLE>nss3/nssb64.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define _NSSB64_H_
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>nss3/nssb64t.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _NSSB64T_H_
 
 typedef struct NSSBase64DecoderStr NSSBase64Decoder;
 typedef struct NSSBase64EncoderStr NSSBase64Encoder;
@@ -848,6 +895,8 @@ typedef struct NSSBase64EncoderStr NSSBase64Encoder;
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _NSSILCKT_H_
 
 typedef enum {
     nssILockArena,
@@ -879,6 +928,8 @@ typedef enum {
 </PARA>
 <SCREEN>
 
+#define nssrwlkt_h___
+
 typedef struct nssRWLockStr NSSRWLock;
 </SCREEN>
 </SECT2>
@@ -887,6 +938,8 @@ typedef struct nssRWLockStr NSSRWLock;
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _OCSPT_H_
 
 typedef struct CERTOCSPRequestStr CERTOCSPRequest;
 typedef struct CERTOCSPResponseStr CERTOCSPResponse;
@@ -900,14 +953,18 @@ typedef struct CERTOCSPSingleResponseStr CERTOCSPSingleResponse;
 </PARA>
 <SCREEN>
 
-extern void PK11_SetPasswordFunc(PK11PasswordFunc);
-extern PRBool PK11_IsReadOnly(PK11SlotInfo *);
-extern char *PK11_GetTokenName(PK11SlotInfo *);
-extern char *PK11_GetSlotName(PK11SlotInfo *);
-extern PRBool PK11_IsHW(PK11SlotInfo *);
-extern PRBool PK11_IsPresent(PK11SlotInfo *);
-extern SECKEYPrivateKey *PK11_FindKeyByAnyCert(CERTCertificate *, void *);
-extern CERTCertificate *PK11_FindCertFromNickname(const char *, void *);
+#define _PK11PUB_H_
+
+extern CERTCertificate *PK11_FindCertFromNickname(const char *nickname,
+						  void *wincx);
+extern SECKEYPrivateKey *PK11_FindKeyByAnyCert(CERTCertificate * cert,
+					       void *wincx);
+extern char *PK11_GetSlotName(PK11SlotInfo * slot);
+extern char *PK11_GetTokenName(PK11SlotInfo * slot);
+extern PRBool PK11_IsHW(PK11SlotInfo * slot);
+extern PRBool PK11_IsPresent(PK11SlotInfo * slot);
+extern PRBool PK11_IsReadOnly(PK11SlotInfo * slot);
+extern void PK11_SetPasswordFunc(PK11PasswordFunc func);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -915,6 +972,8 @@ extern CERTCertificate *PK11_FindCertFromNickname(const char *, void *);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _PKCS11T_H_
 
 typedef unsigned char CK_BYTE;
 typedef CK_BYTE CK_CHAR;
@@ -988,6 +1047,8 @@ typedef CK_ULONG CK_RV;
 </PARA>
 <SCREEN>
 
+#define _PKCS7T_H_
+
 typedef struct SEC_PKCS7RecipientInfoStr {
     SECItem version;
     CERTIssuerAndSN *issuerAndSN;
@@ -1002,6 +1063,8 @@ typedef struct SEC_PKCS7RecipientInfoStr {
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _SECASN1T_H_
 
 typedef struct sec_ASN1Template_struct {
     unsigned long int kind;
@@ -1027,6 +1090,8 @@ typedef void (*SEC_ASN1WriteProc) (void *, const char *, unsigned long int,
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _SECCOMMON_H_
 
 typedef enum {
     siBuffer,
@@ -1069,6 +1134,8 @@ typedef enum _SECComparison {
 </PARA>
 <SCREEN>
 
+#define _SECDERT_H_
+
 typedef struct DERTemplateStr {
     unsigned long int kind;
     unsigned int offset;
@@ -1083,6 +1150,8 @@ typedef struct DERTemplateStr {
 </PARA>
 <SCREEN>
 
+#define _SECDIGT_H_
+
 typedef struct SGNDigestInfoStr {
     PLArenaPool *arena;
     SECAlgorithmID digestAlgorithm;
@@ -1096,15 +1165,13 @@ typedef struct SGNDigestInfoStr {
 </PARA>
 <SCREEN>
 
+#define _SECMODT_H_
 #define SECMOD_MAKE_NSS_FLAGS(fips,slot)	 \
 	"Flags=internal,critical"fips" \
 	slotparams=("#slot"={"SECMOD_SLOT_FLAGS"})"
-#define PK11_PW_AUTHENTICATED	"AUTH"
 #define SECMOD_FIPS_NAME	"NSS Internal FIPS PKCS #11 Module"
 #define SECMOD_INT_NAME	"NSS Internal PKCS #11 Module"
-#define PK11_PW_RETRY	"RETRY"
 #define SECMOD_SLOT_FLAGS	"slotFlags=[RSA,DSA,DH,RC2,RC4,DES,RANDOM,SHA1,MD5,MD2,SSL,TLS,AES,SHA256,SHA512]"
-#define PK11_PW_TRY	"TRY"
 #define SECMOD_EXTERNAL	0
 #define CRL_IMPORT_DEFAULT_OPTIONS	0x00000000
 #define CRL_IMPORT_BYPASS_CHECKS	0x00000001
@@ -1146,8 +1213,11 @@ typedef struct SGNDigestInfoStr {
 #define CKM_INVALID_MECHANISM	0xffffffffL
 #define SECMOD_INTERNAL	1
 #define SECMOD_FIPS	2
+#define PK11_PW_AUTHENTICATED	"AUTH"
+#define PK11_PW_RETRY	"RETRY"
 #define SECMOD_INT_FLAGS	SECMOD_MAKE_NSS_FLAGS("",1)
 #define SECMOD_FIPS_FLAGS	SECMOD_MAKE_NSS_FLAGS(",fips",3)
+#define PK11_PW_TRY	"TRY"
 
 typedef struct SECMODModuleStr {
     PLArenaPool *arena;
@@ -1258,6 +1328,8 @@ typedef enum {
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _SECOIDT_H_
 
 typedef struct SECOidDataStr {
     SECItem oid;
@@ -1588,6 +1660,8 @@ typedef enum {
 </PARA>
 <SCREEN>
 
+#define _SECPKCS5_H_
+
 typedef enum {
     pbeBitGenIDNull,
     pbeBitGenCipherKey = 1,
@@ -1602,6 +1676,8 @@ typedef struct PBEBitGenContextStr PBEBitGenContext;
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _SECPORT_H_
 
 typedef PRBool(*PORTCharConversionWSwapFunc) (PRBool, unsigned char *,
 					      unsigned int,

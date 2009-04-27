@@ -147,25 +147,6 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-#define XI_BARCODE	"BARCODE"
-#define XI_BUTTONBOX	"BUTTONBOX"
-#define XI_CURSORKEYS	"CURSORKEYS"
-#define XI_DATAGLOVE	"DATAGLOVE"
-#define XI_EYETRACKER	"EYETRACKER"
-#define XI_FOOTMOUSE	"FOOTMOUSE"
-#define XI_ID_MODULE	"ID_MODULE"
-#define XI_KEYBOARD	"KEYBOARD"
-#define XI_KNOB_BOX	"KNOB_BOX"
-#define XI_MOUSE	"MOUSE"
-#define XI_NINE_KNOB	"NINE_KNOB"
-#define XI_ONE_KNOB	"ONE_KNOB"
-#define XI_QUADRATURE	"QUADRATURE"
-#define XI_SPACEBALL	"SPACEBALL"
-#define XI_TABLET	"TABLET"
-#define XI_TOUCHPAD	"TOUCHPAD"
-#define XI_TOUCHSCREEN	"TOUCHSCREEN"
-#define XI_TRACKBALL	"TRACKBALL"
-#define INAME	"XInputExtension"
 #define InProximity	(0L &lt;&lt; 1)
 #define DeviceMode	(1L &lt;&lt; 0)
 #define DvAccelNum	(1L &lt;&lt; 0)
@@ -322,6 +303,25 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define sz_xSetDeviceModifierMappingReq	8
 #define sz_xSetDeviceValuatorsReq	8
 #define _noExtensionEvent	9
+#define XI_BARCODE	"BARCODE"
+#define XI_BUTTONBOX	"BUTTONBOX"
+#define XI_CURSORKEYS	"CURSORKEYS"
+#define XI_DATAGLOVE	"DATAGLOVE"
+#define XI_EYETRACKER	"EYETRACKER"
+#define XI_FOOTMOUSE	"FOOTMOUSE"
+#define XI_ID_MODULE	"ID_MODULE"
+#define XI_KEYBOARD	"KEYBOARD"
+#define XI_KNOB_BOX	"KNOB_BOX"
+#define XI_MOUSE	"MOUSE"
+#define XI_NINE_KNOB	"NINE_KNOB"
+#define XI_ONE_KNOB	"ONE_KNOB"
+#define XI_QUADRATURE	"QUADRATURE"
+#define XI_SPACEBALL	"SPACEBALL"
+#define XI_TABLET	"TABLET"
+#define XI_TOUCHPAD	"TOUCHPAD"
+#define XI_TOUCHSCREEN	"TOUCHSCREEN"
+#define XI_TRACKBALL	"TRACKBALL"
+#define INAME	"XInputExtension"
 
 typedef long unsigned int XEventClass;
 typedef struct {
@@ -337,6 +337,7 @@ typedef struct {
 </PARA>
 <SCREEN>
 
+#define _XINPUT_H_
 #define DeviceButtonPress(d,type,_class)	 \
 	FindTypeAndClass(d, type, _class, ButtonClass, _deviceButtonPress)
 #define DeviceButtonRelease(d,type,_class)	 \
@@ -395,11 +396,13 @@ typedef struct {
 #define _deviceMappingNotify	1
 #define _proximityOut	1
 #define _changeDeviceNotify	2
-#define BadClass(dpy,error)	_xibadclass(dpy, &amp;error)
-#define BadDevice(dpy,error)	_xibaddevice(dpy, &amp;error)
-#define BadEvent(dpy,error)	_xibadevent(dpy, &amp;error)
-#define BadMode(dpy,error)	_xibadmode(dpy, &amp;error)
-#define DeviceBusy(dpy,error)	_xidevicebusy(dpy, &amp;error)
+#define DeviceButton4Motion(d,type, _class)	{ _class =  ((XDevice *) d)->device_id &lt;&lt; 8 | _deviceButton4Motion;}
+#define DeviceButtonMotion(d,type, _class)	{ _class =  ((XDevice *) d)->device_id &lt;&lt; 8 | _deviceButtonMotion;}
+#define DevicePresence(dpy, type, _class)	{\
+    extern int _XiGetDevicePresenceNotifyEvent(Display *); \
+    type = _XiGetDevicePresenceNotifyEvent(dpy);            \
+ _class =  (0x10000 | _devicePresence); \
+ }
 
 typedef struct {
     unsigned char input_class;
@@ -517,7 +520,11 @@ typedef struct {
 typedef XProximityNotifyEvent XProximityInEvent;
 typedef XProximityNotifyEvent XProximityOutEvent;
 typedef struct {
-    unsigned char c_class;
+#if defined(__cplusplus) || defined(c_plusplus)
+    unsigned c_class;
+#else
+    unsigned class;
+#endif
     unsigned char length;
 } XInputClass;
 typedef struct {
@@ -532,20 +539,32 @@ typedef struct {
     char data[64];
 } XDeviceStateNotifyEvent;
 typedef struct {
-    unsigned char c_class;
+#if defined(__cplusplus) || defined(c_plusplus)
+    unsigned c_class;
+#else
+    unsigned class;
+#endif
     unsigned char length;
     unsigned char num_valuators;
     unsigned char mode;
     int valuators[6];
 } XValuatorStatus;
 typedef struct {
-    unsigned char c_class;
+#if defined(__cplusplus) || defined(c_plusplus)
+    unsigned c_class;
+#else
+    unsigned class;
+#endif
     unsigned char length;
     short int num_keys;
     char keys[32];
 } XKeyStatus;
 typedef struct {
-    unsigned char c_class;
+#if defined(__cplusplus) || defined(c_plusplus)
+    unsigned c_class;
+#else
+    unsigned class;
+#endif
     unsigned char length;
     short int num_buttons;
     char buttons[32];
@@ -573,12 +592,31 @@ typedef struct {
     int request;
 } XChangeDeviceNotifyEvent;
 typedef struct {
+    int type;
+    long unsigned int serial;
+    int send_event;
+    Display *display;
+    Window window;
+    Time time;
+    int devchange;
+    XID deviceid;
+    XID control;
+} XDevicePresenceNotifyEvent;
+typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
 } XFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int click;
@@ -590,7 +628,11 @@ typedef struct {
     char auto_repeats[32];
 } XKbdFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int accelNum;
@@ -598,7 +640,11 @@ typedef struct {
     int threshold;
 } XPtrFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int resolution;
@@ -606,7 +652,11 @@ typedef struct {
     int maxVal;
 } XIntegerFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int max_symbols;
@@ -614,7 +664,11 @@ typedef struct {
     KeySym *syms_supported;
 } XStringFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int percent;
@@ -622,19 +676,31 @@ typedef struct {
     int duration;
 } XBellFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int led_values;
     int led_mask;
 } XLedFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
 } XFeedbackControl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int accelNum;
@@ -642,7 +708,11 @@ typedef struct {
     int threshold;
 } XPtrFeedbackControl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int click;
@@ -655,20 +725,32 @@ typedef struct {
     int auto_repeat_mode;
 } XKbdFeedbackControl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int num_keysyms;
     KeySym *syms_to_display;
 } XStringFeedbackControl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int int_to_display;
 } XIntegerFeedbackControl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int percent;
@@ -676,7 +758,11 @@ typedef struct {
     int duration;
 } XBellFeedbackControl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     XID id;
     int led_mask;
@@ -701,9 +787,54 @@ typedef struct {
     int *min_resolutions;
     int *max_resolutions;
 } XDeviceResolutionState;
+typedef struct {
+    XID control;
+    int length;
+    int min_x;
+    int max_x;
+    int min_y;
+    int max_y;
+    int flip_x;
+    int flip_y;
+    int rotation;
+    int button_threshold;
+} XDeviceAbsCalibControl;
+typedef XDeviceAbsCalibControl XDeviceAbsCalibState;
+typedef struct {
+    XID control;
+    int length;
+    int offset_x;
+    int offset_y;
+    int width;
+    int height;
+    int screen;
+    XID following;
+} XDeviceAbsAreaControl;
+typedef XDeviceAbsAreaControl XDeviceAbsAreaState;
+typedef struct {
+    XID control;
+    int length;
+    int status;
+} XDeviceCoreControl;
+typedef struct {
+    XID control;
+    int length;
+    int status;
+    int iscore;
+} XDeviceCoreState;
+typedef struct {
+    XID control;
+    int length;
+    int enable;
+} XDeviceEnableControl;
+typedef XDeviceEnableControl XDeviceEnableState;
 typedef struct _XAnyClassinfo *XAnyClassPtr;
 typedef struct _XAnyClassinfo {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
 } XAnyClassInfo;
 typedef struct _XDeviceInfo *XDeviceInfoPtr;
@@ -717,7 +848,11 @@ typedef struct _XDeviceInfo {
 } XDeviceInfo;
 typedef struct _XKeyInfo *XKeyInfoPtr;
 typedef struct _XKeyInfo {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     short unsigned int min_keycode;
     short unsigned int max_keycode;
@@ -725,7 +860,11 @@ typedef struct _XKeyInfo {
 } XKeyInfo;
 typedef struct _XButtonInfo *XButtonInfoPtr;
 typedef struct _XButtonInfo {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     short int num_buttons;
 } XButtonInfo;
@@ -737,7 +876,11 @@ typedef struct _XAxisInfo {
 } XAxisInfo;
 typedef struct _XValuatorInfo *XValuatorInfoPtr;
 typedef struct _XValuatorInfo {
+#if defined(__cplusplus) || defined(c_plusplus)
     XID c_class;
+#else
+    XID class;
+#endif
     int length;
     unsigned char num_axes;
     unsigned char mode;
@@ -758,20 +901,32 @@ typedef struct {
     XInputClass *data;
 } XDeviceState;
 typedef struct {
-    unsigned char c_class;
+#if defined(__cplusplus) || defined(c_plusplus)
+    unsigned c_class;
+#else
+    unsigned class;
+#endif
     unsigned char length;
     unsigned char num_valuators;
     unsigned char mode;
     int *valuators;
 } XValuatorState;
 typedef struct {
-    unsigned char c_class;
+#if defined(__cplusplus) || defined(c_plusplus)
+    unsigned c_class;
+#else
+    unsigned class;
+#endif
     unsigned char length;
     short int num_keys;
     char keys[32];
 } XKeyState;
 typedef struct {
-    unsigned char c_class;
+#if defined(__cplusplus) || defined(c_plusplus)
+    unsigned c_class;
+#else
+    unsigned class;
+#endif
     unsigned char length;
     short int num_buttons;
     char buttons[32];
@@ -799,8 +954,8 @@ extern int XGetDeviceButtonMapping(Display *, XDevice *, unsigned char *,
 extern XDeviceControl *XGetDeviceControl(Display *, XDevice *, int);
 extern XEventClass *XGetDeviceDontPropagateList(Display *, Window, int *);
 extern int XGetDeviceFocus(Display *, XDevice *, Window *, int *, Time *);
-extern KeySym *XGetDeviceKeyMapping(Display *, XDevice *, KeyCode, int,
-				    int *);
+extern KeySym *XGetDeviceKeyMapping(Display *, XDevice *, unsigned int,
+				    int, int *);
 extern XModifierKeymap *XGetDeviceModifierMapping(Display *, XDevice *);
 extern XDeviceTimeCoord *XGetDeviceMotionEvents(Display *, XDevice *, Time,
 						Time, int *, int *, int *);
@@ -956,7 +1111,11 @@ typedef struct {
 typedef struct _xDeviceInfo *xDeviceInfoPtr;
 typedef struct _xAnyClassinfo *xAnyClassPtr;
 typedef struct _xAnyClassinfo {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 length;
 } xAnyClassInfo;
 typedef struct _xDeviceInfo {
@@ -968,7 +1127,11 @@ typedef struct _xDeviceInfo {
 } xDeviceInfo;
 typedef struct _xKeyInfo *xKeyInfoPtr;
 typedef struct _xKeyInfo {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 length;
     CARD8 min_keycode;
     CARD8 max_keycode;
@@ -978,13 +1141,21 @@ typedef struct _xKeyInfo {
 } xKeyInfo;
 typedef struct _xButtonInfo *xButtonInfoPtr;
 typedef struct _xButtonInfo {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 length;
     CARD16 num_buttons;
 } xButtonInfo;
 typedef struct _xValuatorInfo *xValuatorInfoPtr;
 typedef struct _xValuatorInfo {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 length;
     CARD8 num_axes;
     CARD8 mode;
@@ -1021,7 +1192,11 @@ typedef struct {
     CARD32 pad04;
 } xOpenDeviceReply;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 event_type_base;
 } xInputClassInfo;
 typedef struct {
@@ -1349,12 +1524,20 @@ typedef struct {
     CARD32 pad06;
 } xGetFeedbackControlReply;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
 } xFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD16 pitch;
@@ -1368,7 +1551,11 @@ typedef struct {
     BYTE auto_repeats[32];
 } xKbdFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD8 pad1;
@@ -1378,7 +1565,11 @@ typedef struct {
     CARD16 threshold;
 } xPtrFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD32 resolution;
@@ -1386,14 +1577,22 @@ typedef struct {
     INT32 max_value;
 } xIntegerFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD16 max_symbols;
     CARD16 num_syms_supported;
 } xStringFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD8 percent;
@@ -1404,7 +1603,11 @@ typedef struct {
     CARD16 duration;
 } xBellFeedbackState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD32 led_mask;
@@ -1421,12 +1624,20 @@ typedef struct {
     BYTE pad2;
 } xChangeFeedbackControlReq;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
 } xFeedbackCtl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD8 key;
@@ -1439,7 +1650,11 @@ typedef struct {
     CARD32 led_values;
 } xKbdFeedbackCtl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD8 pad1;
@@ -1449,13 +1664,21 @@ typedef struct {
     INT16 thresh;
 } xPtrFeedbackCtl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     INT32 int_to_display;
 } xIntegerFeedbackCtl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD8 pad1;
@@ -1463,7 +1686,11 @@ typedef struct {
     CARD16 num_keysyms;
 } xStringFeedbackCtl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     INT8 percent;
@@ -1474,7 +1701,11 @@ typedef struct {
     INT16 duration;
 } xBellFeedbackCtl;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 id;
     CARD16 length;
     CARD32 led_mask;
@@ -1628,21 +1859,33 @@ typedef struct {
     CARD32 pad6;
 } xQueryDeviceStateReply;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 length;
     CARD8 num_keys;
     BYTE pad1;
     CARD8 keys[32];
 } xKeyState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 length;
     CARD8 num_buttons;
     BYTE pad1;
     CARD8 buttons[32];
 } xButtonState;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
+#else
+    CARD8 class;
+#endif
     CARD8 length;
     CARD8 num_valuators;
     CARD8 mode;

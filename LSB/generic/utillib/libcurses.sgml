@@ -675,34 +675,34 @@ struct pdat {
 };
 
 struct _win_st {
-    short _cury;
+    short _cury;		/* current cursor position */
     short _curx;
-    short _maxy;
+    short _maxy;		/* maximums of x and y, NOT window size */
     short _maxx;
-    short _begy;
+    short _begy;		/* screen coords of upper-left-hand corner */
     short _begx;
-    short _flags;
-    attr_t _attrs;
-    chtype _bkgd;
-    bool _notimeout;
-    bool _clear;
-    bool _leaveok;
-    bool _scroll;
-    bool _idlok;
-    bool _idcok;
-    bool _immed;
-    bool _sync;
-    bool _use_keypad;
-    int _delay;
-    struct ldat *_line;
-    short _regtop;
-    short _regbottom;
-    int _parx;
-    int _pary;
-    WINDOW *_parent;
+    short _flags;		/* window state flags */
+    attr_t _attrs;		/* current attribute for non-space character */
+    chtype _bkgd;		/* current background char/attribute pair */
+    bool _notimeout;		/* no time out on function-key entry? */
+    bool _clear;		/* consider all data in the window invalid? */
+    bool _leaveok;		/* OK to not reset cursor on exit? */
+    bool _scroll;		/* OK to scroll this window? */
+    bool _idlok;		/* OK to use insert/delete line? */
+    bool _idcok;		/* OK to use insert/delete char? */
+    bool _immed;		/* window in immed mode? (not yet used) */
+    bool _sync;			/* window in sync mode? */
+    bool _use_keypad;		/* process function keys into KEY_ symbols? */
+    int _delay;			/* 0 = nodelay, &lt;0 = blocking, >0 = delay */
+    struct ldat *_line;		/* the actual line data */
+    short _regtop;		/* top line of scrolling region */
+    short _regbottom;		/* bottom line of scrolling region */
+    int _parx;			/* x coordinate of this window in parent */
+    int _pary;			/* y coordinate of this window in parent */
+    WINDOW *_parent;		/* pointer to parent if a sub-window */
     struct pdat _pad;
-    short _yoffset;
-    cchar_t _bkgrnd;
+    short _yoffset;		/* real begy is _begy + _yoffset */
+    cchar_t _bkgrnd;		/* current background char/attribute pair */
 };
 
 #define KEY_F(n)	(KEY_F0+(n))
@@ -824,18 +824,23 @@ struct _win_st {
 #define COLOR_PAIR(n)	NCURSES_BITS(n,0)
 #define A_ATTRIBUTES	NCURSES_BITS(~(1UL-1UL),0)
 
+extern int COLORS;
+extern int COLOR_PAIRS;
+extern int COLS;
+extern int LINES;
+extern chtype acs_map[];
 extern int addch(const chtype);
 extern int addchnstr(const chtype *, int);
 extern int addchstr(const chtype *);
 extern int addnstr(const char *, int);
 extern int addstr(const char *);
-extern int attroff(int);
-extern int attron(int);
-extern int attrset(int);
 extern int attr_get(attr_t *, short *, void *);
 extern int attr_off(attr_t, void *);
 extern int attr_on(attr_t, void *);
 extern int attr_set(attr_t, short, void *);
+extern int attroff(int);
+extern int attron(int);
+extern int attrset(int);
 extern int baudrate(void);
 extern int beep(void);
 extern int bkgd(chtype);
@@ -855,20 +860,21 @@ extern int color_set(short, void *);
 extern int copywin(const WINDOW *, WINDOW *, int, int, int, int, int, int,
 		   int);
 extern int curs_set(int);
+extern WINDOW *curscr;
 extern int def_prog_mode(void);
 extern int def_shell_mode(void);
 extern int delay_output(int);
 extern int delch(void);
+extern int deleteln(void);
 extern void delscreen(SCREEN *);
 extern int delwin(WINDOW *);
-extern int deleteln(void);
 extern WINDOW *derwin(WINDOW *, int, int, int, int);
 extern int doupdate(void);
 extern WINDOW *dupwin(WINDOW *);
 extern int echo(void);
 extern int echochar(const chtype);
-extern int erase(void);
 extern int endwin(void);
+extern int erase(void);
 extern char erasechar(void);
 extern void filter(void);
 extern int flash(void);
@@ -889,9 +895,9 @@ extern void immedok(WINDOW *, bool);
 extern chtype inch(void);
 extern int inchnstr(chtype *, int);
 extern int inchstr(chtype *);
-extern WINDOW *initscr(void);
 extern int init_color(short, short, short, short);
 extern int init_pair(short, short, short);
+extern WINDOW *initscr(void);
 extern int innstr(char *, int);
 extern int insch(chtype);
 extern int insdelln(int);
@@ -900,9 +906,9 @@ extern int insnstr(const char *, int);
 extern int insstr(const char *);
 extern int instr(char *);
 extern int intrflush(WINDOW *, bool);
-extern bool isendwin(void);
 extern bool is_linetouched(WINDOW *, int);
 extern bool is_wintouched(WINDOW *);
+extern bool isendwin(void);
 extern const char *keyname(int);
 extern int keypad(WINDOW *, bool);
 extern char killchar(void);
@@ -981,26 +987,25 @@ extern void qiflush(void);
 extern int raw(void);
 extern int redrawwin(WINDOW *);
 extern int refresh(void);
-extern int resetty(void);
 extern int reset_prog_mode(void);
 extern int reset_shell_mode(void);
-extern int ripoffline(int, int (*)(WINDOW *, int)
-    );
+extern int resetty(void);
+extern int ripoffline(int, int (*)(WINDOW *, int));
 extern int savetty(void);
 extern int scanw(const char *, ...);
 extern int scr_dump(const char *);
 extern int scr_init(const char *);
+extern int scr_restore(const char *);
+extern int scr_set(const char *);
 extern int scrl(int);
 extern int scroll(WINDOW *);
 extern int scrollok(WINDOW *, bool);
-extern int scr_restore(const char *);
-extern int scr_set(const char *);
-extern int setscrreg(int, int);
 extern SCREEN *set_term(SCREEN *);
+extern int setscrreg(int, int);
+extern int slk_attr_set(const attr_t, short, void *);
 extern int slk_attroff(const chtype);
 extern int slk_attron(const chtype);
 extern int slk_attrset(const chtype);
-extern int slk_attr_set(const attr_t, short, void *);
 extern int slk_clear(void);
 extern int slk_color(short);
 extern int slk_init(int);
@@ -1010,39 +1015,42 @@ extern int slk_refresh(void);
 extern int slk_restore(void);
 extern int slk_set(int, const char *, int);
 extern int slk_touch(void);
-extern int standout(void);
 extern int standend(void);
+extern int standout(void);
 extern int start_color(void);
+extern WINDOW *stdscr;
 extern WINDOW *subpad(WINDOW *, int, int, int, int);
 extern WINDOW *subwin(WINDOW *, int, int, int, int);
 extern int syncok(WINDOW *, bool);
 extern chtype termattrs(void);
 extern char *termname(void);
 extern void timeout(int);
+extern int touchline(WINDOW *, int, int);
+extern int touchwin(WINDOW *);
 extern int typeahead(int);
+extern const char *unctrl(chtype);
 extern int ungetch(int);
 extern int untouchwin(WINDOW *);
 extern void use_env(bool);
 extern int vidattr(chtype);
-extern int vidputs(chtype, int (*)(int)
-    );
+extern int vidputs(chtype, int (*)(int));
 extern int vline(chtype, int);
-extern int vwprintw(WINDOW *, const char *, va_list);
 extern int vw_printw(WINDOW *, const char *, va_list);
-extern int vwscanw(WINDOW *, const char *, va_list);
 extern int vw_scanw(WINDOW *, const char *, va_list);
+extern int vwprintw(WINDOW *, const char *, va_list);
+extern int vwscanw(WINDOW *, const char *, va_list);
 extern int waddch(WINDOW *, const chtype);
 extern int waddchnstr(WINDOW *, const chtype *, int);
 extern int waddchstr(WINDOW *, const chtype *);
 extern int waddnstr(WINDOW *, const char *, int);
 extern int waddstr(WINDOW *, const char *);
-extern int wattron(WINDOW *, int);
-extern int wattroff(WINDOW *, int);
-extern int wattrset(WINDOW *, int);
 extern int wattr_get(WINDOW *, attr_t *, short *, void *);
-extern int wattr_on(WINDOW *, attr_t, void *);
 extern int wattr_off(WINDOW *, attr_t, void *);
+extern int wattr_on(WINDOW *, attr_t, void *);
 extern int wattr_set(WINDOW *, attr_t, short, void *);
+extern int wattroff(WINDOW *, int);
+extern int wattron(WINDOW *, int);
+extern int wattrset(WINDOW *, int);
 extern int wbkgd(WINDOW *, chtype);
 extern void wbkgdset(WINDOW *, chtype);
 extern int wborder(WINDOW *, chtype, chtype, chtype, chtype, chtype,
@@ -1079,23 +1087,13 @@ extern int wrefresh(WINDOW *);
 extern int wscanw(WINDOW *, const char *, ...);
 extern int wscrl(WINDOW *, int);
 extern int wsetscrreg(WINDOW *, int, int);
-extern int wstandout(WINDOW *);
 extern int wstandend(WINDOW *);
+extern int wstandout(WINDOW *);
 extern void wsyncdown(WINDOW *);
 extern void wsyncup(WINDOW *);
 extern void wtimeout(WINDOW *, int);
 extern int wtouchln(WINDOW *, int, int, int);
 extern int wvline(WINDOW *, chtype, int);
-extern const char *unctrl(chtype);
-extern int COLORS;
-extern int COLOR_PAIRS;
-extern chtype acs_map[];
-extern WINDOW *curscr;
-extern WINDOW *stdscr;
-extern int COLS;
-extern int LINES;
-extern int touchline(WINDOW *, int, int);
-extern int touchwin(WINDOW *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1104,23 +1102,22 @@ extern int touchwin(WINDOW *);
 </PARA>
 <SCREEN>
 
+extern TERMINAL *cur_term;
+extern int del_curterm(TERMINAL *);
 extern int putp(const char *);
+extern int restartterm(char *, int, int *);
+extern TERMINAL *set_curterm(TERMINAL *);
+extern int setupterm(char *, int, int *);
+extern int tgetent(char *, const char *);
+extern int tgetflag(char *);
+extern int tgetnum(char *);
+extern char *tgetstr(char *, char **);
+extern char *tgoto(const char *, int, int);
 extern int tigetflag(const char *);
 extern int tigetnum(const char *);
 extern char *tigetstr(const char *);
 extern char *tparm(const char *, ...);
-extern TERMINAL *set_curterm(TERMINAL *);
-extern int del_curterm(TERMINAL *);
-extern int restartterm(char *, int, int *);
-extern int setupterm(char *, int, int *);
-extern char *tgetstr(char *, char **);
-extern char *tgoto(const char *, int, int);
-extern int tgetent(char *, const char *);
-extern int tgetflag(char *);
-extern int tgetnum(char *);
-extern int tputs(const char *, int, int (*)(int)
-    );
-extern TERMINAL *cur_term;
+extern int tputs(const char *, int, int (*)(int));
 </SCREEN>
 </SECT2>
 <!-- empty header file All/unctrl.h -->

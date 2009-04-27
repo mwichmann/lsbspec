@@ -115,7 +115,6 @@ underlying specification.
 </SECT3>
 </SECT2>
 </SECT1>
-<!-- empty header file All/nspr4/nspr.h -->
 <SECT1 ID=libnspr4-ddefs>
 <TITLE>Data Definitions for libnspr4</TITLE>
 <PARA>
@@ -137,10 +136,21 @@ to supplement - not to replace - source interface definition specifications.
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
 <SECT2>
+<TITLE>nspr4/nspr.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define nspr_h___
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>nspr4/plarena.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
+
+#define plarena_h___
 
 typedef struct PLArenaPool {
     struct PLArena first;
@@ -161,6 +171,8 @@ struct PLArena {
 <PARA>
 </PARA>
 <SCREEN>
+
+#define plhash_h___
 
 typedef PRUint32 PLHashNumber;
 typedef PRIntn(*PLHashComparator) (const void *, const void *);
@@ -195,6 +207,8 @@ struct PLHashTable {
 </PARA>
 <SCREEN>
 
+#define prclist_h___
+
 typedef struct PRCListStr {
     PRCList *next;
     PRCList *prev;
@@ -207,9 +221,11 @@ typedef struct PRCListStr {
 </PARA>
 <SCREEN>
 
+#define prerror_h___
+
 typedef PRInt32 PRErrorCode;
 extern PRErrorCode PR_GetError(void);
-extern void PR_SetError(PRErrorCode, PRInt32);
+extern void PR_SetError(PRErrorCode errorCode, PRInt32 oserr);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -217,6 +233,8 @@ extern void PR_SetError(PRErrorCode, PRInt32);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prinit_h___
 
 extern PRStatus PR_Cleanup(void);
 </SCREEN>
@@ -227,9 +245,11 @@ extern PRStatus PR_Cleanup(void);
 </PARA>
 <SCREEN>
 
+#define prinrval_h
+
 typedef PRUint32 PRIntervalTime;
-extern PRIntervalTime PR_SecondsToInterval(PRUint32);
-extern PRIntervalTime PR_MillisecondsToInterval(PRUint32);
+extern PRIntervalTime PR_MillisecondsToInterval(PRUint32 milli);
+extern PRIntervalTime PR_SecondsToInterval(PRUint32 seconds);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -237,6 +257,8 @@ extern PRIntervalTime PR_MillisecondsToInterval(PRUint32);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prio_h___
 
 typedef enum PRDescType {
     PR_DESC_FILE = 1,
@@ -273,7 +295,7 @@ typedef struct PRFileDesc {
 typedef union PRNetAddr {
     struct {
 	PRUint16 family;
-	char data[0];
+	char data[14];
     } raw;
     struct {
 	PRUint16 family;
@@ -465,36 +487,42 @@ typedef enum PRShutdownHow {
     PR_SHUTDOWN_SEND = 1,
     PR_SHUTDOWN_BOTH = 2
 } PRShutdownHow;
-extern PRFileDesc *PR_OpenTCPSocket(PRIntn);
-extern PRStatus PR_Connect(PRFileDesc *, const PRNetAddr *,
-			   PRIntervalTime);
-extern PRFileDesc *PR_Accept(PRFileDesc *, PRNetAddr *, PRIntervalTime);
-extern PRStatus PR_Bind(PRFileDesc *, const PRNetAddr *);
-extern PRStatus PR_Listen(PRFileDesc *, PRIntn);
-extern PRStatus PR_Shutdown(PRFileDesc *, PRShutdownHow);
-extern PRStatus PR_SetSocketOption(PRFileDesc *,
-				   const PRSocketOptionData *);
-extern PRStatus PR_GetSocketOption(PRFileDesc *, PRSocketOptionData *);
-extern PRInt32 PR_Poll(PRPollDesc *, PRIntn, PRIntervalTime);
-extern PRDescIdentity PR_GetUniqueIdentity(const char *);
-extern PRDescIdentity PR_GetLayersIdentity(PRFileDesc *);
+extern PRFileDesc *PR_Accept(PRFileDesc * fd, PRNetAddr * addr,
+			     PRIntervalTime timeout);
+extern PRStatus PR_Bind(PRFileDesc * fd, const PRNetAddr * addr);
+extern PRStatus PR_Close(PRFileDesc * fd);
+extern PRStatus PR_Connect(PRFileDesc * fd, const PRNetAddr * addr,
+			   PRIntervalTime timeout);
+extern PRFileDesc *PR_CreateIOLayerStub(PRDescIdentity ident,
+					const struct PRIOMethods *methods);
 extern const struct PRIOMethods *PR_GetDefaultIOMethods(void);
-extern PRFileDesc *PR_CreateIOLayerStub(PRDescIdentity,
-					const struct PRIOMethods *);
-extern PRStatus PR_PushIOLayer(PRFileDesc *, PRDescIdentity, PRFileDesc *);
-extern PRFileDesc *PR_PopIOLayer(PRFileDesc *, PRDescIdentity);
-extern PRInt32 PR_Recv(PRFileDesc *, void *, PRInt32, PRIntn,
-		       PRIntervalTime);
-extern PRInt32 PR_Send(PRFileDesc *, const void *, PRInt32, PRIntn,
-		       PRIntervalTime);
-extern PRInt32 PR_RecvFrom(PRFileDesc *, void *, PRInt32, PRIntn,
-			   PRNetAddr *, PRIntervalTime);
-extern PRInt32 PR_SendTo(PRFileDesc *, const void *, PRInt32, PRIntn,
-			 const PRNetAddr *, PRIntervalTime);
-extern PRStatus PR_Close(PRFileDesc *);
-extern PRInt32 PR_Write(PRFileDesc *, const void *, PRInt32);
-extern PRFileDesc *PR_OpenUDPSocket(PRIntn);
-extern PRInt32 PR_Read(PRFileDesc *, void *, PRInt32);
+extern PRDescIdentity PR_GetLayersIdentity(PRFileDesc * fd);
+extern PRStatus PR_GetSocketOption(PRFileDesc * fd,
+				   PRSocketOptionData * data);
+extern PRDescIdentity PR_GetUniqueIdentity(const char *layer_name);
+extern PRStatus PR_Listen(PRFileDesc * fd, PRIntn backlog);
+extern PRFileDesc *PR_OpenTCPSocket(PRIntn af);
+extern PRFileDesc *PR_OpenUDPSocket(PRIntn af);
+extern PRInt32 PR_Poll(PRPollDesc * pds, PRIntn npds,
+		       PRIntervalTime timeout);
+extern PRFileDesc *PR_PopIOLayer(PRFileDesc * fd_stack, PRDescIdentity id);
+extern PRStatus PR_PushIOLayer(PRFileDesc * fd_stack, PRDescIdentity id,
+			       PRFileDesc * layer);
+extern PRInt32 PR_Read(PRFileDesc * fd, void *buf, PRInt32 amount);
+extern PRInt32 PR_Recv(PRFileDesc * fd, void *buf, PRInt32 amount,
+		       PRIntn flags, PRIntervalTime timeout);
+extern PRInt32 PR_RecvFrom(PRFileDesc * fd, void *buf, PRInt32 amount,
+			   PRIntn flags, PRNetAddr * addr,
+			   PRIntervalTime timeout);
+extern PRInt32 PR_Send(PRFileDesc * fd, const void *buf, PRInt32 amount,
+		       PRIntn flags, PRIntervalTime timeout);
+extern PRInt32 PR_SendTo(PRFileDesc * fd, const void *buf, PRInt32 amount,
+			 PRIntn flags, const PRNetAddr * addr,
+			 PRIntervalTime timeout);
+extern PRStatus PR_SetSocketOption(PRFileDesc * fd,
+				   const PRSocketOptionData * data);
+extern PRStatus PR_Shutdown(PRFileDesc * fd, PRShutdownHow how);
+extern PRInt32 PR_Write(PRFileDesc * fd, const void *buf, PRInt32 amount);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -503,8 +531,10 @@ extern PRInt32 PR_Read(PRFileDesc *, void *, PRInt32);
 </PARA>
 <SCREEN>
 
+#define pprio_h___
+
 typedef PRInt32 PROsfd;
-extern PRFileDesc *PR_ImportTCPSocket(PROsfd);
+extern PRFileDesc *PR_ImportTCPSocket(PROsfd osfd);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -512,6 +542,8 @@ extern PRFileDesc *PR_ImportTCPSocket(PROsfd);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prlock_h___
 
 typedef struct PRLock PRLock;
 </SCREEN>
@@ -522,6 +554,8 @@ typedef struct PRLock PRLock;
 </PARA>
 <SCREEN>
 
+#define prmon_h___
+
 typedef struct PRMonitor PRMonitor;
 </SCREEN>
 </SECT2>
@@ -531,6 +565,8 @@ typedef struct PRMonitor PRMonitor;
 </PARA>
 <SCREEN>
 
+#define prnetdb_h___
+
 typedef struct PRHostEnt {
     char *h_name;
     char **h_aliases;
@@ -539,12 +575,15 @@ typedef struct PRHostEnt {
     char **h_addr_list;
 } PRHostEnt;
 typedef struct PRAddrInfo PRAddrInfo;
-extern PRAddrInfo *PR_GetAddrInfoByName(const char *, PRUint16, PRIntn);
-extern void *PR_EnumerateAddrInfo(void *, const PRAddrInfo *, PRUint16,
-				  PRNetAddr *);
-extern void PR_FreeAddrInfo(PRAddrInfo *);
-extern PRStatus PR_StringToNetAddr(const char *, PRNetAddr *);
-extern PRStatus PR_NetAddrToString(const PRNetAddr *, char *, PRUint32);
+extern void *PR_EnumerateAddrInfo(void *enumPtr,
+				  const PRAddrInfo * addrInfo,
+				  PRUint16 port, PRNetAddr * result);
+extern void PR_FreeAddrInfo(PRAddrInfo * addrInfo);
+extern PRAddrInfo *PR_GetAddrInfoByName(const char *hostname, PRUint16 af,
+					PRIntn flags);
+extern PRStatus PR_NetAddrToString(const PRNetAddr * addr, char *string,
+				   PRUint32 size);
+extern PRStatus PR_StringToNetAddr(const char *string, PRNetAddr * addr);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -553,8 +592,10 @@ extern PRStatus PR_NetAddrToString(const PRNetAddr *, char *, PRUint32);
 </PARA>
 <SCREEN>
 
+#define prthread_h___
+
 typedef struct PRThread PRThread;
-extern PRStatus PR_Interrupt(PRThread *);
+extern PRStatus PR_Interrupt(PRThread * thread);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -562,6 +603,8 @@ extern PRStatus PR_Interrupt(PRThread *);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prtime_h___
 
 typedef PRInt64 PRTime;
 extern PRTime PR_Now(void);
@@ -572,6 +615,8 @@ extern PRTime PR_Now(void);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prtypes_h___
 
 typedef int PRInt32;
 typedef unsigned long int PRUword;

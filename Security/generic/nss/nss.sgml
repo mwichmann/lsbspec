@@ -121,7 +121,6 @@ underlying specification.
 </SECT3>
 </SECT2>
 </SECT1>
-<!-- empty header file All/nspr4/nspr.h -->
 <SECT1 ID=libnspr4-ddefs>
 <TITLE>Data Definitions for libnspr4</TITLE>
 <PARA>
@@ -143,10 +142,21 @@ to supplement - not to replace - source interface definition specifications.
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
 <SECT2>
+<TITLE>nspr4/nspr.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define nspr_h___
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>nspr4/plarena.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
+
+#define plarena_h___
 
 typedef struct PLArenaPool {
     struct PLArena first;
@@ -167,6 +177,8 @@ struct PLArena {
 <PARA>
 </PARA>
 <SCREEN>
+
+#define plhash_h___
 
 typedef PRUint32 PLHashNumber;
 typedef PRIntn(*PLHashComparator) (const void *, const void *);
@@ -201,6 +213,8 @@ struct PLHashTable {
 </PARA>
 <SCREEN>
 
+#define prclist_h___
+
 typedef struct PRCListStr {
     PRCList *next;
     PRCList *prev;
@@ -213,9 +227,11 @@ typedef struct PRCListStr {
 </PARA>
 <SCREEN>
 
+#define prerror_h___
+
 typedef PRInt32 PRErrorCode;
 extern PRErrorCode PR_GetError(void);
-extern void PR_SetError(PRErrorCode, PRInt32);
+extern void PR_SetError(PRErrorCode errorCode, PRInt32 oserr);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -223,6 +239,8 @@ extern void PR_SetError(PRErrorCode, PRInt32);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prinit_h___
 
 extern PRStatus PR_Cleanup(void);
 </SCREEN>
@@ -233,9 +251,11 @@ extern PRStatus PR_Cleanup(void);
 </PARA>
 <SCREEN>
 
+#define prinrval_h
+
 typedef PRUint32 PRIntervalTime;
-extern PRIntervalTime PR_SecondsToInterval(PRUint32);
-extern PRIntervalTime PR_MillisecondsToInterval(PRUint32);
+extern PRIntervalTime PR_MillisecondsToInterval(PRUint32 milli);
+extern PRIntervalTime PR_SecondsToInterval(PRUint32 seconds);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -243,6 +263,8 @@ extern PRIntervalTime PR_MillisecondsToInterval(PRUint32);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prio_h___
 
 typedef enum PRDescType {
     PR_DESC_FILE = 1,
@@ -279,7 +301,7 @@ typedef struct PRFileDesc {
 typedef union PRNetAddr {
     struct {
 	PRUint16 family;
-	char data[0];
+	char data[14];
     } raw;
     struct {
 	PRUint16 family;
@@ -471,36 +493,42 @@ typedef enum PRShutdownHow {
     PR_SHUTDOWN_SEND = 1,
     PR_SHUTDOWN_BOTH = 2
 } PRShutdownHow;
-extern PRFileDesc *PR_OpenTCPSocket(PRIntn);
-extern PRStatus PR_Connect(PRFileDesc *, const PRNetAddr *,
-			   PRIntervalTime);
-extern PRFileDesc *PR_Accept(PRFileDesc *, PRNetAddr *, PRIntervalTime);
-extern PRStatus PR_Bind(PRFileDesc *, const PRNetAddr *);
-extern PRStatus PR_Listen(PRFileDesc *, PRIntn);
-extern PRStatus PR_Shutdown(PRFileDesc *, PRShutdownHow);
-extern PRStatus PR_SetSocketOption(PRFileDesc *,
-				   const PRSocketOptionData *);
-extern PRStatus PR_GetSocketOption(PRFileDesc *, PRSocketOptionData *);
-extern PRInt32 PR_Poll(PRPollDesc *, PRIntn, PRIntervalTime);
-extern PRDescIdentity PR_GetUniqueIdentity(const char *);
-extern PRDescIdentity PR_GetLayersIdentity(PRFileDesc *);
+extern PRFileDesc *PR_Accept(PRFileDesc * fd, PRNetAddr * addr,
+			     PRIntervalTime timeout);
+extern PRStatus PR_Bind(PRFileDesc * fd, const PRNetAddr * addr);
+extern PRStatus PR_Close(PRFileDesc * fd);
+extern PRStatus PR_Connect(PRFileDesc * fd, const PRNetAddr * addr,
+			   PRIntervalTime timeout);
+extern PRFileDesc *PR_CreateIOLayerStub(PRDescIdentity ident,
+					const struct PRIOMethods *methods);
 extern const struct PRIOMethods *PR_GetDefaultIOMethods(void);
-extern PRFileDesc *PR_CreateIOLayerStub(PRDescIdentity,
-					const struct PRIOMethods *);
-extern PRStatus PR_PushIOLayer(PRFileDesc *, PRDescIdentity, PRFileDesc *);
-extern PRFileDesc *PR_PopIOLayer(PRFileDesc *, PRDescIdentity);
-extern PRInt32 PR_Recv(PRFileDesc *, void *, PRInt32, PRIntn,
-		       PRIntervalTime);
-extern PRInt32 PR_Send(PRFileDesc *, const void *, PRInt32, PRIntn,
-		       PRIntervalTime);
-extern PRInt32 PR_RecvFrom(PRFileDesc *, void *, PRInt32, PRIntn,
-			   PRNetAddr *, PRIntervalTime);
-extern PRInt32 PR_SendTo(PRFileDesc *, const void *, PRInt32, PRIntn,
-			 const PRNetAddr *, PRIntervalTime);
-extern PRStatus PR_Close(PRFileDesc *);
-extern PRInt32 PR_Write(PRFileDesc *, const void *, PRInt32);
-extern PRFileDesc *PR_OpenUDPSocket(PRIntn);
-extern PRInt32 PR_Read(PRFileDesc *, void *, PRInt32);
+extern PRDescIdentity PR_GetLayersIdentity(PRFileDesc * fd);
+extern PRStatus PR_GetSocketOption(PRFileDesc * fd,
+				   PRSocketOptionData * data);
+extern PRDescIdentity PR_GetUniqueIdentity(const char *layer_name);
+extern PRStatus PR_Listen(PRFileDesc * fd, PRIntn backlog);
+extern PRFileDesc *PR_OpenTCPSocket(PRIntn af);
+extern PRFileDesc *PR_OpenUDPSocket(PRIntn af);
+extern PRInt32 PR_Poll(PRPollDesc * pds, PRIntn npds,
+		       PRIntervalTime timeout);
+extern PRFileDesc *PR_PopIOLayer(PRFileDesc * fd_stack, PRDescIdentity id);
+extern PRStatus PR_PushIOLayer(PRFileDesc * fd_stack, PRDescIdentity id,
+			       PRFileDesc * layer);
+extern PRInt32 PR_Read(PRFileDesc * fd, void *buf, PRInt32 amount);
+extern PRInt32 PR_Recv(PRFileDesc * fd, void *buf, PRInt32 amount,
+		       PRIntn flags, PRIntervalTime timeout);
+extern PRInt32 PR_RecvFrom(PRFileDesc * fd, void *buf, PRInt32 amount,
+			   PRIntn flags, PRNetAddr * addr,
+			   PRIntervalTime timeout);
+extern PRInt32 PR_Send(PRFileDesc * fd, const void *buf, PRInt32 amount,
+		       PRIntn flags, PRIntervalTime timeout);
+extern PRInt32 PR_SendTo(PRFileDesc * fd, const void *buf, PRInt32 amount,
+			 PRIntn flags, const PRNetAddr * addr,
+			 PRIntervalTime timeout);
+extern PRStatus PR_SetSocketOption(PRFileDesc * fd,
+				   const PRSocketOptionData * data);
+extern PRStatus PR_Shutdown(PRFileDesc * fd, PRShutdownHow how);
+extern PRInt32 PR_Write(PRFileDesc * fd, const void *buf, PRInt32 amount);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -509,8 +537,10 @@ extern PRInt32 PR_Read(PRFileDesc *, void *, PRInt32);
 </PARA>
 <SCREEN>
 
+#define pprio_h___
+
 typedef PRInt32 PROsfd;
-extern PRFileDesc *PR_ImportTCPSocket(PROsfd);
+extern PRFileDesc *PR_ImportTCPSocket(PROsfd osfd);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -518,6 +548,8 @@ extern PRFileDesc *PR_ImportTCPSocket(PROsfd);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prlock_h___
 
 typedef struct PRLock PRLock;
 </SCREEN>
@@ -528,6 +560,8 @@ typedef struct PRLock PRLock;
 </PARA>
 <SCREEN>
 
+#define prmon_h___
+
 typedef struct PRMonitor PRMonitor;
 </SCREEN>
 </SECT2>
@@ -537,6 +571,8 @@ typedef struct PRMonitor PRMonitor;
 </PARA>
 <SCREEN>
 
+#define prnetdb_h___
+
 typedef struct PRHostEnt {
     char *h_name;
     char **h_aliases;
@@ -545,12 +581,15 @@ typedef struct PRHostEnt {
     char **h_addr_list;
 } PRHostEnt;
 typedef struct PRAddrInfo PRAddrInfo;
-extern PRAddrInfo *PR_GetAddrInfoByName(const char *, PRUint16, PRIntn);
-extern void *PR_EnumerateAddrInfo(void *, const PRAddrInfo *, PRUint16,
-				  PRNetAddr *);
-extern void PR_FreeAddrInfo(PRAddrInfo *);
-extern PRStatus PR_StringToNetAddr(const char *, PRNetAddr *);
-extern PRStatus PR_NetAddrToString(const PRNetAddr *, char *, PRUint32);
+extern void *PR_EnumerateAddrInfo(void *enumPtr,
+				  const PRAddrInfo * addrInfo,
+				  PRUint16 port, PRNetAddr * result);
+extern void PR_FreeAddrInfo(PRAddrInfo * addrInfo);
+extern PRAddrInfo *PR_GetAddrInfoByName(const char *hostname, PRUint16 af,
+					PRIntn flags);
+extern PRStatus PR_NetAddrToString(const PRNetAddr * addr, char *string,
+				   PRUint32 size);
+extern PRStatus PR_StringToNetAddr(const char *string, PRNetAddr * addr);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -559,8 +598,10 @@ extern PRStatus PR_NetAddrToString(const PRNetAddr *, char *, PRUint32);
 </PARA>
 <SCREEN>
 
+#define prthread_h___
+
 typedef struct PRThread PRThread;
-extern PRStatus PR_Interrupt(PRThread *);
+extern PRStatus PR_Interrupt(PRThread * thread);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -568,6 +609,8 @@ extern PRStatus PR_Interrupt(PRThread *);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prtime_h___
 
 typedef PRInt64 PRTime;
 extern PRTime PR_Now(void);
@@ -578,6 +621,8 @@ extern PRTime PR_Now(void);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define prtypes_h___
 
 typedef int PRInt32;
 typedef unsigned long int PRUword;
@@ -720,6 +765,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
+#define _BLAPIT_H_
 #define PQG_PBITS_TO_INDEX(bits)	 \
    (((bits) &lt; 512 || (bits) > 1024 || (bits) % 64) ? -1 : \
  (int)((bits)-512)/64)
@@ -769,17 +815,23 @@ typedef struct PQGVerifyStr {
 </PARA>
 <SCREEN>
 
-extern void CERT_DestroyCertificate(CERTCertificate *);
-extern CERTCertificate *CERT_DupCertificate(CERTCertificate *);
+#define _CERT_H_
+
+extern SECCertTimeValidity CERT_CheckCertValidTimes(CERTCertificate * cert,
+						    PRTime t,
+						    PRBool allowOverride);
+extern void CERT_DestroyCertificate(CERTCertificate * cert);
+extern CERTCertificate *CERT_DupCertificate(CERTCertificate * c);
+extern void CERT_FreeNicknames(CERTCertNicknames * nicknames);
+extern CERTCertNicknames *CERT_GetCertNicknames(CERTCertDBHandle * handle,
+						int what, void *wincx);
 extern CERTCertDBHandle *CERT_GetDefaultCertDB(void);
-extern SECStatus CERT_VerifyCertName(CERTCertificate *, const char *);
-extern SECCertTimeValidity CERT_CheckCertValidTimes(CERTCertificate *,
-						    PRTime, PRBool);
-extern SECStatus CERT_VerifyCertNow(CERTCertDBHandle *, CERTCertificate *,
-				    PRBool, SECCertUsage, void *);
-extern CERTCertNicknames *CERT_GetCertNicknames(CERTCertDBHandle *, int,
-						void *);
-extern void CERT_FreeNicknames(CERTCertNicknames *);
+extern SECStatus CERT_VerifyCertName(CERTCertificate * cert,
+				     const char *hostname);
+extern SECStatus CERT_VerifyCertNow(CERTCertDBHandle * handle,
+				    CERTCertificate * cert,
+				    PRBool checkSig,
+				    SECCertUsage certUsage, void *wincx);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -788,6 +840,7 @@ extern void CERT_FreeNicknames(CERTCertNicknames *);
 </PARA>
 <SCREEN>
 
+#define _CERTT_H_
 #define NS_CERT_TYPE_CA	 \
 	( NS_CERT_TYPE_SSL_CA | NS_CERT_TYPE_EMAIL_CA | \
 	NS_CERT_TYPE_OBJECT_SIGNING_CA | EXT_KEY_USAGE_STATUS_RESPONDER )
@@ -1227,10 +1280,15 @@ typedef struct {
 </PARA>
 <SCREEN>
 
+#define _CMSRECLIST_H
+
 typedef struct NSSCMSRecipientStr {
     int riIndex;
     int subIndex;
-    enum kind;
+    enum {
+	RLIssuerSN,
+	RLSubjKeyID = 1
+    } kind;
     union {
 	CERTIssuerAndSN *issuerAndSN;
 	SECItem *subjectKeyID;
@@ -1247,6 +1305,8 @@ typedef struct NSSCMSRecipientStr {
 </PARA>
 <SCREEN>
 
+#define _CRYPTOHT_H_
+
 typedef struct SGNContextStr SGNContext;
 typedef struct VFYContextStr VFYContext;
 </SCREEN>
@@ -1257,6 +1317,7 @@ typedef struct VFYContextStr VFYContext;
 </PARA>
 <SCREEN>
 
+#define _HASHT_H_
 #define MD2_LENGTH	16
 #define MD5_LENGTH	16
 #define SHA1_LENGTH	20
@@ -1292,22 +1353,42 @@ typedef enum {
 } HASH_HashType;
 </SCREEN>
 </SECT2>
-<!-- empty header file All/nss3/key.h -->
+<SECT2>
+<TITLE>nss3/key.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define _KEY_H_
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>nss3/keyhi.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
 
-extern void SECKEY_DestroyPrivateKey(SECKEYPrivateKey *);
+#define _KEYHI_H_
+
+extern void SECKEY_DestroyPrivateKey(SECKEYPrivateKey * key);
 </SCREEN>
 </SECT2>
-<!-- empty header file All/nss3/keyt.h -->
+<SECT2>
+<TITLE>nss3/keyt.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define _KEYT_H_
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>nss3/keythi.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _KEYTHI_H_
 
 typedef enum {
     nullKey,
@@ -1413,8 +1494,8 @@ typedef struct {
 </PARA>
 <SCREEN>
 
+#define __nss_h_
 #define NSS_VERSION	"3.11.4"
-#define SECMOD_DB	"secmod.db"
 #define NSS_INIT_READONLY	0x1
 #define NSS_INIT_NOROOTINIT	0x10
 #define NSS_INIT_NOPK11FINALIZE	0x100
@@ -1429,19 +1510,30 @@ typedef struct {
 #define NSS_VMAJOR	3
 #define NSS_VPATCH	4
 #define NSS_INIT_COOPERATE	NSS_INIT_PK11THREADSAFE | NSS_INIT_PK11RELOAD | NSS_INIT_NOPK11FINALIZE | NSS_INIT_RESERVED
+#define SECMOD_DB	"secmod.db"
 
-extern SECStatus NSS_Init(const char *);
-extern SECStatus NSS_InitReadWrite(const char *);
-extern SECStatus NSS_NoDB_Init(const char *);
+extern SECStatus NSS_Init(const char *configdir);
+extern SECStatus NSS_InitReadWrite(const char *configdir);
+extern SECStatus NSS_NoDB_Init(const char *configdir);
 extern SECStatus NSS_Shutdown(void);
 </SCREEN>
 </SECT2>
-<!-- empty header file All/nss3/nssb64.h -->
+<SECT2>
+<TITLE>nss3/nssb64.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define _NSSB64_H_
+</SCREEN>
+</SECT2>
 <SECT2>
 <TITLE>nss3/nssb64t.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _NSSB64T_H_
 
 typedef struct NSSBase64DecoderStr NSSBase64Decoder;
 typedef struct NSSBase64EncoderStr NSSBase64Encoder;
@@ -1452,6 +1544,8 @@ typedef struct NSSBase64EncoderStr NSSBase64Encoder;
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _NSSILCKT_H_
 
 typedef enum {
     nssILockArena,
@@ -1483,6 +1577,8 @@ typedef enum {
 </PARA>
 <SCREEN>
 
+#define nssrwlkt_h___
+
 typedef struct nssRWLockStr NSSRWLock;
 </SCREEN>
 </SECT2>
@@ -1491,6 +1587,8 @@ typedef struct nssRWLockStr NSSRWLock;
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _OCSPT_H_
 
 typedef struct CERTOCSPRequestStr CERTOCSPRequest;
 typedef struct CERTOCSPResponseStr CERTOCSPResponse;
@@ -1504,14 +1602,18 @@ typedef struct CERTOCSPSingleResponseStr CERTOCSPSingleResponse;
 </PARA>
 <SCREEN>
 
-extern void PK11_SetPasswordFunc(PK11PasswordFunc);
-extern PRBool PK11_IsReadOnly(PK11SlotInfo *);
-extern char *PK11_GetTokenName(PK11SlotInfo *);
-extern char *PK11_GetSlotName(PK11SlotInfo *);
-extern PRBool PK11_IsHW(PK11SlotInfo *);
-extern PRBool PK11_IsPresent(PK11SlotInfo *);
-extern SECKEYPrivateKey *PK11_FindKeyByAnyCert(CERTCertificate *, void *);
-extern CERTCertificate *PK11_FindCertFromNickname(const char *, void *);
+#define _PK11PUB_H_
+
+extern CERTCertificate *PK11_FindCertFromNickname(const char *nickname,
+						  void *wincx);
+extern SECKEYPrivateKey *PK11_FindKeyByAnyCert(CERTCertificate * cert,
+					       void *wincx);
+extern char *PK11_GetSlotName(PK11SlotInfo * slot);
+extern char *PK11_GetTokenName(PK11SlotInfo * slot);
+extern PRBool PK11_IsHW(PK11SlotInfo * slot);
+extern PRBool PK11_IsPresent(PK11SlotInfo * slot);
+extern PRBool PK11_IsReadOnly(PK11SlotInfo * slot);
+extern void PK11_SetPasswordFunc(PK11PasswordFunc func);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1519,6 +1621,8 @@ extern CERTCertificate *PK11_FindCertFromNickname(const char *, void *);
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _PKCS11T_H_
 
 typedef unsigned char CK_BYTE;
 typedef CK_BYTE CK_CHAR;
@@ -1592,6 +1696,8 @@ typedef CK_ULONG CK_RV;
 </PARA>
 <SCREEN>
 
+#define _PKCS7T_H_
+
 typedef struct SEC_PKCS7RecipientInfoStr {
     SECItem version;
     CERTIssuerAndSN *issuerAndSN;
@@ -1606,6 +1712,8 @@ typedef struct SEC_PKCS7RecipientInfoStr {
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _SECASN1T_H_
 
 typedef struct sec_ASN1Template_struct {
     unsigned long int kind;
@@ -1631,6 +1739,8 @@ typedef void (*SEC_ASN1WriteProc) (void *, const char *, unsigned long int,
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _SECCOMMON_H_
 
 typedef enum {
     siBuffer,
@@ -1673,6 +1783,8 @@ typedef enum _SECComparison {
 </PARA>
 <SCREEN>
 
+#define _SECDERT_H_
+
 typedef struct DERTemplateStr {
     unsigned long int kind;
     unsigned int offset;
@@ -1687,6 +1799,8 @@ typedef struct DERTemplateStr {
 </PARA>
 <SCREEN>
 
+#define _SECDIGT_H_
+
 typedef struct SGNDigestInfoStr {
     PLArenaPool *arena;
     SECAlgorithmID digestAlgorithm;
@@ -1700,15 +1814,13 @@ typedef struct SGNDigestInfoStr {
 </PARA>
 <SCREEN>
 
+#define _SECMODT_H_
 #define SECMOD_MAKE_NSS_FLAGS(fips,slot)	 \
 	"Flags=internal,critical"fips" \
 	slotparams=("#slot"={"SECMOD_SLOT_FLAGS"})"
-#define PK11_PW_AUTHENTICATED	"AUTH"
 #define SECMOD_FIPS_NAME	"NSS Internal FIPS PKCS #11 Module"
 #define SECMOD_INT_NAME	"NSS Internal PKCS #11 Module"
-#define PK11_PW_RETRY	"RETRY"
 #define SECMOD_SLOT_FLAGS	"slotFlags=[RSA,DSA,DH,RC2,RC4,DES,RANDOM,SHA1,MD5,MD2,SSL,TLS,AES,SHA256,SHA512]"
-#define PK11_PW_TRY	"TRY"
 #define SECMOD_EXTERNAL	0
 #define CRL_IMPORT_DEFAULT_OPTIONS	0x00000000
 #define CRL_IMPORT_BYPASS_CHECKS	0x00000001
@@ -1750,8 +1862,11 @@ typedef struct SGNDigestInfoStr {
 #define CKM_INVALID_MECHANISM	0xffffffffL
 #define SECMOD_INTERNAL	1
 #define SECMOD_FIPS	2
+#define PK11_PW_AUTHENTICATED	"AUTH"
+#define PK11_PW_RETRY	"RETRY"
 #define SECMOD_INT_FLAGS	SECMOD_MAKE_NSS_FLAGS("",1)
 #define SECMOD_FIPS_FLAGS	SECMOD_MAKE_NSS_FLAGS(",fips",3)
+#define PK11_PW_TRY	"TRY"
 
 typedef struct SECMODModuleStr {
     PLArenaPool *arena;
@@ -1862,6 +1977,8 @@ typedef enum {
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _SECOIDT_H_
 
 typedef struct SECOidDataStr {
     SECItem oid;
@@ -2192,6 +2309,8 @@ typedef enum {
 </PARA>
 <SCREEN>
 
+#define _SECPKCS5_H_
+
 typedef enum {
     pbeBitGenIDNull,
     pbeBitGenCipherKey = 1,
@@ -2206,6 +2325,8 @@ typedef struct PBEBitGenContextStr PBEBitGenContext;
 <PARA>
 </PARA>
 <SCREEN>
+
+#define _SECPORT_H_
 
 typedef PRBool(*PORTCharConversionWSwapFunc) (PRBool, unsigned char *,
 					      unsigned int,
@@ -2368,6 +2489,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
+#define __ecl_exp_h_
 #define ECCurve_SECG_CHAR2_163R2	ECCurve_NIST_B163
 #define ECCurve_SECG_CHAR2_233R1	ECCurve_NIST_B233
 #define ECCurve_WTLS_11	ECCurve_NIST_B233
@@ -2479,7 +2601,7 @@ enum ECCurveName {
 </PARA>
 <SCREEN>
 
-#define SSL_ENV_VAR_NAME	"SSL_INHERITANCE"
+#define __ssl_h_
 #define SSL_IS_SSL2_CIPHER(which)	(((which) &amp; 0xfff0) == 0xff00)
 #define SSL_REQUIRE_NEVER	((PRBool)0)
 #define SSL_REQUIRE_ALWAYS	((PRBool)1)
@@ -2508,6 +2630,7 @@ enum ECCurveName {
 #define SSL_ENABLE_SSL2	7
 #define SSL_ENABLE_SSL3	8
 #define SSL_NO_CACHE	9
+#define SSL_ENV_VAR_NAME	"SSL_INHERITANCE"
 
 typedef SECStatus(*SSLAuthCertificate) (void *, PRFileDesc *, PRBool,
 					PRBool);
@@ -2517,54 +2640,72 @@ typedef SECStatus(*SSLGetClientAuthData) (void *, PRFileDesc *,
 					  SECKEYPrivateKey * *);
 typedef SECStatus(*SSLBadCertHandler) (void *, PRFileDesc *);
 typedef void (*SSLHandshakeCallback) (PRFileDesc *, void *);
-extern PRFileDesc *SSL_ImportFD(PRFileDesc *, PRFileDesc *);
-extern SECStatus SSL_OptionSet(PRFileDesc *, PRInt32, PRBool);
-extern SECStatus SSL_OptionGet(PRFileDesc *, PRInt32, PRBool *);
-extern SECStatus SSL_OptionSetDefault(PRInt32, PRBool);
-extern SECStatus SSL_OptionGetDefault(PRInt32, PRBool *);
-extern SECStatus SSL_CipherPrefSet(PRFileDesc *, PRInt32, PRBool);
-extern SECStatus SSL_CipherPrefGet(PRFileDesc *, PRInt32, PRBool *);
-extern SECStatus SSL_CipherPrefSetDefault(PRInt32, PRBool);
-extern SECStatus SSL_CipherPrefGetDefault(PRInt32, PRBool *);
-extern SECStatus SSL_CipherPolicySet(PRInt32, PRInt32);
-extern SECStatus SSL_CipherPolicyGet(PRInt32, PRInt32 *);
-extern SECStatus SSL_ResetHandshake(PRFileDesc *, PRBool);
-extern SECStatus SSL_ForceHandshake(PRFileDesc *);
-extern SECStatus SSL_SecurityStatus(PRFileDesc *, int *, char **, int *,
-				    int *, char **, char **);
-extern CERTCertificate *SSL_PeerCertificate(PRFileDesc *);
-extern SECStatus SSL_AuthCertificateHook(PRFileDesc *, SSLAuthCertificate,
-					 void *);
-extern SECStatus SSL_AuthCertificate(void *, PRFileDesc *, PRBool, PRBool);
-extern SECStatus SSL_GetClientAuthDataHook(PRFileDesc *,
-					   SSLGetClientAuthData, void *);
-extern SECStatus SSL_SetPKCS11PinArg(PRFileDesc *, void *);
-extern SECStatus SSL_BadCertHook(PRFileDesc *, SSLBadCertHandler, void *);
-extern SECStatus SSL_ConfigSecureServer(PRFileDesc *, CERTCertificate *,
-					SECKEYPrivateKey *, SSLKEAType);
-extern SECStatus SSL_ConfigServerSessionIDCache(int, PRUint32, PRUint32,
-						const char *);
-extern SECStatus SSL_ConfigMPServerSIDCache(int, PRUint32, PRUint32,
-					    const char *);
-extern SECStatus SSL_InheritMPServerSIDCache(const char *);
-extern SECStatus SSL_HandshakeCallback(PRFileDesc *, SSLHandshakeCallback,
-				       void *);
-extern SECStatus SSL_ReHandshake(PRFileDesc *, PRBool);
-extern SECStatus SSL_SetURL(PRFileDesc *, const char *);
-extern int SSL_DataPending(PRFileDesc *);
-extern SECStatus SSL_InvalidateSession(PRFileDesc *);
-extern SECItem *SSL_GetSessionID(PRFileDesc *);
+extern SECStatus NSS_CmpCertChainWCANames(CERTCertificate * cert,
+					  CERTDistNames * caNames);
+extern SSLKEAType NSS_FindCertKEAType(CERTCertificate * cert);
+extern SECStatus NSS_GetClientAuthData(void *arg, PRFileDesc * socket,
+				       struct CERTDistNamesStr *caNames,
+				       struct CERTCertificateStr
+				       **pRetCert,
+				       struct SECKEYPrivateKeyStr
+				       **pRetKey);
+extern SECStatus SSL_AuthCertificate(void *arg, PRFileDesc * fd,
+				     PRBool checkSig, PRBool isServer);
+extern SECStatus SSL_AuthCertificateHook(PRFileDesc * fd,
+					 SSLAuthCertificate f, void *arg);
+extern SECStatus SSL_BadCertHook(PRFileDesc * fd, SSLBadCertHandler f,
+				 void *arg);
+extern SECStatus SSL_CipherPolicyGet(PRInt32 cipher, PRInt32 * policy);
+extern SECStatus SSL_CipherPolicySet(PRInt32 cipher, PRInt32 policy);
+extern SECStatus SSL_CipherPrefGet(PRFileDesc * fd, PRInt32 cipher,
+				   PRBool * enabled);
+extern SECStatus SSL_CipherPrefGetDefault(PRInt32 cipher,
+					  PRBool * enabled);
+extern SECStatus SSL_CipherPrefSet(PRFileDesc * fd, PRInt32 cipher,
+				   PRBool enabled);
+extern SECStatus SSL_CipherPrefSetDefault(PRInt32 cipher, PRBool enabled);
 extern void SSL_ClearSessionCache(void);
-extern SECStatus SSL_SetSockPeerID(PRFileDesc *, char *);
-extern void *SSL_RevealPinArg(PRFileDesc *);
-extern char *SSL_RevealURL(PRFileDesc *);
-extern SECStatus NSS_GetClientAuthData(void *, PRFileDesc *,
-				       struct CERTDistNamesStr *,
-				       struct CERTCertificateStr **,
-				       struct SECKEYPrivateKeyStr **);
-extern SECStatus NSS_CmpCertChainWCANames(CERTCertificate *,
-					  CERTDistNames *);
-extern SSLKEAType NSS_FindCertKEAType(CERTCertificate *);
+extern SECStatus SSL_ConfigMPServerSIDCache(int maxCacheEntries,
+					    PRUint32 timeout,
+					    PRUint32 ssl3_timeout,
+					    const char *directory);
+extern SECStatus SSL_ConfigSecureServer(PRFileDesc * fd,
+					CERTCertificate * cert,
+					SECKEYPrivateKey * key,
+					SSLKEAType kea);
+extern SECStatus SSL_ConfigServerSessionIDCache(int maxCacheEntries,
+						PRUint32 timeout,
+						PRUint32 ssl3_timeout,
+						const char *directory);
+extern int SSL_DataPending(PRFileDesc * fd);
+extern SECStatus SSL_ForceHandshake(PRFileDesc * fd);
+extern SECStatus SSL_GetClientAuthDataHook(PRFileDesc * fd,
+					   SSLGetClientAuthData f,
+					   void *a);
+extern SECItem *SSL_GetSessionID(PRFileDesc * fd);
+extern SECStatus SSL_HandshakeCallback(PRFileDesc * fd,
+				       SSLHandshakeCallback cb,
+				       void *client_data);
+extern PRFileDesc *SSL_ImportFD(PRFileDesc * model, PRFileDesc * fd);
+extern SECStatus SSL_InheritMPServerSIDCache(const char *envString);
+extern SECStatus SSL_InvalidateSession(PRFileDesc * fd);
+extern SECStatus SSL_OptionGet(PRFileDesc * fd, PRInt32 option,
+			       PRBool * on);
+extern SECStatus SSL_OptionGetDefault(PRInt32 option, PRBool * on);
+extern SECStatus SSL_OptionSet(PRFileDesc * fd, PRInt32 option, PRBool on);
+extern SECStatus SSL_OptionSetDefault(PRInt32 option, PRBool on);
+extern CERTCertificate *SSL_PeerCertificate(PRFileDesc * fd);
+extern SECStatus SSL_ReHandshake(PRFileDesc * fd, PRBool flushCache);
+extern SECStatus SSL_ResetHandshake(PRFileDesc * fd, PRBool asServer);
+extern void *SSL_RevealPinArg(PRFileDesc * socket);
+extern char *SSL_RevealURL(PRFileDesc * socket);
+extern SECStatus SSL_SecurityStatus(PRFileDesc * fd, int *on,
+				    char **cipher, int *keySize,
+				    int *secretKeySize, char **issuer,
+				    char **subject);
+extern SECStatus SSL_SetPKCS11PinArg(PRFileDesc * fd, void *a);
+extern SECStatus SSL_SetSockPeerID(PRFileDesc * fd, char *peerID);
+extern SECStatus SSL_SetURL(PRFileDesc * fd, const char *url);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -2573,6 +2714,7 @@ extern SSLKEAType NSS_FindCertKEAType(CERTCertificate *);
 </PARA>
 <SCREEN>
 
+#define __SSL_ERR_H_
 #define IS_SSL_ERROR(code)	 \
 	(((code) >= SSL_ERROR_BASE) &amp;&amp; ((code) &lt; SSL_ERROR_LIMIT))
 #define SSL_ERROR_BASE	(-0x3000)
@@ -2814,6 +2956,8 @@ typedef enum {
 <PARA>
 </PARA>
 <SCREEN>
+
+#define __sslt_h_
 
 typedef struct SSL3StatisticsStr {
     long int sch_sid_cache_hits;

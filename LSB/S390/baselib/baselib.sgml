@@ -2937,8 +2937,7 @@ typedef int __jmp_buf[14];
 typedef struct {
     unsigned long int mask;
     unsigned long int addr;
-} __attribute__ ((aligned(8)))
-    _psw_t;
+} __attribute__ ((aligned(8))) _psw_t;
 typedef struct {
     _psw_t psw;
     unsigned long int gprs[__NUM_GPRS];
@@ -3155,18 +3154,18 @@ typedef unsigned long int msgqnum_t;
 typedef unsigned long int msglen_t;
 
 struct msqid_ds {
-    struct ipc_perm msg_perm;
-    time_t msg_stime;
+    struct ipc_perm msg_perm;	/* structure describing operation permission */
+    time_t msg_stime;		/* time of last msgsnd command */
     unsigned long int __unused1;
-    time_t msg_rtime;
+    time_t msg_rtime;		/* time of last msgrcv command */
     unsigned long int __unused2;
-    time_t msg_ctime;
+    time_t msg_ctime;		/* time of last change */
     unsigned long int __unused3;
-    unsigned long int __msg_cbytes;
-    msgqnum_t msg_qnum;
-    msglen_t msg_qbytes;
-    pid_t msg_lspid;
-    pid_t msg_lrpid;
+    unsigned long int __msg_cbytes;	/* current number of bytes on queue */
+    msgqnum_t msg_qnum;		/* number of messages currently on queue */
+    msglen_t msg_qbytes;	/* max number of bytes allowed on queue */
+    pid_t msg_lspid;		/* pid of last msgsnd() */
+    pid_t msg_lrpid;		/* pid of last msgrcv() */
     unsigned long int __unused4;
     unsigned long int __unused5;
 };
@@ -3227,12 +3226,12 @@ struct msqid_ds {
 <SCREEN>
 
 struct semid_ds {
-    struct ipc_perm sem_perm;
-    time_t sem_otime;
+    struct ipc_perm sem_perm;	/* operation permission struct */
+    time_t sem_otime;		/* last semop() time */
     unsigned long int __unused1;
-    time_t sem_ctime;
+    time_t sem_ctime;		/* last time changed by semctl() */
     unsigned long int __unused2;
-    unsigned long int sem_nsems;
+    unsigned long int sem_nsems;	/* number of semaphores in set */
     unsigned long int __unused3;
     unsigned long int __unused4;
 };
@@ -3302,9 +3301,9 @@ struct stat {
     off_t st_size;
     blksize_t st_blksize;
     blkcnt_t st_blocks;
-    struct timespec st_atim;
-    struct timespec st_mtim;
-    struct timespec st_ctim;
+    struct timespec st_atim;	/* Time of last access. */
+    struct timespec st_mtim;	/* Time of last modification. */
+    struct timespec st_ctim;	/* Time of last status change. */
     unsigned long int __unused4;
     unsigned long int __unused5;
 };
@@ -3321,9 +3320,9 @@ struct stat64 {
     off64_t st_size;
     blksize_t st_blksize;
     blkcnt64_t st_blocks;
-    struct timespec st_atim;
-    struct timespec st_mtim;
-    struct timespec st_ctim;
+    struct timespec st_atim;	/* Time of last access. */
+    struct timespec st_mtim;	/* Time of last modification. */
+    struct timespec st_ctim;	/* Time of last status change. */
     ino64_t st_ino;
 };
 </SCREEN>
@@ -3335,30 +3334,30 @@ struct stat64 {
 <SCREEN>
 
 struct statfs {
-    int f_type;
-    int f_bsize;
-    fsblkcnt_t f_blocks;
-    fsblkcnt_t f_bfree;
-    fsblkcnt_t f_bavail;
-    fsfilcnt_t f_files;
-    fsfilcnt_t f_ffree;
-    fsid_t f_fsid;
-    int f_namelen;
-    int f_frsize;
-    int f_spare[5];
+    int f_type;			/* type of filesystem */
+    int f_bsize;		/* optimal transfer block size */
+    fsblkcnt_t f_blocks;	/* total data blocks in file system */
+    fsblkcnt_t f_bfree;		/* free blocks in fs */
+    fsblkcnt_t f_bavail;	/* free blocks avail to non-superuser */
+    fsfilcnt_t f_files;		/* total file nodes in file system */
+    fsfilcnt_t f_ffree;		/* free file nodes in file system */
+    fsid_t f_fsid;		/* file system id */
+    int f_namelen;		/* maximum length of filenames */
+    int f_frsize;		/* fragment size */
+    int f_spare[5];		/* spare for later */
 };
 struct statfs64 {
-    int f_type;
-    int f_bsize;
-    fsblkcnt64_t f_blocks;
-    fsblkcnt64_t f_bfree;
-    fsblkcnt64_t f_bavail;
-    fsfilcnt64_t f_files;
-    fsfilcnt64_t f_ffree;
-    fsid_t f_fsid;
-    int f_namelen;
-    int f_frsize;
-    int f_spare[5];
+    int f_type;			/* type of filesystem */
+    int f_bsize;		/* optimal transfer block size */
+    fsblkcnt64_t f_blocks;	/* total data blocks in file system */
+    fsblkcnt64_t f_bfree;	/* free blocks in fs */
+    fsblkcnt64_t f_bavail;	/* free blocks avail to non-superuser */
+    fsfilcnt64_t f_files;	/* total file nodes in file system */
+    fsfilcnt64_t f_ffree;	/* free file nodes in file system */
+    fsid_t f_fsid;		/* file system id */
+    int f_namelen;		/* maximum length of filenames */
+    int f_frsize;		/* fragment size */
+    int f_spare[5];		/* spare for later */
 };
 </SCREEN>
 </SECT2>
@@ -3661,17 +3660,17 @@ struct lastlog {
 };
 
 struct utmp {
-    short ut_type;
-    pid_t ut_pid;
-    char ut_line[UT_LINESIZE];
-    char ut_id[4];
-    char ut_user[UT_NAMESIZE];
-    char ut_host[UT_HOSTSIZE];
-    struct exit_status ut_exit;
-    long int ut_session;
-    struct timeval ut_tv;
-    int32_t ut_addr_v6[4];
-    char __unused[20];
+    short ut_type;		/* Type of login. */
+    pid_t ut_pid;		/* Process ID of login process. */
+    char ut_line[UT_LINESIZE];	/* Devicename. */
+    char ut_id[4];		/* Inittab ID. */
+    char ut_user[UT_NAMESIZE];	/* Username. */
+    char ut_host[UT_HOSTSIZE];	/* Hostname for remote login. */
+    struct exit_status ut_exit;	/* Exit status of a process marked as DEAD_PROCESS. */
+    long int ut_session;	/* Session ID, used for windowing. */
+    struct timeval ut_tv;	/* Time entry was made. */
+    int32_t ut_addr_v6[4];	/* Internet address of remote host. */
+    char __unused[20];		/* Reserved for future use. */
 };
 </SCREEN>
 </SECT2>
@@ -3682,17 +3681,17 @@ struct utmp {
 <SCREEN>
 
 struct utmpx {
-    short ut_type;
-    pid_t ut_pid;
-    char ut_line[UT_LINESIZE];
-    char ut_id[4];
-    char ut_user[UT_NAMESIZE];
-    char ut_host[UT_HOSTSIZE];
-    struct exit_status ut_exit;
-    long int ut_session;
-    struct timeval ut_tv;
-    int32_t ut_addr_v6[4];
-    char __unused[20];
+    short ut_type;		/* Type of login. */
+    pid_t ut_pid;		/* Process ID of login process. */
+    char ut_line[UT_LINESIZE];	/* Devicename. */
+    char ut_id[4];		/* Inittab ID. */
+    char ut_user[UT_NAMESIZE];	/* Username. */
+    char ut_host[UT_HOSTSIZE];	/* Hostname for remote login. */
+    struct exit_status ut_exit;	/* Exit status of a process marked as DEAD_PROCESS. */
+    long int ut_session;	/* Session ID, used for windowing. */
+    struct timeval ut_tv;	/* Time entry was made. */
+    int32_t ut_addr_v6[4];	/* Internet address of remote host. */
+    char __unused[20];		/* Reserved for future use. */
 };
 </SCREEN>
 </SECT2>
@@ -4539,8 +4538,8 @@ typedef double double_t;
 #define FP_ILOGBNAN	2147483647
 
 extern int __fpclassifyl(long double);
-extern long double exp2l(long double);
 extern int __signbitl(long double);
+extern long double exp2l(long double);
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -5010,7 +5009,7 @@ struct __pthread_mutex_s {
     int __owner;
     int __kind;
     unsigned int __nusers;
-    union {
+    __extension__ union {
 	int __spins;
 	__pthread_slist_t __list;
     };
@@ -5171,26 +5170,26 @@ typedef _Unwind_Reason_Code(*_Unwind_Stop_Fn) (int version,
 
 typedef _Unwind_Reason_Code(*_Unwind_Trace_Fn) (struct _Unwind_Context *,
 						void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
 extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+					_Unwind_Stop_Fn, void *);
+extern _Unwind_Word _Unwind_GetCFA(struct _Unwind_Context *);
 extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
 extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
 extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
 extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
 						   *, unsigned int);
 extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
 extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
 						  *);
-extern void _Unwind_SetIP(struct _Unwind_Context *, unsigned int);
 extern void _Unwind_Resume(struct _Unwind_Exception *);
-extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
-extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
-extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
-					_Unwind_Stop_Fn, void *);
-extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
-extern _Unwind_Word _Unwind_GetCFA(struct _Unwind_Context *);
 extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
 						     _Unwind_Exception *);
-extern void *_Unwind_FindEnclosingFunction(void *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, unsigned int);
 </SCREEN>
 </SECT2>
 </SECT1>

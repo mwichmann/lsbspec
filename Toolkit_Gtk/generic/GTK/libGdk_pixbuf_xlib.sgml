@@ -150,56 +150,83 @@ typedef struct _XlibRgbCmap {
     unsigned int colors[256];
     unsigned char lut[256];
 } XlibRgbCmap;
-extern void gdk_pixbuf_xlib_init_with_depth(Display *, int, int);
-extern Visual *xlib_rgb_get_visual(void);
-extern void gdk_pixbuf_xlib_render_to_drawable(GdkPixbuf *, Drawable, GC,
-					       int, int, int, int, int,
-					       int, XlibRgbDither, int,
-					       int);
-extern GdkPixbuf *gdk_pixbuf_xlib_get_from_drawable(GdkPixbuf *, Drawable,
-						    Colormap, Visual *,
-						    int, int, int, int,
-						    int, int);
-extern XVisualInfo *xlib_rgb_get_visual_info(void);
-extern void xlib_rgb_set_install(int);
-extern void xlib_rgb_cmap_free(XlibRgbCmap *);
-extern int xlib_rgb_get_depth(void);
-extern long unsigned int xlib_rgb_xpixel_from_rgb(guint32);
-extern void xlib_rgb_gc_set_foreground(GC, guint32);
-extern void xlib_rgb_set_verbose(int);
+extern GdkPixbuf *gdk_pixbuf_xlib_get_from_drawable(GdkPixbuf * dest,
+						    Drawable src,
+						    Colormap cmap,
+						    Visual * visual,
+						    int src_x, int src_y,
+						    int dest_x, int dest_y,
+						    int width, int height);
+extern void gdk_pixbuf_xlib_init(Display * display, int screen_num);
+extern void gdk_pixbuf_xlib_init_with_depth(Display * display,
+					    int screen_num, int prefDepth);
+extern void gdk_pixbuf_xlib_render_pixmap_and_mask(GdkPixbuf * pixbuf,
+						   Pixmap * pixmap_return,
+						   Pixmap * mask_return,
+						   int alpha_threshold);
+extern void gdk_pixbuf_xlib_render_threshold_alpha(GdkPixbuf * pixbuf,
+						   Pixmap bitmap,
+						   int src_x, int src_y,
+						   int dest_x, int dest_y,
+						   int width, int height,
+						   int alpha_threshold);
+extern void gdk_pixbuf_xlib_render_to_drawable(GdkPixbuf * pixbuf,
+					       Drawable drawable, GC gc,
+					       int src_x, int src_y,
+					       int dest_x, int dest_y,
+					       int width, int height,
+					       XlibRgbDither dither,
+					       int x_dither, int y_dither);
+extern void gdk_pixbuf_xlib_render_to_drawable_alpha(GdkPixbuf * pixbuf,
+						     Drawable drawable,
+						     int src_x, int src_y,
+						     int dest_x,
+						     int dest_y, int width,
+						     int height,
+						     GdkPixbufAlphaMode
+						     alpha_mode,
+						     int alpha_threshold,
+						     XlibRgbDither dither,
+						     int x_dither,
+						     int y_dither);
+extern void xlib_draw_gray_image(Drawable drawable, GC gc, int x, int y,
+				 int width, int height, XlibRgbDither dith,
+				 unsigned char *buf, int rowstride);
+extern void xlib_draw_indexed_image(Drawable drawable, GC gc, int x, int y,
+				    int width, int height,
+				    XlibRgbDither dith, unsigned char *buf,
+				    int rowstride, XlibRgbCmap * cmap);
+extern void xlib_draw_rgb_32_image(Drawable drawable, GC gc, int x, int y,
+				   int width, int height,
+				   XlibRgbDither dith, unsigned char *buf,
+				   int rowstride);
+extern void xlib_draw_rgb_image(Drawable drawable, GC gc, int x, int y,
+				int width, int height, XlibRgbDither dith,
+				unsigned char *rgb_buf, int rowstride);
+extern void xlib_draw_rgb_image_dithalign(Drawable drawable, GC gc, int x,
+					  int y, int width, int height,
+					  XlibRgbDither dith,
+					  unsigned char *rgb_buf,
+					  int rowstride, int xdith,
+					  int ydith);
+extern void xlib_rgb_cmap_free(XlibRgbCmap * cmap);
+extern XlibRgbCmap *xlib_rgb_cmap_new(guint32 * colors, int n_colors);
 extern int xlib_rgb_ditherable(void);
-extern void xlib_rgb_set_min_colors(int);
-extern void gdk_pixbuf_xlib_render_threshold_alpha(GdkPixbuf *, Pixmap,
-						   int, int, int, int, int,
-						   int, int);
-extern Display *xlib_rgb_get_display(void);
-extern void xlib_rgb_init(Display *, Screen *);
-extern void gdk_pixbuf_xlib_init(Display *, int);
-extern Screen *xlib_rgb_get_screen(void);
+extern void xlib_rgb_gc_set_background(GC gc, guint32 rgb);
+extern void xlib_rgb_gc_set_foreground(GC gc, guint32 rgb);
 extern Colormap xlib_rgb_get_cmap(void);
-extern void xlib_draw_gray_image(Drawable, GC, int, int, int, int,
-				 XlibRgbDither, unsigned char *, int);
-extern void xlib_draw_indexed_image(Drawable, GC, int, int, int, int,
-				    XlibRgbDither, unsigned char *, int,
-				    XlibRgbCmap *);
-extern XlibRgbCmap *xlib_rgb_cmap_new(guint32 *, int);
-extern void xlib_draw_rgb_32_image(Drawable, GC, int, int, int, int,
-				   XlibRgbDither, unsigned char *, int);
-extern void xlib_draw_rgb_image_dithalign(Drawable, GC, int, int, int, int,
-					  XlibRgbDither, unsigned char *,
-					  int, int, int);
-extern void xlib_rgb_gc_set_background(GC, guint32);
-extern void gdk_pixbuf_xlib_render_pixmap_and_mask(GdkPixbuf *, Pixmap *,
-						   Pixmap *, int);
-extern void gdk_pixbuf_xlib_render_to_drawable_alpha(GdkPixbuf *, Drawable,
-						     int, int, int, int,
-						     int, int,
-						     GdkPixbufAlphaMode,
-						     int, XlibRgbDither,
-						     int, int);
-extern void xlib_draw_rgb_image(Drawable, GC, int, int, int, int,
-				XlibRgbDither, unsigned char *, int);
-extern void xlib_rgb_init_with_depth(Display *, Screen *, int);
+extern int xlib_rgb_get_depth(void);
+extern Display *xlib_rgb_get_display(void);
+extern Screen *xlib_rgb_get_screen(void);
+extern Visual *xlib_rgb_get_visual(void);
+extern XVisualInfo *xlib_rgb_get_visual_info(void);
+extern void xlib_rgb_init(Display * display, Screen * screen);
+extern void xlib_rgb_init_with_depth(Display * display, Screen * screen,
+				     int prefDepth);
+extern void xlib_rgb_set_install(int install);
+extern void xlib_rgb_set_min_colors(int min_colors);
+extern void xlib_rgb_set_verbose(int verbose);
+extern long unsigned int xlib_rgb_xpixel_from_rgb(guint32 rgb);
 </SCREEN>
 </SECT2>
 </SECT1>

@@ -365,42 +365,48 @@ typedef enum {
 } ipp_status_t;
 
 typedef struct _http_s http_t;
-extern void cupsLangFree(cups_lang_t *);
-extern void cupsSetEncryption(http_encryption_t);
-extern cups_dest_t *cupsGetDest(const char *, const char *, int,
-				cups_dest_t *);
-extern int cupsGetJobs(cups_job_t * *, const char *, int, int);
+extern int cupsAddDest(const char *name, const char *instance,
+		       int num_dests, cups_dest_t * *dests);
+extern int cupsAddOption(const char *name, const char *value,
+			 int num_options, cups_option_t * *options);
+extern int cupsCancelJob(const char *printer, int job);
 extern http_encryption_t cupsEncryption(void);
-extern void cupsFreeJobs(int, cups_job_t *);
-extern void cupsFreeOptions(int, cups_option_t *);
-extern const char *cupsGetOption(const char *, int, cups_option_t *);
-extern int cupsMarkOptions(ppd_file_t *, int, cups_option_t *);
-extern int cupsAddOption(const char *, const char *, int,
-			 cups_option_t * *);
-extern int cupsGetDests(cups_dest_t * *);
-extern void cupsSetServer(const char *);
-extern const char *cupsGetPassword(const char *);
-extern void cupsSetDests(int, cups_dest_t *);
-extern int cupsParseOptions(const char *, int, cups_option_t * *);
-extern void cupsSetPasswordCB(const char *(*)(const char *)
-    );
-extern void cupsSetUser(const char *);
-extern cups_lang_t *cupsLangGet(const char *);
-extern void cupsLangFlush(void);
-extern int cupsPrintFiles(const char *, int, const char **, const char *,
-			  int, cups_option_t *);
-extern int cupsCancelJob(const char *, int);
-extern char *cupsLangEncoding(cups_lang_t *);
-extern void cupsFreeDests(int, cups_dest_t *);
-extern ipp_status_t cupsLastError(void);
+extern void cupsFreeDests(int num_dests, cups_dest_t * dests);
+extern void cupsFreeJobs(int num_jobs, cups_job_t * jobs);
+extern void cupsFreeOptions(int num_options, cups_option_t * options);
 extern const char *cupsGetDefault(void);
-extern const char *cupsGetPPD(const char *);
+extern cups_dest_t *cupsGetDest(const char *name, const char *instance,
+				int num_dests, cups_dest_t * dests);
+extern int cupsGetDests(cups_dest_t * *dests);
+extern int cupsGetJobs(cups_job_t * *jobs, const char *dest, int myjobs,
+		       int completed);
+extern const char *cupsGetOption(const char *name, int num_options,
+				 cups_option_t * options);
+extern const char *cupsGetPPD(const char *printer);
+extern const char *cupsGetPassword(const char *prompt);
+extern char *cupsLangEncoding(cups_lang_t * lang);
+extern void cupsLangFlush(void);
+extern void cupsLangFree(cups_lang_t * lang);
+extern cups_lang_t *cupsLangGet(const char *language);
+extern ipp_status_t cupsLastError(void);
+extern int cupsMarkOptions(ppd_file_t * ppd, int num_options,
+			   cups_option_t * options);
+extern int cupsParseOptions(const char *arg, int num_options,
+			    cups_option_t * *options);
+extern int cupsPrintFile(const char *printer, const char *filename,
+			 const char *title, int num_options,
+			 cups_option_t * options);
+extern int cupsPrintFiles(const char *printer, int num_files,
+			  const char **files, const char *title,
+			  int num_options, cups_option_t * options);
 extern const char *cupsServer(void);
+extern void cupsSetDests(int num_dests, cups_dest_t * dests);
+extern void cupsSetEncryption(http_encryption_t e);
+extern void cupsSetPasswordCB(const char *(*cb) (const char *));
+extern void cupsSetServer(const char *server);
+extern void cupsSetUser(const char *user);
+extern int cupsTempFd(char *filename, int len);
 extern const char *cupsUser(void);
-extern int cupsTempFd(char *, int);
-extern int cupsPrintFile(const char *, const char *, const char *, int,
-			 cups_option_t *);
-extern int cupsAddDest(const char *, const char *, int, cups_dest_t * *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -569,31 +575,36 @@ typedef enum {
     PPD_CONFORM_RELAXED = 0,
     PPD_CONFORM_STRICT = 1
 } ppd_conform_t;
-extern float ppdPageLength(ppd_file_t *, const char *);
-extern ppd_status_t ppdLastError(int *);
-extern int ppdEmitFd(ppd_file_t *, int, ppd_section_t);
-extern int ppdMarkOption(ppd_file_t *, const char *, const char *);
-extern int ppdEmitJCL(ppd_file_t *, FILE *, int, const char *,
-		      const char *);
-extern ppd_choice_t *ppdFindChoice(ppd_option_t *, const char *);
-extern ppd_file_t *ppdOpenFile(const char *);
-extern int ppdEmit(ppd_file_t *, FILE *, ppd_section_t);
-extern int ppdCollect(ppd_file_t *, ppd_section_t, ppd_choice_t * **);
-extern ppd_option_t *ppdFindOption(ppd_file_t *, const char *);
-extern void ppdMarkDefaults(ppd_file_t *);
-extern ppd_file_t *ppdOpenFd(int);
-extern ppd_attr_t *ppdFindNextAttr(ppd_file_t *, const char *,
-				   const char *);
-extern const char *ppdErrorString(ppd_status_t);
-extern ppd_attr_t *ppdFindAttr(ppd_file_t *, const char *, const char *);
-extern ppd_size_t *ppdPageSize(ppd_file_t *, const char *);
-extern ppd_file_t *ppdOpen(FILE *);
-extern int ppdIsMarked(ppd_file_t *, const char *, const char *);
-extern float ppdPageWidth(ppd_file_t *, const char *);
-extern int ppdConflicts(ppd_file_t *);
-extern ppd_choice_t *ppdFindMarkedChoice(ppd_file_t *, const char *);
-extern void ppdClose(ppd_file_t *);
-extern void ppdSetConformance(ppd_conform_t);
+extern void ppdClose(ppd_file_t * ppd);
+extern int ppdCollect(ppd_file_t * ppd, ppd_section_t section,
+		      ppd_choice_t * **choices);
+extern int ppdConflicts(ppd_file_t * ppd);
+extern int ppdEmit(ppd_file_t * ppd, FILE * fp, ppd_section_t section);
+extern int ppdEmitFd(ppd_file_t * ppd, int fd, ppd_section_t section);
+extern int ppdEmitJCL(ppd_file_t * ppd, FILE * fp, int job_id,
+		      const char *user, const char *title);
+extern const char *ppdErrorString(ppd_status_t status);
+extern ppd_attr_t *ppdFindAttr(ppd_file_t * ppd, const char *name,
+			       const char *spec);
+extern ppd_choice_t *ppdFindChoice(ppd_option_t * o, const char *option);
+extern ppd_choice_t *ppdFindMarkedChoice(ppd_file_t * ppd,
+					 const char *keyword);
+extern ppd_attr_t *ppdFindNextAttr(ppd_file_t * ppd, const char *name,
+				   const char *spec);
+extern ppd_option_t *ppdFindOption(ppd_file_t * ppd, const char *keyword);
+extern int ppdIsMarked(ppd_file_t * ppd, const char *keyword,
+		       const char *option);
+extern ppd_status_t ppdLastError(int *line);
+extern void ppdMarkDefaults(ppd_file_t * ppd);
+extern int ppdMarkOption(ppd_file_t * ppd, const char *keyword,
+			 const char *option);
+extern ppd_file_t *ppdOpen(FILE * fp);
+extern ppd_file_t *ppdOpenFd(int fd);
+extern ppd_file_t *ppdOpenFile(const char *filename);
+extern float ppdPageLength(ppd_file_t * ppd, const char *name);
+extern ppd_size_t *ppdPageSize(ppd_file_t * ppd, const char *name);
+extern float ppdPageWidth(ppd_file_t * ppd, const char *name);
+extern void ppdSetConformance(ppd_conform_t c);
 </SCREEN>
 </SECT2>
 </SECT1>

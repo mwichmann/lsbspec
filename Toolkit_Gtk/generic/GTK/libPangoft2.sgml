@@ -155,10 +155,11 @@ typedef struct _PangoFcDecoderClass {
     void (*_pango_reserved3) (void);
     void (*_pango_reserved4) (void);
 } PangoFcDecoderClass;
-extern FcCharSet *pango_fc_decoder_get_charset(PangoFcDecoder *,
-					       PangoFcFont *);
-extern PangoGlyph pango_fc_decoder_get_glyph(PangoFcDecoder *,
-					     PangoFcFont *, guint32);
+extern FcCharSet *pango_fc_decoder_get_charset(PangoFcDecoder * decoder,
+					       PangoFcFont * fcfont);
+extern PangoGlyph pango_fc_decoder_get_glyph(PangoFcDecoder * decoder,
+					     PangoFcFont * fcfont,
+					     guint32 wc);
 extern GType pango_fc_decoder_get_type(void);
 </SCREEN>
 </SECT2>
@@ -178,12 +179,16 @@ extern GType pango_fc_decoder_get_type(void);
 typedef struct _PangoFcFontMap PangoFcFontMap;
 typedef PangoFcDecoder *(*PangoFcDecoderFindFunc) (FcPattern *, gpointer);
 typedef struct _PangoFcFontMapClass PangoFcFontMapClass;
-extern void pango_fc_font_map_add_decoder_find_func(PangoFcFontMap *,
-						    PangoFcDecoderFindFunc,
-						    gpointer,
-						    GDestroyNotify);
 extern PangoFontDescription
-    *pango_fc_font_description_from_pattern(FcPattern *, gboolean);
+    *pango_fc_font_description_from_pattern(FcPattern * pattern,
+					    gboolean include_size);
+extern void pango_fc_font_map_add_decoder_find_func(PangoFcFontMap *
+						    fcfontmap,
+						    PangoFcDecoderFindFunc
+						    findfunc,
+						    gpointer user_data,
+						    GDestroyNotify
+						    dnotify);
 extern GType pango_fc_font_map_get_type(void);
 </SCREEN>
 </SECT2>
@@ -208,32 +213,41 @@ extern GType pango_fc_font_map_get_type(void);
 
 typedef struct _PangoFT2FontMap PangoFT2FontMap;
 typedef void (*PangoFT2SubstituteFunc) (FcPattern *, gpointer);
-extern void pango_ft2_font_map_set_default_substitute(PangoFT2FontMap *,
-						      PangoFT2SubstituteFunc,
-						      gpointer,
-						      GDestroyNotify);
-extern void pango_fc_font_unlock_face(PangoFcFont *);
-extern GType pango_ft2_font_map_get_type(void);
-extern void pango_ft2_render_transformed(FT_Bitmap *, const PangoMatrix *,
-					 PangoFont *, PangoGlyphString *,
-					 int, int);
-extern PangoContext *pango_ft2_font_map_create_context(PangoFT2FontMap *);
-extern void pango_ft2_render_layout_subpixel(FT_Bitmap *, PangoLayout *,
-					     int, int);
-extern void pango_ft2_render_layout(FT_Bitmap *, PangoLayout *, int, int);
-extern void pango_ft2_font_map_set_resolution(PangoFT2FontMap *, double,
-					      double);
-extern void pango_ft2_render(FT_Bitmap *, PangoFont *, PangoGlyphString *,
-			     int, int);
-extern void pango_ft2_font_map_substitute_changed(PangoFT2FontMap *);
-extern void pango_ft2_render_layout_line(FT_Bitmap *, PangoLayoutLine *,
-					 int, int);
 extern GType pango_fc_font_get_type(void);
-extern void pango_ft2_render_layout_line_subpixel(FT_Bitmap *,
-						  PangoLayoutLine *, int,
-						  int);
-extern FT_Face pango_fc_font_lock_face(PangoFcFont *);
+extern FT_Face pango_fc_font_lock_face(PangoFcFont * font);
+extern void pango_fc_font_unlock_face(PangoFcFont * font);
+extern PangoContext *pango_ft2_font_map_create_context(PangoFT2FontMap *
+						       fontmap);
+extern GType pango_ft2_font_map_get_type(void);
 extern PangoFontMap *pango_ft2_font_map_new(void);
+extern void pango_ft2_font_map_set_default_substitute(PangoFT2FontMap *
+						      fontmap,
+						      PangoFT2SubstituteFunc
+						      func, gpointer data,
+						      GDestroyNotify
+						      notify);
+extern void pango_ft2_font_map_set_resolution(PangoFT2FontMap * fontmap,
+					      double dpi_x, double dpi_y);
+extern void pango_ft2_font_map_substitute_changed(PangoFT2FontMap *
+						  fontmap);
+extern void pango_ft2_render(FT_Bitmap * bitmap, PangoFont * font,
+			     PangoGlyphString * glyphs, int x, int y);
+extern void pango_ft2_render_layout(FT_Bitmap * bitmap,
+				    PangoLayout * layout, int x, int y);
+extern void pango_ft2_render_layout_line(FT_Bitmap * bitmap,
+					 PangoLayoutLine * line, int x,
+					 int y);
+extern void pango_ft2_render_layout_line_subpixel(FT_Bitmap * bitmap,
+						  PangoLayoutLine * line,
+						  int x, int y);
+extern void pango_ft2_render_layout_subpixel(FT_Bitmap * bitmap,
+					     PangoLayout * layout, int x,
+					     int y);
+extern void pango_ft2_render_transformed(FT_Bitmap * bitmap,
+					 const PangoMatrix * matrix,
+					 PangoFont * font,
+					 PangoGlyphString * glyphs, int x,
+					 int y);
 </SCREEN>
 </SECT2>
 </SECT1>
