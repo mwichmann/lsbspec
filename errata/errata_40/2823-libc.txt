@@ -1,0 +1,59 @@
+Specification: LSB Core generic
+Edition of Specification: 4.0
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2823
+
+Rationale: the forkpty and openpty functions do not modify their termp
+and wimp arguments, and so the prototypes should declare these as 'const'.
+
+
+In LSB Core generic
+
+In 13.4. Data Definitions for libc
+
+  13.4.37. pty.h
+
+Change:
+
+extern int forkpty(int *__amaster, char *__name, struct termios *__termp,
+                   struct winsize *__winp);
+extern int openpty(int *__amaster, int *__aslave, char *__name,
+                   struct termios *__termp, struct winsize *__winp);
+
+To:
+
+extern int forkpty(int *__amaster, char *__name,
+                   const struct termios *__termp,
+                   const struct winsize *__winp);
+extern int openpty(int *__amaster, int *__aslave, char *__name,
+                   const struct termios *__termp,
+                   const struct winsize *__winp);
+
+In 14.9. Interface Definitions for libutil
+
+in forkpty, Synopsis:
+
+Change:
+
+   int forkpty(int * amaster, char * name, struct termios * termp,
+   struct winsize * winp);
+
+To:
+
+   int forkpty(int * amaster, char * name, const struct termios * termp,
+   const struct winsize * winp);
+
+
+in openpty, Synopsis:
+
+Change:
+
+   int openpty(int *amaster, int *aslave, char *name, struct
+   termios *termp, struct winsize *winp);
+
+To:
+
+   int openpty(int *amaster, int *aslave, char *name, const struct 
+   termios *termp, const struct winsize *winp);
+
