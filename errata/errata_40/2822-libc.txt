@@ -1,0 +1,40 @@
+Specification: LSB Core generic
+Edition of Specification: 4.0
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2822
+
+Rationale: in the data definitions, the prototypes for scandir and
+scandir64 incorrectly presented the arguments to the __cmp function.
+These did not match the base definition for scandir (POSIX) or for
+scandir64 (this specification).
+
+
+In LSB Core generic
+
+In 13.4. Data Definitions for libc
+
+  13.4.5. dirent.h
+
+Change:
+
+   extern int scandir(const char *__dir, struct dirent ***__namelist,
+                      int (*__selector) (const struct dirent *),
+                      int (*__cmp) (const struct dirent *,
+                                    const struct dirent *));
+   extern int scandir64(const char *__dir, struct dirent64 ***__namelist,
+                        int (*__selector) (const struct dirent64 *),
+                        int (*__cmp) (const struct dirent64 *,
+                                      const struct dirent64 *));
+
+To:
+
+   extern int scandir(const char *__dir, struct dirent ***__namelist,
+                      int (*__selector) (const struct dirent *),
+                      int (*__cmp) (const struct dirent * *,
+                                    const struct dirent * *));
+   extern int scandir64(const char *__dir, struct dirent64 ***__namelist,
+                        int (*__selector) (const struct dirent64 *),
+                        int (*__cmp) (const struct dirent64 * *,
+                                      const struct dirent64 * *));
+
