@@ -1,0 +1,80 @@
+Specification: LSB Desktop generic
+Edition of Specification: 4.0
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2824
+
+Rationale: A number of interfaces in the Freetype library have been
+amended with const qualifiers in common usage.
+
+In LSB Desktop generic:
+
+
+In 12.2. Data Definitions for libfreetype:
+
+In 12.2.9. freetype/ftglyph.h
+
+Change:
+
+typedef void (*FT_Glyph_TransformFunc) (FT_Glyph, FT_Matrix *, FT_Vector *);
+
+To:
+
+typedef void (*FT_Glyph_TransformFunc) (FT_Glyph, const FT_Matrix *,
+                                        const FT_Vector *);
+
+
+In 12.2.10. freetype/ftimage.h
+
+Change:
+
+typedef void (*FT_SpanFunc) (int, int, FT_Span *, void *);
+
+To:
+
+typedef void (*FT_SpanFunc) (int, int, const FT_Span *, void *);
+
+Change:
+
+typedef int (*FT_Raster_RenderFunc) (FT_Raster, FT_Raster_Params *);
+
+To:
+
+typedef int (*FT_Raster_RenderFunc) (FT_Raster, const FT_Raster_Params *); 
+
+Change:
+
+typedef int (*FT_Outline_MoveToFunc) (FT_Vector *, void *);
+typedef int (*FT_Outline_LineToFunc) (FT_Vector *, void *);
+typedef int (*FT_Outline_ConicToFunc) (FT_Vector *, FT_Vector *, void *);
+typedef int (*FT_Outline_CubicToFunc) (FT_Vector *, FT_Vector *,
+                                       FT_Vector *, void *);
+
+To:
+
+typedef int (*FT_Outline_MoveToFunc) (const FT_Vector *, void *);
+typedef int (*FT_Outline_LineToFunc) (const FT_Vector *, void *);
+typedef int (*FT_Outline_ConicToFunc) (const FT_Vector *,
+                                       const FT_Vector *, void *);
+typedef int (*FT_Outline_CubicToFunc) (const FT_Vector *,
+                                       const FT_Vector *,
+                                       const FT_Vector *, void *);
+
+
+In 12.2.19. freetype/ftrender.h
+
+Change:
+
+typedef FT_Error(*FT_Renderer_RenderFunc) (FT_Renderer, FT_GlyphSlot,
+                                           FT_UInt, FT_Vector *);
+typedef FT_Error(*FT_Renderer_TransformFunc) (FT_Renderer, FT_GlyphSlot,
+                                              FT_Matrix *, FT_Vector *);
+
+To:
+ 
+typedef FT_Error(*FT_Renderer_RenderFunc) (FT_Renderer, FT_GlyphSlot,
+                                           FT_UInt, const FT_Vector *);
+typedef FT_Error(*FT_Renderer_TransformFunc) (FT_Renderer, FT_GlyphSlot,
+                                              const FT_Matrix *,
+                                              const FT_Vector *);
+

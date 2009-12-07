@@ -4556,7 +4556,8 @@ extern void g_atomic_int_add(gint * volatile atomic, gint val);
 extern gboolean g_atomic_int_compare_and_exchange(gint * volatile atomic,
 						  gint oldval,
 						  gint newval);
-extern gint g_atomic_int_exchange_and_add(gint * atomic, gint val);
+extern gint g_atomic_int_exchange_and_add(gint * volatile atomic,
+					  gint val);
 extern gboolean g_atomic_pointer_compare_and_exchange(gpointer *
 						      volatile atomic,
 						      gpointer oldval,
@@ -12172,7 +12173,7 @@ extern PangoScriptIter *pango_script_iter_new(const char *text,
 					      int length);
 extern gboolean pango_script_iter_next(PangoScriptIter * iter);
 extern void pango_shape(const gchar * text, gint length,
-			PangoAnalysis * analysis,
+			const PangoAnalysis * analysis,
 			PangoGlyphString * glyphs);
 extern GType pango_stretch_get_type(void);
 extern GType pango_style_get_type(void);
@@ -16273,7 +16274,8 @@ extern gint gdk_colormap_alloc_colors(GdkColormap * colormap,
 				      gboolean best_match,
 				      gboolean * success);
 extern void gdk_colormap_free_colors(GdkColormap * colormap,
-				     GdkColor * colors, gint ncolors);
+				     const GdkColor * colors,
+				     gint ncolors);
 extern GdkScreen *gdk_colormap_get_screen(GdkColormap * cmap);
 extern GdkColormap *gdk_colormap_get_system(void);
 extern GType gdk_colormap_get_type(void);
@@ -16367,7 +16369,8 @@ extern GdkEvent *gdk_display_peek_event(GdkDisplay * display);
 extern gboolean gdk_display_pointer_is_grabbed(GdkDisplay * display);
 extern void gdk_display_pointer_ungrab(GdkDisplay * display,
 				       guint32 time_);
-extern void gdk_display_put_event(GdkDisplay * display, GdkEvent * event);
+extern void gdk_display_put_event(GdkDisplay * display,
+				  const GdkEvent * event);
 extern gboolean gdk_display_request_selection_notification(GdkDisplay *
 							   display,
 							   GdkAtom
@@ -16383,7 +16386,8 @@ extern GdkDisplayPointerHooks *gdk_display_set_pointer_hooks(GdkDisplay *
 							     * new_hooks);
 extern void gdk_display_store_clipboard(GdkDisplay * display,
 					GdkWindow * clipboard_window,
-					guint32 time_, GdkAtom * targets,
+					guint32 time_,
+					const GdkAtom * targets,
 					gint n_targets);
 extern gboolean gdk_display_supports_clipboard_persistence(GdkDisplay *
 							   display);
@@ -16439,12 +16443,12 @@ extern void gdk_draw_glyphs(GdkDrawable * drawable, GdkGC * gc,
 			    PangoFont * font, gint x, gint y,
 			    PangoGlyphString * glyphs);
 extern void gdk_draw_glyphs_transformed(GdkDrawable * drawable, GdkGC * gc,
-					PangoMatrix * matrix,
+					const PangoMatrix * matrix,
 					PangoFont * font, gint x, gint y,
 					PangoGlyphString * glyphs);
 extern void gdk_draw_gray_image(GdkDrawable * drawable, GdkGC * gc, gint x,
 				gint y, gint width, gint height,
-				GdkRgbDither dith, guchar * buf,
+				GdkRgbDither dith, const guchar * buf,
 				gint rowstride);
 extern void gdk_draw_image(GdkDrawable * drawable, GdkGC * gc,
 			   GdkImage * image, gint xsrc, gint ysrc,
@@ -16452,7 +16456,7 @@ extern void gdk_draw_image(GdkDrawable * drawable, GdkGC * gc,
 			   gint height);
 extern void gdk_draw_indexed_image(GdkDrawable * drawable, GdkGC * gc,
 				   gint x, gint y, gint width, gint height,
-				   GdkRgbDither dith, guchar * buf,
+				   GdkRgbDither dith, const guchar * buf,
 				   gint rowstride, GdkRgbCmap * cmap);
 extern void gdk_draw_layout(GdkDrawable * drawable, GdkGC * gc, int x,
 			    int y, PangoLayout * layout);
@@ -16470,46 +16474,48 @@ extern void gdk_draw_layout_with_colors(GdkDrawable * drawable, GdkGC * gc,
 extern void gdk_draw_line(GdkDrawable * drawable, GdkGC * gc, gint x1_,
 			  gint y1_, gint x2_, gint y2_);
 extern void gdk_draw_lines(GdkDrawable * drawable, GdkGC * gc,
-			   GdkPoint * points, gint npoints);
+			   const GdkPoint * points, gint npoints);
 extern void gdk_draw_pixbuf(GdkDrawable * drawable, GdkGC * gc,
-			    GdkPixbuf * pixbuf, gint src_x, gint src_y,
-			    gint dest_x, gint dest_y, gint width,
-			    gint height, GdkRgbDither dither,
+			    const GdkPixbuf * pixbuf, gint src_x,
+			    gint src_y, gint dest_x, gint dest_y,
+			    gint width, gint height, GdkRgbDither dither,
 			    gint x_dither, gint y_dither);
 extern void gdk_draw_point(GdkDrawable * drawable, GdkGC * gc, gint x,
 			   gint y);
 extern void gdk_draw_points(GdkDrawable * drawable, GdkGC * gc,
-			    GdkPoint * points, gint npoints);
+			    const GdkPoint * points, gint npoints);
 extern void gdk_draw_polygon(GdkDrawable * drawable, GdkGC * gc,
-			     gboolean filled, GdkPoint * points,
+			     gboolean filled, const GdkPoint * points,
 			     gint npoints);
 extern void gdk_draw_rectangle(GdkDrawable * drawable, GdkGC * gc,
 			       gboolean filled, gint x, gint y, gint width,
 			       gint height);
 extern void gdk_draw_rgb_32_image(GdkDrawable * drawable, GdkGC * gc,
 				  gint x, gint y, gint width, gint height,
-				  GdkRgbDither dith, guchar * buf,
+				  GdkRgbDither dith, const guchar * buf,
 				  gint rowstride);
 extern void gdk_draw_rgb_32_image_dithalign(GdkDrawable * drawable,
 					    GdkGC * gc, gint x, gint y,
 					    gint width, gint height,
 					    GdkRgbDither dith,
-					    guchar * buf, gint rowstride,
-					    gint xdith, gint ydith);
+					    const guchar * buf,
+					    gint rowstride, gint xdith,
+					    gint ydith);
 extern void gdk_draw_rgb_image(GdkDrawable * drawable, GdkGC * gc, gint x,
 			       gint y, gint width, gint height,
-			       GdkRgbDither dith, guchar * rgb_buf,
+			       GdkRgbDither dith, const guchar * rgb_buf,
 			       gint rowstride);
 extern void gdk_draw_rgb_image_dithalign(GdkDrawable * drawable,
 					 GdkGC * gc, gint x, gint y,
 					 gint width, gint height,
 					 GdkRgbDither dith,
-					 guchar * rgb_buf, gint rowstride,
-					 gint xdith, gint ydith);
+					 const guchar * rgb_buf,
+					 gint rowstride, gint xdith,
+					 gint ydith);
 extern void gdk_draw_segments(GdkDrawable * drawable, GdkGC * gc,
-			      GdkSegment * segs, gint nsegs);
+			      const GdkSegment * segs, gint nsegs);
 extern void gdk_draw_trapezoids(GdkDrawable * drawable, GdkGC * gc,
-				GdkTrapezoid * trapezoids,
+				const struct _GdkTrapezoid *trapezoids,
 				gint n_trapezoids);
 extern GdkImage *gdk_drawable_copy_to_image(GdkDrawable * drawable,
 					    GdkImage * image, gint src_x,
@@ -16536,28 +16542,28 @@ extern void gdk_drop_reply(GdkDragContext * context, gboolean ok,
 			   guint32 time_);
 extern gint gdk_error_trap_pop(void);
 extern void gdk_error_trap_push(void);
-extern GdkEvent *gdk_event_copy(GdkEvent * event);
+extern GdkEvent *gdk_event_copy(const GdkEvent * event);
 extern void gdk_event_free(GdkEvent * event);
 extern GdkEvent *gdk_event_get(void);
-extern gboolean gdk_event_get_axis(GdkEvent * event, GdkAxisUse axis_use,
-				   gdouble * value);
-extern gboolean gdk_event_get_coords(GdkEvent * event, gdouble * x_win,
-				     gdouble * y_win);
+extern gboolean gdk_event_get_axis(const GdkEvent * event,
+				   GdkAxisUse axis_use, gdouble * value);
+extern gboolean gdk_event_get_coords(const GdkEvent * event,
+				     gdouble * x_win, gdouble * y_win);
 extern GdkEvent *gdk_event_get_graphics_expose(GdkWindow * window);
-extern gboolean gdk_event_get_root_coords(GdkEvent * event,
+extern gboolean gdk_event_get_root_coords(const GdkEvent * event,
 					  gdouble * x_root,
 					  gdouble * y_root);
-extern GdkScreen *gdk_event_get_screen(GdkEvent * event);
-extern gboolean gdk_event_get_state(GdkEvent * event,
+extern GdkScreen *gdk_event_get_screen(const GdkEvent * event);
+extern gboolean gdk_event_get_state(const GdkEvent * event,
 				    GdkModifierType * state);
-extern guint32 gdk_event_get_time(GdkEvent * event);
+extern guint32 gdk_event_get_time(const GdkEvent * event);
 extern GType gdk_event_get_type(void);
 extern void gdk_event_handler_set(GdkEventFunc func, gpointer data,
 				  GDestroyNotify notify);
 extern GType gdk_event_mask_get_type(void);
 extern GdkEvent *gdk_event_new(GdkEventType type);
 extern GdkEvent *gdk_event_peek(void);
-extern void gdk_event_put(GdkEvent * event);
+extern void gdk_event_put(const GdkEvent * event);
 extern gboolean gdk_event_send_client_message(GdkEvent * event,
 					      GdkNativeWindow winid);
 extern gboolean gdk_event_send_client_message_for_display(GdkDisplay *
@@ -16592,8 +16598,8 @@ extern void gdk_gc_set_background(GdkGC * gc, const GdkColor * color);
 extern void gdk_gc_set_clip_mask(GdkGC * gc, GdkBitmap * mask);
 extern void gdk_gc_set_clip_origin(GdkGC * gc, gint x, gint y);
 extern void gdk_gc_set_clip_rectangle(GdkGC * gc,
-				      GdkRectangle * rectangle);
-extern void gdk_gc_set_clip_region(GdkGC * gc, GdkRegion * region);
+				      const GdkRectangle * rectangle);
+extern void gdk_gc_set_clip_region(GdkGC * gc, const GdkRegion * region);
 extern void gdk_gc_set_colormap(GdkGC * gc, GdkColormap * colormap);
 extern void gdk_gc_set_dashes(GdkGC * gc, gint dash_offset,
 			      gint8 * dash_list, gint n);
@@ -16690,13 +16696,14 @@ extern PangoContext *gdk_pango_context_get_for_screen(GdkScreen * screen);
 extern GdkRegion *gdk_pango_layout_get_clip_region(PangoLayout * layout,
 						   gint x_origin,
 						   gint y_origin,
-						   gint * index_ranges,
+						   const gint *
+						   index_ranges,
 						   gint n_ranges);
 extern GdkRegion *gdk_pango_layout_line_get_clip_region(PangoLayoutLine *
 							line,
 							gint x_origin,
 							gint y_origin,
-							gint *
+							const gint *
 							index_ranges,
 							gint n_ranges);
 extern PangoRenderer *gdk_pango_renderer_get_default(GdkScreen * screen);
@@ -16813,41 +16820,47 @@ extern void gdk_query_depths(gint * *depths, gint * count);
 extern void gdk_query_visual_types(GdkVisualType * *visual_types,
 				   gint * count);
 extern GType gdk_rectangle_get_type(void);
-extern gboolean gdk_rectangle_intersect(GdkRectangle * src1,
-					GdkRectangle * src2,
+extern gboolean gdk_rectangle_intersect(const GdkRectangle * src1,
+					const GdkRectangle * src2,
 					GdkRectangle * dest);
-extern void gdk_rectangle_union(GdkRectangle * src1, GdkRectangle * src2,
+extern void gdk_rectangle_union(const GdkRectangle * src1,
+				const GdkRectangle * src2,
 				GdkRectangle * dest);
-extern GdkRegion *gdk_region_copy(GdkRegion * region);
+extern GdkRegion *gdk_region_copy(const GdkRegion * region);
 extern void gdk_region_destroy(GdkRegion * region);
-extern gboolean gdk_region_empty(GdkRegion * region);
-extern gboolean gdk_region_equal(GdkRegion * region1, GdkRegion * region2);
-extern void gdk_region_get_clipbox(GdkRegion * region,
+extern gboolean gdk_region_empty(const GdkRegion * region);
+extern gboolean gdk_region_equal(const GdkRegion * region1,
+				 const GdkRegion * region2);
+extern void gdk_region_get_clipbox(const GdkRegion * region,
 				   GdkRectangle * rectangle);
-extern void gdk_region_get_rectangles(GdkRegion * region,
+extern void gdk_region_get_rectangles(const GdkRegion * region,
 				      GdkRectangle * *rectangles,
 				      gint * n_rectangles);
-extern void gdk_region_intersect(GdkRegion * source1, GdkRegion * source2);
+extern void gdk_region_intersect(GdkRegion * source1,
+				 const GdkRegion * source2);
 extern GdkRegion *gdk_region_new(void);
 extern void gdk_region_offset(GdkRegion * region, gint dx, gint dy);
-extern gboolean gdk_region_point_in(GdkRegion * region, int x, int y);
-extern GdkRegion *gdk_region_polygon(GdkPoint * points, gint npoints,
+extern gboolean gdk_region_point_in(const GdkRegion * region, int x,
+				    int y);
+extern GdkRegion *gdk_region_polygon(const GdkPoint * points, gint npoints,
 				     GdkFillRule fill_rule);
-extern GdkOverlapType gdk_region_rect_in(GdkRegion * region,
-					 GdkRectangle * rectangle);
-extern GdkRegion *gdk_region_rectangle(GdkRectangle * rectangle);
+extern GdkOverlapType gdk_region_rect_in(const GdkRegion * region,
+					 const GdkRectangle * rectangle);
+extern GdkRegion *gdk_region_rectangle(const GdkRectangle * rectangle);
 extern void gdk_region_shrink(GdkRegion * region, int dx, int dy);
 extern void gdk_region_spans_intersect_foreach(GdkRegion * region,
-					       GdkSpan * spans,
+					       const GdkSpan * spans,
 					       int n_spans,
 					       gboolean sorted,
 					       GdkSpanFunc function,
 					       gpointer data);
-extern void gdk_region_subtract(GdkRegion * source1, GdkRegion * source2);
-extern void gdk_region_union(GdkRegion * source1, GdkRegion * source2);
+extern void gdk_region_subtract(GdkRegion * source1,
+				const GdkRegion * source2);
+extern void gdk_region_union(GdkRegion * source1,
+			     const GdkRegion * source2);
 extern void gdk_region_union_with_rect(GdkRegion * region,
-				       GdkRectangle * rect);
-extern void gdk_region_xor(GdkRegion * source1, GdkRegion * source2);
+				       const GdkRectangle * rect);
+extern void gdk_region_xor(GdkRegion * source1, const GdkRegion * source2);
 extern void gdk_rgb_cmap_free(GdkRgbCmap * cmap);
 extern GdkRgbCmap *gdk_rgb_cmap_new(guint32 * colors, gint n_colors);
 extern gboolean gdk_rgb_colormap_ditherable(GdkColormap * cmap);
@@ -17027,9 +17040,9 @@ extern void gdk_window_begin_move_drag(GdkWindow * window, gint button,
 				       gint root_x, gint root_y,
 				       guint32 timestamp);
 extern void gdk_window_begin_paint_rect(GdkWindow * window,
-					GdkRectangle * rectangle);
+					const GdkRectangle * rectangle);
 extern void gdk_window_begin_paint_region(GdkWindow * window,
-					  GdkRegion * region);
+					  const GdkRegion * region);
 extern void gdk_window_begin_resize_drag(GdkWindow * window,
 					 GdkWindowEdge edge, gint button,
 					 gint root_x, gint root_y,
@@ -17088,15 +17101,15 @@ extern void gdk_window_hide(GdkWindow * window);
 extern GType gdk_window_hints_get_type(void);
 extern void gdk_window_iconify(GdkWindow * window);
 extern void gdk_window_invalidate_maybe_recurse(GdkWindow * window,
-						GdkRegion * region,
+						const GdkRegion * region,
 						gboolean(*child_func)
 						(GdkWindow *, gpointer),
 						gpointer user_data);
 extern void gdk_window_invalidate_rect(GdkWindow * window,
-				       GdkRectangle * rect,
+				       const GdkRectangle * rect,
 				       gboolean invalidate_children);
 extern void gdk_window_invalidate_region(GdkWindow * window,
-					 GdkRegion * region,
+					 const GdkRegion * region,
 					 gboolean invalidate_children);
 extern gboolean gdk_window_is_viewable(GdkWindow * window);
 extern gboolean gdk_window_is_visible(GdkWindow * window);
@@ -17107,8 +17120,9 @@ extern void gdk_window_lower(GdkWindow * window);
 extern void gdk_window_maximize(GdkWindow * window);
 extern void gdk_window_merge_child_shapes(GdkWindow * window);
 extern void gdk_window_move(GdkWindow * window, gint x, gint y);
-extern void gdk_window_move_region(GdkWindow * window, GdkRegion * region,
-				   gint dx, gint dy);
+extern void gdk_window_move_region(GdkWindow * window,
+				   const GdkRegion * region, gint dx,
+				   gint dy);
 extern void gdk_window_move_resize(GdkWindow * window, gint x, gint y,
 				   gint width, gint height);
 extern GdkWindow *gdk_window_new(GdkWindow * parent,
@@ -17147,7 +17161,7 @@ extern void gdk_window_set_focus_on_map(GdkWindow * window,
 extern void gdk_window_set_functions(GdkWindow * window,
 				     GdkWMFunction functions);
 extern void gdk_window_set_geometry_hints(GdkWindow * window,
-					  GdkGeometry * geometry,
+					  const GdkGeometry * geometry,
 					  GdkWindowHints geom_mask);
 extern void gdk_window_set_group(GdkWindow * window, GdkWindow * leader);
 extern void gdk_window_set_icon(GdkWindow * window,
@@ -17183,7 +17197,7 @@ extern void gdk_window_shape_combine_mask(GdkWindow * window,
 					  GdkBitmap * mask, gint x,
 					  gint y);
 extern void gdk_window_shape_combine_region(GdkWindow * window,
-					    GdkRegion * shape_region,
+					    const GdkRegion * shape_region,
 					    gint offset_x, gint offset_y);
 extern void gdk_window_show(GdkWindow * window);
 extern void gdk_window_show_unraised(GdkWindow * window);
@@ -17207,10 +17221,13 @@ extern GType gdk_wm_function_get_type(void);
 <SCREEN>
 
 extern cairo_t *gdk_cairo_create(GdkDrawable * drawable);
-extern void gdk_cairo_rectangle(cairo_t * cr, GdkRectangle * rectangle);
-extern void gdk_cairo_region(cairo_t * cr, GdkRegion * region);
-extern void gdk_cairo_set_source_color(cairo_t * cr, GdkColor * color);
-extern void gdk_cairo_set_source_pixbuf(cairo_t * cr, GdkPixbuf * pixbuf,
+extern void gdk_cairo_rectangle(cairo_t * cr,
+				const GdkRectangle * rectangle);
+extern void gdk_cairo_region(cairo_t * cr, const GdkRegion * region);
+extern void gdk_cairo_set_source_color(cairo_t * cr,
+				       const GdkColor * color);
+extern void gdk_cairo_set_source_pixbuf(cairo_t * cr,
+					const GdkPixbuf * pixbuf,
 					double pixbuf_x, double pixbuf_y);
 </SCREEN>
 </SECT2>
@@ -29583,8 +29600,9 @@ extern gboolean gtk_cell_renderer_activate(GtkCellRenderer * cell,
 					   GdkEvent * event,
 					   GtkWidget * widget,
 					   const gchar * path,
-					   GdkRectangle * background_area,
-					   GdkRectangle * cell_area,
+					   const GdkRectangle *
+					   background_area,
+					   const GdkRectangle * cell_area,
 					   GtkCellRendererState flags);
 extern GType gtk_cell_renderer_combo_get_type(void);
 extern GtkCellRenderer *gtk_cell_renderer_combo_new(void);
@@ -29592,7 +29610,7 @@ extern void gtk_cell_renderer_get_fixed_size(GtkCellRenderer * cell,
 					     gint * width, gint * height);
 extern void gtk_cell_renderer_get_size(GtkCellRenderer * cell,
 				       GtkWidget * widget,
-				       GdkRectangle * cell_area,
+				       const GdkRectangle * cell_area,
 				       gint * x_offset, gint * y_offset,
 				       gint * width, gint * height);
 extern GType gtk_cell_renderer_get_type(void);
@@ -29604,9 +29622,9 @@ extern GtkCellRenderer *gtk_cell_renderer_progress_new(void);
 extern void gtk_cell_renderer_render(GtkCellRenderer * cell,
 				     GdkWindow * window,
 				     GtkWidget * widget,
-				     GdkRectangle * background_area,
-				     GdkRectangle * cell_area,
-				     GdkRectangle * expose_area,
+				     const GdkRectangle * background_area,
+				     const GdkRectangle * cell_area,
+				     const GdkRectangle * expose_area,
 				     GtkCellRendererState flags);
 extern void gtk_cell_renderer_set_fixed_size(GtkCellRenderer * cell,
 					     gint width, gint height);
@@ -29615,10 +29633,10 @@ extern GtkCellEditable *gtk_cell_renderer_start_editing(GtkCellRenderer *
 							GdkEvent * event,
 							GtkWidget * widget,
 							const gchar * path,
-							GdkRectangle *
-							background_area,
-							GdkRectangle *
-							cell_area,
+							const GdkRectangle
+							* background_area,
+							const GdkRectangle
+							* cell_area,
 							GtkCellRendererState
 							flags);
 extern GType gtk_cell_renderer_state_get_type(void);
@@ -29684,8 +29702,9 @@ extern void gtk_check_menu_item_set_inconsistent(GtkCheckMenuItem *
 						 gboolean setting);
 extern void gtk_check_menu_item_toggled(GtkCheckMenuItem *
 					check_menu_item);
-extern gchar *gtk_check_version(guint required_major, guint required_minor,
-				guint required_micro);
+extern const gchar *gtk_check_version(guint required_major,
+				      guint required_minor,
+				      guint required_micro);
 extern void gtk_clipboard_clear(GtkClipboard * clipboard);
 extern GtkClipboard *gtk_clipboard_get(GdkAtom selection);
 extern GdkDisplay *gtk_clipboard_get_display(GtkClipboard * clipboard);
@@ -30074,8 +30093,8 @@ extern void gtk_drag_source_unset(GtkWidget * widget);
 extern void gtk_drag_unhighlight(GtkWidget * widget);
 extern void gtk_draw_insertion_cursor(GtkWidget * widget,
 				      GdkDrawable * drawable,
-				      GdkRectangle * area,
-				      GdkRectangle * location,
+				      const GdkRectangle * area,
+				      const GdkRectangle * location,
 				      gboolean is_primary,
 				      GtkTextDirection direction,
 				      gboolean draw_arrow);
@@ -30796,7 +30815,7 @@ extern void gtk_im_context_reset(GtkIMContext * context);
 extern void gtk_im_context_set_client_window(GtkIMContext * context,
 					     GdkWindow * window);
 extern void gtk_im_context_set_cursor_location(GtkIMContext * context,
-					       GdkRectangle * area);
+					       const GdkRectangle * area);
 extern void gtk_im_context_set_surrounding(GtkIMContext * context,
 					   const gchar * text, gint len,
 					   gint cursor_index);
@@ -31262,117 +31281,129 @@ extern GType gtk_pack_direction_get_type(void);
 extern GType gtk_pack_type_get_type(void);
 extern void gtk_paint_arrow(GtkStyle * style, GdkWindow * window,
 			    GtkStateType state_type,
-			    GtkShadowType shadow_type, GdkRectangle * area,
-			    GtkWidget * widget, const gchar * detail,
-			    GtkArrowType arrow_type, gboolean fill, gint x,
-			    gint y, gint width, gint height);
+			    GtkShadowType shadow_type,
+			    const GdkRectangle * area, GtkWidget * widget,
+			    const gchar * detail, GtkArrowType arrow_type,
+			    gboolean fill, gint x, gint y, gint width,
+			    gint height);
 extern void gtk_paint_box(GtkStyle * style, GdkWindow * window,
 			  GtkStateType state_type,
-			  GtkShadowType shadow_type, GdkRectangle * area,
-			  GtkWidget * widget, const gchar * detail, gint x,
-			  gint y, gint width, gint height);
+			  GtkShadowType shadow_type,
+			  const GdkRectangle * area, GtkWidget * widget,
+			  const gchar * detail, gint x, gint y, gint width,
+			  gint height);
 extern void gtk_paint_box_gap(GtkStyle * style, GdkWindow * window,
 			      GtkStateType state_type,
 			      GtkShadowType shadow_type,
-			      GdkRectangle * area, GtkWidget * widget,
-			      gchar * detail, gint x, gint y, gint width,
-			      gint height, GtkPositionType gap_side,
-			      gint gap_x, gint gap_width);
+			      const GdkRectangle * area,
+			      GtkWidget * widget, const gchar * detail,
+			      gint x, gint y, gint width, gint height,
+			      GtkPositionType gap_side, gint gap_x,
+			      gint gap_width);
 extern void gtk_paint_check(GtkStyle * style, GdkWindow * window,
 			    GtkStateType state_type,
-			    GtkShadowType shadow_type, GdkRectangle * area,
-			    GtkWidget * widget, const gchar * detail,
-			    gint x, gint y, gint width, gint height);
+			    GtkShadowType shadow_type,
+			    const GdkRectangle * area, GtkWidget * widget,
+			    const gchar * detail, gint x, gint y,
+			    gint width, gint height);
 extern void gtk_paint_diamond(GtkStyle * style, GdkWindow * window,
 			      GtkStateType state_type,
 			      GtkShadowType shadow_type,
-			      GdkRectangle * area, GtkWidget * widget,
-			      const gchar * detail, gint x, gint y,
-			      gint width, gint height);
+			      const GdkRectangle * area,
+			      GtkWidget * widget, const gchar * detail,
+			      gint x, gint y, gint width, gint height);
 extern void gtk_paint_expander(GtkStyle * style, GdkWindow * window,
 			       GtkStateType state_type,
-			       GdkRectangle * area, GtkWidget * widget,
-			       const gchar * detail, gint x, gint y,
+			       const GdkRectangle * area,
+			       GtkWidget * widget, const gchar * detail,
+			       gint x, gint y,
 			       GtkExpanderStyle expander_style);
 extern void gtk_paint_extension(GtkStyle * style, GdkWindow * window,
 				GtkStateType state_type,
 				GtkShadowType shadow_type,
-				GdkRectangle * area, GtkWidget * widget,
-				gchar * detail, gint x, gint y, gint width,
-				gint height, GtkPositionType gap_side);
+				const GdkRectangle * area,
+				GtkWidget * widget, const gchar * detail,
+				gint x, gint y, gint width, gint height,
+				GtkPositionType gap_side);
 extern void gtk_paint_flat_box(GtkStyle * style, GdkWindow * window,
 			       GtkStateType state_type,
 			       GtkShadowType shadow_type,
-			       GdkRectangle * area, GtkWidget * widget,
-			       const gchar * detail, gint x, gint y,
-			       gint width, gint height);
+			       const GdkRectangle * area,
+			       GtkWidget * widget, const gchar * detail,
+			       gint x, gint y, gint width, gint height);
 extern void gtk_paint_focus(GtkStyle * style, GdkWindow * window,
-			    GtkStateType state_type, GdkRectangle * area,
-			    GtkWidget * widget, const gchar * detail,
-			    gint x, gint y, gint width, gint height);
+			    GtkStateType state_type,
+			    const GdkRectangle * area, GtkWidget * widget,
+			    const gchar * detail, gint x, gint y,
+			    gint width, gint height);
 extern void gtk_paint_handle(GtkStyle * style, GdkWindow * window,
 			     GtkStateType state_type,
 			     GtkShadowType shadow_type,
-			     GdkRectangle * area, GtkWidget * widget,
+			     const GdkRectangle * area, GtkWidget * widget,
 			     const gchar * detail, gint x, gint y,
 			     gint width, gint height,
 			     GtkOrientation orientation);
 extern void gtk_paint_hline(GtkStyle * style, GdkWindow * window,
-			    GtkStateType state_type, GdkRectangle * area,
-			    GtkWidget * widget, const gchar * detail,
-			    gint x1, gint x2, gint y);
+			    GtkStateType state_type,
+			    const GdkRectangle * area, GtkWidget * widget,
+			    const gchar * detail, gint x1, gint x2,
+			    gint y);
 extern void gtk_paint_layout(GtkStyle * style, GdkWindow * window,
 			     GtkStateType state_type, gboolean use_text,
-			     GdkRectangle * area, GtkWidget * widget,
+			     const GdkRectangle * area, GtkWidget * widget,
 			     const gchar * detail, gint x, gint y,
 			     PangoLayout * layout);
 extern void gtk_paint_option(GtkStyle * style, GdkWindow * window,
 			     GtkStateType state_type,
 			     GtkShadowType shadow_type,
-			     GdkRectangle * area, GtkWidget * widget,
+			     const GdkRectangle * area, GtkWidget * widget,
 			     const gchar * detail, gint x, gint y,
 			     gint width, gint height);
 extern void gtk_paint_polygon(GtkStyle * style, GdkWindow * window,
 			      GtkStateType state_type,
 			      GtkShadowType shadow_type,
-			      GdkRectangle * area, GtkWidget * widget,
-			      const gchar * detail, GdkPoint * points,
-			      gint npoints, gboolean fill);
+			      const GdkRectangle * area,
+			      GtkWidget * widget, const gchar * detail,
+			      const GdkPoint * points, gint npoints,
+			      gboolean fill);
 extern void gtk_paint_resize_grip(GtkStyle * style, GdkWindow * window,
 				  GtkStateType state_type,
-				  GdkRectangle * area, GtkWidget * widget,
-				  const gchar * detail, GdkWindowEdge edge,
-				  gint x, gint y, gint width, gint height);
+				  const GdkRectangle * area,
+				  GtkWidget * widget, const gchar * detail,
+				  GdkWindowEdge edge, gint x, gint y,
+				  gint width, gint height);
 extern void gtk_paint_shadow(GtkStyle * style, GdkWindow * window,
 			     GtkStateType state_type,
 			     GtkShadowType shadow_type,
-			     GdkRectangle * area, GtkWidget * widget,
+			     const GdkRectangle * area, GtkWidget * widget,
 			     const gchar * detail, gint x, gint y,
 			     gint width, gint height);
 extern void gtk_paint_shadow_gap(GtkStyle * style, GdkWindow * window,
 				 GtkStateType state_type,
 				 GtkShadowType shadow_type,
-				 GdkRectangle * area, GtkWidget * widget,
-				 gchar * detail, gint x, gint y,
-				 gint width, gint height,
+				 const GdkRectangle * area,
+				 GtkWidget * widget, const gchar * detail,
+				 gint x, gint y, gint width, gint height,
 				 GtkPositionType gap_side, gint gap_x,
 				 gint gap_width);
 extern void gtk_paint_slider(GtkStyle * style, GdkWindow * window,
 			     GtkStateType state_type,
 			     GtkShadowType shadow_type,
-			     GdkRectangle * area, GtkWidget * widget,
+			     const GdkRectangle * area, GtkWidget * widget,
 			     const gchar * detail, gint x, gint y,
 			     gint width, gint height,
 			     GtkOrientation orientation);
 extern void gtk_paint_tab(GtkStyle * style, GdkWindow * window,
 			  GtkStateType state_type,
-			  GtkShadowType shadow_type, GdkRectangle * area,
-			  GtkWidget * widget, const gchar * detail, gint x,
-			  gint y, gint width, gint height);
+			  GtkShadowType shadow_type,
+			  const GdkRectangle * area, GtkWidget * widget,
+			  const gchar * detail, gint x, gint y, gint width,
+			  gint height);
 extern void gtk_paint_vline(GtkStyle * style, GdkWindow * window,
-			    GtkStateType state_type, GdkRectangle * area,
-			    GtkWidget * widget, const gchar * detail,
-			    gint y1_, gint y2_, gint x);
+			    GtkStateType state_type,
+			    const GdkRectangle * area, GtkWidget * widget,
+			    const gchar * detail, gint y1_, gint y2_,
+			    gint x);
 extern void gtk_paned_add1(GtkPaned * paned, GtkWidget * child);
 extern void gtk_paned_add2(GtkPaned * paned, GtkWidget * child);
 extern GtkWidget *gtk_paned_get_child1(GtkPaned * paned);
@@ -31825,8 +31856,8 @@ extern void gtk_style_apply_default_background(GtkStyle * style,
 					       GdkWindow * window,
 					       gboolean set_bg,
 					       GtkStateType state_type,
-					       GdkRectangle * area, gint x,
-					       gint y, gint width,
+					       const GdkRectangle * area,
+					       gint x, gint y, gint width,
 					       gint height);
 extern GtkStyle *gtk_style_attach(GtkStyle * style, GdkWindow * window);
 extern GtkStyle *gtk_style_copy(GtkStyle * style);
@@ -32946,8 +32977,8 @@ extern gboolean gtk_tree_view_column_cell_get_position(GtkTreeViewColumn *
 						       gint * width);
 extern void gtk_tree_view_column_cell_get_size(GtkTreeViewColumn *
 					       tree_column,
-					       GdkRectangle * cell_area,
-					       gint * x_offset,
+					       const GdkRectangle *
+					       cell_area, gint * x_offset,
 					       gint * y_offset,
 					       gint * width,
 					       gint * height);
@@ -33424,7 +33455,7 @@ extern void gtk_widget_hide(GtkWidget * widget);
 extern void gtk_widget_hide_all(GtkWidget * widget);
 extern gboolean gtk_widget_hide_on_delete(GtkWidget * widget);
 extern gboolean gtk_widget_intersect(GtkWidget * widget,
-				     GdkRectangle * area,
+				     const GdkRectangle * area,
 				     GdkRectangle * intersection);
 extern gboolean gtk_widget_is_ancestor(GtkWidget * widget,
 				       GtkWidget * ancestor);
@@ -33462,7 +33493,7 @@ extern void gtk_widget_queue_resize_no_redraw(GtkWidget * widget);
 extern void gtk_widget_realize(GtkWidget * widget);
 extern GtkWidget *gtk_widget_ref(GtkWidget * widget);
 extern GdkRegion *gtk_widget_region_intersect(GtkWidget * widget,
-					      GdkRegion * region);
+					      const GdkRegion * region);
 extern gboolean gtk_widget_remove_accelerator(GtkWidget * widget,
 					      GtkAccelGroup * accel_group,
 					      guint accel_key,
