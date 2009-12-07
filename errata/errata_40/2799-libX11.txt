@@ -1,0 +1,43 @@
+Specification: LSB Desktop generic
+Edition of Specification: 4.0
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2790
+
+Rationale: the way XrmOptionDescList was defined in the Data Definitions
+did not actually work when used to produce headers.  The tool change
+to accomodate this also caused another change.
+
+
+In LSB Desktop generic:
+
+Change:
+
+typedef struct {
+    char *option;
+    char *specifier;
+    XrmOptionKind argKind;
+    XPointer value;
+} XrmOptionDescRec;
+typedef struct {
+    char *option;
+    char *specifier;
+    XrmOptionKind argKind;
+    XPointer value;
+} *XrmOptionDescList;
+
+To:
+
+typedef struct {
+    char *option;
+    char *specifier;
+    XrmOptionKind argKind;
+    XPointer value;
+} XrmOptionDescRec, *XrmOptionDescList;
+
+Remove:
+
+typedef enum {
+     XrmBindTightly,
+     XrmBindLoosely
+} *XrmBindingList;
