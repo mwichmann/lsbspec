@@ -5147,6 +5147,7 @@ extern void xdrstdio_create(XDR * __xdrs, FILE * __file,
 </PARA>
 <SCREEN>
 
+#define __CPU_ALLOC_SIZE(count)	((((count) + __NCPUBITS - 1) / __NCPUBITS) * 8)
 #define __CPUELT(cpu)	((cpu) / __NCPUBITS)
 #define __CPUMASK(cpu)	((__cpu_mask) 1 &lt;&lt; ((cpu) % __NCPUBITS))
 #define __NCPUBITS	(8 * sizeof (__cpu_mask))
@@ -5154,11 +5155,51 @@ extern void xdrstdio_create(XDR * __xdrs, FILE * __file,
 #define SCHED_FIFO	1
 #define __CPU_SETSIZE	1024
 #define SCHED_RR	2
-#define CPU_ALLOC(count)	__CPU_ALLOC (count)
+#define __CPU_OP_S(setsize, destset, srcset1, srcset2, op) 	\
+  (__extension__\
+   ({ cpu_set_t *__dest = (destset); \
+     cpu_set_t *__arr1 = (srcset1); \
+     cpu_set_t *__arr2 = (srcset2); \
+     size_t __imax = (setsize) / sizeof (__cpu_mask); \
+     size_t __i; \
+     for (__i = 0; __i &lt; __imax; ++__i)\
+       __dest->__bits[__i] = __arr1->__bits[__i] op __arr2->__bits[__i]; \
+ __dest; }))
+#define __CPU_SET_S(cpu, setsize, cpusetp)	\
+  (__extension__\
+   ({ size_t __cpu = (cpu); \
+     __cpu &lt; 8 * (setsize) \
+     ? ((cpusetp)->__bits[__CPUELT (__cpu)] |= __CPUMASK (__cpu)) : 0; }))
+#define __CPU_ISSET_S(cpu, setsize, cpusetp)	\
+  (__extension__\
+   ({ size_t __cpu = (cpu); \
+     __cpu &lt; 8 * (setsize)\
+     ? (((cpusetp)->__bits[__CPUELT (__cpu)] &amp; __CPUMASK (__cpu))) != 0 \
+ : 0; }))
+#define __CPU_CLR_S(cpu, setsize, cpusetp)	\
+  (__extension__\
+   ({ size_t __cpu = (cpu); \
+     __cpu &lt; 8 * (setsize)\
+     ? ((cpusetp)->__bits[__CPUELT (__cpu)] &amp;= ~__CPUMASK (__cpu)) : 0; }))
+#define __CPU_ZERO_S(setsize, cpusetp)	\
+  do {\
+    size_t __i; \
+    size_t __imax = (setsize) / sizeof (__cpu_mask); \
+    cpu_set_t *__arr = (cpusetp); \
+    for (__i = 0; __i &lt; __imax; ++__i)\
+       __arr->__bits[__i] = 0; \
+  } while (0)
 #define CPU_ALLOC_SIZE(count)	__CPU_ALLOC_SIZE (count)
-#define CPU_COUNT(cpusetp)	__CPU_COUNT_S (sizeof (cpu_set_t), cpusetp)
-#define CPU_FREE(cpuset)	__CPU_FREE (cpuset)
+#define CPU_CLR(cpu, cpusetp)	__CPU_CLR_S (cpu, sizeof (cpu_set_t), cpusetp)
+#define CPU_ISSET(cpu, cpusetp)	__CPU_ISSET_S (cpu, sizeof (cpu_set_t), cpusetp)
+#define CPU_AND_S(setsize, destset, srcset1, srcset2)	__CPU_OP_S (setsize, destset, srcset1, srcset2, &amp;)
+#define CPU_XOR_S(setsize, destset, srcset1, srcset2)	__CPU_OP_S (setsize, destset, srcset1, srcset2, ^)
+#define CPU_OR_S(setsize, destset, srcset1, srcset2)	__CPU_OP_S (setsize, destset, srcset1, srcset2, |)
+#define CPU_AND(destset, srcset1, srcset2)	__CPU_OP_S (sizeof (cpu_set_t), destset, srcset1, srcset2, &amp;)
+#define CPU_XOR(destset, srcset1, srcset2)	__CPU_OP_S (sizeof (cpu_set_t), destset, srcset1, srcset2, ^)
+#define CPU_OR(destset, srcset1, srcset2)	__CPU_OP_S (sizeof (cpu_set_t), destset, srcset1, srcset2, |)
 #define CPU_SETSIZE	__CPU_SETSIZE
+#define CPU_SET(cpu, cpusetp)	__CPU_SET_S (cpu, sizeof (cpu_set_t), cpusetp)
 #define CPU_ZERO(cpusetp)	__CPU_ZERO_S (sizeof (cpu_set_t), cpusetp)
 
 struct sched_param {
@@ -5690,6 +5731,7 @@ typedef unsigned char uint_fast8_t;
 #define P_tmpdir	"/tmp"
 #define FOPEN_MAX	16
 #define L_tmpnam	20
+#define TMP_MAX	238328
 #define FILENAME_MAX	4096
 #define BUFSIZ	8192
 #define L_ctermid	9
@@ -6773,11 +6815,11 @@ extern clock_t times(struct tms *__buffer);
 #define FD_SETSIZE	1024
 #define FD_ZERO(fdsetp)	bzero(fdsetp, sizeof(*(fdsetp)))
 #define FD_ISSET(d,set)	\
-	((set)->fds_bits[((d)/(8*sizeof(long)))]&amp;(1&lt;&lt;((d)%(8*sizeof(long)))))
+  (((set)->fds_bits[((d)/(8*sizeof(long)))]&amp;(1L&lt;&lt;((d)%(8*sizeof(long)))))!=0)
 #define FD_CLR(d,set)	\
-	((set)->fds_bits[((d)/(8*sizeof(long)))]&amp;=~(1&lt;&lt;((d)%(8*sizeof(long)))))
+  ((set)->fds_bits[((d)/(8*sizeof(long)))]&amp;=~(1L&lt;&lt;((d)%(8*sizeof(long)))))
 #define FD_SET(d,set)	\
-	((set)->fds_bits[((d)/(8*sizeof(long)))]|=(1&lt;&lt;((d)%(8*sizeof(long)))))
+  ((set)->fds_bits[((d)/(8*sizeof(long)))]|=(1L&lt;&lt;((d)%(8*sizeof(long)))))
 
 typedef unsigned char u_int8_t;
 typedef unsigned short u_int16_t;
@@ -7106,8 +7148,11 @@ extern int tcsetattr(int __fd, int __optional_actions,
 
 #define CLK_TCK	((clock_t)sysconf(2))
 #define CLOCK_REALTIME	0
+#define CLOCK_MONOTONIC	1
 #define TIMER_ABSTIME	1
 #define CLOCKS_PER_SEC	1000000l
+#define CLOCK_PROCESS_CPUTIME_ID	2
+#define CLOCK_THREAD_CPUTIME_ID	3
 
 struct tm {
     int tm_sec;
