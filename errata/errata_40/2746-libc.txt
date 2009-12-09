@@ -1,0 +1,40 @@
+Specification: LSB Core generic
+Edition of Specification: 4.0
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2746
+
+Rationale: the setsockopt() function is incorrectly described as handling
+an ip_mreq structure for IP_MULTICAST_IF, this does not work in any
+current implementations.
+
+
+In LSB Core generic
+
+In 13.5. Interface Definitions for libc
+
+Entry setsockopt, section IP Protocol Level Options
+
+Change:
+
+   IP_MULTICAST_IF
+
+   Set the local device for a multicast socket. optval shall point
+   to a ip_mreq structure initialized in the same manner as with
+   IP_ADD_MEMBERSHIP.
+
+To:
+
+   IP_MULTICAST_IF
+
+   Set the local device for a multicast socket. optval shall point
+   to either an ip_mreqn structure or an in_addr structure. If
+   using the ip_mreqn structure, the imr_multiaddr field should be
+   set to multicast group address, the imr_address field to the
+   address of the local interface, and the imr_index field to the
+   interface index. If using the in_addr structure, the address of
+   the local interface shall be specified. If in_addr or
+   imr_address is set to INADDR_ANY, then an appropriate interface
+   is chosen by the system. If imr_index is zero, then an
+   appropriate interface index is chosen by the implementation.
+
