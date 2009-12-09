@@ -1,0 +1,73 @@
+Specification: LSB Core generic
+Edition of Specification: 4.0
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2540
+
+Rationale: the description of strsignal() incorrectly indicates
+that an unknown signal will return the text "unknown signal".
+In addition, the same page has a description of sys_siglist[],
+which is not available in this specification.  The description
+of the related _sys_siglist[] should be improved.
+
+
+In LSB Core generic
+
+In 13.5. Interface Definitions for libc
+
+
+Entry _sys_siglist, section Description:
+
+Change
+
+_sys_siglist is an array containing the names of the signal
+names.
+ 
+The _sys_siglist array is only in the binary standard; it is
+not in the source standard. Applications wishing to access the
+names of signals should use the strsignal() function.
+
+To
+
+_sys_siglist is an array containing signal description strings
+ordered by signal number.
+
+The _sys_siglist array is only in the binary standard; it is
+not in the source standard. Applications wishing to access
+signal descriptions should use the strsignal() function.
+
+
+
+Entry strsignal, section Synopsis
+
+Delete:
+
+extern const char * const sys_siglist[];
+
+
+Entry strsignal, section Synopsis
+
+Delete:
+
+The array sys_siglist holds the signal description strings
+indexed by signal number. This array should not be accessed
+directly by applications.
+
+
+Entry strsignal, section Return Value
+
+Change:
+ 
+If sig is a valid signal number, strsignal() shall return a
+pointer to the appropriate description string. Otherwise,
+strsignal() shall return either a pointer to the string
+"unknown signal", or a null pointer.
+
+To:
+
+If sig is a valid signal number, strsignal() shall return a
+pointer to the appropriate description string. If sig is not a
+valid signal number, strsignal() shall return a pointer to an
+error string. The contents of either type of string are
+unspecified.
+
