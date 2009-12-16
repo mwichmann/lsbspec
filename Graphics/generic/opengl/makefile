@@ -12,8 +12,8 @@ TABLES= libGL.sgml libGLU.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/version.generic` -l libGL >libGL.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/version.generic` -l libGLU >libGLU.sgml
+	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -l libGL >libGL.sgml
+	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -l libGLU >libGLU.sgml
 
 clean:
 	rm -f $(FILES)
