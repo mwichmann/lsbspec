@@ -3,6 +3,8 @@
 use Getopt::Long;
 use DBI;
 use IPC::Open2;
+use File::Basename;
+use Cwd;
 
 use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
@@ -917,8 +919,8 @@ if($sth->rows) {
 		# NB: names are NOT demangled here ...
 		if (-f $entry->{'Iname'}.".sgml") {
 			print "m4_include(".$entry->{'Iname'}.".sgml)\n";
-		} elsif (-f "../../generic/baselib/".$entry->{'Iname'}.".sgml") {
-			print "m4_include(../../generic/baselib/".$entry->{'Iname'}.".sgml)\n";
+		} elsif (-f "../../generic/" . basename(cwd()) . "/" . $entry->{'Iname'} . ".sgml") {
+			print "m4_include(../../generic/" . basename(cwd()) . "/" . $entry->{'Iname'} . ".sgml)\n";
 		} else {
 			$missing++;
 			print "<!-- MISSING DEFINITION FOR " . $entry->{'Iname'} . " -->\n";
