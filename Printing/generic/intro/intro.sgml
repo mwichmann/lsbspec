@@ -12,7 +12,7 @@ completed the compliance process as defined by the Linux Foundation.
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
-The LSB-Printing Module defines the multimedia components that are required to
+The LSB-Printing Module defines the printing components that are required to
 be present on a conforming system.
 </PARA>
 
@@ -28,7 +28,7 @@ the information explicitly included here.
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
-The LSB-Printing module defines the multimedia components found on an
+The LSB-Printing module defines the printing components found on an
 LSB conforming system.
 </PARA>
 </CHAPTER>
