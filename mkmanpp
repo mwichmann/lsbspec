@@ -1,0 +1,130 @@
+#!/usr/bin/perl
+#####################################################################
+# Generate multiple manpages from flat text list.
+#
+# The generated pages have form 'function FNNEW should behave like
+# FNOLD, except...' - see the $desc and $usage templates below and
+# fix them where needed.
+#
+# FNNEW values are read from the file provided as a script argument.
+# FNOLD values are constructe of the basis of FNNEW ones;
+# currently the transformation rule is hardcoded in the script,
+# please find '$fnold =' statement and modify it, if needed.
+#
+# Copyright (c) The Linux Foundation
+# Copyright (c) Institute for System Programming, RAS
+#
+#####################################################################
+
+$desc = <<DESCEND;
+The interface <function>FNNEW</function>
+shall function in the same way
+as the interface <function>FNOLD</function>,
+except that <function>FNNEW</function>
+shall accept a 64-bit long double value
+(also known as double long double)
+where <function>FNOLD</function> accepts
+a 128-bit long double value
+(also known as quad long double).
+</para>
+<para>
+The <function>FNNEW</function> 
+function is not in the source standard; 
+it is only in the binary standard.
+DESCEND
+
+$usage = <<USAGEEND;
+<refsect1>
+<title>Application Usage (informative)</title>
+<para>
+With the transition to glibc 2.4,
+the Linux Standard Base 4.0 generally specifies long double
+values as 128 bits long, and interfaces that formerly
+used 64-bit calculations, including <function>FNOLD</function>,
+now use 128-bit calculations.
+</para>
+<para>
+However, if the
+<option>-mlong-double-64</option> compiler option is used, then the
+<function>FNOLD</function> interface is redirected
+to <function>FNNEW</function>
+and therefore also uses 64-bit calculations.
+</para>
+</refsect1>
+USAGEEND
+
+##################################################3
+
+if(@ARGV != 1) {HELP_MESSAGE(); exit(1);}
+
+$in_file = $ARGV[0];
+open (IN_FILE, "< ./$in_file")
+    or die "Couldn't open input file: $!\n";
+
+while ($line = <IN_FILE>) 
+{
+    chomp($line);
+
+    $line =~ s/(\w*?),\s(.*)/$fnnew = $1; $purpose = $2;/e;
+    $fnold = $fnnew;
+    $fnold =~ s/__nldbl_//;
+    $fnfile = "$fnnew.sgml";
+    $purpose .= " (64-bit version)";
+ 
+    `~/LSB/devel/lsbspec/mklsbmanpage -v 4.0 -a PPC32 libc $fnnew > $fnfile`;
+
+    # Read in whole file as one big chunk
+    $temp = $/;
+    undef $/;
+    open (FNFILE, "< ./$fnfile")
+	or die "Couldn't open file $fnfile: $!\n";
+    $etext = <FNFILE>;
+    close FNFILE;
+    $/ = $temp;
+
+    $tags = $etext;
+    $tags =~ s/(<refentry id\=\".*?\">)(.*?)(<indexterm id\=\".*?\">)/$refentry = $1; $indexterm = $3;/sgie;
+    $refentryOld = $refentry;
+    $indextermOld = $indexterm;
+    $refentry =~ s/_/-/sgi;
+    $indexterm =~ s/_/-/sgi;
+
+    $outText = $etext;
+    $outText =~ s/$refentryOld/$refentry/sgi;
+    $outText =~ s/$indextermOld/$indexterm/sgi;
+    $outText =~ s/(<title>Description<\/title>\n<para>\n).*?(<\/para>)/$1$desc$2/sgi;
+    $outText =~ s/<refsect1>\n<title>Return\sValue.*<\/refsect1>/$usage/sgi;
+    $outText =~ s/FNNEW/$fnnew/sgi;
+    $outText =~ s/FNOLD/$fnold/sgi;
+    $outText =~ s/INSERT PURPOSE HERE/$purpose/sgi;
+    $outText =~ s/<varargs>\n//sgi;
+    $outText =~ s/&lt;&gt;\n/&lt;libc.h&gt;\n/sgi;
+
+    $out_file = "$fnnew\.sgml\.test";
+
+    open (OUT_FILE, "> ./$out_file")
+	or die "Couldn't open output file: $!\n";
+
+    print OUT_FILE "$outText";
+    close OUT_FILE;
+
+    `mv -f $out_file $fnfile`;
+}
+
+close IN_FILE;
+
+sub HELP_MESSAGE()
+{
+    print STDERR <<"EOM"
+
+$0: generate multiple manpages from flat text list
+
+Usage: $0 filename
+    filename is a file with function names and purposes.
+        Each line of this file should contain a function name
+        and a short file description, comma separated.
+
+EOM
+    ; exit(1);
+}
+
