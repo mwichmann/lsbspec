@@ -6414,6 +6414,7 @@ extern int shmget(key_t __key, size_t __size, int __shmflg);
 </PARA>
 <SCREEN>
 
+#define CMSG_FIRSTHDR(msg)	((size_t) (msg)->msg_controllen >= sizeof(struct cmsghdr) ? (struct cmsghdr *)(msg)->msg_control : (struct cmsghdr *) NULL)
 #define CMSG_LEN(len)	(CMSG_ALIGN(sizeof(struct cmsghdr))+(len))
 #define SCM_RIGHTS	0x01
 #define SOL_SOCKET	1
@@ -6425,10 +6426,6 @@ extern int shmget(key_t __key, size_t __size, int __shmflg);
 	((unsigned char *) (cmsg) + CMSG_ALIGN(sizeof(struct cmsghdr)))
 #define CMSG_SPACE(len)	\
 	(CMSG_ALIGN(sizeof(struct cmsghdr))+CMSG_ALIGN(len))
-#define CMSG_FIRSTHDR(msg)	\
-           ((msg)->msg_controllen >= sizeof(struct cmsghdr) ? \
-            (struct cmsghdr *)(msg)->msg_control : \
-            (struct cmsghdr *)NULL)
 #define CMSG_NXTHDR(mhdr,cmsg)	\
         (((cmsg) == NULL) ? CMSG_FIRSTHDR(mhdr) : \
          (((u_char *)(cmsg) + CMSG_ALIGN((cmsg)->cmsg_len) \
