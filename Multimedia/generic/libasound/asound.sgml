@@ -860,6 +860,30 @@ underlying specification.
 </TBODY>
 </TGROUP>
 </TABLE>
+<PARA>
+An LSB conforming implementation shall provide the generic deprecated functions
+for ALSA PCM Interface - General Functions specified in <XREF linkend="tbl-libasound-9-depints">,
+with the full mandatory functionality as described in the referenced
+underlying specification.
+</PARA>
+<NOTE><PARA>These interfaces are deprecated, and applications
+should avoid using them.
+These interfaces may be withdrawn
+in future releases of this specification.
+</PARA></NOTE>
+<!--libgroupdepints-->
+<TABLE id="tbl-libasound-9-depints">
+<TITLE>libasound - ALSA PCM Interface - General Functions Deprecated Function Interfaces</TITLE>
+<TGROUP COLS=3>
+<TBODY>
+<ROW>
+<ENTRY><indexterm><primary>snd_pcm_hwsync</primary></indexterm>snd_pcm_hwsync(ALSA_0.9) <LINK LINKEND="REFSTD.libasound.1">[ALSA]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 </SECT3>
 </SECT2>
 <!-- debug: database interface name ALSA PCM Interface - Access Mask Functions -->
@@ -1649,6 +1673,30 @@ underlying specification.
 <ENTRY><indexterm><primary>snd_seq_event_output</primary></indexterm>snd_seq_event_output(ALSA_0.9) <LINK LINKEND="REFSTD.libasound.1">[ALSA]</LINK></ENTRY>
 <ENTRY><indexterm><primary>snd_seq_event_output_direct</primary></indexterm>snd_seq_event_output_direct(ALSA_0.9) <LINK LINKEND="REFSTD.libasound.1">[ALSA]</LINK></ENTRY>
 <ENTRY><indexterm><primary>snd_seq_free_event</primary></indexterm>snd_seq_free_event(ALSA_0.9) <LINK LINKEND="REFSTD.libasound.1">[ALSA]</LINK></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+<PARA>
+An LSB conforming implementation shall provide the generic deprecated functions
+for ALSA Sequencer Event API specified in <XREF linkend="tbl-libasound-24-depints">,
+with the full mandatory functionality as described in the referenced
+underlying specification.
+</PARA>
+<NOTE><PARA>These interfaces are deprecated, and applications
+should avoid using them.
+These interfaces may be withdrawn
+in future releases of this specification.
+</PARA></NOTE>
+<!--libgroupdepints-->
+<TABLE id="tbl-libasound-24-depints">
+<TITLE>libasound - ALSA Sequencer Event API Deprecated Function Interfaces</TITLE>
+<TGROUP COLS=3>
+<TBODY>
+<ROW>
+<ENTRY><indexterm><primary>snd_seq_free_event</primary></indexterm>snd_seq_free_event(ALSA_0.9) <LINK LINKEND="REFSTD.libasound.1">[ALSA]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -4331,6 +4379,67 @@ typedef union snd_seq_timestamp {
     snd_seq_tick_time_t tick;
     struct snd_seq_real_time time;
 } snd_seq_timestamp_t;
+enum snd_seq_event_type {
+    SND_SEQ_EVENT_SYSTEM = 0,	/* system status; event data type = #snd_seq_result_t */
+    SND_SEQ_EVENT_RESULT,	/* returned result status; event data type = #snd_seq_result_t */
+    SND_SEQ_EVENT_NOTE = 5,	/* note on and off with duration; event data type = #snd_seq_ev_note_t */
+    SND_SEQ_EVENT_NOTEON,	/* note on; event data type = #snd_seq_ev_note_t */
+    SND_SEQ_EVENT_NOTEOFF,	/* note off; event data type = #snd_seq_ev_note_t */
+    SND_SEQ_EVENT_KEYPRESS,	/* key pressure change (aftertouch); event data type = #snd_seq_ev_note_t */
+    SND_SEQ_EVENT_CONTROLLER = 10,	/* controller; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_PGMCHANGE,	/* program change; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_CHANPRESS,	/* channel pressure; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_PITCHBEND,	/* pitchwheel; event data type = #snd_seq_ev_ctrl_t; data is from -8192 to 8191) */
+    SND_SEQ_EVENT_CONTROL14,	/* 14 bit controller value; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_NONREGPARAM,	/* 14 bit NRPN;  event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_REGPARAM,	/* 14 bit RPN; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_SONGPOS = 20,	/* SPP with LSB and MSB values; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_SONGSEL,	/* Song Select with song ID number; event data type = #snd_seq_ev_ctrl_ */
+    SND_SEQ_EVENT_QFRAME,	/* midi time code quarter frame; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_TIMESIGN,	/* SMF Time Signature event; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_KEYSIGN,	/* SMF Key Signature event; event data type = #snd_seq_ev_ctrl_t */
+    SND_SEQ_EVENT_START = 30,	/* MIDI Real Time Start message; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_CONTINUE,	/* MIDI Real Time Continue message; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_STOP,		/* MIDI Real Time Stop message; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_SETPOS_TICK,	/* Set tick queue position; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_SETPOS_TIME,	/* Set real-time queue position; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_TEMPO,	/* (SMF) Tempo event; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_CLOCK,	/* MIDI Real Time Clock message; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_TICK,		/* MIDI Real Time Tick message; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_QUEUE_SKEW,	/* Queue timer skew; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_SYNC_POS,	/* Sync position changed; event data type = #snd_seq_ev_queue_control_t */
+    SND_SEQ_EVENT_TUNE_REQUEST = 40,	/* Tune request; event data type = none */
+    SND_SEQ_EVENT_RESET,	/* Reset to power-on state; event data type = none */
+    SND_SEQ_EVENT_SENSING,	/* Active sensing event; event data type = none */
+    SND_SEQ_EVENT_ECHO = 50,	/* Echo-back event; event data type = any type */
+    SND_SEQ_EVENT_OSS,		/* OSS emulation raw event; event data type = any type */
+    SND_SEQ_EVENT_CLIENT_START = 60,	/* New client has connected; event data type = #snd_seq_addr_t */
+    SND_SEQ_EVENT_CLIENT_EXIT,	/* Client has left the system; event data type = #snd_seq_addr_t */
+    SND_SEQ_EVENT_CLIENT_CHANGE,	/* Client status/info has changed; event data type = #snd_seq_addr_t */
+    SND_SEQ_EVENT_PORT_START,	/* New port was created; event data type = #snd_seq_addr_t */
+    SND_SEQ_EVENT_PORT_EXIT,	/* Port was deleted from system; event data type = #snd_seq_addr_t */
+    SND_SEQ_EVENT_PORT_CHANGE,	/* Port status/info has changed; event data type = #snd_seq_addr_t */
+    SND_SEQ_EVENT_PORT_SUBSCRIBED,	/* Ports connected; event data type = #snd_seq_connect_t */
+    SND_SEQ_EVENT_PORT_UNSUBSCRIBED,	/* Ports disconnected; event data type = #snd_seq_connect_t */
+    SND_SEQ_EVENT_USR0 = 90,	/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR1,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR2,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR3,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR4,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR5,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR6,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR7,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR8,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_USR9,		/* user-defined event; event data type = any (fixed size) */
+    SND_SEQ_EVENT_SYSEX = 130,	/* system exclusive data (variable length);  event data type = #snd_seq_ev_ext_t */
+    SND_SEQ_EVENT_BOUNCE,	/* error event;  event data type = #snd_seq_ev_ext_t */
+    SND_SEQ_EVENT_USR_VAR0 = 135,	/* reserved for user apps; event data type = #snd_seq_ev_ext_t */
+    SND_SEQ_EVENT_USR_VAR1,	/* reserved for user apps; event data type = #snd_seq_ev_ext_t */
+    SND_SEQ_EVENT_USR_VAR2,	/* reserved for user apps; event data type = #snd_seq_ev_ext_t */
+    SND_SEQ_EVENT_USR_VAR3,	/* reserved for user apps; event data type = #snd_seq_ev_ext_t */
+    SND_SEQ_EVENT_USR_VAR4,	/* reserved for user apps; event data type = #snd_seq_ev_ext_t */
+    SND_SEQ_EVENT_NONE = 255	/* NOP; ignored in any case */
+};
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -4441,6 +4550,14 @@ typedef enum _snd_timer_type {
     SND_TIMER_TYPE_SHM = 1,
     SND_TIMER_TYPE_INET = 2
 } snd_timer_type_t;
+typedef enum _snd_timer_class {
+    SND_TIMER_CLASS_NONE = -1,	/* invalid */
+    SND_TIMER_CLASS_SLAVE = 0,	/* slave timer */
+    SND_TIMER_CLASS_GLOBAL,	/* global timer */
+    SND_TIMER_CLASS_CARD,	/* card timer */
+    SND_TIMER_CLASS_PCM,	/* PCM timer */
+    SND_TIMER_CLASS_LAST	/* last timer */
+} snd_timer_class_t;
 extern int snd_timer_close(snd_timer_t * handle);
 extern int snd_timer_continue(snd_timer_t * handle);
 extern void snd_timer_id_copy(snd_timer_id_t * dst,
