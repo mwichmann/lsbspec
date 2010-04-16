@@ -12,7 +12,7 @@ all source: $(FILES) $(TABLES)
 gensrc:
 	../../../mkstandardsgmltable -a IA64 -t Standard -m LSB_Core -v `cat ../../../LSB/target_version.IA64` >standards.sgml
 	../../../mkstandardsgmltable -a IA64 -t Reference -m LSB_Core -v `cat ../../../LSB/target_version.IA64` >references.sgml
-	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI','SUSV3','LSB','ISOC99'" >cxxstandards.sgml
+	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI-1.86','SUSV3','LSB','ISOC99'" >cxxstandards.sgml
 	../../../mklibsgmltable -a IA64 -v `cat ../../../LSB/target_version.IA64` -m "LSB_Core" >libraries.sgml
 	../../../mklibsgmltable -a IA64 -v `cat ../../../LSB/target_version.IA64` -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
 

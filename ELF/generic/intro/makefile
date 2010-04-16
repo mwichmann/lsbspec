@@ -6,7 +6,7 @@ TABLES=standards.sgml
 
 # A trick with the generic spec - we don't want LSB Core Generic to reference itself, but we want to add reference to CXXABI
 EXCLSPECS="'LSB'"
-INCLSPECS="'CXXABI'"
+INCLSPECS="'CXXABI-1.86'"
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
