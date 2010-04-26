@@ -9,8 +9,25 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkstandardsgmltable -a <archname>\n";
-die;
+print STDERR <<"EOM"
+mkstandardsgmltable -a <archname> [-v <lsbversion> [-m <submodule>]] [-s <specids>] [-x <exclids>] [-t <spectype>]
+
+-a      Architecture.
+
+-v      LSB Version.
+
+-m      SubModule name. If specified, entries from the SModStd table will be taken into account.
+        If this option is set, LSB Version must be specified, too.
+               
+-s      List of spec identifiers (Standard.Sid) to be included in the generated table, comma separated.                
+
+-x      List of spec identifiers (Standard.Sid) that should not be included in the generated table, 
+        even if they are selected using other ways. Comma separated.                
+                
+-t      Type of specification (Standard.Stype) that should be taken into account, comma separated.
+        By default, entries with Stype='Standard' and Stype='Reference' are picked up.                
+EOM
+      ; exit(1);
 }
 
 sub quote($)
@@ -104,7 +121,7 @@ $select = "SELECT * FROM Standard ";
 if( $SMid ) {
     $select.= "LEFT JOIN SModStd ON SMSsid=Sid ";
 }
-$select.= "WHERE Stype in ($Stype) ";
+$select.= "WHERE Stype IN ($Stype) ";
 $select.= "AND ( Sarch=$Aid OR Sarch=1 ) ";
 if( $specids or $exclids or $SMid ) {
     $select.= "AND (";
