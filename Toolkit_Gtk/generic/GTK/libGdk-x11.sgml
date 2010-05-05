@@ -2576,6 +2576,7 @@ extern void gdk_add_client_message_filter(GdkAtom message_type,
 					  gpointer data);
 extern GdkAtom gdk_atom_intern(const gchar * atom_name,
 			       gboolean only_if_exists);
+extern GdkAtom gdk_atom_intern_static_string(const gchar * atom_name);
 extern gchar *gdk_atom_name(GdkAtom atom);
 extern GType gdk_axis_use_get_type(void);
 extern void gdk_beep(void);
@@ -2722,8 +2723,10 @@ extern gboolean gdk_display_supports_clipboard_persistence(GdkDisplay *
 							   display);
 extern gboolean gdk_display_supports_cursor_alpha(GdkDisplay * display);
 extern gboolean gdk_display_supports_cursor_color(GdkDisplay * display);
+extern gboolean gdk_display_supports_input_shapes(GdkDisplay * display);
 extern gboolean gdk_display_supports_selection_notification(GdkDisplay *
 							    display);
+extern gboolean gdk_display_supports_shapes(GdkDisplay * display);
 extern void gdk_display_sync(GdkDisplay * display);
 extern void gdk_display_warp_pointer(GdkDisplay * display,
 				     GdkScreen * screen, gint x, gint y);
@@ -3119,6 +3122,11 @@ extern GdkPixmap *gdk_pixmap_create_from_xpm_d(GdkDrawable * drawable,
 extern GdkPixmap *gdk_pixmap_foreign_new(GdkNativeWindow anid);
 extern GdkPixmap *gdk_pixmap_foreign_new_for_display(GdkDisplay * display,
 						     GdkNativeWindow anid);
+extern GdkPixmap *gdk_pixmap_foreign_new_for_screen(GdkScreen * screen,
+						    GdkNativeWindow anid,
+						    gint width,
+						    gint height,
+						    gint depth);
 extern GType gdk_pixmap_get_type(void);
 extern GdkPixmap *gdk_pixmap_lookup(GdkNativeWindow anid);
 extern GdkPixmap *gdk_pixmap_lookup_for_display(GdkDisplay * display,
@@ -3203,9 +3211,12 @@ extern void gdk_rgb_set_min_colors(gint min_colors);
 extern void gdk_rgb_set_verbose(gboolean verbose);
 extern void gdk_screen_broadcast_client_message(GdkScreen * screen,
 						GdkEvent * event);
+extern GdkWindow *gdk_screen_get_active_window(GdkScreen * screen);
 extern GdkScreen *gdk_screen_get_default(void);
 extern GdkColormap *gdk_screen_get_default_colormap(GdkScreen * screen);
 extern GdkDisplay *gdk_screen_get_display(GdkScreen * screen);
+extern const cairo_font_options_t *gdk_screen_get_font_options(GdkScreen *
+							       screen);
 extern gint gdk_screen_get_height(GdkScreen * screen);
 extern gint gdk_screen_get_height_mm(GdkScreen * screen);
 extern gint gdk_screen_get_monitor_at_point(GdkScreen * screen, gint x,
@@ -3217,6 +3228,7 @@ extern void gdk_screen_get_monitor_geometry(GdkScreen * screen,
 					    GdkRectangle * dest);
 extern gint gdk_screen_get_n_monitors(GdkScreen * screen);
 extern gint gdk_screen_get_number(GdkScreen * screen);
+extern gdouble gdk_screen_get_resolution(GdkScreen * screen);
 extern GdkColormap *gdk_screen_get_rgb_colormap(GdkScreen * screen);
 extern GdkVisual *gdk_screen_get_rgb_visual(GdkScreen * screen);
 extern GdkColormap *gdk_screen_get_rgba_colormap(GdkScreen * screen);
@@ -3230,12 +3242,18 @@ extern GList *gdk_screen_get_toplevel_windows(GdkScreen * screen);
 extern GType gdk_screen_get_type(void);
 extern gint gdk_screen_get_width(GdkScreen * screen);
 extern gint gdk_screen_get_width_mm(GdkScreen * screen);
+extern GList *gdk_screen_get_window_stack(GdkScreen * screen);
 extern gint gdk_screen_height(void);
 extern gint gdk_screen_height_mm(void);
+extern gboolean gdk_screen_is_composited(GdkScreen * screen);
 extern GList *gdk_screen_list_visuals(GdkScreen * screen);
 extern gchar *gdk_screen_make_display_name(GdkScreen * screen);
 extern void gdk_screen_set_default_colormap(GdkScreen * screen,
 					    GdkColormap * colormap);
+extern void gdk_screen_set_font_options(GdkScreen * screen,
+					const cairo_font_options_t *
+					options);
+extern void gdk_screen_set_resolution(GdkScreen * screen, gdouble dpi);
 extern gint gdk_screen_width(void);
 extern gint gdk_screen_width_mm(void);
 extern GType gdk_scroll_direction_get_type(void);
@@ -3423,12 +3441,21 @@ extern void gdk_window_get_root_origin(GdkWindow * window, gint * x,
 extern GdkWindowState gdk_window_get_state(GdkWindow * window);
 extern GdkWindow *gdk_window_get_toplevel(GdkWindow * window);
 extern GList *gdk_window_get_toplevels(void);
+extern GdkWindowTypeHint gdk_window_get_type_hint(GdkWindow * window);
 extern GdkRegion *gdk_window_get_update_area(GdkWindow * window);
 extern void gdk_window_get_user_data(GdkWindow * window, gpointer * data);
 extern GdkWindowType gdk_window_get_window_type(GdkWindow * window);
 extern void gdk_window_hide(GdkWindow * window);
 extern GType gdk_window_hints_get_type(void);
 extern void gdk_window_iconify(GdkWindow * window);
+extern void gdk_window_input_shape_combine_mask(GdkWindow * window,
+						GdkBitmap * mask, gint x,
+						gint y);
+extern void gdk_window_input_shape_combine_region(GdkWindow * window,
+						  const GdkRegion *
+						  shape_region,
+						  gint offset_x,
+						  gint offset_y);
 extern void gdk_window_invalidate_maybe_recurse(GdkWindow * window,
 						const GdkRegion * region,
 						gboolean(*child_func)
@@ -3447,6 +3474,7 @@ extern GdkWindow *gdk_window_lookup_for_display(GdkDisplay * display,
 						GdkNativeWindow anid);
 extern void gdk_window_lower(GdkWindow * window);
 extern void gdk_window_maximize(GdkWindow * window);
+extern void gdk_window_merge_child_input_shapes(GdkWindow * window);
 extern void gdk_window_merge_child_shapes(GdkWindow * window);
 extern void gdk_window_move(GdkWindow * window, gint x, gint y);
 extern void gdk_window_move_region(GdkWindow * window,
@@ -3478,6 +3506,7 @@ extern void gdk_window_set_back_pixmap(GdkWindow * window,
 				       gboolean parent_relative);
 extern void gdk_window_set_background(GdkWindow * window,
 				      const GdkColor * color);
+extern void gdk_window_set_child_input_shapes(GdkWindow * window);
 extern void gdk_window_set_child_shapes(GdkWindow * window);
 extern void gdk_window_set_cursor(GdkWindow * window, GdkCursor * cursor);
 extern void gdk_window_set_debug_updates(gboolean setting);
@@ -3558,6 +3587,8 @@ extern void gdk_cairo_set_source_color(cairo_t * cr,
 extern void gdk_cairo_set_source_pixbuf(cairo_t * cr,
 					const GdkPixbuf * pixbuf,
 					double pixbuf_x, double pixbuf_y);
+extern void gdk_cairo_set_source_pixmap(cairo_t * cr, GdkPixmap * pixmap,
+					double pixmap_x, double pixmap_y);
 </SCREEN>
 </SECT2>
 <SECT2>

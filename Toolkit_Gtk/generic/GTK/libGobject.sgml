@@ -1403,6 +1403,9 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define G_PARAM_USER_SHIFT	(8)
 #define G_TYPE_CLOSURE	(g_closure_get_type ())
 #define G_TYPE_GSTRING	(g_gstring_get_type ())
+#define G_TYPE_GTYPE	(g_gtype_get_type())
+#define G_TYPE_HASH_TABLE	(g_hash_table_get_type ())
+#define G_TYPE_INITIALLY_UNOWNED	(g_initially_unowned_get_type())
 #define G_TYPE_IO_CHANNEL	(g_io_channel_get_type ())
 #define G_TYPE_IO_CONDITION	(g_io_condition_get_type ())
 #define G_PARAM_READWRITE	(G_PARAM_READABLE | G_PARAM_WRITABLE)
@@ -1990,6 +1993,9 @@ extern GFlagsValue *g_flags_get_value_by_nick(GFlagsClass *,
 					      const gchar *);
 extern GType g_flags_register_static(const gchar *, const GFlagsValue *);
 extern GType g_gstring_get_type(void);
+extern GType g_gtype_get_type(void);
+extern GType g_hash_table_get_type(void);
+extern GType g_initially_unowned_get_type(void);
 extern GType g_io_channel_get_type(void);
 extern GType g_io_condition_get_type(void);
 extern void g_object_add_toggle_ref(GObject *, GToggleNotify, gpointer);
@@ -2004,6 +2010,7 @@ extern void g_object_class_override_property(GObjectClass *, guint,
 					     const gchar *);
 extern gpointer g_object_connect(gpointer, const gchar *, ...);
 extern void g_object_disconnect(gpointer, const gchar *, ...);
+extern void g_object_force_floating(GObject * object);
 extern void g_object_freeze_notify(GObject *);
 extern void g_object_get(gpointer, const gchar *, ...);
 extern gpointer g_object_get_data(GObject *, const gchar *);
@@ -2014,11 +2021,13 @@ extern GParamSpec *g_object_interface_find_property(gpointer,
 						    const gchar *);
 extern void g_object_interface_install_property(gpointer, GParamSpec *);
 extern GParamSpec **g_object_interface_list_properties(gpointer, guint *);
+extern gboolean g_object_is_floating(gpointer object);
 extern gpointer g_object_new(GType, const gchar *, ...);
 extern GObject *g_object_new_valist(GType, const gchar *, va_list);
 extern gpointer g_object_newv(GType, guint, GParameter *);
 extern void g_object_notify(GObject *, const gchar *);
 extern gpointer g_object_ref(gpointer);
+extern gpointer g_object_ref_sink(gpointer object);
 extern void g_object_remove_toggle_ref(GObject *, GToggleNotify, gpointer);
 extern void g_object_remove_weak_pointer(GObject *, gpointer *);
 extern void g_object_run_dispose(GObject *);
@@ -2064,6 +2073,10 @@ extern const gchar *g_param_spec_get_name(GParamSpec *);
 extern const gchar *g_param_spec_get_nick(GParamSpec *);
 extern gpointer g_param_spec_get_qdata(GParamSpec *, GQuark);
 extern GParamSpec *g_param_spec_get_redirect_target(GParamSpec *);
+extern GParamSpec *g_param_spec_gtype(const gchar * name,
+				      const gchar * nick,
+				      const gchar * blurb, GType is_a_type,
+				      GParamFlags flags);
 extern GParamSpec *g_param_spec_int(const gchar *, const gchar *,
 				    const gchar *, gint, gint, gint,
 				    GParamFlags);
@@ -2093,6 +2106,7 @@ extern GParamSpec *g_param_spec_pool_lookup(GParamSpecPool *,
 extern GParamSpecPool *g_param_spec_pool_new(gboolean);
 extern void g_param_spec_pool_remove(GParamSpecPool *, GParamSpec *);
 extern GParamSpec *g_param_spec_ref(GParamSpec *);
+extern GParamSpec *g_param_spec_ref_sink(GParamSpec * pspec);
 extern void g_param_spec_set_qdata(GParamSpec *, GQuark, gpointer);
 extern void g_param_spec_set_qdata_full(GParamSpec *, GQuark, gpointer,
 					GDestroyNotify);
@@ -2274,6 +2288,13 @@ extern GType g_type_register_fundamental(GType, const gchar *,
 					 GTypeFlags);
 extern GType g_type_register_static(GType, const gchar *,
 				    const GTypeInfo *, GTypeFlags);
+extern GType g_type_register_static_simple(GType parent_type,
+					   const gchar * type_name,
+					   guint class_size,
+					   GClassInitFunc class_init,
+					   guint instance_size,
+					   GInstanceInitFunc instance_init,
+					   GTypeFlags flags);
 extern void g_type_remove_class_cache_func(gpointer, GTypeClassCacheFunc);
 extern void g_type_remove_interface_check(gpointer,
 					  GTypeInterfaceCheckFunc);
@@ -2307,6 +2328,7 @@ extern gdouble g_value_get_double(const GValue *);
 extern gint g_value_get_enum(const GValue *);
 extern guint g_value_get_flags(const GValue *);
 extern gfloat g_value_get_float(const GValue *);
+extern GType g_value_get_gtype(const GValue * value);
 extern gint g_value_get_int(const GValue *);
 extern gint64 g_value_get_int64(const GValue *);
 extern glong g_value_get_long(const GValue *);
@@ -2330,6 +2352,7 @@ extern void g_value_set_double(GValue *, gdouble);
 extern void g_value_set_enum(GValue *, gint);
 extern void g_value_set_flags(GValue *, guint);
 extern void g_value_set_float(GValue *, gfloat);
+extern void g_value_set_gtype(GValue * value, GType v_gtype);
 extern void g_value_set_instance(GValue *, gpointer);
 extern void g_value_set_int(GValue *, gint);
 extern void g_value_set_int64(GValue *, gint64);
