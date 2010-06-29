@@ -34342,6 +34342,38 @@ underlying specification.
 </TABLE>
 </SECT3>
 </SECT2>
+<!-- debug: database interface name Non-standard GNU Extensions for libpthread -->
+<SECT2>
+<!--libgroup-->
+<TITLE>Non-standard GNU Extensions for libpthread</TITLE>
+<PARA>
+</PARA>
+
+
+<SECT3>
+<TITLE>Interfaces for Non-standard GNU Extensions for libpthread</TITLE>
+<PARA>
+An LSB conforming implementation shall provide the generic functions
+for Non-standard GNU Extensions for libpthread specified in <XREF linkend="tbl-libpthread-non-s-ints">,
+with the full mandatory functionality as described in the referenced
+underlying specification.
+</PARA>
+<!--libgroupints-->
+<TABLE id="tbl-libpthread-non-s-ints">
+<TITLE>libpthread - Non-standard GNU Extensions for libpthread Function Interfaces</TITLE>
+<TGROUP COLS=4>
+<TBODY>
+<ROW>
+<ENTRY><indexterm><primary>pthread_getattr_np</primary></indexterm>pthread_getattr_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_rwlockattr_getkind_np</primary></indexterm>pthread_rwlockattr_getkind_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_rwlockattr_setkind_np</primary></indexterm>pthread_rwlockattr_setkind_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</SECT3>
+</SECT2>
 </SECT1>
 <SECT1 ID=libpthread-ddefs>
 <TITLE>Data Definitions for libpthread</TITLE>
@@ -34805,6 +34837,121 @@ See <function>pread</function> for possible error values.
 </REFSECT1>
 </REFENTRY>
 
+<!-- MISSING DEFINITION FOR pthread_getattr_np -->
+<!-- Lets just hope nobody notices -->
+<refentry id="libpthread-pthread-rwlockattr-getkind-np-1">
+
+<refmeta>
+<refentrytitle>pthread_rwlockattr_getkind_np, pthread_rwlockattr_setkind_np</refentrytitle>
+<refmiscinfo>libpthread</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>pthread_rwlockattr_getkind_np, pthread_rwlockattr_setkind_np</refname>
+<refpurpose>get/set the read-write lock kind of the thread read-write lock attribute object</refpurpose>
+<indexterm id="ix-pthread-rwlockattr-getkind-1">
+	<primary>pthread_rwlockattr_getkind_np</primary></indexterm>
+<indexterm id="ix-pthread-rwlockattr-getkind-2">
+	<primary>pthread_rwlockattr_setkind_np</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;pthread.h&gt;
+</funcsynopsisinfo>
+<funcprototype>
+<funcdef>int
+<function>pthread_rwlockattr_getkind_np</function>
+</funcdef>
+<paramdef>const pthread_rwlockattr_t *
+<parameter>attr</parameter>
+</paramdef>
+<paramdef>int *
+<parameter>pref</parameter>
+</paramdef>
+</funcprototype>
+
+<funcprototype>
+<funcdef>int
+<function>pthread_rwlockattr_setkind_np</function>
+</funcdef>
+<paramdef>pthread_rwlockattr_t *
+<parameter>attr</parameter>
+</paramdef>
+<paramdef>int *
+<parameter>pref</parameter>
+</paramdef>
+</funcprototype>
+
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+The <function>pthread_rwlockattr_setkind_np</function> function sets the kind 
+of read-write lock of the thread read-write lock attribute object referred to
+by attr to the value specified with pref. The argument pref may be set
+to <constant>PTHREAD_RWLOCK_PREFER_READER_NP</constant>,
+<constant>PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP</constant>,
+or <constant>PTHREAD_RWLOCK_PREFER_WRITER_NP</constant>.
+The default lock setting is <constant>PTHREAD_RWLOCK_PREFER_READER_NP</constant>.
+A thread may hold multiple read locks, i.e. read locks are recursive.
+According to The Single Unix Specification, the behavior is unspecified when 
+a reader tries to place a lock, and there is no write lock but writers are 
+waiting. Giving preference to the reader, as is set by default with 
+the <constant>PTHREAD_RWLOCK_PREFER_READER_NP</constant> value implies
+that the reader will receive the requested lock, even if a writer is waiting.
+As long as there are readers the writer will be starved. Setting the kind to
+<constant>PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP</constant>, avoids writer
+starvation as long as any read locking is not done in a recursive fashion.
+
+The <function>pthread_rwlockattr_getkind_np</function> function returns the 
+value of the read-write lock attribute of the thread read-write lock attribute
+object referred to by <parameter>attr</parameter> in the pointer <parameter>pref</parameter>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+<function>pthread_rwlockattr_setkind_np</function> function returns 0 on success; on error, it returns a non-zero error number.
+
+<function>pthread_rwlockattr_setkind_np</function> function always returns 0.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Errors</title>
+<VARIABLELIST>
+<VARLISTENTRY>
+<TERM>
+EINVAL
+</TERM>
+<LISTITEM>
+<PARA>
+<parameter>pref</parameter> is set to an unsupported value.
+</PARA>
+</LISTITEM>
+</VARLISTENTRY>
+</VARIABLELIST>
+</refsect1>
+
+<refsect1>
+<title>Notes</title>
+<para>
+Setting the value read-write lock kind to <constant>PTHREAD_RWLOCK_PREFER_WRITER_NP</constant>,
+results in the same behavior as setting the value to
+<constant>PTHREAD_RWLOCK_PREFER_READER_NP</constant>. As long as a reader thread holds the
+lock the thread holding a write lock will be starved. Setting the kind
+value to <constant>PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP</constant>, allows the
+writer to run. However, the writer may not be recursive as is implied by the name. 
+</para>
+</refsect1>
+
+</refentry>
+
+<!-- MISSING DEFINITION FOR pthread_rwlockattr_setkind_np -->
+<!-- Lets just hope nobody notices -->
 <REFENTRY ID="baselib-pwrite64"> <REFMETA>
 <REFENTRYTITLE>pwrite64</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -34906,6 +35053,11 @@ for the libgcc_s library
 </TGROUP>
 </TABLE>
 <PARA>
+The behavior of the interfaces in this library is specified by the following specifications:<SIMPLELIST COLUMNS=1>
+<MEMBER ID='REFSTD.libgcc.s.1'>
+[LSB] <XREF LINKEND="std.LSB">
+</MEMBER>
+</SIMPLELIST>
 </PARA>
 <!-- debug: database interface name Unwind Library -->
 <SECT2>
@@ -34918,9 +35070,25 @@ for the libgcc_s library
 <SECT3>
 <TITLE>Interfaces for Unwind Library</TITLE>
 <PARA>
-No external functions are defined for libgcc_s - Unwind Library
-in this part of the specification. See also the relevant architecture specific part of this specification.
+An LSB conforming implementation shall provide the generic functions
+for Unwind Library specified in <XREF linkend="tbl-libgcc-s-unwin-ints">,
+with the full mandatory functionality as described in the referenced
+underlying specification.
 </PARA>
+<!--libgroupints-->
+<TABLE id="tbl-libgcc-s-unwin-ints">
+<TITLE>libgcc_s - Unwind Library Function Interfaces</TITLE>
+<TGROUP COLS=4>
+<TBODY>
+<ROW>
+<ENTRY><indexterm><primary>_Unwind_GetIPInfo</primary></indexterm>_Unwind_GetIPInfo(GCC_4.2.0) <LINK LINKEND="REFSTD.libgcc.s.1">[LSB]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 </SECT3>
 </SECT2>
 </SECT1>
@@ -34986,6 +35154,21 @@ struct _Unwind_Exception {
 typedef int _Unwind_Action;
 </SCREEN>
 </SECT2>
+</SECT1>
+<SECT1 ID=libgcc-sman>
+<TITLE>Interface Definitions for libgcc_s</TITLE>
+<PARA>
+The interfaces defined on the following pages are included in libgcc_s and are defined
+by this specification.
+Unless otherwise noted, these interfaces shall be included
+in the source standard.
+</PARA>
+<PARA>
+Other interfaces listed in <XREF LINKEND=libgcc-s> shall behave as described
+in the referenced base document.
+</PARA>
+<!-- MISSING DEFINITION FOR _Unwind_GetIPInfo -->
+<!-- Lets just hope nobody notices -->
 </SECT1>
 <!-- End of text generated from database -->
 
