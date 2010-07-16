@@ -2707,6 +2707,48 @@ extern long int telldir(DIR * __dirp);
 </SCREEN>
 </SECT2>
 <SECT2>
+<TITLE>elf.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+typedef uint32_t Elf32_Addr;
+typedef uint64_t Elf64_Addr;
+typedef uint32_t Elf32_Word;
+typedef uint32_t Elf64_Word;
+typedef int32_t Elf32_Sword;
+typedef int32_t Elf64_Sword;
+typedef uint64_t Elf32_Xword;
+typedef uint64_t Elf64_Xword;
+typedef int64_t Elf32_Sxword;
+typedef int64_t Elf64_Sxword;
+typedef uint32_t Elf32_Off;
+typedef uint64_t Elf64_Off;
+typedef struct {
+    Elf32_Word p_type;		/* Segment type */
+    Elf32_Off p_offset;		/* Segment file offset */
+    Elf32_Addr p_vaddr;		/* Segment virtual address */
+    Elf32_Addr p_paddr;		/* Segment physical address */
+    Elf32_Word p_filesz;	/* Segment size in file */
+    Elf32_Word p_memsz;		/* Segment size in memory */
+    Elf32_Word p_flags;		/* Segment flags */
+    Elf32_Word p_align;		/* Segment alignment */
+} Elf32_Phdr;
+typedef struct {
+    Elf64_Word p_type;		/* Segment type */
+    Elf64_Word p_flags;		/* Segment flags */
+    Elf64_Off p_offset;		/* Segment file offset */
+    Elf64_Addr p_vaddr;		/* Segment virtual address */
+    Elf64_Addr p_paddr;		/* Segment physical address */
+    Elf64_Xword p_filesz;	/* Segment size in file */
+    Elf64_Xword p_memsz;	/* Segment size in memory */
+    Elf64_Xword p_align;	/* Segment alignment */
+} Elf64_Phdr;
+typedef uint16_t Elf32_Half;
+typedef uint16_t Elf64_Half;
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>endian.h</TITLE>
 <PARA>
 </PARA>
@@ -3399,6 +3441,16 @@ extern char *textdomain(const char *__domainname);
 #define PTHREAD_KEYS_MAX	1024
 #define PTHREAD_THREADS_MAX	16384
 #define PTHREAD_DESTRUCTOR_ITERATIONS	4
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>link.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern int dl_iterate_phdr(int (*)(struct dl_phdr_info *, size_t, void *),
+			   void *);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -35125,6 +35177,8 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
+struct _Unwind_Exception;
+
 typedef unsigned int _Unwind_Ptr __attribute__ ((__mode__(__pointer__)));
 typedef unsigned int _Unwind_Word __attribute__ ((__mode__(__word__)));
 typedef unsigned int _Unwind_Exception_Class
@@ -35237,15 +35291,15 @@ underlying specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
+<ENTRY><indexterm><primary>dl_iterate_phdr</primary></indexterm>dl_iterate_phdr <LINK LINKEND="REFSTD.libdl.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>dladdr</primary></indexterm>dladdr <LINK LINKEND="REFSTD.libdl.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>dlclose</primary></indexterm>dlclose <LINK LINKEND="REFSTD.libdl.2">[SUSv3]</LINK></ENTRY>
 <ENTRY><indexterm><primary>dlerror</primary></indexterm>dlerror <LINK LINKEND="REFSTD.libdl.2">[SUSv3]</LINK></ENTRY>
-<ENTRY><indexterm><primary>dlopen</primary></indexterm>dlopen <LINK LINKEND="REFSTD.libdl.1">[LSB]</LINK></ENTRY>
 </ROW>
 <ROW>
+<ENTRY><indexterm><primary>dlopen</primary></indexterm>dlopen <LINK LINKEND="REFSTD.libdl.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>dlsym</primary></indexterm>dlsym <LINK LINKEND="REFSTD.libdl.1">[LSB]</LINK></ENTRY>
-<ENTRY></ENTRY>
-<ENTRY></ENTRY>
+<ENTRY><indexterm><primary>dlvsym</primary></indexterm>dlvsym <LINK LINKEND="REFSTD.libdl.1">[LSB]</LINK></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 </TBODY>
@@ -35298,6 +35352,7 @@ extern int dlclose(void *__handle);
 extern char *dlerror(void);
 extern void *dlopen(const char *__file, int __mode);
 extern void *dlsym(void *__handle, const char *__name);
+extern void *dlvsym(void *handle, char *name, char *version);
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -35313,6 +35368,8 @@ in the source standard.
 Other interfaces listed in <XREF LINKEND=libdl> shall behave as described
 in the referenced base document.
 </PARA>
+<!-- MISSING DEFINITION FOR dl_iterate_phdr -->
+<!-- Lets just hope nobody notices -->
 <REFENTRY ID="baselib-dladdr-3"> <REFMETA>
 <REFENTRYTITLE>dladdr</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -35562,6 +35619,51 @@ are required, with behavior as described in <XREF LINKEND="std.SUSv3">.
 </refsect2>
 
 </refsect1>
+</refentry>
+
+<refentry id="libdl-dlvsym-1">
+
+<refmeta>
+<refentrytitle>dlvsym</refentrytitle>
+<refmiscinfo>libdl</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>dlvsym</refname>
+<refpurpose>obtain the address of a symbol from a dlopen object</refpurpose>
+<indexterm id="ix-libdl-dlvsym-1">
+	<primary>dlvsym</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;dlfcn.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>void *
+<function>dlvsym</function>
+</funcdef>
+<paramdef>void *
+<parameter>handle</parameter>
+</paramdef>
+<paramdef>char *
+<parameter>name</parameter>
+</paramdef>
+<paramdef>char *
+<parameter>version</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+<function>dlvsym</function> does the same as dlsym()
+but takes a version string as an additional argument.
+</para>
+</refsect1>
+
+
 </refentry>
 
 </SECT1>
