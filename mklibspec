@@ -918,9 +918,11 @@ if($sth->rows) {
 		# NB: Footnotes must be unique across the entire document
 		# NB: names are NOT demangled here ...
 		if (-f $entry->{'Iname'}.".sgml") {
-			print "m4_include(".$entry->{'Iname'}.".sgml)\n";
+                        print "m4_sinclude(m4_ifdef('".$entry->{'Iname'}."','',".$entry->{'Iname'}.".sgml))\n";
+                        print "m4_define('".$entry->{'Iname'}."','1')\n";
 		} elsif (-f "../../generic/" . basename(cwd()) . "/" . $entry->{'Iname'} . ".sgml") {
-			print "m4_include(../../generic/" . basename(cwd()) . "/" . $entry->{'Iname'} . ".sgml)\n";
+                        print "m4_sinclude(m4_ifdef('".$entry->{'Iname'}."','',../../generic/" . basename(cwd()) . "/" . $entry->{'Iname'} . ".sgml))\n";
+                        print "m4_define('".$entry->{'Iname'}."','1')\n";
 		} else {
 			$missing++;
 			print "<!-- MISSING DEFINITION FOR " . $entry->{'Iname'} . " -->\n";
