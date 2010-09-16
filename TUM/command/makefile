@@ -11,7 +11,7 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkcmdtable -m 10 -v `cat ../../LSB/target_version.generic` > cmdlist.sgml
+	../../mkcmdtable -m LSB_TUM -v `cat ../../LSB/target_version.generic` > cmdlist.sgml
 
 clean:
 	rm -f $(FILES)
