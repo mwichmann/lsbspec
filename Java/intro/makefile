@@ -13,7 +13,7 @@ TABLES=references.sgml
 all: $(FILES) #$(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'Java','JavaCmd','JavaVM'" >references.sgml
+	../../mkstandardsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Java >references.sgml
 
 clean:
 	rm -f $(FILES)
