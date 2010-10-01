@@ -10,7 +10,7 @@ TABLES=references.sgml
 all: $(FILES) #$(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -s "'PerlLang','PerlMod','PerlOp','PerlSyn','PerlFun','PerlMan','Python','PythonLib'" >references.sgml
+	../../mkstandardsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Perl,LSB_Python >references.sgml
 
 clean:
 	rm -f $(FILES)

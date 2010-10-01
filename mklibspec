@@ -709,7 +709,17 @@ print "</PARA>\n";
 #
 # 7) Get a list of the libgroups in the library
 #
-$select = "SELECT * FROM LibGroup WHERE LGlib=$Lid ORDER BY LGorder";
+$select = "SELECT * FROM LibGroup ";
+$select.= "WHERE LGlib=$Lid ";
+$select.= "AND EXISTS ( ";
+$select.= "  SELECT 1 FROM LGInt ";
+$select.= "  JOIN ArchInt ON AIint=LGIint";
+$select.= "  WHERE LGIlibg=LGid " ;
+$select.= "  AND AIarch IN (1,$Aid) ";
+$select.= "  AND AIappearedin > '' AND AIappearedin <= '$lsbversion' ";
+$select.= "  AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
+$select.= ") ";
+$select.= "ORDER BY LGorder";
 print STDERR $select,"\n" if $trace;
 $lgh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 $lgh->execute or die "Couldn't execute $select query: ".DBI->errstr;

@@ -9,8 +9,26 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkstandardsgmltable -a <archname>\n";
-die;
+print STDERR <<"EOM"
+mkstandardsgmltable -a <archname> [-v <lsbversion> [-m <submodule>]] [-s <specids>] [-x <exclids>] [-t <spectype>]
+
+-a      Architecture.
+
+-v      LSB Version.
+
+-m      SubModule name(s). If specified, entries from the SModStd table will be taken into account.
+        If this option is set, LSB Version must be specified, too.
+	If several names are specified, they should be comma-separated.
+               
+-s      List of spec identifiers (Standard.Sid) to be included in the generated table, comma separated.                
+
+-x      List of spec identifiers (Standard.Sid) that should not be included in the generated table, 
+        even if they are selected using other ways. Comma separated.                
+                
+-t      Type of specification (Standard.Stype) that should be taken into account, comma separated.
+        By default, entries with Stype='Standard' and Stype='Reference' are picked up.                
+EOM
+      ; exit(1);
 }
 
 sub quote($)
@@ -75,18 +93,18 @@ if( $archname ) {
 # 4) get submodule info
 #
 if( $submodule ) {
-    $select = "SELECT * FROM SubModule WHERE ";
-    $select.= "SMname=".$dbh->quote($submodule);
+    if( $submodule !~ /^'/ ) {
+	$submodule = "'$submodule'";
+	$submodule =~ s/\s//g; # drop spaces, if any
+	$submodule =~ s/,/','/g;
+    }
+    $select = "SELECT GROUP_CONCAT(SMid SEPARATOR ',') FROM SubModule WHERE ";
+    $select.= "SMname IN ($submodule)";
     print STDERR $select,"\n" if $trace;
-    $sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-    $sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+    ($SMid) = $dbh->selectrow_array($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 
-    $entry=$sth->fetchrow_hashref;
-    $sth->finish;
-    $SMid=$entry->{'SMid'};
-
-    if( not $entry->{'SMname'} ) {
-        die "Unknown submodule";
+    if( not $SMid ) {
+        die "Unknown submodule(s)";
     }
 } else {
     $SMid=0;
@@ -100,11 +118,11 @@ $Stype = quote($Stype);
 #    or which assigned to $submodule in the $lsbversion. Exclude entries
 #    listed in the $exclids.
 #
-$select = "SELECT * FROM Standard ";
+$select = "SELECT DISTINCT Standard.* FROM Standard ";
 if( $SMid ) {
     $select.= "LEFT JOIN SModStd ON SMSsid=Sid ";
 }
-$select.= "WHERE Stype in ($Stype) ";
+$select.= "WHERE Stype IN ($Stype) ";
 $select.= "AND ( Sarch=$Aid OR Sarch=1 ) ";
 if( $specids or $exclids or $SMid ) {
     $select.= "AND (";
@@ -123,7 +141,7 @@ if( $SMid ) {
     elsif( $exclids ) {
         $select.= " AND (";
     }
-    $select.= " SMSsmid=$SMid ";
+    $select.= " SMSsmid IN ($SMid) ";
     $select.= "AND SMSappearedin > '' AND SMSappearedin <= '$lsbversion' ";
     $select.= "AND (SMSwithdrawnin IS NULL OR SMSwithdrawnin > '$lsbversion') ";
     $select.= " ) " if( $specids or $exclids );

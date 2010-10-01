@@ -4161,7 +4161,6 @@ extern int XwcTextPerCharExtents(XFontSet, const wchar_t *, int,
 #define _XRead16(dpy,data,len)	_XRead((dpy), (char *)(data), (len))
 #define _XRead16Pad(dpy,data,len)	_XReadPad((dpy), (char *)(data), (len))
 #define OneDataCard32(dpy,dstaddr,srcvar)	{ *(CARD32 *)(dstaddr) = (srcvar); }
-#define MakeBigReq(req,n)	{ CARD64 _BRdat; CARD32 _BRlen = req->length - 1; req->length = 0; _BRdat = ((CARD32 *)req)[_BRlen]; memmove(((char *)req) + 8, ((char *)req) + 4, _BRlen &lt;&lt; 2); ((CARD32 *)req)[1] = _BRlen + n + 2; Data32(dpy, &amp;_BRdat, 4); }
 #define CI_GET_CHAR_INFO_1D(fs,col,def,cs)	{ cs = def; if (col >= fs->min_char_or_byte2 &amp;&amp; col &lt;= fs->max_char_or_byte2) { if (fs->per_char == NULL) { cs = &amp;fs->min_bounds; } else { cs = &amp;fs->per_char[(col - fs->min_char_or_byte2)]; if (CI_NONEXISTCHAR(cs)) cs = def; } } }
 #define CI_GET_CHAR_INFO_2D(fs,row,col,def,cs)	{ cs = def; if (row >= fs->min_byte1 &amp;&amp; row &lt;= fs->max_byte1 &amp;&amp; col >= fs->min_char_or_byte2 &amp;&amp; col &lt;= fs->max_char_or_byte2) { if (fs->per_char == NULL) { cs = &amp;fs->min_bounds; } else { cs = &amp;fs->per_char[((row - fs->min_byte1) * (fs->max_char_or_byte2 - fs->min_char_or_byte2 + 1)) + (col - fs->min_char_or_byte2)]; if (CI_NONEXISTCHAR(cs)) cs = def; } } }
 #define DeqAsyncHandler(dpy,handler)	{ if (dpy->async_handlers == (handler)) dpy->async_handlers = (handler)->next; else _XDeqAsyncHandler(dpy, handler); }
@@ -6384,11 +6383,7 @@ typedef XrmQuark XrmRepresentation;
 typedef struct {
     unsigned int size;
     XPointer addr;
-} XrmValue;
-typedef struct {
-    unsigned int size;
-    XPointer addr;
-} *XrmValuePtr;
+} XrmValue, *XrmValuePtr;
 typedef struct _XrmHashBucketRec *XrmHashBucket;
 typedef XrmHashBucket *XrmHashTable;
 typedef XrmHashTable XrmSearchList[];
@@ -13342,11 +13337,17 @@ typedef struct _XtEventRec {
 #define XtIsConstraint(widget)	(_XtCheckSubclassFlag(widget, (XtEnum)0x10))
 #define XtIsShell(widget)	(_XtCheckSubclassFlag(widget, (XtEnum)0x20))
 #define XtIsWMShell(widget)	(_XtCheckSubclassFlag(widget, (XtEnum)0x40))
+#ifndef FALSE
+#define FALSE	0
+#endif
 #define XtInputNoneMask	0L
 #define XtCacheNone	0x001
 #define XtCacheAll	0x002
 #define XtCacheByDisplay	0x003
 #define XtCacheRefCount	0x100
+#ifndef TRUE
+#define TRUE	1
+#endif
 #define XtIMXEvent	1
 #define _XtIntrinsic_h	1
 #define XtIMTimer	2
@@ -14639,7 +14640,11 @@ typedef struct _ApplicationShellClassRec {
     ApplicationShellClassPart application_shell_class;
 } ApplicationShellClassRec;
 typedef struct {
+#if defined(__cplusplus) || defined(c_plusplus)
     char *c_class;
+#else
+    char *class;
+#endif
     XrmClass xrm_class;
     int argc;
     char **argv;
@@ -15588,22 +15593,6 @@ underlying specification.
 </TBODY>
 </TGROUP>
 </TABLE>
-</SECT3>
-</SECT2>
-<!-- debug: database interface name MIT-MISC Extension -->
-<SECT2>
-<!--libgroup-->
-<TITLE>MIT-MISC Extension</TITLE>
-<PARA>
-</PARA>
-
-
-<SECT3>
-<TITLE>Interfaces for MIT-MISC Extension</TITLE>
-<PARA>
-No external functions are defined for libXext - MIT-MISC Extension
-in this part of the specification. See also the relevant architecture specific part of this specification.
-</PARA>
 </SECT3>
 </SECT2>
 <!-- debug: database interface name X Synchronization Extension -->
