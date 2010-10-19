@@ -369,8 +369,14 @@ underlying specification.
 <TBODY>
 <ROW>
 <ENTRY><indexterm><primary>pthread_getattr_np</primary></indexterm>pthread_getattr_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_mutex_consistent_np</primary></indexterm>pthread_mutex_consistent_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_mutexattr_getrobust_np</primary></indexterm>pthread_mutexattr_getrobust_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pthread_mutexattr_setrobust_np</primary></indexterm>pthread_mutexattr_setrobust_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>pthread_rwlockattr_getkind_np</primary></indexterm>pthread_rwlockattr_getkind_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pthread_rwlockattr_setkind_np</primary></indexterm>pthread_rwlockattr_setkind_np <LINK LINKEND="REFSTD.libpthread.2">[LSB]</LINK></ENTRY>
+<ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 </TBODY>
@@ -440,6 +446,12 @@ enum {
     PTHREAD_PRIO_NONE,
     PTHREAD_PRIO_INHERIT,
     PTHREAD_PRIO_PROTECT
+};
+enum {
+    PTHREAD_MUTEX_STALLED = 0,
+    PTHREAD_MUTEX_STALLED_NP = 0,
+    PTHREAD_MUTEX_ROBUST = 1,
+    PTHREAD_MUTEX_ROBUST_NP = 1
 };
 
 typedef unsigned long int pthread_t;
@@ -584,6 +596,7 @@ extern int pthread_join(pthread_t __th, void **__thread_return);
 extern int pthread_key_create(pthread_key_t * __key,
 			      void (*__destr_function) (void *));
 extern int pthread_key_delete(pthread_key_t __key);
+extern int pthread_mutex_consistent_np(pthread_mutex_t * __mutex);
 extern int pthread_mutex_destroy(pthread_mutex_t * __mutex);
 extern int pthread_mutex_getprioceiling(const pthread_mutex_t * __mutex,
 					int *__prioceiling);
@@ -604,6 +617,8 @@ extern int pthread_mutexattr_getprotocol(const pthread_mutexattr_t *
 					 __attr, int *__protocol);
 extern int pthread_mutexattr_getpshared(const pthread_mutexattr_t * __attr,
 					int *__pshared);
+extern int pthread_mutexattr_getrobust_np(const pthread_mutexattr_t *
+					  __attr, int *__robustness);
 extern int pthread_mutexattr_gettype(const pthread_mutexattr_t * __attr,
 				     int *__kind);
 extern int pthread_mutexattr_init(pthread_mutexattr_t * __attr);
@@ -613,6 +628,8 @@ extern int pthread_mutexattr_setprotocol(pthread_mutexattr_t * __attr,
 					 int __protocol);
 extern int pthread_mutexattr_setpshared(pthread_mutexattr_t * __attr,
 					int __pshared);
+extern int pthread_mutexattr_setrobust_np(const pthread_mutexattr_t *
+					  __attr, int __robustness);
 extern int pthread_mutexattr_settype(pthread_mutexattr_t * __attr,
 				     int __kind);
 extern int pthread_once(pthread_once_t * __once_control,
@@ -702,6 +719,12 @@ m4_define('_pthread_cleanup_push','1')
 m4_sinclude(m4_ifdef('pread64','',pread64.sgml))
 m4_define('pread64','1')
 <!-- MISSING DEFINITION FOR pthread_getattr_np -->
+<!-- Lets just hope nobody notices -->
+<!-- MISSING DEFINITION FOR pthread_mutex_consistent_np -->
+<!-- Lets just hope nobody notices -->
+<!-- MISSING DEFINITION FOR pthread_mutexattr_getrobust_np -->
+<!-- Lets just hope nobody notices -->
+<!-- MISSING DEFINITION FOR pthread_mutexattr_setrobust_np -->
 <!-- Lets just hope nobody notices -->
 m4_sinclude(m4_ifdef('pthread_rwlockattr_getkind_np','',pthread_rwlockattr_getkind_np.sgml))
 m4_define('pthread_rwlockattr_getkind_np','1')
