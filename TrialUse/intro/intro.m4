@@ -76,6 +76,8 @@ m4_include(references.sgml)
 
 <CHAPTER ID="REQUIREMENTS">
 <TITLE>Requirements</TITLE>
+
+<!-- promoted to full standard
 <SECT1 ID="alsalibraries">
 <TITLE>Multimedia Libraries</TITLE>
 <PARA>
@@ -93,7 +95,7 @@ architecture-specific specification.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-m4_include(libraries.sgml)
+#m4_include(libraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
@@ -101,6 +103,7 @@ These libraries will be in an implementation-defined directory which
 the dynamic linker shall search by default.
 </PARA>
 </SECT1>
+-->
 
 <SECT1 ID="nsslibraries">
 <TITLE>Security Libraries</TITLE>
