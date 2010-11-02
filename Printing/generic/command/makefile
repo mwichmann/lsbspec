@@ -14,8 +14,8 @@ BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkcmdtable  -v `cat ../../../LSB/target_version.generic` -m 9 > cmdsutils.sgml
-	../../../mkcmdlist -v `cat ../../../LSB/target_version.generic` -m 9 > cmdman.sgml
+	../../../mkcmdtable  -v `cat ../../../LSB/target_version.generic` -m LSB_Printing > cmdsutils.sgml
+	../../../mkcmdlist -v `cat ../../../LSB/target_version.generic` -m LSB_Printing > cmdman.sgml
 
 clean:
 	rm -f $(FILES)

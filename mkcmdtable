@@ -17,7 +17,7 @@ my $builtins = 0;
 
 sub usage()
 {
-        print STDERR "mkcmdtable -v <lsbversion> [-b] [-m <moduleid>]\n Default moduleid is 1 (i.e LSB Core).\n";
+        print STDERR "mkcmdtable -v <lsbversion> [-b] [-m <module>]\n Default module is LSB_Core.\n";
         die;
 }
 ################################################################################
@@ -25,13 +25,8 @@ sub usage()
 ################################################################################
 
 sub lsbOpenDB {
-
 	$dbh = DBI->connect("DBI:mysql:$LSBDB:$LSBDBHOST", $LSBUSER, $LSBDBPASSWD);
 	die unless $dbh;
-
-	$sth = $dbh->prepare( "SHOW TABLES" );
-	$sth->execute;
-
 }
 
 ################################################################################
@@ -39,11 +34,6 @@ sub lsbOpenDB {
 ################################################################################
 
 sub lsbCloseDB {
-
-	$sth = $dbh->prepare( "SHOW TABLES" );
-	$sth->execute;
-
-	$sth->finish;
 	$dbh->disconnect;
 }
 
@@ -281,13 +271,20 @@ sub makeid($)
 
 # We can get module id from Module Table. Commands list will be generated as per modules.
 GetOptions("b" => \$builtins,
-           "m=i" => \$moduleid,
+           "m=s" => \$module,
 		   "v=s" => \$lsbversion);
 
-if(!$moduleid) { $moduleid=1; }
+lsbOpenDB;
+
+if(!$module) { 
+    $moduleid=1;
+}
+else {
+    ($moduleid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$module'");
+    die("Incorrect SubModule name") if not $moduleid;
+}
 if(!$lsbversion) { usage(); }
 
-lsbOpenDB;
 lsbCommands;
 lsbCloseDB;
 
