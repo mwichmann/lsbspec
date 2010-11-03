@@ -2,14 +2,11 @@
 <TITLE>Foreword</TITLE>
 <PARA>
 This is version &specversion; of the LSB Desktop Specification.
-<!--
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 3.2 of the LSB Desktop
-Specification.
+this version will result in version 4.1 of the LSB Desktop Specification.
+Implmentations may not claim conformance to this version.
 </PARA>
 <PARA>
-Implmentations may not claim conformance to this version.
--->
 This specification is part of a family of specifications under the general title"Linux Standard Base". Developers of applications or implementations interested
 in using the LSB trademark should see the Linux Foundation Certification
 Policy for details.

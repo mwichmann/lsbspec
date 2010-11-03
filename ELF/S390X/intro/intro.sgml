@@ -3,6 +3,8 @@
 <PARA>
 This is version &specversion; of the Executable and Linking Format (ELF)
 Specification.
+This version is a preliminary version for review only. Conclusion of work on
+this version will result in version 4.1 of the ELF Specification.
 </PARA>
 <PARA>
 An implementation of this version of the specification may not claim

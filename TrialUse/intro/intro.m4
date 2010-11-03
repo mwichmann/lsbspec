@@ -3,7 +3,7 @@
 <PARA>
 This is version &specversion; of the Trial Use Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 3.2 of the Trial Use Specification.
+this version will result in version 4.1 of the Trial Use Specification.
 </PARA>
 <PARA>
 This specification describes components which have Trial Use Specification
@@ -77,6 +77,8 @@ m4_include(references.sgml)
 <CHAPTER ID="REQUIREMENTS">
 <TITLE>Requirements</TITLE>
 
+<PARA>None as of this version.</PARA>
+
 <!-- promoted to full standard
 <SECT1 ID="alsalibraries">
 <TITLE>Multimedia Libraries</TITLE>
@@ -105,6 +107,7 @@ the dynamic linker shall search by default.
 </SECT1>
 -->
 
+<!-- promoted to full standard
 <SECT1 ID="nsslibraries">
 <TITLE>Security Libraries</TITLE>
 <PARA>
@@ -122,7 +125,7 @@ architecture-specific specification.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-m4_include(slibraries.sgml)
+#m4_include(slibraries.sgml)
 </TGROUP>
 </TABLE>
 <PARA>
@@ -130,6 +133,7 @@ These libraries will be in an implementation-defined directory which
 the dynamic linker shall search by default.
 </PARA>
 </SECT1>
+-->
 
 </CHAPTER>
 

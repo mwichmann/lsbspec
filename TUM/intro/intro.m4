@@ -3,8 +3,7 @@
 <PARA>
 This is version &specversion; of the LSB-TUM Module Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 3.2 of the LSB-TUM Moudle
-Specification.
+this version will result in version 4.1 of the LSB-TUM Module Specification.
 </PARA>
 <PARA>
 This module describes components which have Trial Use Specification

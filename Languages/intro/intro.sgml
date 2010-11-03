@@ -3,15 +3,14 @@
 <PARA>
 This is version &specversion; of the LSB Languages specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 3.2 of the LSB Languages specification.
+this version will result in version 4.1 of the LSB Languages specification.
+Implmentations may not claim conformance to this version.
 </PARA>
 <PARA>
-Implmentations may not claim conformance to this version.
-<!--
 An implementation of this version of the specification may not claim
-to be an implementation of the LSB Languages specification unless it has successfully
-completed the compliance process as defined by the Linux Foundation.
--->
+to be an implementation of the LSB Languages specification unless it
+has successfully completed the compliance process as defined by the
+Linux Foundation.
 </PARA>
 </PREFACE>
 
