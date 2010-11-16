@@ -1,0 +1,466 @@
+Specification: LSB Core generic
+Specification: LSB Core IA32, IA64, PPC32, PPC64, S390, S390X, AMD64
+Edition of Specification: 4.0
+Type: Error
+Status: Unapproved, new text
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=3084
+Dependencies: apply before 3012-unwind (bug 3012) and 3037-unwind (bug 3037).
+
+Rationale: multiple production errors caused most libgcc_s functions
+    to be listed as architecture-specific when they are generic.
+    The return type of _Unwind_ForcedUnwind was listed as _Unwind_Ptr
+    when it should have been _Unwind_Reason_Code.  _Unwind_SetIP was
+    listed as having a second parameter of type unsigned int when it
+    should have been _Unwind_Ptr.  _Unwind_GetLanguageSpecificData was
+    listed as having a second parameter when it takes only one.
+
+
+In LSB Core generic:
+
+III. Base Libraries
+
+In Table of Contents,
+
+Insert, renumbering subsequent sections:
+
+13.14. Interface Definitions for libgcc_s
+
+       _Unwind_DeleteException -- private C++ error handling method
+       _Unwind_ForcedUnwind -- private C++ error handling method
+       _Unwind_GetGR -- private C++ error handling method
+       _Unwind_GetIP -- private C++ error handling method
+       _Unwind_GetLanguageSpecificData -- private C++ error handling method 
+       _Unwind_GetRegionStart -- private C++ error handling method
+       _Unwind_RaiseException -- private C++ error handling method
+       _Unwind_Resume -- private C++ error handling method
+       _Unwind_SetGR -- private C++ error handling method
+       _Unwind_SetIP -- private C++ error handling method
+
+=
+
+In 13.12.1.1. Interfaces for Unwind Library
+
+Replace
+
+   No external functions are defined for libgcc_s - Unwind Library
+   in this part of the specification. See also the relevant
+   architecture specific part of this specification.
+
+With
+
+   An LSB conforming implementation shall provide the generic
+   functions for Unwind Library specified in Table 13-48, with the
+   full mandatory functionality as described in the referenced
+   underlying specification.
+
+   Table 13-48. libgcc_s - Unwind Library Function Interfaces
+   _Unwind_Backtrace [LSB] _Unwind_DeleteException [LSB]
+   _Unwind_FindEnclosingFunction [LSB] _Unwind_ForcedUnwind [LSB]
+   _Unwind_GetCFA [LSB] _Unwind_GetGR [LSB] _Unwind_GetIP [LSB]
+   _Unwind_GetLanguageSpecificData [LSB]
+   _Unwind_GetRegionStart [LSB] _Unwind_RaiseException [LSB]
+   _Unwind_Resume [LSB] _Unwind_Resume_or_Rethrow [LSB]
+   _Unwind_SetGR [LSB] _Unwind_SetIP [LSB]
+
+=
+
+In 13.13. Data Definitions for libgcc_s
+
+13.13.1. unwind.h
+
+Add:
+
+struct _Unwind_Context;
+struct _Unwind_Exception;
+
+
+Add:
+
+typedef _Unwind_Reason_Code(*_Unwind_Stop_Fn) (int version,
+                                               _Unwind_Action actions,
+                                               _Unwind_Exception_Class
+                                               exceptionClass,
+                                               struct _Unwind_Exception*
+                                               exceptionObject,
+                                               struct _Unwind_Context *
+                                               context,
+                                               void *stop_parameter);
+
+typedef _Unwind_Reason_Code(*_Unwind_Trace_Fn) (struct _Unwind_Context *,
+                                                void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern _Unwind_Reason_Code _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+                                                _Unwind_Stop_Fn, void *);
+extern _Unwind_Word _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
+                                                   *);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+                                                  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+                                                     _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, _Unwind_Ptr);
+
+
+Insert, renumbering subsequent secions:
+
+13.14. Interface Definitions for libgcc_s
+
+   Table of Contents
+   _Unwind_DeleteException -- private C++ error handling method
+   _Unwind_ForcedUnwind -- private C++ error handling method
+   _Unwind_GetGR -- private C++ error handling method
+   _Unwind_GetIP -- private C++ error handling method
+   _Unwind_GetLanguageSpecificData -- private C++ error handling method 
+   _Unwind_GetRegionStart -- private C++ error handling method
+   _Unwind_RaiseException -- private C++ error handling method
+   _Unwind_Resume -- private C++ error handling method
+   _Unwind_SetGR -- private C++ error handling method
+   _Unwind_SetIP -- private C++ error handling method
+
+   The interfaces defined on the following pages are included in
+   libgcc_s and are defined by this specification. Unless
+   otherwise noted, these interfaces shall be included in the
+   source standard.
+
+   Other interfaces listed in Section 13.12 shall behave as
+   described in the referenced base document.
+
+_Unwind_DeleteException
+
+Name
+
+   _Unwind_DeleteException -- private C++ error handling method
+
+Synopsis
+
+   void _Unwind_DeleteException(struct _Unwind_Exception *
+   object);
+
+Description
+
+   _Unwind_DeleteException() deletes the given exception object.
+   If a given runtime resumes normal execution after catching a
+   foreign exception, it will not know how to delete that
+   exception. Such an exception shall be deleted by calling
+   _Unwind_DeleteException(). This is a convenience function that
+   calls the function pointed to by the exception_cleanup field of
+   the exception header.
+
+_Unwind_ForcedUnwind
+
+Name
+
+   _Unwind_ForcedUnwind -- private C++ error handling method
+
+Synopsis
+
+   #include <unwind.h>
+
+   _Unwind_Reason_Code _Unwind_ForcedUnwind(struct
+   _Unwind_Exception * object, _Unwind_Stop_Fn stop, void *
+   stop_parameter);
+
+Description
+
+   Forced unwinding is a single-phase process. stop and
+   stop_parameter control the termination of the unwind process
+   instead of the usual personality routine query. Stop function
+   stop is called for each unwind frame, with the parameteres
+   described for the usual personality routine below, plus an
+   additional stop_parameter.
+
+Return Value
+
+   When stop identifies the destination frame, it transfers
+   control to the user code as appropriate without returning,
+   normally after calling _Unwind_DeleteException(). If not, then
+   it should return an _Unwind_Reason_Code value.
+
+   If stop returns any reason code other than _URC_NO_REASON, then
+   the stack state is indeterminate from the point of view of the
+   caller of _Unwind_ForcedUnwind(). Rather than attempt to
+   return, therefore, the unwind library should use the
+   exception_cleanup entry in object, and then call abort().
+
+   _URC_NO_REASON
+          This is not the destination from. The unwind runtime
+          will call frame's personality routine with the
+          _UA_FORCE_UNWIND and _UA_CLEANUP_PHASE flag set in
+          actions, and then unwind to the next frame and call the
+          stop() function again.
+
+   _URC_END_OF_STACK
+          In order to allow _Unwind_ForcedUnwind() to perform
+          special processing when it reaches the end of the stack,
+          the unwind runtime will call it after the last frame is
+          rejected, with a NULL stack pointer in the context, and
+          the STOP() FUNCTION SHALL CATCH THIS CONDITION. iT MAY
+          return this code if it cannot handle end-of-stack.
+
+   _URC_FATAL_PHASE2_ERROR
+          The stop() function may return this code for other fatal
+          conditions like stack corruption.
+
+_Unwind_GetGR
+
+Name
+
+   _Unwind_GetGR -- private C++ error handling method
+
+Synopsis
+
+   _Unwind_Word _Unwind_GetGR(struct _Unwind_Context * context,
+   int index);
+
+Description
+
+   _Unwind_GetGR() returns data at index found in context. The
+   register is identified by its index: 0 to 31 are for the fixed
+   registers, and 32 to 127 are for the stacked registers.
+
+   During the two phases of unwinding, only GR1 has a guaranteed
+   value, which is the global pointer of the frame referenced by
+   the unwind context. If the register has its NAT bit set, the
+   behavior is unspecified.
+
+_Unwind_GetIP
+
+Name
+
+   _Unwind_GetIP -- private C++ error handling method
+
+Synopsis
+
+   _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context * context);
+
+Description
+
+   _Unwind_GetIP() returns the instruction pointer value for the
+   routine identified by the unwind context.
+
+_Unwind_GetLanguageSpecificData
+
+Name
+
+   _Unwind_GetLanguageSpecificData -- private C++ error handling
+   method
+
+Synopsis
+
+   #include <unwind.h>
+
+   _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct
+   _Unwind_Context * context);
+
+Description
+
+   _Unwind_GetLanguageSpecificData() returns the address of the
+   language specific data area for the current stack frame
+   described by context.
+
+_Unwind_GetRegionStart
+
+Name
+
+   _Unwind_GetRegionStart -- private C++ error handling method
+
+Synopsis
+
+   _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *
+   context);
+
+Description
+
+   _Unwind_GetRegionStart() routine returns the address (i.e., 0)
+   of the beginning of the procedure or code fragment described by
+   the current unwind descriptor block.
+
+_Unwind_RaiseException
+
+Name
+
+   _Unwind_RaiseException -- private C++ error handling method
+
+Synopsis
+
+   _Unwind_Reason_Code _Unwind_RaiseException(struct
+   _Unwind_Exception * object);
+
+Description
+
+   _Unwind_RaiseException() raises an exception, passing along the
+   given exception object, which should have its exception_class
+   and exception_cleanup fields set. The exception object has been
+   allocated by the language-specific runtime, and has a
+   language-specific format, exception that it shall contain an
+   _Unwind_Exception.
+
+Return Value
+
+   _Unwind_RaiseException() does not return unless an error
+   condition is found. If an error condition occurs, an
+   _Unwind_Reason_Code is returnd:
+
+   _URC_END_OF_STACK
+          The unwinder encountered the end of the stack during
+          phase one without finding a handler. The unwind runtime
+          will not have modified the stack. The C++ runtime will
+          normally call uncaught_exception() in this case.
+
+   _URC_FATAL_PHASE1_ERROR
+          The unwinder encountered an unexpected error during
+          phase one, because of something like stack corruption.
+          The unwind runtime will not have modified the stack. The
+          C++ runtime will normally call terminate() in this case.
+
+   _URC_FATAL_PHASE2_ERROR
+          The unwinder encountered an unexpected error during
+          phase two. This is usually a throw, which will call
+          terminate().
+
+_Unwind_Resume
+
+Name
+
+   _Unwind_Resume -- private C++ error handling method
+
+Synopsis
+
+   void _Unwind_Resume(struct _Unwind_Exception * object);
+
+Description
+
+   _Unwind_Resume() resumes propagation of an existing exception
+   object. A call to this routine is inserted as the end of a
+   landing pad that performs cleanup, but does not resume normal
+   execution. It causes unwinding to proceed further.
+
+_Unwind_SetGR
+
+Name
+
+   _Unwind_SetGR -- private C++ error handling method
+
+Synopsis
+
+   void _Unwind_SetGR(struct _Unwind_Context * context, int index,
+   uint value);
+
+Description
+
+   _Unwind_SetGR() sets the value of the register indexed for the
+   routine identified by the unwind context.
+
+_Unwind_SetIP
+
+Name
+
+   _Unwind_SetIP -- private C++ error handling method
+
+Synopsis
+
+   #include <unwind.h>
+
+   void _Unwind_SetIP(struct _Unwind_Context * context,
+   _Unwind_Ptr value);
+
+Description
+
+   _Unwind_SetIP() sets the instruction pointer for the routine
+   identified by the unwind context to value.
+
+===
+
+In LSB Core IA32, IA64, PPC32, PPC64, S390, S390X, AMD64:
+
+
+III. Base Libraries, Table of Contents,
+
+In 11.11. Interface Definitions for libgcc_s
+
+Delete:
+
+      _Unwind_DeleteException -- private C++ error handling method 
+      _Unwind_ForcedUnwind -- private C++ error handling method 
+      _Unwind_GetGR -- private C++ error handling method
+      _Unwind_GetIP -- private C++ error handling method
+      _Unwind_GetLanguageSpecificData -- private C++ error handling method 
+      _Unwind_GetRegionStart -- private C++ error handling method 
+      _Unwind_RaiseException -- private C++ error handling method 
+      _Unwind_Resume -- private C++ error handling method
+      _Unwind_SetGR -- private C++ error handling method
+      _Unwind_SetIP -- private C++ error handling method
+
+=
+
+In 11.10. Data Definitions for libgcc_s
+
+11.10.1. unwind.h
+
+Delete:
+
+typedef _Unwind_Reason_Code(*_Unwind_Stop_Fn) (int version,
+                                               _Unwind_Action actions,
+                                               _Unwind_Exception_Class
+                                               exceptionClass,
+                                               struct _Unwind_Exception*
+                                               exceptionObject,
+                                               struct _Unwind_Context *
+                                               context,
+                                               void *stop_parameter);
+
+typedef _Unwind_Reason_Code(*_Unwind_Trace_Fn) (struct _Unwind_Context *,
+                                                void *);
+extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
+extern void _Unwind_DeleteException(struct _Unwind_Exception *);
+extern void *_Unwind_FindEnclosingFunction(void *);
+extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
+                                        _Unwind_Stop_Fn, void *);
+extern _Unwind_Word _Unwind_GetCFA(struct _Unwind_Context *);
+extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
+extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
+extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
+                                                   *, unsigned int);
+extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
+extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
+                                                  *);
+extern void _Unwind_Resume(struct _Unwind_Exception *);
+extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
+                                                     _Unwind_Exception *);
+extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
+extern void _Unwind_SetIP(struct _Unwind_Context *, unsigned int);
+
+=
+
+In 11.11. Interface Definitions for libgcc_s
+
+In Table of Contents
+
+Delete:
+
+   _Unwind_DeleteException -- private C++ error handling method
+   _Unwind_ForcedUnwind -- private C++ error handling method
+   _Unwind_GetGR -- private C++ error handling method
+   _Unwind_GetIP -- private C++ error handling method
+   _Unwind_GetLanguageSpecificData -- private C++ error handling method 
+   _Unwind_GetRegionStart -- private C++ error handling method
+   _Unwind_RaiseException -- private C++ error handling method
+   _Unwind_Resume -- private C++ error handling method
+   _Unwind_SetGR -- private C++ error handling method
+   _Unwind_SetIP -- private C++ error handling method
+
+
+In definitions
+
+Delete entries for 
+   _Unwind_DeleteException, _Unwind_ForcedUnwind, _Unwind_GetGR,
+   _Unwind_GetIP, _Unwind_GetLanguageSpecificData, _Unwind_GetRegionStart,
+   _Unwind_RaiseException, _Unwind_Resume, _Unwind_SetGR, _Unwind_SetIP
+

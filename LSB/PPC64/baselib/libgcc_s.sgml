@@ -111,38 +111,8 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-typedef _Unwind_Reason_Code(*_Unwind_Stop_Fn) (int version,
-					       _Unwind_Action actions,
-					       _Unwind_Exception_Class
-					       exceptionClass,
-					       struct _Unwind_Exception *
-					       exceptionObject,
-					       struct _Unwind_Context *
-					       context,
-					       void *stop_parameter);
-
-typedef _Unwind_Reason_Code(*_Unwind_Trace_Fn) (struct _Unwind_Context *,
-						void *);
-extern _Unwind_Reason_Code _Unwind_Backtrace(_Unwind_Trace_Fn, void *);
-extern void _Unwind_DeleteException(struct _Unwind_Exception *);
-extern void *_Unwind_FindEnclosingFunction(void *);
-extern _Unwind_Ptr _Unwind_ForcedUnwind(struct _Unwind_Exception *,
-					_Unwind_Stop_Fn, void *);
-extern _Unwind_Word _Unwind_GetCFA(struct _Unwind_Context *);
 extern _Unwind_Ptr _Unwind_GetDataRelBase(struct _Unwind_Context *);
-extern _Unwind_Word _Unwind_GetGR(struct _Unwind_Context *, int);
-extern _Unwind_Ptr _Unwind_GetIP(struct _Unwind_Context *);
-extern _Unwind_Ptr _Unwind_GetLanguageSpecificData(struct _Unwind_Context
-						   *, unsigned int);
-extern _Unwind_Ptr _Unwind_GetRegionStart(struct _Unwind_Context *);
 extern _Unwind_Ptr _Unwind_GetTextRelBase(struct _Unwind_Context *);
-extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception
-						  *);
-extern void _Unwind_Resume(struct _Unwind_Exception *);
-extern _Unwind_Reason_Code _Unwind_Resume_or_Rethrow(struct
-						     _Unwind_Exception *);
-extern void _Unwind_SetGR(struct _Unwind_Context *, int, u_int64_t);
-extern void _Unwind_SetIP(struct _Unwind_Context *, unsigned int);
 </SCREEN>
 </SECT2>
 </SECT1>
@@ -158,26 +128,11 @@ in the source standard.
 Other interfaces listed in <XREF LINKEND=libgcc-s> shall behave as described
 in the referenced base document. For interfaces referencing LSB and not listed below, please see the generic part of the specification.
 </PARA>
-<!-- MISSING DEFINITION FOR _Unwind_Backtrace -->
-<!-- Lets just hope nobody notices -->
-m4_include(../../generic/baselib/_Unwind_DeleteException.sgml)
-<!-- MISSING DEFINITION FOR _Unwind_FindEnclosingFunction -->
-<!-- Lets just hope nobody notices -->
-m4_include(../../generic/baselib/_Unwind_Find_FDE.sgml)
-m4_include(../../generic/baselib/_Unwind_ForcedUnwind.sgml)
-<!-- MISSING DEFINITION FOR _Unwind_GetCFA -->
-<!-- Lets just hope nobody notices -->
-m4_include(../../generic/baselib/_Unwind_GetDataRelBase.sgml)
-m4_include(../../generic/baselib/_Unwind_GetGR.sgml)
-m4_include(../../generic/baselib/_Unwind_GetIP.sgml)
-m4_include(../../generic/baselib/_Unwind_GetLanguageSpecificData.sgml)
-m4_include(../../generic/baselib/_Unwind_GetRegionStart.sgml)
-m4_include(../../generic/baselib/_Unwind_GetTextRelBase.sgml)
-m4_include(../../generic/baselib/_Unwind_RaiseException.sgml)
-m4_include(../../generic/baselib/_Unwind_Resume.sgml)
-<!-- MISSING DEFINITION FOR _Unwind_Resume_or_Rethrow -->
-<!-- Lets just hope nobody notices -->
-m4_include(../../generic/baselib/_Unwind_SetGR.sgml)
-m4_include(../../generic/baselib/_Unwind_SetIP.sgml)
+m4_sinclude(m4_ifdef('_Unwind_Find_FDE','',../../generic/baselib/_Unwind_Find_FDE.sgml))
+m4_define('_Unwind_Find_FDE','1')
+m4_sinclude(m4_ifdef('_Unwind_GetDataRelBase','',../../generic/baselib/_Unwind_GetDataRelBase.sgml))
+m4_define('_Unwind_GetDataRelBase','1')
+m4_sinclude(m4_ifdef('_Unwind_GetTextRelBase','',../../generic/baselib/_Unwind_GetTextRelBase.sgml))
+m4_define('_Unwind_GetTextRelBase','1')
 </SECT1>
 <!-- End of text generated from database -->
