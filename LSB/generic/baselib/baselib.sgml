@@ -36019,8 +36019,150 @@ source standard; it is only in the binary standard.
 
 
 
-<!-- MISSING DEFINITION FOR pthread_getattr_np -->
-<!-- Lets just hope nobody notices -->
+<refentry id="libpthread-pthread-getattr-np-1">
+
+<refmeta>
+<refentrytitle>pthread_getattr_np</refentrytitle>
+<refmiscinfo>libpthread</refmiscinfo>
+</refmeta>
+
+
+<refnamediv>
+<refname>pthread_getattr_np</refname>
+<refpurpose>get thread attributes</refpurpose>
+<indexterm id="ix-libpthread-pthread-getattr-np-1">
+	<primary>pthread_getattr_np</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;pthread.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>pthread_getattr_np</function>
+</funcdef>
+<paramdef>pthread_t <parameter>thread</parameter>
+</paramdef>
+<paramdef>pthread_attr_t *<parameter>attr</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+<function>pthread_getattr_np</function>
+fills in the thread attribute object <parameter>attr</parameter>
+with attribute values describing the running thread
+<parameter>thread</parameter>.  This is useful to detect
+runtime changes from the values specified in the
+thread attributes object used to create the thread with
+<function>pthread_create</function>.
+The following differences may be noted:
+</para>
+<itemizedlist mark=bullet>
+<listitem>
+<para>
+The detach state, since
+a joinable thread may  have  detached  itself after creation.
+Use <function>pthread_attr_getdetachstate</function> to extract
+from <parameter>attr</parameter>.
+</para>
+</listitem>
+<listitem>
+<para>
+The stack size,
+which the implementation may align to a suitable boundary.
+Use <function>pthread_attr_getstack</function> to extract
+from <parameter>attr</parameter>.
+</para>
+</listitem>
+<listitem>
+<para>
+The guard size,
+which the implementation may round upwards to a
+multiple of the page size, or ignore (i.e., treat as 0), 
+if the application is allocating its own stack.
+Use <function>pthread_attr_getguardsize</function> to extract
+from <parameter>attr</parameter>.
+</para>
+</listitem>
+</itemizedlist>
+<para>
+If the stack address attribute was not set in the thread attributes
+object  used to create the thread, then the thread attributes
+object returned by
+<function>pthread_getattr_np</function>
+will show the actual stack address the implementation
+selected for the thread.
+Use <function>pthread_attr_getstack</function> to extract
+from <parameter>attr</parameter>.
+</para>
+<para>
+The thread attributes object <parameter>attr</parameter>
+should be destroyed using <function>pthread_attr_destroy</function>
+when it is no longer needed.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+On success,
+<function>pthread_getattr_np</function>
+returns 0; on error, it returns a non-zero error number.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Errors</title>
+<variablelist>
+<varlistentry>
+<term>
+ENOMEM
+</term>
+<listitem>
+<para>
+Insufficient memory to complete the operation.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<para>
+In addition, if <parameter>thread</parameter> refers to the
+main thread, then
+<function>pthread_getattr_np</function>
+may also fail due to errors from various underlying calls:
+<function>fopen</function>, if
+the pseudo-file containing the memory region map cannot be opened;
+<function>getrlimit</function> if the <constant>RLIMIT_STACK</constant>
+resource limit it not supported.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Notes</title>
+<para>
+This function is a <literal>GNU</literal> extension.
+</para>
+</refsect1>
+
+<refsect1>
+<title>See Also</title>
+<para>
+<function>pthread_attr_destroy</function>,
+<function>pthread_attr_getdetachstate</function>,
+<function>pthread_attr_getguardsize</function>,
+<function>pthread_attr_getstack</function>,
+<function>pthread_create</function>.
+</para>
+</refsect1>
+
+</refentry>
+
+
 <refentry id="libpthread-pthread-mutex-consistent-np-1">
 
 <refmeta>
