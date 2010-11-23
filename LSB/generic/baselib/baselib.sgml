@@ -3881,8 +3881,9 @@ extern char *textdomain(const char *__domainname);
 </PARA>
 <SCREEN>
 
-extern int dl_iterate_phdr(int (*)(struct dl_phdr_info *, size_t, void *),
-			   void *);
+extern int
+dl_iterate_phdr(int (*callback) (struct dl_phdr_info *, size_t, void *),
+		void *data);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -16902,8 +16903,134 @@ bindtextdomain, bind_textdomain_codeset
 
 
 
-<!-- MISSING DEFINITION FOR dl_iterate_phdr -->
-<!-- Lets just hope nobody notices -->
+<refentry id="baselib-dl-iterate-phdr-1">
+
+<refmeta>
+<refentrytitle>dl_iterate_phdr</refentrytitle>
+<refmiscinfo>baselib</refmiscinfo>
+</refmeta>
+
+
+<refnamediv>
+<refname>dl_iterate_phdr</refname>
+<refpurpose>iterate over a program's loaded shared objects</refpurpose>
+<indexterm id="ix-baselib-dl-iterate-phdr-1">
+	<primary>dl_iterate_phdr</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;link.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>dl_iterate_phdr</function>
+</funcdef>
+<paramdef>int(*<parameter>callback</parameter>)
+<funcparams>struct dl_phdr_info *, size_t, void *</funcparams>
+</paramdef>
+<paramdef>void *<parameter>data</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+<function>dl_iterate_phdr</function> allows a program to iterate
+over the shared objects it has loaded.  
+The function described by the <parameter>callback</parameter> parameter
+is called once for each loaded shared object, allowing an action
+to be taken for each one.  <parameter>callback</parameter> is
+called with three arguments which are filled in by the implementation:
+a pointer to a structure of type <structname>dl_phdr_info</structname>
+containing information about the shared object; an integer size
+of the structure; and a copy of the <parameter>data</parameter>
+argument to <function>dl_iterate_phdr</function>.  If 
+<parameter>callback</parameter> returns a non-zero value,
+<function>dl_iterate_phdr</function> will stop processing, even
+if there are unprocessed shared objects.  The order of
+processing is unspecified.
+</para>
+<para>
+The <structname>dl_phdr_info</structname> structure has the following
+members (note that on 64-bit architectures the types here shown
+as <type>Elf32_<replaceable>type</replaceable></type> will
+instead be <type>Elf64_<replaceable>type</replaceable></type>):
+<informalexample><programlisting>
+    Elf32_Addr dlpi_addr;
+    const char *dlpi_name;
+    const Elf32_Phdr *dlpi_phdr;
+    Elf32_Half dlpi_phnum;
+    unsigned long long int dlpi_adds;
+    unsigned long long int dlpi_subs;
+    size_t dlpi_tls_modid;
+    void *dlpi_tls_data;
+</programlisting></informalexample>
+</para>
+<para>
+<structfield>dlpi_addr</structfield> contains the base address
+of the shared object.
+</para>
+<para>
+<structfield>dlpi_name</structfield> is a null-terminated string
+giving the pathname from which the shared object was loaded.
+</para>
+<para>
+<structfield>dlpi_phdr</structfield> is a pointer to an array
+of program headers for this shared object, while
+<structfield>dlpi_phnum</structfield> is the number of
+entries in this array.
+</para>
+<para>
+<structfield>dlpi_adds</structfield> and
+<structfield>dlpi_subs</structfield> are
+incremented when shared objects are added or removed, respectively.
+</para>
+<para>
+<structfield>dlpi_tls_modid</structfield>
+contains the module ID used in TLS relocations, 
+if there is a <constant>PT_TLS</constant> segment.
+Otherwise the value shall be zero.
+</para>
+<para>
+<structfield>dlpi_tls_data</structfield>
+contains the address of the calling thread's instance
+of this module's <constant>PT_TLS</constant> segment,
+if there is one and it has been allocated in the calling thread.
+Otherwise the value shall be a null pointer.
+</para>
+<para>
+Some implementations may not provide all fields in
+<structname>dl_phdr_info</structname>, although the
+first four are always mandatory.  Applications are
+advised to have the callback function check the size
+parameter before examining the later members.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+The <function>dl_iterate_phdr</function> function returns whatever value
+was  returned  by the last call to <parameter>callback</parameter>.
+This will be zero if processing completed normally, since processing
+does not continue unless the callback function returns zero.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Errors</title>
+<para>
+No errors are defined by <function>dl_iterate_phdr</function>;
+as noted the callback function must use a zero return to indicate
+success but may assign any meaning it wishes to non-zero returns.
+</para>
+</refsect1>
+</refentry>
+
+
 <REFENTRY ID="baselib-dngettext"> <REFMETA>
 <REFENTRYTITLE>dngettext</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
@@ -28873,8 +29000,77 @@ but with differences as listed below.
 
 
 
-<!-- MISSING DEFINITION FOR sysinfo -->
-<!-- Lets just hope nobody notices -->
+<refentry id="baselib-sysinfo-1">
+
+<refmeta>
+<refentrytitle>sysinfo</refentrytitle>
+<refmiscinfo>baselib</refmiscinfo>
+</refmeta>
+
+
+<refnamediv>
+<refname>sysinfo</refname>
+<refpurpose>return system information</refpurpose>
+<indexterm id="ix-baselib-sysinfo-1">
+	<primary>sysinfo</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;sys/sysinfo.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>sysinfo</function>
+</funcdef>
+<paramdef>struct sysinfo *<parameter>info</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+<function>sysinfo</function> provides a way to obtain
+certain system statistics.  Statistics are written into
+a <structname>sysinfo</structname> structure pointed to by
+<parameter>info</parameter>. Elements which take a size are sized in
+units indicated by the value of the <structfield>mem_unit</structfield>
+member of <parameter>info</parameter>.  The other
+members have traditional meanings as indicated in Data Definitions,
+but are not formally part of this specification.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+Returns zero on success.  On error, <literal>-1</literal> is
+returned and <varname>errno</varname> is set to indicate the error.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Errors</title>
+<variablelist>
+<varlistentry>
+<term>
+EFAULT
+</term>
+<listitem>
+<para>
+The <parameter>info</parameter> parameter does not point to
+a valid <structname>sysinfo</structname> structure.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</refsect1>
+
+</refentry>
+
+
 <REFENTRY ID="baselib-system-3"> <REFMETA>
 <REFENTRYTITLE>system</REFENTRYTITLE>
 <REFMISCINFO>Base Libraries</REFMISCINFO>
