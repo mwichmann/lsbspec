@@ -1,0 +1,151 @@
+<refentry id="baselib-backtrace-1">
+
+<refmeta>
+<refentrytitle>backtrace, backtrace_symbols, backtrace_symbols_fd</refentrytitle>
+<refmiscinfo>baselib</refmiscinfo>
+</refmeta>
+
+
+<refnamediv>
+<refname>backtrace, backtrace_symbols, backtrace_symbols_fd</refname>
+<refpurpose>runtime stack back tracing</refpurpose>
+<indexterm id="ix-baselib-backtrace-1">
+	<primary>backtrace</primary></indexterm>
+<indexterm id="ix-baselib-backtrace-symbols-1">
+	<primary>backtrace_symbols</primary></indexterm>
+<indexterm id="ix-baselib-backtrace-symbols-fd-1">
+	<primary>backtrace_symbols_fd</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;execinfo.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>backtrace</function>
+</funcdef>
+<paramdef>void **<parameter>array</parameter>
+</paramdef>
+<paramdef>int <parameter>size</parameter>
+</paramdef>
+</funcprototype>
+
+<funcprototype>
+<funcdef>char **<function>backtrace_symbols</function>
+</funcdef>
+<paramdef>void *const *<parameter>array</parameter>
+</paramdef>
+<paramdef>int <parameter>size</parameter>
+</paramdef>
+</funcprototype>
+
+<funcprototype>
+<funcdef>void
+<function>backtrace_symbols_fd</function>
+</funcdef>
+<paramdef>void *const *<parameter>array</parameter>
+</paramdef>
+<paramdef>int <parameter>size</parameter>
+</paramdef>
+<paramdef>int <parameter>fd</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+<function>backtrace</function>
+obtains a backtrace for the current thread as a list of
+pointers filled in to <parameter>array</parameter>.
+The <parameter>size</parameter> parameter describes the
+number of elements that will fit into <parameter>array</parameter>,
+<function>backtrace</function> will truncate the list if 
+necessary.
+A backtrace is a list of currently active function
+calls in a thread; each function call allocates a new
+stack frame and <function>backtrace</function>
+obtains the return address from each stack frame.
+</para>
+<para>
+<function>backtrace_symbols</function>
+translates the information obtained from
+<function>backtrace</function> into an array of strings.
+<parameter>array</parameter> is a pointer to an
+array of addresses as obtained from <function>backtrace</function>.
+<parameter>size</parameter> is the number of entries in
+<parameter>array</parameter>, and should be the return
+value of the call to
+<function>backtrace</function>.
+The strings contain the function name if it can be determined,
+a hedxadecimal offset into the function, and the actual return
+address in hexadecimal. Note that the pointer returned by
+<function>backtrace_symbols</function> is obtained by an
+internal call to <function>malloc</function> and should be
+freed when no longer needed.
+</para>
+<para>
+<function>backtrace_symbols_fd</function>
+performs the same transformation as 
+<function>backtrace_symbols</function> given the
+same argument pair
+<parameter>array</parameter>, <parameter>size</parameter>, but writes
+the strings to the file descriptor contained in <parameter>fd</parameter>.
+This avoids the allocation of string space.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+<para>
+<function>backtrace</function> returns the number of entries
+placed into <parameter>array</parameter>, no more than
+<parameter>size</parameter>.  If the value is less than
+<parameter>size</parameter>, the full backtrace was returned;
+else it may have been truncated.
+</para>
+<para>
+On success, <function>backtrace_symbols</function> returns a pointer to
+an array of strings, which will have <parameter>size</parameter> entries.
+On error, <literal>NULL</literal> is returned.
+</para>
+
+</refsect1>
+
+<refsect1>
+<title>Errors</title>
+<para>
+No errors are defined for these functions.  If
+<function>backtrace_symbols_fd</function> fails,
+it will be due to a failure in the call to <function>malloc</function>,
+and <varname>errno</varname> will be set accordingly.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Notes</title>
+<para>
+The ability to obtain useful backtrace information, in particular
+function names, is dependent on a number of factors at the time
+of program construction, such as compiler optimization options.
+Even if the program itself is constructed so as to make symbols
+visible, the call trace may descend into system libraries which
+have not been so constructed.
+</para>
+<para>
+Inlined functions do not have stack frames, and functions
+declared as static are not exposed and so will not be available
+in the backtrace.
+</para>
+</refsect1>
+
+<refsect1>
+<title>See Also</title>
+<para>
+<function>malloc</function>
+</para>
+</refsect1>
+
+</refentry>
