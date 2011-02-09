@@ -1,13 +1,15 @@
 <refentry id="baselib---fxstatat64-1">
 
 <refmeta>
-<refentrytitle>__fxstatat64</refentrytitle>
+<refentrytitle>__fxstatat64, fstatat64</refentrytitle>
 <refmiscinfo>Base Libraries</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>__fxstatat64</refname>
-<refpurpose>get file status relative to directory file descriptor</refpurpose>
+<refname>__fxstatat64, fstatat64</refname>
+<refpurpose>
+get file status relative to a directory file descriptor (Large File Support)
+</refpurpose>
 <indexterm id="ix-baselib---fxstatat64-1">
 	<primary>__fxstatat64</primary></indexterm>
 <indexterm id="ix-baselib-fstatat64-1">
@@ -16,7 +18,6 @@
 <refsynopsisdiv>
 <funcsynopsis>
 <funcsynopsisinfo>
-#define __LARGEFILE_SOURCE 1
 #include &lt;fcntl.h&gt;
 #include &lt;sys/stat.h&gt;
 </funcsynopsisinfo>
@@ -39,12 +40,37 @@
 <paramdef>int
 <parameter>flags</parameter>
 </paramdef>
+</funcprototype>
 
+<funcprototype>
+<funcdef>int
+<function>fstatat64</function>
+</funcdef>
+<paramdef>int
+<parameter>dirfd</parameter>
+</paramdef>
+<paramdef>const char *
+<parameter>file</parameter>
+</paramdef>
+<paramdef>struct stat64 *
+<parameter>buf</parameter>
+</paramdef>
+<paramdef>int
+<parameter>flag</parameter>
+</paramdef>
 </funcprototype>
 </funcsynopsis>
 </refsynopsisdiv>
 <refsect1>
 <title>Description</title>
+<para>
+<function>fstatat64</function> is a large-file version of
+the <function>fstatat</function> function as defined in
+<xref linkend=std.SUSv4>.
+It differs from <function>fstatat</function> 
+only in that the <parameter>buf</parameter> parameter
+refers to a large-file version of the stat structure.
+</para>
 <para>
 The <function>__fxstatat64</function> function shall implement the
 <function>fstatat64</function> function.
@@ -63,7 +89,6 @@ shall behave as
 <literal>fstatat64(<parameter>dirfd</parameter>,
 <parameter>stat_buf</parameter>,
 <parameter>flags</parameter>)</literal>
-as specified by this specification.
 </para>
 <para>
 <function>__fxstatat64</function> is not in the source standard;
