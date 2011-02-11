@@ -1,0 +1,454 @@
+<refentry id="baselib-ptrace-1">
+
+<refmeta>
+<refentrytitle>ptrace</refentrytitle>
+<refmiscinfo>baselib</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ptrace</refname>
+<refpurpose>process trace</refpurpose>
+<indexterm id="ix-baselib-ptrace-1">
+  <primary>ptrace</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;sys/ptrace.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>long
+<function>ptrace</function>
+</funcdef>
+<paramdef>enum __ptrace_request
+<parameter>request</parameter>
+</paramdef>
+<paramdef>pid_t
+<parameter>pid</parameter>
+</paramdef>
+<paramdef>void *
+<parameter>addr</parameter>
+</paramdef>
+<paramdef>void *
+<parameter>data</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>ptrace</function> system call shall enable a process to
+observe and control the execution of another process, as well as
+examine and change certain attributes of that process.
+</para>
+
+<para>
+This function operates via requests, which act on the traced process
+using the other parameters in ways unique to each request type.  The
+tracing process must initiate tracing, either via
+the <constant>PTRACE_TRACEME</constant>
+or <constant>PTRACE_ATTACH</constant> requests, before other requests
+may be performed.  Except for <constant>PTRACE_TRACEME</constant>
+and <constant>PTRACE_KILL</constant>, all requests must be performed
+on a traced process that has been stopped.
+</para>
+
+<para>
+All signals, except one, delivered to the traced process cause it to
+stop, irrespective of its registered signal handling, and cause an
+event to be delivered to the tracing process which can be detected
+using the wait(2) system call.  The exception is
+the <constant>SIGKILL</constant> signal, which is delivered
+immediately and performs its usual specified behavior.
+</para>
+
+<para>
+The following requests are defined:
+
+<variablelist>
+<varlistentry>
+<term><constant>PTRACE_TRACEME</constant></term>
+<listitem><para>
+This request initates a trace from the perspective of the traced
+process, indicating that the parent of the current process shall be
+the tracing process.  When this is called, a subsequent call to
+execve(2) shall cause the tracing process to receive a SIGTRAP signal,
+and shall stop the current process.  This is the only request a traced
+process may perform, and a tracing process may not perform this
+request. The other parameters are ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_ATTACH</constant></term>
+<listitem><para>
+This request initates a trace from the perspective of the tracing
+process on the process specified by <parameter>pid</parameter>.  After
+this call succeeds, the traced process will appear to be a child of
+the tracing process, although the original parent will still be
+returned to the traced process via getppid(2).  The traced process
+will receive a <constant>SIGSTOP</constant> signal; the tracing
+process should use wait(2) to ensure that the traced process has
+stopped.  A tracing process is only guaranteed to be able to trace its
+child processes; the tracing of other processes may not be allowed by
+the system, and the process with process ID 1 may not be traced under
+any circumstances.  The <parameter>addr</parameter>
+and <parameter>data</parameter> parameters are ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_CONT</constant></term>
+<listitem><para>
+This request restarts a traced process, given
+in <parameter>pid</parameter>, which has been stopped.
+The <parameter>data</parameter> parameter may point to a signal ID to
+deliver to the traced process; if it is zero or SIGSTOP, no signal is
+delivered to the child.  The <parameter>addr</parameter> is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_DETACH</constant></term>
+<listitem><para>
+This request performs the same function, in the same way,
+as <constant>PTRACE_CONT</constant>, except that the tracing
+relationship between the tracing and traced processes is also undone.
+If the trace was initiated using <constant>PTRACE_ATTACH</constant>,
+the original parent-child relationships that existed beforehand are
+restored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_KILL</constant></term>
+<listitem><para>
+This request causes a <constant>SIGKILL</constant> signal to be sent
+to the traced process specified in <parameter>pid</parameter>.
+The <parameter>addr</parameter> and <parameter>data</parameter>
+parameters are ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_PEEKTEXT</constant></term>
+<listitem><para>
+This request reads a word at the location <parameter>addr</parameter>
+of the traced process <parameter>pid</parameter>, and returns it to
+the caller.  The <parameter>data</parameter> parameter is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_PEEKDATA</constant></term>
+<listitem><para>
+This request performs identically to
+the <constant>PTRACE_PEEKTEXT</constant> request.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_PEEKUSER</constant></term>
+<listitem><para>
+This request reads a word at offset <parameter>addr</parameter> in the
+USER area of the traced process <parameter>pid</parameter>.  The
+offset must be word-aligned.  The <parameter>data</parameter>
+parameter is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_POKETEXT</constant></term>
+<listitem><para> 
+This request writes the word pointed at by <parameter>data</parameter>
+to the location <parameter>addr</parameter> of the traced
+process <parameter>pid</parameter>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_POKEDATA</constant></term>
+<listitem><para>
+This request performs identically to
+the <constant>PTRACE_POKETEXT</constant> request.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_POKEUSER</constant></term>
+<listitem><para>
+This request writes the word pointed at by <parameter>data</parameter>
+to offset <parameter>addr</parameter> in the USER area of the traced
+process <parameter>pid</parameter>.  The offset must be word-aligned.
+Implementations may choose to disallow some modifications to the USER
+area.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_GETREGS</constant></term>
+<listitem><para>
+This request copies the general purpose registers from the traced
+process <parameter>pid</parameter> to the tracing process at
+location <parameter>data</parameter>.  This parameter may not be
+available on all architectures.  The <parameter>addr</parameter>
+parameter is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_GETFPREGS</constant></term>
+<listitem><para>
+This request copies the floating point registers from the traced
+process <parameter>pid</parameter> to the tracing process at
+location <parameter>data</parameter>.  This parameter may not be
+available on all architectures.  The <parameter>addr</parameter>
+parameter is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_SETREGS</constant></term>
+<listitem><para>
+This request writes the general purpose registers to the traced
+process <parameter>pid</parameter> from the tracing process at
+location <parameter>data</parameter>.  This parameter may not be
+available on all architectures.  Implementations may choose to
+disallow some register modifications.  The <parameter>addr</parameter>
+parameter is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_SETFPREGS</constant></term>
+<listitem><para>
+This request writes the floating point registers to the traced
+process <parameter>pid</parameter> from the tracing process at
+location <parameter>data</parameter>.  This parameter may not be
+available on all architectures.  Implementations may choose to
+disallow some register modifications.  The <parameter>addr</parameter>
+parameter is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_GETSIGINFO</constant></term>
+<listitem><para>
+This request writes information about the signal which caused the
+traced process <parameter>pid</parameter> to stop to the tracing
+process at location <parameter>data</parameter>, as a siginfo_t.
+The <parameter>addr</parameter> parameter is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_SETSIGINFO</constant></term>
+<listitem><para>
+This request writes signal information to the traced
+process <parameter>pid</parameter> from a siginfo_t structure pointed
+at by <parameter>data</parameter>, such that it will be used as the
+signal information by the traced process when it is resumed.
+The <parameter>addr</parameter> parameter is ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_GETEVENTMSG</constant></term>
+<listitem><para>
+This request stores information about the most recent ptrace event for
+the traced process <parameter>pid</parameter> in the unsigned long
+pointed at by <parameter>data</parameter>.
+For <constant>PTRACE_EVENT_EXIT</constant>, this is the exit status of
+the traced process.
+For <constant>PTRACE_EVENT_FORK</constant>, <constant>PTRACE_EVENT_VFORK</constant>,
+or <constant>PTRACE_EVENT_CLONE</constant>, this is the PID of the
+newly created process. The <parameter>addr</parameter> parameter is
+ignored.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_SYSCALL</constant></term>
+<listitem><para>
+This request performs the same function, in the same way,
+as <constant>PTRACE_CONT</constant>, but with the additional step of
+causing the traced process to stop at the next entry to or exit from a
+system call.  The usual events that would also cause the traced
+process to stop continue to do so.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_SINGLESTEP</constant></term>
+<listitem><para>
+This request performs the same function, in the same way,
+as <constant>PTRACE_CONT</constant>, but with the additional step of
+causing the traced process to stop after execution of a single
+instruction.  The usual events that would also cause the traced
+process to stop continue to do so.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_SYSEMU</constant></term>
+<listitem><para>
+This request performs the same function, in the same way,
+as <constant>PTRACE_CONT</constant>, but with the additional step of
+causing the traced process to stop on entry to the next syscall, which
+will then not be executed.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_SYSEMU_SINGLESTEP</constant></term>
+<listitem><para>
+This request performs the same function, in the same way,
+as <constant>PTRACE_CONT</constant>, but with the additional step of
+causing the traced process to stop on entry to the next syscall, which
+will then not be executed.  If the next instruction is not itself a
+syscall, the traced process will stop after a single instruction is
+executed.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_SETOPTIONS</constant></term>
+<listitem><para>
+This request sets <function>ptrace</function> options for the traced
+process <parameter>pid</parameter> from the location pointed to
+by <parameter>data</parameter>.  The <parameter>addr</parameter> is
+ignored.  This location is interpreted as a bitmask of options, as
+defined by the following flags:
+<variablelist>
+<varlistentry>
+<term><constant>PTRACE_O_TRACESYSGOOD</constant></term>
+<listitem><para>
+This option, when set, causes syscall traps to set bit 7 in the signal
+number.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_O_TRACEFORK</constant></term>
+<listitem><para>
+This option, when set, causes the traced process to stop when it calls
+fork(2).  The original traced process will stop with SIGTRAP |
+PTRACE_EVENT_FORK &lt;&lt; 8, and the new process will be stopped with
+SIGSTOP.  The new process will also be traced by the tracing process,
+as if the tracing process had sent the PTRACE_ATTACH request for that
+process.  The PID of the new process may be retrieved with the
+PTRACE_GETEVENTMSG request.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_O_TRACEVFORK</constant></term>
+<listitem><para>
+This option, when set, causes the traced process to stop when it calls
+vfork(2).  The original traced process will stop with SIGTRAP |
+PTRACE_EVENT_VFORK &lt;&lt; 8, and the new process will be stopped with
+SIGSTOP.  The new process will also be traced by the tracing process,
+as if the tracing process had sent the PTRACE_ATTACH request for that
+process.  The PID of the new process may be retrieved with the
+PTRACE_GETEVENTMSG request.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_O_TRACECLONE</constant></term>
+<listitem><para>
+This option, when set, causes the traced process to stop when it calls
+clone(2).  The original traced process will stop with SIGTRAP |
+PTRACE_EVENT_CLONE &lt;&lt; 8, and the new process will be stopped with
+SIGSTOP.  The new process will also be traced by the tracing process,
+as if the tracing process had sent the PTRACE_ATTACH request for that
+process.  The PID of the new process may be retrieved with the
+PTRACE_GETEVENTMSG request.  Under certain circumstances, clone(2)
+calls by the traced process will generate events and information
+consistent with the PTRACE_O_TRACEVFORK or PTRACE_O_TRACEFORK options
+above.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_O_TRACEEXEC</constant></term>
+<listitem><para>
+
+This option, when set, causes the traced process to stop when it calls
+execve(2).  The traced process will stop with SIGTRAP |
+PTRACE_EVENT_EXEC &lt;&lt; 8.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_O_TRACEVFORKDONE</constant></term>
+<listitem><para>
+This option, when set, causes the traced process to stop at the
+completion of its next vfork(2) call.  The traced process will stop
+with SIGTRAP | PTRACE_EVENT_EXEC &lt;&lt; 8.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>PTRACE_O_TRACEEXIT</constant></term>
+<listitem><para>
+This option, when set, causes the traced process to stop upon exit.
+The traced process will stop with SIGTRAP | PTRACE_EVENT_EXIT &lt;&lt;
+8, and its exit status can be retrieved with the PTRACE_GETEVENTMSG
+request.  The stop is guaranteed to be early in the process exit
+process, meaning that information such as register status at exit is
+preserved.  Upon continuing, the traced process will immediately exit.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+
+</refsect1>
+
+<refsect1>
+<title>Return Value</title>
+
+<para>
+On success, <function>ptrace</function> shall return the requested
+data for <constant>PTRACE_PEEK</constant> requests, or zero for all
+other requests.  On error, all requests return -1,
+with <varname>errno</varname> set to an appropriate value.  Note
+that -1 may be a valid return value
+for <constant>PTRACE_PEEK</constant> requests; the application is
+responsible for distinguishing between an error condition and a valid
+return value in that case.
+</para>
+</refsect1>
+<refsect1>
+<title>Errors</title>
+<para>
+On error, <function>ptrace</function> shall
+set <varname>errno</varname> to one of the regular error values below:
+<variablelist>
+<varlistentry>
+<term><constant>EBUSY</constant></term>
+<listitem><para>
+An error occurred while allocating or freeing a debug register.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>EFAULT</constant></term>
+<listitem><para>
+The request attempted to read from or write to an invalid area in the
+memory space of the tracing or traced process.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>EIO</constant></term>
+<listitem><para>
+The request was invalid, or it attempted to read from or write to an
+invalid area in the memory space of the tracing or traced process, or
+it violated a word-alignment boundary, or an invalid signal was given
+to continue the traced process.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>EINVAL</constant></term>
+<listitem><para>
+An attempt was made to set an invalid option.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>EPERM</constant></term>
+<listitem><para>
+The request to trace a process was denied by the system.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><constant>ESRCH</constant></term>
+<listitem><para>
+The process requested does not exist, is not being traced by the
+current process, or is not stopped.
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+
+</refsect1>
+</refentry>
