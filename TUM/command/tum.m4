@@ -13,6 +13,7 @@ Linux Standard Base.
 </PARA>
 </SECT1>
 
+<!--
 <SECT1 ID="xdgutils">
 <TITLE>Xdg-utils</TITLE>
 <PARA>
@@ -25,6 +26,7 @@ while the application is running.
 <PARA>
 These utilities operate as described at <xref linkend="std.xdg.utils">
 </PARA>
+-->
 
 <!--
 Overview
@@ -44,6 +46,7 @@ It also contains the following runtime integration tools:
     * xdg-screensaver, control the screensaver
 -->
 
+<!--
 <SECT2>
 <TITLE>Xdg-utils Commands</TITLE>
 
@@ -51,6 +54,7 @@ m4_include(cmdlist.sgml)
 
 </SECT2>
 </SECT1>
+-->
 
 </CHAPTER>
 </PART>

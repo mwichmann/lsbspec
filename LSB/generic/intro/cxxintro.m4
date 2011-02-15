@@ -1,4 +1,5 @@
-m4_include(`../../generic/intro/preface.sgml')
+&preface;
+
 <PART ID="TOCINTRO">
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
@@ -169,8 +170,7 @@ A strictly conforming application does not require or use any interface, facilit
 </SECT1>
 </CHAPTER>
 
-m4_include(../../../matters/definitions.sgml)
-
-m4_include(../../generic/intro/terms.sgml)
+<!-- boilerplate terms and definitions -->
+&definitions;
 
 </PART>

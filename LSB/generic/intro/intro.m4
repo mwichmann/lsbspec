@@ -1,4 +1,5 @@
-m4_include(`../../generic/intro/preface.sgml')
+&preface;
+
 <PART ID="TOCINTRO">
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
@@ -61,7 +62,7 @@ m4_dnl
 m4_dnl the following para is architecture specific. The makefile
 m4_dnl now contains -DARCH=foobar to ensure that this para comes out
 m4_dnl the way it is supposed to for the different architectures
-m4_dnl since this file is copied from generic to each archLSB
+m4_dnl since this file is copied from generic to each arch spec
 m4_dnl
 m4_ifelse(ARCH,`All', 
 	`m4_define(`TBLTARGET',`"tbl-glsb-stdlib"')', 
@@ -243,9 +244,8 @@ A strictly conforming application shall not require or use any interface, facili
 </SECT1>
 </CHAPTER>
 
-m4_include(../../../matters/definitions.sgml)
-
-m4_include(../../generic/intro/terms.sgml)
+<!-- boilerplate terms and definitions -->
+&definitions;
 
 m4_ifdef(`CORE',`
 <CHAPTER ID="POSIXConflicts">

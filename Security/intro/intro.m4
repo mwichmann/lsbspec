@@ -88,8 +88,7 @@ the dynamic linker shall search by default.
 
 </CHAPTER>
 
+<!-- boilerplate terms and definitions -->
 &definitions;
-
-m4_include(terms.sgml)
 
 </PART>

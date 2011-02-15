@@ -23,4 +23,3 @@ intro.m4::
 	cp ../../generic/intro/$@ .
 
 intro.sgml: standards.sgml
-intro.sgml: ../../../matters/definitions.sgml ../../generic/intro/terms.sgml

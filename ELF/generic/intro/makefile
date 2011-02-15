@@ -23,6 +23,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-
 intro.sgml: standards.sgml
-intro.sgml: ../../../matters/definitions.sgml ../../generic/intro/terms.sgml

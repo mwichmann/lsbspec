@@ -28,7 +28,7 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-intro.sgml: preface.sgml genscope.sgml modscope.sgml standards.sgml libraries.sgml terms.sgml
-cxxintro.sgml: preface.sgml genscope.sgml cxxscope.sgml cxxstandards.sgml cxxlibraries.sgml terms.sgml
+intro.sgml: genscope.sgml modscope.sgml standards.sgml libraries.sgml
+cxxintro.sgml: genscope.sgml cxxscope.sgml cxxstandards.sgml cxxlibraries.sgml
 
 libraries.sgml: glibraries.sgml pslibs.sgml cxxlibraries.sgml

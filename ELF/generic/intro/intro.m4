@@ -244,8 +244,6 @@ document in order to be installed or to execute successfully.
 </SECT1>
 </CHAPTER>
 
-m4_include(../../../matters/definitions.sgml)
-
-m4_include(../../generic/intro/terms.sgml)
+&definitions;
 
 </PART>

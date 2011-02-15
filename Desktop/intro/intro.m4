@@ -1,30 +1,4 @@
-<PREFACE id="OVERVIEW">
-<TITLE>Foreword</TITLE>
-<PARA>
-This is version &specversion; of the LSB Desktop Specification.
-This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 4.1 of the LSB Desktop Specification.
-Implmentations may not claim conformance to this version.
-</PARA>
-<PARA>
-This specification is part of a family of specifications under the general title"Linux Standard Base". Developers of applications or implementations interested
-in using the LSB trademark should see the Linux Foundation Certification
-Policy for details.
-</PARA>
-</PREFACE>
-
-<PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
-<PARA>
-The LSB Desktop specification defines components that are required to
-be present on an LSB conforming system.
-</PARA>
-
-<PARA>
-This document should be used in conjunction with the documents it references.
-Information referenced in this way is as much a part of this document as is
-the information explicitly included here.
-</PARA>
-</PREFACE>
+&preface;
 
 <PART ID="TOCINTRO">
 <TITLE>Introductory Elements</TITLE>
@@ -104,8 +78,7 @@ the dynamic linker shall search by default.
 
 </CHAPTER>
 
+<!-- boilerplate terms and definitions -->
 &definitions
-
-m4_include(terms.sgml)
 
 </PART>

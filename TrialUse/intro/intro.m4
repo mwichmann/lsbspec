@@ -66,12 +66,14 @@ specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
 the specification is to be considered normative.
 </PARA>
+<!-- no references in 4.1
 <TABLE>
 <TITLE>Informative References</TITLE>
 <TGROUP COLS=2>
-m4_include(references.sgml)
+m4_dnl m4_include(references.sgml)
 </TGROUP>
 </TABLE>
+-->
 </CHAPTER>
 
 <CHAPTER ID="REQUIREMENTS">
@@ -137,8 +139,7 @@ the dynamic linker shall search by default.
 
 </CHAPTER>
 
+<!-- boilerplate terms and definitions -->
 &definitions;
-
-m4_include(terms.sgml)
 
 </PART>

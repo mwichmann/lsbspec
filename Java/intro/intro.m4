@@ -221,8 +221,7 @@ successfully.
 -->
 </CHAPTER>
 
+<!-- boilerplate terms and definitions -->
 &definitions;
-
-m4_include(terms.sgml)
 
 </PART>

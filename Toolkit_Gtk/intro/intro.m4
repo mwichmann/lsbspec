@@ -209,8 +209,7 @@ A strictly conforming application does not require or use any interface, facilit
 -->
 </CHAPTER>
 
+<!-- boilerplate terms and definitions -->
 &definitions
-
-m4_include(terms.sgml)
 
 </PART>
