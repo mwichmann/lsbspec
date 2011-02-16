@@ -11,6 +11,11 @@ The Trial Use Module decribes components in Trial Use status.
 Trial Use Specifications are non-mandatory components of the
 Linux Standard Base.
 </PARA>
+<!-- XXX -->
+<PARA>
+As of version &specversion; there are no specified elements in this module.
+</PARA>
+
 </SECT1>
 
 <!--
@@ -50,7 +55,7 @@ It also contains the following runtime integration tools:
 <SECT2>
 <TITLE>Xdg-utils Commands</TITLE>
 
-m4_include(cmdlist.sgml)
+m4_dnl m4_include(cmdlist.sgml)
 
 </SECT2>
 </SECT1>

@@ -1,12 +1,26 @@
 <PREFACE id="OVERVIEW">
-<TITLE>Foreword</TITLE>
-<PARA>
+<title>Foreword</title>
+<para>
 This is version &specversion; of the Trial Use Specification.
+<!--
 This version is a preliminary version for review only. Conclusion of work on
 this version will result in version 4.1 of the Trial Use Specification.
-</PARA>
+-->
+This specification augments the series of volumes released under 
+the collective title <citetitle>Linux Standard Base</citetitle>:
+</para>
+<itemizedlist>
+<listitem><para>Core</para></listitem>
+<listitem><para>C++</para></listitem>
+<listitem><para>Desktop</para></listitem>
+<listitem><para>Languages</para></listitem>
+<listitem><para>Printing</para></listitem>
+</itemizedlist>
+<para>
+Note that the Core, C++ and Desktop volumes consist of a generic volume augmented by an architecture-specific volume.
+</para>
 <PARA>
-This specification describes components which have Trial Use Specification
+This document describes components which have Trial Use Specification
 status, and as such there is no formal compliance process for
 this specification. Implementations may claim to provide these components
 in a manner that agrees with this specification, but such a claim is not
@@ -18,14 +32,35 @@ Applications may not assume that the components of this specification
 are present or operate as described in this specification on any
 given implementation. 
 </PARA>
-<!-- we don't use this in modules
-<PARA>
-An implementation of this version of the specification may not claim
-to be an implementation of LSB-TrialUse Specification unless it has successfully
-completed the compliance process as defined by the Linux Foundation.
-</PARA>
--->
-</PREFACE>
+</preface>
+<preface id="status">
+<title>Status of this Document</title>
+<para>
+This document is a complement to the released specification. Other documents may
+supersede or augment this document. A list of current
+Linux Standard Base (LSB) specifications is available at 
+<ulink url="http://refspecs.linuxfoundation.org/">http://refspecs.linuxfoundation.org</ulink>.
+</para>
+<para>If you wish to make comments regarding this document
+in a manner that is tracked by the LSB project, please submit them
+using our public bug database at 
+<ulink url="http://bugs.linuxbase.org">http://bugs.linuxbase.org</ulink>.
+Please enter your feedback, carefully indicating the title of the
+section for which you are submitting feedback, and the volume and
+version of the specification where you found the problem, quoting
+the incorrect text if appropriate. If you are suggesting a new feature,
+please indicate what the problem you are trying to solve is. That is
+more important than the solution, in fact.  </para>
+<para>
+If you do not have or wish to create a bug database account then you 
+can also e-mail feedback to
+<email>lsb-discuss@lists.linuxfoundation.org</email> (<ulink
+url="http://lists.linux-foundation.org/mailman/listinfo/lsb-discuss">
+subscribe</ulink>, <ulink
+url="http://lists.linux-foundation.org/pipermail/lsb-discuss/">
+archives</ulink>), and arrangements will be made to transpose the
+comments to our public bug database.  </para>
+</preface>
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
 <PARA>
@@ -50,6 +85,10 @@ the information explicitly included here.
 <PARA>
 The Trial Use Specification defines components which are not
 required parts of the LSB Specification.
+</PARA>
+<!-- XXX -->
+<PARA>
+As of version &specversion; there are no specified elements in &spectitle;.
 </PARA>
 </CHAPTER>
 
