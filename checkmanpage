@@ -1,0 +1,60 @@
+#!/bin/sh
+#
+# simple script to attempt to build a document from a manpage 
+# aims to ease debugging, building a whole book over in booksets is slow
+# takes one arg: the (base) name of the manpage
+# generates sgml into xxx.sgml, then tries to build to xxx.html, xxx.txt
+# those three will be placed in the current directory
+#
+# plenty of work still needed: no checking at all that we called the
+# right way or that the requested source page exists
+# we include "entities" in case definitions from there are used,
+# but the rest of the infrastructure is missing - intentionally,
+# but can easily break on the page using something not defined -
+# mainly this is going to be references to specs, which should be
+# bolted in somehow
+# 
+# @mats
+
+PAGE=$1
+SPECSRC=`echo $PWD | sed -e "s/lsbspec.*/lsbspec/"`
+OUTFILE=xxx.sgml
+DATEVERSION="0.1-`date +'%Y%m%d'`"
+
+cat > $OUTFILE <<HEAD
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!ENTITY % entities SYSTEM "$SPECSRC/entities">
+<!ENTITY specversion "$DATEVERSION">
+<!ENTITY spectitle "Experimenal $PAGE Manpage">
+%entities;
+<!ENTITY copyrightyear "2011">
+<!ENTITY copyrightholder "Linux Foundation">
+]>
+
+<book>
+<bookinfo>
+<edition>&spectitle;</edition>
+<title>&spectitle; &specversion;</title>
+<copyright>
+<year>&copyrightyear;</year>
+<holder>Linux Foundation</holder>
+</copyright>
+</bookinfo>
+
+<chapter id="exp" xreflabel="base pages">
+<title>Interfaces</title>
+
+<sect1 id="expman">
+<title>Interface Definitions</title>
+HEAD
+
+cat >> $OUTFILE < $PAGE.sgml
+
+cat >> $OUTFILE <<TAIL
+</sect1>
+</chapter>
+</book>
+TAIL
+
+docbook2html -d $SPECSRC/docbook-utils.dsl\#html -u $OUTFILE
+jw -f docbook -b $SPECSRC/backends/txt -d $SPECSRC/docbook-utils.dsl\#html $OUTFILE
