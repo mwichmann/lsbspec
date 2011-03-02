@@ -2679,6 +2679,11 @@ extern long int telldir(DIR * __dirp);
 #define SHT_NULL	0
 #define STB_LOCAL	0
 #define STT_NOTYPE	0
+#define DF_ORIGIN	0x00000001	/* Object may use DF_ORIGIN */
+#define DF_SYMBOLIC	0x00000002	/* Symbol resolutions start with this object */
+#define DF_TEXTREL	0x00000004	/* Object contains text relocations */
+#define DF_BIND_NOW	0x00000008	/* No lazy binding for this object */
+#define DF_STATIC_TLS	0x00000010	/* Module uses the static TLS model */
 #define SHF_IA_64_SHORT	0x10000000
 #define PT_LOOS	0x60000000
 #define DT_LOOS	0x6000000d
@@ -2809,6 +2814,10 @@ extern long int telldir(DIR * __dirp);
 #define PT_INTERP	3
 #define SHT_STRTAB	3
 #define STB_NUM	3
+#define DT_FLAGS	30
+#define DT_ENCODING	32
+#define DT_PREINIT_ARRAY	32
+#define DT_PREINIT_ARRAYSZ	33
 #define DT_NUM	34
 #define DT_HASH	4
 #define EI_CLASS	4
@@ -6272,6 +6281,7 @@ extern int __wctomb_chk(char *, wchar_t, size_t);
 extern long int a64l(const char *__s);
 extern void abort(void);
 extern int abs(int __x);
+extern int atexit(void (*__func) (void));
 extern double atof(const char *__nptr);
 extern int atoi(const char *__nptr);
 extern long int atol(const char *__nptr);
@@ -6458,7 +6468,7 @@ extern int strncasecmp(const char *__s1, const char *__s2, size_t __n);
 #define EPOLLOUT	4
 #define EPOLLERR	8
 #define EPOLLHUP	16
-#define EPOLLRDHUP	32
+#define EPOLLRDHUP	0x2000
 #define EPOLLONESHOT	(1 &lt;&lt; 30)
 #define EPOLLET	(1 &lt;&lt; 31)
 
@@ -7042,10 +7052,23 @@ extern int __xstat64(int __ver, const char *__filename,
 extern int chmod(const char *__file, mode_t __mode);
 extern int fchmod(int __fd, mode_t __mode);
 extern int fchmodat(int __fd, const char *__file, mode_t mode, int __flag);
+extern int fstat(int __fd, struct stat *__buf);
+extern int fstat64(int __fd, struct stat64 *__buf);
+extern int fstatat(int __fd, const char *__file, struct stat *__buf,
+		   int __flag);
+extern int fstatat64(int __fd, const char *__file, struct stat64 *__buf,
+		     int __flag);
+extern int lstat(const char *__file, struct stat *__buf);
+extern int lstat64(const char *__file, struct stat64 *__buf);
 extern int mkdir(const char *__path, mode_t __mode);
 extern int mkdirat(int __fd, const char *__path, mode_t __mode);
 extern int mkfifo(const char *__path, mode_t __mode);
 extern int mkfifoat(int __fd, const char *__path, mode_t __mode);
+extern int mknod(const char *__path, mode_t __mode, dev_t __dev);
+extern int mknodat(int __fd, const char *__path, mode_t __mode,
+		   dev_t __dev);
+extern int stat(const char *__file, struct stat *__buf);
+extern int stat64(const char *__file, struct stat64 *__buf);
 extern mode_t umask(mode_t __mask);
 </SCREEN>
 </SECT2>
