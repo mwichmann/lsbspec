@@ -45,7 +45,11 @@ my $status, $title, $tbl, $MainTitle;
 $status    = 'Included';
 $title     = $language.' modules';
 $tbl       = "tbl-$language-mods";
+$footnote  = "ftn-$language-mods";
 $MainTitle = "$language Modules";
+
+printf("<!-- Start of generated text - do not edit! -->\n");
+printf("<!-- generated from the LSB specification database by mkilmodtable -->\n");
 
 $select  = "SELECT * FROM InterpretedLanguageModule ";
 $select .= "LEFT JOIN InterpretedLanguage ON ILMlanguage=ILid ";
@@ -61,13 +65,15 @@ print STDERR $select, "\n" if $trace;
 $sth = $dbh->prepare($select);
 $sth->execute;
 
-printf("<!-- Start of generated text - do not edit! -->\n");
-printf("<!-- generated from the LSB specification database by mkilmodtable -->\n");
 printf("<PARA>\n");
 printf("An LSB conforming implementation shall provide the\n");
 printf("%s as described in <XREF LINKEND=\"%s\">\n", $title, $tbl );
 printf("with at least the behavior described as mandatory\n");
-printf("in the referenced underlying specification\n");
+printf("in the referenced underlying specification.\n");
+printf("Some %s may be marked as deprecated, and applications\n", $title);
+printf("should avoid using these as they may be withdrawn\n");
+printf("in future releases of this specification.\n");
+
 printf("</PARA>\n");
 
 if ( $sth->rows < 1 ) {
@@ -82,12 +88,12 @@ if ( $sth->rows < 1 ) {
 
     my $col       = 0;                               #column count
     my $row       = 0;
+    my $hasDeprecated = 0;
     my $totalrows = int( ( $sth->rows + 4 ) / 5 );
 
     my $mods = $sth->fetchall_arrayref( {} );
 
     while ( $row < $totalrows ) {
-
 	#
 	# fixed width table ... 5 columns
 	#
@@ -98,7 +104,6 @@ if ( $sth->rows < 1 ) {
 	}
 	my $idx = ( $row + ( $col++ * $totalrows ) );
 	$field = $mods->[ ($idx) ];
-
 	#
 	# Shouldn't need this, but we've seen this script
 	# go into an infinite loop before, so this is a safeguard.
@@ -107,12 +112,11 @@ if ( $sth->rows < 1 ) {
 	  unless ( $idx <= $totalrows * 5 );
 
 	$ref = $permutation{ $field->{'ILMstandard'} };
-
 	#$ftid = sprintf("std-fn-%s-%s",
 	#	$field[1], $permutation{$field[1]});
 
 	printf( "<ENTRY>%s\n", $field->{'ILMname'} );
-
+	#
 	# figure out a reference
 	# each table is followed by a list of references
 	#
@@ -121,8 +125,8 @@ if ( $sth->rows < 1 ) {
 	#   with values being the names of the standards
 	# @ref is an array; each element is a key in %ref
 	# $refno is the current index into that array
+	#
 	if ( $field->{'Sid'} ) {
-
 	    my $refstr = sprintf "std-mod-%d", $field->{'Sid'};
 	    $references{$refstr} = $field->{'Sname'};
 	    $refno = 0;
@@ -134,12 +138,25 @@ if ( $sth->rows < 1 ) {
 		push( @ref, $refstr );
 		$refno = $#ref;
 	    }
-
 	    printf( "<LINK LINKEND=\"%s\"> [%d]</LINK>\n",
 		$refstr, $refno + 1 );
 	}
-	printf("</ENTRY>\n");
+	#
+	# handle deprecated modules - adds a footnote for first one,
+	# footnoteref for subsequent ones
+	#
+	if ( $field->{'ILMdeprecatedsince'} ) {
+	    if ( $field->{'ILMdeprecatedsince'} <= $lsbversion ) {
+	        if ( $hasDeprecated == 0 ) {
+		    printf("<FOOTNOTE ID=%s><PARA>Deprecated module</PARA></FOOTNOTE>\n", $footnote);
 
+		    $hasDeprecated = 1;
+		} else {
+		    printf("<FOOTNOTEREF LINKEND=%s>\n", $footnote);
+		}
+	    }
+	}
+	printf("</ENTRY>\n");
     }
 
     printf("</ROW>\n");

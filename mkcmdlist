@@ -28,8 +28,8 @@ if( !$lsbversion ) { usage(); }
 my $dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
     or die "Couldn't connect to database: ".DBI->errstr;
 
-if( !$module ) { 
-    $moduleid=1; 
+if( !$module ) {
+    $moduleid=1;
 }
 else {
     ($moduleid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$module'");
@@ -68,7 +68,36 @@ $cth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
 for(1..$cth->rows) {
         $entry = $cth->fetchrow_hashref() or die "Fetchrow failed on $select query: ".DBI->errstr;
-        print "m4_include(".$entry->{'Cname'}.".sgml)\n";
+
+        # If there is a "Cname.sgml" file, just use it
+        if( -e $entry->{'Cname'}.".sgml" ) {
+            print "m4_include(".$entry->{'Cname'}.".sgml)\n";
+        }
+        else {
+            # Otherwise we have different files for different LSB versions
+            # Let's select the proper one
+            $Cname = $entry->{'Cname'};
+            $prev_ver = "";
+            $found = 0;
+
+            open( F, "ls -1 ".$Cname."*sgml |" );
+            while(<F>) {
+                if( /$Cname\-(.+)\.sgml/ ) {
+                    $ver = $1;
+                    if( $ver > $lsbversion ) {
+                        print "m4_include(".$Cname."-".$prev_ver.".sgml)\n";
+                        $found = 1;
+                        last;
+                    }
+                    $prev_ver = $ver;
+                }
+            }
+            close(F);
+
+            if( !$found ) {
+                print "m4_include(".$Cname."-".$prev_ver.".sgml)\n";
+            }
+        }
 }
 
 $cth->finish;

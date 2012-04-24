@@ -66,13 +66,27 @@ sub funcdef($$) {
         0 );
 }
 
-sub paramdef($$) {
-    my ( $type, $name ) = @_;
+sub paramdef($$$) {
+    my ( $type, $name, $Ttype ) = @_;
     return "<void>" if ( !defined($type) || $type eq "" || $type eq "void" );
     return "<varargs>" if ( $type eq "..." );
-    return tag( "paramdef",
-        sprintf( "%s\n%s%s", $type, indent( $level + 2 ), parameter($name) ),
-        0 );
+    if( $Ttype eq "FuncPtr" ) {
+        if( $type =~ /^([^(]+\(\*\))\((.+)\)$/ ) {
+            my $rettype = $1;
+            my $funcparams = "<funcparams>".$2."</funcparams>";
+            my $pname_tag = parameter($name);
+            $rettype =~ s/\(\*\)/\(\*$pname_tag\)/;
+            $type = $rettype.$funcparams;
+        }
+        return tag( "paramdef",
+            sprintf( "%s\n%s%s", $type, indent( $level + 2 ), "" ),
+            0 );
+    }
+    else {
+        return tag( "paramdef",
+            sprintf( "%s\n%s%s", $type, indent( $level + 2 ), parameter($name) ),
+            0 );
+    }
 }
 
 sub parameter($) {
@@ -96,7 +110,7 @@ sub funcsynopsis($$$) {
     my $argstr = "";
     for my $arg (@$args) {
         $level += 2;
-        $argstr .= paramdef( $arg->{'type'}, $arg->{name} );
+        $argstr .= paramdef( $arg->{'type'}, $arg->{name}, $arg->{'Ttype'} );
         $level -= 2;
     }
     tag( "funcsynopsis",
@@ -137,7 +151,7 @@ sub mksynop($) {
     #
     my $sql = "select * from Interface ";
     $sql .= "left join ArchInt on Iid=AIint ";
-    $sql .= "left join Type on Tid=Ireturn ";
+    $sql .= "left join Type on Tid=AIreturn ";
     $sql .= "left join ArchType on ATtid=Tid ";
     $sql .= "left join Header on Hid=Iheader ";
     $sql .= "where ";
@@ -186,6 +200,7 @@ sub mksynop($) {
                 {
                     'type' => undef,
                     'name' => "irrelevant",
+                    'Ttype' => undef,
                 }
             );
         }
@@ -198,6 +213,7 @@ sub mksynop($) {
                 {
                     'type' => $argtype,
                     'name' => $argname,
+                    'Ttype' => $entry->{'Ttype'},
                 }
             );
         }
@@ -233,7 +249,7 @@ sub namediv($$) {
 	$iname = $unmangled;
 	$iname =~ s/\(.*$//;
     }
-    
+
     print "\n";
     print "<refnamediv>\n";
     print "<refname>$iname</refname>\n";
@@ -247,7 +263,7 @@ sub section($$) {
     my ( $title, $interface ) = @_;
     print "<refsect1>\n";
     print "<title>$title</title>\n";
-    
+
     if( $title eq "Errors" ) {
 	print <<"EOM"
 <variablelist>
