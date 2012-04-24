@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# tool for looking at differences in spec versions
+# 
+# is run in a specific book directory, compares that book's .txt
+# file with the one most recently committed.  Thus the workflow is:
+#
+# 1. update all external matters - specdb, build_env/headers .defs file
+# 2. in lsbspec, do "make gensrc" then "make"
+#    Note: it may help to do just the "make gensrc" first, then run "bzr diff"
+#    to make sure you're getting the changes you expect, before proceeding.
+# 3. identify the book that is affected, and build in it (or rebuild them all)
+#    remember production books that are /combinations/ of modules/submodules
+#    are built in booksets/, while single-source ones are in books/
+#    all production volumes begin with lsb-
+# 4. run 'specdiff'.  If you're in LSB-foo, this will diff LSB-foo.txt
+#    and leave a file LSB-foo.DIFF, marked with #ifdef ERRATA
+#    these changes should be sufficient together with the appropriate bug
+#    to generate an errata documente
+#        
+
+# check we're in a spec directory:
+spec=`basename $PWD`
+base=`dirname $PWD`
+name=`basename $base`
+if [ $name != 'books' -a $name != 'booksets' ]
+then
+    echo "need to be in a spec book (one level below books/booksets)"
+    exit 1
+fi
+
+# now generate the diff
+#echo "Going to diff $spec"
+bzr diff --diff-options="-bBw -D ERRATA" -r -2 $spec.txt > $spec.DIFF
+
+if [ ! -s $spec.DIFF ]
+then
+    echo "no differences in $spec"
+    rm $spec.DIFF
+else
+    echo "$spec has changes"
+fi
