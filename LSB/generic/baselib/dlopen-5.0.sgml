@@ -1,0 +1,125 @@
+<refentry id="baselib-dlopen-1"> <refmeta>
+<refentrytitle>dlopen</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>dlopen
+</refname>
+<refpurpose>open dynamic object
+</refpurpose>
+<indexterm id="ix-baselib-dlopen-1"><primary>dlopen</primary></indexterm>
+</refnamediv>
+<REFSYNOPSISDIV>
+<REFSYNOPSISDIVINFO>
+<DATE>08 July  2004</DATE>
+</REFSYNOPSISDIVINFO>
+<SYNOPSIS>
+#include &lt;dlfcn.h&gt;
+</SYNOPSIS>
+<FUNCSYNOPSIS>
+<FUNCPROTOTYPE>
+ <FUNCDEF>void * 
+  <FUNCTION>dlopen</FUNCTION></FUNCDEF>
+ <PARAMDEF>const char *
+  <PARAMETER><REPLACEABLE>filename</REPLACEABLE></PARAMETER></PARAMDEF>
+ <PARAMDEF>int
+  <PARAMETER><REPLACEABLE>flag</REPLACEABLE></PARAMETER></PARAMDEF>
+</FUNCPROTOTYPE>
+</FUNCSYNOPSIS>
+</REFSYNOPSISDIV>
+<refsect1>
+<title>Description</title>
+
+<para>
+The <function>dlopen</function> function shall behave as specified in 
+<XREF LINKEND="STD.SUSv3">, but with additional behaviors listed below.
+</para>
+
+<para>
+If the file argument does not contain a slash character, then the
+system shall look for a library of that name in at least the following
+directories, and use the first one which is found:
+
+<itemizedlist>
+
+<listitem><para>The directories specified by the 
+<CONSTANT>DT_RPATH</CONSTANT> dynamic entry.
+</para></listitem>
+
+<listitem><para>The directories specified in the 
+<constant>LD_LIBRARY_PATH</constant>
+environment variable (which is a colon separated list of pathnames).
+This step shall be skipped for setuid
+and setgid executables.</para></listitem>
+
+<listitem><para>A set of directories sufficient to contain the
+libraries specified in this standard.
+
+<note><para>Traditionally, <filename>/lib</filename> and
+<filename>/usr/lib</filename>.  This case would also cover cases in
+which the system used the mechanism of
+<filename>/etc/ld.so.conf</filename> and
+<filename>/etc/ld.so.cache</filename> to provide access.
+</para>
+
+<para>Example: An application which is not linked against libm may
+choose to dlopen libm.</para></note>
+
+</para></listitem>
+
+</itemizedlist>
+
+</para>
+
+<refsect2>
+<title>Additional flags</title>
+<para>
+In addition to the available values for <parameter>flag</parameter>
+as documented in <XREF LINKEND=std.SUSv3>, the following values may
+also be ORed into <parameter>flag</parameter>:
+</para>
+
+<variablelist>
+  <varlistentry>
+  <term>RTLD_NODELETE</term>
+  <listitem> 
+<para>
+Do not unload the library during
+<function>dlclose</function>. Consequently, the library's static
+variables are not reinitialized if the library is reloaded with
+<function>dlopen</function> at a later time.
+</para>
+  </listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term>RTLD_NOLOAD</term>
+  <listitem> 
+<para>
+Do not load the library. This can be used to test if the
+library is already resident. <function>dlopen</function> returns a
+<constant>NULL</constant> pointer if it is not resident;
+it returns the library's handle if it is resident. 
+This flag can also be used to promote the flags on
+a library that is already loaded. For example, a library that was
+previously loaded with <constant>RTLD_LOCAL</constant> can be reopened
+using <constant>RTLD_NOLOAD|RTLD_GLOBAL</constant>.
+</para>
+  </listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term>RTLD_DEEPBIND</term>
+  <listitem> 
+<para>
+Place the lookup scope of the symbols in this library ahead of the global
+scope. This means that a self-contained library will use its own symbols
+in preference to global symbols with the same name contained in libraries
+that have already been loaded.
+</para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+
+</refsect1>
+</refentry>
