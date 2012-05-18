@@ -8453,7 +8453,7 @@ typedef struct _GtkTextAttributes {
     PangoTabArray *tabs;
     GtkWrapMode wrap_mode;
     PangoLanguage *language;
-    gpointer padding1;
+    GdkColor *pg_bg_color;
     guint invisible:1;
     guint bg_full_height:1;
     guint editable:1;
@@ -8948,9 +8948,10 @@ typedef struct _GtkWidgetClass {
     AtkObject *(*get_accessible) (GtkWidget *);
     void (*screen_changed) (GtkWidget *, GdkScreen *);
      gboolean(*can_activate_accel) (GtkWidget *, guint);
-    void (*_gtk_reserved2) (void);
-    void (*_gtk_reserved3) (void);
-    void (*_gtk_reserved4) (void);
+     gboolean(*grab_broken_event) (void);
+    void (*composited_changed) (GtkWidget *);
+     gboolean(*query_tooltip) (GtkWidget *, gint, gint, gboolean,
+			       GtkTooltip *);
     void (*_gtk_reserved5) (void);
     void (*_gtk_reserved6) (void);
     void (*_gtk_reserved7) (void);
@@ -9865,8 +9866,8 @@ typedef struct _GtkMenuItemClass {
     void (*activate_item) (GtkMenuItem *);
     void (*toggle_size_request) (GtkMenuItem *, gint *);
     void (*toggle_size_allocate) (GtkMenuItem *, gint);
-    void (*_gtk_reserved1) (void);
-    void (*_gtk_reserved2) (void);
+    void (*set_label) (void);
+    const gchar *(*get_label) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
 } GtkMenuItemClass;
@@ -9906,7 +9907,7 @@ typedef struct _GtkActionClass {
     GtkWidget *(*create_tool_item) (GtkAction *);
     void (*connect_proxy) (GtkAction *, GtkWidget *);
     void (*disconnect_proxy) (GtkAction *, GtkWidget *);
-    void (*_gtk_reserved1) (void);
+    GtkWidget *(*create_menu) (GtkAction *);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -10001,7 +10002,7 @@ typedef struct _GtkMenuShellClass {
     void (*select_item) (GtkMenuShell *, GtkWidget *);
     void (*insert) (GtkMenuShell *, GtkWidget *, gint);
      gint(*get_popup_delay) (GtkMenuShell *);
-    void (*_gtk_reserved1) (void);
+     gboolean(*move_selected) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
 } GtkMenuShellClass;
@@ -10017,7 +10018,7 @@ typedef struct _GtkLabelClass {
     void (*move_cursor) (GtkLabel *, GtkMovementStep, gint, gboolean);
     void (*copy_clipboard) (GtkLabel *);
     void (*populate_popup) (GtkLabel *, GtkMenu *);
-    void (*_gtk_reserved1) (void);
+     gboolean(*activate_link) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -10183,7 +10184,7 @@ typedef struct _GtkTextBufferClass {
 			const GtkTextIter *);
     void (*begin_user_action) (GtkTextBuffer *);
     void (*end_user_action) (GtkTextBuffer *);
-    void (*_gtk_reserved1) (void);
+    void (*paste_done) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -10407,7 +10408,7 @@ typedef struct _GtkStyleClass {
     void (*draw_resize_grip) (GtkStyle *, GdkWindow *, GtkStateType,
 			      GdkRectangle *, GtkWidget *, const gchar *,
 			      GdkWindowEdge, gint, gint, gint, gint);
-    void (*_gtk_reserved1) (void);
+    void (*get_text_area_size) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -10547,7 +10548,7 @@ typedef struct _GtkEntryClass {
     void (*copy_clipboard) (GtkEntry *);
     void (*paste_clipboard) (GtkEntry *);
     void (*toggle_overwrite) (GtkEntry *);
-    void (*_gtk_reserved1) (void);
+    void (*get_text_area_size) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
 } GtkEntryClass;
@@ -10557,7 +10558,7 @@ typedef struct _GtkSpinButtonClass {
      gint(*output) (GtkSpinButton *);
     void (*value_changed) (GtkSpinButton *);
     void (*change_value) (GtkSpinButton *, GtkScrollType);
-    void (*_gtk_reserved1) (void);
+    void (*cursor_on_match) (GtkSpinButton *);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -10589,7 +10590,8 @@ typedef struct _GtkEntryCompletionClass {
 				GtkTreeIter *);
     void (*action_activated) (GtkEntryCompletion *, gint);
      gboolean(*insert_prefix) (GtkEntryCompletion *, const gchar *);
-    void (*_gtk_reserved0) (void);
+     gboolean(*cursor_on_match) (GtkEntryCompletion *, GtkTreeModel *,
+				 GtkTreeIter *);
     void (*_gtk_reserved1) (void);
     void (*_gtk_reserved2) (void);
 } GtkEntryCompletionClass;
@@ -10877,7 +10879,7 @@ typedef struct _GtkSeparatorMenuItem {
 } GtkSeparatorMenuItem;
 typedef struct _GtkAboutDialogClass {
     GtkDialogClass parent_class;
-    void (*_gtk_reserved1) (void);
+     gboolean(*activate_link) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -10891,7 +10893,7 @@ typedef struct _GtkListStoreClass {
 } GtkListStoreClass;
 typedef struct _GtkFileChooserButtonClass {
     GtkHBoxClass parent_class;
-    void *__gtk_reserved1;
+    void (*file_set) (void);
     void *__gtk_reserved2;
     void *__gtk_reserved3;
     void *__gtk_reserved4;
@@ -10935,9 +10937,9 @@ typedef struct _GtkNotebookClass {
      gboolean(*focus_tab) (GtkNotebook *, GtkNotebookTab);
     void (*change_current_page) (GtkNotebook *, gint);
     void (*move_focus_out) (GtkNotebook *, GtkDirectionType);
-    void (*_gtk_reserved1) (void);
-    void (*_gtk_reserved2) (void);
-    void (*_gtk_reserved3) (void);
+     gboolean(*reorder_tab) (void);
+     gint(*insert_page) (void);
+    GtkNotebook *(*create_window) (void);
     void (*_gtk_reserved4) (void);
 } GtkNotebookClass;
 typedef struct _GtkImageMenuItemClass {
@@ -11195,7 +11197,7 @@ typedef struct _GtkPrintOperationClass {
     GtkWidget *(*create_custom_widget) (void);
     void (*custom_widget_apply) (void);
      gboolean(*preview) (void);
-    void (*_gtk_reserved1) (void);
+    void (*update_custom_widget) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -11389,6 +11391,7 @@ typedef enum {
 } GtkCellRendererAccelMode;
 typedef void (*GtkTreeViewSearchPositionFunc) (GtkTreeView *, GtkWidget *,
 					       gpointer);
+typedef struct _GtkTooltip GtkTooltip;
 extern const gchar *const *gtk_about_dialog_get_artists(GtkAboutDialog *
 							about);
 extern const gchar *const *gtk_about_dialog_get_authors(GtkAboutDialog *
@@ -13237,9 +13240,9 @@ extern void gtk_init(int *argc, char ***argv);
 extern void gtk_init_add(GtkFunction function, gpointer data);
 extern gboolean gtk_init_check(int *argc, char ***argv);
 extern gboolean gtk_init_with_args(int *argc, char ***argv,
-				   char *parameter_string,
+				   const char *parameter_string,
 				   GOptionEntry * entries,
-				   char *translation_domain,
+				   const char *translation_domain,
 				   GError * *error);
 extern GType gtk_input_dialog_get_type(void);
 extern GtkWidget *gtk_input_dialog_new(void);
@@ -14704,7 +14707,7 @@ extern gboolean gtk_target_list_find(GtkTargetList * list, GdkAtom target,
 extern GType gtk_target_list_get_type(void);
 extern GtkTargetList *gtk_target_list_new(const GtkTargetEntry * targets,
 					  guint ntargets);
-extern void gtk_target_list_ref(GtkTargetList * list);
+extern GtkTargetList gtk_target_list_ref(GtkTargetList * list);
 extern void gtk_target_list_remove(GtkTargetList * list, GdkAtom target);
 extern void gtk_target_list_unref(GtkTargetList * list);
 extern void gtk_target_table_free(GtkTargetEntry * targets,
@@ -15436,7 +15439,7 @@ extern GtkTreeIter *gtk_tree_iter_copy(GtkTreeIter * iter);
 extern void gtk_tree_iter_free(GtkTreeIter * iter);
 extern GType gtk_tree_iter_get_type(void);
 extern void gtk_tree_model_filter_clear_cache(GtkTreeModelFilter * filter);
-extern void
+extern gboolean
 gtk_tree_model_filter_convert_child_iter_to_iter(GtkTreeModelFilter *
 						 filter,
 						 GtkTreeIter * filter_iter,
@@ -15546,13 +15549,11 @@ extern void gtk_tree_model_rows_reordered(GtkTreeModel * tree_model,
 					  gint * new_order);
 extern void gtk_tree_model_sort_clear_cache(GtkTreeModelSort *
 					    tree_model_sort);
-extern void gtk_tree_model_sort_convert_child_iter_to_iter(GtkTreeModelSort
-							   *
-							   tree_model_sort,
-							   GtkTreeIter *
-							   sort_iter,
-							   GtkTreeIter *
-							   child_iter);
+extern gboolean
+gtk_tree_model_sort_convert_child_iter_to_iter(GtkTreeModelSort *
+					       tree_model_sort,
+					       GtkTreeIter * sort_iter,
+					       GtkTreeIter * child_iter);
 extern GtkTreePath
     *gtk_tree_model_sort_convert_child_path_to_path(GtkTreeModelSort *
 						    tree_model_sort,
@@ -17132,14 +17133,16 @@ typedef struct _GtkStatusIconClass {
     void (*activate) (void);
     void (*popup_menu) (void);
      gboolean(*size_changed) (void);
-    void *__gtk_reserved1;
-    void *__gtk_reserved2;
-    void *__gtk_reserved3;
-    void *__gtk_reserved4;
+     gboolean(*button_press_event) (GtkStatusIcon *, GdkEventButton *);
+     gboolean(*button_release_event) (GtkStatusIcon *, GdkEventButton *);
+     gboolean(*scroll_event) (GtkStatusIcon *, GdkEventButton *);
+     gboolean(*query_tooltip) (GtkStatusIcon *, gint, gint, gboolean,
+			       GtkTooltip *);
     void *__gtk_reserved5;
     void *__gtk_reserved6;
 } GtkStatusIconClass;
 typedef struct _GtkStatusIconPrivate GtkStatusIconPrivate;
+typedef struct _GtkTooltip GtkTooltip;
 extern gboolean gtk_status_icon_get_blinking(GtkStatusIcon * status_icon);
 extern gboolean gtk_status_icon_get_geometry(GtkStatusIcon * status_icon,
 					     GdkScreen * *screen,

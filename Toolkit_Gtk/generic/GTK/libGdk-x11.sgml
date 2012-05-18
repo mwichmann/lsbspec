@@ -2495,11 +2495,11 @@ typedef struct _GdkDrawableClass {
 				     PangoFont *, gint, gint,
 				     PangoGlyphString *);
     void (*draw_trapezoids) (GdkDrawable *, GdkGC *, GdkTrapezoid *, gint);
-    void (*_gdk_reserved3) (void);
-    void (*_gdk_reserved4) (void);
-    void (*_gdk_reserved5) (void);
-    void (*_gdk_reserved6) (void);
-    void (*_gdk_reserved7) (void);
+    cairo_surface_t *(*ref_cairo_surface) (void);
+    GdkDrawable *(*get_source_drawable) (void);
+    void (*set_cairo_clip) (void);
+    cairo_surface_t *(*create_cairo_surface) (void);
+    void (*draw_drawable_with_src) (void);
     void (*_gdk_reserved9) (void);
     void (*_gdk_reserved10) (void);
     void (*_gdk_reserved11) (void);
@@ -2577,6 +2577,14 @@ typedef enum {
     GDK_WA_WMCLASS = 1 &lt;&lt; 7,
     GDK_WA_NOREDIR = 1 &lt;&lt; 8
 } GdkWindowAttributesType;
+typedef struct _GdkEventGrabBroken {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    gboolean keyboard;
+    gboolean implicit;
+    GdkWindow *grab_window;
+} GdkEventGrabBroken;
 extern void gdk_add_client_message_filter(GdkAtom message_type,
 					  GdkFilterFunc func,
 					  gpointer data);

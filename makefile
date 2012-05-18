@@ -1,6 +1,6 @@
 
 DOCDIRS=ELF LSB Packaging Graphics Graphics-Ext \
-	Toolkit_Gtk Toolkit_Qt3 Toolkit_Qt XML Desktop \
+	Toolkit_Gtk Toolkit_Qt XML Desktop \
 	Perl Python Languages Multimedia Printing \
 	Security TUM TrialUse
 

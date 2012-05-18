@@ -4359,8 +4359,8 @@ typedef struct _GSource {
     GSList *poll_fds;
     GSource *prev;
     GSource *next;
-    gpointer reserved1;
-    gpointer reserved2;
+    char *name;
+    GSourcePrivate *priv;
 } GSource;
 typedef gboolean(*GSourceFunc) (gpointer);
 typedef struct _GSourceCallbackFuncs {
@@ -4991,6 +4991,7 @@ typedef enum {
     G_BOOKMARK_FILE_ERROR_FILE_NOT_FOUND
 } GBookmarkFileError;
 typedef struct _GBookmarkFile GBookmarkFile;
+typedef struct _GSourcePrivate GSourcePrivate;
 extern void g_allocator_free(GAllocator * allocator);
 extern GAllocator *g_allocator_new(const gchar * name, guint n_preallocs);
 extern GArray *g_array_append_vals(GArray * array, gconstpointer data,
@@ -5276,7 +5277,8 @@ extern GQuark g_convert_error_quark(void);
 extern gchar *g_convert_with_fallback(const gchar * str, gssize len,
 				      const gchar * to_codeset,
 				      const gchar * from_codeset,
-				      gchar * fallback, gsize * bytes_read,
+				      const gchar * fallback,
+				      gsize * bytes_read,
 				      gsize * bytes_written,
 				      GError * *error);
 extern gchar *g_convert_with_iconv(const gchar * str, gssize len,
@@ -5653,15 +5655,16 @@ extern gboolean g_key_file_load_from_file(GKeyFile * key_file,
 					  GKeyFileFlags flags,
 					  GError * *error);
 extern GKeyFile *g_key_file_new(void);
-extern void g_key_file_remove_comment(GKeyFile * key_file,
+extern gboolean g_key_file_remove_comment(GKeyFile * key_file,
+					  const gchar * group_name,
+					  const gchar * key,
+					  GError * *error);
+extern gboolean g_key_file_remove_group(GKeyFile * key_file,
+					const gchar * group_name,
+					GError * *error);
+extern gboolean g_key_file_remove_key(GKeyFile * key_file,
 				      const gchar * group_name,
 				      const gchar * key, GError * *error);
-extern void g_key_file_remove_group(GKeyFile * key_file,
-				    const gchar * group_name,
-				    GError * *error);
-extern void g_key_file_remove_key(GKeyFile * key_file,
-				  const gchar * group_name,
-				  const gchar * key, GError * *error);
 extern void g_key_file_set_boolean(GKeyFile * key_file,
 				   const gchar * group_name,
 				   const gchar * key, gboolean value);
@@ -5669,10 +5672,11 @@ extern void g_key_file_set_boolean_list(GKeyFile * key_file,
 					const gchar * group_name,
 					const gchar * key, gboolean * list,
 					gsize length);
-extern void g_key_file_set_comment(GKeyFile * key_file,
-				   const gchar * group_name,
-				   const gchar * key,
-				   const gchar * comment, GError * *error);
+extern gboolean g_key_file_set_comment(GKeyFile * key_file,
+				       const gchar * group_name,
+				       const gchar * key,
+				       const gchar * comment,
+				       GError * *error);
 extern void g_key_file_set_double(GKeyFile * key_file,
 				  const gchar * group_name,
 				  const gchar * key, gdouble value);
@@ -8990,7 +8994,7 @@ extern GValueArray *g_value_array_sort_with_data(GValueArray *,
 						 gpointer);
 extern void g_value_copy(const GValue *, GValue *);
 extern gpointer g_value_dup_boxed(const GValue *);
-extern GObject *g_value_dup_object(const GValue *);
+extern gpointer g_value_dup_object(const GValue *);
 extern GParamSpec *g_value_dup_param(const GValue *);
 extern gchar *g_value_dup_string(const GValue *);
 extern gboolean g_value_fits_pointer(const GValue *);
@@ -10558,7 +10562,7 @@ typedef struct _AtkStreamableContentIface {
      gint(*get_n_mime_types) (AtkStreamableContent *);
     const gchar *(*get_mime_type) (AtkStreamableContent *, gint);
     GIOChannel *(*get_stream) (AtkStreamableContent *, const gchar *);
-    AtkFunction pad1;
+    const gchar *(*get_uri) (void);
     AtkFunction pad2;
     AtkFunction pad3;
     AtkFunction pad4;
@@ -10603,7 +10607,7 @@ typedef struct _AtkObjectClass {
     void (*state_change) (AtkObject *, const gchar *, gboolean);
     void (*visible_data_changed) (AtkObject *);
     void (*active_descendant_changed) (AtkObject *, gpointer *);
-    AtkFunction pad1;
+    AtkAttributeSet *(*get_attributes) (void);
     AtkFunction pad2;
     AtkFunction pad3;
 } AtkObjectClass;
@@ -10683,7 +10687,7 @@ typedef struct _AtkValueIface {
     void (*get_maximum_value) (AtkValue *, GValue *);
     void (*get_minimum_value) (AtkValue *, GValue *);
      gboolean(*set_current_value) (AtkValue *, const GValue *);
-    AtkFunction pad1;
+    void (*create_window) (AtkValue *, GValue *);
     AtkFunction pad2;
 } AtkValueIface;
 typedef struct _AtkRelationClass {
@@ -10763,7 +10767,7 @@ typedef struct _AtkImageIface {
     void (*get_image_size) (AtkImage *, gint *, gint *);
      gboolean(*set_image_description) (AtkImage *, const gchar *);
     AtkFunction pad1;
-    AtkFunction pad2;
+    const gchar *(*get_image_locale) (void);
 } AtkImageIface;
 typedef struct _AtkComponentIface {
     GTypeInterface parent;
@@ -10784,7 +10788,7 @@ typedef struct _AtkComponentIface {
      AtkLayer(*get_layer) (AtkComponent *);
      gint(*get_mdi_zorder) (AtkComponent *);
     void (*bounds_changed) (AtkComponent *, AtkRectangle *);
-    AtkFunction pad2;
+     gdouble(*get_alpha) (void);
 } AtkComponentIface;
 typedef struct _AtkEditableTextIface {
     GTypeInterface parent_interface;
@@ -10803,10 +10807,10 @@ typedef struct _AtkDocumentIface {
     GTypeInterface parent;
     const gchar *(*get_document_type) (AtkDocument *);
      gpointer(*get_document) (AtkDocument *);
-    AtkFunction pad1;
-    AtkFunction pad2;
-    AtkFunction pad3;
-    AtkFunction pad4;
+    const gchar *(*get_document_locale) (AtkDocument *);
+    AtkAttributeSet *(*get_document_attributes) (void);
+    const gchar *(*get_document_attribute_value) (void);
+     gboolean(*set_document_attribute) (void);
     AtkFunction pad5;
     AtkFunction pad6;
     AtkFunction pad7;
@@ -12370,7 +12374,7 @@ typedef struct _PangoRendererClass {
     void (*begin) (PangoRenderer *);
     void (*end) (PangoRenderer *);
     void (*prepare_run) (PangoRenderer *, PangoLayoutRun *);
-    void (*_pango_reserved1) (void);
+    void (*draw_glyph_item) (void);
     void (*_pango_reserved2) (void);
     void (*_pango_reserved3) (void);
     void (*_pango_reserved4) (void);
@@ -16974,11 +16978,11 @@ typedef struct _GdkDrawableClass {
 				     PangoFont *, gint, gint,
 				     PangoGlyphString *);
     void (*draw_trapezoids) (GdkDrawable *, GdkGC *, GdkTrapezoid *, gint);
-    void (*_gdk_reserved3) (void);
-    void (*_gdk_reserved4) (void);
-    void (*_gdk_reserved5) (void);
-    void (*_gdk_reserved6) (void);
-    void (*_gdk_reserved7) (void);
+    cairo_surface_t *(*ref_cairo_surface) (void);
+    GdkDrawable *(*get_source_drawable) (void);
+    void (*set_cairo_clip) (void);
+    cairo_surface_t *(*create_cairo_surface) (void);
+    void (*draw_drawable_with_src) (void);
     void (*_gdk_reserved9) (void);
     void (*_gdk_reserved10) (void);
     void (*_gdk_reserved11) (void);
@@ -17056,6 +17060,14 @@ typedef enum {
     GDK_WA_WMCLASS = 1 &lt;&lt; 7,
     GDK_WA_NOREDIR = 1 &lt;&lt; 8
 } GdkWindowAttributesType;
+typedef struct _GdkEventGrabBroken {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    gboolean keyboard;
+    gboolean implicit;
+    GdkWindow *grab_window;
+} GdkEventGrabBroken;
 extern void gdk_add_client_message_filter(GdkAtom message_type,
 					  GdkFilterFunc func,
 					  gpointer data);
@@ -27989,7 +28001,7 @@ typedef struct _GtkTextAttributes {
     PangoTabArray *tabs;
     GtkWrapMode wrap_mode;
     PangoLanguage *language;
-    gpointer padding1;
+    GdkColor *pg_bg_color;
     guint invisible:1;
     guint bg_full_height:1;
     guint editable:1;
@@ -28484,9 +28496,10 @@ typedef struct _GtkWidgetClass {
     AtkObject *(*get_accessible) (GtkWidget *);
     void (*screen_changed) (GtkWidget *, GdkScreen *);
      gboolean(*can_activate_accel) (GtkWidget *, guint);
-    void (*_gtk_reserved2) (void);
-    void (*_gtk_reserved3) (void);
-    void (*_gtk_reserved4) (void);
+     gboolean(*grab_broken_event) (void);
+    void (*composited_changed) (GtkWidget *);
+     gboolean(*query_tooltip) (GtkWidget *, gint, gint, gboolean,
+			       GtkTooltip *);
     void (*_gtk_reserved5) (void);
     void (*_gtk_reserved6) (void);
     void (*_gtk_reserved7) (void);
@@ -29401,8 +29414,8 @@ typedef struct _GtkMenuItemClass {
     void (*activate_item) (GtkMenuItem *);
     void (*toggle_size_request) (GtkMenuItem *, gint *);
     void (*toggle_size_allocate) (GtkMenuItem *, gint);
-    void (*_gtk_reserved1) (void);
-    void (*_gtk_reserved2) (void);
+    void (*set_label) (void);
+    const gchar *(*get_label) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
 } GtkMenuItemClass;
@@ -29442,7 +29455,7 @@ typedef struct _GtkActionClass {
     GtkWidget *(*create_tool_item) (GtkAction *);
     void (*connect_proxy) (GtkAction *, GtkWidget *);
     void (*disconnect_proxy) (GtkAction *, GtkWidget *);
-    void (*_gtk_reserved1) (void);
+    GtkWidget *(*create_menu) (GtkAction *);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -29537,7 +29550,7 @@ typedef struct _GtkMenuShellClass {
     void (*select_item) (GtkMenuShell *, GtkWidget *);
     void (*insert) (GtkMenuShell *, GtkWidget *, gint);
      gint(*get_popup_delay) (GtkMenuShell *);
-    void (*_gtk_reserved1) (void);
+     gboolean(*move_selected) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
 } GtkMenuShellClass;
@@ -29553,7 +29566,7 @@ typedef struct _GtkLabelClass {
     void (*move_cursor) (GtkLabel *, GtkMovementStep, gint, gboolean);
     void (*copy_clipboard) (GtkLabel *);
     void (*populate_popup) (GtkLabel *, GtkMenu *);
-    void (*_gtk_reserved1) (void);
+     gboolean(*activate_link) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -29719,7 +29732,7 @@ typedef struct _GtkTextBufferClass {
 			const GtkTextIter *);
     void (*begin_user_action) (GtkTextBuffer *);
     void (*end_user_action) (GtkTextBuffer *);
-    void (*_gtk_reserved1) (void);
+    void (*paste_done) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -29943,7 +29956,7 @@ typedef struct _GtkStyleClass {
     void (*draw_resize_grip) (GtkStyle *, GdkWindow *, GtkStateType,
 			      GdkRectangle *, GtkWidget *, const gchar *,
 			      GdkWindowEdge, gint, gint, gint, gint);
-    void (*_gtk_reserved1) (void);
+    void (*get_text_area_size) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -30083,7 +30096,7 @@ typedef struct _GtkEntryClass {
     void (*copy_clipboard) (GtkEntry *);
     void (*paste_clipboard) (GtkEntry *);
     void (*toggle_overwrite) (GtkEntry *);
-    void (*_gtk_reserved1) (void);
+    void (*get_text_area_size) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
 } GtkEntryClass;
@@ -30093,7 +30106,7 @@ typedef struct _GtkSpinButtonClass {
      gint(*output) (GtkSpinButton *);
     void (*value_changed) (GtkSpinButton *);
     void (*change_value) (GtkSpinButton *, GtkScrollType);
-    void (*_gtk_reserved1) (void);
+    void (*cursor_on_match) (GtkSpinButton *);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -30125,7 +30138,8 @@ typedef struct _GtkEntryCompletionClass {
 				GtkTreeIter *);
     void (*action_activated) (GtkEntryCompletion *, gint);
      gboolean(*insert_prefix) (GtkEntryCompletion *, const gchar *);
-    void (*_gtk_reserved0) (void);
+     gboolean(*cursor_on_match) (GtkEntryCompletion *, GtkTreeModel *,
+				 GtkTreeIter *);
     void (*_gtk_reserved1) (void);
     void (*_gtk_reserved2) (void);
 } GtkEntryCompletionClass;
@@ -30413,7 +30427,7 @@ typedef struct _GtkSeparatorMenuItem {
 } GtkSeparatorMenuItem;
 typedef struct _GtkAboutDialogClass {
     GtkDialogClass parent_class;
-    void (*_gtk_reserved1) (void);
+     gboolean(*activate_link) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -30427,7 +30441,7 @@ typedef struct _GtkListStoreClass {
 } GtkListStoreClass;
 typedef struct _GtkFileChooserButtonClass {
     GtkHBoxClass parent_class;
-    void *__gtk_reserved1;
+    void (*file_set) (void);
     void *__gtk_reserved2;
     void *__gtk_reserved3;
     void *__gtk_reserved4;
@@ -30471,9 +30485,9 @@ typedef struct _GtkNotebookClass {
      gboolean(*focus_tab) (GtkNotebook *, GtkNotebookTab);
     void (*change_current_page) (GtkNotebook *, gint);
     void (*move_focus_out) (GtkNotebook *, GtkDirectionType);
-    void (*_gtk_reserved1) (void);
-    void (*_gtk_reserved2) (void);
-    void (*_gtk_reserved3) (void);
+     gboolean(*reorder_tab) (void);
+     gint(*insert_page) (void);
+    GtkNotebook *(*create_window) (void);
     void (*_gtk_reserved4) (void);
 } GtkNotebookClass;
 typedef struct _GtkImageMenuItemClass {
@@ -30731,7 +30745,7 @@ typedef struct _GtkPrintOperationClass {
     GtkWidget *(*create_custom_widget) (void);
     void (*custom_widget_apply) (void);
      gboolean(*preview) (void);
-    void (*_gtk_reserved1) (void);
+    void (*update_custom_widget) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
     void (*_gtk_reserved4) (void);
@@ -30925,6 +30939,7 @@ typedef enum {
 } GtkCellRendererAccelMode;
 typedef void (*GtkTreeViewSearchPositionFunc) (GtkTreeView *, GtkWidget *,
 					       gpointer);
+typedef struct _GtkTooltip GtkTooltip;
 extern const gchar *const *gtk_about_dialog_get_artists(GtkAboutDialog *
 							about);
 extern const gchar *const *gtk_about_dialog_get_authors(GtkAboutDialog *
@@ -32773,9 +32788,9 @@ extern void gtk_init(int *argc, char ***argv);
 extern void gtk_init_add(GtkFunction function, gpointer data);
 extern gboolean gtk_init_check(int *argc, char ***argv);
 extern gboolean gtk_init_with_args(int *argc, char ***argv,
-				   char *parameter_string,
+				   const char *parameter_string,
 				   GOptionEntry * entries,
-				   char *translation_domain,
+				   const char *translation_domain,
 				   GError * *error);
 extern GType gtk_input_dialog_get_type(void);
 extern GtkWidget *gtk_input_dialog_new(void);
@@ -34240,7 +34255,7 @@ extern gboolean gtk_target_list_find(GtkTargetList * list, GdkAtom target,
 extern GType gtk_target_list_get_type(void);
 extern GtkTargetList *gtk_target_list_new(const GtkTargetEntry * targets,
 					  guint ntargets);
-extern void gtk_target_list_ref(GtkTargetList * list);
+extern GtkTargetList gtk_target_list_ref(GtkTargetList * list);
 extern void gtk_target_list_remove(GtkTargetList * list, GdkAtom target);
 extern void gtk_target_list_unref(GtkTargetList * list);
 extern void gtk_target_table_free(GtkTargetEntry * targets,
@@ -34972,7 +34987,7 @@ extern GtkTreeIter *gtk_tree_iter_copy(GtkTreeIter * iter);
 extern void gtk_tree_iter_free(GtkTreeIter * iter);
 extern GType gtk_tree_iter_get_type(void);
 extern void gtk_tree_model_filter_clear_cache(GtkTreeModelFilter * filter);
-extern void
+extern gboolean
 gtk_tree_model_filter_convert_child_iter_to_iter(GtkTreeModelFilter *
 						 filter,
 						 GtkTreeIter * filter_iter,
@@ -35082,13 +35097,11 @@ extern void gtk_tree_model_rows_reordered(GtkTreeModel * tree_model,
 					  gint * new_order);
 extern void gtk_tree_model_sort_clear_cache(GtkTreeModelSort *
 					    tree_model_sort);
-extern void gtk_tree_model_sort_convert_child_iter_to_iter(GtkTreeModelSort
-							   *
-							   tree_model_sort,
-							   GtkTreeIter *
-							   sort_iter,
-							   GtkTreeIter *
-							   child_iter);
+extern gboolean
+gtk_tree_model_sort_convert_child_iter_to_iter(GtkTreeModelSort *
+					       tree_model_sort,
+					       GtkTreeIter * sort_iter,
+					       GtkTreeIter * child_iter);
 extern GtkTreePath
     *gtk_tree_model_sort_convert_child_path_to_path(GtkTreeModelSort *
 						    tree_model_sort,
@@ -36668,14 +36681,16 @@ typedef struct _GtkStatusIconClass {
     void (*activate) (void);
     void (*popup_menu) (void);
      gboolean(*size_changed) (void);
-    void *__gtk_reserved1;
-    void *__gtk_reserved2;
-    void *__gtk_reserved3;
-    void *__gtk_reserved4;
+     gboolean(*button_press_event) (GtkStatusIcon *, GdkEventButton *);
+     gboolean(*button_release_event) (GtkStatusIcon *, GdkEventButton *);
+     gboolean(*scroll_event) (GtkStatusIcon *, GdkEventButton *);
+     gboolean(*query_tooltip) (GtkStatusIcon *, gint, gint, gboolean,
+			       GtkTooltip *);
     void *__gtk_reserved5;
     void *__gtk_reserved6;
 } GtkStatusIconClass;
 typedef struct _GtkStatusIconPrivate GtkStatusIconPrivate;
+typedef struct _GtkTooltip GtkTooltip;
 extern gboolean gtk_status_icon_get_blinking(GtkStatusIcon * status_icon);
 extern gboolean gtk_status_icon_get_geometry(GtkStatusIcon * status_icon,
 					     GdkScreen * *screen,
