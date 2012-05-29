@@ -1,0 +1,58 @@
+Specification: LSB Desktop generic
+Edition of Specification: 4.1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=3125
+
+Rationale: two interfaces from the GTK Toolkit section,
+g_convert_with_fallback() and gtk_init_with_args(), need 
+corrections to declare parameters as "const".
+
+
+In LSB Desktop generic:
+
+In 16.3. Data Definitions for libglib-2.0
+16.3.1. glib-2.0/glib.h
+
+
+Change:
+
+extern gchar *g_convert_with_fallback(const gchar * str, gssize len,
+                                      const gchar * to_codeset,
+                                      const gchar * from_codeset,
+                                      gchar * fallback, 
+                                      gsize * bytes_read,
+                                      gsize * bytes_written,
+                                      GError * *error);
+
+To:
+
+extern gchar *g_convert_with_fallback(const gchar * str, gssize len,
+                                      const gchar * to_codeset,
+                                      const gchar * from_codeset,
+                                      const gchar * fallback,
+                                      gsize * bytes_read,
+                                      gsize * bytes_written,
+                                      GError * *error);
+
+
+In 16.28. Data Definitions for libgtk-x11-2.0
+16.28.1. gtk-2.0/gtk/gtk.h
+
+Change:
+
+
+extern boolean gtk_init_with_args(int *argc, char ***argv,
+                                   char *parameter_string,
+                                   GOptionEntry * entries,
+                                   char *translation_domain,
+                                   GError * *error);
+
+To:
+
+extern boolean gtk_init_with_args(int *argc, char ***argv,
+                                   const char *parameter_string,
+                                   GOptionEntry * entries,
+                                   const char *translation_domain,
+                                   GError * *error);
+
