@@ -673,7 +673,7 @@ if(open(DESC,"<$Lname.txt" )) {
 # 6) Get a list of the Standards that are used by this library
 #
 print "<PARA>\n";
-$select = "SELECT DISTINCT Sname,Sid FROM Standard ";
+$select = "SELECT DISTINCT Sname,Stag,Sid FROM Standard ";
 $select.= "LEFT JOIN IntStd ON ISsid=Sid ";
 $select.= "LEFT JOIN Interface ON Iid=ISiid ";
 $select.= "LEFT JOIN LGInt ON LGIint=Iid ";
@@ -684,6 +684,8 @@ $select.= "AND (AIappearedin <= '$lsbversion' AND AIappearedin<>'') ";
 $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
 $select.= "AND (ISappearedin <= '$lsbversion' AND ISappearedin<>'') ";
 $select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
+$select.= "AND (Sappearedin <= '$lsbversion' AND Sappearedin<>'') ";
+$select.= "AND (Swithdrawnin IS NULL OR Swithdrawnin >'$lsbversion') ";
 $select.= "AND AIarch=$Aid ";
 $select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
@@ -699,7 +701,7 @@ if( $lsh->rows) {
 		local(*entry);
 		$entry=$lsh->fetchrow_hashref;
 		printf "<MEMBER ID='REFSTD.%s.%d'>\n", makeid($Lname), $refno;
-		printf "[%s] <XREF LINKEND=\"std.%s\">\n", $entry->{'Sname'}, makeid($entry->{'Sname'});
+		printf "[%s] <XREF LINKEND=\"std.%s\">\n", $entry->{'Sname'}, $entry->{'Stag'};
 		print "</MEMBER>\n";
 		$ref_list{$entry->{'Sname'}} = $refno;
 		}
