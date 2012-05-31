@@ -4506,6 +4506,7 @@ extern char *textdomain(const char *__domainname);
 #define _POSIX_PATH_MAX	256
 #define _POSIX_SEM_NSEMS_MAX	256
 #define NGROUPS_MAX	32
+#define WORD_BIT	32
 #define _POSIX2_EXPR_NEST_MAX	32
 #define _POSIX_DELAYTIMER_MAX	32
 #define _POSIX_MQ_PRIO_MAX	32
@@ -7612,8 +7613,16 @@ extern int setrlimit64(__rlimit_resource_t __resource,
 </PARA>
 <SCREEN>
 
+#define FD_ISSET(d,set)	(((set)->fds_bits[((d)/(8*sizeof(long)))]&amp;(1L&lt;&lt;((d)%(8*sizeof(long)))))!=0)
+#define FD_CLR(d,set)	((set)->fds_bits[((d)/(8*sizeof(long)))]&amp;=~(1L&lt;&lt;((d)%(8*sizeof(long)))))
+#define FD_SET(d,set)	((set)->fds_bits[((d)/(8*sizeof(long)))]|=(1L&lt;&lt;((d)%(8*sizeof(long)))))
 #define NFDBITS	(8 * sizeof (long))
+#define FD_SETSIZE	1024
+#define FD_ZERO(fdsetp)	bzero(fdsetp, sizeof(*(fdsetp)))
 
+typedef struct {
+    unsigned long int fds_bits[FD_SETSIZE / NFDBITS];
+} fd_set;
 extern int pselect(int __nfds, fd_set * __readfds, fd_set * __writefds,
 		   fd_set * __exceptfds, const struct timespec *__timeout,
 		   const sigset_t * __sigmask);
@@ -8054,14 +8063,6 @@ extern clock_t times(struct tms *__buffer);
 #ifndef TRUE
 #define TRUE	1
 #endif
-#define FD_SETSIZE	1024
-#define FD_ZERO(fdsetp)	bzero(fdsetp, sizeof(*(fdsetp)))
-#define FD_ISSET(d,set)	\
-  (((set)->fds_bits[((d)/(8*sizeof(long)))]&amp;(1L&lt;&lt;((d)%(8*sizeof(long)))))!=0)
-#define FD_CLR(d,set)	\
-  ((set)->fds_bits[((d)/(8*sizeof(long)))]&amp;=~(1L&lt;&lt;((d)%(8*sizeof(long)))))
-#define FD_SET(d,set)	\
-  ((set)->fds_bits[((d)/(8*sizeof(long)))]|=(1L&lt;&lt;((d)%(8*sizeof(long)))))
 
 typedef unsigned char u_int8_t;
 typedef unsigned short u_int16_t;
@@ -8102,10 +8103,6 @@ typedef unsigned long long int dev_t;
 typedef unsigned int mode_t;
 typedef unsigned long int nlink_t;
 typedef char *caddr_t;
-
-typedef struct {
-    unsigned long int fds_bits[__FDSET_LONGS];
-} fd_set;
 
 typedef long int clock_t;
 typedef long int time_t;
