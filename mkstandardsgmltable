@@ -123,6 +123,10 @@ if( $SMid ) {
     $select.= "LEFT JOIN SModStd ON SMSsid=Sid ";
 }
 $select.= "WHERE Stype IN ($Stype) ";
+if( $lsbversion ) {
+    $select.= "AND Sappearedin > '' AND Sappearedin <= '$lsbversion' ";
+    $select.= "AND (Swithdrawnin IS NULL OR Swithdrawnin > '$lsbversion') ";
+}
 $select.= "AND ( Sarch=$Aid OR Sarch=1 ) ";
 if( $specids or $exclids or $SMid ) {
     $select.= "AND (";
@@ -172,7 +176,7 @@ for(1..$sth->rows) {
     print "<ROW>";
     # Don't print the nickname. It may be confusing
     #printf "<ENTRY>%s</ENTRY>",$entry->{'Sname'};
-    printf "<ENTRY ID=\"std.%s\" XREFLABEL=\"%s\">%s</ENTRY>",makeid($entry->{'Sname'}),$entry->{'Sshort'},$entry->{'Sshort'};
+    printf "<ENTRY ID=\"std.%s\" XREFLABEL=\"%s\">%s</ENTRY>",$entry->{'Stag'},$entry->{'Sshort'},$entry->{'Sshort'};
     printf "<ENTRY>%s</ENTRY>", $entry->{'Sfull'};
     printf "<ENTRY><ULINK URL=\"%s\">%s</ULINK></ENTRY>",
                     encode_entities($entry->{'Surl'},"%&"),
@@ -185,12 +189,3 @@ $dbh->disconnect;
 
 print "</TBODY>\n";
 printf("<!-- End of text generated from database -->\n");
-
-sub makeid {
-    my ($name) = @_;
-    $name =~ s/\s+/./g;
-    $name =~ s/[^A-Za-z0-9.]+/./g;
-    # finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
-    $name =~ s/\.\.+/./g;
-    return $name;
-}

@@ -59,6 +59,8 @@ $select .= "AND ILappearedin <= '$lsbversion' AND ILappearedin <>'' ";
 $select .= "AND (ILwithdrawnin IS NULL OR ILwithdrawnin > '$lsbversion') ";
 $select .= "AND ILMappearedin <= '$lsbversion' AND ILMappearedin <>'' ";
 $select .= "AND (ILMwithdrawnin IS NULL OR ILMwithdrawnin > '$lsbversion') ";
+$select .= "AND Sappearedin <= '$lsbversion' AND Sappearedin <>'' ";
+$select .= "AND (Swithdrawnin IS NULL OR Swithdrawnin > '$lsbversion') ";
 $select .= "ORDER BY ILMname";
 print STDERR $select, "\n" if $trace;
 
@@ -128,7 +130,7 @@ if ( $sth->rows < 1 ) {
 	#
 	if ( $field->{'Sid'} ) {
 	    my $refstr = sprintf "std-mod-%d", $field->{'Sid'};
-	    $references{$refstr} = $field->{'Sname'};
+	    $references{$refstr} = $field->{'Stag'};
 	    $refno = 0;
 	    for $r ( 0 .. $#ref ) {
 		$refno = $r;
@@ -176,7 +178,7 @@ if ( $sth->rows < 1 ) {
 	      if ( $references{$refstr} eq "Linux Standard Base" );
 	    printf
 "<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para><XREF LINKEND=std.%s></para></FORMALPARA>\n",
-	      $refstr, $r + 1, makeid( $references{$refstr} );
+	      $refstr, $r + 1, $references{$refstr};
 	}
     }
 }
