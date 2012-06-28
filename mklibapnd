@@ -11,16 +11,6 @@ print STDERR "mklibapdn -a <archname> -v <lsbversion> [-m module]\n Default modu
 die;
 }
 
-sub makeid($)
-{
-	my ($name) = @_;
-	$name =~ s/\s+/./g;
-	$name =~ s/[^A-Za-z0-9.]+/./g;
-	# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
-	$name =~ s/\.\.+/./g;
-	return $name;
-}
-
 # Uncomment to trace SQL statments
 #$trace=1;
 
@@ -100,7 +90,7 @@ $entry=$lth->fetchrow_hashref;
 $Lid=$entry->{'Lid'};
 $Lname=$entry->{'Lname'};
 
-$select = "SELECT Iname,ISsid,Vname,Sname ";
+$select = "SELECT Iname,ISsid,Vname,Sname,Stag ";
 $select.= "FROM Interface ";
 $select.= "INNER JOIN LGInt ON Iid=LGIint ";
 $select.= "INNER JOIN LibGroup ON LGIlibg=LGid ";
@@ -131,13 +121,15 @@ print "</PARA>\n";
 # 6) Get a list of the Standards that are used by this library
 #
 print "<PARA>\n";
-$select = "SELECT DISTINCT Sname,Sid FROM Standard,LibGroup,LGInt,Interface ";
+$select = "SELECT DISTINCT Sname,Sid,Stag FROM Standard,LibGroup,LGInt,Interface ";
 $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "LEFT JOIN IntStd ON Iid=ISiid ";
 $select.= "WHERE Sid=ISsid AND Iid=LGIint AND LGIlibg=LGid ";
 $select.= "AND LGlib=$Lid AND AIarch=$Aid ";
 $select.= "AND ISappearedin <= '$lsbversion' AND ISappearedin > '' ";
 $select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
+$select.= "AND Sappearedin <= '$lsbversion' AND Sappearedin > '' ";
+$select.= "AND (Swithdrawnin IS NULL OR Swithdrawnin >'$lsbversion') ";
 $select.= "ORDER BY Sname";
 print STDERR $select,"\n" if $trace;
 $lsh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
@@ -153,7 +145,7 @@ if( $lsh->rows) {
 		$refname[$_] = $entry->{'Sname'};
 		print "<MEMBER>\n";
 		printf "<XREF LINKEND=\"STD.%s\"> [%s]\n",
-		makeid($entry->{'Sname'}), $entry->{'Sname'};
+		$entry->{'Stag'}, $entry->{'Sname'};
 		print "</MEMBER>\n";
 	}
 	print "</SIMPLELIST>\n";
@@ -179,7 +171,7 @@ print "<TBODY>\n";
 	local(*refs);
 	# we did the following query back at step 4,
 	# and the results are still there waiting to be fetched ...
-	#$select = "SELECT Iname,ISsid,Vname,Sname ";
+	#$select = "SELECT Iname,ISsid,Vname,Sname,Stag ";
 	#$select.= "FROM Interface,LGInt,LibGroup ";
 	#$select.= "LEFT JOIN Version ON Vid=Iversion ";
 	#$select.= "LEFT JOIN IntStd ON ISiid=Iid ";
@@ -188,6 +180,8 @@ print "<TBODY>\n";
 	#$select.= "AND LGlib=$Lid AND Iarch=$Aid AND Istdstatus='Included' ";
 	#$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
 	#$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
+	#$select.= "AND (Sappearedin <= '$lsbversion' and Sappearedin<>'') ";
+	#$select.= "AND (Swithdrawnin IS NULL OR Swithdrawnin >'$lsbversion') ";
 	#$select.= "ORDER BY Iname,Vname";
 	#$inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 	#$inh->execute or die "Couldn't execute $select query: ".DBI->errstr;
@@ -196,7 +190,7 @@ print "<TBODY>\n";
 		$entry=$inh->fetchrow_hashref;
 		$entry[$_]=$entry->{'Iname'};
 		$std[$_]=$entry->{'ISsid'};
-		$xrefs[$_]=sprintf ("std.%s", makeid($entry->{'Sname'}));
+		$xrefs[$_]=sprintf ("std.%s", $entry->{'Stag'});
 		$refs[$_]=sprintf "[%s]", $entry->{'Sname'};
 		$symver[$_]=$entry->{'Vname'};
 	}
@@ -253,7 +247,7 @@ print "</TABLE>\n";
 	local(*std);
 	local(*xrefs);
 	local(*refs);
-	$select = "SELECT Iname,ISsid,Vname,Sname ";
+	$select = "SELECT Iname,ISsid,Vname,Sname,Stag ";
 	$select.= "FROM Interface ";
 	$select.= "INNER JOIN LGInt ON Iid=LGIint ";
 	$select.= "INNER JOIN LibGroup ON LGIlibg=LGid ";
@@ -267,6 +261,8 @@ print "</TABLE>\n";
 	$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
 	$select.= "AND ISappearedin <= '$lsbversion' AND ISappearedin > '' ";
 	$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
+	$select.= "AND Sappearedin <= '$lsbversion' AND Sappearedin > '' ";
+	$select.= "AND (Swithdrawnin IS NULL OR Swithdrawnin >'$lsbversion') ";
 	$select.= "ORDER BY Iname,Vname";
 	print STDERR $select,"\n" if $trace;
 	$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
@@ -276,7 +272,7 @@ print "</TABLE>\n";
 			$datasym=$sth->fetchrow_hashref;
 			$datasym[$_]=$datasym->{'Iname'};
 			$std[$_]=$datasym->{'ISsid'};
-			$xrefs[$_]=sprintf ("std.%s", makeid($datasym->{'Sname'}));
+			$xrefs[$_]=sprintf ("std.%s", $datasym->{'Stag'});
 			$refs[$_]=sprintf "[%s]", $datasym->{'Sname'};
 			$symver[$_]=$datasym->{'Vname'};
 		}

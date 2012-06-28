@@ -148,12 +148,14 @@ sub lsbCommands {
 
 	printf("</PARA>\n");
 
-	$sth = $dbh->prepare("SELECT Cname, CSsid, Sfull, Sid, Sname FROM Command
+	$sth = $dbh->prepare("SELECT Cname, CSsid, Sfull, Sid, Sname, Stag FROM Command
                             LEFT JOIN SModCmd ON Command.Cid=SModCmd.SMCcid
                             LEFT JOIN CmdStd ON CScid=Cid
                             LEFT JOIN Standard ON CSsid=Standard.Sid
                             WHERE SMCappearedin > '' AND SMCappearedin<='$lsbversion'
                             AND (SMCwithdrawnin IS NULL OR SMCwithdrawnin>'$lsbversion')
+                            AND Sappearedin > '' AND Sappearedin<='$lsbversion'
+                            AND (Swithdrawnin IS NULL OR Swithdrawnin>'$lsbversion')
                             AND $builtinCheck
                             AND SModCmd.SMCsmid=$moduleid
                             ORDER BY Command.Cname");
@@ -214,7 +216,7 @@ sub lsbCommands {
 
 			my $refstr = sprintf "std-cmd%s-%d",
 				$builtins ? "bi":"" ,$field->{'Sid'};
-			$references{$refstr} = $field->{'Sname'};
+			$references{$refstr} = $field->{'Stag'};
 			$refno = 0;
 			for $r (0..$#ref) {
 				$refno = $r;
@@ -245,27 +247,13 @@ sub lsbCommands {
 			$refstr = $ref[$r];
 			$references{$refstr} = "This specification" if ($references{$refstr} eq "Linux Standard Base");
 			printf "<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para><XREF LINKEND=std.%s></para></FORMALPARA>\n",
-				$refstr, $r+1, makeid($references{$refstr});
+				$refstr, $r+1, $references{$refstr};
 			}
 		}
 	}
-	
 	$sth->finish;
 
 	printf("<!-- End of text generated from database -->\n");
-}
-
-################################################################################
-#	makeid
-################################################################################
-sub makeid($) 
-{
-	my ($name) = @_;
-	$name =~ s/\s+/./g;
-	$name =~ s/[^A-Za-z0-9.]+/./g;
-	# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
-	$name =~ s/\.\.+/./g;
-	return $name;
 }
 
 ################################################################################
