@@ -6752,7 +6752,9 @@ extern int posix_spawnp(pid_t * __pid, const char *__file,
 </PARA>
 <SCREEN>
 
-#define offsetof(TYPE,MEMBER)	((size_t)&amp;((TYPE*)0)->MEMBER)
+#if !defined(__GNUC__)
+#define __builtin_offsetof (TYPE, MEMBER)	((size_t)&amp;((TYPE*)0)->MEMBER)
+#endif
 #ifndef NULL
 #  ifdef __cplusplus
 #    define NULL        (0L)
@@ -6760,6 +6762,7 @@ extern int posix_spawnp(pid_t * __pid, const char *__file,
 #    define NULL        ((void*) 0)
 #  endif
 #endif
+#define offsetof(TYPE,MEMBER)	__builtin_offsetof (TYPE, MEMBER)
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -7529,7 +7532,8 @@ typedef enum __priority_which __priority_which_t;
 extern int getpriority(__priority_which_t __which, id_t __who);
 extern int getrlimit(__rlimit_resource_t __resource,
 		     struct rlimit *__rlimits);
-extern int getrlimit64(id_t __resource, struct rlimit64 *__rlimits);
+extern int getrlimit64(__rlimit_resource_t __resource,
+		       struct rlimit64 *__rlimits);
 extern int getrusage(int __who, struct rusage *__usage);
 extern int setpriority(__priority_which_t __which, id_t __who, int __prio);
 extern int setrlimit(__rlimit_resource_t __resource,
