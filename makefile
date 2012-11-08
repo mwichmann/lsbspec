@@ -1,8 +1,8 @@
 
 DOCDIRS=ELF LSB Packaging Graphics Graphics-Ext \
 	Toolkit_Gtk Toolkit_Qt XML Desktop \
-	Perl Python Languages Multimedia Printing \
-	Security TUM TrialUse
+	Perl Python Languages Multimedia Imaging \
+	Security TUM TrialUse Print Scan
 
 SUBDIRS= $(DOCDIRS)
 

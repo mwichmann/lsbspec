@@ -5,7 +5,7 @@
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
-The LSB-Printing module defines the printing components found on an
+The LSB-Imaging module defines the imaging components found on an
 LSB conforming system.
 </PARA>
 </CHAPTER>
@@ -15,9 +15,9 @@ LSB conforming system.
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
-the LSB-Printing Module Standard.  Such references may be normative or
+the LSB-Imaging Module Standard.  Such references may be normative or
 informative; a reference to specification shall only be considered
-normative if it is explicitly cited as such.  The LSB-Printing Module
+normative if it is explicitly cited as such.  The LSB-Imaging Module
 may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
@@ -36,12 +36,12 @@ m4_include(standards.sgml)
 <SECT1 ID="xlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed in <XREF LINKEND='tbl-xml-stdlib'> shall
+The libraries listed in <XREF LINKEND='tbl-img-stdlib'> shall
 be available on a Linux Standard Base system, with the specified
 runtime names.  This list may be supplemented or amended by the
 architecture-specific specification.
 </PARA>
-<TABLE ID=tbl-xml-stdlib>
+<TABLE ID=tbl-img-stdlib>
 <TITLE>Standard Library Names</TITLE>
 <TGROUP COLS=2>
 <THEAD>
