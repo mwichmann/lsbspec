@@ -1,5 +1,5 @@
 
-SUBDIRS= libxml2
+SUBDIRS= libxml2 libxslt
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done
