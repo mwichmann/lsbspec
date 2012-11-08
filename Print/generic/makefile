@@ -1,5 +1,5 @@
 
-SUBDIRS= intro cupslib command
+SUBDIRS= cupslib command execenv
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done

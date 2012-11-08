@@ -10,8 +10,8 @@ TABLES=standards.sgml libraries.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All -v `cat ../../../LSB/target_version.generic` -m LSB_Print >standards.sgml
-	../../../mklibsgmltable -a All -v `cat ../../../LSB/target_version.generic` -m LSB_Print >libraries.sgml
+	../../mkstandardsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Print >standards.sgml
+	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Print >libraries.sgml
 
 clean:
 	rm -f $(FILES)
