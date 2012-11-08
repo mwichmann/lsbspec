@@ -41,6 +41,33 @@ of runtime modules which shall be in an implementation-defined
 directory which the interpreters shall search by default.
 </PARA>
 
+<SECT1 ID="rlibraries">
+<TITLE>Relevant Libraries</TITLE>
+<PARA>
+The libraries listed in <XREF LINKEND='tbl-lib-languages'> shall
+be available on a Linux Standard Base system, with the specified
+runtime names.  This list may be supplemented or amended by the
+architecture-specific specification.
+</PARA>
+<TABLE ID=tbl-lib-languages>
+<TITLE>Standard Library Names</TITLE>
+<TGROUP COLS=2>
+<THEAD>
+<ROW>
+<ENTRY>Library</ENTRY>
+<ENTRY>Runtime Name</ENTRY>
+</ROW>
+</THEAD>
+m4_include(libraries.sgml)
+</TGROUP>
+</TABLE>
+<PARA>
+These libraries will be in an implementation-defined directory which
+the dynamic linker shall search by default.
+</PARA>
+</SECT1>
+
+
 </CHAPTER>
 
 <!-- boilerplate terms and definitions -->

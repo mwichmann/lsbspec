@@ -14,8 +14,8 @@ INCLSPECS="'CXXABI-1.86'"
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Core -v `cat ../../../LSB/target_version.generic` >standards.sgml
-	../../../mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Core -v `cat ../../../LSB/target_version.generic` >references.sgml
+	../../../mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Base -v `cat ../../../LSB/target_version.generic` >standards.sgml
+	../../../mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Base -v `cat ../../../LSB/target_version.generic` >references.sgml
 
 clean:
 	rm -f $(FILES)
