@@ -1,7 +1,7 @@
-<PART ID=tocbaselib>
+<PART ID=cxxtocbaselib>
 <TITLE>Base Libraries</TITLE>
 
-<CHAPTER id=baselib>
+<CHAPTER id=cxxbaselib>
 <TITLE>Libraries</TITLE>
 
 <PARA>
