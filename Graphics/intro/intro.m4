@@ -3,7 +3,7 @@
 <PARA>
 This is version &specversion; of the LSB-Graphics Module Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 4.1 of the LSB-Graphics Module
+this version will result in version 5.0 of the LSB-Graphics Module
 Specification.
 Implmentations may not claim conformance to this version.
 </PARA>

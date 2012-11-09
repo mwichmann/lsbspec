@@ -1,5 +1,8 @@
 
-SUBDIRS= graphlib opengl
+SUBDIRS= graphlib opengl \
+	libpng libjpeg fontconfig-commands libfontconfig \
+	libXrender libfreetype libXft libcairo
+
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
