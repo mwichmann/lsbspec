@@ -30,7 +30,7 @@ level indicated may be found at the Linux Foundation's
 </PARA>
 </NOTE>
 <!-- the ID below is a placeholder for any standards that have Istandard=0 in the database -->
-<TABLE ID='STD.'>
+<TABLE ID='STD.base'>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=3>
 m4_include(`standards.sgml')

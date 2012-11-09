@@ -1,6 +1,6 @@
 &preface;
 
-<PART ID="TOCINTRO">
+<PART ID="CXXTOCINTRO">
 <TITLE>Introductory Elements</TITLE>
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
@@ -8,8 +8,8 @@ m4_include(`../../generic/intro/genscope.sgml')
 m4_include(`../../generic/intro/cxxscope.sgml')
 </CHAPTER>
 
-<CHAPTER ID="normativerefs">
-<TITLE>Normative References</TITLE>
+<CHAPTER ID="cxxnormativerefs">
+<TITLE>C++ Normative References</TITLE>
 <PARA>
 The specifications listed below are referenced in whole or in part by
 this module of
@@ -18,7 +18,7 @@ of one of these references is identified, then the normative reference is to
 that section alone, and the rest of the referenced document is informative.
 </PARA>
 <!-- the ID below is a placeholder for any standards that have Istandard=0 in the database -->
-<TABLE ID='STD.'>
+<TABLE ID='STD.cxx'>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
 m4_include(`cxxstandards.sgml')
@@ -31,11 +31,11 @@ m4_include(`cxxstandards.sgml')
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed in <XREF LINKEND=tbl-glsb-stdlib> shall
+The libraries listed in <XREF LINKEND=tbl-gcxx-stdlib> shall
 be available on a Linux Standard Base system, with the specified
 runtime names. 
 </PARA>
-<TABLE ID=tbl-glsb-stdlib>
+<TABLE ID=tbl-gcxx-stdlib>
 <TITLE>Standard Library Names</TITLE>
 <TGROUP COLS=2>
 <THEAD>

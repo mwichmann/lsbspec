@@ -10,8 +10,8 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a IA64 -t Standard -m LSB_Core -v `cat ../../../LSB/target_version.IA64` >standards.sgml
-	../../../mkstandardsgmltable -a IA64 -t Reference -m LSB_Core -v `cat ../../../LSB/target_version.IA64` >references.sgml
+	../../../mkstandardsgmltable -a IA64 -t Standard -m LSB_Base -v `cat ../../../LSB/target_version.IA64` >standards.sgml
+	../../../mkstandardsgmltable -a IA64 -t Reference -m LSB_Base -v `cat ../../../LSB/target_version.IA64` >references.sgml
 
 clean:
 	rm -f $(FILES)

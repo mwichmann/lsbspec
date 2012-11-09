@@ -10,8 +10,8 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a x86-64 -t Standard -m LSB_Core -v `cat ../../../LSB/target_version.AMD64` >standards.sgml
-	../../../mkstandardsgmltable -a x86-64 -t Reference -m LSB_Core -v `cat ../../../LSB/target_version.AMD64` >references.sgml
+	../../../mkstandardsgmltable -a x86-64 -t Standard -m LSB_Base -v `cat ../../../LSB/target_version.AMD64` >standards.sgml
+	../../../mkstandardsgmltable -a x86-64 -t Reference -m LSB_Base -v `cat ../../../LSB/target_version.AMD64` >references.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,8 +1,8 @@
 
 .SUFFIXES: .sgml .cpp .m4
 
-FILES=intro.sgml cxxintro.sgml
-TABLES= standards.sgml references.sgml libraries.sgml cxxstandards.sgml cxxlibraries.sgml 
+FILES=intro.sgml #cxxintro.sgml
+TABLES= standards.sgml references.sgml libraries.sgml 
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat -DARCH=IA32 $*.m4 >$@
@@ -10,11 +10,9 @@ TABLES= standards.sgml references.sgml libraries.sgml cxxstandards.sgml cxxlibra
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a IA32 -t Standard -m LSB_Core -v `cat ../../../LSB/target_version.IA32` >standards.sgml
-	../../../mkstandardsgmltable -a IA32 -t Reference -m LSB_Core -v `cat ../../../LSB/target_version.IA32` >references.sgml
-	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI-1.86','SUSV3','LSB','ISOC99'" >cxxstandards.sgml
-	../../../mklibsgmltable -a IA32 -v `cat ../../../LSB/target_version.IA32` -m "LSB_Core" >libraries.sgml
-	../../../mklibsgmltable -a IA32 -v `cat ../../../LSB/target_version.IA32` -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
+	../../../mkstandardsgmltable -a IA32 -t Standard -m LSB_Base -v `cat ../../../LSB/target_version.IA32` >standards.sgml
+	../../../mkstandardsgmltable -a IA32 -t Reference -m LSB_Base -v `cat ../../../LSB/target_version.IA32` >references.sgml
+	../../../mklibsgmltable -a IA32 -v `cat ../../../LSB/target_version.IA32` -m "LSB_Base" >libraries.sgml
 
 clean:
 	rm -f $(FILES)

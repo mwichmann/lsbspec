@@ -10,8 +10,8 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a S390X -t Standard -m LSB_Core -v `cat ../../../LSB/target_version.S390X` >standards.sgml
-	../../../mkstandardsgmltable -a S390X -t Reference -m LSB_Core -v `cat ../../../LSB/target_version.S390X` >references.sgml
+	../../../mkstandardsgmltable -a S390X -t Standard -m LSB_Base -v `cat ../../../LSB/target_version.S390X` >standards.sgml
+	../../../mkstandardsgmltable -a S390X -t Reference -m LSB_Base -v `cat ../../../LSB/target_version.S390X` >references.sgml
 
 clean:
 	rm -f $(FILES)

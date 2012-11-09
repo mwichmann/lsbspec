@@ -1,11 +1,11 @@
-<PART ID=tocbaselib>
-<TITLE>Base Libraries</TITLE>
+<PART ID=cxxtocbaselib>
+<TITLE>C++ Libraries</TITLE>
 
-<CHAPTER id=baselib>
+<CHAPTER id=cxxbaselib>
 <TITLE>Libraries</TITLE>
 
 <PARA>
-An LSB-conforming implementation shall support some base libraries which
+An LSB-conforming implementation shall support some C++ libraries which
 provide interfaces for accessing the operating system, processor and other
 hardware in the system.
 </PARA>
