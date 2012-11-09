@@ -17,7 +17,7 @@ my $builtins = 0;
 
 sub usage()
 {
-        print STDERR "mkcmdtable -v <lsbversion> [-b] [-m <module>]\n Default module is LSB_Core.\n";
+        print STDERR "mkcmdtable -v <lsbversion> [-b] [-m <subsubmodule>]\n Default module is LSB_Base.\n";
         die;
 }
 ################################################################################
@@ -262,17 +262,16 @@ sub lsbCommands {
 # We can get module id from Module Table. Commands list will be generated as per modules.
 GetOptions("b" => \$builtins,
            "m=s" => \$module,
-		   "v=s" => \$lsbversion);
+	   "v=s" => \$lsbversion);
 
 lsbOpenDB;
 
 if(!$module) { 
-    $moduleid=1;
+    $module='LSB_Base';
 }
-else {
-    ($moduleid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$module'");
-    die("Incorrect SubModule name") if not $moduleid;
-}
+($moduleid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$module'");
+die("Incorrect SubModule name") if not $moduleid;
+
 if(!$lsbversion) { usage(); }
 
 lsbCommands;

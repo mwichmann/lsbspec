@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mkcmdlist -v <lsbversion> [-m <module> ]\n Default module is LSB_Core\n";
+print STDERR "mkcmdlist -v <lsbversion> [-m <submodule> ]\n Default submodule is LSB_Base\n";
 die;
 }
 
@@ -17,7 +17,9 @@ die;
 #
 # 1) process the arguments
 #
-# We can get module id from Module Table. Commands list will be generated as per modules.
+# We can get submodule id from SubModule Table. 
+# Commands list will be generated as per submodules.
+
 GetOptions("m=s" => \$module,
             "v=s" => \$lsbversion);
 if( !$lsbversion ) { usage(); }
@@ -29,12 +31,10 @@ my $dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSE
     or die "Couldn't connect to database: ".DBI->errstr;
 
 if( !$module ) {
-    $moduleid=1;
+    $module='LSB_Base';
 }
-else {
-    ($moduleid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$module'");
-    die("Incorrect SubModule name") if not $moduleid;
-}
+($moduleid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$module'");
+die("Incorrect SubModule name") if not $moduleid;
 
 printf("<!-- Start of generated text - do not edit! -->\n");
 printf("<!-- generated from the LSB specification database by mkcmdlist -->\n");
