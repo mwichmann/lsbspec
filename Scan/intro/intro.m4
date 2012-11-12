@@ -11,7 +11,7 @@ LSB conforming system.
 </CHAPTER>
 
 <CHAPTER ID="normativerefs">
-<TITLE>Normative References</TITLE>
+<TITLE>References</TITLE>
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <PARA ID=STD.LSB XREFLABEL="This Specification">
 The specifications listed below are referenced in whole or in part by
@@ -23,6 +23,12 @@ specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
 the specification is to be considered normative.
 </PARA>
+<TABLE>
+<TITLE>Normative References</TITLE>
+<TGROUP COLS=2>
+m4_include(standards.sgml)
+</TGROUP>
+</TABLE>
 <TABLE>
 <TITLE>Informative References</TITLE>
 <TGROUP COLS=2>
