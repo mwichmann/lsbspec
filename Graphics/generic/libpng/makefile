@@ -132,9 +132,6 @@ png_start_read_image.sgml
 FILES=libpng.sgml
 TABLES= png.sgml 
 
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
-
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
 

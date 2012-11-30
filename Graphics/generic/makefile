@@ -1,7 +1,7 @@
 
 SUBDIRS= graphlib opengl \
 	libpng libjpeg fontconfig-commands libfontconfig \
-	libXrender libfreetype libXft libcairo
+	libXrender libfreetype libXft libcairo libpng15
 
 
 all:

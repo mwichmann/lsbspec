@@ -22,6 +22,8 @@ m4_include(libXi.sgml)
 
 m4_include(libXtst.sgml)
 
+m4_include(libxcb.sgml)
+
 </CHAPTER>
 
 </PART>

@@ -20,6 +20,7 @@ gensrc:
 	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libXt >libXt.sgml
 	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libXi >libXi.sgml
 	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libXtst >libXtst.sgml
+	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libxcb >libxcb.sgml
 
 clean:
 	rm -f $(FILES)
@@ -28,5 +29,5 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-graphlib.sgml: libX11.sgml libXext.sgml libICE.sgml libSM.sgml libXt.sgml libXtst.sgml
+graphlib.sgml: libX11.sgml libXext.sgml libICE.sgml libSM.sgml libXt.sgml libXtst.sgml libxcb.sgml
 graphlib.sgml: $(MANPAGES)
