@@ -1,5 +1,5 @@
 
-SUBDIRS= cupslib command execenv
+SUBDIRS= cupslib command execenv appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done

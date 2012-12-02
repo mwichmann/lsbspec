@@ -1,5 +1,5 @@
 
-SUBDIRS= nss
+SUBDIRS= nss appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done

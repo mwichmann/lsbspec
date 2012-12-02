@@ -1,8 +1,8 @@
 
 SUBDIRS= graphlib opengl \
 	libpng libjpeg fontconfig-commands libfontconfig \
-	libXrender libfreetype libXft libcairo libpng15
-
+	libXrender libfreetype libXft libcairo libpng15 \
+	appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
