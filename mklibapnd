@@ -7,7 +7,7 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mklibapdn -a <archname> -v <lsbversion> [-m submodule]\n Default submodule is LSB_Base\n";
+print STDERR "mklibapnd -a <archname> -v <lsbversion> [-m submodule]\n Default submodule is LSB_Base\n";
 die;
 }
 
@@ -50,23 +50,24 @@ printf("<!-- Start of generated text - do not edit! -->\n");
 printf("<!-- generated from the LSB specification database by mklibapnd -->\n");
 
 print "<APPENDIX ID=app-A>\n";
-print "<TITLE>Alphabetical Listing of Interfaces</TITLE>\n";
+print "<TITLE>Alphabetical Listing of Interfaces by Library</TITLE>\n";
 print "<PARA>\n";
 print "</PARA>\n";
 #
 # 4) get & print the library info
 #
+if ( ! $module ) {
+    $module = "LSB_Base";
+}
 $select = "SELECT * FROM Library ";
 $select.= "LEFT JOIN ArchLib ON ALlid=Lid ";
-if( $module ) {
-	$select.= "LEFT JOIN SModLib ON SMLlid=Lid ";
-	$select.= "LEFT JOIN SubModule ON SMLsmid=SMid ";
-}
+$select.= "LEFT JOIN SModLib ON SMLlid=Lid ";
+$select.= "LEFT JOIN SubModule ON SMLsmid=SMid ";
 $select.= "WHERE (ALappearedin <= '$lsbversion' AND ALappearedin > '' ";
 $select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
-if( $module ) {
-	$select.= "AND SMname='".$module."' ";
-}
+$select.= "AND (SMLappearedin <= '$lsbversion' AND SMLappearedin > '' ";
+$select.= "AND (SMLwithdrawnin IS NULL OR SMLwithdrawnin > '$lsbversion') ) ";
+$select.= "AND SMname='".$module."' ";
 
 if( $Aid != 1 ) {
 	$select.= "AND (ALaid=$Aid OR (ALaid=1 AND Lid NOT IN ( ";
@@ -106,6 +107,7 @@ $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
 $select.= "AND ISappearedin <= '$lsbversion' AND ISappearedin > '' ";
 $select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 $select.= "ORDER BY Iname,Vname ";
+print STDERR $select,"\n" if $trace;
 $inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
 $inh->execute or die "Couldn't execute $select query: ".DBI->errstr;
 if( $inh->rows == 0) {
