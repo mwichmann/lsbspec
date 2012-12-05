@@ -1,6 +1,6 @@
 
 DOCDIRS=ELF LSB Packaging Security \
-	Graphics Toolkit_Gtk Toolkit_Qt Multimedia Desktop \
+	Graphics Toolkit_Gtk Toolkit_Qt Toolkit_Independent Multimedia Desktop \
 	Perl Python XML Languages \
 	Print Scan Imaging \
 	TUM TrialUse 
