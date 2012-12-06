@@ -1,3 +1,4 @@
+TOP=../..
 
 .SUFFIXES: .sgml .m4
 
@@ -11,8 +12,8 @@ BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkilmodtable  -v `cat ../../LSB/target_version.generic` -l "Perl" > modules.sgml
-	#../../mkilmodlist -v `cat ../../LSB/target_version.generic` -l "Perl" > modman.sgml
+	$(TOP)/mkilmodtable  -v `cat $(TOP)/target_version` -l "Perl" > modules.sgml
+	#$(TOP)/mkilmodlist -v `cat $(TOP)/target_version` -l "Perl" > modman.sgml
 
 clean:
 	rm -f $(FILES)

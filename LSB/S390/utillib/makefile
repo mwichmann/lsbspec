@@ -1,11 +1,9 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=utillib.sgml libz.sgml libcurses.sgml libutil.sgml
 TABLES=
-
-.cpp.sgml:
-	cpp -I../../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P $*.m4 >$@
@@ -13,9 +11,9 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a S390 -l libz -v `cat ../../target_version.S390` >libz.sgml
-	../../../mklibspec -a S390 -l libncurses -v `cat ../../target_version.S390` >libcurses.sgml
-	../../../mklibspec -a S390 -l libutil -v `cat ../../target_version.S390` >libutil.sgml
+	$(TOP)/mklibspec -a S390 -l libz -v `cat $(TOP)/target_version` >libz.sgml
+	$(TOP)/mklibspec -a S390 -l libncurses -v `cat $(TOP)/target_version` >libcurses.sgml
+	$(TOP)/mklibspec -a S390 -l libutil -v `cat $(TOP)/target_version` >libutil.sgml
 
 clean:
 	rm -f $(FILES)

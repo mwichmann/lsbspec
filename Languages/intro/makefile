@@ -1,3 +1,4 @@
+TOP=../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,8 +11,8 @@ TABLES=references.sgml libraries.sgml
 all: $(FILES) #$(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Perl,LSB_Python,LSB_XML >references.sgml
-	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_XML > libraries.sgml
+	$(TOP)/mkstandardsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Perl,LSB_Python,LSB_XML >references.sgml
+	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_XML > libraries.sgml
 
 clean:
 	rm -f $(FILES)

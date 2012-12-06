@@ -1,5 +1,6 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml #cxxintro.sgml
 TABLES= standards.sgml references.sgml libraries.sgml 
@@ -10,9 +11,9 @@ TABLES= standards.sgml references.sgml libraries.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a IA64 -t Standard -m LSB_Base -v `cat ../../../LSB/target_version.IA64` >standards.sgml
-	../../../mkstandardsgmltable -a IA64 -t Reference -m LSB_Base -v `cat ../../../LSB/target_version.IA64` >references.sgml
-	../../../mklibsgmltable -a IA64 -v `cat ../../../LSB/target_version.IA64` -m "LSB_Base" >libraries.sgml
+	$(TOP)/mkstandardsgmltable -a IA64 -t Standard -m LSB_Base -v `cat $(TOP)/target_version` >standards.sgml
+	$(TOP)/mkstandardsgmltable -a IA64 -t Reference -m LSB_Base -v `cat $(TOP)/target_version` >references.sgml
+	$(TOP)/mklibsgmltable -a IA64 -v `cat $(TOP)/target_version` -m "LSB_Base" >libraries.sgml
 
 clean:
 	rm -f $(FILES)

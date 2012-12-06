@@ -1,5 +1,5 @@
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
 TABLES=

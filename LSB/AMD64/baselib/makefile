@@ -1,5 +1,6 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 MANPAGES= 
 
@@ -16,13 +17,13 @@ TABLES=
 all source: $(FILES) $(TABLES) $(MANPAGES)
 
 gensrc: $(MANPAGES)
-	../../../mklibspec -a x86-64 -l libc -v `cat ../../target_version.AMD64` >libc.sgml
-	../../../mklibspec -a x86-64 -l libm -v `cat ../../target_version.AMD64` >libm.sgml
-	../../../mklibspec -a x86-64 -l libpthread -v `cat ../../target_version.AMD64` >libpthread.sgml
-	../../../mklibspec -a x86-64 -l libdl -v `cat ../../target_version.AMD64` >libdl.sgml
-	../../../mklibspec -a x86-64 -l libcrypt -v `cat ../../target_version.AMD64` >libcrypt.sgml
-	../../../mklibspec -a x86-64 -l libgcc_s -v `cat ../../target_version.AMD64` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../../mklibspec -a x86-64 -c 1 -l libstdcxx -d -v `cat ../../target_version.AMD64` | ../../../fixc++spec >libstdcxx.sgml
+	$(TOP)/mklibspec -a x86-64 -l libc -v `cat $(TOP)/target_version` >libc.sgml
+	$(TOP)/mklibspec -a x86-64 -l libm -v `cat $(TOP)/target_version` >libm.sgml
+	$(TOP)/mklibspec -a x86-64 -l libpthread -v `cat $(TOP)/target_version` >libpthread.sgml
+	$(TOP)/mklibspec -a x86-64 -l libdl -v `cat $(TOP)/target_version` >libdl.sgml
+	$(TOP)/mklibspec -a x86-64 -l libcrypt -v `cat $(TOP)/target_version` >libcrypt.sgml
+	$(TOP)/mklibspec -a x86-64 -l libgcc_s -v `cat $(TOP)/target_version` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	$(TOP)/mklibspec -a x86-64 -c 1 -l libstdcxx -d -v `cat $(TOP)/target_version` | $(TOP)/fixc++spec >libstdcxx.sgml
 
 clean:
 	rm -f $(FILES)

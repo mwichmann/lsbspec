@@ -1,3 +1,4 @@
+TOP=../..
 
 .SUFFIXES: .sgml .m4
 
@@ -13,8 +14,8 @@ all source: $(FILES) $(TABLES)
 #XXX generate unique IDs.  Desktop also has fontconfig commands, 
 #XXX so for the moment just hack ids here to be unique
 gensrc:
-	../../mkcmdtable -m LSB_Toolkit_Independent \
-	-v `cat ../../LSB/target_version.generic` | \
+	$(TOP)/mkcmdtable -m LSB_Toolkit_Independent \
+	-v `cat $(TOP)/target_version` | \
 	sed -e 's/tbl-cmds/xdg-cmds/' \
 	-e 's/std-cmd/xdg-cmd/' > cmdlist.sgml
 

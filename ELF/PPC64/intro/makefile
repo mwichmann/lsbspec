@@ -1,5 +1,6 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
 TABLES=standards.sgml
@@ -10,8 +11,8 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a PPC64 -t Standard -m LSB_Base -v `cat ../../../LSB/target_version.PPC64` >standards.sgml
-	../../../mkstandardsgmltable -a PPC64 -t Reference -m LSB_Base -v `cat ../../../LSB/target_version.PPC64` >references.sgml
+	$(TOP)/mkstandardsgmltable -a PPC64 -t Standard -m LSB_Base -v `cat $(TOP)/target_version` >standards.sgml
+	$(TOP)/mkstandardsgmltable -a PPC64 -t Reference -m LSB_Base -v `cat $(TOP)/target_version` >references.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=qtlist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a S390 -m LSB_Toolkit_Qt -v `cat ../../../LSB/target_version.S390` >qtlist.sgml
+	$(TOP)/mklibapnd -a S390 -m LSB_Toolkit_Qt -v `cat $(TOP)/target_version` >qtlist.sgml
 
 clean:
 	rm -f $(FILES)

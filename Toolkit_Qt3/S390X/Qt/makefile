@@ -1,11 +1,9 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=Qt3.sgml
 TABLES= libqt_mt.sgml 
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -13,7 +11,7 @@ TABLES= libqt_mt.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a S390X -v `cat ../../../LSB/target_version.S390X` -c 2 -l libqt-mt >libqt_mt.sgml
+	$(TOP)/mklibspec -a S390X -v `cat $(TOP)/target_version` -c 2 -l libqt-mt >libqt_mt.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,18 +1,19 @@
+TOP=../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 GENSRC=dyntag_IA64.sgml linuxtag_IA64.sgml
 FILES=dynlnk.sgml $(GENSRC)
 TABLES=
 
 .m4.sgml:
-	m4 -P $*.m4 >$@
+	m4 -P -Uindex -Uformat $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkdyntagtable -a IA64 -s 'IA64 ABI' -c 4 >dyntag_IA64.sgml
-	../../mkdyntagtable -a IA64 -s 'LSB' -d >linuxtag_IA64.sgml
+	$(TOP)/mkdyntagtable -a IA64 -v `cat $(TOP)/target_version` -s 'IA64 ABI' -c 4 >dyntag_IA64.sgml
+	$(TOP)/mkdyntagtable -a IA64 -v `cat $(TOP)/target_version` -s 'LSB' -d >linuxtag_IA64.sgml
 
 clean:
 	rm -f $(FILES)

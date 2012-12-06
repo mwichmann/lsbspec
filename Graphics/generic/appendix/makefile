@@ -1,7 +1,9 @@
+TOP=../../..
+
 .SUFFIXES: .sgml .m4
 
 FILES=liblist.sgml
-TABLES=
+TABLES=graphlist.sgml
 
 .m4.sgml:
 	m4 -P $*.m4 >$@
@@ -9,7 +11,7 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB_Graphics -v `cat ../../../LSB/target_version.generic` >liblist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Graphics -v `cat $(TOP)/target_version` >graphlist.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,11 +1,9 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=dynlnk.sgml dyntag.sgml linuxtag.sgml
 TABLES=
-
-.cpp.sgml:
-	cpp -I../../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P $*.m4 >$@
@@ -13,8 +11,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkdyntagtable -a S390X -s 'S390X ABI' -v `cat ../../../LSB/target_version.S390X` -c 4 >dyntag.sgml
-	../../../mkdyntagtable -a S390X -s 'LSB' -v `cat ../../../LSB/target_version.S390X` -d >linuxtag.sgml
+	$(TOP)/mkdyntagtable -a S390X -s 'S390X ABI' -v `cat $(TOP)/target_version` -c 4 >dyntag.sgml
+	$(TOP)/mkdyntagtable -a S390X -s 'LSB' -v `cat $(TOP)/target_version` -d >linuxtag.sgml
 
 clean:
 	rm -f $(FILES)

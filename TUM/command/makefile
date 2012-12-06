@@ -1,3 +1,4 @@
+TOP=../..
 
 .SUFFIXES: .sgml .m4
 
@@ -11,7 +12,7 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkcmdtable -m LSB_TUM -v `cat ../../LSB/target_version.generic` > cmdlist.sgml
+	$(TOP)/mkcmdtable -m LSB_TUM -v `cat $(TOP)/target_version` > cmdlist.sgml
 
 clean:
 	rm -f $(FILES)

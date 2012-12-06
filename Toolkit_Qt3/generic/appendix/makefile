@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=qt3list.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB_Toolkit_Qt3 -v `cat ../../../LSB/target_version.generic` >qt3list.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Toolkit_Qt3 -v `cat $(TOP)/target_version` >qt3list.sgml
 
 clean:
 	rm -f $(FILES)

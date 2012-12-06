@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=gtklist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a S390X -m LSB_Toolkit_Gtk -v `cat ../../../LSB/target_version.S390X` >gtklist.sgml
+	$(TOP)/mklibapnd -a S390X -m LSB_Toolkit_Gtk -v `cat $(TOP)/target_version` >gtklist.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,5 +1,6 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 MANPAGES=
 
@@ -12,8 +13,8 @@ TABLES= libGL.sgml libGLU.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -l libGL >libGL.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -l libGLU >libGLU.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libGL >libGL.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libGLU >libGLU.sgml
 
 clean:
 	rm -f $(FILES)

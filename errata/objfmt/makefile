@@ -1,5 +1,6 @@
+TOP=../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES  = objfmt.sgml 
 TABLES = ia64sect.sgml ppc32sect.sgml
@@ -10,8 +11,8 @@ TABLES = ia64sect.sgml ppc32sect.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mksectiontable -a IA64 -s 'LSB' -t 'IA64 Additional Special Sections' >ia64sect.sgml
-	../../mksectiontable -a PPC32 -s 'LSB' -t 'PPC32 Additional Special Sections' >ppc32sect.sgml
+	$(TOP)/mksectiontable -a IA64 -v `cat $(TOP)/target_version` -s 'LSB' -t 'IA64 Additional Special Sections' >ia64sect.sgml
+	$(TOP)/mksectiontable -a PPC32 -v `cat $(TOP)/target_version` -s 'LSB' -t 'PPC32 Additional Special Sections' >ppc32sect.sgml
 
 clean:
 	rm -f $(FILES)

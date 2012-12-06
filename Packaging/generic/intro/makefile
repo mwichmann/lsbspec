@@ -1,11 +1,9 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
 TABLES=standards.sgml
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -13,7 +11,7 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All -s "'RFC1952','RFC2440'" >standards.sgml
+	$(TOP)/mkstandardsgmltable -a All -s "'RFC1952','RFC2440'" -v `cat $(TOP)/target_version` >standards.sgml
 
 clean:
 	rm -f $(FILES)

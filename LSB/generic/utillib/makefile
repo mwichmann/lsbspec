@@ -1,3 +1,5 @@
+TOP=../../..
+
 .SUFFIXES: .sgml .m4
 
 MANPAGES= forkpty.sgml login.sgml login_tty.sgml logout.sgml \
@@ -31,9 +33,9 @@ all source: $(FILES) $(GENFILES)
 $(SCANWFILES): scanw_diffs.sgml
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libz >libz.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libncurses >libcurses.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libutil >libutil.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libz >libz.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libncurses >libcurses.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libutil >libutil.sgml
 
 clean:
 	rm -f $(FILES)

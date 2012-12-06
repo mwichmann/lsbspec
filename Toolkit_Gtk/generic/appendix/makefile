@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=gtklist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB_Toolkit_Gtk -v `cat ../../../LSB/target_version.generic` >gtklist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Toolkit_Gtk -v `cat $(TOP)/target_version` >gtklist.sgml
 
 clean:
 	rm -f $(FILES)

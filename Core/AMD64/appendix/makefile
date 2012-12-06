@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,8 +11,8 @@ TABLES=baselist.sgml securitylist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a x86-64 -m LSB_Base -v `cat ../../../LSB/target_version.AMD64` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >baselist.sgml
-	../../../mklibapnd -a x86-64 -m LSB_Security -v `cat ../../../LSB/target_version.AMD64` >securitylist.sgml
+	$(TOP)/mklibapnd -a x86-64 -m LSB_Base -v `cat $(TOP)/target_version` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >baselist.sgml
+	$(TOP)/mklibapnd -a x86-64 -m LSB_Security -v `cat $(TOP)/target_version` >securitylist.sgml
 
 clean:
 	rm -f $(FILES)

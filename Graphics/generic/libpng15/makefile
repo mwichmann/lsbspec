@@ -1,3 +1,5 @@
+TOP=../../..
+
 .SUFFIXES: .sgml .m4
 
 FILES=libpng15.sgml
@@ -9,7 +11,7 @@ TABLES= png15.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libpng15 >png15.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libpng15 >png15.sgml
 
 clean:
 	rm -f $(FILES)

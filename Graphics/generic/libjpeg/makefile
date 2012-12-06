@@ -1,5 +1,6 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 MANPAGES= jpeg_abort_compress.sgml jpeg_abort_decompress.sgml \
 jpeg_abort.sgml jpeg_add_quant_table.sgml jpeg_alloc_huff_table.sgml \
@@ -29,16 +30,13 @@ jpeg_write_tables.sgml
 FILES=libjpeg.sgml
 TABLES= jpeg.sgml 
 
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
-
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libjpeg >jpeg.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libjpeg >jpeg.sgml
 
 clean:
 	rm -f $(FILES)

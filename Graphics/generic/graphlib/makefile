@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -13,14 +14,14 @@ TABLES= libICE.sgml libSM.sgml libX11.sgml libXext.sgml libXt.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libX11 >libX11.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libXext >libXext.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libICE >libICE.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libSM >libSM.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libXt >libXt.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libXi >libXi.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libXtst >libXtst.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 4 -l libxcb >libxcb.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 4 -l libX11 >libX11.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 4 -l libXext >libXext.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 4 -l libICE >libICE.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 4 -l libSM >libSM.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 4 -l libXt >libXt.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 4 -l libXi >libXi.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 4 -l libXtst >libXtst.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 4 -l libxcb >libxcb.sgml
 
 clean:
 	rm -f $(FILES)

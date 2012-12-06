@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=xmllist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB_XML -v `cat ../../../LSB/target_version.generic` >xmllist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_XML -v `cat $(TOP)/target_version` >xmllist.sgml
 
 clean:
 	rm -f $(FILES)

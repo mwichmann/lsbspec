@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=baselist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a S390 -m LSB_Base -v `cat ../../target_version.S390` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >baselist.sgml
+	$(TOP)/mklibapnd -a S390 -m LSB_Base -v `cat $(TOP)/target_version` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >baselist.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=printlist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB_Print -v `cat ../../../LSB/target_version.generic` >printlist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Print -v `cat $(TOP)/target_version` >printlist.sgml
 
 clean:
 	rm -f $(FILES)

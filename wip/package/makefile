@@ -1,5 +1,6 @@
+TOP=../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 MANPAGES=
 
@@ -12,9 +13,9 @@ TABLES=privtags.sgml sigtags.sgml hdrtags.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkrpmtagtable -g Private -t "Header Private Tag Values" >privtags.sgml
-	../../../mkrpmtagtable -g Signature -t "Signature Tag Values" >sigtags.sgml
-	../../../mkrpmtagtable -g Header -t "Header Tag Values" >hdrtags.sgml
+	$(TOP)/mkrpmtagtable -g Private -t "Header Private Tag Values" -v `cat $(TOP)/target_version` >privtags.sgml
+	$(TOP)/mkrpmtagtable -g Signature -t "Signature Tag Values" -v `cat $(TOP)/target_version` >sigtags.sgml
+	$(TOP)/mkrpmtagtable -g Header -t "Header Tag Values" -v `cat $(TOP)/target_version` >hdrtags.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,11 +11,11 @@ TABLES=graphlist.sgml gtklist.sgml qtlist.sgml mmedialist.sgml #qt3list.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a x86-64 -m LSB_Graphics -v `cat ../../../LSB/target_version.AMD64` >graphlist.sgml
-	../../../mklibapnd -a x86-64 -m LSB_Multimedia -v `cat ../../../LSB/target_version.AMD64` >mmedialist.sgml
-	../../../mklibapnd -a x86-64 -m LSB_Toolkit_Gtk -v `cat ../../../LSB/target_version.AMD64` >gtklist.sgml
-	../../../mklibapnd -a x86-64 -m LSB_Toolkit_Qt -v `cat ../../../LSB/target_version.AMD64` >qtlist.sgml
-	#../../../mklibapnd -a x86-64 -m LSB_Toolkit_Qt3 -v `cat ../../../LSB/target_version.AMD64` >qt3list.sgml
+	$(TOP)/mklibapnd -a x86-64 -m LSB_Graphics -v `cat $(TOP)/target_version` >graphlist.sgml
+	$(TOP)/mklibapnd -a x86-64 -m LSB_Multimedia -v `cat $(TOP)/target_version` >mmedialist.sgml
+	$(TOP)/mklibapnd -a x86-64 -m LSB_Toolkit_Gtk -v `cat $(TOP)/target_version` >gtklist.sgml
+	$(TOP)/mklibapnd -a x86-64 -m LSB_Toolkit_Qt -v `cat $(TOP)/target_version` >qtlist.sgml
+	#$(TOP)/mklibapnd -a x86-64 -m LSB_Toolkit_Qt3 -v `cat $(TOP)/target_version` >qt3list.sgml
 
 clean:
 	rm -f $(FILES)

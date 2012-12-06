@@ -1,11 +1,9 @@
+TOP=../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
 TABLES=standards.sgml libraries.sgml pslibs.sgml
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -13,9 +11,9 @@ TABLES=standards.sgml libraries.sgml pslibs.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All >standards.sgml
-	../../../mklibsgmltable -a All -v `cat ../../../LSB/target_version.generic` -f >libraries.sgml
-	../../../mklibsgmltable -a None -v `cat ../../../LSB/target_version.generic` >pslibs.sgml
+	$(TOP)/mkstandardsgmltable -a All -v `cat $(TOP)/target_version` >standards.sgml
+	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -f >libraries.sgml
+	$(TOP)/mklibsgmltable -a None -v `cat $(TOP)/target_version` >pslibs.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,3 +1,4 @@
+TOP=../..
 
 .SUFFIXES: .sgml .m4
 
@@ -8,11 +9,11 @@ TABLES=references.sgml #libraries.sgml slibraries.sgml
 	m4 -P -Uindex -Uformat $*.m4 >$@
 
 all: $(FILES) #$(TABLES)
-	#../../mkstandardsgmltable -a All -s "'xdg-utils','ALSA','ISOC99','NSS SSL','NSPR'" >references.sgml
+	#$(TOP)/mkstandardsgmltable -a All -s "'xdg-utils','ALSA','ISOC99','NSS SSL','NSPR'" -v `cat $(TOP)/target_version >references.sgml
 gensrc:
-	../../mkstandardsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_TUM >references.sgml
-	#../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Multimedia >libraries.sgml
-	#../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Security >slibraries.sgml
+	$(TOP)/mkstandardsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_TUM >references.sgml
+	#$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Multimedia >libraries.sgml
+	#$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Security >slibraries.sgml
 
 clean:
 	rm -f $(FILES)

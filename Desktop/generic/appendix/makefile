@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,11 +11,11 @@ TABLES=graphlist.sgml gtklist.sgml qtlist.sgml mmedialist.sgml #qt3list.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB_Graphics -v `cat ../../../LSB/target_version.generic` >graphlist.sgml
-	../../../mklibapnd -a All -m LSB_Multimedia -v `cat ../../../LSB/target_version.generic` >mmedialist.sgml
-	../../../mklibapnd -a All -m LSB_Toolkit_Gtk -v `cat ../../../LSB/target_version.generic` >gtklist.sgml
-	../../../mklibapnd -a All -m LSB_Toolkit_Qt -v `cat ../../../LSB/target_version.generic` >qtlist.sgml
-	#../../../mklibapnd -a All -m LSB_Toolkit_Qt3 -v `cat ../../../LSB/target_version.generic` >qt3list.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Graphics -v `cat $(TOP)/target_version` >graphlist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Multimedia -v `cat $(TOP)/target_version` >mmedialist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Toolkit_Gtk -v `cat $(TOP)/target_version` >gtklist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Toolkit_Qt -v `cat $(TOP)/target_version` >qtlist.sgml
+	#$(TOP)/mklibapnd -a All -m LSB_Toolkit_Qt3 -v `cat $(TOP)/target_version` >qt3list.sgml
 
 
 clean:

@@ -1,5 +1,6 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
 TABLES=standards.sgml
@@ -14,8 +15,8 @@ INCLSPECS="'CXXABI-1.86'"
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Base -v `cat ../../../LSB/target_version.generic` >standards.sgml
-	../../../mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Base -v `cat ../../../LSB/target_version.generic` >references.sgml
+	$(TOP)/mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Base -v `cat $(TOP)/target_version` >standards.sgml
+	$(TOP)/mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Base -v `cat $(TOP)/target_version` >references.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,5 +1,6 @@
+TOP=../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
 TABLES=standards.sgml
@@ -10,7 +11,7 @@ TABLES=standards.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -s "'SUSV3'" >standards.sgml
+	$(TOP)/mkstandardsgmltable -v `cat $(TOP)/target_version` -s "'SUSV3'" >standards.sgml
 
 clean:
 	rm -f $(FILES)

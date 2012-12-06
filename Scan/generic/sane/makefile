@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=libsane.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -l libsane > libsane.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libsane > libsane.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,11 +1,9 @@
+TOP=../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
 TABLES=standards.sgml glibraries.sgml
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -13,8 +11,8 @@ TABLES=standards.sgml glibraries.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Graphics >standards.sgml
-	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Graphics >glibraries.sgml
+	$(TOP)/mkstandardsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Graphics >standards.sgml
+	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Graphics >glibraries.sgml
 
 
 clean:

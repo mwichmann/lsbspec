@@ -1,5 +1,6 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=libxslt.sgml
 TABLES= xslt.sgml 
@@ -10,7 +11,7 @@ TABLES= xslt.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libxslt >xslt.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libxslt >xslt.sgml
 
 clean:
 	rm -f $(FILES)

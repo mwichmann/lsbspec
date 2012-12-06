@@ -1,11 +1,9 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=libfontconfig.sgml
 TABLES= fontconfig.sgml 
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -13,7 +11,7 @@ TABLES= fontconfig.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libfontconfig >fontconfig.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libfontconfig >fontconfig.sgml
 
 clean:
 	rm -f $(FILES)

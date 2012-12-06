@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -10,7 +11,7 @@ TABLES=securitylist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB_Scan -v `cat ../../../LSB/target_version.generic` >securitylist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Scan -v `cat $(TOP)/target_version` >securitylist.sgml
 
 clean:
 	rm -f $(FILES)
