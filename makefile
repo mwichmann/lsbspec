@@ -1,5 +1,5 @@
 
-DOCDIRS=ELF LSB Packaging Security \
+DOCDIRS=ELF LSB Packaging Security Core \
 	Graphics Toolkit_Gtk Toolkit_Qt Toolkit_Independent Multimedia Desktop \
 	Perl Python XML Languages \
 	Print Scan Imaging \

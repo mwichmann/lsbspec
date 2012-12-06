@@ -2,7 +2,7 @@
 .SUFFIXES: .sgml .m4
 
 FILES=liblist.sgml
-TABLES=
+TABLES=baselist.sgml
 
 .m4.sgml:
 	m4 -P $*.m4 >$@
@@ -10,7 +10,7 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a All -m LSB_Base -v `cat ../../target_version.generic` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >liblist.sgml
+	../../../mklibapnd -a All -m LSB_Base -v `cat ../../target_version.generic` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >baselist.sgml
 
 clean:
 	rm -f $(FILES)
