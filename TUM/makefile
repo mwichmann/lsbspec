@@ -1,5 +1,5 @@
 
-SUBDIRS= command intro
+SUBDIRS= command intro generic
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done
