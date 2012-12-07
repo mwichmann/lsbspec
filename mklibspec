@@ -416,7 +416,7 @@ sub getinterfaces($$$$)
 
 	if ($type eq "functions" || $type eq "methods") {
 		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
-		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
 		$where.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
 		$where.= "AND AIarch=$Aid ";
 		$name  = "ints";
@@ -431,7 +431,7 @@ sub getinterfaces($$$$)
 	}
 	elsif ($type eq "data interfaces") {
 		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
 		$where.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
 		$where.= "AND AIarch=$Aid ";
 		$name  = "data";
@@ -454,7 +454,7 @@ sub getinterfaces($$$$)
 	$select.= "LEFT JOIN IntStd ON ISiid=Iid ";
 	$select.= "LEFT JOIN Standard ON Sid=ISsid ";
 	$select.= "$where ";
-	$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+	$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin <> '') ";
 	$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 	$select.= "ORDER BY Iname, Vname";
 	print STDERR $select,"\n" if $trace;
@@ -623,9 +623,9 @@ print "</PARA>\n";
 $select = "SELECT * FROM Library ";
 $select.= "LEFT JOIN ArchLib ON Lid=ALlid ";
 $select.= "WHERE Library.Lname=".$dbh->quote($libname)." ";
-$select.= "AND ( (ALappearedin <= '$lsbversion' AND ALappearedin<>'' ";
+$select.= "AND ( (ALappearedin <= '$lsbversion' AND ALappearedin <> '' ";
 $select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
-$select.= "OR Lcandidatefor<>'' )";
+$select.= "OR Lcandidatefor <> '' )";
 $select.= "AND ALaid=$Aid";
 print STDERR $select,"\n" if $trace;
 $sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
@@ -680,11 +680,11 @@ $select.= "LEFT JOIN LGInt ON LGIint=Iid ";
 $select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
 $select.= "LEFT JOIN ArchInt ON AIint=Iid ";
 $select.= "WHERE LGlib=$Lid ";
-$select.= "AND (AIappearedin <= '$lsbversion' AND AIappearedin<>'') ";
+$select.= "AND (AIappearedin <= '$lsbversion' AND AIappearedin <> '') ";
 $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
-$select.= "AND (ISappearedin <= '$lsbversion' AND ISappearedin<>'') ";
+$select.= "AND (ISappearedin <= '$lsbversion' AND ISappearedin <> '') ";
 $select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
-$select.= "AND (Sappearedin <= '$lsbversion' AND Sappearedin<>'') ";
+$select.= "AND (Sappearedin <= '$lsbversion' AND Sappearedin <> '') ";
 $select.= "AND (Swithdrawnin IS NULL OR Swithdrawnin >'$lsbversion') ";
 $select.= "AND AIarch=$Aid ";
 $select.= "ORDER BY Sname";
@@ -772,7 +772,7 @@ for(1..$lgh->rows) {
 	if( $Aid != 1 ) {
 		$select.= "AND (ACaid=1 OR ACaid=$Aid) ";
 	}
-	$select.= "AND ACappearedin<>'' AND ACappearedin <= '$lsbversion' ";
+	$select.= "AND ACappearedin <> '' AND ACappearedin <= '$lsbversion' ";
 	$select.= "AND (ACwithdrawnin IS NULL OR ACwithdrawnin > '$lsbversion') ";
 	$select.= "AND CVpos=0 ";
 	$select.= "GROUP BY ACcid ";
@@ -824,7 +824,7 @@ local ($data_def_header);
 $data_def_header = 0;
 $select = "SELECT DISTINCT Hname,Hid FROM Header ";
 $select.= "WHERE Hlib=$Lid ";
-$select.= "AND Happearedin <= '$lsbversion' AND Happearedin <>'' ";
+$select.= "AND Happearedin <= '$lsbversion' AND Happearedin <> '' ";
 $select.= "AND (Hwithdrawnin IS NULL OR Hwithdrawnin > '$lsbversion') ";
 $select.= "ORDER BY Hname";
 $hdh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
@@ -887,9 +887,9 @@ $select.= "LEFT JOIN IntStd ON ISiid=Iid ";
 $select.= "LEFT JOIN Standard ON Sid=ISsid ";
 $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "WHERE Lid=$Lid AND AIarch=$Aid ";
-$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
 $select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
-$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin<>'') ";
+$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin <> '') ";
 $select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
 # Don't try to include the description of generic interfaces
 # into the arch specific document
@@ -897,7 +897,7 @@ if( $Aid!=1 ) {
 	$select.= "AND Iid NOT IN ";
 	$select.= "(SELECT DISTINCT AIint FROM ArchInt";
 	$select.= " WHERE AIarch=1 ";
-	$select.= " AND (AIappearedin <= '$lsbversion' and AIappearedin<>'') ";
+	$select.= " AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
 	$select.= " AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') )";
 }
 $select.= "AND Sname='LSB'";

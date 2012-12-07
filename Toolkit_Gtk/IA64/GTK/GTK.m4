@@ -103,6 +103,7 @@ m4_include(libGdk_pixbuf.sgml)
 m4_include(libGdk_pixbuf_xlib.sgml)
 m4_include(libGdk-x11.sgml)
 m4_include(libGtk-x11.sgml)
+m4_include(libGio.sgml)
 
 </CHAPTER>
 

@@ -29,6 +29,7 @@ gensrc:
 	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgdk-x11-2.0 >libGdk-x11.sgml
 	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgtk-x11-2.0 >libGtk-x11.sgml
 	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libpangocairo-1.0 >libPangoCairo.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgio-2.0 >libGio.sgml
 
 clean:
 	rm -f $(FILES)
