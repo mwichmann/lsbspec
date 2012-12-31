@@ -27,5 +27,5 @@ spotless: clean
 
 
 objfmt.sgml: abinote.sgml ehframehdr.sgml elfsect.sgml elfsecttypes.sgml
-objfmt.sgml: linuxsect.sgml linuxsecttypes.sgml symtarget_version.sgml dwarfext.sgml
+objfmt.sgml: linuxsect.sgml linuxsecttypes.sgml symversion.sgml dwarfext.sgml
 objfmt.sgml: ehframe.sgml dwarfenc.sgml
