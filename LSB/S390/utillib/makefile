@@ -13,6 +13,7 @@ all source: $(FILES) $(TABLES)
 gensrc:
 	$(TOP)/mklibspec -a S390 -l libz -v `cat $(TOP)/target_version` >libz.sgml
 	$(TOP)/mklibspec -a S390 -l libncurses -v `cat $(TOP)/target_version` >libcurses.sgml
+	$(TOP)/mklibspec -a S390 -l libncursesw -v `cat $(TOP)/target_version` >libcursesw.sgml
 	$(TOP)/mklibspec -a S390 -l libutil -v `cat $(TOP)/target_version` >libutil.sgml
 
 clean:

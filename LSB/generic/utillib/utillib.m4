@@ -5,14 +5,16 @@
 <TITLE>Utility Libraries</TITLE>
 <SECT1><TITLE>Introduction</TITLE>
 <PARA>
-An LSB-conforming implementation shall also support the following utility
-libraries which
-are built on top of the interfaces provided by the base libraries. These
-libraries implement common functionality, and hide additional system dependent
-information such as file formats and device names.
+An LSB-conforming implementation shall also support the following
+utility libraries which are built on top of the interfaces provided
+by the base libraries. These libraries implement common functionality,
+and hide additional system dependent information such as file formats
+and device names.
+
 <itemizedlist>
 <listitem><para>libz</para></listitem>
-<listitem><para>libcurses</para></listitem>
+<listitem><para>libncurses</para></listitem>
+<listitem><para>libncursesw</para></listitem>
 <listitem><para>libutil</para></listitem>
 </itemizedlist>
 </PARA>
@@ -24,6 +26,8 @@ same model as used for <XREF LINKEND=baselib>.
 m4_include(libz.sgml)
 
 m4_include(libcurses.sgml)
+
+m4_include(libcursesw.sgml)
 
 m4_include(libutil.sgml)
 

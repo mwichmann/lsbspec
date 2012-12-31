@@ -442,6 +442,30 @@ underlying specification.
 </TBODY>
 </TGROUP>
 </TABLE>
+<PARA>
+An LSB conforming implementation shall provide the generic deprecated functions
+for libpng15 interfaces specified in <XREF linkend="tbl-libpng15-libpn-depints">,
+with the full mandatory functionality as described in the referenced
+underlying specification.
+</PARA>
+<NOTE><PARA>These interfaces are deprecated, and applications
+should avoid using them.
+These interfaces may be withdrawn
+in future releases of this specification.
+</PARA></NOTE>
+<!--libgroupdepints-->
+<TABLE id="tbl-libpng15-libpn-depints">
+<TITLE>libpng15 - libpng15 interfaces Deprecated Function Interfaces</TITLE>
+<TGROUP COLS=3>
+<TBODY>
+<ROW>
+<ENTRY><indexterm><primary>png_get_io_chunk_name</primary></indexterm>png_get_io_chunk_name <LINK LINKEND="REFSTD.libpng15.1">[LSB]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
 </SECT3>
 </SECT2>
 </SECT1>
@@ -653,19 +677,6 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define PNG_ROW_IN_INTERLACE_PASS(y, pass)	((PNG_PASS_MASK(pass,0) >> ((y)&amp;7)) &amp; 1)
 #define PNG_COL_IN_INTERLACE_PASS(x, pass)	((PNG_PASS_MASK(pass,1) >> ((x)&amp;7)) &amp; 1)
 
-typedef char *png_libpng_version_1_5_13;
-typedef const png_color *png_const_colorp;
-typedef const png_color_16 *png_const_color_16p;
-typedef const png_color_8 *png_const_color_8p;
-typedef const png_sPLT_entry *png_const_sPLT_entryp;
-typedef const png_sPLT_t *png_const_sPLT_tp;
-typedef const png_text *png_const_textp;
-typedef const png_time *png_const_timep;
-typedef const png_unknown_chunk *png_const_unknown_chunkp;
-typedef const png_info *png_const_infop;
-typedef const png_struct *png_const_structp;
-typedef void (*png_unknown_chunk_ptr) (void);
-typedef void (*png_longjmp_ptr) (void);
 typedef struct {
     png_byte red;
     png_byte green;
@@ -697,13 +708,6 @@ typedef struct {
 } png_sPLT_entry_struct;
 typedef png_sPLT_entry_struct png_sPLT_entry;
 typedef struct {
-    png_charp name;
-    png_byte depth;
-    png_sPLT_entryp entries;
-    png_int_32 nentries;
-} png_sPLT_struct;
-typedef png_sPLT_struct png_sPLT;
-typedef struct {
     int compression;
     png_charp key;
     png_charp text;
@@ -723,12 +727,38 @@ typedef struct {
 } png_time_struct;
 typedef png_time_struct png_time;
 typedef struct {
-    png_byte name[];
+    png_byte name[5];
     png_byte *data;
     png_size_t size;
     png_byte location;
 } png_unknown_chunk_t;
 typedef png_unknown_chunk_t png_unknown_chunk;
+typedef struct png_info_def png_info;
+typedef png_sPLT_entry *png_sPLT_entryp;
+typedef struct png_struct_def png_struct;
+
+typedef struct {
+    png_charp name;
+    png_byte depth;
+    png_sPLT_entryp entries;
+    png_int_32 nentries;
+} png_sPLT_struct;
+typedef png_sPLT_struct png_sPLT_t;
+
+typedef char *png_libpng_version_1_5_13;
+typedef const png_color *png_const_colorp;
+typedef const png_color_16 *png_const_color_16p;
+typedef const png_color_8 *png_const_color_8p;
+typedef const png_sPLT_entry *png_const_sPLT_entryp;
+typedef const png_sPLT_t *png_const_sPLT_tp;
+typedef const png_text *png_const_textp;
+typedef const png_time *png_const_timep;
+typedef const png_unknown_chunk *png_const_unknown_chunkp;
+typedef const png_info *png_const_infop;
+typedef const png_struct *png_const_structp;
+typedef void (*png_unknown_chunk_ptr) (void);
+typedef void (*png_longjmp_ptr) (void);
+typedef png_sPLT_struct png_sPLT;
 typedef struct {
     png_uint_32 width;
     png_size_t rowbytes;
@@ -738,14 +768,12 @@ typedef struct {
     png_byte pixel_depth;
 } png_row_info_struct;
 typedef png_row_info_struct png_row_info;
-typedef struct png_info_def png_info;
 typedef png_color *png_colorp;
 typedef png_color **png_colorpp;
 typedef png_color_16 *png_color_16p;
 typedef png_color_16 **png_color_16pp;
 typedef png_color_8 *png_color_8p;
 typedef png_color_8 **png_color_8pp;
-typedef png_sPLT_entry *png_sPLT_entryp;
 typedef png_sPLT_entry **png_sPLT_entrypp;
 typedef png_sPLT_t *png_sPLT_tp;
 typedef png_sPLT_t **png_sPLT_tpp;
@@ -761,93 +789,83 @@ typedef png_row_info *png_row_infop;
 typedef png_row_info **png_row_infopp;
 typedef png_struct *png_structp;
 typedef png_struct **png_structpp;
-typedef struct png_struct_def png_struct;
-typedef png_sPLT_struct png_sPLT_t;
 typedef void (*png_progressive_info_ptr) (png_structp, png_infop);
 typedef void (*png_progressive_end_ptr) (png_structp, png_infop);
 typedef void (*png_progressive_row_ptr) (png_structp, png_bytep,
 					 png_uint_32, int);
-typedef void (*) (png_structp, png_voidp) png_free_ptr;
-typedef png_voidp(*) (png_structp, png_size_t) png_malloc_ptr;
-typedef int (*) (png_structp, png_unknown_chunkp) png_user_chunk_ptr;
-typedef void (*) (png_structp, png_uint_32, int) png_write_status_ptr;
-typedef void (*) (png_structp, png_uint_32, int) png_read_status_ptr;
-typedef void (*) (png_structp, png_row_infop,
-		  png_bytep) png_user_transform_ptr;
-typedef void (*) (png_structp, png_bytep, png_size_t) png_flush_ptr;
-typedef void (*) (png_structp, png_const_charp) png_error_ptr;
-typedef void (*) (png_structp, png_bytep, png_size_t) png_rw_ptr;
-typedef void void (*) (png_structp, png_const_charp);
-typedef void void (*) (png_structp, png_bytep, png_size_t);
-typedef void void (*) (png_structp, png_row_infop, png_bytep);
-typedef void void (*) (png_structp, png_uint_32, int);
-typedef int int (*) (png_structp, png_unknown_chunkp);
-typedef png_voidp png_voidp(*) (png_structp, png_size_t);
-typedef void void (*) (png_structp, png_voidp);
+typedef void (*png_free_ptr) (png_structp, png_voidp);
+typedef png_voidp(*png_malloc_ptr) (png_structp, png_size_t);
+typedef int (*png_user_chunk_ptr) (png_structp, png_unknown_chunkp);
+typedef void (*png_write_status_ptr) (png_structp, png_uint_32, int);
+typedef void (*png_read_status_ptr) (png_structp, png_uint_32, int);
+typedef void (*png_user_transform_ptr) (png_structp, png_row_infop,
+					png_bytep);
+typedef void (*png_flush_ptr) (png_structp, png_bytep, png_size_t);
+typedef void (*png_error_ptr) (png_structp, png_const_charp);
+typedef void (*png_rw_ptr) (png_structp, png_bytep, png_size_t);
 extern png_uint_32 png_access_version_number(void);
-extern void png_benign_error(png_rw_ptr png_ptr,
-			     png_rw_ptr warning_message);
-extern void png_build_grayscale_palette(int bit_depth, png_rw_ptr palette);
-extern png_voidp png_calloc(png_rw_ptr png_ptr, png_alloc_size_t size);
-extern void png_chunk_benign_error(png_rw_ptr png_ptr,
-				   png_rw_ptr warning_message);
-extern void png_chunk_error(png_rw_ptr png_ptr, png_rw_ptr error_message);
-extern void png_chunk_warning(png_rw_ptr png_ptr,
-			      png_rw_ptr warning_message);
-extern void png_convert_from_struct_tm(png_rw_ptr ptime,
+extern void png_benign_error(png_structp png_ptr,
+			     png_const_charp warning_message);
+extern void png_build_grayscale_palette(int bit_depth, png_colorp palette);
+extern png_voidp png_calloc(png_structp png_ptr, png_alloc_size_t size);
+extern void png_chunk_benign_error(png_structp png_ptr,
+				   png_const_charp warning_message);
+extern void png_chunk_error(png_structp png_ptr,
+			    png_const_charp error_message);
+extern void png_chunk_warning(png_structp png_ptr,
+			      png_const_charp warning_message);
+extern void png_convert_from_struct_tm(png_timep ptime,
 				       const struct tm *ttime);
-extern void png_convert_from_time_t(png_rw_ptr ptime, time_t ttime);
-extern png_const_charp png_convert_to_rfc1123(png_rw_ptr png_ptr,
+extern void png_convert_from_time_t(png_timep ptime, time_t ttime);
+extern png_const_charp png_convert_to_rfc1123(png_structp png_ptr,
 					      png_const_timep ptime);
-extern png_infop png_create_info_struct(png_rw_ptr png_ptr);
-extern png_structp png_create_read_struct(png_rw_ptr user_png_ver,
-					  png_rw_ptr error_ptr,
+extern png_infop png_create_info_struct(png_structp png_ptr);
+extern png_structp png_create_read_struct(png_const_charp user_png_ver,
+					  png_voidp error_ptr,
 					  png_error_ptr error_fn,
 					  png_error_ptr warn_fn);
-extern png_structp png_create_read_struct_2(png_rw_ptr user_png_ver,
-					    png_rw_ptr error_ptr,
+extern png_structp png_create_read_struct_2(png_const_charp user_png_ver,
+					    png_voidp error_ptr,
 					    png_error_ptr error_fn,
 					    png_error_ptr warn_fn,
-					    png_rw_ptr mem_ptr,
+					    png_voidp mem_ptr,
 					    png_malloc_ptr malloc_fn,
 					    png_free_ptr free_fn);
-extern png_structp png_create_write_struct(png_rw_ptr user_png_ver,
-					   png_rw_ptr error_ptr,
+extern png_structp png_create_write_struct(png_const_charp user_png_ver,
+					   png_voidp error_ptr,
 					   png_error_ptr error_fn,
 					   png_error_ptr warn_fn);
-extern png_structp png_create_write_struct_2(png_rw_ptr user_png_ver,
-					     png_rw_ptr error_ptr,
+extern png_structp png_create_write_struct_2(png_const_charp user_png_ver,
+					     png_voidp error_ptr,
 					     png_error_ptr error_fn,
 					     png_error_ptr warn_fn,
-					     png_rw_ptr mem_ptr,
+					     png_voidp mem_ptr,
 					     png_malloc_ptr malloc_fn,
 					     png_free_ptr free_fn);
-extern void png_data_freer(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			   int freer, png_rw_ptr mask);
-extern void png_destroy_info_struct(png_rw_ptr png_ptr,
-				    png_rw_ptr info_ptr_ptr);
-extern void png_destroy_read_struct(png_rw_ptr png_ptr_ptr,
-				    png_rw_ptr info_ptr_ptr,
-				    png_rw_ptr end_info_ptr_ptr);
-extern void png_destroy_write_struct(png_rw_ptr png_ptr_ptr,
-				     png_rw_ptr info_ptr_ptr);
-extern void png_error(png_rw_ptr png_ptr, png_rw_ptr error_message);
-extern void png_free(png_rw_ptr png_ptr, png_rw_ptr ptr);
-extern void png_free_data(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			  png_rw_ptr free_me, int num);
-extern void png_free_default(png_rw_ptr png_ptr, png_rw_ptr ptr);
-extern png_uint_32 png_get_IHDR(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-				png_rw_ptr width, png_rw_ptr height,
+extern void png_data_freer(png_structp png_ptr, png_infop info_ptr,
+			   int freer, png_uint_32 mask);
+extern void png_destroy_info_struct(png_structp png_ptr,
+				    png_infopp info_ptr_ptr);
+extern void png_destroy_read_struct(png_structpp png_ptr_ptr,
+				    png_infopp info_ptr_ptr,
+				    png_infopp end_info_ptr_ptr);
+extern void png_destroy_write_struct(png_structpp png_ptr_ptr,
+				     png_infopp info_ptr_ptr);
+extern void png_error(png_structp png_ptr, png_const_charp error_message);
+extern void png_free(png_structp png_ptr, png_voidp ptr);
+extern void png_free_data(png_structp png_ptr, png_infop info_ptr,
+			  png_uint_32 free_me, int num);
+extern void png_free_default(png_structp png_ptr, png_voidp ptr);
+extern png_uint_32 png_get_IHDR(png_structp png_ptr, png_infop info_ptr,
+				png_uint_32 * width, png_uint_32 * height,
 				int *bit_depth, int *color_type,
 				int *interlace_method,
 				int *compression_method,
 				int *filter_method);
-extern png_uint_32 png_get_PLTE(png_const_structp png_ptr,
-				png_const_infop info_ptr,
-				png_rw_ptr palette, int *num_palette);
-extern png_uint_32 png_get_bKGD(png_const_structp png_ptr,
-				png_rw_ptr info_ptr,
-				png_rw_ptr background);
+extern png_uint_32 png_get_PLTE(png_structp png_ptr, png_infop info_ptr,
+				png_colorp * palette, int *num_palette);
+extern png_uint_32 png_get_bKGD(png_structp png_ptr, png_infop info_ptr,
+				png_color_16p * background);
 extern png_byte png_get_bit_depth(png_const_structp png_ptr,
 				  png_const_infop info_ptr);
 extern png_uint_32 png_get_cHRM(png_const_structp png_ptr,
@@ -859,7 +877,7 @@ extern png_uint_32 png_get_cHRM(png_const_structp png_ptr,
 extern png_uint_32 png_get_cHRM_XYZ(png_structp png_ptr,
 				    png_const_infop info_ptr,
 				    double *red_X, double *red_Y,
-				    double *red_X, double *green_X,
+				    double *red_Z, double *green_X,
 				    double *green_Y, double *green_Z,
 				    double *blue_X, double *blue_Y,
 				    double *blue_Z);
@@ -867,7 +885,7 @@ extern png_uint_32 png_get_cHRM_XYZ_fixed(png_structp png_ptr,
 					  png_const_infop info_ptr,
 					  png_fixed_point * int_red_X,
 					  png_fixed_point * int_red_Y,
-					  png_fixed_point * int_red_X,
+					  png_fixed_point * int_red_Z,
 					  png_fixed_point * int_green_X,
 					  png_fixed_point * int_green_Y,
 					  png_fixed_point * int_green_Z,
@@ -907,13 +925,13 @@ extern png_uint_32 png_get_gAMA_fixed(png_const_structp png_ptr,
 				      png_const_infop info_ptr,
 				      png_fixed_point * int_file_gamma);
 extern png_uint_32 png_get_hIST(png_const_structp png_ptr,
-				png_const_infop info_ptr, png_rw_ptr hist);
+				png_const_infop info_ptr);
 extern png_const_charp png_get_header_ver(png_const_structp png_ptr);
 extern png_const_charp png_get_header_version(png_const_structp png_ptr);
 extern png_uint_32 png_get_iCCP(png_const_structp png_ptr,
-				png_const_infop info_ptr, png_rw_ptr name,
-				int *compression_type, png_rw_ptr profile,
-				png_rw_ptr proflen);
+				png_const_infop info_ptr, png_charpp name,
+				int *compression_type, png_bytepp profile,
+				png_uint_32 * proflen);
 extern png_uint_32 png_get_image_height(png_const_structp png_ptr,
 					png_const_infop info_ptr);
 extern png_uint_32 png_get_image_width(png_const_structp png_ptr,
@@ -921,26 +939,27 @@ extern png_uint_32 png_get_image_width(png_const_structp png_ptr,
 extern png_int_32 png_get_int_32(png_const_bytep buf);
 extern png_byte png_get_interlace_type(png_const_structp png_ptr,
 				       png_const_infop info_ptr);
-extern png_const_bytep png_get_io_chunk_name(png_rw_ptr png_ptr);
+extern png_const_bytep png_get_io_chunk_name(png_structp png_ptr);
 extern png_uint_32 png_get_io_chunk_type(png_const_structp png_ptr);
-extern png_voidp png_get_io_ptr(png_rw_ptr png_ptr);
-extern png_uint_32 png_get_io_state(png_rw_ptr png_ptr);
+extern png_voidp png_get_io_ptr(png_structp png_ptr);
+extern png_uint_32 png_get_io_state(png_structp png_ptr);
 extern png_const_charp png_get_libpng_ver(png_const_structp png_ptr);
 extern png_voidp png_get_mem_ptr(png_const_structp png_ptr);
 extern png_uint_32 png_get_oFFs(png_const_structp png_ptr,
 				png_const_infop info_ptr,
-				png_rw_ptr offset_x, png_rw_ptr offset_y,
-				int *unit_type);
-extern png_uint_32 png_get_pCAL(png_const_structp png_ptr,
-				png_const_infop info_ptr, void purpose,
-				png_rw_ptr X0, png_rw_ptr X1, int *type,
-				int *nparams, void units, char ***params);
+				png_int_32 * offset_x,
+				png_int_32 * offset_y, int *unit_type);
+extern png_uint_32 png_get_pCAL(png_structp png_ptr, png_infop info_ptr,
+				png_charp * purpose, png_int_32 * X0,
+				png_int_32 * X1, int *type, int *nparams,
+				png_charp * units, png_charpp * params);
 extern png_uint_32 png_get_pHYs(png_const_structp png_ptr,
-				png_const_infop info_ptr, png_rw_ptr res_x,
-				png_rw_ptr res_y, int *unit_type);
+				png_const_infop info_ptr,
+				png_int_32 * res_x, png_int_32 * res_y,
+				int *unit_type);
 extern png_uint_32 png_get_pHYs_dpi(png_const_structp png_ptr,
 				    png_const_infop info_ptr,
-				    png_rw_ptr res_x, png_rw_ptr res_y,
+				    png_int_32 * res_x, png_int_32 * res_y,
 				    int *unit_type);
 extern float png_get_pixel_aspect_ratio(png_const_structp png_ptr,
 					png_const_infop info_ptr);
@@ -959,47 +978,49 @@ extern png_size_t png_get_rowbytes(png_const_structp png_ptr,
 extern png_bytepp png_get_rows(png_const_structp png_ptr,
 			       png_const_infop info_ptr);
 extern png_uint_32 png_get_sBIT(png_const_structp png_ptr,
-				png_rw_ptr info_ptr, png_rw_ptr sig_bit);
+				png_infop info_ptr,
+				png_color_8p * sig_bit);
 extern png_uint_32 png_get_sCAL(png_const_structp png_ptr,
 				png_const_infop info_ptr, int *unit,
 				double *width, double *height);
-extern png_uint_32 png_get_sCAL_fixed(png_structp png_ptr,
+extern png_uint_32 png_get_sCAL_fixed(png_const_structp png_ptr,
 				      png_const_infop info_ptr, int *unit,
-				      double *width, double *height);
+				      png_fixed_point * width,
+				      png_fixed_point * height);
 extern png_uint_32 png_get_sCAL_s(png_const_structp png_ptr,
 				  png_const_infop info_ptr, int *unit,
-				  png_rw_ptr swidth, png_rw_ptr sheight);
+				  png_charpp swidth, png_charpp sheight);
 extern png_uint_32 png_get_sPLT(png_const_structp png_ptr,
 				png_const_infop info_ptr,
-				png_rw_ptr entries);
+				png_sPLT_tpp entries);
 extern png_uint_32 png_get_sRGB(png_const_structp png_ptr,
 				png_const_infop info_ptr,
 				int *file_srgb_intent);
 extern png_const_bytep png_get_signature(png_const_structp png_ptr,
-					 png_rw_ptr info_ptr);
+					 png_infop info_ptr);
 extern png_uint_32 png_get_tIME(png_const_structp png_ptr,
-				png_rw_ptr info_ptr, png_rw_ptr mod_time);
+				png_infop info_ptr, png_timep * mod_time);
 extern png_uint_32 png_get_tRNS(png_const_structp png_ptr,
-				png_rw_ptr info_ptr,
-				png_rw_ptr trans_alpha, int *num_trans,
-				png_rw_ptr trans_color);
+				png_infop info_ptr,
+				png_bytep * trans_alpha, int *num_trans,
+				png_color_16p * trans_color);
 extern png_uint_32 png_get_text(png_const_structp png_ptr,
 				png_const_infop info_ptr,
-				png_rw_ptr text_ptr, int *num_text);
+				png_textp * text_ptr, int *num_text);
 extern png_uint_16 png_get_uint_16(png_const_bytep buf);
-extern png_uint_32 png_get_uint_31(png_rw_ptr png_ptr,
+extern png_uint_32 png_get_uint_31(png_structp png_ptr,
 				   png_const_bytep buf);
 extern png_uint_32 png_get_uint_32(png_const_bytep buf);
 extern int png_get_unknown_chunks(png_const_structp png_ptr,
 				  png_const_infop info_ptr,
-				  png_rw_ptr entries);
+				  png_unknown_chunkpp entries);
 extern png_voidp png_get_user_chunk_ptr(png_const_structp png_ptr);
 extern png_uint_32 png_get_user_height_max(png_const_structp png_ptr);
 extern png_voidp png_get_user_transform_ptr(png_const_structp png_ptr);
 extern png_uint_32 png_get_user_width_max(png_const_structp png_ptr);
 extern png_uint_32 png_get_valid(png_const_structp png_ptr,
 				 png_const_infop info_ptr,
-				 png_rw_ptr flag);
+				 png_uint_32 flag);
 extern float png_get_x_offset_inches(png_const_structp png_ptr,
 				     png_const_infop info_ptr);
 extern png_fixed_point png_get_x_offset_inches_fixed(png_structp png_ptr,
@@ -1026,55 +1047,55 @@ extern png_uint_32 png_get_y_pixels_per_inch(png_const_structp png_ptr,
 					     png_const_infop info_ptr);
 extern png_uint_32 png_get_y_pixels_per_meter(png_const_structp png_ptr,
 					      png_const_infop info_ptr);
-extern int png_handle_as_unknown(png_rw_ptr png_ptr,
+extern int png_handle_as_unknown(png_structp png_ptr,
 				 png_const_bytep chunk_name);
-extern void png_info_init_3(png_rw_ptr info_ptr,
-			    png_rw_ptr png_info_struct_size);
-extern void png_init_io(png_rw_ptr png_ptr, png_rw_ptr fp);
-extern void png_longjmp(png_rw_ptr png_ptr, int val);
-extern png_voidp png_malloc(png_rw_ptr png_ptr, png_alloc_size_t size);
-extern png_voidp png_malloc_default(png_rw_ptr png_ptr,
+extern void png_info_init_3(png_infopp info_ptr,
+			    png_size_t png_info_struct_size);
+extern void png_init_io(png_structp png_ptr, png_FILE_p fp);
+extern void png_longjmp(png_structp png_ptr, int val);
+extern png_voidp png_malloc(png_structp png_ptr, png_alloc_size_t size);
+extern png_voidp png_malloc_default(png_structp png_ptr,
 				    png_alloc_size_t size);
-extern png_voidp png_malloc_warn(png_rw_ptr png_ptr,
+extern png_voidp png_malloc_warn(png_structp png_ptr,
 				 png_alloc_size_t size);
-extern png_uint_32 png_permit_mng_features(png_rw_ptr png_ptr,
-					   png_rw_ptr
+extern png_uint_32 png_permit_mng_features(png_structp png_ptr,
+					   png_uint_32
 					   mng_features_permitted);
-extern void png_process_data(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			     png_rw_ptr buffer, png_rw_ptr buffer_size);
-extern png_size_t png_process_data_pause(png_rw_ptr, int save);
-extern png_uint_32 png_process_data_skip(png_rw_ptr);
-extern void png_progressive_combine_row(png_rw_ptr png_ptr,
-					png_rw_ptr old_row,
+extern void png_process_data(png_structp png_ptr, png_infop info_ptr,
+			     png_bytep buffer, png_size_t buffer_size);
+extern png_size_t png_process_data_pause(png_structp, int save);
+extern png_uint_32 png_process_data_skip(png_structp);
+extern void png_progressive_combine_row(png_structp png_ptr,
+					png_bytep old_row,
 					png_const_bytep new_row);
-extern void png_read_end(png_rw_ptr png_ptr, png_rw_ptr info_ptr);
-extern void png_read_image(png_rw_ptr png_ptr, png_rw_ptr image);
-extern void png_read_info(png_rw_ptr png_ptr, png_rw_ptr info_ptr);
-extern void png_read_png(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			 int transforms, png_rw_ptr params);
-extern void png_read_row(png_rw_ptr png_ptr, png_rw_ptr row,
-			 png_rw_ptr display_row);
-extern void png_read_rows(png_rw_ptr png_ptr, png_rw_ptr row,
-			  png_rw_ptr display_row, png_rw_ptr num_rows);
-extern void png_read_update_info(png_rw_ptr png_ptr, png_rw_ptr info_ptr);
-extern int png_reset_zstream(png_rw_ptr png_ptr);
-extern void png_save_int_32(png_rw_ptr buf, png_rw_ptr i);
-extern void png_save_uint_16(png_rw_ptr buf, unsigned int i);
-extern void png_save_uint_32(png_rw_ptr buf, png_rw_ptr i);
-extern void png_set_IHDR(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			 png_rw_ptr width, png_rw_ptr height,
+extern void png_read_end(png_structp png_ptr, png_infop info_ptr);
+extern void png_read_image(png_structp png_ptr, png_bytepp image);
+extern void png_read_info(png_structp png_ptr, png_infop info_ptr);
+extern void png_read_png(png_structp png_ptr, png_infop info_ptr,
+			 int transforms, png_voidp params);
+extern void png_read_row(png_structp png_ptr, png_bytep row,
+			 png_bytep display_row);
+extern void png_read_rows(png_structp png_ptr, png_bytepp row,
+			  png_bytepp display_row, png_uint_32 num_rows);
+extern void png_read_update_info(png_structp png_ptr, png_infop info_ptr);
+extern int png_reset_zstream(png_structp png_ptr);
+extern void png_save_int_32(png_bytep buf, png_int_32 i);
+extern void png_save_uint_16(png_bytep buf, unsigned int i);
+extern void png_save_uint_32(png_bytep buf, png_uint_32 i);
+extern void png_set_IHDR(png_structp png_ptr, png_infop info_ptr,
+			 png_uint_32 width, png_uint_32 height,
 			 int bit_depth, int color_type,
 			 int interlace_method, int compression_method,
 			 int filter_method);
-extern void png_set_PLTE(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_PLTE(png_structp png_ptr, png_infop info_ptr,
 			 png_const_colorp palette, int num_palette);
-extern void png_set_add_alpha(png_rw_ptr png_ptr, png_rw_ptr filler,
+extern void png_set_add_alpha(png_structp png_ptr, png_uint_32 filler,
 			      int flags);
 extern void png_set_alpha_mode(png_structp png_ptr, int mode,
 			       double output_gamma);
 extern void png_set_alpha_mode_fixed(png_structp png_ptr, int mode,
 				     png_fixed_point output_gamma);
-extern void png_set_bKGD(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_bKGD(png_structp png_ptr, png_infop info_ptr,
 			 png_const_color_16p background);
 extern void png_set_background(png_structp png_ptr,
 			       png_const_color_16p background_color,
@@ -1085,8 +1106,8 @@ extern void png_set_background_fixed(png_structp png_ptr,
 				     int background_gamma_code,
 				     int need_expand,
 				     png_fixed_point background_gamma);
-extern void png_set_benign_errors(png_rw_ptr png_ptr, int allowed);
-extern void png_set_bgr(png_rw_ptr png_ptr);
+extern void png_set_benign_errors(png_structp png_ptr, int allowed);
+extern void png_set_bgr(png_structp png_ptr);
 extern void png_set_cHRM(png_structp png_ptr, png_infop info_ptr,
 			 double white_x, double white_y, double red_x,
 			 double red_y, double green_x, double green_y,
@@ -1115,33 +1136,34 @@ extern void png_set_cHRM_fixed(png_structp png_ptr, png_infop info_ptr,
 			       png_fixed_point int_green_y,
 			       png_fixed_point int_blue_x,
 			       png_fixed_point int_blue_y);
-extern void png_set_check_for_invalid_index(png_rw_ptr png_ptr,
+extern void png_set_check_for_invalid_index(png_structp png_ptr,
 					    int allowed);
-extern void png_set_chunk_cache_max(png_rw_ptr png_ptr,
-				    png_rw_ptr user_chunk_cache_max);
-extern void png_set_chunk_malloc_max(png_rw_ptr png_ptr,
+extern void png_set_chunk_cache_max(png_structp png_ptr,
+				    png_uint_32 user_chunk_cache_max);
+extern void png_set_chunk_malloc_max(png_structp png_ptr,
 				     png_alloc_size_t
 				     user_chunk_cache_max);
-extern void png_set_compression_buffer_size(png_rw_ptr png_ptr,
-					    png_rw_ptr size);
-extern void png_set_compression_level(png_rw_ptr png_ptr, int level);
-extern void png_set_compression_mem_level(png_rw_ptr png_ptr,
+extern void png_set_compression_buffer_size(png_structp png_ptr,
+					    png_size_t size);
+extern void png_set_compression_level(png_structp png_ptr, int level);
+extern void png_set_compression_mem_level(png_structp png_ptr,
 					  int mem_level);
-extern void png_set_compression_method(png_rw_ptr png_ptr, int method);
-extern void png_set_compression_strategy(png_rw_ptr png_ptr, int strategy);
-extern void png_set_compression_window_bits(png_rw_ptr png_ptr,
+extern void png_set_compression_method(png_structp png_ptr, int method);
+extern void png_set_compression_strategy(png_structp png_ptr,
+					 int strategy);
+extern void png_set_compression_window_bits(png_structp png_ptr,
 					    int window_bits);
-extern void png_set_crc_action(png_rw_ptr png_ptr, int crit_action,
+extern void png_set_crc_action(png_structp png_ptr, int crit_action,
 			       int ancil_action);
-extern void png_set_error_fn(png_rw_ptr png_ptr, png_rw_ptr error_ptr,
+extern void png_set_error_fn(png_structp png_ptr, png_voidp error_ptr,
 			     png_error_ptr error_fn,
 			     png_error_ptr warning_fn);
-extern void png_set_expand(png_rw_ptr png_ptr);
-extern void png_set_expand_16(png_rw_ptr png_ptr);
-extern void png_set_expand_gray_1_2_4_to_8(png_rw_ptr png_ptr);
-extern void png_set_filler(png_rw_ptr png_ptr, png_rw_ptr filler,
+extern void png_set_expand(png_structp png_ptr);
+extern void png_set_expand_16(png_structp png_ptr);
+extern void png_set_expand_gray_1_2_4_to_8(png_structp png_ptr);
+extern void png_set_filler(png_structp png_ptr, png_uint_32 filler,
 			   int flags);
-extern void png_set_filter(png_rw_ptr png_ptr, int method, int filters);
+extern void png_set_filter(png_structp png_ptr, int method, int filters);
 extern void png_set_filter_heuristics(png_structp png_ptr,
 				      int heuristic_method,
 				      int num_weights,
@@ -1154,7 +1176,7 @@ extern void png_set_filter_heuristics_fixed(png_structp png_ptr,
 					    filter_weights,
 					    png_const_fixed_point_p
 					    filter_costs);
-extern void png_set_flush(png_rw_ptr png_ptr, int nrows);
+extern void png_set_flush(png_structp png_ptr, int nrows);
 extern void png_set_gAMA(png_structp png_ptr, png_infop info_ptr,
 			 double file_gamma);
 extern void png_set_gAMA_fixed(png_structp png_ptr, png_infop info_ptr,
@@ -1164,56 +1186,56 @@ extern void png_set_gamma(png_structp png_ptr, double screen_gamma,
 extern void png_set_gamma_fixed(png_structp png_ptr,
 				png_fixed_point screen_gamma,
 				png_fixed_point override_file_gamma);
-extern void png_set_gray_to_rgb(png_rw_ptr png_ptr);
-extern void png_set_hIST(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_gray_to_rgb(png_structp png_ptr);
+extern void png_set_hIST(png_structp png_ptr, png_infop info_ptr,
 			 png_const_uint_16p hist);
-extern void png_set_iCCP(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			 png_rw_ptr name, int compression_type,
-			 png_const_bytep profile, png_rw_ptr proflen);
-extern int png_set_interlace_handling(png_rw_ptr png_ptr);
-extern void png_set_invalid(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_iCCP(png_structp png_ptr, png_infop info_ptr,
+			 png_const_charp name, int compression_type,
+			 png_const_bytep profile, png_uint_32 proflen);
+extern int png_set_interlace_handling(png_structp png_ptr);
+extern void png_set_invalid(png_structp png_ptr, png_infop info_ptr,
 			    int mask);
-extern void png_set_invert_alpha(png_rw_ptr png_ptr);
-extern void png_set_invert_mono(png_rw_ptr png_ptr);
-extern void png_set_keep_unknown_chunks(png_rw_ptr png_ptr, int keep,
+extern void png_set_invert_alpha(png_structp png_ptr);
+extern void png_set_invert_mono(png_structp png_ptr);
+extern void png_set_keep_unknown_chunks(png_structp png_ptr, int keep,
 					png_const_bytep chunk_list,
 					int num_chunks);
-extern struct __jmp_buf_tag *png_set_longjmp_fn(png_rw_ptr png_ptr,
-						png_longjmp_ptr longjmp_fn,
-						size_t jmp_buf_size);
-extern void png_set_mem_fn(png_rw_ptr png_ptr, png_rw_ptr mem_ptr,
+extern jmp_buf *png_set_longjmp_fn(png_structp png_ptr,
+				   png_longjmp_ptr longjmp_fn,
+				   size_t jmp_buf_size);
+extern void png_set_mem_fn(png_structp png_ptr, png_voidp mem_ptr,
 			   png_malloc_ptr malloc_fn, png_free_ptr free_fn);
-extern void png_set_oFFs(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			 png_rw_ptr offset_x, png_rw_ptr offset_y,
+extern void png_set_oFFs(png_structp png_ptr, png_infop info_ptr,
+			 png_int_32 offset_x, png_int_32 offset_y,
 			 int unit_type);
-extern void png_set_pCAL(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			 png_rw_ptr purpose, png_rw_ptr X0, png_rw_ptr X1,
-			 int type, int nparams, png_rw_ptr units,
-			 png_rw_ptr params);
-extern void png_set_pHYs(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			 png_rw_ptr res_x, png_rw_ptr res_y,
+extern void png_set_pCAL(png_structp png_ptr, png_infop info_ptr,
+			 png_const_charp purpose, png_int_32 X0,
+			 png_int_32 X1, int type, int nparams,
+			 png_const_charp units, png_charpp params);
+extern void png_set_pHYs(png_structp png_ptr, png_infop info_ptr,
+			 png_uint_32 res_x, png_uint_32 res_y,
 			 int unit_type);
-extern void png_set_packing(png_rw_ptr png_ptr);
-extern void png_set_packswap(png_rw_ptr png_ptr);
-extern void png_set_palette_to_rgb(png_rw_ptr png_ptr);
-extern void png_set_progressive_read_fn(png_rw_ptr png_ptr,
-					png_rw_ptr progressive_ptr,
+extern void png_set_packing(png_structp png_ptr);
+extern void png_set_packswap(png_structp png_ptr);
+extern void png_set_palette_to_rgb(png_structp png_ptr);
+extern void png_set_progressive_read_fn(png_structp png_ptr,
+					png_voidp progressive_ptr,
 					png_progressive_info_ptr info_fn,
 					png_progressive_row_ptr row_fn,
 					png_progressive_end_ptr end_fn);
-extern void png_set_quantize(png_rw_ptr png_ptr, png_rw_ptr palette,
+extern void png_set_quantize(png_structp png_ptr, png_colorp palette,
 			     int num_palette, int maximum_colors,
 			     png_const_uint_16p histogram,
 			     int full_quantize);
-extern void png_set_read_fn(png_rw_ptr png_ptr, png_rw_ptr io_ptr,
+extern void png_set_read_fn(png_structp png_ptr, png_voidp io_ptr,
 			    png_rw_ptr read_data_fn);
-extern void png_set_read_status_fn(png_rw_ptr png_ptr,
+extern void png_set_read_status_fn(png_structp png_ptr,
 				   png_read_status_ptr read_row_fn);
-extern void png_set_read_user_chunk_fn(png_rw_ptr png_ptr,
-				       png_rw_ptr user_chunk_ptr,
+extern void png_set_read_user_chunk_fn(png_structp png_ptr,
+				       png_voidp user_chunk_ptr,
 				       png_user_chunk_ptr
 				       read_user_chunk_fn);
-extern void png_set_read_user_transform_fn(png_rw_ptr png_ptr,
+extern void png_set_read_user_transform_fn(png_structp png_ptr,
 					   png_user_transform_ptr
 					   read_user_transform_fn);
 extern void png_set_rgb_to_gray(png_structp png_ptr, int error_action,
@@ -1222,95 +1244,97 @@ extern void png_set_rgb_to_gray_fixed(png_structp png_ptr,
 				      int error_action,
 				      png_fixed_point red,
 				      png_fixed_point green);
-extern void png_set_rows(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			 png_rw_ptr row_pointers);
-extern void png_set_sBIT(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_rows(png_structp png_ptr, png_infop info_ptr,
+			 png_bytepp row_pointers);
+extern void png_set_sBIT(png_structp png_ptr, png_infop info_ptr,
 			 png_const_color_8p sig_bit);
 extern void png_set_sCAL(png_structp png_ptr, png_infop info_ptr, int unit,
 			 double width, double height);
 extern void png_set_sCAL_fixed(png_structp png_ptr, png_infop info_ptr,
 			       int unit, png_fixed_point width,
 			       png_fixed_point height);
-extern void png_set_sCAL_s(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			   int unit, png_rw_ptr swidth,
-			   png_rw_ptr sheight);
-extern void png_set_sPLT(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_sCAL_s(png_structp png_ptr, png_infop info_ptr,
+			   int unit, png_const_charp swidth,
+			   png_const_charp sheight);
+extern void png_set_sPLT(png_structp png_ptr, png_infop info_ptr,
 			 png_const_sPLT_tp entries, int nentries);
-extern void png_set_sRGB(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_sRGB(png_structp png_ptr, png_infop info_ptr,
 			 int srgb_intent);
-extern void png_set_sRGB_gAMA_and_cHRM(png_rw_ptr png_ptr,
-				       png_rw_ptr info_ptr,
+extern void png_set_sRGB_gAMA_and_cHRM(png_structp png_ptr,
+				       png_infop info_ptr,
 				       int srgb_intent);
-extern void png_set_scale_16(png_rw_ptr png_ptr);
-extern void png_set_shift(png_rw_ptr png_ptr,
+extern void png_set_scale_16(png_structp png_ptr);
+extern void png_set_shift(png_structp png_ptr,
 			  png_const_color_8p true_bits);
-extern void png_set_sig_bytes(png_rw_ptr png_ptr, int num_bytes);
-extern void png_set_strip_16(png_rw_ptr png_ptr);
-extern void png_set_strip_alpha(png_rw_ptr png_ptr);
-extern void png_set_swap(png_rw_ptr png_ptr);
-extern void png_set_swap_alpha(png_rw_ptr png_ptr);
-extern void png_set_tIME(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_sig_bytes(png_structp png_ptr, int num_bytes);
+extern void png_set_strip_16(png_structp png_ptr);
+extern void png_set_strip_alpha(png_structp png_ptr);
+extern void png_set_swap(png_structp png_ptr);
+extern void png_set_swap_alpha(png_structp png_ptr);
+extern void png_set_tIME(png_structp png_ptr, png_infop info_ptr,
 			 png_const_timep mod_time);
-extern void png_set_tRNS(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_tRNS(png_structp png_ptr, png_infop info_ptr,
 			 png_const_bytep trans_alpha, int num_trans,
 			 png_const_color_16p trans_color);
-extern void png_set_tRNS_to_alpha(png_rw_ptr png_ptr);
-extern void png_set_text(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_tRNS_to_alpha(png_structp png_ptr);
+extern void png_set_text(png_structp png_ptr, png_infop info_ptr,
 			 png_const_textp text_ptr, int num_text);
-extern void png_set_text_compression_level(png_rw_ptr png_ptr, int level);
-extern void png_set_text_compression_mem_level(png_rw_ptr png_ptr,
+extern void png_set_text_compression_level(png_structp png_ptr, int level);
+extern void png_set_text_compression_mem_level(png_structp png_ptr,
 					       int mem_level);
-extern void png_set_text_compression_method(png_rw_ptr png_ptr,
+extern void png_set_text_compression_method(png_structp png_ptr,
 					    int method);
-extern void png_set_text_compression_strategy(png_rw_ptr png_ptr,
+extern void png_set_text_compression_strategy(png_structp png_ptr,
 					      int strategy);
-extern void png_set_text_compression_window_bits(png_rw_ptr png_ptr,
+extern void png_set_text_compression_window_bits(png_structp png_ptr,
 						 int window_bits);
-extern void png_set_unknown_chunk_location(png_rw_ptr png_ptr,
-					   png_rw_ptr info_ptr, int chunk,
+extern void png_set_unknown_chunk_location(png_structp png_ptr,
+					   png_infop info_ptr, int chunk,
 					   int location);
-extern void png_set_unknown_chunks(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
+extern void png_set_unknown_chunks(png_structp png_ptr, png_infop info_ptr,
 				   png_const_unknown_chunkp unknowns,
 				   int num_unknowns);
-extern void png_set_user_limits(png_rw_ptr png_ptr,
-				png_rw_ptr user_width_max,
-				png_rw_ptr user_height_max);
-extern void png_set_user_transform_info(png_rw_ptr png_ptr,
-					png_rw_ptr user_transform_ptr,
+extern void png_set_user_limits(png_structp png_ptr,
+				png_uint_32 user_width_max,
+				png_uint_32 user_height_max);
+extern void png_set_user_transform_info(png_structp png_ptr,
+					png_voidp user_transform_ptr,
 					int user_transform_depth,
 					int user_transform_channels);
-extern void png_set_write_fn(png_rw_ptr png_ptr, png_rw_ptr io_ptr,
+extern void png_set_write_fn(png_structp png_ptr, png_voidp io_ptr,
 			     png_rw_ptr write_data_fn,
 			     png_flush_ptr output_flush_fn);
-extern void png_set_write_status_fn(png_rw_ptr png_ptr,
+extern void png_set_write_status_fn(png_structp png_ptr,
 				    png_write_status_ptr write_row_fn);
-extern void png_set_write_user_transform_fn(png_rw_ptr png_ptr,
+extern void png_set_write_user_transform_fn(png_structp png_ptr,
 					    png_user_transform_ptr
 					    write_user_transform_fn);
-extern int png_sig_cmp(png_const_bytep sig, png_rw_ptr start,
-		       png_rw_ptr num_to_check);
-extern void png_start_read_image(png_rw_ptr png_ptr);
-extern void png_warning(png_rw_ptr png_ptr, png_rw_ptr warning_message);
-extern void png_write_chunk(png_rw_ptr png_ptr, png_const_bytep chunk_name,
-			    png_const_bytep data, png_rw_ptr length);
-extern void png_write_chunk_data(png_rw_ptr png_ptr, png_const_bytep data,
-				 png_rw_ptr length);
-extern void png_write_chunk_end(png_rw_ptr png_ptr);
-extern void png_write_chunk_start(png_rw_ptr png_ptr,
+extern int png_sig_cmp(png_const_bytep sig, png_size_t start,
+		       png_size_t num_to_check);
+extern void png_start_read_image(png_structp png_ptr);
+extern void png_warning(png_structp png_ptr,
+			png_const_charp warning_message);
+extern void png_write_chunk(png_structp png_ptr,
+			    png_const_bytep chunk_name,
+			    png_const_bytep data, png_size_t length);
+extern void png_write_chunk_data(png_structp png_ptr, png_const_bytep data,
+				 png_size_t length);
+extern void png_write_chunk_end(png_structp png_ptr);
+extern void png_write_chunk_start(png_structp png_ptr,
 				  png_const_bytep chunk_name,
-				  png_rw_ptr length);
-extern void png_write_end(png_rw_ptr png_ptr, png_rw_ptr info_ptr);
-extern void png_write_flush(png_rw_ptr png_ptr);
-extern void png_write_image(png_rw_ptr png_ptr, png_rw_ptr image);
-extern void png_write_info(png_rw_ptr png_ptr, png_rw_ptr info_ptr);
-extern void png_write_info_before_PLTE(png_rw_ptr png_ptr,
-				       png_rw_ptr info_ptr);
-extern void png_write_png(png_rw_ptr png_ptr, png_rw_ptr info_ptr,
-			  int transforms, png_rw_ptr params);
-extern void png_write_row(png_rw_ptr png_ptr, png_const_bytep row);
-extern void png_write_rows(png_rw_ptr png_ptr, png_rw_ptr row,
-			   png_rw_ptr num_rows);
-extern void png_write_sig(png_rw_ptr png_ptr);
+				  png_uint_32 length);
+extern void png_write_end(png_structp png_ptr, png_infop info_ptr);
+extern void png_write_flush(png_structp png_ptr);
+extern void png_write_image(png_structp png_ptr, png_bytepp image);
+extern void png_write_info(png_structp png_ptr, png_infop info_ptr);
+extern void png_write_info_before_PLTE(png_structp png_ptr,
+				       png_infop info_ptr);
+extern void png_write_png(png_structp png_ptr, png_infop info_ptr,
+			  int transforms, png_voidp params);
+extern void png_write_row(png_structp png_ptr, png_const_bytep row);
+extern void png_write_rows(png_structp png_ptr, png_bytepp row,
+			   png_uint_32 num_rows);
+extern void png_write_sig(png_structp png_ptr);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -1335,6 +1359,14 @@ extern void png_write_sig(png_rw_ptr png_ptr);
 #define PNG_CALLBACK(type, name, args)	type (PNGCBAPI name) PNGARG(args)
 #define png_sizeof(x)	(sizeof (x))
 
+typedef unsigned long int png_uint_32;
+typedef long int png_int_32;
+typedef unsigned short png_uint_16;
+typedef short png_int_16;
+typedef unsigned char png_byte;
+typedef size_t png_size_t;
+typedef const char *png_fixed_point;
+
 typedef const void *png_const_voidp;
 typedef const png_byte *png_const_bytep;
 typedef const png_uint_32 *png_const_uint_32p;
@@ -1345,12 +1377,6 @@ typedef const png_fixed_point *png_const_fixed_point_p;
 typedef png_size_t *png_size_tp;
 typedef const png_size_t *png_const_size_tp;
 typedef png_size_t png_alloc_size_t;
-typedef unsigned long int png_uint_32;
-typedef long int png_int_32;
-typedef unsigned short png_uint_16;
-typedef short png_int_16;
-typedef unsigned char png_byte;
-typedef size_t png_size_t;
 typedef void *png_voidp;
 typedef png_byte *png_bytep;
 typedef png_uint_32 *png_uint_32p;

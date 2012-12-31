@@ -19,7 +19,7 @@ DB2PDF=sgmltools -b pdf
 
 all::
 	find . -name '*.m4' | xargs touch
-	find . -name '*.sed' | xargs touch
+	#find . -name '*.sed' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done
 
 all:: intlists
@@ -42,13 +42,13 @@ source:
 
 autobuild:
 	find . -name '*.m4' | xargs touch
-	find . -name '*.sed' | xargs touch
+	#find . -name '*.sed' | xargs touch
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) autobuild);done
 	tar czf LSBrtfs.tar.gz `find book booksets -name '*.rtf' -o -name '*.eps'`
 
 relbuild: intlists
 	find . -name '*.m4' | xargs touch
-	find . -name '*.sed' | xargs touch
+	#find . -name '*.sed' | xargs touch
 	for dir in $(DOCDIRS);do (cd $$dir && $(MAKE) gensrc source);done
 
 clean::

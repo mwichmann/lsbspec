@@ -33,9 +33,10 @@ all source: $(FILES) $(GENFILES)
 $(SCANWFILES): scanw_diffs.sgml
 
 gensrc:
-	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libz >libz.sgml
-	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libncurses >libcurses.sgml
-	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libutil >libutil.sgml
+	$(TOP)/mklibspec -a All -l libz -v `cat $(TOP)/target_version` >libz.sgml
+	$(TOP)/mklibspec -a All -l libncurses -v `cat $(TOP)/target_version` >libcurses.sgml
+	$(TOP)/mklibspec -a All -l libncursesw -v `cat $(TOP)/target_version` >libcursesw.sgml
+	$(TOP)/mklibspec -a All -l libutil -v `cat $(TOP)/target_version` >libutil.sgml
 
 clean:
 	rm -f $(FILES)
