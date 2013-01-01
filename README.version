@@ -1,20 +1,26 @@
 How spec versioning works:
 
-Two files, version and target_version, are used.
+Two files, version and target_version, are used for version info.
 
 'version' contains the version number that will be put in the spec.
 It is used in ../books and ../booksets (reference is in Makefile.common),
 to create a file 'buildversion' and to modify the main sgml file which
 controls the build, like this:
 
-	echo `cat $(SPECSRC)/version`-`date +"%Y%m%d"` >buildversion;\
-	sed -e "s#LSBVERSION#`cat $(SPECSRC)version`-`date +"%Y%m%d"`#" <$(DOC).sgml.sed -e "s#SPECSRC#$(SPECSRC)#">$(DOC).sgml
+	echo `cat $(SPECSRC)/version`-`date +"%Y%m%d"` >buildversion; \
+	sed -e "s#LSBVERSION#`cat $(SPECSRC)/version`-`date +"%Y%m%d"`#" \
+	-e "s#TARGETVERSION#`cat $(SPECSRC)/target_version`#" \
+	-e "s#SPECSRC#$(SPECSRC)#" $(DOC).sgml.sed >$(DOC).sgml
 
 or like this:
 
-	echo `cat $(SPECSRC)/version` >buildversion;\
-	sed -e "s#LSBVERSION#`cat $(SPECSRC)/version`#" <$(DOC).sgml.sed -e "s#SPECSRC#$(SPECSRC)#">$(DOC).sgml
+	echo `cat $(SPECSRC)/version` >buildversion; \
+	sed -e "s#LSBVERSION#`cat $(SPECSRC)/version`#" \
+	-e "s#TARGETVERSION#`cat $(SPECSRC)/target_version`#" \
+	-e "s#SPECSRC#$(SPECSRC)#" $(DOC).sgml.sed >$(DOC).sgml
 
+In the .sgml.sed files in ../books and ../booksets, this value will
+be edited into the controlling .sgml file as entity @specversion;
 
 'target_version' is used to describe the version the build targets -
 this number is rarely the same as 'version', except for the initial
@@ -34,6 +40,15 @@ TOP=../../..
 gensrc:
 	$(TOP)/mklibapnd -a All -m LSB_Graphics -v `cat $(TOP)/target_version` >graphlist.sgml
 
+
+Update: target_version is now made available to all book/booksets builds
+as the &targetversion; entity defined in each .sgml.sed file which
+is edited into the controlling .sgml file by the make rules above.
+Spec sources which need to refer to the target LSB version can use
+this - e.g. the frontmatter which often says something like "this is
+version @specversion; of FOO, when work is complete it will become
+@targetversion;."   This has been put into all the appropriate places
+in this tree.
 
 ===
 
