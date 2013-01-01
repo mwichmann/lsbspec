@@ -3,7 +3,8 @@
 <PARA>
 This is version &specversion; of the Linux Package Specification (LPS).
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 1.0 of the Linux Packaging Specification.
+this version will result in version &targetversion; of the 
+Linux Packaging Specification.
 </PARA>
 <PARA>
 Implmentations may not claim conformance to this version.

@@ -3,16 +3,17 @@
 <PARA>
 This is version &specversion; of the LSB-Java Module Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 4.1 of the LSB-Java Module Specification.
-Implmentations may not claim conformance to this version.
+this version will result in version &targetversion; of the LSB-Java 
+Module Specification.
 </PARA>
-<!--
 <PARA>
+Implmentations may not claim conformance to this version.
+<!--
 An implementation of this version of the specification may not claim
 to be an implementation of LSB-Java Module unless it has successfully
 completed the compliance process as defined by the Linux Foundation.
-</PARA>
 -->
+</PARA>
 <PARA>
 The LSB-Java Module was in Trial Use status as of LSB 4.0.
 It failed the vote to promote it to full use and has been

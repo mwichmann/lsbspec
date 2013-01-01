@@ -3,7 +3,7 @@
 <PARA>
 This is version &specversion; of the LSB-XML Module Specification.
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 4.1 of the LSB-XML Module
+this version will result in version &targetversion; of the LSB-XML Module
 Specification.
 </PARA>
 <PARA>

@@ -2,8 +2,9 @@
 <TITLE>Foreword</TITLE>
 <para>
 This is version &specversion; of the LSB-TUM Module Specification.
-<!-- This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 4.1 of the LSB-TUM Module Specification. -->
+This version is a preliminary version for review only. Conclusion of work on
+this version will result in version &targetversion; of the LSB-TUM 
+Module Specification.
 </PARA>
 <PARA>
 This module describes components which have Trial Use Specification
@@ -18,13 +19,6 @@ Applications may not assume that the components of this specification
 are present or operate as described in this specification on any
 given implementation.
 </PARA>
-<!-- we don't use this in modules
-<PARA>
-An implementation of this version of the specification may not claim
-to be an implementation of LSB-TUM Module unless it has successfully
-completed the compliance process as defined by the Linux Foundation.
-</PARA>
--->
 </PREFACE>
 
 <PREFACE ID="INTRO"><TITLE>Introduction</TITLE>

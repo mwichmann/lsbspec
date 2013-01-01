@@ -2,22 +2,20 @@
 <title>Foreword</title>
 <para>
 This is version &specversion; of the Trial Use Specification.
-<!--
 This version is a preliminary version for review only. Conclusion of work on
-this version will result in version 4.1 of the Trial Use Specification.
--->
+this version will result in version &targetversion; of the Trial Use Specification.
 This specification augments the series of volumes released under 
 the collective title <citetitle>Linux Standard Base</citetitle>:
 </para>
 <itemizedlist>
 <listitem><para>Core</para></listitem>
-<listitem><para>C++</para></listitem>
 <listitem><para>Desktop</para></listitem>
 <listitem><para>Languages</para></listitem>
 <listitem><para>Printing</para></listitem>
 </itemizedlist>
 <para>
-Note that the Core, C++ and Desktop volumes consist of a generic volume augmented by an architecture-specific volume.
+Note that the Core and Desktop volumes consist of a generic volume 
+augmented by an architecture-specific volume.
 </para>
 <PARA>
 This document describes components which have Trial Use Specification
@@ -39,7 +37,7 @@ given implementation.
 This document is a complement to the released specification. Other documents may
 supersede or augment this document. A list of current
 Linux Standard Base (LSB) specifications is available at 
-<ulink url="http://refspecs.linuxfoundation.org/">http://refspecs.linuxfoundation.org</ulink>.
+<ulink url="http://refspecs.linuxbase.org/">http://refspecs.linuxbase.org</ulink>.
 </para>
 <para>If you wish to make comments regarding this document
 in a manner that is tracked by the LSB project, please submit them
