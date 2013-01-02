@@ -1,0 +1,23 @@
+TOP=../..
+
+.SUFFIXES: .sgml .m4
+
+FILES=intro.sgml
+TABLES=references.sgml
+
+.m4.sgml:
+	m4 -P -Uindex -Uformat $*.m4 >$@
+
+all: $(FILES) $(TABLES)
+
+gensrc:
+	$(TOP)/mkstandardsgmltable -a All -t Reference -v `cat $(TOP)/target_version` -m LSB_Toolkit_Independent -s "'XdgMenu','XdgDesktop','XdgIcon','XdgBasedir'" > references.sgml
+
+clean:
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
+
+intro.sgml: $(TABLES)
