@@ -1,7 +1,8 @@
 
 .SUFFIXES: .sgml .m4
 
-FILES=execenv.sgml
+#FILES=execenv.sgml
+FILES=
 TABLES=
 
 .m4.sgml:
