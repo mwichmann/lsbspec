@@ -123,15 +123,7 @@ External C symbols shall be unchanged in an object file's symbol table.
 <PARA>
 The LSB does not specify debugging information, however, some additional
 sections contain information which is encoded using the the encoding as
-specified by <XREF LINKEND="std.DWARF2"> with extensions defined here.
-<NOTE>
-<PARA>
-The extensions specified here also exist in <XREF LINKEND="std.DWARF3">.
-It is expected that future versions of the LSB will reference the final
-version of that document, and that the definitions here will be taken
-from that document instead of being specified here.
-</PARA>
-</NOTE>
+specified by <XREF LINKEND="std.DWARF4"> with extensions defined here.
 
 </PARA>
 
@@ -154,7 +146,7 @@ This information is contained in the special sections
 <PARA>
 The format of the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section is similar
 in format and purpose to the <COMPUTEROUTPUT>.debug_frame</COMPUTEROUTPUT>
-section which is specified in <XREF LINKEND="std.DWARF3">.
+section which is specified in <XREF LINKEND="std.DWARF4">.
 Readers are advised that there are some subtle difference,
 and care should be taken when comparing the two sections.
 </PARA>
