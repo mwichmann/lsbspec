@@ -2,7 +2,7 @@
 SUBDIRS= graphlib opengl \
 	libpng libjpeg fontconfig-commands libfontconfig \
 	libXrender libfreetype libXft libcairo libpng15 \
-	appendix
+	libcairo-gobject libcairo-script-interpreter appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
