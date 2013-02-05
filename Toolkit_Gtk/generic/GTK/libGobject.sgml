@@ -1240,14 +1240,10 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
-#define TRACE(probe)
 #define G_CLOSURE_NEEDS_MARSHAL(closure)	 \
 	(((GClosure*) (closure))->marshal == NULL)
 #define G_TYPE_FROM_INTERFACE(g_iface)	 \
 	(((GTypeInterface*) (g_iface))->g_type)
-#define G_CLOSURE_N_NOTIFIERS(cl)	 \
-	((cl)->meta_marshal + ((cl)->n_guards &lt;&lt; 1L) + (cl)->n_fnotifiers + \
-	(cl)->n_inotifiers)
 #define _G_TYPE_CCC(cp,gt,ct)	 \
 	((ct*) g_type_check_class_cast ((GTypeClass*) cp, gt))
 #define _G_TYPE_CIC(ip,gt,ct)	 \
@@ -1530,23 +1526,23 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 	g_signal_handlers_unblock_matched ((instance), (GSignalMatchType) \
 	(G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA), 0, 0, NULL, (func), \
 	(data))
-#define G_DEFINE_TYPE_EXTENDED(TypeName,type_name,TYPE_PARENT,flags,CODE)	 \
-	static void type_name ##_init (TypeName *self); static void type_name \
-	##_class_init (TypeName ##Class *klass); static gpointer type_name \
-	##_parent_class = NULL; static void type_name ##_class_intern_init \
-	(gpointer klass) { type_name ##_parent_class = \
-	g_type_class_peek_parent (klass); type_name ##_class_init ((TypeName \
-	##Class*) klass); } GType type_name ##_get_type (void) { static GType \
-	g_define_type_id = 0; if (G_UNLIKELY (g_define_type_id == 0)) { static \
-	const GTypeInfo g_define_type_info = { sizeof (TypeName ##Class), \
-	(GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) \
-	type_name ##_class_intern_init, (GClassFinalizeFunc) NULL, NULL, \
-	sizeof (TypeName), 0, (GInstanceInitFunc) type_name ##_init, NULL }; \
-	g_define_type_id = g_type_register_static (TYPE_PARENT, #TypeName, \
-	&amp;g_define_type_info, (GTypeFlags) flags); { CODE ; } } return \
-	g_define_type_id; }
 #define G_CCLOSURE_SWAP_DATA(cclosure)	 \
  (((GClosure*) (cclosure))->derivative_flag)
+#define G_OBJECT_WARN_INVALID_PSPEC(object,pname,property_id,pspec)	 \
+G_STMT_START { \
+  GObject *_object = (GObject*) (object); \
+  GParamSpec *_pspec = (GParamSpec*) (pspec); \
+  guint _property_id = (property_id); \
+  g_warning ("%s: invalid %s id %u for \"%s\" of type `%s' in `%s'", \
+	     G_STRLOC, \
+             (pname), \
+             _property_id, \
+             _pspec->name, \
+             g_type_name (G_PARAM_SPEC_TYPE (_pspec)), \
+             G_OBJECT_TYPE_NAME (_object)); \
+} G_STMT_END
+#define G_CLOSURE_N_NOTIFIERS(cl)	(((cl)->n_guards &lt;&lt; 1L) + \
+	(cl)->n_fnotifiers + (cl)->n_inotifiers)
 #define G_TYPE_FROM_CLASS(g_class)	(((GTypeClass*) (g_class))->g_type)
 #define G_VALUE_TYPE(value)	(((GValue*) (value))->g_type)
 #define _G_TYPE_IGC(ip,gt,ct)	((ct*) (((GTypeInstance*) ip)->g_class))
@@ -1694,19 +1690,6 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define G_TYPE_UINT	G_TYPE_MAKE_FUNDAMENTAL (7)
 #define G_TYPE_LONG	G_TYPE_MAKE_FUNDAMENTAL (8)
 #define G_TYPE_ULONG	G_TYPE_MAKE_FUNDAMENTAL (9)
-#define G_OBJECT_WARN_INVALID_PSPEC(object,pname,property_id,pspec)	\
-G_STMT_START { \
-  GObject *_object = (GObject*) (object); \
-  GParamSpec *_pspec = (GParamSpec*) (pspec); \
-  guint _property_id = (property_id); \
-  g_warning ("%s: invalid %s id %u for "%s" of type `%s' in `%s'", \
-             G_STRLOC, \
-             (pname), \
-             _property_id, \
-             _pspec->name, \
-             g_type_name (G_PARAM_SPEC_TYPE (_pspec)), \
-             G_OBJECT_TYPE_NAME (_object)); \
-} G_STMT_END
 #define G_DEFINE_DYNAMIC_TYPE_EXTENDED(TypeName,type_name,TYPE_PARENT,flags,CODE)	\
 static void     type_name##_init              (TypeName        *self); \
 static void     type_name##_class_init        (TypeName##Class *klass); \
