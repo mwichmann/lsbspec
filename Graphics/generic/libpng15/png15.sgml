@@ -496,6 +496,10 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 <SCREEN>
 
 #define PNG_LIBPNG_VER_STRING	"1.5.13"
+#define png_jmpbuf(png_ptr)	(*png_set_longjmp_fn((png_ptr), longjmp, sizeof (jmp_buf)))
+#define PNG_COLOR_TYPE_GRAY	0
+#define PNG_FILLER_BEFORE	0
+#define PNG_FILLER_AFTER	1
 #define PNG_HEADER_VERSION_STRING	" libpng version 1.5.13 - September 27, 2012\n"
 #define PNG_LIBPNG_VER_SONUM	15
 #define PNG_LIBPNG_VER_DLLNUM	15
@@ -756,8 +760,7 @@ typedef const png_time *png_const_timep;
 typedef const png_unknown_chunk *png_const_unknown_chunkp;
 typedef const png_info *png_const_infop;
 typedef const png_struct *png_const_structp;
-typedef void (*png_unknown_chunk_ptr) (void);
-typedef void (*png_longjmp_ptr) (void);
+typedef void (*png_longjmp_ptr) (jmp_buf, int);
 typedef png_sPLT_struct png_sPLT;
 typedef struct {
     png_uint_32 width;
@@ -803,6 +806,8 @@ typedef void (*png_user_transform_ptr) (png_structp, png_row_infop,
 typedef void (*png_flush_ptr) (png_structp, png_bytep, png_size_t);
 typedef void (*png_error_ptr) (png_structp, png_const_charp);
 typedef void (*png_rw_ptr) (png_structp, png_bytep, png_size_t);
+
+typedef void (*png_unknown_chunk_ptr) (png_structp);
 extern png_uint_32 png_access_version_number(void);
 extern void png_benign_error(png_structp png_ptr,
 			     png_const_charp warning_message);
@@ -925,7 +930,8 @@ extern png_uint_32 png_get_gAMA_fixed(png_const_structp png_ptr,
 				      png_const_infop info_ptr,
 				      png_fixed_point * int_file_gamma);
 extern png_uint_32 png_get_hIST(png_const_structp png_ptr,
-				png_const_infop info_ptr);
+				png_const_infop info_ptr,
+				png_uint_16p * hist);
 extern png_const_charp png_get_header_ver(png_const_structp png_ptr);
 extern png_const_charp png_get_header_version(png_const_structp png_ptr);
 extern png_uint_32 png_get_iCCP(png_const_structp png_ptr,
@@ -955,12 +961,12 @@ extern png_uint_32 png_get_pCAL(png_structp png_ptr, png_infop info_ptr,
 				png_charp * units, png_charpp * params);
 extern png_uint_32 png_get_pHYs(png_const_structp png_ptr,
 				png_const_infop info_ptr,
-				png_int_32 * res_x, png_int_32 * res_y,
+				png_uint_32 * res_x, png_uint_32 * res_y,
 				int *unit_type);
 extern png_uint_32 png_get_pHYs_dpi(png_const_structp png_ptr,
 				    png_const_infop info_ptr,
-				    png_int_32 * res_x, png_int_32 * res_y,
-				    int *unit_type);
+				    png_uint_32 * res_x,
+				    png_uint_32 * res_y, int *unit_type);
 extern float png_get_pixel_aspect_ratio(png_const_structp png_ptr,
 					png_const_infop info_ptr);
 extern png_fixed_point png_get_pixel_aspect_ratio_fixed(png_const_structp
