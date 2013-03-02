@@ -546,7 +546,13 @@ underlying specification.
 <ENTRY><indexterm><primary>acs_map</primary></indexterm>acs_map <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
 <ENTRY><indexterm><primary>cur_term</primary></indexterm>cur_term <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
 <ENTRY><indexterm><primary>curscr</primary></indexterm>curscr <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
+<ENTRY><indexterm><primary>newscr</primary></indexterm>newscr <LINK LINKEND="REFSTD.libncurses.1">[LSB]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>stdscr</primary></indexterm>stdscr <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
+<ENTRY><indexterm><primary>ttytype</primary></indexterm>ttytype <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -580,6 +586,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
+#define getattrs(win)	((win)?(win)->_attrs:A_NORMAL)
 #define ERR	(-1)
 #define OK	(0)
 #define ACS_RARROW	(acs_map['+'])
@@ -607,6 +614,8 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define ACS_VLINE	(acs_map['x'])
 #define ACS_DIAMOND	(acs_map['`'])
 #define ACS_BULLET	(acs_map['~'])
+#define setsyx(y,x)	do{if((y)==-1&amp;&amp;(x)==-1)newscr->_leaveok=TRUE;else{newscr->_leaveok=FALSE;wmove(newscr,(y),(x));}}while(0)
+#define getsyx(y,x)	do{if(newscr->_leaveok)(y)=(x)=-1;elsegetyx(newscr,(y),(x));}while(0)
 #define getmaxyx(win,y,x)	\
 	(y=(win)?((win)->_maxy+1):ERR,x=(win)?((win)->_maxx+1):ERR)
 #define getbegyx(win,y,x)	\
@@ -965,6 +974,7 @@ extern int mvwscanw(WINDOW *, int, int, const char *, ...);
 extern int mvwvline(WINDOW *, int, int, chtype, int);
 extern int napms(int);
 extern WINDOW *newpad(int, int);
+extern WINDOW *newscr;
 extern SCREEN *newterm(const char *, FILE *, FILE *);
 extern WINDOW *newwin(int, int, int, int);
 extern int nl(void);
@@ -1118,6 +1128,7 @@ extern int tigetnum(const char *);
 extern char *tigetstr(const char *);
 extern char *tparm(const char *, ...);
 extern int tputs(const char *, int, int (*)(int));
+extern char ttytype[];
 </SCREEN>
 </SECT2>
 <!-- empty header file All/unctrl.h -->
@@ -1158,6 +1169,8 @@ m4_sinclude(m4_ifdef('mvwinstr','',mvwinstr.sgml))
 m4_define('mvwinstr','1')
 m4_sinclude(m4_ifdef('mvwscanw','',mvwscanw.sgml))
 m4_define('mvwscanw','1')
+<!-- MISSING DEFINITION FOR newscr -->
+<!-- Lets just hope nobody notices -->
 m4_sinclude(m4_ifdef('ripoffline','',ripoffline.sgml))
 m4_define('ripoffline','1')
 m4_sinclude(m4_ifdef('scanw','',scanw.sgml))

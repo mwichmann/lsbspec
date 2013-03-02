@@ -5300,7 +5300,13 @@ underlying specification.
 <ENTRY><indexterm><primary>acs_map</primary></indexterm>acs_map <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
 <ENTRY><indexterm><primary>cur_term</primary></indexterm>cur_term <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
 <ENTRY><indexterm><primary>curscr</primary></indexterm>curscr <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
+<ENTRY><indexterm><primary>newscr</primary></indexterm>newscr <LINK LINKEND="REFSTD.libncurses.1">[LSB]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>stdscr</primary></indexterm>stdscr <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
+<ENTRY><indexterm><primary>ttytype</primary></indexterm>ttytype <LINK LINKEND="REFSTD.libncurses.2">[SUS-CURSES]</LINK></ENTRY>
+<ENTRY></ENTRY>
+<ENTRY></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -5334,6 +5340,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 </PARA>
 <SCREEN>
 
+#define getattrs(win)	((win)?(win)->_attrs:A_NORMAL)
 #define ERR	(-1)
 #define OK	(0)
 #define ACS_RARROW	(acs_map['+'])
@@ -5361,6 +5368,8 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define ACS_VLINE	(acs_map['x'])
 #define ACS_DIAMOND	(acs_map['`'])
 #define ACS_BULLET	(acs_map['~'])
+#define setsyx(y,x)	do{if((y)==-1&amp;&amp;(x)==-1)newscr->_leaveok=TRUE;else{newscr->_leaveok=FALSE;wmove(newscr,(y),(x));}}while(0)
+#define getsyx(y,x)	do{if(newscr->_leaveok)(y)=(x)=-1;elsegetyx(newscr,(y),(x));}while(0)
 #define getmaxyx(win,y,x)	\
 	(y=(win)?((win)->_maxy+1):ERR,x=(win)?((win)->_maxx+1):ERR)
 #define getbegyx(win,y,x)	\
@@ -5719,6 +5728,7 @@ extern int mvwscanw(WINDOW *, int, int, const char *, ...);
 extern int mvwvline(WINDOW *, int, int, chtype, int);
 extern int napms(int);
 extern WINDOW *newpad(int, int);
+extern WINDOW *newscr;
 extern SCREEN *newterm(const char *, FILE *, FILE *);
 extern WINDOW *newwin(int, int, int, int);
 extern int nl(void);
@@ -5872,6 +5882,7 @@ extern int tigetnum(const char *);
 extern char *tigetstr(const char *);
 extern char *tparm(const char *, ...);
 extern int tputs(const char *, int, int (*)(int));
+extern char ttytype[];
 </SCREEN>
 </SECT2>
 <!-- empty header file All/unctrl.h -->
@@ -6472,6 +6483,8 @@ on success.
 
 
 
+<!-- MISSING DEFINITION FOR newscr -->
+<!-- Lets just hope nobody notices -->
 <refentry id="curses-ripoffline-1">
 
 <refmeta>
@@ -7546,31 +7559,13 @@ underlying specification.
 <ENTRY><indexterm><primary>LINES</primary></indexterm>LINES <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>TABSIZE</primary></indexterm>TABSIZE <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>acs_map</primary></indexterm>acs_map <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>boolcodes</primary></indexterm>boolcodes <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-</ROW>
-<ROW>
-<ENTRY><indexterm><primary>boolfnames</primary></indexterm>boolfnames <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>boolnames</primary></indexterm>boolnames <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>cur_term</primary></indexterm>cur_term <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>curscr</primary></indexterm>curscr <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>newscr</primary></indexterm>newscr <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>numcodes</primary></indexterm>numcodes <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>numfnames</primary></indexterm>numfnames <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>numnames</primary></indexterm>numnames <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>stdscr</primary></indexterm>stdscr <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>strcodes</primary></indexterm>strcodes <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>strfnames</primary></indexterm>strfnames <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>strnames</primary></indexterm>strnames <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>ttytype</primary></indexterm>ttytype <LINK LINKEND="REFSTD.libncursesw.2">[LSB]</LINK></ENTRY>
-<ENTRY></ENTRY>
-<ENTRY></ENTRY>
-<ENTRY></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -7605,6 +7600,22 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 <SCREEN>
 
 #define CURSES	1
+#define setsyx(y,x)	do { if (newscr) { \
+				 if ((y) == -1 &amp;&amp; (x) == -1) \
+					 leaveok(newscr, TRUE); \
+				 else { \
+					 leaveok(newscr, FALSE); \
+					 wmove(newscr, (y), (x)); \
+				} \
+			 } \
+		  } while(0)
+#define getsyx(y,x)	do { if (newscr) { \
+				 if (is_leaveok(newscr)) \
+					 (y) = (x) = -1; \
+				 else \
+					 getyx(newscr,(y), (x)); \
+			 } \
+		 } while(0)
 #define CURSES_H	1
 #define NCURSES_VERSION_MAJOR	5
 #define NCURSES_VERSION_MINOR	9
@@ -9298,12 +9309,6 @@ in the referenced base document.
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR addch -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR boolcodes -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR boolfnames -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR boolnames -->
-<!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR cbreak -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR clear -->
@@ -9338,12 +9343,6 @@ in the referenced base document.
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR nonl -->
 <!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR numcodes -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR numfnames -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR numnames -->
-<!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR pecho_wchar -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR raw -->
@@ -9353,12 +9352,6 @@ in the referenced base document.
 <!-- MISSING DEFINITION FOR slk_wset -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR stdscr -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR strcodes -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR strfnames -->
-<!-- Lets just hope nobody notices -->
-<!-- MISSING DEFINITION FOR strnames -->
 <!-- Lets just hope nobody notices -->
 <!-- MISSING DEFINITION FOR ttytype -->
 <!-- Lets just hope nobody notices -->
