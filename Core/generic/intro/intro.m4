@@ -251,18 +251,18 @@ m4_ifdef(`CORE',`
 <CHAPTER ID="POSIXConflicts">
 <TITLE>Relationship To ISO/IEC 9945 POSIX</TITLE>
 <PARA>
-This specification includes many interfaces described in <XREF LINKEND="STD.SUSv3">.
+This specification includes many interfaces described in <XREF LINKEND="STD.SUSv4">.
 Unless otherwise specified, such interfaces should behave exactly as described
 in that specification.
 Any conflict between the requirements described here and the <XREF
-LINKEND="STD.SUSv3">
+LINKEND="STD.SUSv4">
 standard is unintentional, except as explicitly noted otherwise.
 </PARA>
 <NOTE>
 <PARA>
 In addition to the differences noted inline in this specification,
 PDTR 24715 has extracted the differences between this specification and <XREF
-LINKEND="STD.SUSv3">
+LINKEND="STD.SUSv4">
 into a single place.
 It is the long term plan of the Linux Foundation to converge the LSB Core Specification
 with ISO/IEC 9945 POSIX.
