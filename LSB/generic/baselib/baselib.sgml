@@ -2691,6 +2691,76 @@ to supplement - not to replace - source interface definition specifications.
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
 <SECT2>
+<TITLE>aio.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define AIO_CANCELED	0
+#define AIO_NOTCANCELED	1
+#define AIO_ALLDONE	2
+
+#define LIO_READ	0
+#define LIO_WRITE	1
+#define LIO_NOP	2
+
+#define LIO_WAIT	0
+#define LIO_NOWAIT	1
+
+struct aiocb {
+    int aio_fildes;		/* File desriptor. */
+    int aio_lio_opcode;		/* Operation to be performed. */
+    int aio_reqprio;		/* Request priority offset. */
+    void *aio_buf;		/* Location of buffer. */
+    size_t aio_nbytes;		/* Length of transfer. */
+    struct sigevent aio_sigevent;	/* Signal number and value. */
+    struct aiocb *__next_prio;
+    int __abs_prio;
+    int __policy;
+    int __error_code;
+    __ssize_t __return_value;
+    __off_t aio_offset;		/* File offset. */
+    char __pad[1];
+    char __unused[1];
+};
+struct aiocb64 {
+    int aio_fildes;
+    int aio_lio_opcode;
+    int aio_reqprio;
+    void *aio_buf;
+    size_t aio_nbytes;
+    struct sigevent aio_sigevent;
+    struct aiocb *__next_prio;
+    int __abs_prio;
+    int __policy;
+    int __error_code;
+    __ssize_t __return_value;
+    __off64_t aio_offset;
+    char __unused[1];
+};
+extern int aio_cancel(int fildes, struct aiocb *aiocbp);
+extern int aio_cancel64(int fildes, struct aiocb64 *aiocbp);
+extern int aio_error(struct aiocb *aiocbp);
+extern int aio_error64(struct aiocb64 *aiocbp);
+extern int aio_fsync(int operation, struct aiocb *aiocbp);
+extern int aio_fsync64(int operation, struct aiocb64 *aiocbp);
+extern int aio_read(struct aiocb *aiocbp);
+extern int aio_read64(struct aiocb64 *aiocbp);
+extern int aio_return(struct aiocb *aiocbp);
+extern int aio_return64(struct aiocb64 *aiocbp);
+extern int aio_suspend(struct aiocb *list[], int nent,
+		       struct timespec *timeout);
+extern int aio_suspend64(struct aiocb64 *list[], int nent,
+			 struct timespec *timeout);
+extern int aio_write(struct aiocb *aiocbp);
+extern int aio_write64(struct aiocb64 *aiocbp);
+extern int lio_listio(int mode, struct aiocb *list[], int nent,
+		      struct sigevent *sig);
+extern int lio_listio64(int mode, struct aiocb64 *list[], int nent,
+			struct sigevent *sig);
+</SCREEN>
+</SECT2>
+<SECT2>
 <TITLE>argz.h</TITLE>
 <PARA>
 </PARA>
@@ -38438,6 +38508,9 @@ for the librt library
 <PARA>
 The behavior of the interfaces in this library is specified by the following specifications:<SIMPLELIST COLUMNS=1>
 <MEMBER ID='REFSTD.librt.1'>
+[LFS] <XREF LINKEND="std.LFS">
+</MEMBER>
+<MEMBER ID='REFSTD.librt.2'>
 [SUSv4] <XREF LINKEND="std.SUSv4">
 </MEMBER>
 </SIMPLELIST>
@@ -38464,10 +38537,60 @@ underlying specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>shm_open</primary></indexterm>shm_open <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>shm_unlink</primary></indexterm>shm_unlink <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>shm_open</primary></indexterm>shm_open <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>shm_unlink</primary></indexterm>shm_unlink <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
+</ROW>
+</TBODY>
+</TGROUP>
+</TABLE>
+</SECT3>
+</SECT2>
+<!-- debug: database interface name Asynchronous I/O -->
+<SECT2>
+<!--libgroup-->
+<TITLE>Asynchronous I/O</TITLE>
+<PARA>
+</PARA>
+
+
+<SECT3>
+<TITLE>Interfaces for Asynchronous I/O</TITLE>
+<PARA>
+An LSB conforming implementation shall provide the generic functions
+for Asynchronous I/O specified in <XREF linkend="tbl-librt-async-ints">,
+with the full mandatory functionality as described in the referenced
+underlying specification.
+</PARA>
+<!--libgroupints-->
+<TABLE id="tbl-librt-async-ints">
+<TITLE>librt - Asynchronous I/O Function Interfaces</TITLE>
+<TGROUP COLS=4>
+<TBODY>
+<ROW>
+<ENTRY><indexterm><primary>aio_cancel</primary></indexterm>aio_cancel <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_cancel64</primary></indexterm>aio_cancel64 <LINK LINKEND="REFSTD.librt.1">[LFS]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_error</primary></indexterm>aio_error <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_error64</primary></indexterm>aio_error64 <LINK LINKEND="REFSTD.librt.1">[LFS]</LINK></ENTRY>
+</ROW>
+<ROW>
+<ENTRY><indexterm><primary>aio_fsync</primary></indexterm>aio_fsync <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_fsync64</primary></indexterm>aio_fsync64 <LINK LINKEND="REFSTD.librt.1">[LFS]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_read</primary></indexterm>aio_read <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_read64</primary></indexterm>aio_read64 <LINK LINKEND="REFSTD.librt.1">[LFS]</LINK></ENTRY>
+</ROW>
+<ROW>
+<ENTRY><indexterm><primary>aio_return</primary></indexterm>aio_return <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_return64</primary></indexterm>aio_return64 <LINK LINKEND="REFSTD.librt.1">[LFS]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_suspend</primary></indexterm>aio_suspend <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_suspend64</primary></indexterm>aio_suspend64 <LINK LINKEND="REFSTD.librt.1">[LFS]</LINK></ENTRY>
+</ROW>
+<ROW>
+<ENTRY><indexterm><primary>aio_write</primary></indexterm>aio_write <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>aio_write64</primary></indexterm>aio_write64 <LINK LINKEND="REFSTD.librt.1">[LFS]</LINK></ENTRY>
+<ENTRY><indexterm><primary>lio_listio</primary></indexterm>lio_listio(GLIBC_2.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>lio_listio64</primary></indexterm>lio_listio64(GLIBC_2.4) <LINK LINKEND="REFSTD.librt.1">[LFS]</LINK></ENTRY>
 </ROW>
 </TBODY>
 </TGROUP>
@@ -38496,13 +38619,13 @@ underlying specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>clock_getcpuclockid</primary></indexterm>clock_getcpuclockid <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>clock_getres</primary></indexterm>clock_getres <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>clock_gettime</primary></indexterm>clock_gettime <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>clock_nanosleep</primary></indexterm>clock_nanosleep <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>clock_getcpuclockid</primary></indexterm>clock_getcpuclockid <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>clock_getres</primary></indexterm>clock_getres <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>clock_gettime</primary></indexterm>clock_gettime <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>clock_nanosleep</primary></indexterm>clock_nanosleep <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>clock_settime</primary></indexterm>clock_settime <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>clock_settime</primary></indexterm>clock_settime <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
@@ -38534,13 +38657,13 @@ underlying specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>timer_create</primary></indexterm>timer_create <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>timer_delete</primary></indexterm>timer_delete <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>timer_getoverrun</primary></indexterm>timer_getoverrun <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>timer_gettime</primary></indexterm>timer_gettime <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>timer_create</primary></indexterm>timer_create <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>timer_delete</primary></indexterm>timer_delete <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>timer_getoverrun</primary></indexterm>timer_getoverrun <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>timer_gettime</primary></indexterm>timer_gettime <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>timer_settime</primary></indexterm>timer_settime <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>timer_settime</primary></indexterm>timer_settime <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
@@ -38572,20 +38695,20 @@ underlying specification.
 <TGROUP COLS=4>
 <TBODY>
 <ROW>
-<ENTRY><indexterm><primary>mq_close</primary></indexterm>mq_close(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>mq_getattr</primary></indexterm>mq_getattr(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>mq_notify</primary></indexterm>mq_notify(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>mq_open</primary></indexterm>mq_open(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_close</primary></indexterm>mq_close(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_getattr</primary></indexterm>mq_getattr(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_notify</primary></indexterm>mq_notify(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_open</primary></indexterm>mq_open(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>mq_receive</primary></indexterm>mq_receive(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>mq_send</primary></indexterm>mq_send(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>mq_setattr</primary></indexterm>mq_setattr(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>mq_timedreceive</primary></indexterm>mq_timedreceive(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_receive</primary></indexterm>mq_receive(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_send</primary></indexterm>mq_send(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_setattr</primary></indexterm>mq_setattr(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_timedreceive</primary></indexterm>mq_timedreceive(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
 </ROW>
 <ROW>
-<ENTRY><indexterm><primary>mq_timedsend</primary></indexterm>mq_timedsend(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>mq_unlink</primary></indexterm>mq_unlink(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.1">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_timedsend</primary></indexterm>mq_timedsend(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>mq_unlink</primary></indexterm>mq_unlink(GLIBC_2.3.4) <LINK LINKEND="REFSTD.librt.2">[SUSv4]</LINK></ENTRY>
 <ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
