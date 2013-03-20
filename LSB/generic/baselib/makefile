@@ -111,7 +111,7 @@ MANPAGES= sockio.sgml ttyio.sgml \
 	pam_open_session.sgml pam_putenv.sgml pam_set_item.sgml \
 	pam_setcred.sgml pam_start.sgml pam_strerror.sgml \
 	_pthread_cleanup_pop.sgml _pthread_cleanup_push.sgml \
-	pread64.sgml pwrite64.sgml
+	pread64.sgml pwrite64.sgml crypt_r.sgml encrypt_r.sgml setkey_r.sgml
 
 FILES=baselib.sgml cxxlib.sgml
 GENFILES=libc.sgml libm.sgml libpthread.sgml libdl.sgml libcrypt.sgml \
