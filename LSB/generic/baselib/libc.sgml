@@ -1102,39 +1102,39 @@ underlying specification.
 <ENTRY><indexterm><primary>connect</primary></indexterm>connect <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 </ROW>
 <ROW>
+<ENTRY><indexterm><primary>freeifaddrs</primary></indexterm>freeifaddrs(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gethostid</primary></indexterm>gethostid <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 <ENTRY><indexterm><primary>gethostname</primary></indexterm>gethostname <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>getifaddrs</primary></indexterm>getifaddrs(GLIBC_2.3) <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>getpeername</primary></indexterm>getpeername <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 <ENTRY><indexterm><primary>getsockname</primary></indexterm>getsockname <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>getsockopt</primary></indexterm>getsockopt <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>if_freenameindex</primary></indexterm>if_freenameindex <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>if_indextoname</primary></indexterm>if_indextoname <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 <ENTRY><indexterm><primary>if_nameindex</primary></indexterm>if_nameindex <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>if_nametoindex</primary></indexterm>if_nametoindex <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 <ENTRY><indexterm><primary>listen</primary></indexterm>listen <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>recv</primary></indexterm>recv <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 <ENTRY><indexterm><primary>recvfrom</primary></indexterm>recvfrom <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>recvmsg</primary></indexterm>recvmsg <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 <ENTRY><indexterm><primary>send</primary></indexterm>send <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>sendmsg</primary></indexterm>sendmsg <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 <ENTRY><indexterm><primary>sendto</primary></indexterm>sendto <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
-</ROW>
-<ROW>
 <ENTRY><indexterm><primary>setsockopt</primary></indexterm>setsockopt <LINK LINKEND="REFSTD.libc.2">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>shutdown</primary></indexterm>shutdown <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>sockatmark</primary></indexterm>sockatmark <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
-<ENTRY><indexterm><primary>socket</primary></indexterm>socket <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 </ROW>
 <ROW>
+<ENTRY><indexterm><primary>sockatmark</primary></indexterm>sockatmark <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
+<ENTRY><indexterm><primary>socket</primary></indexterm>socket <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
 <ENTRY><indexterm><primary>socketpair</primary></indexterm>socketpair <LINK LINKEND="REFSTD.libc.6">[SUSv4]</LINK></ENTRY>
-<ENTRY></ENTRY>
-<ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 </TBODY>
@@ -4275,6 +4275,31 @@ extern size_t iconv(iconv_t __cd, char **__inbuf, size_t * __inbytesleft,
 		    char **__outbuf, size_t * __outbytesleft);
 extern int iconv_close(iconv_t __cd);
 extern iconv_t iconv_open(const char *__tocode, const char *__fromcode);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>ifaddrs.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+#define ifa_broadaddr	ifa_ifu.ifu_broadaddr
+#define ifa_dstaddr	ifa_ifu.ifu_dstaddr
+
+struct ifaddrs {
+    struct ifaddrs *ifa_next;
+    char *ifa_name;
+    unsigned int ifa_flags;
+    struct sockaddr *ifa_addr;
+    struct sockaddr *ifa_netmask;
+    union {
+	struct sockaddr *ifu_broadaddr;
+	struct sockaddr *ifu_dstaddr;
+    } ifa_ifu;
+    void *ifa_data;
+};
+extern void freeifaddrs(struct ifaddrs *);
+extern int getifaddrs(struct ifaddrs **);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -9881,6 +9906,8 @@ m4_sinclude(m4_ifdef('fputws_unlocked','',fputws_unlocked.sgml))
 m4_define('fputws_unlocked','1')
 m4_sinclude(m4_ifdef('fread_unlocked','',fread_unlocked.sgml))
 m4_define('fread_unlocked','1')
+<!-- MISSING DEFINITION FOR freeifaddrs -->
+<!-- Lets just hope nobody notices -->
 m4_sinclude(m4_ifdef('fscanf','',fscanf.sgml))
 m4_define('fscanf','1')
 m4_sinclude(m4_ifdef('fstatfs','',fstatfs.sgml))
@@ -9909,6 +9936,8 @@ m4_sinclude(m4_ifdef('gethostbyname2_r','',gethostbyname2_r.sgml))
 m4_define('gethostbyname2_r','1')
 m4_sinclude(m4_ifdef('gethostbyname_r','',gethostbyname_r.sgml))
 m4_define('gethostbyname_r','1')
+<!-- MISSING DEFINITION FOR getifaddrs -->
+<!-- Lets just hope nobody notices -->
 m4_sinclude(m4_ifdef('getloadavg','',getloadavg.sgml))
 m4_define('getloadavg','1')
 m4_sinclude(m4_ifdef('getopt','',getopt.sgml))
