@@ -368,6 +368,8 @@ extern void PR_SetErrorText(PRIntn textLength, const char *text);
 #define prinit_h___
 
 typedef PRIntn(*PRPrimordialFn) (PRIntn argc, char **argv);
+typedef PRStatus(*PRCallOnceFN) (void);
+typedef PRStatus(*PRCallOnceWithArgFN) (void *arg);
 extern void PR_Abort(void);
 extern PRStatus PR_Cleanup(void);
 extern void PR_Init(PRThreadType type, PRThreadPriority priority,
@@ -499,20 +501,21 @@ typedef struct PRSocketOptionData {
 	union PRNetAddr mcast_if;
     } value;
 } PRSocketOptionData;
-typedef PRStatus(*PRFsyncFN) (PRFileDesc *);
-typedef PRStatus(*PRListenFN) (PRFileDesc *, PRIntn);
+typedef PRStatus(*PRFsyncFN) (PRFileDesc * fd);
+typedef PRStatus(*PRListenFN) (PRFileDesc * fd, PRIntn how);
 typedef enum PRSeekWhence {
     PR_SEEK_SET = 0,
     PR_SEEK_CUR = 1,
     PR_SEEK_END = 2
 } PRSeekWhence;
-typedef PRInt32(*PRAcceptreadFN) (PRFileDesc *, PRFileDesc * *,
-				  PRNetAddr * *, void *, PRInt32,
-				  PRIntervalTime);
-typedef PRStatus(*PRCloseFN) (PRFileDesc *);
-typedef PRInt32(*PRTransmitfileFN) (PRFileDesc *, PRFileDesc *,
-				    const void *, PRInt32,
-				    PRTransmitFileFlags, PRIntervalTime);
+typedef PRInt32(*PRAcceptreadFN) (PRFileDesc * sd, PRFileDesc * *nd,
+				  PRNetAddr * *raddr, void *buf,
+				  PRInt32 amount, PRIntervalTime t);
+typedef PRStatus(*PRCloseFN) (PRFileDesc * fd);
+typedef PRInt32(*PRTransmitfileFN) (PRFileDesc * sd, PRFileDesc * fd,
+				    const void *headers, PRInt32 hlen,
+				    PRTransmitFileFlags flags,
+				    PRIntervalTime t);
 typedef enum PRSockOption {
     PR_SockOpt_Nonblocking,
     PR_SockOpt_Linger = 1,
@@ -532,37 +535,43 @@ typedef enum PRSockOption {
     PR_SockOpt_Broadcast = 15,
     PR_SockOpt_Last = 16
 } PRSockOption;
-typedef PRFileDesc *(*PRAcceptFN) (PRFileDesc *, PRNetAddr *,
-				   PRIntervalTime);
-typedef PRStatus(*PRConnectcontinueFN) (PRFileDesc *, PRInt16);
-typedef PRInt32(*PRReadFN) (PRFileDesc *, void *, PRInt32);
+typedef PRFileDesc *(*PRAcceptFN) (PRFileDesc * fd, PRNetAddr * addr,
+				   PRIntervalTime timeout);
+typedef PRStatus(*PRConnectcontinueFN) (PRFileDesc * fd,
+					PRInt16 out_flags);
+typedef PRInt32(*PRReadFN) (PRFileDesc * fd, void *buf, PRInt32 amount);
 typedef struct PRFileInfo64 {
     PRFileType type;
     PROffset64 size;
     PRTime creationTime;
     PRTime modifyTime;
 } PRFileInfo64;
-typedef PRStatus(*PRGetsocketoptionFN) (PRFileDesc *,
-					PRSocketOptionData *);
-typedef PRInt32(*PRSendtoFN) (PRFileDesc *, const void *, PRInt32, PRIntn,
-			      const PRNetAddr *, PRIntervalTime);
-typedef PRStatus(*PRGetsocknameFN) (PRFileDesc *, PRNetAddr *);
-typedef PRInt32(*PRSendFN) (PRFileDesc *, const void *, PRInt32, PRIntn,
-			    PRIntervalTime);
-typedef PROffset32(*PRSeekFN) (PRFileDesc *, PROffset32, PRSeekWhence);
-typedef PRInt64(*PRAvailable64FN) (PRFileDesc *);
-typedef PRInt32(*PRAvailableFN) (PRFileDesc *);
+typedef PRStatus(*PRGetsocketoptionFN) (PRFileDesc * fd,
+					PRSocketOptionData * data);
+typedef PRInt32(*PRSendtoFN) (PRFileDesc * fd, const void *buf,
+			      PRInt32 amount, PRIntn flags,
+			      const PRNetAddr * addr,
+			      PRIntervalTime timeout);
+typedef PRStatus(*PRGetsocknameFN) (PRFileDesc * fd, PRNetAddr * addr);
+typedef PRInt32(*PRSendFN) (PRFileDesc * fd, const void *buf,
+			    PRInt32 amount, PRIntn flags,
+			    PRIntervalTime timeout);
+typedef PROffset32(*PRSeekFN) (PRFileDesc * fd, PROffset32 offset,
+			       PRSeekWhence how);
+typedef PRInt64(*PRAvailable64FN) (PRFileDesc * fd);
+typedef PRInt32(*PRAvailableFN) (PRFileDesc * fd);
 typedef struct PRFileInfo {
     PRFileType type;
     PROffset32 size;
     PRTime creationTime;
     PRTime modifyTime;
 } PRFileInfo;
-typedef PROffset64(*PRSeek64FN) (PRFileDesc *, PROffset64, PRSeekWhence);
-typedef PRStatus(*PRSetsocketoptionFN) (PRFileDesc *,
-					const PRSocketOptionData *);
-typedef PRInt32(*PRRecvFN) (PRFileDesc *, void *, PRInt32, PRIntn,
-			    PRIntervalTime);
+typedef PROffset64(*PRSeek64FN) (PRFileDesc * fd, PROffset64 offset,
+				 PRSeekWhence how);
+typedef PRStatus(*PRSetsocketoptionFN) (PRFileDesc * fd,
+					const PRSocketOptionData * data);
+typedef PRInt32(*PRRecvFN) (PRFileDesc * fd, void *buf, PRInt32 amount,
+			    PRIntn flags, PRIntervalTime timeout);
 typedef struct PRSendFileData {
     PRFileDesc *fd;
     PRUint32 file_offset;
@@ -573,31 +582,36 @@ typedef struct PRSendFileData {
     PRInt32 tlen;
 } PRSendFileData;
 typedef PRIntn PRDescIdentity;
-typedef PRStatus(*PRConnectFN) (PRFileDesc *, const PRNetAddr *,
-				PRIntervalTime);
-typedef PRInt32(*PRSendfileFN) (PRFileDesc *, PRSendFileData *,
-				PRTransmitFileFlags, PRIntervalTime);
-typedef PRInt32(*PRRecvfromFN) (PRFileDesc *, void *, PRInt32, PRIntn,
-				PRNetAddr *, PRIntervalTime);
+typedef PRStatus(*PRConnectFN) (PRFileDesc * fd, const PRNetAddr * addr,
+				PRIntervalTime timeout);
+typedef PRInt32(*PRSendfileFN) (PRFileDesc * networkSocket,
+				PRSendFileData * sendData,
+				PRTransmitFileFlags flags,
+				PRIntervalTime timeout);
+typedef PRInt32(*PRRecvfromFN) (PRFileDesc * fd, void *buf, PRInt32 amount,
+				PRIntn flags, PRNetAddr * addr,
+				PRIntervalTime timeout);
 typedef struct PRPollDesc {
     PRFileDesc *fd;
     PRInt16 in_flags;
     PRInt16 out_flags;
 } PRPollDesc;
-typedef PRInt32(*PRWriteFN) (PRFileDesc *, const void *, PRInt32);
-typedef PRStatus(*PRFileInfo64FN) (PRFileDesc *, PRFileInfo64 *);
-typedef PRStatus(*PRShutdownFN) (PRFileDesc *, PRIntn);
-typedef PRIntn(*PRReservedFN) (PRFileDesc *);
-typedef PRStatus(*PRFileInfoFN) (PRFileDesc *, PRFileInfo *);
-typedef PRInt32(*PRWritevFN) (PRFileDesc *, const PRIOVec *, PRInt32,
-			      PRIntervalTime);
+typedef PRInt32(*PRWriteFN) (PRFileDesc * fd, const void *buf,
+			     PRInt32 amount);
+typedef PRStatus(*PRFileInfo64FN) (PRFileDesc * fd, PRFileInfo64 * info);
+typedef PRStatus(*PRShutdownFN) (PRFileDesc * fd, PRIntn how);
+typedef PRIntn(*PRReservedFN) (PRFileDesc * fd);
+typedef PRStatus(*PRFileInfoFN) (PRFileDesc * fd, PRFileInfo * info);
+typedef PRInt32(*PRWritevFN) (PRFileDesc * fd, const PRIOVec * iov,
+			      PRInt32 iov_size, PRIntervalTime timeout);
 typedef enum PRFileType {
     PR_FILE_FILE = 1,
     PR_FILE_DIRECTORY = 2,
     PR_FILE_OTHER = 3
 } PRFileType;
-typedef PRStatus(*PRBindFN) (PRFileDesc *, const PRNetAddr *);
-typedef PRInt16(*PRPollFN) (PRFileDesc *, PRInt16, PRInt16 *);
+typedef PRStatus(*PRBindFN) (PRFileDesc * fd, const PRNetAddr * addr);
+typedef PRInt16(*PRPollFN) (PRFileDesc * fd, PRInt16 in_flags,
+			    PRInt16 * out_flags);
 struct PRIOMethods {
     PRDescType file_type;
     PRCloseFN close;
@@ -636,7 +650,7 @@ struct PRIOMethods {
     PRReservedFN reserved_fn_1;
     PRReservedFN reserved_fn_0;
 };
-typedef PRStatus(*PRGetpeernameFN) (PRFileDesc *, PRNetAddr *);
+typedef PRStatus(*PRGetpeernameFN) (PRFileDesc * fd, PRNetAddr * addr);
 typedef enum PRShutdownHow {
     PR_SHUTDOWN_RCV = 0,
     PR_SHUTDOWN_SEND = 1,
