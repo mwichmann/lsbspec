@@ -607,7 +607,6 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 typedef void (*XtDoChangeProc) (Widget, WidgetList, Cardinal *, WidgetList,
 				Cardinal *, XtPointer);
 typedef struct _CompositeClassRec *CompositeWidgetClass;
-typedef Cardinal(*XtOrderProc) (Widget);
 extern void XtChangeManagedSet(WidgetList, Cardinal, XtDoChangeProc,
 			       XtPointer, WidgetList, Cardinal);
 extern void XtManageChild(Widget);
@@ -861,6 +860,73 @@ typedef struct _XtEventRec {
 </PARA>
 <SCREEN>
 
+typedef unsigned int Cardinal;
+typedef void *XtPointer;
+typedef struct _WidgetRec *Widget;
+typedef char *String;
+typedef unsigned int XtGeometryMask;
+typedef short int Position;
+typedef short unsigned int Dimension;
+typedef struct {
+    XtGeometryMask request_mode;
+    Position x;
+    Position y;
+    Dimension width;
+    Dimension height;
+    Dimension border_width;
+    Widget sibling;
+    int stack_mode;
+} XtWidgetGeometry;
+struct _XtResource {
+    String resource_name;
+    String resource_class;
+    String resource_type;
+    Cardinal resource_size;
+    Cardinal resource_offset;
+    String default_type;
+    XtPointer default_addr;
+};
+typedef struct _XtResource *XtResourceList;
+typedef void (*XtActionProc) (Widget, XEvent *, String *, Cardinal *);
+struct _XtActionsRec {
+    String string;
+    XtActionProc proc;
+};
+typedef struct _XtActionsRec *XtActionList;
+typedef char Boolean;
+typedef unsigned char XtEnum;
+typedef long unsigned int XtInputId;
+struct _WidgetClassRec;
+typedef Widget *WidgetList;
+typedef enum {
+    XtGeometryYes = 0,
+    XtGeometryNo = 1,
+    XtGeometryAlmost = 2,
+    XtGeometryDone = 3
+} XtGeometryResult;
+typedef long int XtArgVal;
+typedef struct {
+    String name;
+    XtArgVal value;
+} Arg;
+typedef Arg *ArgList;
+typedef struct _XtCallbackRec *XtCallbackList;
+typedef long unsigned int EventMask;
+typedef enum {
+    XtGrabNone = 0,
+    XtGrabNonexclusive = 1,
+    XtGrabExclusive = 2
+} XtGrabKind;
+typedef long unsigned int XtValueMask;
+typedef struct _XtEventRec *XtEventTable;
+typedef void (*XtCreatePopupChildProc) (Widget);
+typedef long unsigned int Pixel;
+typedef XtActionProc *XtBoundActions;
+
+typedef struct _WidgetClassRec *WidgetClass;
+
+typedef struct _TranslationData *XtTranslations;
+
 #define XtOffset(p_type,field)	((Cardinal) (((char *) (&amp;(((p_type)NULL)->field))) - ((char *) NULL)))
 #define XtNumber(arr)	((Cardinal) (sizeof(arr) / sizeof(arr[0])))
 #define XtAllEvents	((EventMask) -1L)
@@ -920,50 +986,17 @@ typedef struct _XtEventRec {
 #define XtVaNestedList	"XtVaNestedList"
 #define XtVaTypedArg	"XtVaTypedArg"
 
-typedef unsigned int Cardinal;
-typedef void *XtPointer;
 struct _WidgetRec;
-typedef struct _WidgetRec *Widget;
-typedef char *String;
-typedef unsigned int XtGeometryMask;
-typedef short int Position;
-typedef short unsigned int Dimension;
-typedef struct {
-    XtGeometryMask request_mode;
-    Position x;
-    Position y;
-    Dimension width;
-    Dimension height;
-    Dimension border_width;
-    Widget sibling;
-    int stack_mode;
-} XtWidgetGeometry;
 typedef unsigned int Modifiers;
 typedef void *XtCacheRef;
-typedef struct _XtResource *XtResourceList;
 struct _XtAppStruct;
 typedef struct _XtAppStruct *XtAppContext;
-typedef void (*XtActionProc) (Widget, XEvent *, String *, Cardinal *);
-typedef struct _XtActionsRec *XtActionList;
-typedef char Boolean;
 typedef int XtCacheType;
 typedef long unsigned int XtGCMask;
-typedef unsigned char XtEnum;
 typedef long unsigned int XtSignalId;
 typedef long unsigned int XtWorkProcId;
-typedef long unsigned int XtInputId;
 typedef long unsigned int XtIntervalId;
-struct _WidgetClassRec;
-typedef struct _WidgetClassRec *WidgetClass;
-typedef Widget *WidgetList;
 typedef struct _TranslationData *XtAccelerators;
-typedef struct _TranslationData *XtTranslations;
-typedef enum {
-    XtGeometryYes = 0,
-    XtGeometryNo = 1,
-    XtGeometryAlmost = 2,
-    XtGeometryDone = 3
-} XtGeometryResult;
 typedef enum {
     XtAddress = 0,
     XtBaseOffset = 1,
@@ -979,12 +1012,6 @@ typedef struct {
     Cardinal size;
 } XtConvertArgRec;
 typedef XtConvertArgRec *XtConvertArgList;
-typedef long int XtArgVal;
-typedef struct {
-    String name;
-    XtArgVal value;
-} Arg;
-typedef Arg *ArgList;
 typedef void (*XtSignalCallbackProc) (XtPointer, XtSignalId *);
 typedef enum {
     XtCallbackNoList = 0,
@@ -999,8 +1026,6 @@ typedef enum {
     XtListTail = 1
 } XtListPosition;
 typedef void (*XtCallbackProc) (Widget, XtPointer, XtPointer);
-typedef struct _XtCallbackRec *XtCallbackList;
-typedef long unsigned int EventMask;
 typedef void *XtVarArgsList;
 typedef void (*XtEventHandler) (Widget, XtPointer, XEvent *, Boolean *);
 typedef void (*XtCaseProc) (Display *, KeySym, KeySym *, KeySym *);
@@ -1037,11 +1062,6 @@ typedef Boolean(*XtConvertSelectionProc) (Widget, Atom *, Atom *, Atom *,
 typedef void (*XtErrorMsgHandler) (String, String, String, String,
 				   String *, Cardinal *);
 typedef String(*XtLanguageProc) (Display *, String, XtPointer);
-typedef enum {
-    XtGrabNone = 0,
-    XtGrabNonexclusive = 1,
-    XtGrabExclusive = 2
-} XtGrabKind;
 typedef struct _XtCheckpointTokenRec *XtCheckpointToken;
 typedef void (*XtExtensionSelectProc) (Widget, int *, XtPointer *, int,
 				       XtPointer);
@@ -1056,18 +1076,7 @@ typedef Boolean(*XtConvertSelectionIncrProc) (Widget, Atom *, Atom *,
 typedef void (*XtSelectionDoneIncrProc) (Widget, Atom *, Atom *,
 					 XtRequestId *, XtPointer);
 typedef void (*XtLoseSelectionIncrProc) (Widget, Atom *, XtPointer);
-typedef long unsigned int XtValueMask;
-typedef struct _XtEventRec *XtEventTable;
-typedef void (*XtCreatePopupChildProc) (Widget);
-typedef struct _XtResource {
-    String resource_name;
-    String resource_class;
-    String resource_type;
-    Cardinal resource_size;
-    Cardinal resource_offset;
-    String default_type;
-    XtPointer default_addr;
-} XtResource;
+typedef struct _XtResource XtResource;
 typedef struct _XtCallbackRec {
     XtCallbackProc callback;
     XtPointer closure;
@@ -1086,17 +1095,12 @@ typedef struct _XtCheckpointTokenRec {
     int type;
     Widget widget;
 } XtCheckpointTokenRec;
-typedef long unsigned int Pixel;
-typedef struct _XtActionsRec {
-    String string;
-    XtActionProc proc;
-} XtActionsRec;
+typedef struct _XtActionsRec XtActionsRec;
 typedef struct {
     Widget shell_widget;
     Widget enable_widget;
 } XtPopdownIDRec;
 typedef XtPopdownIDRec *XtPopdownID;
-typedef XtActionProc *XtBoundActions;
 typedef struct {
     String type;
     Widget widget;
@@ -2741,6 +2745,15 @@ typedef struct {
     VendorShellPart vendor;
 } VendorShellRec;
 typedef VendorShellRec *VendorShellWidget;
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>lsb/Composite.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+typedef Cardinal(*XtOrderProc) (Widget);
 </SCREEN>
 </SECT2>
 </SECT1>
