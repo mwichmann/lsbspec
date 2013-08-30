@@ -19,9 +19,9 @@ die;
 #
 GetOptions("a=s" => \$archname,
 	   "v=s" => \$lsbversion,
-           "m=s" => \$module);
+           "m=s" => \$submodule);
 
-if( !$module ) { $module='LSB_Base'; }
+if( !$submodule ) { $submodule='LSB_Base'; }
 
 if( !$archname ) { usage(); }
 if( !$lsbversion ) { usage(); }
@@ -52,8 +52,8 @@ printf("<!-- generated from the LSB specification database by mklibapnd -->\n");
 #
 # 4) get & print the library info
 #
-if ( ! $module ) {
-    $module = "LSB_Base";
+if ( ! $submodule ) {
+    $submodule = "LSB_Base";
 }
 $select = "SELECT * FROM Library ";
 $select.= "LEFT JOIN ArchLib ON ALlid=Lid ";
@@ -63,7 +63,7 @@ $select.= "WHERE (ALappearedin <= '$lsbversion' AND ALappearedin > '' ";
 $select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
 $select.= "AND (SMLappearedin <= '$lsbversion' AND SMLappearedin > '' ";
 $select.= "AND (SMLwithdrawnin IS NULL OR SMLwithdrawnin > '$lsbversion') ) ";
-$select.= "AND SMname='".$module."' ";
+$select.= "AND SMname='".$submodule."' ";
 
 if( $Aid != 1 ) {
 	$select.= "AND (ALaid=$Aid OR (ALaid=1 AND Lid NOT IN ( ";

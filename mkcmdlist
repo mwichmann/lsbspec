@@ -20,7 +20,7 @@ die;
 # We can get submodule id from SubModule Table. 
 # Commands list will be generated as per submodules.
 
-GetOptions("m=s" => \$module,
+GetOptions("m=s" => \$submodule,
             "v=s" => \$lsbversion);
 if( !$lsbversion ) { usage(); }
 
@@ -30,11 +30,11 @@ if( !$lsbversion ) { usage(); }
 my $dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
     or die "Couldn't connect to database: ".DBI->errstr;
 
-if( !$module ) {
-    $module='LSB_Base';
+if( !$submodule ) {
+    $submodule='LSB_Base';
 }
-($moduleid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$module'");
-die("Incorrect SubModule name") if not $moduleid;
+($submoduleid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$submodule'");
+die("Incorrect SubModule name") if not $submoduleid;
 
 printf("<!-- Start of generated text - do not edit! -->\n");
 printf("<!-- generated from the LSB specification database by mkcmdlist -->\n");
@@ -54,7 +54,7 @@ $select = "SELECT * FROM Command ";
 $select.= "LEFT JOIN SModCmd ON SMCcid=Cid ";
 $select.= "LEFT JOIN CmdStd ON CScid=Cid ";
 $select.= "LEFT JOIN Standard ON Sid=CSsid ";
-$select.= "WHERE SMCsmid=$moduleid AND SMCappearedin <= '$lsbversion' AND SMCappearedin > '' ";
+$select.= "WHERE SMCsmid=$submoduleid AND SMCappearedin <= '$lsbversion' AND SMCappearedin > '' ";
 $select.= "AND (SMCwithdrawnin IS NULL OR SMCwithdrawnin > '$lsbversion') ";
 $select.= "AND CSappearedin <= '$lsbversion' AND CSappearedin > '' ";
 $select.= "AND (CSwithdrawnin IS NULL OR CSwithdrawnin > '$lsbversion') ";
