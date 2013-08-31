@@ -11,11 +11,11 @@ TABLES= standards.sgml references.sgml libraries.sgml cxxstandards.sgml cxxlibra
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a PPC64 -t Standard -m LSB_Core -v `cat ../../../LSB/target_version.PPC64` >standards.sgml
-	../../../mkstandardsgmltable -a PPC64 -t Reference -m LSB_Core -v `cat ../../../LSB/target_version.PPC64` >references.sgml
-	../../../mkstandardsgmltable -s "'ISOCXX','CXXABI-1.86','SUSV3','LSB','ISOC99'" >cxxstandards.sgml
-	../../../mklibsgmltable -a PPC64 -v `cat ../../../LSB/target_version.PPC64` -m "LSB_Core" >libraries.sgml
-	../../../mklibsgmltable -a PPC64 -v `cat ../../../LSB/target_version.PPC64` -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
+	$(TOP)/mkstandardsgmltable -a PPC64 -t Standard -m LSB_Core -v `cat $(TOP)/target_version` >standards.sgml
+	$(TOP)/mkstandardsgmltable -a PPC64 -t Reference -m LSB_Core -v `cat $(TOP)/target_version` >references.sgml
+	$(TOP)/mkstandardsgmltable -s "'ISOCXX','CXXABI-1.86','SUSV3','LSB','ISOC99'" >cxxstandards.sgml
+	$(TOP)/mklibsgmltable -a PPC64 -v `cat $(TOP)/target_version` -m "LSB_Core" >libraries.sgml
+	$(TOP)/mklibsgmltable -a PPC64 -v `cat $(TOP)/target_version` -m "LSB_Cpp" -l "'libstdcxx'" >cxxlibraries.sgml
 
 clean:
 	rm -f $(FILES)

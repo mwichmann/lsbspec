@@ -12,9 +12,9 @@ MANPAGES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libnspr4 >libnspr4.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libnss3 >libnss3.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libssl3 >libssl3.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libnspr4 >libnspr4.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libnss3 >libnss3.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libssl3 >libssl3.sgml
 
 clean:
 	rm -f $(FILES)

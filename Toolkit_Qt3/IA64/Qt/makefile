@@ -11,7 +11,7 @@ TABLES= libqt_mt.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a IA64 -v `cat ../../../LSB/target_version.IA64` -c 2 -l libqt-mt >libqt_mt.sgml
+	$(TOP)/mklibspec -a IA64 -v `cat $(TOP)/target_version` -c 2 -l libqt-mt >libqt_mt.sgml
 
 clean:
 	rm -f $(FILES)

@@ -11,9 +11,9 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a IA64 -l libz -v `cat ../../target_version.IA64` >libz.sgml
-	../../../mklibspec -a IA64 -l libncurses -v `cat ../../target_version.IA64` >libcurses.sgml
-	../../../mklibspec -a IA64 -l libutil -v `cat ../../target_version.IA64` >libutil.sgml
+	$(TOP)/mklibspec -a IA64 -l libz -v `cat $(TOP)/target_version` >libz.sgml
+	$(TOP)/mklibspec -a IA64 -l libncurses -v `cat $(TOP)/target_version` >libcurses.sgml
+	$(TOP)/mklibspec -a IA64 -l libutil -v `cat $(TOP)/target_version` >libutil.sgml
 
 clean:
 	rm -f $(FILES)

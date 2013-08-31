@@ -11,7 +11,7 @@ TABLES= xml2.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libxml2 >xml2.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libxml2 >xml2.sgml
 
 clean:
 	rm -f $(FILES)

@@ -1,4 +1,4 @@
-TOP=../../..
+TOP=../..
 
 .SUFFIXES: .sgml .cpp .m4
 
@@ -11,8 +11,8 @@ TABLES=standards.sgml libraries.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkstandardsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Toolkit_Qt3 >standards.sgml
-	../../mklibsgmltable -a All -v `cat ../../LSB/target_version.generic` -m LSB_Toolkit_Qt3 >libraries.sgml
+	$(TOP)/mkstandardsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Toolkit_Qt3 >standards.sgml
+	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Toolkit_Qt3 >libraries.sgml
 
 
 clean:

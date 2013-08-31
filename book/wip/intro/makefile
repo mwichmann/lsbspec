@@ -10,9 +10,9 @@ TABLES=standards.sgml libraries.sgml pslibs.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a All >standards.sgml
-	../../../mklibsgmltable -a All -v `cat ../../../LSB/target_version.generic` -f >libraries.sgml
-	../../../mklibsgmltable -a None -v `cat ../../../LSB/target_version.generic` >pslibs.sgml
+	$(TOP)/mkstandardsgmltable -a All >standards.sgml
+	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -f >libraries.sgml
+	$(TOP)/mklibsgmltable -a None -v `cat $(TOP)/target_version` >pslibs.sgml
 
 clean:
 	rm -f $(FILES)

@@ -36,7 +36,7 @@ TABLES= jpeg.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libjpeg >jpeg.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libjpeg >jpeg.sgml
 
 clean:
 	rm -f $(FILES)

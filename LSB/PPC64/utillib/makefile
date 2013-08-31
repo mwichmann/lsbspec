@@ -11,9 +11,9 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a PPC64 -l libz -v `cat ../../target_version.PPC64` >libz.sgml
-	../../../mklibspec -a PPC64 -l libncurses -v `cat ../../target_version.PPC64` >libcurses.sgml
-	../../../mklibspec -a PPC64 -l libutil -v `cat ../../target_version.PPC64` >libutil.sgml
+	$(TOP)/mklibspec -a PPC64 -l libz -v `cat $(TOP)/target_version` >libz.sgml
+	$(TOP)/mklibspec -a PPC64 -l libncurses -v `cat $(TOP)/target_version` >libcurses.sgml
+	$(TOP)/mklibspec -a PPC64 -l libutil -v `cat $(TOP)/target_version` >libutil.sgml
 
 clean:
 	rm -f $(FILES)

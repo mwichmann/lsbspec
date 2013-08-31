@@ -11,8 +11,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkdyntagtable -a PPC64 -s 'PPC64 ABI' -v `cat ../../../LSB/target_version.PPC64` -c 4 >dyntag.sgml
-	../../../mkdyntagtable -a PPC64 -s 'LSB' -v `cat ../../../LSB/target_version.PPC64` -d >linuxtag.sgml
+	$(TOP)/mkdyntagtable -a PPC64 -s 'PPC64 ABI' -v `cat $(TOP)/target_version` -c 4 >dyntag.sgml
+	$(TOP)/mkdyntagtable -a PPC64 -s 'LSB' -v `cat $(TOP)/target_version` -d >linuxtag.sgml
 
 clean:
 	rm -f $(FILES)

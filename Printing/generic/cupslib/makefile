@@ -37,8 +37,8 @@ $(CUPSFILES): api-cups.xml api-cupsimage.xml cupsfunc_template.sgml.in
 	./mk-from-mxmldoc
 
 gensrc: $(CUPSFILES)
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -l libcups >libcups.sgml
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -l libcupsimage >libcupsimage.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libcups >libcups.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libcupsimage >libcupsimage.sgml
 
 clean:
 	rm -f $(FILES)

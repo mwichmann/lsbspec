@@ -12,10 +12,10 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mksecttypestable -a All -s 'ABIUpdate' -t 'ELF Section Types' -v `cat ../../../LSB/target_version.generic` >elfsect.sgml >elfsecttypes.sgml
-	../../../mksecttypestable -a All -s 'LSB' -t 'Additional Section Types' -v `cat ../../../LSB/target_version.generic` >elfsect.sgml >linuxsecttypes.sgml
-	../../../mksectiontable -a All -s 'ABIUpdate' -t 'ELF Special Sections' -v `cat ../../../LSB/target_version.generic` >elfsect.sgml
-	../../../mksectiontable -a All -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/target_version.generic` >linuxsect.sgml
+	$(TOP)/mksecttypestable -a All -s 'ABIUpdate' -t 'ELF Section Types' -v `cat $(TOP)/target_version` >elfsect.sgml >elfsecttypes.sgml
+	$(TOP)/mksecttypestable -a All -s 'LSB' -t 'Additional Section Types' -v `cat $(TOP)/target_version` >elfsect.sgml >linuxsecttypes.sgml
+	$(TOP)/mksectiontable -a All -s 'ABIUpdate' -t 'ELF Special Sections' -v `cat $(TOP)/target_version` >elfsect.sgml
+	$(TOP)/mksectiontable -a All -s 'LSB' -t 'Additional Special Sections' -v `cat $(TOP)/target_version` >linuxsect.sgml
 
 clean:
 	rm -f $(FILES)

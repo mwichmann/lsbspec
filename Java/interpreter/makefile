@@ -12,8 +12,8 @@ BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../mkilmodtable  -v `cat ../../LSB/target_version.generic` -l "Java" > modules.sgml
-	#../../mkilmodlist -v `cat ../../LSB/target_version.generic` -l "Java" > modman.sgml
+	$(TOP)/mkilmodtable  -v `cat $(TOP)/target_version` -l "Java" > modules.sgml
+	#$(TOP)/mkilmodlist -v `cat $(TOP)/target_version` -l "Java" > modman.sgml
 
 clean:
 	rm -f $(FILES)

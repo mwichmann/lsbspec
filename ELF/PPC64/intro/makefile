@@ -11,8 +11,8 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a PPC64 -t Standard -m LSB_Core -v `cat ../../../LSB/target_version.PPC64` >standards.sgml
-	../../../mkstandardsgmltable -a PPC64 -t Reference -m LSB_Core -v `cat ../../../LSB/target_version.PPC64` >references.sgml
+	$(TOP)/mkstandardsgmltable -a PPC64 -t Standard -m LSB_Core -v `cat $(TOP)/target_version` >standards.sgml
+	$(TOP)/mkstandardsgmltable -a PPC64 -t Reference -m LSB_Core -v `cat $(TOP)/target_version` >references.sgml
 
 clean:
 	rm -f $(FILES)

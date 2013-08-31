@@ -11,7 +11,7 @@ TABLES= Xft.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libXft >Xft.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libXft >Xft.sgml
 
 clean:
 	rm -f $(FILES)

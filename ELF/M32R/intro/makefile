@@ -11,8 +11,8 @@ TABLES=standards.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkstandardsgmltable -a M32R -t Standard -m LSB_Core -v `cat ../../../LSB/target_version.M32R` >standards.sgml
-	../../../mkstandardsgmltable -a M32R -t Reference -m LSB_Core -v `cat ../../../LSB/target_version.M32R` >references.sgml
+	$(TOP)/mkstandardsgmltable -a M32R -t Standard -m LSB_Core -v `cat $(TOP)/target_version` >standards.sgml
+	$(TOP)/mkstandardsgmltable -a M32R -t Reference -m LSB_Core -v `cat $(TOP)/target_version` >references.sgml
 
 clean:
 	rm -f $(FILES)

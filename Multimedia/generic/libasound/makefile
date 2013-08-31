@@ -11,7 +11,7 @@ TABLES= asound.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libasound >asound.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libasound >asound.sgml
 
 clean:
 	rm -f $(FILES)

@@ -11,8 +11,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkdyntagtable -a IA64 -s 'IA64 ABI' -v `cat ../../../LSB/target_version.errata` -c 4 >dyntag_IA64.sgml
-	../../../mkdyntagtable -a IA64 -s 'LSB' -v `cat ../../../LSB/target_version.errata` -d >linuxtag_IA64.sgml
+	$(TOP)/mkdyntagtable -a IA64 -s 'IA64 ABI' -v `cat $(TOP)/target_version` -c 4 >dyntag_IA64.sgml
+	$(TOP)/mkdyntagtable -a IA64 -s 'LSB' -v `cat $(TOP)/target_version` -d >linuxtag_IA64.sgml
 
 clean:
 	rm -f $(FILES)

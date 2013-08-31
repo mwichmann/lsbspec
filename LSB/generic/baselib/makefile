@@ -128,15 +128,15 @@ all source: $(FILES) $(GENFILES)
 $(SCANFFILES): scanf_diffs.sgml
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libc >libc.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libm >libm.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libpthread >libpthread.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libdl >libdl.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libcrypt >libcrypt.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libpam >libpam.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l librt >librt.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
-	../../../mklibspec -a All -v `cat ../../target_version.generic` -c 1 -l libstdcxx -d | ../../../fixc++spec >libstdcxx.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libc >libc.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libm >libm.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libpthread >libpthread.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libdl >libdl.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libcrypt >libcrypt.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libpam >libpam.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l librt >librt.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -l libgcc_s | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 1 -l libstdcxx -d | $(TOP)/fixc++spec >libstdcxx.sgml
 
 clean:
 	rm -f $(FILES)

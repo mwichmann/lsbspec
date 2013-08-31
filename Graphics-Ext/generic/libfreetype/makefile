@@ -12,7 +12,7 @@ MANPAGES=FT_Get_X11_Font_Format.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibspec -a All -v `cat ../../../LSB/target_version.generic` -c 3 -l libfreetype >freetype.sgml
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libfreetype >freetype.sgml
 
 clean:
 	rm -f $(FILES)

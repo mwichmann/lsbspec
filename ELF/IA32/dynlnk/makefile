@@ -11,8 +11,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkdyntagtable -a IA32 -s 'IA32-ABI-4' -v `cat ../../../LSB/target_version.IA32` -c 4 >dyntag.sgml
-	../../../mkdyntagtable -a IA32 -s 'LSB' -v `cat ../../../LSB/target_version.IA32` -d >linuxtag.sgml
+	$(TOP)/mkdyntagtable -a IA32 -s 'IA32-ABI-4' -v `cat $(TOP)/target_version` -c 4 >dyntag.sgml
+	$(TOP)/mkdyntagtable -a IA32 -s 'LSB' -v `cat $(TOP)/target_version` -d >linuxtag.sgml
 
 clean:
 	rm -f $(FILES)

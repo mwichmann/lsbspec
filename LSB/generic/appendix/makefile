@@ -11,7 +11,7 @@ TABLES=corelist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	$(TOP)/mklibapnd -a All -m LSB_Core -v `cat $(TOP)/LSB/target_version.generic` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >corelist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Core -v `cat $(TOP)/target_version` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >corelist.sgml
 
 clean:
 	rm -f $(FILES)

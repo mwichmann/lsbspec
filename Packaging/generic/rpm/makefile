@@ -16,16 +16,16 @@ TABLES=privtags.sgml sigtags.sgml hdrtags.sgml pkgtags.sgml insttags.sgml \
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g Private -t "Header Private Tag Values" >privtags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g Signature -t "Signature Tag Values" >sigtags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g SigDigest -t "Signature Digest Tag Values" >sigdigtags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g SigSigning -t "Signature Signing Tag Values" >sigsigntags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g Header -t "Header Tag Values" >hdrtags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g PackageInfo -t "Package Info Tag Values" >pkgtags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g InstallInfo -t "Installation Tag Values" >insttags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g FileDetails -t "File Info Tag Values" >filetags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g Dependencies -t "Package Dependency Tag Values" >deptags.sgml
-	../../../mkrpmtagtable -v `cat ../../../LSB/target_version.generic` -g Other -t "Other Tag Values" >othtags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g Private -t "Header Private Tag Values" >privtags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g Signature -t "Signature Tag Values" >sigtags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g SigDigest -t "Signature Digest Tag Values" >sigdigtags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g SigSigning -t "Signature Signing Tag Values" >sigsigntags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g Header -t "Header Tag Values" >hdrtags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g PackageInfo -t "Package Info Tag Values" >pkgtags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g InstallInfo -t "Installation Tag Values" >insttags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g FileDetails -t "File Info Tag Values" >filetags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g Dependencies -t "Package Dependency Tag Values" >deptags.sgml
+	$(TOP)/mkrpmtagtable -v `cat $(TOP)/target_version` -g Other -t "Other Tag Values" >othtags.sgml
 
 clean:
 	rm -f $(FILES)
