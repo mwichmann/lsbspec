@@ -57,8 +57,12 @@ underlying specification.
 <ENTRY><indexterm><primary>pango_fc_decoder_get_glyph</primary></indexterm>pango_fc_decoder_get_glyph <LINK LINKEND="REFSTD.libpangoft2.1.0.2">[Pango 1.10]</LINK></ENTRY>
 </ROW>
 <ROW>
+<ENTRY><indexterm><primary>pango_fc_decoder_get_type</primary></indexterm>pango_fc_decoder_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.0">[Gobject 2.8]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pango_fc_decoder_get_type</primary></indexterm>pango_fc_decoder_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.1">[GObject 2.12]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>pango_fc_font_description_from_pattern</primary></indexterm>pango_fc_font_description_from_pattern <LINK LINKEND="REFSTD.libpangoft2.1.0.2">[Pango 1.10]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pango_fc_font_get_type</primary></indexterm>pango_fc_font_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.0">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>pango_fc_font_get_type</primary></indexterm>pango_fc_font_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.1">[GObject 2.12]</LINK></ENTRY>
@@ -66,11 +70,15 @@ underlying specification.
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>pango_fc_font_map_add_decoder_find_func</primary></indexterm>pango_fc_font_map_add_decoder_find_func <LINK LINKEND="REFSTD.libpangoft2.1.0.2">[Pango 1.10]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pango_fc_font_map_get_type</primary></indexterm>pango_fc_font_map_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.1">[GObject 2.12]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pango_fc_font_map_get_type</primary></indexterm>pango_fc_font_map_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.0">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
+<ENTRY><indexterm><primary>pango_fc_font_map_get_type</primary></indexterm>pango_fc_font_map_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.1">[GObject 2.12]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pango_fc_font_unlock_face</primary></indexterm>pango_fc_font_unlock_face <LINK LINKEND="REFSTD.libpangoft2.1.0.2">[Pango 1.10]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>pango_ft2_font_map_create_context</primary></indexterm>pango_ft2_font_map_create_context <LINK LINKEND="REFSTD.libpangoft2.1.0.2">[Pango 1.10]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pango_ft2_font_map_get_type</primary></indexterm>pango_ft2_font_map_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.0">[Gobject 2.8]</LINK></ENTRY>
 </ROW>
 <ROW>
 <ENTRY><indexterm><primary>pango_ft2_font_map_get_type</primary></indexterm>pango_ft2_font_map_get_type <LINK LINKEND="REFSTD.libpangoft2.1.0.1">[GObject 2.12]</LINK></ENTRY>
@@ -148,8 +156,10 @@ typedef struct _PangoFcDecoder {
 } PangoFcDecoder;
 typedef struct _PangoFcDecoderClass {
     GObjectClass parent_class;
-    FcCharSet *(*get_charset) (PangoFcDecoder *, PangoFcFont *);
-     PangoGlyph(*get_glyph) (PangoFcDecoder *, PangoFcFont *, guint32);
+    FcCharSet *(*get_charset) (PangoFcDecoder * decoder,
+			       PangoFcFont * fcfont);
+     PangoGlyph(*get_glyph) (PangoFcDecoder * decoder,
+			     PangoFcFont * fcfont, guint32 wc);
     void (*_pango_reserved1) (void);
     void (*_pango_reserved2) (void);
     void (*_pango_reserved3) (void);
@@ -177,7 +187,8 @@ extern GType pango_fc_decoder_get_type(void);
 #define PANGO_TYPE_FC_FONT_MAP	(pango_fc_font_map_get_type ())
 
 typedef struct _PangoFcFontMap PangoFcFontMap;
-typedef PangoFcDecoder *(*PangoFcDecoderFindFunc) (FcPattern *, gpointer);
+typedef PangoFcDecoder *(*PangoFcDecoderFindFunc) (FcPattern * pattern,
+						   gpointer user_data);
 typedef struct _PangoFcFontMapClass PangoFcFontMapClass;
 extern PangoFontDescription
     *pango_fc_font_description_from_pattern(FcPattern * pattern,
@@ -212,7 +223,8 @@ extern GType pango_fc_font_map_get_type(void);
 #define PANGO_TYPE_FT2_FONT_MAP	(pango_ft2_font_map_get_type ())
 
 typedef struct _PangoFT2FontMap PangoFT2FontMap;
-typedef void (*PangoFT2SubstituteFunc) (FcPattern *, gpointer);
+typedef void (*PangoFT2SubstituteFunc) (FcPattern * pattern,
+					gpointer data);
 extern GType pango_fc_font_get_type(void);
 extern FT_Face pango_fc_font_lock_face(PangoFcFont * font);
 extern void pango_fc_font_unlock_face(PangoFcFont * font);
@@ -231,7 +243,7 @@ extern void pango_ft2_font_map_set_resolution(PangoFT2FontMap * fontmap,
 extern void pango_ft2_font_map_substitute_changed(PangoFT2FontMap *
 						  fontmap);
 extern void pango_ft2_render(FT_Bitmap * bitmap, PangoFont * font,
-			     PangoGlyphString * glyphs, int x, int y);
+			     PangoGlyphString * glyphs, gint x, gint y);
 extern void pango_ft2_render_layout(FT_Bitmap * bitmap,
 				    PangoLayout * layout, int x, int y);
 extern void pango_ft2_render_layout_line(FT_Bitmap * bitmap,

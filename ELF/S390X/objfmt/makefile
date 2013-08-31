@@ -14,8 +14,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mksecttypestable -a S390X -s 'S390X ABI' -t 'ELF Section Types' >elfsecttypes.sgml
-	../../../mksecttypestable -a S390X -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
+	../../../mksecttypestable -a S390X -s 'S390X ABI' -t 'ELF Section Types' -v `cat ../../../LSB/target_version.generic` >elfsecttypes.sgml
+	../../../mksecttypestable -a S390X -s 'LSB' -t 'Additional Section Types' -v `cat ../../../LSB/target_version.generic` >linuxsecttypes.sgml
 	../../../mksectiontable -a S390X -s 'S390X ABI' -t 'ELF Special Sections' -v `cat ../../../LSB/target_version.S390X` >elfsect.sgml
 	../../../mksectiontable -a S390X -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/target_version.S390X` >linuxsect.sgml
 

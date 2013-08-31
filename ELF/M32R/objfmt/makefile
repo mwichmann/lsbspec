@@ -14,8 +14,8 @@ TABLES=
 all: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mksecttypestable -a M32R -s 'M32R ABI' -t 'ELF Section Types' >elfsecttypes.sgml
-	../../../mksecttypestable -a M32R -s 'LSB' -t 'Additional Section Types' >linuxsecttypes.sgml
+	../../../mksecttypestable -a M32R -s 'M32R ABI' -t 'ELF Section Types' -v `cat ../../../LSB/target_version.generic` >elfsecttypes.sgml
+	../../../mksecttypestable -a M32R -s 'LSB' -t 'Additional Section Types' -v `cat ../../../LSB/target_version.generic` >linuxsecttypes.sgml
 	../../../mksectiontable -a M32R -s 'M32R ABI' -t 'ELF Special Sections' -v `cat ../../../LSB/target_version.M32R` >elfsect.sgml
 	../../../mksectiontable -a M32R -s 'LSB' -t 'Additional Special Sections' -v `cat ../../../LSB/target_version.M32R` >linuxsect.sgml
 

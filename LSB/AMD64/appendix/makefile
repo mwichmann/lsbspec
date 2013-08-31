@@ -1,11 +1,9 @@
+TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=liblist.sgml
-TABLES=
-
-.cpp.sgml:
-	cpp -I../../../../src/include $*.cpp | grep -v '^# ' >$@
+TABLES=corelist.sgml
 
 .m4.sgml:
 	m4 -P $*.m4 >$@
@@ -13,7 +11,7 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	../../../mklibapnd -a x86-64 -v `cat ../../target_version.AMD64` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >liblist.sgml
+	$(TOP)/mklibapnd -a x86-64 -m LSB_Core -v `cat $(TOP)/LSB/target_version.AMD64` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >corelist.sgml
 
 clean:
 	rm -f $(FILES)

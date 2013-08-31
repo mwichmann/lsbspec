@@ -3633,12 +3633,12 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 # define G_END_DECLS
 #endif
 #define G_GINT32_MODIFIER	""
-#define G_GNUC_FUNCTION	""
-#define G_GNUC_PRETTY_FUNCTION	""
+#define G_GNUC_FUNCTION	""	/* DEPRECATED */
+#define G_GNUC_PRETTY_FUNCTION	""	/* DEPRECATED */
 #define G_OPTION_REMAINING	""
 #define G_OS_UNIX
 #define G_THREADS_ENABLED
-#define G_THREADS_IMPL_POSIX
+#define G_THREADS_IMPL_POSIX	/* DEPRECATED */
 #define G_WIN32_DLLMAIN_FOR_DLL_NAME(static,dll_name)
 #define G_CSET_LATINC	 \
 	"\300\301\302\303\304\305\306" \
@@ -4008,7 +4008,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define G_CSET_A_2_Z	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define G_CSET_a_2_z	"abcdefghijklmnopqrstuvwxyz"
 #define g_alloca(size)	alloca (size)
-#define G_CONST_RETURN	const
+#define G_CONST_RETURN	const	/* DEPRECATED */
 #define G_MAXDOUBLE	DBL_MAX
 #define G_MINDOUBLE	DBL_MIN
 #define GLIB_VAR	extern
@@ -4200,26 +4200,13 @@ typedef struct _GHashTable GHashTable;
 typedef const void *gconstpointer;
 typedef guint(*GHashFunc) (gconstpointer);
 typedef gboolean(*GEqualFunc) (gconstpointer, gconstpointer);
-typedef struct _GStaticMutex {
-    struct _GMutex *runtime_mutex;
-    union {
-	char pad[GLIB_LSB_PADDING_SIZE];
-	double dummy_double;
-	void *dummy_pointer;
-	long int dummy_long;
-    } static_mutex;
-} GStaticMutex;
+typedef struct _GMutex GMutex;
 typedef union _GSystemThread {
     char data[GLIB_LSB_DATA_SIZE];
     double dummy_double;
     void *dummy_pointer;
     long int dummy_long;
 } GSystemThread;
-typedef struct _GStaticRecMutex {
-    GStaticMutex mutex;
-    guint depth;
-    GSystemThread owner;
-} GStaticRecMutex;
 typedef struct _GMarkupParseContext GMarkupParseContext;
 typedef struct _GData GData;
 typedef enum {
@@ -4532,15 +4519,6 @@ typedef enum {
 } GUnicodeBreakType;
 typedef struct _GStringChunk GStringChunk;
 typedef struct _GCond GCond;
-typedef struct _GStaticRWLock {
-    GStaticMutex mutex;
-    GCond *read_cond;
-    GCond *write_cond;
-    guint read_counter;
-    gboolean have_writer;
-    guint want_to_read;
-    guint want_to_write;
-} GStaticRWLock;
 typedef void (*GChildWatchFunc) (GPid, gint, gpointer);
 typedef struct _GTimeVal {
     glong tv_sec;
@@ -4608,7 +4586,15 @@ typedef enum {
     G_NORMALIZE_ALL_COMPOSE = 3,
     G_NORMALIZE_NFKC = 3
 } GNormalizeMode;
-typedef struct _GMutex GMutex;
+typedef struct _GStaticMutex {
+    struct _GMutex *runtime_mutex;
+    union {
+	char pad[GLIB_LSB_PADDING_SIZE];
+	double dummy_double;
+	void *dummy_pointer;
+	long int dummy_long;
+    } static_mutex;
+} GStaticMutex;
 typedef struct _GStaticPrivate {
     guint index;
 } GStaticPrivate;
@@ -4899,6 +4885,9 @@ typedef enum {
     G_BOOKMARK_FILE_ERROR_FILE_NOT_FOUND
 } GBookmarkFileError;
 typedef struct _GBookmarkFile GBookmarkFile;
+
+typedef struct _GStaticRecMutex GStaticRecMutex;
+typedef struct _GStaticRWLock GStaticRWLock;
 extern void g_allocator_free(GAllocator * allocator);
 extern GAllocator *g_allocator_new(const gchar * name, guint n_preallocs);
 extern GArray *g_array_append_vals(GArray * array, gconstpointer data,
@@ -4973,19 +4962,20 @@ extern gpointer g_async_queue_try_pop_unlocked(GAsyncQueue * queue);
 extern void g_async_queue_unlock(GAsyncQueue * queue);
 extern void g_async_queue_unref(GAsyncQueue * queue);
 extern void g_atexit(GVoidFunc func);
-extern void g_atomic_int_add(gint * volatile atomic, gint val);
-extern gboolean g_atomic_int_compare_and_exchange(gint * volatile atomic,
+extern void g_atomic_int_add(volatile gint * atomic, gint val);
+extern gboolean g_atomic_int_compare_and_exchange(volatile gint * atomic,
 						  gint oldval,
 						  gint newval);
-extern gint g_atomic_int_exchange_and_add(gint * volatile atomic,
+extern gint g_atomic_int_exchange_and_add(volatile gint * atomic,
 					  gint val);
-extern gboolean g_atomic_pointer_compare_and_exchange(gpointer *
-						      volatile atomic,
+extern gboolean g_atomic_pointer_compare_and_exchange(volatile void
+						      *atomic,
 						      gpointer oldval,
 						      gpointer newval);
-extern guchar *g_base64_decode(const char *text, gsize * out_len);
-extern gsize g_base64_decode_step(const char *in, gsize len, guchar * out,
-				  gint * state, guint * save);
+extern guchar *g_base64_decode(const gchar * text, gsize * out_len);
+extern gsize g_base64_decode_step(const gchar * in, gsize len,
+				  guchar * out, gint * state,
+				  guint * save);
 extern gchar *g_base64_encode(const unsigned char *data, gsize len);
 extern gsize g_base64_encode_close(gboolean break_lines, gchar * out,
 				   gint * state, gint * save);
@@ -6414,7 +6404,7 @@ extern gchar *g_utf8_collate_key(const gchar * str, gssize len);
 extern gchar *g_utf8_collate_key_for_filename(const gchar * str,
 					      gssize len);
 extern gchar *g_utf8_find_next_char(const gchar * p, const gchar * end);
-extern gchar *g_utf8_find_prev_char(const char *str, const char *p);
+extern gchar *g_utf8_find_prev_char(const gchar * str, const gchar * p);
 extern gunichar g_utf8_get_char(const gchar * p);
 extern gunichar g_utf8_get_char_validated(const gchar * p, gssize max_len);
 extern gchar *g_utf8_normalize(const gchar * str, gssize len,
@@ -6424,11 +6414,11 @@ extern glong g_utf8_pointer_to_offset(const gchar * str,
 				      const gchar * pos);
 extern gchar *g_utf8_prev_char(const gchar * p);
 extern const gchar *const g_utf8_skip;
-extern gchar *g_utf8_strchr(const char *p, gssize len, gunichar c);
+extern gchar *g_utf8_strchr(const gchar * p, gssize len, gunichar c);
 extern gchar *g_utf8_strdown(const gchar * str, gssize len);
 extern glong g_utf8_strlen(const gchar * p, gssize max);
 extern gchar *g_utf8_strncpy(gchar * dest, const gchar * src, gsize n);
-extern gchar *g_utf8_strrchr(const char *p, gssize len, gunichar c);
+extern gchar *g_utf8_strrchr(const gchar * p, gssize len, gunichar c);
 extern gchar *g_utf8_strreverse(const gchar * str, gssize len);
 extern gchar *g_utf8_strup(const gchar * str, gssize len);
 extern gunichar *g_utf8_to_ucs4(const gchar * str, glong len,
@@ -6439,7 +6429,7 @@ extern gunichar *g_utf8_to_ucs4_fast(const gchar * str, glong len,
 extern gunichar2 *g_utf8_to_utf16(const gchar * str, glong len,
 				  glong * items_read,
 				  glong * items_written, GError * *error);
-extern gboolean g_utf8_validate(const char *str, gssize max_len,
+extern gboolean g_utf8_validate(const gchar * str, gssize max_len,
 				const gchar * *end);
 extern const guint glib_binary_age;
 extern const gchar *glib_check_version(guint required_major,

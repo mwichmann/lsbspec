@@ -1235,8 +1235,6 @@ typedef struct _AtkValueIface {
     void (*get_maximum_value) (AtkValue *, GValue *);
     void (*get_minimum_value) (AtkValue *, GValue *);
      gboolean(*set_current_value) (AtkValue *, const GValue *);
-    AtkFunction pad1;
-    AtkFunction pad2;
 } AtkValueIface;
 typedef struct _AtkRelationClass {
     GObjectClass parent;
@@ -1311,7 +1309,7 @@ typedef struct _AtkNoOpObjectClass {
 typedef struct _AtkImageIface {
     GTypeInterface parent;
     void (*get_image_position) (AtkImage *, gint *, gint *, AtkCoordType);
-    const gchar *(*get_image_description) (AtkImage *);
+    const gchar *(*get_image_description) (AtkImage *, AtkImage *);
     void (*get_image_size) (AtkImage *, gint *, gint *);
      gboolean(*set_image_description) (AtkImage *, const gchar *);
     AtkFunction pad1;
@@ -1556,11 +1554,14 @@ extern GType atk_registry_get_factory_type(AtkRegistry * registry,
 extern GType atk_registry_get_type(void);
 extern void atk_registry_set_factory_type(AtkRegistry * registry,
 					  GType type, GType factory_type);
-extern void atk_relation_add_target(AtkRelation *, AtkObject *);
-extern AtkRelationType atk_relation_get_relation_type(AtkRelation *);
-extern GPtrArray *atk_relation_get_target(AtkRelation *);
+extern void atk_relation_add_target(AtkRelation * relation,
+				    AtkObject * target);
+extern AtkRelationType atk_relation_get_relation_type(AtkRelation *
+						      relation);
+extern GPtrArray *atk_relation_get_target(AtkRelation * relation);
 extern GType atk_relation_get_type(void);
-extern AtkRelation *atk_relation_new(AtkObject * *, gint, AtkRelationType);
+extern AtkRelation *atk_relation_new(AtkObject * *targets, gint n_targets,
+				     AtkRelationType relationship);
 extern void atk_relation_set_add(AtkRelationSet * set,
 				 AtkRelation * relation);
 extern void atk_relation_set_add_relation_by_type(AtkRelationSet * set,
@@ -1580,9 +1581,9 @@ extern GType atk_relation_set_get_type(void);
 extern AtkRelationSet *atk_relation_set_new(void);
 extern void atk_relation_set_remove(AtkRelationSet * set,
 				    AtkRelation * relation);
-extern AtkRelationType atk_relation_type_for_name(const gchar *);
-extern const gchar *atk_relation_type_get_name(AtkRelationType);
-extern AtkRelationType atk_relation_type_register(const gchar *);
+extern AtkRelationType atk_relation_type_for_name(const gchar * name);
+extern const gchar *atk_relation_type_get_name(AtkRelationType type);
+extern AtkRelationType atk_relation_type_register(const gchar * name);
 extern void atk_remove_focus_tracker(guint tracker_id);
 extern void atk_remove_global_event_listener(guint listener_id);
 extern void atk_remove_key_event_listener(guint listener_id);

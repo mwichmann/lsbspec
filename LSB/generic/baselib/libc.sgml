@@ -3833,12 +3833,21 @@ struct flock64 {
 
 #define F_DUPFD	0
 #define F_RDLCK	0
+#ifndef SEEK_SET
+#define SEEK_SET	0
+#endif
 #define F_GETFD	1
 #define F_WRLCK	1
+#ifndef SEEK_CUR
+#define SEEK_CUR	1
+#endif
 #define F_SETSIG	10
 #define F_GETSIG	11
 #define F_SETFD	2
 #define F_UNLCK	2
+#ifndef SEEK_END
+#define SEEK_END	2
+#endif
 #define F_GETFL	3
 #define F_SETFL	4
 #define F_GETLK	5
@@ -4585,6 +4594,20 @@ extern char *setlocale(int __category, const char *__locale);
 extern locale_t uselocale(locale_t __dataset);
 </SCREEN>
 </SECT2>
+<SECT2>
+<TITLE>lsb/time.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+struct timeval {
+    time_t tv_sec;
+    suseconds_t tv_usec;
+};
+</SCREEN>
+</SECT2>
+<!-- missing header file All/4.1/lsb/types.h -->
+<!-- missing header file All/4.1/lsb/wchar.h -->
 <!-- empty header file All/malloc.h -->
 <SECT2>
 <TITLE>monetary.h</TITLE>
@@ -6507,6 +6530,8 @@ typedef struct sigevent {
 #define si_fd	_sifields._sigpoll._fd
 #define si_timer1	_sifields._timer._timer1
 #define si_timer2	_sifields._timer._timer2
+#define sigev_notify_attributes	_sigev_un._sigev_thread._attribute
+#define sigev_notify_function	_sigev_un._sigev_thread._function
 
 typedef struct siginfo {
     int si_signo;		/* Signal number. */
@@ -6838,7 +6863,16 @@ typedef unsigned char uint_fast8_t;
 
 #define EOF	(-1)
 #define P_tmpdir	"/tmp"
+#ifndef SEEK_SET
+#define SEEK_SET	0
+#endif
+#ifndef SEEK_CUR
+#define SEEK_CUR	1
+#endif
 #define FOPEN_MAX	16
+#ifndef SEEK_END
+#define SEEK_END	2
+#endif
 #define L_tmpnam	20
 #define TMP_MAX	238328
 #define FILENAME_MAX	4096
@@ -6944,6 +6978,7 @@ extern int putchar_unlocked(int __c);
 extern int puts(const char *__s);
 extern int putw(int __w, FILE * __stream);
 extern int remove(const char *__filename);
+extern int rename(const char *__old, const char *__new);
 extern int renameat(int __oldfd, const char *__old, int __newfd,
 		    const char *__new);
 extern void rewind(FILE * __stream);
@@ -7082,6 +7117,7 @@ extern int mblen(const char *__s, size_t __n);
 extern size_t mbstowcs(wchar_t * __pwcs, const char *__s, size_t __n);
 extern int mbtowc(wchar_t * __pwc, const char *__s, size_t __n);
 extern char *mkdtemp(char *__template);
+extern int mkstemp(char *__template);
 extern int mkstemp64(char *__template);
 extern char *mktemp(char *__template);
 extern long int mrand48(void);
@@ -7549,6 +7585,8 @@ extern int setrlimit64(__rlimit_resource_t __resource,
 extern int pselect(int __nfds, fd_set * __readfds, fd_set * __writefds,
 		   fd_set * __exceptfds, const struct timespec *__timeout,
 		   const sigset_t * __sigmask);
+extern int select(int __nfds, fd_set * __readfds, fd_set * __writefds,
+		  fd_set * __exceptfds, struct timeval *__timeout);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -7919,16 +7957,6 @@ struct timezone {
 
 typedef int __itimer_which_t;
 
-struct timespec {
-    time_t tv_sec;
-    long int tv_nsec;
-};
-
-struct timeval {
-    time_t tv_sec;
-    suseconds_t tv_usec;
-};
-
 struct itimerval {
     struct timeval it_interval;
     struct timeval it_value;
@@ -8002,6 +8030,7 @@ typedef unsigned long long int u_int64_t;
 typedef unsigned int uid_t;
 typedef int pid_t;
 typedef long int off_t;
+typedef long long int off64_t;
 typedef int key_t;
 typedef long int suseconds_t;
 typedef unsigned int u_int;
@@ -8366,11 +8395,16 @@ struct tm {
     long int tm_gmtoff;
     char *tm_zone;
 };
+
+struct timespec {
+    time_t tv_sec;
+    long int tv_nsec;
+};
+
 struct itimerspec {
     struct timespec it_interval;
     struct timespec it_value;
 };
-
 extern int __daylight;
 extern long int __timezone;
 extern char *__tzname[];
@@ -8447,14 +8481,18 @@ extern long int ulimit(int __cmd, ...);
 </PARA>
 <SCREEN>
 
+#ifndef SEEK_SET
 #define SEEK_SET	0
+#endif
 #define STDIN_FILENO	0
+#ifndef SEEK_CUR
 #define SEEK_CUR	1
+#endif
 #define STDOUT_FILENO	1
+#ifndef SEEK_END
 #define SEEK_END	2
+#endif
 #define STDERR_FILENO	2
-
-typedef long long int off64_t;
 
 #define F_OK	0
 #define X_OK	1
@@ -8810,7 +8848,6 @@ extern int lockf(int __fd, int __cmd, off_t __len);
 extern int lockf64(int __fd, int __cmd, off64_t __len);
 extern off_t lseek(int __fd, off_t __offset, int __whence);
 extern loff_t lseek64(int __fd, loff_t __offset, int __whence);
-extern int mkstemp(char *__template);
 extern int nice(int __inc);
 extern char *optarg;
 extern int opterr;
@@ -8831,11 +8868,8 @@ extern ssize_t read(int __fd, void *__buf, size_t __nbytes);
 extern ssize_t readlink(const char *__path, char *__buf, size_t __len);
 extern ssize_t readlinkat(int __fd, const char *__path, char *__buf,
 			  size_t __len);
-extern int rename(const char *__old, const char *__new);
 extern int rmdir(const char *__path);
 extern void *sbrk(intptr_t __delta);
-extern int select(int __nfds, fd_set * __readfds, fd_set * __writefds,
-		  fd_set * __exceptfds, struct timeval *__timeout);
 extern int setegid(gid_t __gid);
 extern int seteuid(uid_t __uid);
 extern int setgid(gid_t __gid);
