@@ -1,3 +1,5 @@
+TOP=../../..
+
 .SUFFIXES: .sgml .m4
 
 MANPAGES= forkpty.sgml login.sgml login_tty.sgml logout.sgml \

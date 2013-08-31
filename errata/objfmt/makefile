@@ -1,5 +1,6 @@
+TOP=../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES  = objfmt.sgml 
 TABLES = ia64sect.sgml ppc32sect.sgml

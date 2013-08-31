@@ -1,11 +1,9 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=Qt.sgml
 TABLES= libQtCore.sgml libQtGui.sgml libQtSql.sgml libQtOpenGL.sgml libQtXml.sgml libQtSvg.sgml libQtNetwork.sgml
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@

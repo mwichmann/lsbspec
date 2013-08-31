@@ -1,3 +1,4 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .cpp .m4
 
@@ -28,9 +29,6 @@ jpeg_write_tables.sgml
 
 FILES=libjpeg.sgml
 TABLES= jpeg.sgml 
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@

@@ -1,3 +1,4 @@
+TOP=../../..
 #
 #	Linux Standard Base, http://www.linuxbase.org/
 #	George Kraft IV, gk4@us.ibm.com, 3/9/2000
@@ -10,9 +11,6 @@
 FILES=command.sgml
 TABLES= cmdsutils.sgml cmdsbuiltin.sgml cmdman.sgml
 BASEFILES=$(filter-out $(TABLES) $(FILES), $(shell ls *.sgml))
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@

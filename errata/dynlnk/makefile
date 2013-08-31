@@ -1,3 +1,4 @@
+TOP=../..
 
 .SUFFIXES: .sgml .cpp .m4
 

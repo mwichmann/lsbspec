@@ -1,12 +1,10 @@
+TOP=../../..
 
 .SUFFIXES: .sgml .cpp .m4
 
 FILES=nss.sgml
 TABLES= libnspr4.sgml libnss3.sgml libssl3.sgml
 MANPAGES=
-
-.cpp.sgml:
-	cpp -I../../../code/headers $*.cpp | grep -v '^# ' >$@
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
