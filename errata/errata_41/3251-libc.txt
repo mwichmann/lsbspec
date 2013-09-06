@@ -1,0 +1,196 @@
+Specification: LSB Core generic
+Specification: LSB Core IA32 IA64 PPC32 PPC64 S390 S390X AMD64
+Edition of Specification: 4.1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=3251
+
+Rationale: the getlimit() and setrlimit() functions have additional
+behaviors beyond that specified in POSIX 1003.1-2001. Additional resource
+limits and error conditions are defined, but were not described in this
+specification.
+
+In LSB Core Generic:
+
+In III. Base Libraries
+
+   Table of Contents
+   12. Base Libraries
+	12.5. Interface Definitions for libc
+
+Add:
+
+      getrlimit, setrlimit -- get resource consumption limits
+
+
+
+In 12.3.3. System Calls
+12.3.3.1. Interfaces for System Calls
+   Table 12-5. libc - System Calls Function Interfaces
+
+Change:
+
+   getrlimit(GLIBC_2.2.5) [SUSv3]
+
+To:
+
+   getrlimit(GLIBC_2.2.5) [LSB]
+
+Change:
+
+   [SUSv3] setrlimit(GLIBC_2.2.5) [SUSv3]
+
+To:
+
+   [SUSv3] setrlimit(GLIBC_2.2.5) [LSB]
+
+===
+
+In 12.5. Interface Definitions for libc
+
+   Table of Contents
+
+Add:
+
+   getrlimit, setrlimit -- get resource consumption limits
+
+
+
+In body
+
+Add:
+
+getrlimit, setrlimit
+
+Name
+
+   getrlimit, setrlimit -- get resource consumption limits
+
+Synopsis
+
+   #include <sys/resource.h>
+
+   int getrlimit(__rlimit_resource_t __resource, struct rlimit *
+   __rlimits);
+
+   int setrlimit(__rlimit_resource_t __resource, const struct
+   rlimit * __rlimits);
+
+Description
+
+   getrlimit() and setrlimit() are as specified in POSIX
+   1003.1-2008 (ISO/IEC 9945-2009), but with differences as listed
+   below.
+
+Extra Resources
+
+   These additional resources extend the list in POSIX 1003.1-2008
+   (ISO/IEC 9945-2009).
+
+   - RLIMIT_NPROC
+
+   The maximum number of processes (or, more precisely on Linux,
+   threads) that can be created for the real user ID of the
+   calling process. Upon encountering this limit, fork() shall
+   fail with the error EAGAIN.
+   - RLIMIT_MEMLOCK
+
+   The maximum number of bytes of memory that may be locked into
+   RAM. In effect this limit is rounded down to the nearest
+   multiple of the system page size. This limit affects mlock()
+   and mlockall(), the mmap() MAP_LOCKED operation and the
+   shmctl() SHM_LOCK operation. The shmctl() SHM_LOCK locks are
+   accounted for separately from the per-process memory locks
+   established by mlock(), mlockall(), and mmap() MAP_LOCKED. In
+   the former case, the limit sets a maximum on the total bytes in
+   shared memory segments (see shmget()) that may be locked by the
+   real user ID of the calling process. A process can lock bytes
+   up to this limit in each of these two categories.
+   - RLIMIT_LOCKS
+
+   A limit on the combined number of flock() locks and fcntl()
+   leases that this process may establish. This limit is obsolete
+   and should not be used; support depends heavily on the version
+   of the operating system kernel.
+   - RLIMIT_RSS
+
+   Specifies the limit (in pages) of the process's resident set.
+   This limit is obsolete and should not be used; support depends
+   heavily on the version of the operating system kernel. It
+   affects only calls to madvise() specifying MADV_WILLNEED.
+
+Extra Errors
+
+   These additional error codes extend the list in POSIX
+   1003.1-2008 (ISO/IEC 9945-2009).
+
+   - EFAULT
+
+   A pointer argument points to a location outside the accessible
+   address space.
+
+
+
+In A.1. libc
+   Table A-1. libc Function Interfaces
+
+Change:
+
+   getrlimit(GLIBC_2.2.5)[SUSv3]
+
+To:
+
+   getrlimit(GLIBC_2.2.5)[LSB]
+
+Change:
+
+   setrlimit(GLIBC_2.2.5)[SUSv3]
+
+To:
+
+   setrlimit(GLIBC_2.2.5)[LSB]
+
+=== 
+
+In LSB Core IA32 IA64 PPC32 PPC64 S390 S390X AMD64:
+
+In 10.2.3. System Calls
+10.2.3.1. Interfaces for System Calls
+   Table 10-4. libc - System Calls Function Interfaces
+
+Change:
+
+   getrlimit(GLIBC_2.2.5) [SUSv3]
+
+To:
+
+   getrlimit(GLIBC_2.2.5) [LSB]
+
+Change:
+
+   [SUSv3] setrlimit(GLIBC_2.2.5) [SUSv3]
+
+To:
+
+   [SUSv3] setrlimit(GLIBC_2.2.5) [LSB]
+
+
+
+In A.1. libc
+   Table A-1. libc Function Interfaces
+
+Change:
+
+   getrlimit(GLIBC_2.2.5)[SUSv3]
+
+To:
+
+   getrlimit(GLIBC_2.2.5)[LSB]
+
+Change:
+
+   setrlimit(GLIBC_2.2.5)[SUSv3]
+
+To:
+
+   setrlimit(GLIBC_2.2.5)[LSB]
