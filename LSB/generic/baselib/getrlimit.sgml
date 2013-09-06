@@ -1,0 +1,142 @@
+<refentry id="baselib-getrlimit-1">
+
+<refmeta>
+<refentrytitle>getrlimit, setrlimit</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>getrlimit, setrlimit</refname>
+<refpurpose>get resource consumption limits</refpurpose>
+<indexterm id="ix-baselib-getrlimit-1">
+	<primary>getrlimit</primary></indexterm>
+<indexterm id="ix-baselib-setrlimit-1">
+	<primary>setrlimit</primary></indexterm>
+</refnamediv>
+
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;sys/resource.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>int
+<function>getrlimit</function>
+</funcdef>
+<paramdef>__rlimit_resource_t
+<parameter>__resource</parameter>
+</paramdef>
+<paramdef>struct rlimit *
+<parameter>__rlimits</parameter>
+</paramdef>
+</funcprototype>
+<funcprototype>
+<funcdef>int
+<function>setrlimit</function>
+</funcdef>
+<paramdef>__rlimit_resource_t
+<parameter>__resource</parameter>
+</paramdef>
+<paramdef>const struct rlimit *
+<parameter>__rlimits</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Description</title>
+<para>
+<function>getrlimit</function> and <function>setrlimit</function>
+are as specified in <xref LINKEND=STD.SUSv4>, 
+but with differences as listed below. 
+</para>
+<refsect2 id='extra.resources'><title>Extra Resources</title>
+<para>These additional resources extend the list in <xref LINKEND=STD.SUSv4>.
+</para>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><emphasis remap='B'></emphasis> - <emphasis remap='B'>RLIMIT_NPROC</emphasis></term>
+  <listitem>
+<para> The maximum number of processes (or, more precisely on Linux,
+threads) that can be created for the real user ID of the calling
+process. Upon encountering this limit, <function>fork</function>
+shall fail with the error <errorcode>EAGAIN</errorcode>. </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'></emphasis> - <emphasis remap='B'>RLIMIT_MEMLOCK</emphasis></term>
+  <listitem>
+<para> The maximum number of bytes of memory that may be
+locked into RAM.  In effect this limit is rounded down to the
+nearest multiple of the system page size. This limit affects
+<function>mlock</function> and <function>mlockall</function>, the
+<function>mmap</function> <constant>MAP_LOCKED</constant> operation and
+the <function>shmctl</function> <constant>SHM_LOCK</constant> operation.
+The <function>shmctl</function> <constant>SHM_LOCK</constant> locks are
+accounted for separately from the per-process memory locks established
+by <function>mlock</function>, <function>mlockall</function>, and
+<function>mmap</function> <constant>MAP_LOCKED</constant>. In the former
+case, the limit sets a maximum on the total bytes in shared memory
+segments (see <function>shmget</function>) that may be locked by the
+real user ID of the calling process.  A process can lock bytes up to
+this limit in each of these two categories.  </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'></emphasis> - <emphasis remap='B'>RLIMIT_LOCKS</emphasis></term>
+  <listitem>
+<para> A limit on the combined number of <function>flock</function> locks 
+and <function>fcntl</function> leases that this process may establish.
+This limit is obsolete and should not be used; support depends heavily
+on the version of the operating system kernel. </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'></emphasis> - <emphasis remap='B'>RLIMIT_RSS</emphasis></term>
+  <listitem>
+<para> Specifies the
+limit (in pages) of the process's resident set. This limit
+is obsolete and should not be used; support depends heavily
+on the version of the operating system kernel. It affects
+only calls to <function>madvise</function> specifying
+<constant>MADV_WILLNEED</constant>. </para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+<refsect2 id='extra.errors'><title>Extra Errors</title>
+<para>These additional error codes extend the list in <xref LINKEND=STD.SUSv4>.
+</para>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><emphasis remap='B'></emphasis> - <emphasis remap='B'>EFAULT</emphasis></term>
+  <listitem>
+<para>
+A pointer argument points to a location outside  the  accessible
+address space.
+</para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+
+</refsect1>
+
+<!-- this describes pre-2.6.9 kernel differences - but that's
+     old enough that we think we can leave it out entirely.
+<refsect1>
+<title>Notes</title>
+<para> In the case of <constant>RLIMIT_MEMLOCK</constant>,
+application developers should be aware of some behavior
+changes over time when using a Linux kernel.  Prior to Linux
+2.6.9, <constant>RLIMIT_MEMLOCK</constant> did not affect the
+<function>shmctl</function> <constant>SHM_LOCK</constant> operation (see
+above for description). Additionally, prior to Linux 2.6.9 the limit
+controlled the amount of memory that could be locked by a privileged
+process. Since Linux 2.6.9, no limits are placed on the amount of memory
+that a privileged process may lock, and this limit instead governs the
+amount of memory that an unprivileged process may lock. </para>
+</refsect1>
+-->
+
+</refentry>
