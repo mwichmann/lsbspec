@@ -1817,6 +1817,11 @@ group named <PARAMETER Class=Option>group</PARAMETER>.
 The group name shall be unique in the group database. If no
 <PARAMETER Class=option>gid</PARAMETER> is specified, 
 <COMMAND>groupadd</COMMAND> shall create the new group with a unique group ID.
+If the group named <PARAMETER Class=Option>group</PARAMETER> already exists,
+or if a group with <PARAMETER Class=Option>gid</PARAMETER> ID exists and 
+<PARAMETER Class=Option>-o</PARAMETER> option is not set,
+<COMMAND>groupadd</COMMAND> shall issue a diagnostic message and exit
+with a non-zero exit status.
 </PARA>
 <PARA>
 The <command>groupadd</command> command is a system administration utility,
@@ -1866,9 +1871,10 @@ delete a group
 <PARA>
 If the caller has sufficient privilege,
 the <COMMAND>groupdel</COMMAND> command shall modify the system group database,
-deleting the 
-group named <PARAMETER Class=Option>group</PARAMETER>.  
-If the group named <PARAMETER Class=Option>group</PARAMETER> does not exist,
+deleting the
+group named <PARAMETER Class=Option>group</PARAMETER>.
+If the group named <PARAMETER Class=Option>group</PARAMETER> does not exist
+or is a primary group for existing user,
 <COMMAND>groupdel</COMMAND> shall issue a diagnostic message and exit
 with a non-zero exit status.
 </PARA>
@@ -6414,6 +6420,12 @@ user account using the values specified on the command line and the
 default values from the system.  The new user account will be entered
 into the system files as needed, the home directory will be created,
 and initial files copied, depending on the command line options.
+If the group named <PARAMETER Class=Option>group</PARAMETER> does not exist,
+or the user names <PARAMETER Class=Option>login</PARAMETER> already exists,
+or the user ID <PARAMETER Class=Option>uid</PARAMETER> is already in use
+and no <PARAMETER Class=Option>-o</PARAMETER> option is specified, then
+<COMMAND>useradd</COMMAND> shall issue a diagnostic message and exit
+with a non-zero exit status.
 </PARA>
 
 <PARA>
@@ -6639,6 +6651,10 @@ Delete the user account named <REPLACEABLE
 CLASS="PARAMETER">login</REPLACEABLE>.  If there is also a group named
 <REPLACEABLE CLASS="PARAMETER">login</REPLACEABLE>, this command may
 delete the group as well, or may leave it alone.
+If the user named <PARAMETER Class=Option>login</PARAMETER> does not exist
+or is currently logged in,
+<COMMAND>userdel</COMMAND> shall issue a diagnostic message and exit
+with a non-zero exit status.
 </PARA>
 <PARA>
 The <command>userdel</command> command is a system administration utility,
