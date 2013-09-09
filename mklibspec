@@ -10,554 +10,598 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 my $trace = 0;
 
-sub usage()
-{
-	print STDERR "mklibspec -l <libname> -a <archname> -v <lsbversion> [-c cols] [-d]\n";
-	die;
+sub usage() {
+    print STDERR
+      "mklibspec -l <libname> -a <archname> -v <lsbversion> [-c cols] [-d]\n";
+    die;
 }
 
-sub unmangle($)
-{
-	local($int) = @_;
-	# handle qt3 hack
-	$int =~ s/^_Y/_Z/;
+sub unmangle($) {
+    local ($int) = @_;
 
-	if (!defined($cxxfilt)) {
-		$cxxfilt = open2(\*CXXRDR, \*CXXWRT, "c++filt") or
-			die "Could not open c++filt: $!";
-	}
-	print CXXWRT "$int\n";
-	$int = <CXXRDR>;
-	chomp($int);
-	$int =~ s/</\&lt;/g;
-	$int =~ s/>/\&gt;/g;
-	return $int;
+    # handle qt3 hack
+    $int =~ s/^_Y/_Z/;
+
+    if ( !defined($cxxfilt) ) {
+        $cxxfilt = open2( \*CXXRDR, \*CXXWRT, "c++filt" )
+          or die "Could not open c++filt: $!";
+    }
+    print CXXWRT "$int\n";
+    $int = <CXXRDR>;
+    chomp($int);
+    $int =~ s/</\&lt;/g;
+    $int =~ s/>/\&gt;/g;
+    return $int;
 }
 
-sub makeid($)
-{
-	my ($name) = @_;
-	$name =~ s/\s+/./g;
-	$name =~ s/[^A-Za-z0-9.]+/./g;
-	# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
-	$name =~ s/\.\.+/./g;
-	return $name;
+sub makeid($) {
+    my ($name) = @_;
+    $name =~ s/\s+/./g;
+    $name =~ s/[^A-Za-z0-9.]+/./g;
+
+# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
+    $name =~ s/\.\.+/./g;
+    return $name;
 }
 
-sub output_table($$$$$$$)
-{
-local ($i,$name,*int,*symver,*stdnum,*stdname,$title) = @_;
-local *ref;
+sub output_table($$$$$$$) {
+    local ( $i, $name, *int, *symver, *stdnum, *stdname, $title ) = @_;
+    local *ref;
 
-print "<TABLE id=\"$name\">\n";
-print "<TITLE>$title</TITLE>\n";
-print "<TGROUP COLS=$numcols>\n";
-print "<TBODY>\n";
-my $trows=int(($i+($numcols-1))/$numcols);
-my $intnum = 1;
-for $row (1..$trows) {
-	print "<ROW>\n";
-	for $col (0..$numcols-1) {
-		printf "<ENTRY>";
-		#my $intnum = $row+($col*$trows);
-		if( $int[$intnum] ) {
-			# the reference stuff is now somewhat simpler than
-			# it used to be. Up front, we calculated a hash
-			# with all of the references. LINK to that table
-			# by looking up the number from the %ref_list hash.
+    print "<TABLE id=\"$name\">\n";
+    print "<TITLE>$title</TITLE>\n";
+    print "<TGROUP COLS=$numcols>\n";
+    print "<TBODY>\n";
+    my $trows = int( ( $i + ( $numcols - 1 ) ) / $numcols );
+    my $intnum = 1;
+    for $row ( 1 .. $trows ) {
+        print "<ROW>\n";
+        for $col ( 0 .. $numcols - 1 ) {
+            printf "<ENTRY>";
 
-			my $interface = $int[$intnum];
-			$interface = unmangle($interface) if ($demangle);
-			printf "<indexterm><primary>%s</primary></indexterm>%s", $interface, $interface;
-			if( $symver[$intnum] ) {
-				printf "(%s)", $symver[$intnum];
-				}
-			if( $stdname[$intnum] ) {
-				printf " <LINK LINKEND=\"REFSTD.%s.%d\">[%s]</LINK>",
-					makeid($Lname),
-					$ref_list{$stdname[$intnum]},
-					$stdname[$intnum];
-				}
-			$intnum++;
-			}
-		printf "</ENTRY>\n";
-	}
-	print "</ROW>\n";
-	}
-print "</TBODY>\n";
-print "</TGROUP>\n";
-print "</TABLE>\n";
+            #my $intnum = $row+($col*$trows);
+            if ( $int[$intnum] ) {
+
+                # the reference stuff is now somewhat simpler than
+                # it used to be. Up front, we calculated a hash
+                # with all of the references. LINK to that table
+                # by looking up the number from the %ref_list hash.
+
+                my $interface = $int[$intnum];
+                $interface = unmangle($interface) if ($demangle);
+                printf "<indexterm><primary>%s</primary></indexterm>%s",
+                  $interface, $interface;
+                if ( $symver[$intnum] ) {
+                    printf "(%s)", $symver[$intnum];
+                }
+                if ( $stdname[$intnum] ) {
+                    printf " <LINK LINKEND=\"REFSTD.%s.%d\">[%s]</LINK>",
+                      makeid($Lname),
+                      $ref_list{ $stdname[$intnum] },
+                      $stdname[$intnum];
+                }
+                $intnum++;
+            }
+            printf "</ENTRY>\n";
+        }
+        print "</ROW>\n";
+    }
+    print "</TBODY>\n";
+    print "</TGROUP>\n";
+    print "</TABLE>\n";
 }
 
-sub getinterfacename($)
-{
-local($Iid)=@_;
-my($select,$entry);
+sub getinterfacename($) {
+    local ($Iid) = @_;
+    my ( $select, $entry );
 
-if( $Iid eq "" ) {return "";}
+    if ( $Iid eq "" ) { return ""; }
 
-#print STDERR "Looking for Iname for $Iid\n";
+    #print STDERR "Looking for Iname for $Iid\n";
 
-$select = "SELECT Iname FROM Interface ";
-$select.= "WHERE Iid=$Iid";
-#print $select;
-$isth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-$isth->execute or die "Couldn't execute $select query: ".DBI->errstr;
-$entry=$isth->fetchrow_hashref;
-$isth->finish;
-return $entry->{'Iname'};
+    $select = "SELECT Iname FROM Interface ";
+    $select .= "WHERE Iid=$Iid";
+
+    #print $select;
+    $isth = $dbh->prepare($select)
+      or die "Couldn't prepare $select query: " . DBI->errstr;
+    $isth->execute or die "Couldn't execute $select query: " . DBI->errstr;
+    $entry = $isth->fetchrow_hashref;
+    $isth->finish;
+    return $entry->{'Iname'};
 }
 
+sub getinterfacevisibility($) {
+    local ($Iid) = @_;
+    my ( $select, %entry );
 
-sub getinterfacevisibility($)
-{
-local($Iid)=@_;
-my($select,%entry);
+    if ( $Iid eq "" ) { return ""; }
 
-if( $Iid eq "" ) {return "";}
+    $select = "SELECT Isrcbin FROM Interface ";
+    $select .= "WHERE Iid=$Iid";
+    $isth = $dbh->prepare($select)
+      or die "Couldn't prepare $select query: " . DBI->errstr;
+    $isth->execute or die "Couldn't execute $select query: " . DBI->errstr;
+    $entry = $isth->fetchrow_hashref;
+    $isth->finish;
 
-$select = "SELECT Isrcbin FROM Interface ";
-$select.= "WHERE Iid=$Iid";
-$isth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-$isth->execute or die "Couldn't execute $select query: ".DBI->errstr;
-$entry=$isth->fetchrow_hashref;
-$isth->finish;
-
-return $entry->{'Isrcbin'};
+    return $entry->{'Isrcbin'};
 }
 
-sub output_classinfo($)
-{
-	local ($class) = @_;
+sub output_classinfo($) {
+    local ($class) = @_;
 
-	#print STDERR $$class{'CIname'}."\n";
-	local $classname = unmangle($$class{'CIname'});
+    #print STDERR $$class{'CIname'}."\n";
+    local $classname = unmangle( $$class{'CIname'} );
 
-	print "\n\n";
-	print "<SECT3>\n";
-	print "<TITLE>";
-	print "Class data for ".$classname;
-	print "</TITLE>\n";
-	print "<PARA>\n";
-	print "</PARA>\n";
+    print "\n\n";
+    print "<SECT3>\n";
+    print "<TITLE>";
+    print "Class data for " . $classname;
+    print "</TITLE>\n";
+    print "<PARA>\n";
+    print "</PARA>\n";
 
-	#
-	# Display Vtable info
-	#
-	if( $$class{'CIvtable'} ) {
-		#
-		# we are in a class ... always unmangle (ignore -d)
-		#
-		local $tblref = sprintf "cls-%s", nmhash($$class{'CIvtable'});
+    #
+    # Display Vtable info
+    #
+    if ( $$class{'CIvtable'} ) {
+        #
+        # we are in a class ... always unmangle (ignore -d)
+        #
+        local $tblref = sprintf "cls-%s", nmhash( $$class{'CIvtable'} );
 
         $GenericVtable = 1;
-        if( $Aid > 1 ) {
+        if ( $Aid > 1 ) {
+
             # Do we really have arch-specific vtable entries?
             # If not, we can simply refer to the generic spec
             $checkArchSpecific = "SELECT VTviid FROM Vtable ";
-            $checkArchSpecific.= "WHERE VTcid=".$$class{'CIid'}." ";
-            $checkArchSpecific.= "AND VTarch=$Aid ";
-            $checkArchSpecific.= "LIMIT 1";
-            $vtarchsth = $dbh->prepare($checkArchSpecific) or die "Couldn't prepare $checkArchSpecific query: ".DBI->errstr;
-            $vtarchsth->execute or die "Couldn't execute $checkArchSpecific query: ".DBI->errstr;
-            if( $vtarchsth->rows ) {
+            $checkArchSpecific .= "WHERE VTcid=" . $$class{'CIid'} . " ";
+            $checkArchSpecific .= "AND VTarch=$Aid ";
+            $checkArchSpecific .= "LIMIT 1";
+            $vtarchsth = $dbh->prepare($checkArchSpecific)
+              or die "Couldn't prepare $checkArchSpecific query: "
+              . DBI->errstr;
+            $vtarchsth->execute
+              or die "Couldn't execute $checkArchSpecific query: "
+              . DBI->errstr;
+            if ( $vtarchsth->rows ) {
                 $GenericVtable = 0;
             }
             $vtarchsth->finish;
         }
 
-        if( $GenericVtable and $Aid > 1 ) {
+        if ( $GenericVtable and $Aid > 1 ) {
             print "<PARA>\n";
             print "The virtual table for the $classname class\n";
-                    #XXX
-                #print "is described in the relevant architecture specific part of &ISOSTD;.\n";
+	    # this should be conditional based on ISO/non-ISO build
+	    #print "is described in the relevant architecture specific part of &ISOSTD;.\n";
             print "is described in the generic part of this specification.\n";
             print "</PARA>\n";
         } else {
-		$select = "SELECT * FROM ClassVtab ";
-		$select.= "LEFT JOIN ArchClass ON ACcid = CVcid ";
-		$select.= "AND ACpos = CVpos ";
-		$select.= "WHERE CVcid=".$$class{'CIid'}." ";
-		$select.= "AND ( ACaid = $Aid or ACaid = 1 ) ";
-		$select.= "ORDER BY CVpos";
-		$vtsth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-		$vtsth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+            $select = "SELECT * FROM ClassVtab ";
+            $select .= "LEFT JOIN ArchClass ON ACcid = CVcid ";
+            $select .= "AND ACpos = CVpos ";
+            $select .= "WHERE CVcid=" . $$class{'CIid'} . " ";
+            $select .= "AND ( ACaid = $Aid or ACaid = 1 ) ";
+            $select .= "ORDER BY CVpos";
+            $vtsth = $dbh->prepare($select)
+              or die "Couldn't prepare $select query: " . DBI->errstr;
+            $vtsth->execute
+              or die "Couldn't execute $select query: " . DBI->errstr;
 
-		if( $vtsth->rows ) {
-			print "<PARA>\n";
-			print "The virtual table for the $classname class\n";
-			print "is described by <XREF LINKEND=\"$tblref-0\">\n";
-			print "</PARA>\n";
-		} else {
-			print "<PARA>\n";
-			print "The virtual table for the $classname class\n";
-                	#XXX
-		        #print "is described in the relevant architecture specific part of &ISOSTD;.\n";
-			print "is described in the relevant architecture specific part of this specification.\n";
-			print "</PARA>\n";
-		}
+            if ( $vtsth->rows ) {
+                print "<PARA>\n";
+                print "The virtual table for the $classname class\n";
+                print "is described by <XREF LINKEND=\"$tblref-0\">\n";
+                print "</PARA>\n";
+            } else {
+                print "<PARA>\n";
+                print "The virtual table for the $classname class\n";
+		# this should be conditional based on ISO/non-ISO build
+		#print "is described in the relevant architecture specific part of &ISOSTD;.\n";
+                print "is described in the relevant architecture specific part of this specification.\n";
+                print "</PARA>\n";
+            }
 
-		for(1..$vtsth->rows) {
-			$classvtab = $vtsth->fetchrow_hashref;
-			print "<!--classdata-->\n";
-			printf "<TABLE id=\"$tblref-%d\">\n", $classvtab->{'CVpos'};
-			print "<TITLE>";
+            for ( 1 .. $vtsth->rows ) {
+                $classvtab = $vtsth->fetchrow_hashref;
+                print "<!--classdata-->\n";
+                printf "<TABLE id=\"$tblref-%d\">\n", $classvtab->{'CVpos'};
+                print "<TITLE>";
 
-			if( $classvtab->{'CVpos'} == 0 ) {
-				print "Primary ";
-			} else {
-				print "Secondary ";
-			}
-			$intname=unmangle(getinterfacename($$class{'CIvtable'}));
-			if( $intname ne '' ) {
-				print $intname;
-			} else {
-				print getinterfacename($$class{'CIvtable'})." ".$$class{'CIvtable'};
-				die "Can't get the vtable name";
-			}
-			print "</TITLE>\n";
-			#print "<!-- ".getinterfacename($$class{'CIvtable'})." ".$$class{'CIvtable'}."-->\n";
-			print "<TGROUP COLS=2>\n";
-			print "<TBODY>\n";
+                if ( $classvtab->{'CVpos'} == 0 ) {
+                    print "Primary ";
+                } else {
+                    print "Secondary ";
+                }
+                $intname = unmangle( getinterfacename( $$class{'CIvtable'} ) );
+                if ( $intname ne '' ) {
+                    print $intname;
+                } else {
+                    print getinterfacename( $$class{'CIvtable'} ) . " "
+                      . $$class{'CIvtable'};
+                    die "Can't get the vtable name";
+                }
+                print "</TITLE>\n";
 
-			print "<ROW>\n";
-			print "<ENTRY>Base Offset</ENTRY>\n";
-			print "<ENTRY>";
-			print $classvtab->{'ACbaseoffset'};
-			print "</ENTRY>\n";
-			print "</ROW>\n";
+#print "<!-- ".getinterfacename($$class{'CIvtable'})." ".$$class{'CIvtable'}."-->\n";
+                print "<TGROUP COLS=2>\n";
+                print "<TBODY>\n";
 
-			print "<ROW>\n";
-			print "<ENTRY>Virtual Base Offset</ENTRY>\n";
-			print "<ENTRY>";
-			print $classvtab->{'ACvoffset'};
-			print "</ENTRY>\n";
-			print "</ROW>\n";
+                print "<ROW>\n";
+                print "<ENTRY>Base Offset</ENTRY>\n";
+                print "<ENTRY>";
+                print $classvtab->{'ACbaseoffset'};
+                print "</ENTRY>\n";
+                print "</ROW>\n";
 
-			print "<ROW>\n";
-			print "<ENTRY>RTTI</ENTRY>\n";
-			print "<ENTRY>";
-			$func=unmangle(getinterfacename($classvtab->{'CVrtti'}));
-			printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-			print "</ENTRY>\n";
-			print "</ROW>\n";
-			$select = "SELECT * FROM Vtable ";
-			$select.= "LEFT JOIN Architecture ON VTarch=Aid ";
-			$select.= "WHERE VTcid=".$$class{'CIid'}." ";
-			$select.= "AND VTvtpos=".$classvtab->{'CVpos'}." ";
-			$select.= "AND ( Aid=$Aid OR Aid=1 ) ";
-			$select.= "ORDER BY VTpos";
-			$vsth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-			$vsth->execute or die "Couldn't execute $select query: ".DBI->errstr;
-			$lastpost=0;
-			for(1..$vsth->rows) {
-				$ventry=$vsth->fetchrow_hashref;
-				for(($lastpos+1)..($ventry->{'VTpos'}-1)) {
-					print "<ROW>\n";
-					print "<ENTRY>vfunc&lsqb;$_&rsqb;:</ENTRY>\n";
-					print "<ENTRY>";
-					printf "See The Architecture Specific Specification";
-					print "</ENTRY>\n";
-					print "</ROW>\n";
-				}
-				print "<ROW>\n";
-				print "<ENTRY>vfunc&lsqb;".$ventry->{'VTpos'}."&rsqb;:</ENTRY>\n";
-				print "<ENTRY>";
-				if( $ventry->{'VTviid'} != 0 ) {
-					$func=unmangle(getinterfacename($ventry->{'VTviid'}));
-					$visibility = getinterfacevisibility($ventry->{'VTviid'});
-                        	        if( $visibility eq "SrcOnly" ) {
-		                    	    printf "<indexterm><primary>%s</primary></indexterm>NULL or %s", $func, $func;
-	    	            		}
-		            		else {
-                                    	    printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-                                	}
-				} else {
-					printf "Unspecified";
-					}
-				print "</ENTRY>\n";
-				print "</ROW>\n";
-				$lastpos=$ventry->{'VTpos'};
-			}
-			$vsth->finish;
+                print "<ROW>\n";
+                print "<ENTRY>Virtual Base Offset</ENTRY>\n";
+                print "<ENTRY>";
+                print $classvtab->{'ACvoffset'};
+                print "</ENTRY>\n";
+                print "</ROW>\n";
 
-			print "</TBODY>\n";
-			print "</TGROUP>\n";
-			print "</TABLE>\n";
-		}
-		$vtsth->finish
-	}
+                print "<ROW>\n";
+                print "<ENTRY>RTTI</ENTRY>\n";
+                print "<ENTRY>";
+                $func = unmangle( getinterfacename( $classvtab->{'CVrtti'} ) );
+                printf "<indexterm><primary>%s</primary></indexterm>%s", $func,
+                  $func;
+                print "</ENTRY>\n";
+                print "</ROW>\n";
+                $select = "SELECT * FROM Vtable ";
+                $select .= "LEFT JOIN Architecture ON VTarch=Aid ";
+                $select .= "WHERE VTcid=" . $$class{'CIid'} . " ";
+                $select .= "AND VTvtpos=" . $classvtab->{'CVpos'} . " ";
+                $select .= "AND ( Aid=$Aid OR Aid=1 ) ";
+                $select .= "ORDER BY VTpos";
+                $vsth = $dbh->prepare($select)
+                  or die "Couldn't prepare $select query: " . DBI->errstr;
+                $vsth->execute
+                  or die "Couldn't execute $select query: " . DBI->errstr;
+                $lastpost = 0;
+
+                for ( 1 .. $vsth->rows ) {
+                    $ventry = $vsth->fetchrow_hashref;
+                    for ( ( $lastpos + 1 ) .. ( $ventry->{'VTpos'} - 1 ) ) {
+                        print "<ROW>\n";
+                        print "<ENTRY>vfunc&lsqb;$_&rsqb;:</ENTRY>\n";
+                        print "<ENTRY>";
+                        printf "See The Architecture Specific Specification";
+                        print "</ENTRY>\n";
+                        print "</ROW>\n";
+                    }
+                    print "<ROW>\n";
+                    print "<ENTRY>vfunc&lsqb;"
+                      . $ventry->{'VTpos'}
+                      . "&rsqb;:</ENTRY>\n";
+                    print "<ENTRY>";
+                    if ( $ventry->{'VTviid'} != 0 ) {
+                        $func =
+                          unmangle( getinterfacename( $ventry->{'VTviid'} ) );
+                        $visibility =
+                          getinterfacevisibility( $ventry->{'VTviid'} );
+                        if ( $visibility eq "SrcOnly" ) {
+                            printf
+"<indexterm><primary>%s</primary></indexterm>NULL or %s",
+                              $func, $func;
+                        } else {
+                            printf
+                              "<indexterm><primary>%s</primary></indexterm>%s",
+                              $func, $func;
+                        }
+                    } else {
+                        printf "Unspecified";
+                    }
+                    print "</ENTRY>\n";
+                    print "</ROW>\n";
+                    $lastpos = $ventry->{'VTpos'};
+                }
+                $vsth->finish;
+
+                print "</TBODY>\n";
+                print "</TGROUP>\n";
+                print "</TABLE>\n";
+            }
+            $vtsth->finish;
+        }
     }
 
+    #
+    # Display RTTI info
+    #
+    if ( $$class{'CIrtti'} ) {
+        local $tblref = sprintf "rtti-%s", nmhash( $$class{'CIrtti'} );
+        print "<PARA>\n";
+        print "The Run Time Type Information for the $classname  class\n";
+        print "is described by <XREF LINKEND=\"$tblref\">\n";
+        print "</PARA>\n";
+        print "<!--classdata-->\n";
+        print "<TABLE ID=\"$tblref\">\n";
+        print "<TITLE>"
+          . unmangle( getinterfacename( $$class{'CIrtti'} ) )
+          . "</TITLE>\n";
+        print "<TGROUP COLS=2>\n";
+        print "<TBODY>\n";
+        print "<ROW>\n";
+        print "<ENTRY>Base Vtable</ENTRY>\n";
+        print "<ENTRY>";
+        $func = unmangle( getinterfacename( $$class{'CIbasevtable'} ) );
+        printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+        print "</ENTRY>\n";
+        print "</ROW>\n";
+        print "<ROW>\n";
+        print "<ENTRY>Name</ENTRY>\n";
+        print "<ENTRY>";
+        $func = "_ZTS" . substr( $$class{'CIname'}, 2, 256 );
+        $func = unmangle($func);
+        printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+        print "</ENTRY>\n";
+        print "</ROW>\n";
 
-	#
-	# Display RTTI info
-	#
-	if( $$class{'CIrtti'} ) {
-		local $tblref = sprintf "rtti-%s", nmhash($$class{'CIrtti'});
-		print "<PARA>\n";
-		print "The Run Time Type Information for the $classname  class\n";
-		print "is described by <XREF LINKEND=\"$tblref\">\n";
-		print "</PARA>\n";
-		print "<!--classdata-->\n";
-		print "<TABLE ID=\"$tblref\">\n";
-		print "<TITLE>".unmangle(getinterfacename($$class{'CIrtti'}))."</TITLE>\n";
-		print "<TGROUP COLS=2>\n";
-		print "<TBODY>\n";
-		print "<ROW>\n";
-		print "<ENTRY>Base Vtable</ENTRY>\n";
-		print "<ENTRY>";
-		$func=unmangle(getinterfacename($$class{'CIbasevtable'}));
-		printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-		print "</ENTRY>\n";
-		print "</ROW>\n";
-		print "<ROW>\n";
-		print "<ENTRY>Name</ENTRY>\n";
-		print "<ENTRY>";
-		$func="_ZTS".substr($$class{'CIname'},2,256);
-		$func = unmangle($func);
-		printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-		print "</ENTRY>\n";
-		print "</ROW>\n";
-		if( $$class{'CInumbasetype'} == '1' ) {
-			$select = "SELECT * FROM BaseTypes ";
-			$select.= "LEFT JOIN ClassInfo ON BTcid=CIid ";
-			$select.= "WHERE CIid=".$$class{'CIid'}." ";
-			$select.= "ORDER BY BTpos";
-			$vsth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-			$vsth->execute or die "Couldn't execute $select query: ".DBI->errstr;
-#			for(1..$$class{'CInumbasetype'}) {
-				$entry=$vsth->fetchrow_hashref;
-				print "<ROW>\n";
-				print "<ENTRY>basetype:</ENTRY>\n";
-				print "<ENTRY>";
-				$func=unmangle(getinterfacename($$entry{'BTbasetype'}));
-				printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-				print "</ENTRY>\n";
-				print "</ROW>\n";
-#			}
-			$vsth->finish;
-		}
-		if( $$class{'CInumvmitypes'} ) {
-			print "<ROW>\n";
-			print "<ENTRY>flags:</ENTRY>\n";
-			print "<ENTRY>".$$class{'CIflags'}."</ENTRY>\n";
-			print "</ROW>\n";
-			$select = "SELECT * FROM VMIBaseTypes ";
-			$select.= "LEFT JOIN ClassInfo ON VBTcid=CIid ";
-			$select.= "WHERE CIid=".$$class{'CIid'}." ";
-			$select.= "ORDER BY VBTpos";
-			$vsth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-			$vsth->execute or die "Couldn't execute $select query: ".DBI->errstr;
-			for(1..$$class{'CInumvmitypes'}) {
-				$entry=$vsth->fetchrow_hashref;
-				print "<ROW>\n";
-				print "<ENTRY>basetype:</ENTRY>\n";
-				print "<ENTRY>";
-				$func=unmangle(getinterfacename($entry->{'VBTbasetype'}));
-				printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-				print "</ENTRY>\n";
-				print "<ENTRY>".$entry->{'VBTflags'}."</ENTRY>\n";
-				print "</ROW>\n";
-			}
-			$vsth->finish;
-		}
+        if ( $$class{'CInumbasetype'} == '1' ) {
+            $select = "SELECT * FROM BaseTypes ";
+            $select .= "LEFT JOIN ClassInfo ON BTcid=CIid ";
+            $select .= "WHERE CIid=" . $$class{'CIid'} . " ";
+            $select .= "ORDER BY BTpos";
+            $vsth = $dbh->prepare($select)
+              or die "Couldn't prepare $select query: " . DBI->errstr;
+            $vsth->execute
+              or die "Couldn't execute $select query: " . DBI->errstr;
 
-		print "</TBODY>\n";
-		print "</TGROUP>\n";
-		print "</TABLE>\n";
-	}
-	#
-	# Display VTT info
-	#
-	if( $$class{'CIvtt'} ) {
-		local $tblref = sprintf "vtt-%s", nmhash($$class{'CIvtt'});
-		print "<PARA>\n";
-		print "The VTT for the $classname  class\n";
-		print "is described by <XREF LINKEND=\"$tblref\">\n";
-		print "</PARA>\n";
-		print "<!--classdata-->\n";
-		print "<TABLE ID=\"$tblref\">\n";
-		print "<TITLE>".unmangle(getinterfacename($$class{'CIvtt'}))."</TITLE>\n";
-		print "<TGROUP COLS=2>\n";
-		print "<TBODY>\n";
-		print "<ROW>\n";
-		print "<ENTRY>VTT Name</ENTRY>\n";
-		print "<ENTRY>";
-		$func=getinterfacename($$class{'CIvtt'});
-		printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
-		print "</ENTRY>\n";
-		print "</ROW>\n";
-		print "<ROW>\n";
-		print "<ENTRY>Number of Entries</ENTRY>\n";
-		print "<ENTRY>";
-		print $$class{'CInumvtt'};
-		print "</ENTRY>\n";
-		print "</ROW>\n";
-		print "</TBODY>\n";
-		print "</TGROUP>\n";
-		print "</TABLE>\n";
-	}
-	print "</SECT3>\n";
+            #			for(1..$$class{'CInumbasetype'}) {
+            $entry = $vsth->fetchrow_hashref;
+            print "<ROW>\n";
+            print "<ENTRY>basetype:</ENTRY>\n";
+            print "<ENTRY>";
+            $func = unmangle( getinterfacename( $$entry{'BTbasetype'} ) );
+            printf "<indexterm><primary>%s</primary></indexterm>%s", $func,
+              $func;
+            print "</ENTRY>\n";
+            print "</ROW>\n";
+
+            #			}
+            $vsth->finish;
+        }
+        if ( $$class{'CInumvmitypes'} ) {
+            print "<ROW>\n";
+            print "<ENTRY>flags:</ENTRY>\n";
+            print "<ENTRY>" . $$class{'CIflags'} . "</ENTRY>\n";
+            print "</ROW>\n";
+            $select = "SELECT * FROM VMIBaseTypes ";
+            $select .= "LEFT JOIN ClassInfo ON VBTcid=CIid ";
+            $select .= "WHERE CIid=" . $$class{'CIid'} . " ";
+            $select .= "ORDER BY VBTpos";
+            $vsth = $dbh->prepare($select)
+              or die "Couldn't prepare $select query: " . DBI->errstr;
+            $vsth->execute
+              or die "Couldn't execute $select query: " . DBI->errstr;
+
+            for ( 1 .. $$class{'CInumvmitypes'} ) {
+                $entry = $vsth->fetchrow_hashref;
+                print "<ROW>\n";
+                print "<ENTRY>basetype:</ENTRY>\n";
+                print "<ENTRY>";
+                $func = unmangle( getinterfacename( $entry->{'VBTbasetype'} ) );
+                printf "<indexterm><primary>%s</primary></indexterm>%s", $func,
+                  $func;
+                print "</ENTRY>\n";
+                print "<ENTRY>" . $entry->{'VBTflags'} . "</ENTRY>\n";
+                print "</ROW>\n";
+            }
+            $vsth->finish;
+        }
+
+        print "</TBODY>\n";
+        print "</TGROUP>\n";
+        print "</TABLE>\n";
+    }
+    #
+    # Display VTT info
+    #
+    if ( $$class{'CIvtt'} ) {
+        local $tblref = sprintf "vtt-%s", nmhash( $$class{'CIvtt'} );
+        print "<PARA>\n";
+        print "The VTT for the $classname  class\n";
+        print "is described by <XREF LINKEND=\"$tblref\">\n";
+        print "</PARA>\n";
+        print "<!--classdata-->\n";
+        print "<TABLE ID=\"$tblref\">\n";
+        print "<TITLE>"
+          . unmangle( getinterfacename( $$class{'CIvtt'} ) )
+          . "</TITLE>\n";
+        print "<TGROUP COLS=2>\n";
+        print "<TBODY>\n";
+        print "<ROW>\n";
+        print "<ENTRY>VTT Name</ENTRY>\n";
+        print "<ENTRY>";
+        $func = getinterfacename( $$class{'CIvtt'} );
+        printf "<indexterm><primary>%s</primary></indexterm>%s", $func, $func;
+        print "</ENTRY>\n";
+        print "</ROW>\n";
+        print "<ROW>\n";
+        print "<ENTRY>Number of Entries</ENTRY>\n";
+        print "<ENTRY>";
+        print $$class{'CInumvtt'};
+        print "</ENTRY>\n";
+        print "</ROW>\n";
+        print "</TBODY>\n";
+        print "</TGROUP>\n";
+        print "</TABLE>\n";
+    }
+    print "</SECT3>\n";
 }
 
-sub getinterfaces($$$$)
-{
-	local ($Lname, $LGname, $type, $needpara) = @_;
-	local(*entry);
-	local(*symver);
-	local(*stdnum);
-	local(*stdname);
-	local($table_title);
-	local($name);
-	local($where);
-	local($safeLname)=$Lname;
-	$safeLname =~ s/_/-/g;
+sub getinterfaces($$$$) {
+    local ( $Lname, $LGname, $type, $needpara ) = @_;
+    local (*entry);
+    local (*symver);
+    local (*stdnum);
+    local (*stdname);
+    local ($table_title);
+    local ($name);
+    local ($where);
+    local ($safeLname) = $Lname;
+    $safeLname =~ s/_/-/g;
 
-	if ($type eq "functions" || $type eq "methods") {
-		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
-		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
-		$where.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
-		$where.= "AND AIarch=$Aid ";
-		$name  = "ints";
-		$table_title = "$Lname - $LGname Function Interfaces";
-	}
-	elsif ($type eq "deprecated functions") {
-		$where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
-		$where.= "AND AIdeprecatedsince <= '$lsbversion' ";
-		$where.= "AND AIarch=$Aid ";
-		$name  = "depints";
-		$table_title = "$Lname - $LGname Deprecated Function Interfaces";
-	}
-	elsif ($type eq "data interfaces") {
-		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-		$where.= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
-		$where.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
-		$where.= "AND AIarch=$Aid ";
-		$name  = "data";
-		$table_title = "$Lname - $LGname Data Interfaces";
-	}
-	elsif ($type eq "deprecated data interfaces") {
-		$where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
-		$where.= "AND AIdeprecatedsince <= '$lsbversion' ";
-		$where.= "AND AIarch=$Aid ";
-		$name  = "ddata";
-		$table_title = "$Lname - $LGname Deprecated Data Interfaces";
-	}
-	else {
-		die "Unknown type $type";
-	}
-	$select = "SELECT DISTINCT Iname, AIarch, Vname, ISsid, Sname FROM Interface ";
-	$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
-	$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
-	$select.= "LEFT JOIN Version ON Vid=AIversion ";
-	$select.= "LEFT JOIN IntStd ON ISiid=Iid ";
-	$select.= "LEFT JOIN Standard ON Sid=ISsid ";
-	$select.= "$where ";
-	$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin <> '') ";
-	$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
-	$select.= "ORDER BY Iname, Vname";
-	print STDERR $select,"\n" if $trace;
-	$inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-	$inh->execute or die "Couldn't execute $select query: ".DBI->errstr;
-	$i=0;
-	for(1..$inh->rows) {
-		$entry=$inh->fetchrow_hashref;
-		# uncomment the 'if' to keep only the latest version of a 
-		# symbol in the main table
-		#if( $entry[$i] ne $entry->{'Iname'} ) {
-			$i++;
-		#}
-		$entry[$i]=$entry->{'Iname'};
-		if( $entry->{'AIarch'} == $Aid ) {
-			$symver[$i]=$entry->{'Vname'};
-		}
-		$stdnum[$i]=$entry->{'ISsid'};
-		$stdname[$i]=$entry->{'Sname'};
-	}
-	$inh->finish;
-	if( $i > 0 ) {
-		$arch_type = ($archname eq "All") ? "generic" : "architecture specific";
-		$tblname = sprintf "tbl-%s-%s-%s", $safeLname, nmhash($LGname), $name;
-		$tblname =~ s/[^A-Za-z0-9.]+/-/g;
-		$tblname =~ s/\+/x/g;		# change the C++ names into Cxx
-		print "<PARA>\n";
-		print "An LSB conforming implementation shall provide the $arch_type $type\n";
-		print "for $LGname specified in <XREF linkend=\"$tblname\">,\n";
-		print "with the full mandatory functionality as described in the referenced\n";
-		print "underlying specification.\n";
-		print "</PARA>\n";
-		if ($type =~ /deprecated.*/) {
-			print "<NOTE>";
-			print "<PARA>These interfaces are deprecated, and applications\n";
-			print "should avoid using them.\n";
-			print "These interfaces may be withdrawn\n";
-			print "in future releases of this specification.\n";
-			print "</PARA></NOTE>\n";
-			}
-		print "<!--libgroup$name-->\n";
-		output_table($i,$tblname,*entry,*symver,*stdnum,*stdname,$table_title);
-	}
-	elsif ($needpara) {
-		#
-		# no functions/methods are defined for this library in THIS architecture
-		# but they may be defined for other architectures.
-		# Add appropriate note to this effect.
-		#
-		printf "<PARA>\n";
-		printf "No external $type are defined for $Lname - $LGname\n";
-                printf "in this part of the specification. See also the %s.\n",
-                        $Aid == 1 ? "relevant architecture specific part of this specification" : "generic specification";
-                        #XXX
-                        #$Aid == 1 ? "relevant architecture specific part of &ISOSTD;" : "generic specification, &ISOSTD-1;";
-		printf "</PARA>\n";
-	}
+    if ( $type eq "functions" || $type eq "methods" ) {
+        $where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
+        $where .= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
+        $where .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
+        $where .= "AND AIarch=$Aid ";
+        $name        = "ints";
+        $table_title = "$Lname - $LGname Function Interfaces";
+    }
+    elsif ( $type eq "deprecated functions" ) {
+        $where = "WHERE LGIlibg=$LGid AND Itype='Function' ";
+        $where .= "AND AIdeprecatedsince <= '$lsbversion' ";
+        $where .= "AND AIarch=$Aid ";
+        $name        = "depints";
+        $table_title = "$Lname - $LGname Deprecated Function Interfaces";
+    }
+    elsif ( $type eq "data interfaces" ) {
+        $where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
+        $where .= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
+        $where .=
+          "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
+        $where .= "AND AIarch=$Aid ";
+        $name        = "data";
+        $table_title = "$Lname - $LGname Data Interfaces";
+    }
+    elsif ( $type eq "deprecated data interfaces" ) {
+        $where = "WHERE LGIlibg=$LGid AND Itype != 'Function' ";
+        $where .= "AND AIdeprecatedsince <= '$lsbversion' ";
+        $where .= "AND AIarch=$Aid ";
+        $name        = "ddata";
+        $table_title = "$Lname - $LGname Deprecated Data Interfaces";
+    } else {
+        die "Unknown type $type";
+    }
+    $select =
+      "SELECT DISTINCT Iname, AIarch, Vname, ISsid, Sname FROM Interface ";
+    $select .= "LEFT JOIN LGInt ON Iid=LGIint ";
+    $select .= "LEFT JOIN ArchInt ON Iid=AIint ";
+    $select .= "LEFT JOIN Version ON Vid=AIversion ";
+    $select .= "LEFT JOIN IntStd ON ISiid=Iid ";
+    $select .= "LEFT JOIN Standard ON Sid=ISsid ";
+    $select .= "$where ";
+    $select .= "AND (ISappearedin <= '$lsbversion' and ISappearedin <> '') ";
+    $select .= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
+    $select .= "ORDER BY Iname, Vname";
+    print STDERR $select, "\n" if $trace;
+    $inh = $dbh->prepare($select)
+      or die "Couldn't prepare $select query: " . DBI->errstr;
+    $inh->execute or die "Couldn't execute $select query: " . DBI->errstr;
+    $i = 0;
+
+    for ( 1 .. $inh->rows ) {
+        $entry = $inh->fetchrow_hashref;
+
+        # uncomment the 'if' to keep only the latest version of a
+        # symbol in the main table
+        #if( $entry[$i] ne $entry->{'Iname'} ) {
+        $i++;
+
+        #}
+        $entry[$i] = $entry->{'Iname'};
+        if ( $entry->{'AIarch'} == $Aid ) {
+            $symver[$i] = $entry->{'Vname'};
+        }
+        $stdnum[$i]  = $entry->{'ISsid'};
+        $stdname[$i] = $entry->{'Sname'};
+    }
+    $inh->finish;
+    if ( $i > 0 ) {
+        $arch_type =
+          ( $archname eq "All" ) ? "generic" : "architecture specific";
+        $tblname = sprintf "tbl-%s-%s-%s", $safeLname, nmhash($LGname), $name;
+        $tblname =~ s/[^A-Za-z0-9.]+/-/g;
+        $tblname =~ s/\+/x/g;    # change the C++ names into Cxx
+        print "<PARA>\n";
+        print "An LSB conforming implementation shall provide the $arch_type $type\n";
+        print "for $LGname specified in <XREF linkend=\"$tblname\">,\n";
+        print "with the full mandatory functionality as described in the referenced\n";
+        print "underlying specification.\n";
+        print "</PARA>\n";
+
+        if ( $type =~ /deprecated.*/ ) {
+            print "<NOTE>";
+            print "<PARA>These interfaces are deprecated, and applications\n";
+            print "should avoid using them.\n";
+            print "These interfaces may be withdrawn\n";
+            print "in future releases of this specification.\n";
+            print "</PARA></NOTE>\n";
+        }
+        print "<!--libgroup$name-->\n";
+        output_table( $i, $tblname, *entry, *symver, *stdnum, *stdname,
+            $table_title );
+    }
+    elsif ($needpara) {
+        #
+        # no functions/methods are defined for this library in THIS architecture
+        # but they may be defined for other architectures.
+        # Add appropriate note to this effect.
+        #
+        printf "<PARA>\n";
+        printf "No external $type are defined for $Lname - $LGname\n";
+	# this should be conditional based on ISO/non-ISO build
+        #printf "in this part of the specification. See also the %s.\n",
+	#  $Aid == 1 
+	#  ? "relevant architecture specific part of &ISOSTD;" 
+	#  : "generic specification, &ISOSTD-1;";
+        printf "in this part of the specification. See also the %s.\n",
+          $Aid == 1
+          ? "relevant architecture specific part of this specification"
+          : "generic specification";
+        printf "</PARA>\n";
+    }
 }
 
-sub nmhash($)
-{
-	local ($name) = @_;
+sub nmhash($) {
+    local ($name) = @_;
 
-	# generate a five char name from the (long) libgroup name
-	local ($sname) = lc(substr($name, 0, 5));
-	$namehash{$sname} = $name if (!defined ($namehash{$sname}));
-	until (!defined($namehash{$sname}) || ($namehash{$sname} eq $name)) {
-		$sname++;
-		$sname =~ s/_/-/g;
-	}
-	$namehash{$sname} = $name;
-	return $sname;
+    # generate a five char name from the (long) libgroup name
+    local ($sname) = lc( substr( $name, 0, 5 ) );
+    $namehash{$sname} = $name if ( !defined( $namehash{$sname} ) );
+    until ( !defined( $namehash{$sname} ) || ( $namehash{$sname} eq $name ) ) {
+        $sname++;
+        $sname =~ s/_/-/g;
+    }
+    $namehash{$sname} = $name;
+    return $sname;
 }
 
-sub data_def_header()
-{
-	print "<SECT1 ID=", $safelibname, "-ddefs>\n";
-	print "<TITLE>Data Definitions for $Lname</TITLE>\n";
-	print "<PARA>\n";
-	print "This section defines global identifiers and their values that are associated\n";
-	print "with interfaces contained in $Lname.\n";
-	print "These definitions are organized into groups that\n";
-	print "correspond to system headers. This convention is used as a\n";
-	print "convenience for the reader, and does not imply the existence\n";
-	print "of these headers, or their content.\n";
-	print "Where an interface is defined as requiring a particular system header file\n";
-	print "all of the data definitions for that system header file presented here shall be in effect.\n";
-	print "</PARA>\n";
-	print "<PARA>\n";
-	print "This section gives data definitions to promote binary application\n";
-	print "portability, not to repeat source interface definitions available\n";
-	print "elsewhere. System providers and application developers should use this ABI\n";
-	print "to supplement - not to replace - source interface definition specifications.\n";
-	print "</PARA>\n";
-	print "<PARA>\n";
-	print "This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming ";
-	print "language, and ";
-	print "data definitions are specified in ISO C format. The C language ";
-	print "is used here as a convenient notation. Using a C language ";
-	print "description of these data objects does not preclude their use ";
-	print "by other programming languages.";
-	print "</PARA>\n";
-	$done_data_def_header++;
+sub data_def_header() {
+    print "<SECT1 ID=", $safelibname, "-ddefs>\n";
+    print "<TITLE>Data Definitions for $Lname</TITLE>\n";
+    print "<PARA>\n";
+    print "This section defines global identifiers and their values that are associated\n";
+    print "with interfaces contained in $Lname.\n";
+    print "These definitions are organized into groups that\n";
+    print "correspond to system headers. This convention is used as a\n";
+    print "convenience for the reader, and does not imply the existence\n";
+    print "of these headers, or their content.\n";
+    print "Where an interface is defined as requiring a particular system header file\n";
+    print "all of the data definitions for that system header file presented here shall be in effect.\n";
+    print "</PARA>\n";
+    print "<PARA>\n";
+    print "This section gives data definitions to promote binary application\n";
+    print "portability, not to repeat source interface definitions available\n";
+    print "elsewhere. System providers and application developers should use this ABI\n";
+    print "to supplement - not to replace - source interface definition specifications.\n";
+    print "</PARA>\n";
+    print "<PARA>\n";
+    print "This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming ";
+    print "language, and ";
+    print "data definitions are specified in ISO C format. The C language ";
+    print "is used here as a convenient notation. Using a C language ";
+    print "description of these data objects does not preclude their use ";
+    print "by other programming languages.";
+    print "</PARA>\n";
+    $done_data_def_header++;
 }
 
 # the main program ...
@@ -566,52 +610,55 @@ sub data_def_header()
 
 # A default value
 
-$numcols=4;
+$numcols = 4;
 
 $demangle = 0;
 #
 # 1) process the arguments
 #
 
+GetOptions(
+    "l=s" => \$libname,
+    "c=i" => \$numcols,
+    "v=s" => \$lsbversion,
+    "d"   => \$demangle,
+    "a=s" => \$archname
+);
 
-GetOptions("l=s" => \$libname,
-	   "c=i" => \$numcols,
-	   "v=s" => \$lsbversion,
-	   "d"   => \$demangle,
-	   "a=s" => \$archname);
-
-if( !$libname ) { usage(); }
-if( !$archname ) { usage(); }
-if( !$lsbversion ) { usage(); }
+if ( !$libname )    { usage(); }
+if ( !$archname )   { usage(); }
+if ( !$lsbversion ) { usage(); }
 
 #
 # 2) Establish connection to the database
 #
-$dbh = DBI->connect('DBI:mysql:database='.$LSBDB.';host='.$LSBDBHOST, $LSBUSER, $LSBDBPASSWD)
-    or die "Couldn't connect to database: ".DBI->errstr;
+$dbh = DBI->connect( 'DBI:mysql:database=' . $LSBDB . ';host=' . $LSBDBHOST,
+    $LSBUSER, $LSBDBPASSWD )
+  or die "Couldn't connect to database: " . DBI->errstr;
 
 #
 # 3) get & print the architecture info
 #
 $select = "SELECT Aname,Aid FROM Architecture WHERE ";
-$select.= "Architecture.Aname=".$dbh->quote($archname);
-print STDERR $select,"\n" if $trace;
-$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+$select .= "Architecture.Aname=" . $dbh->quote($archname);
+print STDERR $select, "\n" if $trace;
+$sth = $dbh->prepare($select)
+  or die "Couldn't prepare $select query: " . DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: " . DBI->errstr;
 
-$entry=$sth->fetchrow_hashref;
+$entry = $sth->fetchrow_hashref;
 $sth->finish;
-$Aid=$entry->{'Aid'};
-$Aname=$entry->{'Aname'};
+$Aid   = $entry->{'Aid'};
+$Aname = $entry->{'Aname'};
 
-$safelibname=$libname;
+$safelibname = $libname;
 $safelibname =~ s/_/-/g;
 
 printf("<!-- Start of generated text - do not edit! -->\n");
 printf("<!-- generated from the LSB specification database by mklibspec -->\n");
 
-print "<SECT1 ID=", $safelibname, ">\n";
-print "<TITLE>Interfaces for ", $libname, "</TITLE>\n";
+print "<SECT1 ID=",             $safelibname, ">\n";
+print "<TITLE>Interfaces for ", $libname,     "</TITLE>\n";
 print "<PARA>\n";
 print "<XREF LINKEND=\"lib-$safelibname-def\"> defines the library name and shared object name\n";
 print "for the $libname library\n";
@@ -621,52 +668,54 @@ print "</PARA>\n";
 # 4) get & print the library info
 #
 $select = "SELECT * FROM Library ";
-$select.= "LEFT JOIN ArchLib ON Lid=ALlid ";
-$select.= "WHERE Library.Lname=".$dbh->quote($libname)." ";
-$select.= "AND ( (ALappearedin <= '$lsbversion' AND ALappearedin <> '' ";
-$select.= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
-$select.= "OR Lcandidatefor <> '' )";
-$select.= "AND ALaid=$Aid";
-print STDERR $select,"\n" if $trace;
-$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
+$select .= "LEFT JOIN ArchLib ON Lid=ALlid ";
+$select .= "WHERE Library.Lname=" . $dbh->quote($libname) . " ";
+$select .= "AND ( (ALappearedin <= '$lsbversion' AND ALappearedin <> '' ";
+$select .= "AND (ALwithdrawnin IS NULL OR ALwithdrawnin > '$lsbversion') ) ";
+$select .= "OR Lcandidatefor <> '' )";
+$select .= "AND ALaid=$Aid";
+print STDERR $select, "\n" if $trace;
+$sth = $dbh->prepare($select)
+  or die "Couldn't prepare $select query: " . DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: " . DBI->errstr;
 
-$entry=$sth->fetchrow_hashref;
+$entry = $sth->fetchrow_hashref;
 $sth->finish;
-$Lid=$entry->{'Lid'};
-$Lname=$entry->{'Lname'};
-$Larch=$entry->{'ALaid'};
+$Lid   = $entry->{'Lid'};
+$Lname = $entry->{'Lname'};
+$Larch = $entry->{'ALaid'};
 
-if( $Larch == $Aid ) {
-	print "<TABLE id=\"lib-$safelibname-def\">\n";
-	print "<TITLE>$Lname Definition</TITLE>\n";
-	print "<TGROUP COLS=2>\n";
-	print "<TBODY>\n";
-	print "<ROW>\n";
-	print "<ENTRY>Library:</ENTRY>\n";
-	print "<ENTRY>", $entry->{'Lname'}, "</ENTRY>\n";
-	print "</ROW>\n";
-	print "<ROW>\n";
-	print "<ENTRY>SONAME:</ENTRY>\n";
-	if( $entry->{'ALrunname'} ne "" ) {
-		print "<ENTRY>", $entry->{'ALrunname'}, "</ENTRY>\n";
-	} else {
-		print "<ENTRY>See archLSB.</ENTRY>\n";
-	}
-	print "</ROW>\n";
-	print "</TBODY>\n";
-	print "</TGROUP>\n";
-	print "</TABLE>\n";
+if ( $Larch == $Aid ) {
+    print "<TABLE id=\"lib-$safelibname-def\">\n";
+    print "<TITLE>$Lname Definition</TITLE>\n";
+    print "<TGROUP COLS=2>\n";
+    print "<TBODY>\n";
+    print "<ROW>\n";
+    print "<ENTRY>Library:</ENTRY>\n";
+    print "<ENTRY>", $entry->{'Lname'}, "</ENTRY>\n";
+    print "</ROW>\n";
+    print "<ROW>\n";
+    print "<ENTRY>SONAME:</ENTRY>\n";
+
+    if ( $entry->{'ALrunname'} ne "" ) {
+        print "<ENTRY>", $entry->{'ALrunname'}, "</ENTRY>\n";
+    } else {
+        print "<ENTRY>See archLSB.</ENTRY>\n";
+    }
+    print "</ROW>\n";
+    print "</TBODY>\n";
+    print "</TGROUP>\n";
+    print "</TABLE>\n";
 }
 
 #
 # 5) Check for additional description text for the library
 #
-if(open(DESC,"<$Lname.txt" )) {
-	while(<DESC>) {
-		print $_;
-	}
-	close DESC;
+if ( open( DESC, "<$Lname.txt" ) ) {
+    while (<DESC>) {
+        print $_;
+    }
+    close DESC;
 }
 
 #
@@ -674,38 +723,41 @@ if(open(DESC,"<$Lname.txt" )) {
 #
 print "<PARA>\n";
 $select = "SELECT DISTINCT Sname,Stag,Sid FROM Standard ";
-$select.= "LEFT JOIN IntStd ON ISsid=Sid ";
-$select.= "LEFT JOIN Interface ON Iid=ISiid ";
-$select.= "LEFT JOIN LGInt ON LGIint=Iid ";
-$select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
-$select.= "LEFT JOIN ArchInt ON AIint=Iid ";
-$select.= "WHERE LGlib=$Lid ";
-$select.= "AND (AIappearedin <= '$lsbversion' AND AIappearedin <> '') ";
-$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
-$select.= "AND (ISappearedin <= '$lsbversion' AND ISappearedin <> '') ";
-$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
-$select.= "AND (Sappearedin <= '$lsbversion' AND Sappearedin <> '') ";
-$select.= "AND (Swithdrawnin IS NULL OR Swithdrawnin >'$lsbversion') ";
-$select.= "AND AIarch=$Aid ";
-$select.= "ORDER BY Sname";
-print STDERR $select,"\n" if $trace;
-#my %ref_list;
-$lsh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-$lsh->execute or die "Couldn't execute $select query: ".DBI->errstr;
+$select .= "LEFT JOIN IntStd ON ISsid=Sid ";
+$select .= "LEFT JOIN Interface ON Iid=ISiid ";
+$select .= "LEFT JOIN LGInt ON LGIint=Iid ";
+$select .= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
+$select .= "LEFT JOIN ArchInt ON AIint=Iid ";
+$select .= "WHERE LGlib=$Lid ";
+$select .= "AND (AIappearedin <= '$lsbversion' AND AIappearedin <> '') ";
+$select .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
+$select .= "AND (ISappearedin <= '$lsbversion' AND ISappearedin <> '') ";
+$select .= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
+$select .= "AND (Sappearedin <= '$lsbversion' AND Sappearedin <> '') ";
+$select .= "AND (Swithdrawnin IS NULL OR Swithdrawnin >'$lsbversion') ";
+$select .= "AND AIarch=$Aid ";
+$select .= "ORDER BY Sname";
+print STDERR $select, "\n" if $trace;
 
-if( $lsh->rows) {
-	print "The behavior of the interfaces in this library is specified ";
-	print "by the following specifications:";
-	print "<SIMPLELIST COLUMNS=1>\n";
-	for(my $refno=1; $refno <= $lsh->rows; $refno++) {
-		local(*entry);
-		$entry=$lsh->fetchrow_hashref;
-		printf "<MEMBER ID='REFSTD.%s.%d'>\n", makeid($Lname), $refno;
-		printf "[%s] <XREF LINKEND=\"std.%s\">\n", $entry->{'Sname'}, $entry->{'Stag'};
-		print "</MEMBER>\n";
-		$ref_list{$entry->{'Sname'}} = $refno;
-		}
-	print "</SIMPLELIST>\n";
+#my %ref_list;
+$lsh = $dbh->prepare($select)
+  or die "Couldn't prepare $select query: " . DBI->errstr;
+$lsh->execute or die "Couldn't execute $select query: " . DBI->errstr;
+
+if ( $lsh->rows ) {
+    print "The behavior of the interfaces in this library is specified ";
+    print "by the following specifications:";
+    print "<SIMPLELIST COLUMNS=1>\n";
+    for ( my $refno = 1 ; $refno <= $lsh->rows ; $refno++ ) {
+        local (*entry);
+        $entry = $lsh->fetchrow_hashref;
+        printf "<MEMBER ID='REFSTD.%s.%d'>\n", makeid($Lname), $refno;
+        printf "[%s] <XREF LINKEND=\"std.%s\">\n", $entry->{'Sname'},
+          $entry->{'Stag'};
+        print "</MEMBER>\n";
+        $ref_list{ $entry->{'Sname'} } = $refno;
+    }
+    print "</SIMPLELIST>\n";
 }
 $lsh->finish;
 print "</PARA>\n";
@@ -714,101 +766,106 @@ print "</PARA>\n";
 # 7) Get a list of the libgroups in the library
 #
 $select = "SELECT * FROM LibGroup ";
-$select.= "WHERE LGlib=$Lid ";
-$select.= "AND EXISTS ( ";
-$select.= "  SELECT 1 FROM LGInt ";
-$select.= "  JOIN ArchInt ON AIint=LGIint";
-$select.= "  WHERE LGIlibg=LGid " ;
-$select.= "  AND AIarch IN (1,$Aid) ";
-$select.= "  AND AIappearedin > '' AND AIappearedin <= '$lsbversion' ";
-$select.= "  AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
-$select.= ") ";
-$select.= "ORDER BY LGorder";
-print STDERR $select,"\n" if $trace;
-$lgh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-$lgh->execute or die "Couldn't execute $select query: ".DBI->errstr;
-if ($lgh->rows == 0) {
-	if ($archname eq "All") {
-		print "<PARA>\n";
-		print "There are no generic interfaces to this library\n";
-                #XX
-                #print "Please refer to the relevant architecture specific part of &ISOSTD; for details\n";
-                print "Please refer to the relevant architecture specific part of this specification for details\n";
-		print "</PARA>\n";
-	} else {
-		print "<PARA>\n";
-		print "The $archname architecture has no architecture specific interfaces\n";
-		print "to this library. Please refer to the generic specification.\n";
-		print "</PARA>\n";
-	}
-}
-for(1..$lgh->rows) {
-	local(*entry);
-	local(*std);
-	$entry=$lgh->fetchrow_hashref;
-	$LGid=$entry->{'LGid'};
-	$LGname=$entry->{'LGname'};
-	print "<!-- debug: database interface name $LGname -->\n";
-	$LGname=unmangle($LGname) if ($demangle);
+$select .= "WHERE LGlib=$Lid ";
+$select .= "AND EXISTS ( ";
+$select .= "  SELECT 1 FROM LGInt ";
+$select .= "  JOIN ArchInt ON AIint=LGIint";
+$select .= "  WHERE LGIlibg=LGid ";
+$select .= "  AND AIarch IN (1,$Aid) ";
+$select .= "  AND AIappearedin > '' AND AIappearedin <= '$lsbversion' ";
+$select .= "  AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') ";
+$select .= ") ";
+$select .= "ORDER BY LGorder";
+print STDERR $select, "\n" if $trace;
+$lgh = $dbh->prepare($select)
+  or die "Couldn't prepare $select query: " . DBI->errstr;
+$lgh->execute or die "Couldn't execute $select query: " . DBI->errstr;
 
-	print "<SECT2>\n";
-	print "<!--libgroup-->\n";
-	print "<TITLE>";
-	print $LGname;
-	print "</TITLE>\n";
-	print "<PARA>\n";
-	print "</PARA>\n";
-#
-# 8) For each group, make a table of the class data
-#
-{
-	local(*entry);
-	local(*inh);
-	$select = "SELECT * FROM ClassInfo ";
-	$select.= "LEFT JOIN LibGroup ON CIlibg=LGid ";
-	$select.= "LEFT JOIN ClassVtab ON CVcid=CIid ";
-	$select.= "LEFT JOIN ArchClass ON ACcid=CIid ";
-	$select.= "WHERE LGid=$LGid ";
-	if( $Aid != 1 ) {
-		$select.= "AND (ACaid=1 OR ACaid=$Aid) ";
-	}
-	$select.= "AND ACappearedin <> '' AND ACappearedin <= '$lsbversion' ";
-	$select.= "AND (ACwithdrawnin IS NULL OR ACwithdrawnin > '$lsbversion') ";
-	$select.= "AND CVpos=0 ";
-	$select.= "GROUP BY ACcid ";
-	$inh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-	$inh->execute or die "Couldn't execute $select query: ".DBI->errstr;
-	print STDERR $select,"\n" if $trace;
-	for(1..$inh->rows) {
-		$entry=$inh->fetchrow_hashref;
-		output_classinfo($entry);
-	}
-	$inh->finish;
+if ( $lgh->rows == 0 ) {
+    if ( $archname eq "All" ) {
+        print "<PARA>\n";
+        print "There are no generic interfaces to this library\n";
+	# this should be conditional based on ISO/non-ISO build
+	#print "Please refer to the relevant architecture specific part of &ISOSTD; for details\n";
+        print "Please refer to the relevant architecture specific part of this specification for details\n";
+        print "</PARA>\n";
+    } else {
+        print "<PARA>\n";
+        print "The $archname architecture has no architecture specific interfaces\n";
+        print "to this library. Please refer to the generic specification.\n";
+        print "</PARA>\n";
+    }
 }
-#
-# 9) For each group, make a table of the interfaces
-#
-	print "\n\n";
-	print "<SECT3>\n";
-	print "<TITLE>";
-	print "Interfaces for ".$LGname;
-	print "</TITLE>\n";
-	getinterfaces( $Lname, $LGname, $demangle ? "methods" : "functions", 1);
-#
-# 10) For each group, make a table of the deprecated interfaces
-#
-	getinterfaces($Lname, $LGname, "deprecated functions", 0);
+for ( 1 .. $lgh->rows ) {
+    local (*entry);
+    local (*std);
+    $entry  = $lgh->fetchrow_hashref;
+    $LGid   = $entry->{'LGid'};
+    $LGname = $entry->{'LGname'};
+    print "<!-- debug: database interface name $LGname -->\n";
+    $LGname = unmangle($LGname) if ($demangle);
 
-#
-# 11) Make a table of data interfaces
-#
-	getinterfaces($Lname, $LGname, "data interfaces", 0);
-#
-# 12) Make a table of deprecated data interfaces
-#
-	getinterfaces($Lname, $LGname, "deprecated data interfaces", 0);
-	print "</SECT3>\n";
-	print "</SECT2>\n";
+    print "<SECT2>\n";
+    print "<!--libgroup-->\n";
+    print "<TITLE>";
+    print $LGname;
+    print "</TITLE>\n";
+    print "<PARA>\n";
+    print "</PARA>\n";
+    #
+    # 8) For each group, make a table of the class data
+    #
+    {
+        local (*entry);
+        local (*inh);
+        $select = "SELECT * FROM ClassInfo ";
+        $select .= "LEFT JOIN LibGroup ON CIlibg=LGid ";
+        $select .= "LEFT JOIN ClassVtab ON CVcid=CIid ";
+        $select .= "LEFT JOIN ArchClass ON ACcid=CIid ";
+        $select .= "WHERE LGid=$LGid ";
+        if ( $Aid != 1 ) {
+            $select .= "AND (ACaid=1 OR ACaid=$Aid) ";
+        }
+        $select .= "AND ACappearedin <> '' AND ACappearedin <= '$lsbversion' ";
+        $select .=
+          "AND (ACwithdrawnin IS NULL OR ACwithdrawnin > '$lsbversion') ";
+        $select .= "AND CVpos=0 ";
+        $select .= "GROUP BY ACcid ";
+        $inh = $dbh->prepare($select)
+          or die "Couldn't prepare $select query: " . DBI->errstr;
+        $inh->execute or die "Couldn't execute $select query: " . DBI->errstr;
+        print STDERR $select, "\n" if $trace;
+
+        for ( 1 .. $inh->rows ) {
+            $entry = $inh->fetchrow_hashref;
+            output_classinfo($entry);
+        }
+        $inh->finish;
+    }
+    #
+    # 9) For each group, make a table of the interfaces
+    #
+    print "\n\n";
+    print "<SECT3>\n";
+    print "<TITLE>";
+    print "Interfaces for " . $LGname;
+    print "</TITLE>\n";
+    getinterfaces( $Lname, $LGname, $demangle ? "methods" : "functions", 1 );
+    #
+    # 10) For each group, make a table of the deprecated interfaces
+    #
+    getinterfaces( $Lname, $LGname, "deprecated functions", 0 );
+
+    #
+    # 11) Make a table of data interfaces
+    #
+    getinterfaces( $Lname, $LGname, "data interfaces", 0 );
+    #
+    # 12) Make a table of deprecated data interfaces
+    #
+    getinterfaces( $Lname, $LGname, "deprecated data interfaces", 0 );
+    print "</SECT3>\n";
+    print "</SECT2>\n";
 }
 $lgh->finish;
 
@@ -822,57 +879,62 @@ print "</SECT1>\n";
 #
 local ($data_def_header);
 $data_def_header = 0;
-$select = "SELECT DISTINCT Hname,Hid FROM Header ";
-$select.= "WHERE Hlib=$Lid ";
-$select.= "AND Happearedin <= '$lsbversion' AND Happearedin <> '' ";
-$select.= "AND (Hwithdrawnin IS NULL OR Hwithdrawnin > '$lsbversion') ";
-$select.= "ORDER BY Hname";
-$hdh = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-$hdh->execute or die "Couldn't execute $select query: ".DBI->errstr;
-if( $hdh->rows ) {
-	for(1..$hdh->rows) {
-		local(*entry);
-		$entry=$hdh->fetchrow_hashref;
-		$Hname=$entry->{'Hname'};
-		$headroot="../../../build_env/headers/$archname/$lsbversion/".$Hname;
-		$headname=$headroot.".defs";
-		if (!open(HEADER,"<".$headname) &&
-			!open(HEADER,"<../".$headname)) {
-			print "<!-- missing header file $archname/$lsbversion/$Hname -->\n";
-			next;
-		}
-		if( -s HEADER ) { # Make sure it's not empty
-			data_def_header() if (!$done_data_def_header);
-			print "<SECT2>\n";
-			print "<TITLE>";
-			print $entry->{'Hname'};
-			print "</TITLE>\n";
-			print "<PARA>\n";
-			$headnote=$headroot.".notes";
-			if (open(HEADNOTE, "<$headnote") ||
-				open(HEADNOTE,"<../$headnote")) {
-				print $_ while (<HEADNOTE>);
-				close(HEADNOTE);
-			}
-			print "</PARA>\n";
-			print "<SCREEN>\n";
-			while(<HEADER>) {
-                                s/\&/&amp;/g;
-				s/\</&lt;/g;
-				print $_;
-				}
-			print "</SCREEN>\n";
-			print "</SECT2>\n";
-		} else {
-			print "<!-- empty header file $archname/$Hname -->\n";
-			#
-			# perhaps we should print a :
-			# "No additional data interfaces are defined for $Hname"
-			# message here ??
-			#
-		}
-	}
-	print "</SECT1>\n" if ($done_data_def_header);
+$select          = "SELECT DISTINCT Hname,Hid FROM Header ";
+$select .= "WHERE Hlib=$Lid ";
+$select .= "AND Happearedin <= '$lsbversion' AND Happearedin <> '' ";
+$select .= "AND (Hwithdrawnin IS NULL OR Hwithdrawnin > '$lsbversion') ";
+$select .= "ORDER BY Hname";
+$hdh = $dbh->prepare($select)
+  or die "Couldn't prepare $select query: " . DBI->errstr;
+$hdh->execute or die "Couldn't execute $select query: " . DBI->errstr;
+
+if ( $hdh->rows ) {
+    for ( 1 .. $hdh->rows ) {
+        local (*entry);
+        $entry = $hdh->fetchrow_hashref;
+        $Hname = $entry->{'Hname'};
+        $headroot =
+          "../../../build_env/headers/$archname/$lsbversion/" . $Hname;
+        $headname = $headroot . ".defs";
+        if (   !open( HEADER, "<" . $headname )
+            && !open( HEADER, "<../" . $headname ) )
+        {
+            print "<!-- missing header file $archname/$lsbversion/$Hname -->\n";
+            next;
+        }
+        if ( -s HEADER ) {    # Make sure it's not empty
+            data_def_header() if ( !$done_data_def_header );
+            print "<SECT2>\n";
+            print "<TITLE>";
+            print $entry->{'Hname'};
+            print "</TITLE>\n";
+            print "<PARA>\n";
+            $headnote = $headroot . ".notes";
+            if (   open( HEADNOTE, "<$headnote" )
+                || open( HEADNOTE, "<../$headnote" ) )
+            {
+                print $_ while (<HEADNOTE>);
+                close(HEADNOTE);
+            }
+            print "</PARA>\n";
+            print "<SCREEN>\n";
+            while (<HEADER>) {
+                s/\&/&amp;/g;
+                s/\</&lt;/g;
+                print $_;
+            }
+            print "</SCREEN>\n";
+            print "</SECT2>\n";
+        } else {
+            print "<!-- empty header file $archname/$Hname -->\n";
+            #
+            # perhaps we should print a :
+            # "No additional data interfaces are defined for $Hname"
+            # message here ??
+            #
+        }
+    }
+    print "</SECT1>\n" if ($done_data_def_header);
 }
 $hdh->finish;
 #
@@ -880,74 +942,90 @@ $hdh->finish;
 #
 
 $select = "SELECT Iname,ISsid FROM Interface ";
-$select.= "LEFT JOIN LGInt ON Iid=LGIint ";
-$select.= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
-$select.= "LEFT JOIN Library ON Lid=LGlib ";
-$select.= "LEFT JOIN IntStd ON ISiid=Iid ";
-$select.= "LEFT JOIN Standard ON Sid=ISsid ";
-$select.= "LEFT JOIN ArchInt ON Iid=AIint ";
-$select.= "WHERE Lid=$Lid AND AIarch=$Aid ";
-$select.= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
-$select.= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
-$select.= "AND (ISappearedin <= '$lsbversion' and ISappearedin <> '') ";
-$select.= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
+$select .= "LEFT JOIN LGInt ON Iid=LGIint ";
+$select .= "LEFT JOIN LibGroup ON LGid=LGIlibg ";
+$select .= "LEFT JOIN Library ON Lid=LGlib ";
+$select .= "LEFT JOIN IntStd ON ISiid=Iid ";
+$select .= "LEFT JOIN Standard ON Sid=ISsid ";
+$select .= "LEFT JOIN ArchInt ON Iid=AIint ";
+$select .= "WHERE Lid=$Lid AND AIarch=$Aid ";
+$select .= "AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
+$select .= "AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion')";
+$select .= "AND (ISappearedin <= '$lsbversion' and ISappearedin <> '') ";
+$select .= "AND (ISwithdrawnin IS NULL OR ISwithdrawnin >'$lsbversion') ";
+
 # Don't try to include the description of generic interfaces
 # into the arch specific document
-if( $Aid!=1 ) {
-	$select.= "AND Iid NOT IN ";
-	$select.= "(SELECT DISTINCT AIint FROM ArchInt";
-	$select.= " WHERE AIarch=1 ";
-	$select.= " AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
-	$select.= " AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') )";
+if ( $Aid != 1 ) {
+    $select .= "AND Iid NOT IN ";
+    $select .= "(SELECT DISTINCT AIint FROM ArchInt";
+    $select .= " WHERE AIarch=1 ";
+    $select .= " AND (AIappearedin <= '$lsbversion' and AIappearedin <> '') ";
+    $select .= " AND (AIwithdrawnin IS NULL OR AIwithdrawnin >'$lsbversion') )";
 }
-$select.= "AND Sname='LSB'";
-$select.= "ORDER BY Iname";
-print STDERR $select,"\n" if $trace;
-$sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->errstr;
-$sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
-if($sth->rows) {
-	print "<SECT1 ID=", $safelibname, "man>\n";
-	print "<TITLE>Interface Definitions for ", $libname, "</TITLE>\n";
-	print "<PARA>\n";
-	print "The interfaces defined on the following pages are included in $libname and are defined\n";
-	print "by this specification.\n";
-	print "Unless otherwise noted, these interfaces shall be included\n";
-	print "in the source standard.\n";
-	print "</PARA>\n";
-	print "<PARA>\n";
-	print "Other interfaces listed in <XREF LINKEND=$safelibname> shall behave as described\n";
-	print "in the referenced base document.";
-	if( $Aid != 1 ) {
-		print " For interfaces referencing LSB and not listed below, please see the generic part of the specification.\n"
-	}
-	else {
-		print "\n";
-	}
+$select .= "AND Sname='LSB'";
+$select .= "ORDER BY Iname";
+print STDERR $select, "\n" if $trace;
+$sth = $dbh->prepare($select)
+  or die "Couldn't prepare $select query: " . DBI->errstr;
+$sth->execute or die "Couldn't execute $select query: " . DBI->errstr;
+if ( $sth->rows ) {
+    print "<SECT1 ID=",                        $safelibname, "man>\n";
+    print "<TITLE>Interface Definitions for ", $libname,     "</TITLE>\n";
+    print "<PARA>\n";
+    print "The interfaces defined on the following pages are included in $libname and are defined\n";
+    print "by this specification.\n";
+    print "Unless otherwise noted, these interfaces shall be included\n";
+    print "in the source standard.\n";
+    print "</PARA>\n";
+    print "<PARA>\n";
+    print "Other interfaces listed in <XREF LINKEND=$safelibname> shall behave as described\n";
+    print "in the referenced base document.";
 
-	print "</PARA>\n";
+    if ( $Aid != 1 ) {
+        print " For interfaces referencing LSB and not listed below, please see the generic part of the specification.\n";
+    } else {
+        print "\n";
+    }
 
-	for(1..$sth->rows) {
-		local(*entry);
-		$entry=$sth->fetchrow_hashref;
-		# NB: Footnotes must be unique across the entire document
-		# NB: names are NOT demangled here ...
-		if (-f $entry->{'Iname'}.".sgml") {
-                        print "m4_sinclude(m4_ifdef('".$entry->{'Iname'}."','',".$entry->{'Iname'}.".sgml))\n";
-                        print "m4_define('".$entry->{'Iname'}."','1')\n";
-		} elsif (-f "../../generic/" . basename(cwd()) . "/" . $entry->{'Iname'} . ".sgml") {
-                        print "m4_sinclude(m4_ifdef('".$entry->{'Iname'}."','',../../generic/" . basename(cwd()) . "/" . $entry->{'Iname'} . ".sgml))\n";
-                        print "m4_define('".$entry->{'Iname'}."','1')\n";
-		} else {
-			$missing++;
-			print "<!-- MISSING DEFINITION FOR " . $entry->{'Iname'} . " -->\n";
-			print "<!-- Lets just hope nobody notices -->\n";
-		}
-	}
-	print "</SECT1>\n";
+    print "</PARA>\n";
+
+    for ( 1 .. $sth->rows ) {
+        local (*entry);
+        $entry = $sth->fetchrow_hashref;
+
+        # NB: Footnotes must be unique across the entire document
+        # NB: names are NOT demangled here ...
+        if ( -f $entry->{'Iname'} . ".sgml" ) {
+            print "m4_sinclude(m4_ifdef('"
+              . $entry->{'Iname'} . "','',"
+              . $entry->{'Iname'}
+              . ".sgml))\n";
+            print "m4_define('" . $entry->{'Iname'} . "','1')\n";
+        }
+        elsif ( -f "../../generic/"
+            . basename( cwd() ) . "/"
+            . $entry->{'Iname'}
+            . ".sgml" )
+        {
+            print "m4_sinclude(m4_ifdef('"
+              . $entry->{'Iname'}
+              . "','',../../generic/"
+              . basename( cwd() ) . "/"
+              . $entry->{'Iname'}
+              . ".sgml))\n";
+            print "m4_define('" . $entry->{'Iname'} . "','1')\n";
+        } else {
+            $missing++;
+            print "<!-- MISSING DEFINITION FOR " . $entry->{'Iname'} . " -->\n";
+            print "<!-- Lets just hope nobody notices -->\n";
+        }
+    }
+    print "</SECT1>\n";
 }
 $sth->finish;
 $dbh->disconnect;
 
-printf STDERR ("Skipped %d missing interfaces\n", $missing) if ($missing);
+printf STDERR ( "Skipped %d missing interfaces\n", $missing ) if ($missing);
 printf("<!-- End of text generated from database -->\n");
 
