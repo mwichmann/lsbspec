@@ -93,7 +93,7 @@ MANPAGES= sockio.sgml ttyio.sgml \
 	__wcsrtombs_chk.sgml __wcstombs_chk.sgml __wctomb_chk.sgml \
 	__wmemcpy_chk.sgml __wmemmove_chk.sgml __wmempcpy_chk.sgml \
 	__wmemset_chk.sgml __wprintf_chk.sgml \
-	dladdr.sgml dlopen.sgml dlsym.sgml \
+	dladdr.sgml dlopen-1.0.sgml dlopen-5.0.sgml dlsym.sgml \
 	__finite.sgml __finitef.sgml __finitel.sgml __fpclassify.sgml \
 	__fpclassifyf.sgml __signbit.sgml __signbitf.sgml \
 	clog10.sgml clog10f.sgml clog10l.sgml drem.sgml dremf.sgml \

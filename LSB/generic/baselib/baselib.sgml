@@ -38536,6 +38536,56 @@ choose to dlopen libm.</para></note>
 
 </para>
 
+<refsect2>
+<title>Additional flags</title>
+<para>
+In addition to the available values for <parameter>flag</parameter>
+as documented in <XREF LINKEND=std.SUSv4>, the following values may
+also be ORed into <parameter>flag</parameter>:
+</para>
+
+<variablelist>
+  <varlistentry>
+  <term>RTLD_NODELETE</term>
+  <listitem> 
+<para>
+Do not unload the library during
+<function>dlclose</function>. Consequently, the library's static
+variables are not reinitialized if the library is reloaded with
+<function>dlopen</function> at a later time.
+</para>
+  </listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term>RTLD_NOLOAD</term>
+  <listitem> 
+<para>
+Do not load the library. This can be used to test if the
+library is already resident. <function>dlopen</function> returns a
+<constant>NULL</constant> pointer if it is not resident;
+it returns the library's handle if it is resident. 
+This flag can also be used to promote the flags on
+a library that is already loaded. For example, a library that was
+previously loaded with <constant>RTLD_LOCAL</constant> can be reopened
+using <constant>RTLD_NOLOAD|RTLD_GLOBAL</constant>.
+</para>
+  </listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term>RTLD_DEEPBIND</term>
+  <listitem> 
+<para>
+Place the lookup scope of the symbols in this library ahead of the global
+scope. This means that a self-contained library will use its own symbols
+in preference to global symbols with the same name contained in libraries
+that have already been loaded.
+</para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+
 </refsect1>
 </refentry>
 

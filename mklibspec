@@ -39,7 +39,8 @@ sub makeid($) {
     $name =~ s/\s+/./g;
     $name =~ s/[^A-Za-z0-9.]+/./g;
 
-# finally, remove any repeated . (e.g. "RPC...XDR" which arose from "RPC & XDR")
+    # finally, remove any repeated `.' 
+    # (e.g. "RPC...XDR" which arose from "RPC & XDR")
     $name =~ s/\.\.+/./g;
     return $name;
 }
@@ -109,6 +110,74 @@ sub getinterfacename($) {
     $entry = $isth->fetchrow_hashref;
     $isth->finish;
     return $entry->{'Iname'};
+}
+
+sub getinterfacespec($) {
+    my $Iname = @_[0];
+    my $Page = $Iname . ".sgml";
+    #
+    # look for page in current directory
+    #
+    if ( -f $Page ) {
+        return( $Page );
+    } 
+    #
+    # if not in generic, look in generic directory
+    #
+    if (cwd() !~ /generic/) {
+	$AltPage = "../../generic/" .  basename( cwd() ) . "/" . $Page;
+	if ( -f $AltPage ) {
+	    return ( $AltPage );
+	}
+    }
+    #
+    # look for version-suffixed names in current directory
+    #
+    my $found = 0;
+    my $prev_ver = "";
+    opendir (DIR, ".");
+    @filelist = sort grep { /^$Iname\-.+\.sgml/ } readdir(DIR);
+    closedir (DIR);
+    foreach (@filelist) {
+	if (/^$Iname-(.+)\.sgml/) {
+	    $ver = $1;
+	    $found = 1;
+	}
+	if ($ver > $lsbversion) {
+	    return ($Iname."-".$prev_ver.".sgml");
+	}
+	$prev_ver = $ver;
+    }
+    if ($found) {
+	return ($Iname."-".$prev_ver.".sgml");
+    }
+    #
+    # if not in generic, look for version-suffixed names in generic
+    #
+    if (cwd() !~ /generic/) {
+	$found = 0;
+	$prev_ver = "";
+	opendir (DIR, "../../generic/".basename(cwd())."/" );
+	@filelist = sort grep { /^$Iname\-.+\.sgml/ } readdir(DIR);
+	closedir (DIR);
+	foreach (@filelist) {
+	    if (/^$Iname-(.+)\.sgml/) {
+		$ver = $1;
+		$found = 1;
+	    }
+	    if ($ver > $lsbversion) {
+		return ($Iname."-".$prev_ver.".sgml");
+	    }
+	    $prev_ver = $ver;
+	}
+	if ($prev_ver) {
+	    return ($Iname."-".$prev_ver.".sgml");
+	}
+    }
+    #
+    # not found: return empty string for separate processing
+    #
+    return ( "" );
 }
 
 sub getinterfacevisibility($) {
@@ -993,31 +1062,15 @@ if ( $sth->rows ) {
     for ( 1 .. $sth->rows ) {
         local (*entry);
         $entry = $sth->fetchrow_hashref;
+	my $Iname = $entry->{'Iname'};
+	$pagename = getinterfacespec($Iname);
 
-        # NB: Footnotes must be unique across the entire document
-        # NB: names are NOT demangled here ...
-        if ( -f $entry->{'Iname'} . ".sgml" ) {
-            print "m4_sinclude(m4_ifdef('"
-              . $entry->{'Iname'} . "','',"
-              . $entry->{'Iname'}
-              . ".sgml))\n";
-            print "m4_define('" . $entry->{'Iname'} . "','1')\n";
-        }
-        elsif ( -f "../../generic/"
-            . basename( cwd() ) . "/"
-            . $entry->{'Iname'}
-            . ".sgml" )
-        {
-            print "m4_sinclude(m4_ifdef('"
-              . $entry->{'Iname'}
-              . "','',../../generic/"
-              . basename( cwd() ) . "/"
-              . $entry->{'Iname'}
-              . ".sgml))\n";
-            print "m4_define('" . $entry->{'Iname'} . "','1')\n";
+	if ($pagename) {
+            print "m4_sinclude(m4_ifdef('" . $Iname . "',''," . $pagename . "))\n";
+            print "m4_define('" . $Iname . "','1')\n";
         } else {
             $missing++;
-            print "<!-- MISSING DEFINITION FOR " . $entry->{'Iname'} . " -->\n";
+            print "<!-- MISSING DEFINITION FOR " . $Iname . " -->\n";
             print "<!-- Lets just hope nobody notices -->\n";
         }
     }
