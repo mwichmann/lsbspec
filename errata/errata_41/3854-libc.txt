@@ -1,0 +1,114 @@
+Specification: LSB Core generic
+Edition of Specification: 4.1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=3854
+
+Rationale: six functions are incorrectly documented as needing to include
+<libc.h>; the header is not specified. The functions __chk_fail and
+__stack_chk_fail should be documented as appearing only in the source
+standard, and should have no header refrence.  The functions __fprintf_chk
+and __vfprintf_chk should be documented as requiring <stdio.h> and the
+function __stpncpy_chk should be documented as requiring <string.h>.
+These three prototypes did not appear in Data Definitions, and should
+be added.  One additional function, lcong48_r, should be documented as
+requiring <stdlib.h>.
+
+
+In LSB Core generic:
+
+In 12.4. Data Definitions for libc
+12.4.58. stdio.h
+
+Add:
+
+extern int __fprintf_chk(FILE *, int, const char *, ...);
+extern int __vfprintf_chk(FILE *, int, const char *, va_list);
+
+
+12.4.60. string.h
+
+Add:
+
+extern char *__stpncpy_chk(char *, const char *, size_t, size_t);
+
+
+In 12.5. Interface Definitions for libc
+
+
+In interface __chk_fail, section Synopsis:
+
+Delete:
+
+   #include <libc.h>
+
+in section Description:
+
+Add:
+
+   The __chk_fail() function is not in the source standard; it is
+   only in the binary standard.
+
+
+In interface __fprintf_chk, section Synopsis:
+
+Change:
+
+   #include <libc.h>
+
+To:
+
+   #include <stdio.h>
+
+
+
+In interface __chk_fail, section Synopsis:
+
+Delete:
+
+   #include <libc.h>
+
+
+in section Description:
+
+Add:
+
+   The __stack_chk_fail() function is not in the source standard;
+   it is only in the binary standard.
+
+
+
+In interface __stpncpy_chk, section Synopsis:
+
+Change:
+
+   #include <libc.h>
+
+To:
+
+   #include <string.h>
+
+
+In interface __vfprintf_chk, section Synopsis:
+
+Change:
+
+   #include <libc.h>
+
+To:
+
+   #include <stdio.h>
+
+
+
+In interface lcong48_r, section Synopsis:
+
+Change:
+
+   #include <libc.h>
+
+To:
+
+   #include <stdlib.h>
+
+
