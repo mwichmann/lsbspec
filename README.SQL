@@ -1,4 +1,5 @@
 How to hack on the LSB spec
+Warning: this document is outdated
 ---------------------------
 
 This document concerns the database portion of the LSB spec.  Because

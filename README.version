@@ -1,0 +1,79 @@
+How spec versioning works:
+
+Two files, version and target_version, are used for version info.
+
+'version' contains the version number that will be put in the spec.
+It is used in ../books and ../booksets (reference is in Makefile.common),
+to create a file 'buildversion' and to modify the main sgml file which
+controls the build, like this:
+
+	echo `cat $(SPECSRC)/version`-`date +"%Y%m%d"` >buildversion; \
+	sed -e "s#LSBVERSION#`cat $(SPECSRC)/version`-`date +"%Y%m%d"`#" \
+	-e "s#TARGETVERSION#`cat $(SPECSRC)/target_version`#" \
+	-e "s#SPECSRC#$(SPECSRC)#" $(DOC).sgml.sed >$(DOC).sgml
+
+or like this:
+
+	echo `cat $(SPECSRC)/version` >buildversion; \
+	sed -e "s#LSBVERSION#`cat $(SPECSRC)/version`#" \
+	-e "s#TARGETVERSION#`cat $(SPECSRC)/target_version`#" \
+	-e "s#SPECSRC#$(SPECSRC)#" $(DOC).sgml.sed >$(DOC).sgml
+
+In the .sgml.sed files in ../books and ../booksets, this value will
+be edited into the controlling .sgml file as entity @specversion;
+
+'target_version' is used to describe the version the build targets -
+this number is rarely the same as 'version', except for the initial
+gold release of each LSB version.  target_version is used for database
+queries by various generator scripts, so for all builds targeting
+LSB 5.0 the value must be 5.0, while version will usually start lower
+(e.g. 4.80, 4.85) during pre-release) and possibly move beyond (5.0.1,
+etc.) post-release.  There will typically be an lsbspec branch for
+each LSB release, and when creating this branch is usually the only
+time target_version is changed.
+
+target_version usage usually is limited to makefiles, and is usually
+done in this style:
+
+TOP=../../..
+...
+gensrc:
+	$(TOP)/mklibapnd -a All -m LSB_Graphics -v `cat $(TOP)/target_version` >graphlist.sgml
+
+
+Update: target_version is now made available to all book/booksets builds
+as the &targetversion; entity defined in each .sgml.sed file which
+is edited into the controlling .sgml file by the make rules above.
+Spec sources which need to refer to the target LSB version can use
+this - e.g. the frontmatter which often says something like "this is
+version @specversion; of FOO, when work is complete it will become
+@targetversion;."   This has been put into all the appropriate places
+in this tree.
+
+===
+
+Recently this scheme was simplified; previously there was a version and
+target_version for each architecture (generic, IA32, etc.), and it was
+possible to have copies of these files in each module and submodule
+directory. This is mentioned in case there is some future reason to
+restore multiple version files.
+
+In {books/booksets}/Makefile.common, the $(SPECSRC)/version can be
+replaced with $(SPECSRC)/version.$(ARCH) is there is a reason to return
+to per-arch versions.  In this case the top-level directory here should
+add matching files - version.generic, version.IA32, etc.
+
+In lsbspec, there seems less reason to return to per-arch behavior,
+since the target version is likely to be the same within the same branch.
+
+Per-module (or per-submodule) versions are possible.  Usually the module
+specifications are all published together, so this would be unusual,
+but submodules can be published individually for various reasons, and
+these versions could vary.  For example, when Packaging is included
+in Core the whole thing is published under the LSB version, but if
+built separately (in books directory), it might be published as "Linux
+Packaging Specification 1.2".  However, at the moment the Makefile.common
+scheme does not understand anything other than getting a single version
+file when generating the two files described above, and would have to
+be taught this - essentially, in this case, the rules would no longer
+be common (this ought only to apply in books, not booksets).

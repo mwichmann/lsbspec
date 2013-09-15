@@ -1,0 +1,97 @@
+lsbspec:
+this directory contains most of the source code for the LSB specification.
+
+This note describes the directory layout, but not how to make use of
+the contents.  That information may be found elsewehere, both in files
+in this tree and on the LSB Wiki, but just some short notes here.
+
+This note is for the LSB 4.1 specification directory and has been updated
+with some changes made post-release to match some of the changes made to
+the LSB 5.0 specification tree.
+
+1. The spec is written in Docbook (sgml, for historical reasons and because
+   nobody has had the time to invest to convert it to xml).
+
+2. LSB is structured in a heirarchical form, the full spec divided into 
+   Modules, modules composed of Submodules, and submodules containing
+   individual elements such as libraries, commands, etc.
+
+   In general, each submodule has a directory in lsbspec which contains
+   the sources for the pieces of that submodule. Each module has a
+   directory as well.  When individual submodule books are built (from
+   the parallel ../books tree), the submodule front matter and appendix
+   is used. When submodules are combined into a module book (from the
+   parallel ../booksets tree), they are ignored and the combined module
+   front matter and appendix is used.
+
+   There are a number of exceptions to this layout rule, see (5) below.
+
+3. The submodule layout is roughly:
+
+   intro - frontmatter, including generated lists of libraries,
+           referenced specifications, and some intro text
+   generic - all the generic material for the submodule
+   [arch1, arch2...] - each of these contains arch-specific materials,
+           omitted if there is none
+
+   Some of these may be further subdivided, e.g. generic may have
+   subdirectories for generic libraries, or groups of libraries.
+
+   There will usually be some sort of appendix directory as well,
+   usually under the generic/arch directories.
+
+4. Module directories generally only have an intro directory containing
+   the frontmatter needed to glue the submodules together when each
+   submodule's intro directory is omitted, and some structure to generate
+   an appendix for the combined book.
+
+5. Since there's been evolution over more than a decade and for each
+   change in convention it wasn't always worth reworking old stuff, some
+   things don't follow the current convention (many of these oddities will
+   be eliminated in LSB 5.0).  The main exception is that the directory
+   LSB corresponds to both the submodule named LSB_Core and the module
+   named LSB-Core. It also contains source for the the LSB_CXX module,
+   which is built separately.  LSB-Core is also considered to include
+   ELF and Packaging which are their own top-level directories, even
+   though these are not officially submodules.
+
+6. Individual generated sgml files which are to be put together into a
+   published specification are generally described by SGML entities in
+   the file "entities".  This avoids building in long paths in the book
+   build area.  Where several entities are to be combined for a submodule,
+   there's usually a file named "contents" which is a list of entities
+   needed. Since LSB 5.0 (later retrofit to 4.1), these have been moved
+   into the submodule directories from an earlier separate location.
+
+7. There's an exception to "source is here": source for Data Definitions,
+   which are similar to SDK headers, but version-specific,
+   architecture-specific and without protection macros and other
+   wrapping material that a true header requires - these are expected
+   to be in ../build_env/headers relative to inside lsbspec.  So while
+   build_env/headers/stdio.h is full of #ifdefs for versions,
+   protection, architecture specifics, there is a stdio.h.defs
+   file for each specific specification build scenario, for example
+   build_env/headers/All/4.1/stdio.h.defs is the piece to be used in
+   the Generic build of the LSB 4.1 specification.  Headers and data
+   definitions files are maintained and generated together to avoid
+   version skew, which is why this additional tree is needed during
+   spec building.
+
+8. A fair bit of additional data is generated from the database. This
+   material is built by typing "make gensrc" in the appropriate directory.
+   Adding new spec manpages will somewhat surprisingly require this step,
+   which requires setting up an instance of the database.
+
+Directories which begin with lowercase letters contain various additional
+material, which is usually not specification source.  The exception
+would be "matters", which includes some shared boilerplate such as the
+spec license, definitions, copyright statements, etc. 
+
+"errata" contains errata documents for various editions of the 
+specification. At the moment this is in the form of text files,
+not sgml files although a conversion someday is hoped for and there
+are already placeholder locations for building full sgml-based errata.
+
+Note that the specifications are not generated here, but rather in
+parallel directories "booksets" and "books".
+
