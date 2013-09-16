@@ -3,7 +3,7 @@ TOP=../../..
 .SUFFIXES: .sgml .m4
 
 MANPAGES= forkpty.sgml login.sgml login_tty.sgml logout.sgml \
-	logwtmp.sgml mkfifo.sgml mknod.sgml openpty.sgml \
+	logwtmp.sgml openpty.sgml \
 	adler32.sgml compress2.sgml compressBound.sgml compress.sgml \
 	crc32.sgml deflateBound.sgml deflateCopy.sgml deflateEnd.sgml \
 	deflateInit2_.sgml deflateInit_.sgml deflateParams.sgml \
