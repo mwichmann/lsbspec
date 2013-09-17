@@ -1,0 +1,38 @@
+Specification: LSB Core generic
+Edition of Specification: 4.1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=2832
+
+Rationale: the macro offsetof, required by ISO C, fails when applied
+in certain circumstances.  The circumstances are particular to certain
+compilation environments, but to facilitate application development on
+a range of platforms, the following adjustment is made to accomodate
+implementations.  The __builtin_offsetof compiler builtin in the special
+case meets the requirement of POSIX 2003, which is a restatement of the
+ISO C requirement:
+
+  offsetof(type, member-designator)
+
+      Integer constant expression of type size_t, the value of which is
+      the offset in bytes to the structure member (member-designator),
+      from the beginning of its structure (type).
+
+
+In LSB Core generic:
+
+In 12.4. Data Definitions for libc
+12.4.56. stddef.h
+
+Change:
+
+#define offsetof(TYPE,MEMBER)   ((size_t)&((TYPE*)0)->MEMBER)
+
+To:
+
+#if !defined(__GNUC__)
+#define __builtin_offsetof (TYPE, MEMBER)       ((size_t)&((TYPE*)0)->MEMBER)
+#endif
+#define offsetof(TYPE,MEMBER)   __builtin_offsetof (TYPE, MEMBER)
+
+

@@ -1,0 +1,67 @@
+Specification: LSB Core generic
+Edition of Specification: 4.1
+Type: Error
+Status: Unapproved
+Bug reference: http://bugs.linuxbase.org/show_bug.cgi?id=3717
+
+Rationale: several items in Data Definitions are defined in places other
+than described by POSIX 2003 and other specifications. In practical
+use, this caused some issues with portable software which could be
+compiled in other environments but not when attempting conformance
+with this specification.  The changes to constants SEEK_SET, SEEK_CUR,
+SEEK_END and function select() are intended to align with POSIX 2003,
+and the change to type off64_t is intended to align with LFS (and
+consistency with POSIX as to where related type off_t is defined).
+
+In LSB Core generic:
+
+In 12.4. Data Definitions for libc
+12.4.11. fcntl.h
+
+Add:
+#ifndef SEEK_SET
+#define SEEK_SET        0
+
+#ifndef SEEK_CUR
+#define SEEK_CUR        1
+
+#ifndef SEEK_END
+#define SEEK_END        2
+
+
+12.4.73. sys/select.h
+
+Add:
+
+extern int select(int __nfds, fd_set * __readfds, fd_set * __writefds,
+                  fd_set * __exceptfds, struct timeval *__timeout);
+
+
+12.4.85. sys/types.h
+
+Add:
+
+typedef long long int off64_t;
+
+
+12.4.96. unistd.h
+
+Delete:
+
+#ifndef SEEK_SET
+#define SEEK_SET        0
+
+#ifndef SEEK_CUR
+#define SEEK_CUR        1
+
+#ifndef SEEK_END
+#define SEEK_END        2
+
+Delete:
+
+typedef long long int off64_t;
+
+Delete:
+
+extern int select(int __nfds, fd_set * __readfds, fd_set * __writefds,
+                  fd_set * __exceptfds, struct timeval *__timeout);
