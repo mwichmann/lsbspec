@@ -2699,15 +2699,16 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 typedef int error_t;
 extern error_t argz_add(char **argz, size_t * argz_len, const char *str);
 extern error_t argz_add_sep(char **argz, size_t * argz_len,
-			    const char *str, int delim);
+			    const char *str, int sep);
 extern error_t argz_append(char **argz, size_t * argz_len, const char *buf,
 			   size_t buf_len);
-extern size_t argz_count(const char *argz, size_t * len);
-extern error_t argz_create(char *const argv[], char **argz, size_t * len);
+extern size_t argz_count(const char *argz, size_t * argz_len);
+extern error_t argz_create(char *const argv[], char **argz,
+			   size_t * argz_len);
 extern error_t argz_create_sep(const char *str, int sep, char **argz,
-			       size_t * len);
+			       size_t * argz_len);
 extern void argz_delete(char **argz, size_t * argz_len, char *entry);
-extern void argz_extract(const char *argz, size_t len, char **argv);
+extern void argz_extract(const char *argz, size_t argz_len, char **argv);
 extern error_t argz_insert(char **argz_insert, size_t * argz_len,
 			   char *before, const char *entry);
 extern char argz_next(const char *argz, size_t argz_len,
@@ -2715,7 +2716,7 @@ extern char argz_next(const char *argz, size_t argz_len,
 extern error_t argz_replace(char **argz, size_t * argz_len,
 			    const char *str, const char *with,
 			    unsigned int *replace_count);
-extern void argz_stringify(char *argz, size_t len, int sep);
+extern void argz_stringify(char *argz, size_t argz_len, int sep);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -16931,7 +16932,7 @@ of type <structname>dirent64</structname> instead of type
 </refentry>
 
 
-<refentry id="baselib-argz-add-1">
+<refentry id="baselib-argz-add">
 
 <refmeta>
 <refentrytitle>
@@ -16967,29 +16968,29 @@ argz_replace,
 argz_stringify
 </refname>
 <refpurpose>Operate on argz vectors</refpurpose>
-<indexterm id="ix-baselib-argz-add-1">
+<indexterm id="ix-baselib-argz-add">
 	<primary>argz_add</primary></indexterm>
-<indexterm id="ix-baselib-argz-add-sep-1">
+<indexterm id="ix-baselib-argz-add-sep">
 	<primary>argz_add_sep</primary></indexterm>
-<indexterm id="ix-baselib-argz-append-1">
+<indexterm id="ix-baselib-argz-append">
 	<primary>argz_append</primary></indexterm>
-<indexterm id="ix-baselib-argz-count-1">
+<indexterm id="ix-baselib-argz-count">
 	<primary>argz_count</primary></indexterm>
-<indexterm id="ix-baselib-argz-create-1">
+<indexterm id="ix-baselib-argz-create">
 	<primary>argz_create</primary></indexterm>
-<indexterm id="ix-baselib-argz-create-sep-1">
+<indexterm id="ix-baselib-argz-create-sep">
 	<primary>argz_create_sep</primary></indexterm>
-<indexterm id="ix-baselib-argz-delete-1">
+<indexterm id="ix-baselib-argz-delete">
 	<primary>argz_delete</primary></indexterm>
-<indexterm id="ix-baselib-argz-extract-1">
+<indexterm id="ix-baselib-argz-extract">
 	<primary>argz_extract</primary></indexterm>
-<indexterm id="ix-baselib-argz-insert-1">
+<indexterm id="ix-baselib-argz-insert">
 	<primary>argz_insert</primary></indexterm>
-<indexterm id="ix-baselib-argz-next-1">
+<indexterm id="ix-baselib-argz-next">
 	<primary>argz_next</primary></indexterm>
-<indexterm id="ix-baselib-argz-replace-1">
+<indexterm id="ix-baselib-argz-replace">
 	<primary>argz_replace</primary></indexterm>
-<indexterm id="ix-baselib-argz-stringify-1">
+<indexterm id="ix-baselib-argz-stringify">
 	<primary>argz_stringify</primary></indexterm>
 </refnamediv>
 
@@ -17003,7 +17004,7 @@ argz_stringify
 <funcdef>error_t
 <function>argz_add</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -17018,7 +17019,7 @@ argz_stringify
 <funcdef>error_t
 <function>argz_add_sep</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -17028,7 +17029,7 @@ argz_stringify
 <parameter>str</parameter>
 </paramdef>
 <paramdef>int
-<parameter>delim</parameter>
+<parameter>sep</parameter>
 </paramdef>
 </funcprototype>
 
@@ -17036,7 +17037,7 @@ argz_stringify
 <funcdef>error_t
 <function>argz_append</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -17058,7 +17059,7 @@ argz_stringify
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t *
-<parameter>len</parameter>
+<parameter>argz_len</parameter>
 </paramdef>
 </funcprototype>
 
@@ -17069,11 +17070,11 @@ argz_stringify
 <paramdef>char * const 
 <parameter>argv</parameter>
 </paramdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t *
-<parameter>len</parameter>
+<parameter>argz_len</parameter>
 </paramdef>
 </funcprototype>
 
@@ -17087,11 +17088,11 @@ argz_stringify
 <paramdef>int
 <parameter>sep</parameter>
 </paramdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t *
-<parameter>len</parameter>
+<parameter>argz_len</parameter>
 </paramdef>
 </funcprototype>
 
@@ -17099,7 +17100,7 @@ argz_stringify
 <funcdef>void
 <function>argz_delete</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -17118,9 +17119,9 @@ argz_stringify
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t
-<parameter>len</parameter>
+<parameter>argz_len</parameter>
 </paramdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argv</parameter>
 </paramdef>
 </funcprototype>
@@ -17129,7 +17130,7 @@ argz_stringify
 <funcdef>error_t
 <function>argz_insert</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argz_insert</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -17162,7 +17163,7 @@ argz_stringify
 <funcdef>error_t
 <function>argz_replace</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -17187,7 +17188,7 @@ argz_stringify
 <parameter>argz</parameter>
 </paramdef>
 <paramdef>size_t
-<parameter>len</parameter>
+<parameter>argz_len</parameter>
 </paramdef>
 <paramdef>int
 <parameter>sep</parameter>
@@ -17199,45 +17200,137 @@ argz_stringify
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+The argz functions operate on argz vectors, which are typically used
+to more easily manipulate program arguments, of the form described 
+in <XREF LINKEND="STD.ISOC99"> in section 5.1.2.2.1, Program Startup.
+While an argv is an array of character pointers to strings,
+an argz vector is a set of strings, separated by
+null characters, in contiguous memory; the vector is described by
+a pointer to the first element and a size.  There is no limitation
+that the argz must be made up of program arguments.
+</para>
+<para>
+The argz functions which change argz vectors expect them to use
+memory allocated using <function>malloc</function>, and will
+themselves use <function>malloc</function> or <function>realloc</function>.
+</para>
+<para>
+The <function>argz_create</function> function converts an argv 
+vector identified by <varname>argv</varname>
+to an argz vector with the same elements, identified by
+<varname>argz</varname> and <varname>argz_len</varname>.
+</para>
+<para>
+The <function>argz_create_sep</function> function converts the
+string identified by <varname>str</varname>,
+spliting into a separate string at each occurence of 
+<varname>sep</varname>, to an argz vector identified by
+<varname>argz</varname> and <varname>argz_len</varname>. 
+</para>
+<para>
+The <function>argz_add</function> function adds the
+string identified by <varname>str</varname> to the vector identified
+by <varname>argz</varname> and <varname>argz_len</varname>, updating
+<varname>argz</varname> and <varname>argz_len</varname>.
+</para>
+<para>
+The <function>argz_add_sep</function> function adds the
+string identified by <varname>str</varname>,
+spliting into a separate string at each occurence of 
+<varname>sep</varname>, to the vector identified
+by <varname>argz</varname>, updating
+<varname>argz</varname> and <varname>argz_len</varname>. 
+</para>
+<para>
+The <function>argz_append</function> function appends
+the argz vector identified by <varname>buf</varname> and
+<varname>buf_len</varname> to the argz vector identified by
+<varname>argz</varname> and <varname>argz_len</varname>,
+thus updating <varname>argz</varname> and <varname>argz_len</varname>.
+</para>
+<para>
+The <function>argz_count</function> function returns the number
+of strings in the argz vector identified by
+<varname>argz</varname> and <varname>argz_len</varname>.
+</para>
+<para>
+The <function>argz_delete</function> function removes the string
+identified by <varname>entry</varname> from the 
+the argz vector identified by
+<varname>argz</varname>, <varname>argz_len</varname>, updating
+<varname>argz</varname> and <varname>argz_len</varname>.
+</para>
+<para>
+The <function>argz_extract</function> function performs
+the inverse of <function>argz_create</function>. It converts
+an argz vector identified by 
+<varname>argz</varname> and <varname>argz_len</varname> 
+to an argv vector identified by <varname>argv</varname>
+with the same elements.
+</para>
+<para>
+The <function>argz_insert</function> function inserts the string
+identified by <varname>entry</varname> at position
+<varname>before</varname> to the the argz vector identified by
+<varname>argz</varname> and <varname>argz_len</varname>, updating
+<varname>argz</varname> and <varname>argz_len</varname>.
+</para>
+<para>
+The <function>argz_next</function> function returns the entry
+following the entry identfied by <varname>entry</varname>
+in the argz vector identified by
+<varname>argz</varname> and <varname>argz_len</varname>.
+If <varname>entry</varname> is <constant>NULL</constant>
+the first entry is returned. This function can be used to
+step through an argz vector by obtaining the first entry
+by passing <constant>NULL</constant>, then passing the just
+obtained value to the next call, and so on. 
+<constant>NULL</constant> is returned if there is no following entry.
+</para>
+<para>
+The <function>argz_replace</function> function replaces each
+occurrence of <varname>str</varname> in the argz vector identified by
+<varname>argz</varname> and <varname>argz_len</varname> with
+<varname>with</varname>, updating
+<varname>argz</varname> and <varname>argz_len</varname>.
+The counter pointed to by <varname>replace_count</varname> will be 
+incremented by the number of replacements unless <constant>NULL</constant>
+is passed for <varname>replace_count</varname>.
+</para>
+<para>
+The <function>argz_stringify</function> function performs the
+inverse of <function>argz_create_sep</function>. It converts
+the argz vector identified by 
+<varname>argz</varname> and <varname>argz_len</varname> 
+into a regular string, with the strings in the original
+vector separated by <varname>sep</varname> in the converted string.
+The conversion is done in place, so in effect each null byte in 
+<varname>argz</varname> but the last one is replaced by
+<varname>sep</varname>.
 </para>
 </refsect1>
 
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
+All of the argz functions that perform memory allocation return an
+<type>error_t</type> type. These functions return
+<literal>0</literal> on success; if memory allocation fails,
+they return <errorname>ENOMEM</errorname>.
 </para>
-</refsect1>
-
-<refsect1>
-<title>Errors</title>
-<variablelist>
-<varlistentry>
-<term>
-INSERT ERROR CODE HERE
-</term>
-<listitem>
 <para>
-INSERT ERROR REASON HERE
+<function>argz_count</function> returns a count of substrings
+in the argz vector as a <type>size_t</type> type.
 </para>
-</listitem>
-</varlistentry>
-</variablelist>
-</refsect1>
-
-<refsect1>
-<title>Notes</title>
 <para>
-INSERT TEXT HERE
+<function>argz_next</function> returns a pointer to a substring
+in an argz vector, or <constant>NULL</constant>.
 </para>
 </refsect1>
-
 <refsect1>
 <title>See Also</title>
 <para>
-<function>INSERT TEXT HERE</function>,
-<function>INSERT TEXT HERE</function>.
+<xref linkend="baselib-envz-add">
 </para>
 </refsect1>
 
@@ -18813,7 +18906,7 @@ file with the other functions.
 
 
 
-<refentry id="baselib-envz-add-1">
+<refentry id="baselib-envz-add">
 
 <refmeta>
 <refentrytitle> envz_add,
@@ -18835,17 +18928,17 @@ envz_remove,
 envz_strip
 </refname>
 <refpurpose>Operate on environment vectors</refpurpose>
-<indexterm id="ix-baselib-envz-add-1">
+<indexterm id="ix-baselib-envz-add">
 	<primary>envz_add</primary></indexterm>
-<indexterm id="ix-baselib-envz-get-1">
+<indexterm id="ix-baselib-envz-get">
 	<primary>envz_get</primary></indexterm>
-<indexterm id="ix-baselib-envz-entry-1">
+<indexterm id="ix-baselib-envz-entry">
 	<primary>envz_entry</primary></indexterm>
-<indexterm id="ix-baselib-envz-merge-1">
+<indexterm id="ix-baselib-envz-merge">
 	<primary>envz_merge</primary></indexterm>
-<indexterm id="ix-baselib-envz-remove-1">
+<indexterm id="ix-baselib-envz-remove">
 	<primary>envz_remove</primary></indexterm>
-<indexterm id="ix-baselib-envz-strip-1">
+<indexterm id="ix-baselib-envz-strip">
 	<primary>envz_strip</primary></indexterm>
 </refnamediv>
 
@@ -18858,7 +18951,7 @@ envz_strip
 <funcdef>error_t
 <function>envz_add</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>envz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -18906,7 +18999,7 @@ envz_strip
 <funcdef>error_t
 <function>envz_merge</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>envz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -18927,7 +19020,7 @@ envz_strip
 <funcdef>void
 <function>envz_remove</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>envz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -18942,7 +19035,7 @@ envz_strip
 <funcdef>void
 <function>envz_strip</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>envz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -18955,45 +19048,101 @@ envz_strip
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+The envz functions operate on envz vectors, which are typically
+used to manipulate program environment variables.
+</para>
+<para>
+An envz vector is identical in makeup to an argz vector
+(see <xref linkend="baselib-argz-add">)
+but has the constraint that each element is a name, value pair
+separated by an <literal>=</literal> character.   
+Only the first <literal>=</literal> character in an element has special
+meaning, any subsequent instances are part of the value string.
+If no <literal>=</literal> character is present in an element,
+the value is taken to be <constant>NULL</constant>.
+If an element has an empty value 
+(an <literal>=</literal> character is present),
+the value will return the empty string <literal>""</literal> when queried.
+</para>
+<para>
+Since an envz vector is an argz vector, the argz functions can
+be used where it makes sense.  For example, converting from
+a program's environment variables (as described in Chapter 8
+of the XBD volume of <XREF LINKEND=STD.SUSv4>) to an envz vector 
+is done with <function>argz_create</function>.
+</para>
+<para>
+The <function>envz_add</function> function adds a string
+constructed from <varname>name</varname> and <varname>value</varname>
+in the form "<varname>name</varname>=<varname>value</varname>"
+to the envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>, updating
+<varname>envz</varname> and <varname>envz_len</varname>. 
+If <varname>value</varname> is <constant>NULL</constant> it adds 
+a string of the form "<varname>name</varname>".
+If an entry with the same name already exists, it is replaced..
+</para>
+<para>
+The <function>envz_entry</function> function
+searches for <varname>name</varname> in the envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>,
+returning the full entry if found, or <constant>NULL</constant> if not.
+</para>
+<para>
+The <function>envz_get</function> function
+searches for <varname>name</varname> in the envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>,
+returning the value part of the entry if found, 
+or <constant>NULL</constant> if not. 
+Note the value may be also <constant>NULL</constant>.
+</para>
+<para>
+The <function>envz_merge</function> function
+adds each entry from the envz vector identified by
+<varname>envz2</varname> and <varname>envz2_len</varname>
+to the envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>, updating
+<varname>envz</varname> and <varname>envz_len</varname>. 
+The behavior is as if <function>envz_add</function> were called
+for each entry in <varname>envz2</varname>.
+If <varname>override</varname> is true, 
+then values from <varname>envz2</varname> will replace those with the
+same name in <varname>envz</varname>.
+</para>
+<para>
+The <function>envz_remove</function> function
+removes the entry for <varname>name</varname> from the 
+envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>
+if it exists, updating
+<varname>envz</varname> and <varname>envz_len</varname>. 
+</para>
+<para>
+The <function>envz_strip</function> function
+removes all entries with value <constant>NULL</constant>.
 </para>
 </refsect1>
 
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
+The envz functions that perform memory allocation 
+(<function>envz_add</function> and <function>envz_merge</function>)
+return an <type>error_t</type> type. These functions return
+<literal>0</literal> on success; if memory allocation fails,
+they return <errorname>ENOMEM</errorname>.
 </para>
-</refsect1>
-
-<refsect1>
-<title>Errors</title>
-<variablelist>
-<varlistentry>
-<term>
-INSERT ERROR CODE HERE
-</term>
-<listitem>
 <para>
-INSERT ERROR REASON HERE
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</refsect1>
-
-<refsect1>
-<title>Notes</title>
-<para>
-INSERT TEXT HERE
+<function>envz_entry</function> and <function>envz_get</function>
+return a pointer to a substring
+in an envz vector, or <constant>NULL</constant>.
 </para>
 </refsect1>
 
 <refsect1>
 <title>See Also</title>
 <para>
-<function>INSERT TEXT HERE</function>,
-<function>INSERT TEXT HERE</function>.
+<xref linkend="baselib-argz-add">
 </para>
 </refsect1>
 

@@ -1,4 +1,4 @@
-<refentry id="baselib-envz-add-1">
+<refentry id="baselib-envz-add">
 
 <refmeta>
 <refentrytitle> envz_add,
@@ -20,17 +20,17 @@ envz_remove,
 envz_strip
 </refname>
 <refpurpose>Operate on environment vectors</refpurpose>
-<indexterm id="ix-baselib-envz-add-1">
+<indexterm id="ix-baselib-envz-add">
 	<primary>envz_add</primary></indexterm>
-<indexterm id="ix-baselib-envz-get-1">
+<indexterm id="ix-baselib-envz-get">
 	<primary>envz_get</primary></indexterm>
-<indexterm id="ix-baselib-envz-entry-1">
+<indexterm id="ix-baselib-envz-entry">
 	<primary>envz_entry</primary></indexterm>
-<indexterm id="ix-baselib-envz-merge-1">
+<indexterm id="ix-baselib-envz-merge">
 	<primary>envz_merge</primary></indexterm>
-<indexterm id="ix-baselib-envz-remove-1">
+<indexterm id="ix-baselib-envz-remove">
 	<primary>envz_remove</primary></indexterm>
-<indexterm id="ix-baselib-envz-strip-1">
+<indexterm id="ix-baselib-envz-strip">
 	<primary>envz_strip</primary></indexterm>
 </refnamediv>
 
@@ -43,7 +43,7 @@ envz_strip
 <funcdef>error_t
 <function>envz_add</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>envz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -91,7 +91,7 @@ envz_strip
 <funcdef>error_t
 <function>envz_merge</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>envz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -112,7 +112,7 @@ envz_strip
 <funcdef>void
 <function>envz_remove</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>envz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -127,7 +127,7 @@ envz_strip
 <funcdef>void
 <function>envz_strip</function>
 </funcdef>
-<paramdef>char * *
+<paramdef>char **
 <parameter>envz</parameter>
 </paramdef>
 <paramdef>size_t *
@@ -140,45 +140,101 @@ envz_strip
 <refsect1>
 <title>Description</title>
 <para>
-INSERT TEXT HERE
+The envz functions operate on envz vectors, which are typically
+used to manipulate program environment variables.
+</para>
+<para>
+An envz vector is identical in makeup to an argz vector
+(see <xref linkend="baselib-argz-add">)
+but has the constraint that each element is a name, value pair
+separated by an <literal>=</literal> character.   
+Only the first <literal>=</literal> character in an element has special
+meaning, any subsequent instances are part of the value string.
+If no <literal>=</literal> character is present in an element,
+the value is taken to be <constant>NULL</constant>.
+If an element has an empty value 
+(an <literal>=</literal> character is present),
+the value will return the empty string <literal>""</literal> when queried.
+</para>
+<para>
+Since an envz vector is an argz vector, the argz functions can
+be used where it makes sense.  For example, converting from
+a program's environment variables (as described in Chapter 8
+of the XBD volume of <XREF LINKEND=STD.SUSv4>) to an envz vector 
+is done with <function>argz_create</function>.
+</para>
+<para>
+The <function>envz_add</function> function adds a string
+constructed from <varname>name</varname> and <varname>value</varname>
+in the form "<varname>name</varname>=<varname>value</varname>"
+to the envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>, updating
+<varname>envz</varname> and <varname>envz_len</varname>. 
+If <varname>value</varname> is <constant>NULL</constant> it adds 
+a string of the form "<varname>name</varname>".
+If an entry with the same name already exists, it is replaced..
+</para>
+<para>
+The <function>envz_entry</function> function
+searches for <varname>name</varname> in the envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>,
+returning the full entry if found, or <constant>NULL</constant> if not.
+</para>
+<para>
+The <function>envz_get</function> function
+searches for <varname>name</varname> in the envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>,
+returning the value part of the entry if found, 
+or <constant>NULL</constant> if not. 
+Note the value may be also <constant>NULL</constant>.
+</para>
+<para>
+The <function>envz_merge</function> function
+adds each entry from the envz vector identified by
+<varname>envz2</varname> and <varname>envz2_len</varname>
+to the envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>, updating
+<varname>envz</varname> and <varname>envz_len</varname>. 
+The behavior is as if <function>envz_add</function> were called
+for each entry in <varname>envz2</varname>.
+If <varname>override</varname> is true, 
+then values from <varname>envz2</varname> will replace those with the
+same name in <varname>envz</varname>.
+</para>
+<para>
+The <function>envz_remove</function> function
+removes the entry for <varname>name</varname> from the 
+envz vector identified by
+<varname>envz</varname> and <varname>envz_len</varname>
+if it exists, updating
+<varname>envz</varname> and <varname>envz_len</varname>. 
+</para>
+<para>
+The <function>envz_strip</function> function
+removes all entries with value <constant>NULL</constant>.
 </para>
 </refsect1>
 
 <refsect1>
 <title>Return Value</title>
 <para>
-INSERT TEXT HERE
+The envz functions that perform memory allocation 
+(<function>envz_add</function> and <function>envz_merge</function>)
+return an <type>error_t</type> type. These functions return
+<literal>0</literal> on success; if memory allocation fails,
+they return <errorname>ENOMEM</errorname>.
 </para>
-</refsect1>
-
-<refsect1>
-<title>Errors</title>
-<variablelist>
-<varlistentry>
-<term>
-INSERT ERROR CODE HERE
-</term>
-<listitem>
 <para>
-INSERT ERROR REASON HERE
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</refsect1>
-
-<refsect1>
-<title>Notes</title>
-<para>
-INSERT TEXT HERE
+<function>envz_entry</function> and <function>envz_get</function>
+return a pointer to a substring
+in an envz vector, or <constant>NULL</constant>.
 </para>
 </refsect1>
 
 <refsect1>
 <title>See Also</title>
 <para>
-<function>INSERT TEXT HERE</function>,
-<function>INSERT TEXT HERE</function>.
+<xref linkend="baselib-argz-add">
 </para>
 </refsect1>
 
