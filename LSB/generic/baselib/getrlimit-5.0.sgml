@@ -106,6 +106,7 @@ only calls to <function>madvise</function> specifying
   <term Revision="5.0">RLIMIT_SIGPENDING</term>
   <listitem>
 <para> 
+<!-- TODO: clean up wording -->
 Specifies the limit on the number of signals that may be queued
 for the real user ID of the calling process.  Both standard and
 real-time signals are counted for the purpose of checking this
@@ -119,7 +120,26 @@ instance of any of the signals that are not already queued to the process.
   <term Revision="5.0">RLIMIT_MSGQUEUE</term>
   <listitem>
 <para> 
-XXX
+<!-- TODO: clean up wording -->
+Specifies the limit on the number of bytes that can be allocated for
+POSIX message queues for the real user ID of the calling process. This
+limit is enforced for <function>mq_open</function>.   Each message queue
+that the user creates counts (until it is removed) against this limit
+according to the formula:
+</para>
+<programlisting>
+  bytes = attr.mq_maxmsg * sizeof(struct msg_msg *) +
+	  attr.mq_maxmsg * attr.mq_msgsize
+</programlisting>
+<para>
+where attr is the mq_attr structure specified as the fourth argument
+to mq_open(3).
+</para>
+<para>
+The first addend in the formula, which includes sizeof(struct msg_msg *)
+(4 bytes on Linux/i386), ensures that the user cannot create an unlimited
+number of zero-length messages (such messages nevertheless each
+consume some system memory for bookkeeping overhead).
 </para>
   </listitem>
   </varlistentry>
@@ -127,7 +147,12 @@ XXX
   <term Revision="5.0">RLIMIT_NICE</term>
   <listitem>
 <para> 
-XXX
+<!-- TODO: clean up wording -->
+Specifies a ceiling to which the process's nice value can be
+raised using <function>setpriority</function> or <function>nice</function>.  
+The actual ceiling for
+the nice value is calculated as 20 minus the value of 
+<varname>rlim_cur</varname>. 
 </para>
   </listitem>
   </varlistentry>
@@ -135,7 +160,9 @@ XXX
   <term Revision="5.0">RLIMIT_RTPRIO</term>
   <listitem>
 <para> 
-XXX
+<!-- TODO: clean up wording -->
+Specifies a ceiling on the real-time priority that may be set
+for this process using sched_setscheduler(2) and sched_setparam(2).
 </para>
   </listitem>
   </varlistentry>
@@ -143,7 +170,26 @@ XXX
   <term Revision="5.0">RLIMIT_RTTIME</term>
   <listitem>
 <para> 
-XXX
+<!-- TODO: clean up wording -->
+Specifies a limit (in microseconds) on the amount of CPU time that a
+process scheduled under a real-time scheduling policy may consume without
+making a blocking system call. For the purpose of this limit, each time
+a process makes a blocking system call, the count of its consumed CPU
+time is reset to zero.  The CPU time count is not reset if the process
+continues trying to use the CPU but is preempted, its time slice expires,
+or it calls <function>sched_yield</function>.
+</para>
+<para>
+Upon reaching the soft limit, the process is sent a
+<constant>SIGXCPU</constant> signal. If the process catches or
+ignores this signal and continues consuming CPU time, then
+<constant>SIGXCPU</constant> will be generated once each second until
+the hard limit is reached, at which point the process is sent a
+<constant>SIGKILL</constant> signal.
+</para>
+<para>
+The intended use of this limit is to stop a runaway real-time
+process from locking up the system.
 </para>
   </listitem>
   </varlistentry>
