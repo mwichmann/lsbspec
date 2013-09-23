@@ -2,6 +2,8 @@ TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
+FILES=libpng.sgml
+TABLES= png.sgml 
 MANPAGES= png_access_version_number.sgml\
 png_check_sig.sgml\
 png_create_info_struct.sgml\
@@ -130,9 +132,6 @@ png_set_write_status_fn.sgml \
 png_set_write_user_transform_fn.sgml \
 png_start_read_image.sgml
 
-FILES=libpng.sgml
-TABLES= png.sgml 
-
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
 
@@ -146,7 +145,6 @@ clean:
 
 spotless: clean
 	rm -f $(TABLES)
-
 
 libpng.sgml: png.sgml
 libpng.sgml: $(MANPAGES)

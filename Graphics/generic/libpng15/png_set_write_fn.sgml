@@ -1,0 +1,60 @@
+<refentry id="libpng15-png-set-write-fn">
+<refmeta>
+<refentrytitle>png_set_write_fn</refentrytitle>
+<refmiscinfo>libpng15</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>png_set_write_fn</refname>
+<refpurpose>set user-defined function for writing a PNG stream</refpurpose>
+<indexterm id="ix-libpng15-png-set-write-fn">	<primary>png_set_write_fn</primary></indexterm>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;png.h&gt;
+</funcsynopsisinfo><funcprototype>
+<funcdef>void
+<function>png_set_write_fn</function>
+</funcdef>
+<paramdef>png_structp
+<parameter>png_ptr</parameter>
+</paramdef>
+<paramdef>png_voidp
+<parameter>io_ptr</parameter>
+</paramdef>
+<paramdef>png_rw_ptr
+<parameter>write_data_fn</parameter>
+</paramdef>
+<paramdef>png_flush_ptr
+<parameter>output_flush_fn</parameter>
+</paramdef>
+
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+png_set_write_fn() sets the write_data_fn as the output function for writing PNG
+files instead of using standard C I/O stream functions.
+png_ptr       - pointer to output data structure png_struct
+io_ptr        - pointer to user-defined structure containing information about 
+                the output functions. This value may be NULL.
+write_data_fn - pointer to new output function that shall take the following
+                arguments:
+                - a pointer to a png_struct 
+			    - a pointer to a structure where output data can be stored
+			    - 32-bit unsigned int to indicate number of bytes to write
+			    The output function should invoke png_error() to handle any fatal
+			    errors and png_warning() to handle non-fatal errors.
+flush_data_fn - pointer to a new flush function that shall take a pointer to
+                a png_struct as argument. This function shall flush any
+				remaining data in buffers used by the output function. If the
+				output function does not buffer output, a function prototype
+				must still be supplied.
+</para>
+</refsect1>
+
+
+</refentry>
