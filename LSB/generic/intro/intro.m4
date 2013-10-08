@@ -26,7 +26,7 @@ Locator (URL) is given for informative purposes only.
 This may point to a more recent copy of the referenced
 specification, or may be out of date. Reference copies of specifications at the revision
 level indicated may be found at the Linux Foundation's 
-<ULINK URL='http://refspecs.freestandards.org'>Reference Specifications</ULINK> site.
+<ULINK URL='http://refspecs.linuxbase.org'>Reference Specifications</ULINK> site.
 </PARA>
 </NOTE>
 <!-- the ID below is a placeholder for any standards that have Istandard=0 in the database -->
@@ -261,11 +261,10 @@ standard is unintentional, except as explicitly noted otherwise.
 <NOTE>
 <PARA>
 In addition to the differences noted inline in this specification,
-PDTR 24715 has extracted the differences between this specification and <XREF
-LINKEND="STD.SUSv3">
-into a single place.
-It is the long term plan of the Linux Foundation to converge the LSB Core Specification
-with ISO/IEC 9945 POSIX.
+PDTR 24715 has extracted the differences between this specification and 
+ISO/IEC 9945-2003 into a single place.
+It is the long term plan of the Linux Foundation to converge the 
+LSB Core Specification with ISO/IEC 9945 POSIX.
 </PARA>
 </NOTE>
 <PARA>

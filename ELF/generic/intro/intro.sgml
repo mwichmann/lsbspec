@@ -69,7 +69,7 @@ Where copies of a document are available on the World Wide Web, a Uniform Resour
 Locator (URL) is given. This may point to a more recent copy of the referenced
 specification, or may be out of date. Reference copies of specifications at the revision
 level indicated may be found at the Linux Foundation's 
-<ULINK URL='http://refspecs.freestandards.org'>Reference Specifications</ULINK> site.
+<ULINK URL='http://refspecs.linuxbase.org'>Reference Specifications</ULINK> site.
 </PARA>
 </NOTE>
 <TABLE>
