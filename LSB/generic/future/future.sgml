@@ -13,8 +13,8 @@ interfaces.
 <PARA>
 We encourage system implementors and ISVs to provide these interfaces, and to
 provide feedback on their specification to 
-<ULINK url="mailto://lsb-spec@freestandards.org">
-lsbspec@freestandards.org</ULINK>. These interfaces may well be further
+<ULINK url="mailto://lsb-discuss@linuxfoundation.org">
+lsb-discuss@linuxfoundation.org</ULINK>. These interfaces may well be further
 modified during the development process, and may be withdrawn if concensus
 cannot be reached.
 </PARA>
