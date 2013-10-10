@@ -12,7 +12,7 @@ m4_include(`modscope.sgml')
 <title>References</title>
 <sect1 id="normativerefssect">
 <title>Normative References</titlE>
-m4_ifelse(arch,`All', `
+m4_ifelse(ARCH,`All', `
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <para id=STD.LSB xreflabel="This Specification">',`<para>')
 The following referenced documents are indispensable for the application
