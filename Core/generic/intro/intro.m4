@@ -15,19 +15,20 @@ m4_include(`modscope.sgml')
 m4_ifelse(ARCH,`All', `
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
 <para id=STD.LSB xreflabel="This Specification">',`<para>')
-The following referenced documents are indispensable for the application
-of this document. For dated references, only the edition cited
+The following specifications are incorporated by reference into
+this specification. For dated references, only the edition cited
 applies. For undated references, the latest edition of the referenced
-document (including any amendments) applies.
+specification (including any amendments) applies.
 </para>
 <note>
 <para>
-Where copies of a document are available on the World Wide Web, a
-Uniform Resource Locator (URL) is given for informative purposes only.
-This may point to a more recent copy of the referenced specification,
-or may be out of date. Reference copies of specifications at the
-revision level indicated may be found at the Linux Foundation's <ULINK
-URL='http://refspecs.linuxbase.org'>Reference Specifications</ULINK> site.
+Where copies of a referenced specification are available on the World Wide Web,
+a Uniform Resource Locator (URL) is given, for informative purposes only.
+Such URL might at any given time resolve to a more recent copy of the 
+specification, or be out of date (not resolve). 
+Reference copies of specifications at the revision level indicated 
+may be found at the Linux Foundation's 
+<ULINK URL='http://refspecs.linuxbase.org'>Reference Specifications</ULINK> site.
 </para>
 </note>
 <!-- the ID below is a placeholder for any standards that have Istandard=0 in the database -->
@@ -42,9 +43,10 @@ m4_include(`standards.sgml')
 <sect1 id="informativerefs">
 <title>Informative References/Bibliography</title>
 <para>
-In addition, the specifications listed below provide essential background
+The documents listed below provide essential background
 information to implementors of this specification. These references are
-included for information only.
+included for information only, and do not represent normative parts
+of this specification.
 </para>
 <table>
 <title>Other References</title>
@@ -140,29 +142,29 @@ to the application.
 <para>
 The implementation shall be capable of executing compiled applications
 having the format and using the system interfaces described in this
-document.
+specification.
 </para>
 </listitem>
 <listitem>
 <para>
 The implementation shall provide libraries containing the interfaces
-specified by this document, and shall provide a dynamic linking
+specified by this specification, and shall provide a dynamic linking
 mechanism that allows these interfaces to be attached to applications
 at runtime. All the interfaces shall behave as specified in
-this document.
+this specification.
 </para>
 </listitem>
 <listitem>
 <para>
 The map of virtual memory provided by the implementation shall conform 
-to the requirements of this document. 
+to the requirements of this specification. 
 </para>
 </listitem>
 <listitem>
 <para>
 The implementation's low-level behavior with respect to function call
 linkage, system traps, signals, and other such activities shall conform
-to the formats described in this document.
+to the formats described in this specification.
 </para>
 </listitem>
 <listitem>
@@ -182,11 +184,12 @@ interfaces are provided.
 <listitem>
 <para>
 The implementation shall provide all files and utilities specified as
-part of this document in the format defined here and in other referenced
-documents. All commands and utilities shall behave as required by this
-document. The implementation shall also provide all mandatory components
-of an application's runtime environment that are included or referenced
-in this document.
+part of this specification in the format defined here and in other documents
+normatively included by reference.  
+All commands and utilities shall behave as required by this specification. 
+The implementation shall also provide all mandatory components of an 
+application's runtime environment that are included or referenced in 
+this specification.
 </para>
 </listitem>
 <listitem>
@@ -214,72 +217,69 @@ values outside the standard ranges, for standard named interfaces.
 <sect1 id="Application">
 <title>LSB Application Conformance </title>
 <para>
-A conforming application is necessarily architecture specific, and must
+A conforming application containing object files
+is necessarily architecture specific, and must
 conform to both the generic LSB Core specification (&ISOSTD-1;) and the
 relevant architecture specific part of &ISOSTD;.
+A conforming application which contains no object files may be
+architecture neutral. Architecture neutral applications shall conform only to
+the requirements of the generic LSB Core specification (&ISOSTD-1;).
 </para>
 <para>
 A conforming application shall satisfy the following requirements: 
 </para>
-<para>
 <itemizedlist>
 <listitem>
 <para>
-Its executable files shall be either shell scripts or object files in
-the format defined for the Object File Format system interface.
+Executable files shall be either object files in the format defined 
+in the Object Format section of this specification,
+or script files in a scripting language where the interpreter is
+required by this specification.
 </para>
 </listitem>
 <listitem>
 <para>
-Its object files shall participate in dynamic linking as defined in the 
-Program Loading and Linking System interface.
+Object files shall participate in dynamic linking as defined in the 
+Program Loading and Linking section of this specification.
 </para>
 </listitem>
 <listitem>
 <para>
-It shall employ only the instructions, traps, and other low-level 
-facilities defined in the Low-Level System interface as being for 
-use by applications.
+Object files shall employ only the instructions, traps, and other low-level 
+facilities defined as being for use by applications 
+in the Low-Level System Information section of this specification 
 </para>
 </listitem>
 <listitem>
 <para>
-If it requires any optional interface defined in this document in order
-to be installed or to execute successfully, the requirement for that
+If the application requires any optional interface defined in this specification
+in order to be installed or to execute successfully, the requirement for that
 optional interface shall be stated in the application's documentation.
 </para>
 </listitem>
 <listitem>
 <para>
-It shall not use any interface or data format that is not required to be provided by a conforming implementation, unless: 
-<itemizedlist mark='bullet'>
-<listitem>
-<para>
-If such an interface or data format is supplied by another application
-through direct invocation of that application during execution, that
-application shall be in turn an LSB conforming application.
-</para>
-</listitem>
-<listitem>
-<para>
-The use of that interface or data format, as well as its source, shall
+The application shall not use any interface or data format that is not
+required to be provided by a conforming implementation, unless
+such an interface or data format is supplied by another application
+through direct invocation of that application during execution.
+The other application must also be a conforming application,
+and the use of such interface or data format, as well as its source
+(in other words, the other conforming application), shall
 be identified in the documentation of the application.
 </para>
 </listitem>
-</itemizedlist>
-</para>
-</listitem>
 <listitem>
 <para>
-It shall not use any values for a named interface that are reserved for
-vendor extensions.
+The application shall not use any values for a named interface that are 
+reserved for vendor extensions.
 </para>
 </listitem>
 </itemizedlist>
-
+<para>
 A strictly conforming application shall not require or use any interface,
-facility, or implementation-defined extension that is not defined in
-this document in order to be installed or to execute successfully.
+facility, or implementation-defined extension not defined in
+this specification in order to be installed or to execute successfully.
 </para>
 </sect1>
 </chapter>
@@ -317,7 +317,7 @@ LSB Core specification with the ISO/IEC POSIX specification.
 <para>
 The LSB Specification Authority is responsible for deciding the meaning
 of conformance to normative referenced standards in the LSB context.
-Problem Reports regarding underlying or referenced standards in any
+Problem reports regarding underlying or referenced standards in any
 other context will be referred to the relevant maintenance body for 
 that standard.
 </para>
