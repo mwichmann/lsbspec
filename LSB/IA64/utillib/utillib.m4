@@ -19,6 +19,7 @@ m4_include(libcurses.sgml)
 m4_include(libcursesw.sgml)
 
 m4_include(libutil.sgml)
+
 </CHAPTER>
 
 </PART>

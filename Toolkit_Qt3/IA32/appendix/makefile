@@ -17,5 +17,8 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES)
+	rm -f $(TABLES) liblist.m4
 
+# change this if all the books stop sharing the same m4 file
+liblist.m4::
+	cp ../../generic/appendix/$@ .

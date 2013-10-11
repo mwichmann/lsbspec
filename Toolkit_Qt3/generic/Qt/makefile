@@ -19,5 +19,5 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-Qt3.sgml: libqt_mt.sgml 
+Qt3.sgml: $(TABLES)
 

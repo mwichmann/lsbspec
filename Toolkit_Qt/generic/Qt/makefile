@@ -25,5 +25,5 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-Qt.sgml: libQtCore.sgml libQtGui.sgml libQtSql.sgml libQtOpenGL.sgml libQtXml.sgml libQtSvg.sgml
+Qt.sgml: $(TABLES)
 

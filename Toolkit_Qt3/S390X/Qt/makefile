@@ -17,7 +17,11 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES)
+	rm -f $(TABLES) Qt3.m4
 
-Qt3.sgml: libqt_mt.sgml 
+# change this if all the books stop sharing the same m4 file
+Qt3.m4::
+	cp ../../generic/Qt/$@ .
+
+Qt3.sgml: $(TABLES)
 

@@ -31,6 +31,10 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES)
+	rm -f $(TABLES) GTK.m4
+
+# change this if all the books stop sharing the same m4 file
+GTK.m4::
+	cp ../../generic/GTK/$@ .
 
 GTK.sgml: $(TABLES) $(MANPAGES)

@@ -24,4 +24,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-intro.sgml: standards.sgml
+intro.sgml: $(TABLES)
