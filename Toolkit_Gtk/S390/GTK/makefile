@@ -4,7 +4,7 @@ TOP=../../..
 
 MANPAGES=
 FILES=GTK.sgml
-TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk-x11.sgml libGtk-x11.sgml libPangoCairo.sgml
+TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk_x11.sgml libGtk_x11.sgml libPangoCairo.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
@@ -22,8 +22,8 @@ gensrc:
 	$(TOP)/mklibspec -a S390 -v `cat $(TOP)/target_version` -c 2 -l libpangoft2-1.0 >libPangoft2.sgml
 	$(TOP)/mklibspec -a S390 -v `cat $(TOP)/target_version` -c 2 -l libgdk_pixbuf-2.0 >libGdk_pixbuf.sgml
 	$(TOP)/mklibspec -a S390 -v `cat $(TOP)/target_version` -c 2 -l libgdk_pixbuf_xlib-2.0 >libGdk_pixbuf_xlib.sgml
-	$(TOP)/mklibspec -a S390 -v `cat $(TOP)/target_version` -c 2 -l libgdk-x11-2.0 >libGdk-x11.sgml
-	$(TOP)/mklibspec -a S390 -v `cat $(TOP)/target_version` -c 2 -l libgtk-x11-2.0 >libGtk-x11.sgml
+	$(TOP)/mklibspec -a S390 -v `cat $(TOP)/target_version` -c 2 -l libgdk-x11-2.0 >libGdk_x11.sgml
+	$(TOP)/mklibspec -a S390 -v `cat $(TOP)/target_version` -c 2 -l libgtk-x11-2.0 >libGtk_x11.sgml
 	$(TOP)/mklibspec -a S390 -v `cat $(TOP)/target_version` -c 2 -l libpangocairo-1.0 >libPangoCairo.sgml
 
 clean:

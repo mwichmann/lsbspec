@@ -101,8 +101,8 @@ m4_include(libPangoxft.sgml)
 m4_include(libPangoft2.sgml)
 m4_include(libGdk_pixbuf.sgml)
 m4_include(libGdk_pixbuf_xlib.sgml)
-m4_include(libGdk-x11.sgml)
-m4_include(libGtk-x11.sgml)
+m4_include(libGdk_x11.sgml)
+m4_include(libGtk_x11.sgml)
 
 </CHAPTER>
 
