@@ -20,8 +20,8 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-        rm -f $(TABLES) intro.m4
-        #rm -f $(CXXTABLES) cxxintro.m4
+	rm -f $(TABLES) intro.m4
+	#rm -f $(CXXTABLES) cxxintro.m4
 
 # change this if all the books stop sharing the same m4 file
 intro.m4::
