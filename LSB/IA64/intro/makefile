@@ -1,9 +1,10 @@
 TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=intro.sgml cxxintro.sgml
-TABLES= standards.sgml references.sgml libraries.sgml cxxstandards.sgml cxxlibraries.sgml 
+CTABLES= standards.sgml references.sgml libraries.sgml
+CXXTABLES= cxxstandards.sgml cxxlibraries.sgml 
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat -DARCH=IA64 $*.m4 >$@
@@ -21,13 +22,14 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES)
+	rm -f $(CTABLES) $(CXXTABLES) intro.m4 cxxintro.m4
 
+# change this if all the books stop sharing the same m4 files
 intro.m4::
 	cp ../../generic/intro/$@ .
 
 cxxintro.m4::
 	cp ../../generic/intro/$@ .
 
-intro.sgml: standards.sgml libraries.sgml
-cxxintro.sgml: cxxstandards.sgml cxxlibraries.sgml
+intro.sgml: ../../generic/intro/genscope.sgml modscope.sgml $(CTABLES)
+cxxintro.sgml: ../../generic/intro/genscope.sgml ../../generic/intro/cxxscope.sgml $(CXXTABLES)

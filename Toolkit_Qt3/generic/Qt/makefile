@@ -1,6 +1,6 @@
 TOP=../../..
 
-.SUFFIXES: .sgml .cpp .m4
+.SUFFIXES: .sgml .m4
 
 FILES=Qt3.sgml
 TABLES= libqt_mt.sgml 
@@ -19,5 +19,5 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-Qt3.sgml: libqt_mt.sgml 
+Qt3.sgml: $(TABLES)
 

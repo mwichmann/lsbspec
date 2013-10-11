@@ -19,5 +19,4 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES)
-
+	rm -f $(TABLES) 

@@ -1,5 +1,5 @@
 
-SUBDIRS= Qt
+SUBDIRS= Qt appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done

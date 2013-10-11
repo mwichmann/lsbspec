@@ -1,5 +1,5 @@
 
-SUBDIRS= GTK
+SUBDIRS= GTK appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done

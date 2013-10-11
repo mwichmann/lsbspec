@@ -26,4 +26,3 @@ clean:
 
 spotless: clean
 	rm -f $(TABLES)
-
