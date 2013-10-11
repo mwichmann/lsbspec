@@ -89,11 +89,11 @@ to supply any header files.
 </PARA>
 </SECT1>
 
-
 m4_include(libGlib.sgml)
 m4_include(libGobject.sgml)
 m4_include(libGmodule.sgml)
 m4_include(libGthread.sgml)
+m4_include(libGio.sgml)
 m4_include(libAtk.sgml)
 m4_include(libPango.sgml)
 m4_include(libPangoCairo.sgml)
@@ -101,9 +101,8 @@ m4_include(libPangoxft.sgml)
 m4_include(libPangoft2.sgml)
 m4_include(libGdk_pixbuf.sgml)
 m4_include(libGdk_pixbuf_xlib.sgml)
-m4_include(libGdk-x11.sgml)
-m4_include(libGtk-x11.sgml)
-m4_include(libGio.sgml)
+m4_include(libGdk_x11.sgml)
+m4_include(libGtk_x11.sgml)
 
 </CHAPTER>
 
