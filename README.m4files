@@ -1,0 +1,86 @@
+The LSB specification uses a lot of files suffixed .m4.  These exist to
+allow a little bit of macro processing, and to do file inclusion, using
+the m4 tool.
+
+A pretty typical setup is Toolkit_Gtk/generic/GTK:
+
+This directory contains some manually written specification text
+(the list enumerated by MANPAGES in the makefile), as well as some
+files generated from the specification database by script (this list
+is enumerated by TABLES).  However, the objective is to produce just a
+single docbook file for use in processing.
+
+This is done using a template file, named GTK.m4 here.  It contains
+docbook markup for the overall chapter, and some lines which look like:
+
+    m4_include(libGlib.sgml)
+
+These are used to build the eventual output file, the product of all
+this work, GTK.sgml.  It should be noted that the generated TABLES files 
+may themselves contain further m4 instructions - this
+happens when the generator script notices that an interface contained
+within that library is marked as being documented by LSB - it will
+then attempt to include the appropriate file - which should be one of
+the MANPAGES files.  If the file does not exist, the generator emits
+a comment instead.  Examples of both:
+
+    m4_sinclude(m4_ifdef('g_cache_value_foreach','',g_cache_value_foreach.sgml))
+    m4_define('g_cache_value_foreach','1')
+
+    <!-- MISSING DEFINITION FOR g_once_init_enter_impl -->
+    <!-- Lets just hope nobody notices -->
+
+The m4 files can also do some macro processing with the idea of reducing
+duplication of files - if there is some wording that should be in the
+generic valume and be different in the arch-specific volumes, this can
+also be handled. Example is from LSB/generic/intro/intro.m4:
+
+   m4_ifelse(ARCH,`All', `
+   <!-- the ID below is for auto generated xrefs to the LSB itself -->
+   <para id=STD.LSB xreflabel="This Specification">',`<para>')
+
+The makefiles then do appropriate things to set these. Generic:
+
+    m4 -P -Uindex -Uformat -DARCH=All -DCORE=1 intro.m4 >intro.sgml
+
+and x86-64:
+
+    m4 -P -Uindex -Uformat -DARCH=x86-64 intro.m4 >intro.sgml
+
+So now the reason for creating this note: where care has been taken
+to create multi-use m4 files, they should be kept that way.  If you
+have a submodule which contains arch-specifics, you will have eight
+separate directories. If they can share an m4 file, put it only in
+generic, and add rules to the makefiles in the arch-specific directories
+to pick it up as needed:
+
+    # change this if all the books stop sharing the same m4 file
+    intro.m4::
+            cp ../../generic/intro/$@ .
+
+and then add a rule to make sure the copied file can be removed:
+
+    spotless: clean
+	    rm -f $(TABLES) intro.m4
+
+DO NOT check in the copied files, then you'll risk the files going
+out of skew with each other, someone will modify the one in generic
+and the other directories won't pick up the changes.
+
+Recently had to sweep through the spec and clean out a whole bunch
+of these.
+
+Note there are cases when the m4 files do differ.  For example, in
+Desktop, the module contains both generic submodules and ones with
+arch-specific pieces.  When the appendix list of interfaces is built,
+the generic one gets everything, the arch-specific ones get only the
+interfaces for the libraries which have arch-speicific pieces.  So here
+they include different lists of files.  Yes, work could be done with
+the m4 macro trick noted above to keep the file common across all eight.
+Maybe someday.  There are certainly also cases where different wording
+is wanted. Again, it /could/ be handled with macros.  One pain with
+the m4 macros that discourages excess use is that the start and end 
+delimiters for a piece of text are different, this makes it a little
+harder on matching tools in editors, and syntax-higlighting editors
+don't seem to recognize m4 usage.
+
