@@ -1,6 +1,6 @@
 
 SUBDIRS= libpng libjpeg fontconfig-commands libfontconfig \
-	 libXrender libfreetype libXft libcairo
+	 libXrender libfreetype libXft libcairo appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done

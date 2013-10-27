@@ -1,5 +1,5 @@
 
-SUBDIRS= intro cupslib command
+SUBDIRS= intro cupslib command appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done

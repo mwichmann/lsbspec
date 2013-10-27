@@ -1,5 +1,5 @@
 
-SUBDIRS= graphlib opengl
+SUBDIRS= graphlib opengl appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && make all);done
