@@ -1,73 +1,106 @@
-<PART ID="tocgtk">
-<TITLE>GTK+ Stack Libraries</TITLE>
+<part id="tocgtk">
+<title>GTK+ Stack Libraries</title>
 
-<CHAPTER id=gtk>
-<TITLE>Libraries</TITLE>
-<SECT1><TITLE>Introduction</TITLE>
-<PARA>
-A conforming implementation shall support the following
-GTK+ stack libraries which
+<chapter id=gtk>
+<title>Libraries</title>
+
+<sect1>
+<title>Introduction</title>
+<para>
+A conforming implementation shall support the following libraries from
+the GTK+ stack which
 provide interfaces for creating rich graphical user interface applications.
-<VARIABLELIST>
-<VARLISTENTRY>
-<TERM>GLib</TERM>
-<LISTITEM><para>A general-purpose utility library, not specific to graphical user interfaces. GLib provides many useful data types, macros, type conversions, string utilities, file utilities, a main loop abstraction, and so on.</para>
+<variablelist>
+<varlistentry>
+<term>GLib</term>
+<listitem>
+<para>A general-purpose utility library, not specific to graphical
+user interfaces. Glib is implemented as several libraries,
+providing a type system, a signal system, data conversion routines, 
+string utilities, a filesystem abstraction and file utility routines, 
+threading support and a main loop abstraction.</para>
 <para>libglib-2.0</para>
 <para>libgmodule-2.0</para>
 <para>libgobject-2.0</para>
 <para>libgthread-2.0</para>
+<para>libgio-2.0</para>
 </listitem>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>ATK</TERM>
-<listitem><para>ATK is the Accessibility Toolkit. It provides a set of generic interfaces allowing accessibility technologies to interact with a graphical user interface. For example, a screen reader uses ATK to discover the text in an interface and read it to blind users. GTK+ widgets have built-in support for accessibility using the ATK framework. </para>
-<para>libatk-1.0</para></listitem>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>Pango</TERM>
-<listitem><para>Pango is a library for internationalized text handling. It centers around the PangoLayout object, representing a paragraph of text. Pango provides the engine for GtkTextView, GtkLabel, GtkEntry, and other widgets that display text.</para>
+</varlistentry>
+<varlistentry>
+<term>ATK</term>
+<listitem>
+<para>ATK is the Accessibility Toolkit. It provides a set of generic
+interfaces allowing accessibility technologies to interact with a
+graphical user interface. For example, a screen reader uses ATK to
+discover the text in an interface and read it to blind users. GTK+ widgets
+have built-in support for accessibility using the ATK framework. </para>
+<para>libatk-1.0</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Pango</term>
+<listitem>
+<para>Pango is a library for laying out and rendering text. It centers
+around the PangoLayout object, representing a paragraph of text. Pango
+provides the engine for GtkTextView, GtkLabel, GtkEntry, and other
+widgets that display text.</para>
 <para>libpango-1.0</para>
 <para>libpangocairo-1.0</para>
 <para>libpangoxft-1.0</para>
 <para>libpangoft2-1.0</para>
 </listitem>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>GdkPixbuf</TERM>
-<listitem><para>This is a small library which allows you to create GdkPixbuf ("pixel buffer") objects from image data or image files. Use a GdkPixbuf in combination with GtkImage to display images.</para>
+</varlistentry>
+<varlistentry>
+<term>GdkPixbuf</term>
+<listitem>
+<para>This is a small library which allows you to create GdkPixbuf
+("pixel buffer") objects from image data or image files. Use a GdkPixbuf
+in combination with GtkImage to display images.</para>
 <para>libgdk_pixbuf-2.0</para>
-<para>libgdk_pixbuf_xlib-2.0</para></listitem>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>GDK</TERM>
-<listitem><para>GDK is the abstraction layer that allows GTK+ to support multiple windowing systems. GDK provides drawing and window system facilities on X11, Windows, and the Linux framebuffer device.</para>
-<para>libgdk-x11-2.0</para></listitem>
-</VARLISTENTRY>
-<VARLISTENTRY>
-<TERM>GTK+</TERM>
-<listitem><para>The GTK+ library contains widgets, that is, GUI components such as GtkButton or GtkTextView.</para>
-<para>libgtk-x11-2.0</para></listitem>
-</VARLISTENTRY>
-</VARIABLELIST>
-</PARA>
-<PARA>
+<para>libgdk_pixbuf_xlib-2.0</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>GDK</term>
+<listitem>
+<para>GDK is the abstraction layer that allows GTK+ to support multiple
+windowing systems. GDK provides drawing and window system facilities on
+X11, Windows, and the Linux framebuffer device. GDK is provided in two
+versions in this edition.  </para>
+<para>libgdk-x11-2.0</para>
+<para>libgdk-3</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>GTK+</term>
+<listitem>
+<para>The GTK+ library contains widgets, that is, GUI components such
+as GtkButton or GtkTextView. GTK+ is provided in two versions in this
+edition.</para>
+<para>libgtk-x11-2.0</para>
+<para>libgtk-3</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</para>
+<para>
 There are three main parts to the definition of each of these
 libraries.
-</PARA>
-<PARA>
+</para>
+<para>
 The "Interfaces" section defines the required library name and version,
 and the required public symbols (interfaces and global data), as well
 as symbol versions, if any.
-</PARA>
-<PARA>
+</para>
+<para>
 The "Interface Definitions" section provides complete or partial
 definitions of certain interfaces where either this specification is
 the source specification, or where there are variations from the source
 specification. If an interface definition requires one or more header 
 files, one of those headers shall include the function 
 prototype for the interface.
-</PARA>
-<PARA>
+</para>
+<para>
 For source definitions of interfaces which include a reference to a
 header file, the contents of such header files form a
 part of the specification.  The "Data Definitions" section provides the
@@ -79,19 +112,19 @@ header files, as they are a supplement to the source
 specifications.  Application developers should follow the guidelines
 of the source specifications when determining which header files need
 to be included to completely resolve all references.
-<NOTE>
-<PARA>
+<note>
+<para>
 While the Data Definitions supplement the source specifications,
 this specification itself does not require conforming implementations
 to supply any header files.
-</PARA>
-</NOTE>
-</PARA>
-</SECT1>
+</para>
+</note>
+</para>
+</sect1>
 
 m4_include(libGlib.sgml)
-m4_include(libGobject.sgml)
 m4_include(libGmodule.sgml)
+m4_include(libGobject.sgml)
 m4_include(libGthread.sgml)
 m4_include(libGio.sgml)
 m4_include(libAtk.sgml)
@@ -102,8 +135,9 @@ m4_include(libPangoft2.sgml)
 m4_include(libGdk_pixbuf.sgml)
 m4_include(libGdk_pixbuf_xlib.sgml)
 m4_include(libGdk_x11.sgml)
+m4_include(libGdk_3.sgml)
 m4_include(libGtk_x11.sgml)
+m4_include(libGtk_3.sgml)
 
-</CHAPTER>
-
-</PART>
+</chapter>
+</part>
