@@ -42,6 +42,9 @@ The behavior of the interfaces in this library is specified by the following spe
 <MEMBER ID='REFSTD.libpam.1'>
 [LSB] <XREF LINKEND="std.LSB">
 </MEMBER>
+<MEMBER ID='REFSTD.libpam.2'>
+[PAM] <XREF LINKEND="std.PAM">
+</MEMBER>
 </SIMPLELIST>
 </PARA>
 <!-- debug: database interface name Pluggable Authentication API -->
@@ -74,19 +77,25 @@ underlying specification.
 <ROW>
 <ENTRY><indexterm><primary>pam_end</primary></indexterm>pam_end(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pam_fail_delay</primary></indexterm>pam_fail_delay(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_get_data</primary></indexterm>pam_get_data(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.2">[PAM]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pam_get_item</primary></indexterm>pam_get_item(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_getenv</primary></indexterm>pam_getenv(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 </ROW>
 <ROW>
+<ENTRY><indexterm><primary>pam_get_user</primary></indexterm>pam_get_user(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.2">[PAM]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_getenv</primary></indexterm>pam_getenv(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pam_getenvlist</primary></indexterm>pam_getenvlist(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pam_open_session</primary></indexterm>pam_open_session(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_putenv</primary></indexterm>pam_putenv(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
-<ENTRY><indexterm><primary>pam_set_item</primary></indexterm>pam_set_item(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 </ROW>
 <ROW>
+<ENTRY><indexterm><primary>pam_putenv</primary></indexterm>pam_putenv(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_set_data</primary></indexterm>pam_set_data(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.2">[PAM]</LINK></ENTRY>
+<ENTRY><indexterm><primary>pam_set_item</primary></indexterm>pam_set_item(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pam_setcred</primary></indexterm>pam_setcred(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+</ROW>
+<ROW>
 <ENTRY><indexterm><primary>pam_start</primary></indexterm>pam_start(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
 <ENTRY><indexterm><primary>pam_strerror</primary></indexterm>pam_strerror(LIBPAM_1.0) <LINK LINKEND="REFSTD.libpam.1">[LSB]</LINK></ENTRY>
+<ENTRY></ENTRY>
 <ENTRY></ENTRY>
 </ROW>
 </TBODY>
@@ -116,7 +125,7 @@ to supplement - not to replace - source interface definition specifications.
 <PARA>
 This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the reference programming language, and data definitions are specified in ISO C format. The C language is used here as a convenient notation. Using a C language description of these data objects does not preclude their use by other programming languages.</PARA>
 <SECT2>
-<TITLE>security/pam_appl.h</TITLE>
+<TITLE>security/_pam_types.h</TITLE>
 <PARA>
 </PARA>
 <SCREEN>
@@ -186,22 +195,42 @@ struct pam_conv {
 #define PAM_CHANGE_EXPIRED_AUTHTOK	0x0020U	/* Extend lifetime of user credentials */
 #define PAM_SILENT	0x8000U	/* Authentication service should not generate any messages */
 
+extern int pam_fail_delay(pam_handle_t *, unsigned int);
+extern int pam_get_item(const pam_handle_t *, int, const void **);
+extern const char *pam_getenv(pam_handle_t *, const char *);
+extern char **pam_getenvlist(pam_handle_t *);
+extern int pam_putenv(pam_handle_t *, const char *);
+extern int pam_set_item(pam_handle_t *, int, const void *);
+extern const char *pam_strerror(pam_handle_t *, int);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>security/pam_appl.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
 extern int pam_acct_mgmt(pam_handle_t *, int);
 extern int pam_authenticate(pam_handle_t *, int);
 extern int pam_chauthtok(pam_handle_t *, int);
 extern int pam_close_session(pam_handle_t *, int);
 extern int pam_end(pam_handle_t *, int);
-extern int pam_fail_delay(pam_handle_t *, unsigned int);
-extern int pam_get_item(const pam_handle_t *, int, const void **);
-extern const char *pam_getenv(pam_handle_t *, const char *);
-extern char **pam_getenvlist(pam_handle_t *);
 extern int pam_open_session(pam_handle_t *, int);
-extern int pam_putenv(pam_handle_t *, const char *);
-extern int pam_set_item(pam_handle_t *, int, const void *);
 extern int pam_setcred(pam_handle_t *, int);
 extern int pam_start(const char *, const char *, const struct pam_conv *,
 		     pam_handle_t * *);
-extern const char *pam_strerror(pam_handle_t *, int);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>security/pam_modules.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern int pam_get_data(const pam_handle_t *, const char *, const void **);
+extern int pam_get_user(pam_handle_t *, const char **, const char *);
+extern int pam_set_data(pam_handle_t *, const char *, void *,
+			void (*)(pam_handle_t *, void *, int));
 </SCREEN>
 </SECT2>
 </SECT1>
