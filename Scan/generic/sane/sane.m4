@@ -1,5 +1,5 @@
 <PART ID="toclibsane">
-<TITLE>SANE - Scanner Access Now Easy</TITLE>
+<TITLE>Scanning Libraries</TITLE>
 
 <CHAPTER id=sanelib>
 <TITLE>Libraries</TITLE>

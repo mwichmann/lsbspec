@@ -1,5 +1,5 @@
 <PART ID="toccupslib">
-<TITLE>LSB Printing Libraries</TITLE>
+<TITLE>Printing Libraries</TITLE>
 
 <CHAPTER id=libcupslib>
 <TITLE>Libraries</TITLE>
