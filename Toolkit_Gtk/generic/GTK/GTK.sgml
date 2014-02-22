@@ -30596,8 +30596,8 @@ typedef union _GdkEvent {
     GdkEventWindowState window_state;
     GdkEventSetting setting;
 } GdkEvent;
-typedef GdkFilterReturn(*GdkFilterFunc) (GdkXEvent *, GdkEvent *,
-					 gpointer);
+typedef GdkFilterReturn(*GdkFilterFunc) (GdkXEvent * xevent,
+					 GdkEvent * event, gpointer data);
 typedef struct _GdkDrawable {
     GObject parent_instance;
 } GdkPixmap;
@@ -33962,7 +33962,8 @@ typedef enum {
     GDK_FILTER_TRANSLATE,
     GDK_FILTER_REMOVE
 } GdkFilterReturn;
-typedef GdkFilterReturn(*GdkFilterFunc) (void);
+typedef GdkFilterReturn(*GdkFilterFunc) (GdkXEvent * xevent,
+					 GdkEvent * event, gpointer data);
 typedef enum {
     GDK_NOTHING,
     GDK_DELETE,
@@ -34495,7 +34496,7 @@ extern GdkEvent *gdk_display_peek_event(GdkDisplay * display);
 extern gboolean gdk_display_pointer_is_grabbed(GdkDisplay * display);
 extern void gdk_display_pointer_ungrab(GdkDisplay * display, guint32);
 extern void gdk_display_put_event(GdkDisplay * display,
-				  const union _GdkEvent *);
+				  const GdkEvent * event);
 extern gboolean gdk_display_request_selection_notification(GdkDisplay *
 							   display,
 							   GdkAtom);
@@ -48096,7 +48097,8 @@ typedef struct _GtkAspectFrame {
     gboolean obey_child;
     GtkAllocation center_allocation;
 } GtkAspectFrame;
-typedef gboolean(*GtkFileFilterFunc) (const GtkFileFilterInfo *, gpointer);
+typedef gboolean(*GtkFileFilterFunc) (const GtkFileFilterInfo *
+				      filter_info, gpointer data);
 typedef struct _GtkIMMulticontextPrivate GtkIMMulticontextPrivate;
 typedef struct _GtkIMMulticontext {
     GtkIMContext object;
@@ -55487,8 +55489,8 @@ typedef enum {
     GTK_RECENT_FILTER_GROUP,
     GTK_RECENT_FILTER_AGE
 } GtkRecentFilterFlags;
-typedef gboolean(*GtkRecentFilterFunc) (const GtkRecentFilterInfo *,
-					gpointer);
+typedef gboolean(*GtkRecentFilterFunc) (const GtkRecentFilterInfo *
+					filter_info, gpointer user_data);
 extern void gtk_recent_filter_add_age(GtkRecentFilter * filter, gint days);
 extern void gtk_recent_filter_add_application(GtkRecentFilter * filter,
 					      const char *application);
@@ -57048,9 +57050,12 @@ typedef enum {
     GTK_FILE_FILTER_DISPLAY_NAME,
     GTK_FILE_FILTER_MIME_TYPE
 } GtkFileFilterFlags;
-typedef gboolean(*GtkFileFilterFunc) (void);
+typedef gboolean(*GtkFileFilterFunc) (const GtkFileFilterInfo *
+				      filter_info, gpointer data);
 typedef struct _GtkThemingEngine GtkThemingEngine;
-typedef gboolean(*GtkFontFilterFunc) (void);
+typedef gboolean(*GtkFontFilterFunc) (const PangoFontFamily * family,
+				      const PangoFontFace * face,
+				      gpointer data);
 typedef struct _GtkFontChooser GtkFontChooser;
 typedef struct _GtkAppChooserButton GtkAppChooserButton;
 typedef struct _GtkMountOperation GtkMountOperation;
@@ -57105,7 +57110,8 @@ typedef struct _GtkRecentFilter GtkRecentFilter;
 typedef struct _GtkRecentFilterInfo GtkRecentFilterInfo;
 typedef enum
     GtkRecentFilterFlags;
-typedef gboolean(*GtkRecentFilterFunc) (void);
+typedef gboolean(*GtkRecentFilterFunc) (const GtkRecentFilterInfo *
+					filter_info, gpointer user_data);
 typedef struct _GtkSwitch GtkSwitch;
 typedef enum {
     GTK_CELL_RENDERER_SELECTED,
