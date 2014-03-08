@@ -16852,8 +16852,8 @@ typedef union _GdkEvent {
     GdkEventWindowState window_state;
     GdkEventSetting setting;
 } GdkEvent;
-typedef GdkFilterReturn(*GdkFilterFunc) (GdkXEvent *, GdkEvent *,
-					 gpointer);
+typedef GdkFilterReturn(*GdkFilterFunc) (GdkXEvent * xevent,
+					 GdkEvent * event, gpointer data);
 typedef struct _GdkDrawable {
     GObject parent_instance;
 } GdkPixmap;
@@ -29384,7 +29384,8 @@ typedef struct _GtkAspectFrame {
     gboolean obey_child;
     GtkAllocation center_allocation;
 } GtkAspectFrame;
-typedef gboolean(*GtkFileFilterFunc) (const GtkFileFilterInfo *, gpointer);
+typedef gboolean(*GtkFileFilterFunc) (const GtkFileFilterInfo *
+				      filter_info, gpointer data);
 typedef struct _GtkIMMulticontextPrivate GtkIMMulticontextPrivate;
 typedef struct _GtkIMMulticontext {
     GtkIMContext object;
@@ -36775,8 +36776,8 @@ typedef enum {
     GTK_RECENT_FILTER_GROUP,
     GTK_RECENT_FILTER_AGE
 } GtkRecentFilterFlags;
-typedef gboolean(*GtkRecentFilterFunc) (const GtkRecentFilterInfo *,
-					gpointer);
+typedef gboolean(*GtkRecentFilterFunc) (const GtkRecentFilterInfo *
+					filter_info, gpointer user_data);
 extern void gtk_recent_filter_add_age(GtkRecentFilter * filter, gint days);
 extern void gtk_recent_filter_add_application(GtkRecentFilter * filter,
 					      const char *application);
@@ -37117,16 +37118,16 @@ gtk_page_setup_unix_dialog_set_print_settings(GtkPageSetupUnixDialog *
 <SCREEN>
 
 typedef enum {
-    GTK_PRINT_CAPABILITY_PAGE_SET,
-    GTK_PRINT_CAPABILITY_COPIES,
-    GTK_PRINT_CAPABILITY_COLLATE,
-    GTK_PRINT_CAPABILITY_REVERSE,
-    GTK_PRINT_CAPABILITY_SCALE,
-    GTK_PRINT_CAPABILITY_GENERATE_PDF,
-    GTK_PRINT_CAPABILITY_GENERATE_PS,
-    GTK_PRINT_CAPABILITY_PREVIEW,
-    GTK_PRINT_CAPABILITY_NUMBER_UP,
-    GTK_PRINT_CAPABILITY_NUMBER_UP_LAYOUT
+    GTK_PRINT_CAPABILITY_PAGE_SET = 1 &lt;&lt; 0,
+    GTK_PRINT_CAPABILITY_COPIES = 1 &lt;&lt; 1,
+    GTK_PRINT_CAPABILITY_COLLATE = 1 &lt;&lt; 2,
+    GTK_PRINT_CAPABILITY_REVERSE = 1 &lt;&lt; 3,
+    GTK_PRINT_CAPABILITY_SCALE = 1 &lt;&lt; 4,
+    GTK_PRINT_CAPABILITY_GENERATE_PDF = 1 &lt;&lt; 5,
+    GTK_PRINT_CAPABILITY_GENERATE_PS = 1 &lt;&lt; 6,
+    GTK_PRINT_CAPABILITY_PREVIEW = 1 &lt;&lt; 7,
+    GTK_PRINT_CAPABILITY_NUMBER_UP = 1 &lt;&lt; 8,
+    GTK_PRINT_CAPABILITY_NUMBER_UP_LAYOUT = 1 &lt;&lt; 9
 } GtkPrintCapabilities;
 typedef struct _GtkPrinter {
     GObject parent_instance;
@@ -37134,7 +37135,7 @@ typedef struct _GtkPrinter {
 } GtkPrinter;
 typedef struct _GtkPrinterClass {
     GObjectClass parent_class;
-    void (*details_acquired) (void);
+    void (*details_acquired) (GtkPrinter * printer, gboolean success);
     void (*_gtk_reserved1) (void);
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
