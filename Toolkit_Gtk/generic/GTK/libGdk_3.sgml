@@ -441,7 +441,7 @@ typedef enum {
     GDK_CURSOR_IS_PIXMAP
 } GdkCursorType;
 typedef struct _GdkPoint GdkPoint;
-typedef struct _cairo_rectangle_int GdkRectangle;
+typedef const cairo_rectangle_int_t GdkRectangle;
 typedef struct _GdkAtom *GdkAtom;
 typedef struct _GdkColor GdkColor;
 typedef struct _GdkRGBA {
@@ -568,28 +568,23 @@ extern void gdk_beep(void);
 extern GType gdk_byte_order_get_type(void);
 extern cairo_t *gdk_cairo_create(GdkWindow * window);
 extern gboolean gdk_cairo_get_clip_rectangle(cairo_t * cr, GdkRectangle *);
-extern void gdk_cairo_rectangle(cairo_t * cr,
-				const struct _cairo_rectangle_int *);
-extern void gdk_cairo_region(cairo_t * cr, const struct _cairo_region *);
+extern void gdk_cairo_rectangle(cairo_t * cr, const GdkRectangle *);
+extern void gdk_cairo_region(cairo_t * cr, const cairo_region_t);
 extern cairo_region_t *gdk_cairo_region_create_from_surface(cairo_surface_t
 							    * surface);
-extern void gdk_cairo_set_source_color(cairo_t * cr,
-				       const struct _GdkColor *);
-extern void gdk_cairo_set_source_pixbuf(cairo_t * cr,
-					const struct _GdkPixbuf *, gdouble,
-					gdouble);
-extern void gdk_cairo_set_source_rgba(cairo_t * cr,
-				      const struct _GdkRGBA *);
+extern void gdk_cairo_set_source_color(cairo_t * cr, const GdkColor *);
+extern void gdk_cairo_set_source_pixbuf(cairo_t * cr, const GdkPixbuf *,
+					gdouble, gdouble);
+extern void gdk_cairo_set_source_rgba(cairo_t * cr, const GdkRGBA *);
 extern void gdk_cairo_set_source_window(cairo_t * cr, GdkWindow *, gdouble,
 					gdouble);
-extern GdkColor *gdk_color_copy(const struct _GdkColor *color);
-extern gboolean gdk_color_equal(const struct _GdkColor *colora,
-				const struct _GdkColor *);
+extern GdkColor *gdk_color_copy(const GdkColor * color);
+extern gboolean gdk_color_equal(const GdkColor * colora, const GdkColor *);
 extern void gdk_color_free(GdkColor * color);
 extern GType gdk_color_get_type(void);
-extern guint gdk_color_hash(const struct _GdkColor *color);
+extern guint gdk_color_hash(const GdkColor * color);
 extern gboolean gdk_color_parse(const char *spec, GdkColor *);
-extern gchar *gdk_color_to_string(const struct _GdkColor *color);
+extern gchar *gdk_color_to_string(const GdkColor * color);
 extern GType gdk_crossing_mode_get_type(void);
 extern GdkCursorType gdk_cursor_get_cursor_type(GdkCursor * cursor);
 extern GdkDisplay *gdk_cursor_get_display(GdkCursor * cursor);
@@ -711,8 +706,7 @@ extern void gdk_display_set_double_click_distance(GdkDisplay * display,
 						  guint);
 extern void gdk_display_set_double_click_time(GdkDisplay * display, guint);
 extern void gdk_display_store_clipboard(GdkDisplay * display, GdkWindow *,
-					guint32, struct _GdkAtom *const *,
-					gint);
+					guint32, const GdkAtom *, gint);
 extern gboolean gdk_display_supports_clipboard_persistence(GdkDisplay *
 							   display);
 extern gboolean gdk_display_supports_composite(GdkDisplay * display);
@@ -894,36 +888,33 @@ extern gboolean gdk_pointer_is_grabbed(void);
 extern void gdk_pointer_ungrab(guint32 time_);
 extern void gdk_pre_parse_libgtk_only(void);
 extern GType gdk_prop_mode_get_type(void);
-extern void gdk_property_change(GdkWindow * window, struct _GdkAtom *,
-				struct _GdkAtom *, gint, GdkPropMode,
-				const unsigned char *, gint);
-extern void gdk_property_delete(GdkWindow * window, struct _GdkAtom *);
+extern void gdk_property_change(GdkWindow * window, GdkAtom, GdkAtom, gint,
+				GdkPropMode, const unsigned char *, gint);
+extern void gdk_property_delete(GdkWindow * window, GdkAtom);
 extern gboolean gdk_property_get(GdkWindow * window, GdkAtom, GdkAtom,
-				 gulong, gulong, gint, struct _GdkAtom **,
-				 gint *, gint *, guchar * *);
+				 gulong, gulong, gint, GdkAtom *, gint *,
+				 gint *, guchar * *);
 extern GType gdk_property_state_get_type(void);
 extern void gdk_query_depths(gint * *depths, gint *);
 extern void gdk_query_visual_types(GdkVisualType * *visual_types, gint *);
 extern GType gdk_rectangle_get_type(void);
-extern gboolean gdk_rectangle_intersect(const struct _cairo_rectangle_int
-					*src1,
-					const struct _cairo_rectangle_int
-					*, GdkRectangle *);
-extern void gdk_rectangle_union(const struct _cairo_rectangle_int *src1,
-				const struct _cairo_rectangle_int *,
-				GdkRectangle *);
-extern GdkRGBA *gdk_rgba_copy(const struct _GdkRGBA *rgba);
+extern gboolean gdk_rectangle_intersect(const GdkRectangle * src1,
+					const GdkRectangle *,
+					GdkRectangle *);
+extern void gdk_rectangle_union(const GdkRectangle * src1,
+				const GdkRectangle *, GdkRectangle *);
+extern GdkRGBA *gdk_rgba_copy(const GdkRGBA * rgba);
 extern gboolean gdk_rgba_equal(gconstpointer p1, gconstpointer);
 extern void gdk_rgba_free(GdkRGBA * rgba);
 extern GType gdk_rgba_get_type(void);
 extern guint gdk_rgba_hash(gconstpointer p);
 extern gboolean gdk_rgba_parse(GdkRGBA * rgba, const char *);
-extern gchar *gdk_rgba_to_string(const struct _GdkRGBA *rgba);
+extern gchar *gdk_rgba_to_string(const GdkRGBA * rgba);
 extern GdkWindow *gdk_screen_get_active_window(GdkScreen * screen);
 extern GdkScreen *gdk_screen_get_default(void);
 extern GdkDisplay *gdk_screen_get_display(GdkScreen * screen);
-extern const struct _cairo_font_options
-    *gdk_screen_get_font_options(GdkScreen * screen);
+extern const cairo_font_options_t *gdk_screen_get_font_options(GdkScreen *
+							       screen);
 extern gint gdk_screen_get_height(GdkScreen * screen);
 extern gint gdk_screen_get_height_mm(GdkScreen * screen);
 extern gint gdk_screen_get_monitor_at_point(GdkScreen * screen, gint,
@@ -957,8 +948,7 @@ extern gboolean gdk_screen_is_composited(GdkScreen * screen);
 extern GList *gdk_screen_list_visuals(GdkScreen * screen);
 extern gchar *gdk_screen_make_display_name(GdkScreen * screen);
 extern void gdk_screen_set_font_options(GdkScreen * screen,
-					const struct _cairo_font_options
-					*);
+					const cairo_font_options_t *);
 extern void gdk_screen_set_resolution(GdkScreen * screen, gdouble);
 extern gint gdk_screen_width(void);
 extern gint gdk_screen_width_mm(void);
@@ -974,15 +964,12 @@ extern gboolean gdk_selection_owner_set_for_display(GdkDisplay * display,
 						    GdkWindow *, GdkAtom,
 						    guint32, gboolean);
 extern gint gdk_selection_property_get(GdkWindow * requestor, guchar * *,
-				       struct _GdkAtom **, gint *);
-extern void gdk_selection_send_notify(GdkWindow * requestor,
-				      struct _GdkAtom *, struct _GdkAtom *,
-				      struct _GdkAtom *, guint32);
+				       GdkAtom *, gint *);
+extern void gdk_selection_send_notify(GdkWindow * requestor, GdkAtom,
+				      GdkAtom, GdkAtom, guint32);
 extern void gdk_selection_send_notify_for_display(GdkDisplay * display,
-						  GdkWindow *,
-						  struct _GdkAtom *,
-						  struct _GdkAtom *,
-						  struct _GdkAtom *,
+						  GdkWindow *, GdkAtom,
+						  GdkAtom, GdkAtom,
 						  guint32);
 extern void gdk_set_double_click_time(guint msec);
 extern void gdk_set_program_class(const char *program_class);
@@ -998,8 +985,7 @@ extern gboolean gdk_test_simulate_key(GdkWindow * window, gint, gint,
 				      guint, GdkModifierType,
 				      GdkEventType);
 extern gint gdk_text_property_to_utf8_list_for_display(GdkDisplay *
-						       display,
-						       struct _GdkAtom *,
+						       display, GdkAtom,
 						       gint,
 						       const unsigned char
 						       *, gint,
@@ -1056,10 +1042,9 @@ extern void gdk_window_begin_move_drag_for_device(GdkWindow * window,
 						  GdkDevice *, gint, gint,
 						  gint, guint32);
 extern void gdk_window_begin_paint_rect(GdkWindow * window,
-					const struct _cairo_rectangle_int
-					*);
+					const GdkRectangle *);
 extern void gdk_window_begin_paint_region(GdkWindow * window,
-					  const struct _cairo_region *);
+					  const cairo_region_t);
 extern void gdk_window_begin_resize_drag(GdkWindow * window, GdkWindowEdge,
 					 gint, gint, gint, guint32);
 extern void gdk_window_begin_resize_drag_for_device(GdkWindow * window,
@@ -1148,19 +1133,16 @@ extern void gdk_window_hide(GdkWindow * window);
 extern GType gdk_window_hints_get_type(void);
 extern void gdk_window_iconify(GdkWindow * window);
 extern void gdk_window_input_shape_combine_region(GdkWindow * window,
-						  const struct
-						  _cairo_region *, gint,
-						  gint);
+						  const cairo_region_t,
+						  gint, gint);
 extern void gdk_window_invalidate_maybe_recurse(GdkWindow * window,
-						const struct _cairo_region
-						*, GdkWindowChildFunc,
+						const cairo_region_t,
+						GdkWindowChildFunc,
 						void *);
 extern void gdk_window_invalidate_rect(GdkWindow * window,
-				       const struct _cairo_rectangle_int *,
-				       gboolean);
+				       const GdkRectangle *, gboolean);
 extern void gdk_window_invalidate_region(GdkWindow * window,
-					 const struct _cairo_region *,
-					 gboolean);
+					 const cairo_region_t, gboolean);
 extern gboolean gdk_window_is_destroyed(GdkWindow * window);
 extern gboolean gdk_window_is_input_only(GdkWindow * window);
 extern gboolean gdk_window_is_shaped(GdkWindow * window);
@@ -1172,8 +1154,7 @@ extern void gdk_window_merge_child_input_shapes(GdkWindow * window);
 extern void gdk_window_merge_child_shapes(GdkWindow * window);
 extern void gdk_window_move(GdkWindow * window, gint, gint);
 extern void gdk_window_move_region(GdkWindow * window,
-				   const struct _cairo_region *, gint,
-				   gint);
+				   const cairo_region_t, gint, gint);
 extern void gdk_window_move_resize(GdkWindow * window, gint, gint, gint,
 				   gint);
 extern GdkWindow *gdk_window_new(GdkWindow * parent, GdkWindowAttr *,
@@ -1192,7 +1173,7 @@ extern void gdk_window_restack(GdkWindow * window, GdkWindow *, gboolean);
 extern void gdk_window_scroll(GdkWindow * window, gint, gint);
 extern void gdk_window_set_accept_focus(GdkWindow * window, gboolean);
 extern void gdk_window_set_background(GdkWindow * window,
-				      const struct _GdkColor *);
+				      const GdkColor *);
 extern void gdk_window_set_background_pattern(GdkWindow * window,
 					      cairo_pattern_t *);
 extern void gdk_window_set_background_rgba(GdkWindow * window, GdkRGBA *);
@@ -1238,8 +1219,8 @@ extern void gdk_window_set_type_hint(GdkWindow * window,
 extern void gdk_window_set_urgency_hint(GdkWindow * window, gboolean);
 extern void gdk_window_set_user_data(GdkWindow * window, gpointer);
 extern void gdk_window_shape_combine_region(GdkWindow * window,
-					    const struct _cairo_region *,
-					    gint, gint);
+					    const cairo_region_t, gint,
+					    gint);
 extern void gdk_window_show(GdkWindow * window);
 extern void gdk_window_show_unraised(GdkWindow * window);
 extern GType gdk_window_state_get_type(void);
@@ -4654,9 +4635,8 @@ extern void gdk_x11_display_set_startup_notification_id(GdkDisplay *
 							const char *);
 extern gint gdk_x11_display_string_to_compound_text(GdkDisplay * display,
 						    const char *,
-						    struct _GdkAtom **,
-						    gint *, guchar * *,
-						    gint *);
+						    GdkAtom *, gint *,
+						    guchar * *, gint *);
 extern gint gdk_x11_display_text_property_to_text_list(GdkDisplay *
 						       display, GdkAtom,
 						       gint,
@@ -4666,9 +4646,8 @@ extern gint gdk_x11_display_text_property_to_text_list(GdkDisplay *
 extern void gdk_x11_display_ungrab(GdkDisplay * display);
 extern gboolean gdk_x11_display_utf8_to_compound_text(GdkDisplay * display,
 						      const char *,
-						      struct _GdkAtom **,
-						      gint *, guchar * *,
-						      gint *);
+						      GdkAtom *, gint *,
+						      guchar * *, gint *);
 extern GType gdk_x11_drag_context_get_type(void);
 extern void gdk_x11_free_compound_text(guchar * ctext);
 extern void gdk_x11_free_text_list(gchar * *list);
