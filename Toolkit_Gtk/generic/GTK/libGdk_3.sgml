@@ -143,11 +143,218 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define GDK_DEPRECATED_FOR(f)	G_DEPRECATED_FOR(f)
 #define GDK_UNAVAILABLE(maj,min)	G_UNAVAILABLE(maj,min)
 
-typedef struct _GdkKeymapKey GdkKeymapKey;
-typedef struct _GdkEventMotion GdkEventMotion;
-typedef struct _GdkEventKey GdkEventKey;
+typedef struct _GdkKeymapKey {
+    guint keycode;
+    gint group;
+    gint level;
+} GdkKeymapKey;
+typedef struct _GdkEventAny {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+} GdkEventAny;
+typedef struct _GdkEventExpose {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkRectangle area;
+    cairo_region_t *region;
+    gint count;
+} GdkEventExpose;
+typedef struct _GdkEventVisibility {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkVisibilityState state;
+} GdkEventVisibility;
+typedef struct _GdkEventMotion {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    guint32 time;
+    gdouble x;
+    gdouble y;
+    gdouble *axes;
+    guint state;
+    gint16 is_hint;
+    GdkDevice *device;
+    gdouble x_root;
+    gdouble y_root;
+} GdkEventMotion;
+typedef struct _GdkEventButton {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    guint32 time;
+    gdouble x;
+    gdouble y;
+    gdouble *axes;
+    guint state;
+    guint button;
+    GdkDevice *device;
+    gdouble x_root;
+    gdouble y_root;
+} GdkEventButton;
+typedef struct _GdkEventTouch {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    guint32 time;
+    gdouble x;
+    gdouble y;
+    gdouble *axes;
+    guint state;
+    GdkEventSequence *sequence;
+    gboolean emulating_pointer;
+    GdkDevice *device;
+    gdouble x_root;
+    gdouble y_root;
+} GdkEventTouch;
+typedef struct _GdkEventScroll {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    guint32 time;
+    gdouble x;
+    gdouble y;
+    guint state;
+    GdkScrollDirection direction;
+    GdkDevice *device;
+    gdouble x_root;
+    gdouble y_root;
+} GdkEventScroll;
+typedef struct _GdkEventKey {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    guint32 time;
+    guint state;
+    guint keyval;
+    gint length;
+    gchar *string;
+    guint16 hardware_keycode;
+    guint8 group;
+    guint is_modifier;
+} GdkEventKey;
+typedef struct _GdkEventFocus {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    gint16 in;
+} GdkEventFocus;
+typedef struct _GdkEventCrossing {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkWindow *subwindow;
+    guint32 time;
+    gdouble x;
+    gdouble y;
+    gdouble x_root;
+    gdouble y_root;
+    GdkCrossingMode mode;
+    GdkNotifyType detail;
+    gboolean focus;
+    guint state;
+} GdkEventCrossing;
+typedef struct _GdkEventConfigure {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    gint x;
+    gint y;
+    gint width;
+    gint height;
+} GdkEventConfigure;
+typedef struct _GdkEventProperty {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkAtom atom;
+    guint32 time;
+    guint state;
+} GdkEventProperty;
+typedef struct _GdkEventSelection {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkAtom selection;
+    GdkAtom target;
+    GdkAtom property;
+    guint32 time;
+    GdkWindow *requestor;
+} GdkEventSelection;
+typedef struct _GdkEventOwnerChange {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkWindow *owner;
+    GdkOwnerChange reason;
+    GdkAtom selection;
+    guint32 time;
+    guint32 selection_time;
+} GdkEventOwnerChange;
+typedef struct _GdkEventProximity {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    guint32 time;
+    GdkDevice *device;
+} GdkEventProximity;
+typedef struct _GdkEventDND {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkDragContext *context;
+    guint32 time;
+    gshort x_root;
+    gshort y_root;
+} GdkEventDND;
+typedef struct _GdkEventWindowState {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkWindowState changed_mask;
+    GdkWindowState new_window_state;
+} GdkEventWindowState;
+typedef struct _GdkEventSetting {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    GdkSettingAction action;
+    char *name;
+} GdkEventSetting;
+typedef struct _GdkEventGrabBroken {
+    GdkEventType type;
+    GdkWindow *window;
+    gint8 send_event;
+    gboolean keyboard;
+    gboolean implicit;
+    GdkWindow *grab_window;
+} GdkEventGrabBroken;
 typedef struct _GdkEventSequence GdkEventSequence;
-typedef union _GdkEvent GdkEvent;
+typedef union _GdkEvent {
+    GdkEventType type;
+    GdkEventAny any;
+    GdkEventExpose expose;
+    GdkEventVisibility visibility;
+    GdkEventMotion motion;
+    GdkEventButton button;
+    GdkEventTouch touch;
+    GdkEventScroll scroll;
+    GdkEventKey key;
+    GdkEventCrossing crossing;
+    GdkEventFocus focus_change;
+    GdkEventConfigure configure;
+    GdkEventProperty property;
+    GdkEventSelection selection;
+    GdkEventOwnerChange owner_change;
+    GdkEventProximity proximity;
+    GdkEventDND dnd;
+    GdkEventWindowState window_state;
+    GdkEventSetting setting;
+    GdkEventGrabBroken grab_broken;
+} GdkEvent;
 typedef void (*GdkEventFunc) (GdkEvent * event, gpointer data);
 typedef void GdkXEvent;
 typedef enum {
@@ -158,51 +365,56 @@ typedef enum {
 typedef GdkFilterReturn(*GdkFilterFunc) (GdkXEvent * xevent,
 					 GdkEvent * event, gpointer data);
 typedef enum {
-    GDK_NOTHING,
-    GDK_DELETE,
-    GDK_DESTROY,
-    GDK_EXPOSE,
-    GDK_MOTION_NOTIFY,
-    GDK_BUTTON_PRESS,
-    GDK_2BUTTON_PRESS,
-    GDK_DOUBLE_BUTTON_PRESS,
-    GDK_3BUTTON_PRESS,
-    GDK_TRIPLE_BUTTON_PRESS,
-    GDK_BUTTON_RELEASE,
-    GDK_KEY_PRESS,
-    GDK_KEY_RELEASE,
-    GDK_ENTER_NOTIFY,
-    GDK_LEAVE_NOTIFY,
-    GDK_FOCUS_CHANGE,
-    GDK_CONFIGURE,
-    GDK_MAP,
-    GDK_UNMAP,
-    GDK_PROPERTY_NOTIFY,
-    GDK_SELECTION_CLEAR,
-    GDK_SELECTION_REQUEST,
-    GDK_SELECTION_NOTIFY,
-    GDK_PROXIMITY_IN,
-    GDK_PROXIMITY_OUT,
-    GDK_DRAG_ENTER,
-    GDK_DRAG_LEAVE,
-    GDK_DRAG_MOTION,
-    GDK_DRAG_STATUS,
-    GDK_DROP_START,
-    GDK_DROP_FINISHED,
-    GDK_CLIENT_EVENT,
-    GDK_VISIBILITY_NOTIFY,
-    GDK_SCROLL,
-    GDK_WINDOW_STATE,
-    GDK_SETTING,
-    GDK_OWNER_CHANGE,
-    GDK_GRAB_BROKEN,
-    GDK_DAMAGE,
-    GDK_TOUCH_BEGIN,
-    GDK_TOUCH_UPDATE,
-    GDK_TOUCH_END,
-    GDK_TOUCH_CANCEL,
+    GDK_NOTHING = -1,
+    GDK_DELETE = 0,
+    GDK_DESTROY = 1,
+    GDK_EXPOSE = 2,
+    GDK_MOTION_NOTIFY = 3,
+    GDK_BUTTON_PRESS = 4,
+    GDK_2BUTTON_PRESS = 5,
+    GDK_DOUBLE_BUTTON_PRESS = GDK_2BUTTON_PRESS,
+    GDK_3BUTTON_PRESS = 6,
+    GDK_TRIPLE_BUTTON_PRESS = GDK_3BUTTON_PRESS,
+    GDK_BUTTON_RELEASE = 7,
+    GDK_KEY_PRESS = 8,
+    GDK_KEY_RELEASE = 9,
+    GDK_ENTER_NOTIFY = 10,
+    GDK_LEAVE_NOTIFY = 11,
+    GDK_FOCUS_CHANGE = 12,
+    GDK_CONFIGURE = 13,
+    GDK_MAP = 14,
+    GDK_UNMAP = 15,
+    GDK_PROPERTY_NOTIFY = 16,
+    GDK_SELECTION_CLEAR = 17,
+    GDK_SELECTION_REQUEST = 18,
+    GDK_SELECTION_NOTIFY = 19,
+    GDK_PROXIMITY_IN = 20,
+    GDK_PROXIMITY_OUT = 21,
+    GDK_DRAG_ENTER = 22,
+    GDK_DRAG_LEAVE = 23,
+    GDK_DRAG_MOTION = 24,
+    GDK_DRAG_STATUS = 25,
+    GDK_DROP_START = 26,
+    GDK_DROP_FINISHED = 27,
+    GDK_CLIENT_EVENT = 28,
+    GDK_VISIBILITY_NOTIFY = 29,
+    GDK_SCROLL = 31,
+    GDK_WINDOW_STATE = 32,
+    GDK_SETTING = 33,
+    GDK_OWNER_CHANGE = 34,
+    GDK_GRAB_BROKEN = 35,
+    GDK_DAMAGE = 36,
+    GDK_TOUCH_BEGIN = 37,
+    GDK_TOUCH_UPDATE = 38,
+    GDK_TOUCH_END = 39,
+    GDK_TOUCH_CANCEL = 40,
     GDK_EVENT_LAST
 } GdkEventType;
+typedef enum {
+    GDK_VISIBILITY_UNOBSCURED,
+    GDK_VISIBILITY_PARTIAL,
+    GDK_VISIBILITY_FULLY_OBSCURED
+} GdkVisibilityState;
 typedef enum {
     GDK_SCROLL_UP,
     GDK_SCROLL_DOWN,
@@ -211,15 +423,70 @@ typedef enum {
     GDK_SCROLL_SMOOTH
 } GdkScrollDirection;
 typedef enum {
-    GDK_WINDOW_STATE_WITHDRAWN,
-    GDK_WINDOW_STATE_ICONIFIED,
-    GDK_WINDOW_STATE_MAXIMIZED,
-    GDK_WINDOW_STATE_STICKY,
-    GDK_WINDOW_STATE_FULLSCREEN,
-    GDK_WINDOW_STATE_ABOVE,
-    GDK_WINDOW_STATE_BELOW,
-    GDK_WINDOW_STATE_FOCUSED
+    GDK_NOTIFY_ANCESTOR = 0,
+    GDK_NOTIFY_VIRTUAL = 1,
+    GDK_NOTIFY_INFERIOR = 2,
+    GDK_NOTIFY_NONLINEAR = 3,
+    GDK_NOTIFY_NONLINEAR_VIRTUAL = 4,
+    GDK_NOTIFY_UNKNOWN = 5
+} GdkNotifyType;
+typedef enum {
+    GDK_CROSSING_NORMAL,
+    GDK_CROSSING_GRAB,
+    GDK_CROSSING_UNGRAB,
+    GDK_CROSSING_GTK_GRAB,
+    GDK_CROSSING_GTK_UNGRAB,
+    GDK_CROSSING_STATE_CHANGED,
+    GDK_CROSSING_TOUCH_BEGIN,
+    GDK_CROSSING_TOUCH_END,
+    GDK_CROSSING_DEVICE_SWITCH
+} GdkCrossingMode;
+typedef enum {
+    GDK_PROPERTY_NEW_VALUE,
+    GDK_PROPERTY_DELETE
+} GdkPropertyState;
+typedef enum {
+    GDK_WINDOW_STATE_WITHDRAWN = 1 &lt;&lt; 0,
+    GDK_WINDOW_STATE_ICONIFIED = 1 &lt;&lt; 1,
+    GDK_WINDOW_STATE_MAXIMIZED = 1 &lt;&lt; 2,
+    GDK_WINDOW_STATE_STICKY = 1 &lt;&lt; 3,
+    GDK_WINDOW_STATE_FULLSCREEN = 1 &lt;&lt; 4,
+    GDK_WINDOW_STATE_ABOVE = 1 &lt;&lt; 5,
+    GDK_WINDOW_STATE_BELOW = 1 &lt;&lt; 6,
+    GDK_WINDOW_STATE_FOCUSED = 1 &lt;&lt; 7
 } GdkWindowState;
+typedef enum {
+    GDK_SETTING_ACTION_NEW,
+    GDK_SETTING_ACTION_CHANGED,
+    GDK_SETTING_ACTION_DELETED
+} GdkSettingAction;
+typedef enum {
+    GDK_OWNER_CHANGE_NEW_OWNER,
+    GDK_OWNER_CHANGE_DESTROY,
+    GDK_OWNER_CHANGE_CLOSE
+} GdkOwnerChange;
+union _GdkEvent {
+    GdkEventType type;
+    GdkEventAny any;
+    GdkEventExpose expose;
+    GdkEventVisibility visibility;
+    GdkEventMotion motion;
+    GdkEventButton button;
+    GdkEventTouch touch;
+    GdkEventScroll scroll;
+    GdkEventKey key;
+    GdkEventCrossing crossing;
+    GdkEventFocus focus_change;
+    GdkEventConfigure configure;
+    GdkEventProperty property;
+    GdkEventSelection selection;
+    GdkEventOwnerChange owner_change;
+    GdkEventProximity proximity;
+    GdkEventDND dnd;
+    GdkEventWindowState window_state;
+    GdkEventSetting setting;
+    GdkEventGrabBroken grab_broken;
+};
 typedef enum {
     GDK_PROP_MODE_REPLACE,
     GDK_PROP_MODE_PREPEND,
@@ -234,12 +501,12 @@ typedef enum {
     GDK_VISUAL_DIRECT_COLOR
 } GdkVisualType;
 typedef enum {
-    GDK_ACTION_DEFAULT,
-    GDK_ACTION_COPY,
-    GDK_ACTION_MOVE,
-    GDK_ACTION_LINK,
-    GDK_ACTION_PRIVATE,
-    GDK_ACTION_ASK
+    GDK_ACTION_DEFAULT = 1 &lt;&lt; 0,
+    GDK_ACTION_COPY = 1 &lt;&lt; 1,
+    GDK_ACTION_MOVE = 1 &lt;&lt; 2,
+    GDK_ACTION_LINK = 1 &lt;&lt; 3,
+    GDK_ACTION_PRIVATE = 1 &lt;&lt; 4,
+    GDK_ACTION_ASK = 1 &lt;&lt; 5
 } GdkDragAction;
 typedef enum {
     GDK_DRAG_PROTO_NONE,
@@ -250,8 +517,40 @@ typedef enum {
     GDK_DRAG_PROTO_OLE2,
     GDK_DRAG_PROTO_LOCAL
 } GdkDragProtocol;
-typedef struct _GdkGeometry GdkGeometry;
-typedef struct _GdkWindowAttr GdkWindowAttr;
+typedef struct _GdkGeometry {
+    gint min_width;
+    gint min_height;
+    gint max_width;
+    gint max_height;
+    gint base_width;
+    gint base_height;
+    gint width_inc;
+    gint height_inc;
+    gdouble min_aspect;
+    gdouble max_aspect;
+    GdkGravity win_gravity;
+} GdkGeometry;
+typedef struct _GdkWindowAttr {
+    gchar *title;
+    gint event_mask;
+    gint x;
+    gint y;
+    gint width;
+    gint height;
+    GdkWindowWindowClass wclass;
+    GdkVisual *visual;
+    GdkWindowType window_type;
+    GdkCursor *cursor;
+    gchar *wmclass_name;
+    gchar *wmclass_class;
+    gboolean override_redirect;
+    GdkWindowTypeHint type_hint;
+} GdkWindowAttr;
+typedef struct _GdkWindowRedirect GdkWindowRedirect;
+typedef enum {
+    GDK_INPUT_OUTPUT,
+    GDK_INPUT_ONLY
+} GdkWindowWindowClass;
 typedef enum {
     GDK_WINDOW_ROOT,
     GDK_WINDOW_TOPLEVEL,
@@ -261,15 +560,25 @@ typedef enum {
     GDK_WINDOW_OFFSCREEN
 } GdkWindowType;
 typedef enum {
-    GDK_HINT_POS,
-    GDK_HINT_MIN_SIZE,
-    GDK_HINT_MAX_SIZE,
-    GDK_HINT_BASE_SIZE,
-    GDK_HINT_ASPECT,
-    GDK_HINT_RESIZE_INC,
-    GDK_HINT_WIN_GRAVITY,
-    GDK_HINT_USER_POS,
-    GDK_HINT_USER_SIZE
+    GDK_WA_TITLE = 1 &lt;&lt; 1,
+    GDK_WA_X = 1 &lt;&lt; 2,
+    GDK_WA_Y = 1 &lt;&lt; 3,
+    GDK_WA_CURSOR = 1 &lt;&lt; 4,
+    GDK_WA_VISUAL = 1 &lt;&lt; 5,
+    GDK_WA_WMCLASS = 1 &lt;&lt; 6,
+    GDK_WA_NOREDIR = 1 &lt;&lt; 7,
+    GDK_WA_TYPE_HINT = 1 &lt;&lt; 8
+} GdkWindowAttributesType;
+typedef enum {
+    GDK_HINT_POS = 1 &lt;&lt; 0,
+    GDK_HINT_MIN_SIZE = 1 &lt;&lt; 1,
+    GDK_HINT_MAX_SIZE = 1 &lt;&lt; 2,
+    GDK_HINT_BASE_SIZE = 1 &lt;&lt; 3,
+    GDK_HINT_ASPECT = 1 &lt;&lt; 4,
+    GDK_HINT_RESIZE_INC = 1 &lt;&lt; 5,
+    GDK_HINT_WIN_GRAVITY = 1 &lt;&lt; 6,
+    GDK_HINT_USER_POS = 1 &lt;&lt; 7,
+    GDK_HINT_USER_SIZE = 1 &lt;&lt; 8
 } GdkWindowHints;
 typedef enum {
     GDK_WINDOW_TYPE_HINT_NORMAL,
@@ -288,21 +597,21 @@ typedef enum {
     GDK_WINDOW_TYPE_HINT_DND
 } GdkWindowTypeHint;
 typedef enum {
-    GDK_DECOR_ALL,
-    GDK_DECOR_BORDER,
-    GDK_DECOR_RESIZEH,
-    GDK_DECOR_TITLE,
-    GDK_DECOR_MENU,
-    GDK_DECOR_MINIMIZE,
-    GDK_DECOR_MAXIMIZE
+    GDK_DECOR_ALL = 1 &lt;&lt; 0,
+    GDK_DECOR_BORDER = 1 &lt;&lt; 1,
+    GDK_DECOR_RESIZEH = 1 &lt;&lt; 2,
+    GDK_DECOR_TITLE = 1 &lt;&lt; 3,
+    GDK_DECOR_MENU = 1 &lt;&lt; 4,
+    GDK_DECOR_MINIMIZE = 1 &lt;&lt; 5,
+    GDK_DECOR_MAXIMIZE = 1 &lt;&lt; 6
 } GdkWMDecoration;
 typedef enum {
-    GDK_FUNC_ALL,
-    GDK_FUNC_RESIZE,
-    GDK_FUNC_MOVE,
-    GDK_FUNC_MINIMIZE,
-    GDK_FUNC_MAXIMIZE,
-    GDK_FUNC_CLOSE
+    GDK_FUNC_ALL = 1 &lt;&lt; 0,
+    GDK_FUNC_RESIZE = 1 &lt;&lt; 1,
+    GDK_FUNC_MOVE = 1 &lt;&lt; 2,
+    GDK_FUNC_MINIMIZE = 1 &lt;&lt; 3,
+    GDK_FUNC_MAXIMIZE = 1 &lt;&lt; 4,
+    GDK_FUNC_CLOSE = 1 &lt;&lt; 5
 } GdkWMFunction;
 typedef enum {
     GDK_GRAVITY_NORTH_WEST = 1,
@@ -326,9 +635,13 @@ typedef enum {
     GDK_WINDOW_EDGE_SOUTH,
     GDK_WINDOW_EDGE_SOUTH_EAST
 } GdkWindowEdge;
+typedef struct _GdkWindowClass GdkWindowClass;
 typedef gboolean(*GdkWindowChildFunc) (GdkWindow * window,
 				       gpointer user_data);
-typedef struct _GdkTimeCoord GdkTimeCoord;
+typedef struct _GdkTimeCoord {
+    guint32 time;
+    gdouble axes[128];
+} GdkTimeCoord;
 typedef enum {
     GDK_SOURCE_MOUSE,
     GDK_SOURCE_PEN,
@@ -359,91 +672,99 @@ typedef enum {
     GDK_DEVICE_TYPE_FLOATING
 } GdkDeviceType;
 typedef enum {
-    GDK_X_CURSOR,
-    GDK_ARROW,
-    GDK_BASED_ARROW_DOWN,
-    GDK_BASED_ARROW_UP,
-    GDK_BOAT,
-    GDK_BOGOSITY,
-    GDK_BOTTOM_LEFT_CORNER,
-    GDK_BOTTOM_RIGHT_CORNER,
-    GDK_BOTTOM_SIDE,
-    GDK_BOTTOM_TEE,
-    GDK_BOX_SPIRAL,
-    GDK_CENTER_PTR,
-    GDK_CIRCLE,
-    GDK_CLOCK,
-    GDK_COFFEE_MUG,
-    GDK_CROSS,
-    GDK_CROSS_REVERSE,
-    GDK_CROSSHAIR,
-    GDK_DIAMOND_CROSS,
-    GDK_DOT,
-    GDK_DOTBOX,
-    GDK_DOUBLE_ARROW,
-    GDK_DRAFT_LARGE,
-    GDK_DRAFT_SMALL,
-    GDK_DRAPED_BOX,
-    GDK_EXCHANGE,
-    GDK_FLEUR,
-    GDK_GOBBLER,
-    GDK_GUMBY,
-    GDK_HAND1,
-    GDK_HAND2,
-    GDK_HEART,
-    GDK_ICON,
-    GDK_IRON_CROSS,
-    GDK_LEFT_PTR,
-    GDK_LEFT_SIDE,
-    GDK_LEFT_TEE,
-    GDK_LEFTBUTTON,
-    GDK_LL_ANGLE,
-    GDK_LR_ANGLE,
-    GDK_MAN,
-    GDK_MIDDLEBUTTON,
-    GDK_MOUSE,
-    GDK_PENCIL,
-    GDK_PIRATE,
-    GDK_PLUS,
-    GDK_QUESTION_ARROW,
-    GDK_RIGHT_PTR,
-    GDK_RIGHT_SIDE,
-    GDK_RIGHT_TEE,
-    GDK_RIGHTBUTTON,
-    GDK_RTL_LOGO,
-    GDK_SAILBOAT,
-    GDK_SB_DOWN_ARROW,
-    GDK_SB_H_DOUBLE_ARROW,
-    GDK_SB_LEFT_ARROW,
-    GDK_SB_RIGHT_ARROW,
-    GDK_SB_UP_ARROW,
-    GDK_SB_V_DOUBLE_ARROW,
-    GDK_SHUTTLE,
-    GDK_SIZING,
-    GDK_SPIDER,
-    GDK_SPRAYCAN,
-    GDK_STAR,
-    GDK_TARGET,
-    GDK_TCROSS,
-    GDK_TOP_LEFT_ARROW,
-    GDK_TOP_LEFT_CORNER,
-    GDK_TOP_RIGHT_CORNER,
-    GDK_TOP_SIDE,
-    GDK_TOP_TEE,
-    GDK_TREK,
-    GDK_UL_ANGLE,
-    GDK_UMBRELLA,
-    GDK_UR_ANGLE,
-    GDK_WATCH,
-    GDK_XTERM,
+    GDK_X_CURSOR = 0,
+    GDK_ARROW = 2,
+    GDK_BASED_ARROW_DOWN = 4,
+    GDK_BASED_ARROW_UP = 6,
+    GDK_BOAT = 8,
+    GDK_BOGOSITY = 10,
+    GDK_BOTTOM_LEFT_CORNER = 12,
+    GDK_BOTTOM_RIGHT_CORNER = 14,
+    GDK_BOTTOM_SIDE = 16,
+    GDK_BOTTOM_TEE = 18,
+    GDK_BOX_SPIRAL = 20,
+    GDK_CENTER_PTR = 22,
+    GDK_CIRCLE = 24,
+    GDK_CLOCK = 26,
+    GDK_COFFEE_MUG = 28,
+    GDK_CROSS = 30,
+    GDK_CROSS_REVERSE = 32,
+    GDK_CROSSHAIR = 34,
+    GDK_DIAMOND_CROSS = 36,
+    GDK_DOT = 38,
+    GDK_DOTBOX = 40,
+    GDK_DOUBLE_ARROW = 42,
+    GDK_DRAFT_LARGE = 44,
+    GDK_DRAFT_SMALL = 46,
+    GDK_DRAPED_BOX = 48,
+    GDK_EXCHANGE = 50,
+    GDK_FLEUR = 52,
+    GDK_GOBBLER = 54,
+    GDK_GUMBY = 56,
+    GDK_HAND1 = 58,
+    GDK_HAND2 = 60,
+    GDK_HEART = 62,
+    GDK_ICON = 64,
+    GDK_IRON_CROSS = 66,
+    GDK_LEFT_PTR = 68,
+    GDK_LEFT_SIDE = 70,
+    GDK_LEFT_TEE = 72,
+    GDK_LEFTBUTTON = 74,
+    GDK_LL_ANGLE = 76,
+    GDK_LR_ANGLE = 78,
+    GDK_MAN = 80,
+    GDK_MIDDLEBUTTON = 82,
+    GDK_MOUSE = 84,
+    GDK_PENCIL = 86,
+    GDK_PIRATE = 88,
+    GDK_PLUS = 90,
+    GDK_QUESTION_ARROW = 92,
+    GDK_RIGHT_PTR = 94,
+    GDK_RIGHT_SIDE = 96,
+    GDK_RIGHT_TEE = 98,
+    GDK_RIGHTBUTTON = 100,
+    GDK_RTL_LOGO = 102,
+    GDK_SAILBOAT = 104,
+    GDK_SB_DOWN_ARROW = 106,
+    GDK_SB_H_DOUBLE_ARROW = 108,
+    GDK_SB_LEFT_ARROW = 110,
+    GDK_SB_RIGHT_ARROW = 112,
+    GDK_SB_UP_ARROW = 114,
+    GDK_SB_V_DOUBLE_ARROW = 116,
+    GDK_SHUTTLE = 118,
+    GDK_SIZING = 120,
+    GDK_SPIDER = 122,
+    GDK_SPRAYCAN = 124,
+    GDK_STAR = 126,
+    GDK_TARGET = 128,
+    GDK_TCROSS = 130,
+    GDK_TOP_LEFT_ARROW = 132,
+    GDK_TOP_LEFT_CORNER = 134,
+    GDK_TOP_RIGHT_CORNER = 136,
+    GDK_TOP_SIDE = 138,
+    GDK_TOP_TEE = 140,
+    GDK_TREK = 142,
+    GDK_UL_ANGLE = 144,
+    GDK_UMBRELLA = 146,
+    GDK_UR_ANGLE = 148,
+    GDK_WATCH = 150,
+    GDK_XTERM = 152,
     GDK_LAST_CURSOR,
-    GDK_BLANK_CURSOR,
-    GDK_CURSOR_IS_PIXMAP
+    GDK_BLANK_CURSOR = -2,
+    GDK_CURSOR_IS_PIXMAP = -1
 } GdkCursorType;
-typedef struct _GdkPoint GdkPoint;
+typedef struct _GdkPoint {
+    gint x;
+    gint y;
+} GdkPoint;
 typedef const cairo_rectangle_int_t GdkRectangle;
 typedef struct _GdkAtom *GdkAtom;
-typedef struct _GdkColor GdkColor;
+typedef struct _GdkColor {
+    guint32 pixel;
+    guint16 red;
+    guint16 green;
+    guint16 blue;
+} GdkColor;
 typedef struct _GdkRGBA {
     gdouble red;
     gdouble green;
@@ -466,38 +787,38 @@ typedef enum {
     GDK_MSB_FIRST
 } GdkByteOrder;
 typedef enum {
-    GDK_SHIFT_MASK,
-    GDK_LOCK_MASK,
-    GDK_CONTROL_MASK,
-    GDK_MOD1_MASK,
-    GDK_MOD2_MASK,
-    GDK_MOD3_MASK,
-    GDK_MOD4_MASK,
-    GDK_MOD5_MASK,
-    GDK_BUTTON1_MASK,
-    GDK_BUTTON2_MASK,
-    GDK_BUTTON3_MASK,
-    GDK_BUTTON4_MASK,
-    GDK_BUTTON5_MASK,
-    GDK_MODIFIER_RESERVED_13_MASK,
-    GDK_MODIFIER_RESERVED_14_MASK,
-    GDK_MODIFIER_RESERVED_15_MASK,
-    GDK_MODIFIER_RESERVED_16_MASK,
-    GDK_MODIFIER_RESERVED_17_MASK,
-    GDK_MODIFIER_RESERVED_18_MASK,
-    GDK_MODIFIER_RESERVED_19_MASK,
-    GDK_MODIFIER_RESERVED_20_MASK,
-    GDK_MODIFIER_RESERVED_21_MASK,
-    GDK_MODIFIER_RESERVED_22_MASK,
-    GDK_MODIFIER_RESERVED_23_MASK,
-    GDK_MODIFIER_RESERVED_24_MASK,
-    GDK_MODIFIER_RESERVED_25_MASK,
-    GDK_SUPER_MASK,
-    GDK_HYPER_MASK,
-    GDK_META_MASK,
-    GDK_MODIFIER_RESERVED_29_MASK,
-    GDK_RELEASE_MASK,
-    GDK_MODIFIER_MASK
+    GDK_SHIFT_MASK = 1 &lt;&lt; 0,
+    GDK_LOCK_MASK = 1 &lt;&lt; 1,
+    GDK_CONTROL_MASK = 1 &lt;&lt; 2,
+    GDK_MOD1_MASK = 1 &lt;&lt; 3,
+    GDK_MOD2_MASK = 1 &lt;&lt; 4,
+    GDK_MOD3_MASK = 1 &lt;&lt; 5,
+    GDK_MOD4_MASK = 1 &lt;&lt; 6,
+    GDK_MOD5_MASK = 1 &lt;&lt; 7,
+    GDK_BUTTON1_MASK = 1 &lt;&lt; 8,
+    GDK_BUTTON2_MASK = 1 &lt;&lt; 9,
+    GDK_BUTTON3_MASK = 1 &lt;&lt; 10,
+    GDK_BUTTON4_MASK = 1 &lt;&lt; 11,
+    GDK_BUTTON5_MASK = 1 &lt;&lt; 12,
+    GDK_MODIFIER_RESERVED_13_MASK = 1 &lt;&lt; 13,
+    GDK_MODIFIER_RESERVED_14_MASK = 1 &lt;&lt; 14,
+    GDK_MODIFIER_RESERVED_15_MASK = 1 &lt;&lt; 15,
+    GDK_MODIFIER_RESERVED_16_MASK = 1 &lt;&lt; 16,
+    GDK_MODIFIER_RESERVED_17_MASK = 1 &lt;&lt; 17,
+    GDK_MODIFIER_RESERVED_18_MASK = 1 &lt;&lt; 18,
+    GDK_MODIFIER_RESERVED_19_MASK = 1 &lt;&lt; 19,
+    GDK_MODIFIER_RESERVED_20_MASK = 1 &lt;&lt; 20,
+    GDK_MODIFIER_RESERVED_21_MASK = 1 &lt;&lt; 21,
+    GDK_MODIFIER_RESERVED_22_MASK = 1 &lt;&lt; 22,
+    GDK_MODIFIER_RESERVED_23_MASK = 1 &lt;&lt; 23,
+    GDK_MODIFIER_RESERVED_24_MASK = 1 &lt;&lt; 24,
+    GDK_MODIFIER_RESERVED_25_MASK = 1 &lt;&lt; 25,
+    GDK_SUPER_MASK = 1 &lt;&lt; 26,
+    GDK_HYPER_MASK = 1 &lt;&lt; 27,
+    GDK_META_MASK = 1 &lt;&lt; 29,
+    GDK_MODIFIER_RESERVED_29_MASK = 1 &lt;&lt; 29,
+    GDK_RELEASE_MASK = 1 &lt;&lt; 30,
+    GDK_MODIFIER_MASK = 0x5c001fff
 } GdkModifierType;
 typedef enum {
     GDK_MODIFIER_INTENT_PRIMARY_ACCELERATOR,
@@ -507,6 +828,8 @@ typedef enum {
     GDK_MODIFIER_INTENT_NO_TEXT_INPUT,
     GDK_MODIFIER_INTENT_SHIFT_GROUP
 } GdkModifierIntent;
+typedef enum
+    GdkStatus;
 typedef enum {
     GDK_GRAB_SUCCESS,
     GDK_GRAB_ALREADY_GRABBED,
@@ -520,30 +843,30 @@ typedef enum {
     GDK_OWNERSHIP_APPLICATION
 } GdkGrabOwnership;
 typedef enum {
-    GDK_EXPOSURE_MASK,
-    GDK_POINTER_MOTION_MASK,
-    GDK_POINTER_MOTION_HINT_MASK,
-    GDK_BUTTON_MOTION_MASK,
-    GDK_BUTTON1_MOTION_MASK,
-    GDK_BUTTON2_MOTION_MASK,
-    GDK_BUTTON3_MOTION_MASK,
-    GDK_BUTTON_PRESS_MASK,
-    GDK_BUTTON_RELEASE_MASK,
-    GDK_KEY_PRESS_MASK,
-    GDK_KEY_RELEASE_MASK,
-    GDK_ENTER_NOTIFY_MASK,
-    GDK_LEAVE_NOTIFY_MASK,
-    GDK_FOCUS_CHANGE_MASK,
-    GDK_STRUCTURE_MASK,
-    GDK_PROPERTY_CHANGE_MASK,
-    GDK_VISIBILITY_NOTIFY_MASK,
-    GDK_PROXIMITY_IN_MASK,
-    GDK_PROXIMITY_OUT_MASK,
-    GDK_SUBSTRUCTURE_MASK,
-    GDK_SCROLL_MASK,
-    GDK_TOUCH_MASK,
-    GDK_SMOOTH_SCROLL_MASK,
-    GDK_ALL_EVENTS_MASK
+    GDK_EXPOSURE_MASK = 1 &lt;&lt; 1,
+    GDK_POINTER_MOTION_MASK = 1 &lt;&lt; 2,
+    GDK_POINTER_MOTION_HINT_MASK = 1 &lt;&lt; 3,
+    GDK_BUTTON_MOTION_MASK = 1 &lt;&lt; 4,
+    GDK_BUTTON1_MOTION_MASK = 1 &lt;&lt; 5,
+    GDK_BUTTON2_MOTION_MASK = 1 &lt;&lt; 6,
+    GDK_BUTTON3_MOTION_MASK = 1 &lt;&lt; 7,
+    GDK_BUTTON_PRESS_MASK = 1 &lt;&lt; 8,
+    GDK_BUTTON_RELEASE_MASK = 1 &lt;&lt; 9,
+    GDK_KEY_PRESS_MASK = 1 &lt;&lt; 10,
+    GDK_KEY_RELEASE_MASK = 1 &lt;&lt; 11,
+    GDK_ENTER_NOTIFY_MASK = 1 &lt;&lt; 12,
+    GDK_LEAVE_NOTIFY_MASK = 1 &lt;&lt; 13,
+    GDK_FOCUS_CHANGE_MASK = 1 &lt;&lt; 14,
+    GDK_STRUCTURE_MASK = 1 &lt;&lt; 15,
+    GDK_PROPERTY_CHANGE_MASK = 1 &lt;&lt; 16,
+    GDK_VISIBILITY_NOTIFY_MASK = 1 &lt;&lt; 17,
+    GDK_PROXIMITY_IN_MASK = 1 &lt;&lt; 18,
+    GDK_PROXIMITY_OUT_MASK = 1 &lt;&lt; 19,
+    GDK_SUBSTRUCTURE_MASK = 1 &lt;&lt; 20,
+    GDK_SCROLL_MASK = 1 &lt;&lt; 21,
+    GDK_TOUCH_MASK = 1 &lt;&lt; 22,
+    GDK_SMOOTH_SCROLL_MASK = 1 &lt;&lt; 23,
+    GDK_ALL_EVENTS_MASK = 0xFFFFFE
 } GdkEventMask;
 extern void gdk_add_option_entries_libgtk_only(GOptionGroup * group);
 extern GType gdk_app_launch_context_get_type(void);

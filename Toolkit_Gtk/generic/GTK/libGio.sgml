@@ -5816,7 +5816,7 @@ extern const char
 extern GDBusMessage
     *g_dbus_method_invocation_get_message(GDBusMethodInvocation *
 					  invocation);
-extern const struct _GDBusMethodInfo
+extern const GDBusMethodInfo
     *g_dbus_method_invocation_get_method_info(GDBusMethodInvocation *
 					      invocation);
 extern const char
@@ -9755,7 +9755,29 @@ extern void g_mount_unshadow(GMount * mount);
 #define G_IS_MOUNT_OPERATION(o)	(G_TYPE_CHECK_INSTANCE_TYPE ((o), G_TYPE_MOUNT_OPERATION))
 #define G_MOUNT_OPERATION_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), G_TYPE_MOUNT_OPERATION, GMountOperationClass))
 
+typedef struct _GMountOperationClass {
+    GObjectClass parent_class;
+    void (*ask_password) (void);
+    void (*ask_question) (void);
+    void (*reply) (void);
+    void (*aborted) (void);
+    void (*show_processes) (void);
+    void (*show_unmount_progress) (void);
+    void (*_g_reserved1) (void);
+    void (*_g_reserved2) (void);
+    void (*_g_reserved3) (void);
+    void (*_g_reserved4) (void);
+    void (*_g_reserved5) (void);
+    void (*_g_reserved6) (void);
+    void (*_g_reserved7) (void);
+    void (*_g_reserved8) (void);
+    void (*_g_reserved9) (void);
+} GMountOperationClass;
 typedef struct _GMountOperationPrivate GMountOperationPrivate;
+struct _GMountOperation {
+    GObject parent_instance;
+    GMountOperationPrivate *priv;
+};
 extern gboolean g_mount_operation_get_anonymous(GMountOperation * op);
 extern int g_mount_operation_get_choice(GMountOperation * op);
 extern const char *g_mount_operation_get_domain(GMountOperation * op);
