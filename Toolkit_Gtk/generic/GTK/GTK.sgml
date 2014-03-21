@@ -4967,6 +4967,7 @@ typedef enum {
     G_SHELL_ERROR_EMPTY_STRING,
     G_SHELL_ERROR_FAILED
 } GShellError;
+typedef short int gshort;
 typedef struct _GMappedFile GMappedFile;
 typedef enum {
     G_BOOKMARK_FILE_ERROR_INVALID_URI,
@@ -16792,7 +16793,6 @@ typedef struct _GdkDragContext {
     guint32 start_time;
     gpointer windowing_data;
 } GdkDragContext;
-typedef short int gshort;
 typedef struct _GdkEventDND {
     GdkEventType type;
     GdkWindow *window;
@@ -17604,7 +17604,7 @@ extern void gdk_draw_rgb_image_dithalign(GdkDrawable * drawable,
 extern void gdk_draw_segments(GdkDrawable * drawable, GdkGC * gc,
 			      const GdkSegment * segs, gint nsegs);
 extern void gdk_draw_trapezoids(GdkDrawable * drawable, GdkGC * gc,
-				const struct _GdkTrapezoid *trapezoids,
+				const GdkTrapezoid * trapezoids,
 				gint n_trapezoids);
 extern GdkImage *gdk_drawable_copy_to_image(GdkDrawable * drawable,
 					    GdkImage * image, gint src_x,
@@ -36999,9 +36999,9 @@ extern void gtk_status_icon_set_visible(GtkStatusIcon * status_icon,
 
 typedef guint8 *(*GtkTextBufferSerializeFunc) (GtkTextBuffer *,
 					       GtkTextBuffer *,
-					       const struct _GtkTextIter *,
-					       const struct _GtkTextIter *,
-					       gsize *, gpointer);
+					       GtkTextIter *,
+					       GtkTextIter *, gsize *,
+					       gpointer);
 typedef gboolean(*GtkTextBufferDeserializeFunc) (GtkTextBuffer *,
 						 GtkTextBuffer *,
 						 GtkTextIter *,
@@ -37011,7 +37011,7 @@ typedef gboolean(*GtkTextBufferDeserializeFunc) (GtkTextBuffer *,
 extern gboolean gtk_text_buffer_deserialize(GtkTextBuffer *
 					    register_buffer,
 					    GtkTextBuffer * content_buffer,
-					    struct _GdkAtom *format,
+					    GdkAtom format,
 					    GtkTextIter * iter,
 					    const unsigned char *data,
 					    gsize length, GError * *error);
@@ -37023,12 +37023,12 @@ extern void gtk_text_buffer_deserialize_set_can_create_tags(GtkTextBuffer *
 							    GdkAtom format,
 							    gboolean
 							    can_create_tags);
-extern struct _GdkAtom
-    **gtk_text_buffer_get_deserialize_formats(GtkTextBuffer * buffer,
-					      gint * n_formats);
-extern struct _GdkAtom
-    **gtk_text_buffer_get_serialize_formats(GtkTextBuffer * buffer,
-					    gint * n_formats);
+extern GdkAtom *gtk_text_buffer_get_deserialize_formats(GtkTextBuffer *
+							buffer,
+							gint * n_formats);
+extern GdkAtom *gtk_text_buffer_get_serialize_formats(GtkTextBuffer *
+						      buffer,
+						      gint * n_formats);
 extern GdkAtom gtk_text_buffer_register_deserialize_format(GtkTextBuffer *
 							   buffer,
 							   const char
@@ -37059,9 +37059,9 @@ extern GdkAtom gtk_text_buffer_register_serialize_tagset(GtkTextBuffer *
 							 *tagset_name);
 extern guint8 *gtk_text_buffer_serialize(GtkTextBuffer * register_buffer,
 					 GtkTextBuffer * content_buffer,
-					 struct _GdkAtom *format,
-					 const struct _GtkTextIter *start,
-					 const struct _GtkTextIter *end,
+					 GdkAtom format,
+					 GtkTextIter * start,
+					 GtkTextIter * end,
 					 gsize * length);
 extern void gtk_text_buffer_unregister_deserialize_format(GtkTextBuffer *
 							  buffer,
