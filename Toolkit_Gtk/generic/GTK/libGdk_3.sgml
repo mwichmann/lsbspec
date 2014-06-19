@@ -1206,6 +1206,8 @@ typedef struct _GdkEventScroll {
     GdkDevice *device;
     gdouble x_root;
     gdouble y_root;
+    gdouble delta_x;
+    gdouble delta_y;
 } GdkEventScroll;
 typedef struct _GdkEventKey {
     GdkEventType type;
@@ -1619,7 +1621,27 @@ typedef enum {
     GDK_WINDOW_EDGE_SOUTH,
     GDK_WINDOW_EDGE_SOUTH_EAST
 } GdkWindowEdge;
-typedef struct _GdkWindowClass GdkWindowClass;
+typedef struct _GdkWindowClass {
+    GObjectClass parent_class;
+    GdkWindow *(*pick_embedded_child) (GdkWindow * window, gdouble x,
+				       gdouble y);
+    void (*to_embedder) (GdkWindow * window, gdouble offscreen_x,
+			 gdouble offscreen_y, gdouble * embedder_x,
+			 gdouble * embedder_y);
+    void (*from_embedder) (GdkWindow * window, gdouble offscreen_x,
+			   gdouble offscreen_y, gdouble * embedder_x,
+			   gdouble * embedder_y);
+    cairo_surface_t *(*create_surface) (GdkWindow * window, gint width,
+					gint height);
+    void (*_gdk_reserved1) (void);
+    void (*_gdk_reserved2) (void);
+    void (*_gdk_reserved3) (void);
+    void (*_gdk_reserved4) (void);
+    void (*_gdk_reserved5) (void);
+    void (*_gdk_reserved6) (void);
+    void (*_gdk_reserved7) (void);
+    void (*_gdk_reserved8) (void);
+} GdkWindowClass;
 typedef gboolean(*GdkWindowChildFunc) (GdkWindow * window,
 				       gpointer user_data);
 typedef struct _GdkTimeCoord {
