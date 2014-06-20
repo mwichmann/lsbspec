@@ -7450,7 +7450,8 @@ typedef struct _GtkIMContextClass {
     void (*set_client_window) (GtkIMContext * context, GdkWindow * window);
     void (*get_preedit_string) (GtkIMContext * context, gchar * *str,
 				PangoAttrList * *attrs, gint * cursor_pos);
-     gboolean(*filter_keypress) (GtkIMContext * context, event);
+     gboolean(*filter_keypress) (GtkIMContext * context,
+				 GdkEventKey * event);
     void (*focus_in) (GtkIMContext * context);
     void (*focus_out) (GtkIMContext * context);
     void (*reset) (GtkIMContext * context);
@@ -7796,9 +7797,12 @@ typedef struct _GtkStatusIconClass {
     void (*popup_menu) (GtkStatusIcon * status_icon, guint button,
 			guint32 activate_time);
      gboolean(*size_changed) (GtkStatusIcon * status_icon, gint size);
-     gboolean(*button_press_event) (GtkStatusIcon * status_icon, event);
-     gboolean(*button_release_event) (GtkStatusIcon * status_icon, event);
-     gboolean(*scroll_event) (GtkStatusIcon * status_icon, event);
+     gboolean(*button_press_event) (GtkStatusIcon * status_icon,
+				    GdkEventKey * event);
+     gboolean(*button_release_event) (GtkStatusIcon * status_icon,
+				      GdkEventKey * event);
+     gboolean(*scroll_event) (GtkStatusIcon * status_icon,
+			      GdkEventScroll * event);
      gboolean(*query_tooltip) (GtkStatusIcon * status_icon, gint x, gint y,
 			       gboolean keyboard_mode,
 			       GtkTooltip * tooltip);
@@ -8136,7 +8140,7 @@ typedef struct _GtkEntryBufferClass {
 			   const gchar * chars, guint n_chars);
     void (*deleted_text) (GtkEntryBuffer * buffer, guint position,
 			  guint n_chars);
-     (*get_text) (GtkEntryBuffer * buffer, gsize * n_bytes);
+    const gchar *(*get_text) (GtkEntryBuffer * buffer, gsize * n_bytes);
      guint(*get_length) (GtkEntryBuffer * buffer);
      guint(*insert_text) (GtkEntryBuffer * buffer, guint position,
 			  const gchar * chars, guint n_chars);
@@ -8215,9 +8219,9 @@ typedef struct _GtkThemingEngineClass {
     void (*render_activity) (GtkThemingEngine * engine, cairo_t * cr,
 			     gdouble x0, gdouble y0, gdouble x1,
 			     gdouble y1);
-     (*render_icon_pixbuf) (GtkThemingEngine * engine,
-			    const GtkIconSource * source,
-			    GtkIconSize size);
+    GdkPixbuf *(*render_icon_pixbuf) (GtkThemingEngine * engine,
+				      const GtkIconSource * source,
+				      GtkIconSize size);
     void (*render_icon) (GtkThemingEngine * engine, cairo_t * cr, pixbuf,
 			 gdouble x, gdouble y);
     gpointer padding;
@@ -8329,31 +8333,48 @@ typedef struct _GtkWidgetClass {
      gboolean(*keynav_failed) (GtkWidget * widget,
 			       GtkDirectionType direction);
      gboolean(*event) (GtkWidget * widget, GdkEvent * event);
-     gboolean(*button_press_event) (GtkWidget * widget, event);
-     gboolean(*button_release_event) (GtkWidget * widget, event);
-     gboolean(*scroll_event) (GtkWidget * widget, event);
-     gboolean(*motion_notify_event) (GtkWidget * widget, event);
-     gboolean(*delete_event) (GtkWidget * widget, event);
-     gboolean(*destroy_event) (GtkWidget * widget, event);
-     gboolean(*key_press_event) (GtkWidget * widget, event);
-     gboolean(*key_release_event) (GtkWidget * widget, event);
-     gboolean(*enter_notify_event) (GtkWidget * widget, event);
-     gboolean(*leave_notify_event) (GtkWidget * widget, event);
-     gboolean(*configure_event) (GtkWidget * widget, event);
-     gboolean(*focus_in_event) (GtkWidget * widget, event);
-     gboolean(*focus_out_event) (GtkWidget * widget, event);
-     gboolean(*map_event) (GtkWidget * widget, event);
-     gboolean(*unmap_event) (GtkWidget * widget, event);
-     gboolean(*property_notify_event) (GtkWidget * widget, event);
-     gboolean(*selection_clear_event) (GtkWidget * widget, event);
-     gboolean(*selection_request_event) (GtkWidget * widget, event);
-     gboolean(*selection_notify_event) (GtkWidget * widget, event);
-     gboolean(*proximity_in_event) (GtkWidget * widget, event);
-     gboolean(*proximity_out_event) (GtkWidget * widget, event);
-     gboolean(*visibility_notify_event) (GtkWidget * widget, event);
-     gboolean(*window_state_event) (GtkWidget * widget, event);
-     gboolean(*damage_event) (GtkWidget * widget, event);
-     gboolean(*grab_broken_event) (GtkWidget * widget, event);
+     gboolean(*button_press_event) (GtkWidget * widget,
+				    GdkEventKey * event);
+     gboolean(*button_release_event) (GtkWidget * widget,
+				      GdkEventKey * event);
+     gboolean(*scroll_event) (GtkWidget * widget, GdkEventScroll * event);
+     gboolean(*motion_notify_event) (GtkWidget * widget,
+				     GdkEventMotion * event);
+     gboolean(*delete_event) (GtkWidget * widget, GdkEventAny * event);
+     gboolean(*destroy_event) (GtkWidget * widget, GdkEventAny * event);
+     gboolean(*key_press_event) (GtkWidget * widget, GdkEventKey * event);
+     gboolean(*key_release_event) (GtkWidget * widget,
+				   GdkEventKey * event);
+     gboolean(*enter_notify_event) (GtkWidget * widget,
+				    GdkEventCrossing * event);
+     gboolean(*leave_notify_event) (GtkWidget * widget,
+				    GdkEventCrossing * event);
+     gboolean(*configure_event) (GtkWidget * widget,
+				 GdkEventConfigure * event);
+     gboolean(*focus_in_event) (GtkWidget * widget, GdkEventFocus * event);
+     gboolean(*focus_out_event) (GtkWidget * widget,
+				 GdkEventFocus * event);
+     gboolean(*map_event) (GtkWidget * widget, GdkEventAny * event);
+     gboolean(*unmap_event) (GtkWidget * widget, GdkEventAny * event);
+     gboolean(*property_notify_event) (GtkWidget * widget,
+				       GdkEventProperty * event);
+     gboolean(*selection_clear_event) (GtkWidget * widget,
+				       GdkEventSelection * event);
+     gboolean(*selection_request_event) (GtkWidget * widget,
+					 GdkEventSelection * event);
+     gboolean(*selection_notify_event) (GtkWidget * widget,
+					GdkEventSelection * event);
+     gboolean(*proximity_in_event) (GtkWidget * widget,
+				    GdkEventProximity * event);
+     gboolean(*proximity_out_event) (GtkWidget * widget,
+				     GdkEventProximity * event);
+     gboolean(*visibility_notify_event) (GtkWidget * widget,
+					 GdkEventVisibility * event);
+     gboolean(*window_state_event) (GtkWidget * widget,
+				    GdkEventWindowState * event);
+     gboolean(*damage_event) (GtkWidget * widget, GdkEventExpose * event);
+     gboolean(*grab_broken_event) (GtkWidget * widget,
+				   GdkEventGrabBroken * event);
     void (*selection_get) (GtkWidget * widget,
 			   GtkSelectionData * selection_data, guint info,
 			   guint time_);
@@ -8402,7 +8423,7 @@ typedef struct _GtkWidgetClass {
 				    gint * allocated_pos,
 				    gint * allocated_size);
     void (*style_updated) (GtkWidget * widget);
-     gboolean(*touch_event) (GtkWidget * widget, event);
+     gboolean(*touch_event) (GtkWidget * widget, GdkEventTouch * event);
     GtkWidgetClassPrivate *priv;
     void (*_gtk_reserved2) (void);
     void (*_gtk_reserved3) (void);
@@ -8595,10 +8616,12 @@ typedef struct _GtkCellRendererAccel {
 typedef struct _GtkCellRendererAccelPrivate GtkCellRendererAccelPrivate;
 typedef struct _GtkCellRendererAccelClass {
     GtkCellRendererTextClass parent_class;
-    void (*accel_edited) (accel, const gchar * path_string,
-			  guint accel_key, GdkModifierType accel_mods,
+    void (*accel_edited) (GtkCellRendererAccel * accel,
+			  const gchar * path_string, guint accel_key,
+			  GdkModifierType accel_mods,
 			  guint hardware_keycode);
-    void (*accel_cleared) (accel, const gchar * path_string);
+    void (*accel_cleared) (GtkCellRendererAccel * accel,
+			   const gchar * path_string);
     void (*_gtk_reserved0) (void);
     void (*_gtk_reserved1) (void);
     void (*_gtk_reserved2) (void);
@@ -9256,7 +9279,8 @@ typedef struct _GtkEditableInterface {
 			    gint new_text_length, gint * position);
     void (*do_delete_text) (GtkEditable * editable, gint start_pos,
 			    gint end_pos);
-     (*get_chars) (GtkEditable * editable, gint start_pos, gint end_pos);
+    gchar *(*get_chars) (GtkEditable * editable, gint start_pos,
+			 gint end_pos);
     void (*set_selection_bounds) (GtkEditable * editable, gint start_pos,
 				  gint end_pos);
      gboolean(*get_selection_bounds) (GtkEditable * editable,
@@ -9308,7 +9332,7 @@ typedef struct _GtkScale {
 typedef struct _GtkScalePrivate GtkScalePrivate;
 typedef struct _GtkScaleClass {
     GtkRangeClass parent_class;
-     (*format_value) (GtkScale * scale, gdouble value);
+    gchar *(*format_value) (GtkScale * scale, gdouble value);
     void (*draw_value) (GtkScale * scale);
     void (*get_layout_offsets) (GtkScale * scale, gint * x, gint * y);
     void (*_gtk_reserved1) (void);
@@ -10689,7 +10713,7 @@ typedef struct _GtkTextBufferClass {
     void (*insert_text) (GtkTextBuffer * buffer, GtkTextIter * pos,
 			 const gchar * new_text, gint new_text_length);
     void (*insert_pixbuf) (GtkTextBuffer * buffer, GtkTextIter * iter,
-			   pixbuf);
+			   GdkPixbuf * pixbuf);
     void (*insert_child_anchor) (GtkTextBuffer * buffer,
 				 GtkTextIter * iter,
 				 GtkTextChildAnchor * anchor);
@@ -10793,7 +10817,7 @@ typedef struct _GtkCellLayoutIface {
 			      GtkCellRenderer * cell);
     void (*reorder) (GtkCellLayout * cell_layout, GtkCellRenderer * cell,
 		     gint position);
-     (*get_cells) (GtkCellLayout * cell_layout);
+    GList *(*get_cells) (GtkCellLayout * cell_layout);
     GtkCellArea *(*get_area) (GtkCellLayout * cell_layout);
 } GtkCellLayoutIface;
 typedef void (*GtkCellLayoutDataFunc) (GtkClipboard * cell_layout,
