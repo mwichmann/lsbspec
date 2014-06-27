@@ -7131,6 +7131,7 @@ This specification uses the <XREF LINKEND='std.ISOC99'> C Language as the refere
 #define GTK_ACTIVATABLE_GET_IFACE(obj)	(G_TYPE_INSTANCE_GET_INTERFACE ((obj), GTK_TYPE_ACTIVATABLE, GtkActivatableIface))
 #define GTK_BUILDABLE_GET_IFACE(obj)	(G_TYPE_INSTANCE_GET_INTERFACE ((obj), GTK_TYPE_BUILDABLE, GtkBuildableIface))
 #define GTK_TOOL_SHELL_GET_IFACE(obj)	(G_TYPE_INSTANCE_GET_INTERFACE ((obj), GTK_TYPE_TOOL_SHELL, GtkToolShellIface))
+#define GTK_PATH_PRIO_MASK	0x0f
 #define GTK_STYLE_PROVIDER_PRIORITY_FALLBACK	1
 #define GTK_STYLE_PROVIDER_PRIORITY_THEME	200
 #define GTK_STYLE_PROVIDER_PRIORITY_SETTINGS	400
@@ -8222,8 +8223,8 @@ typedef struct _GtkThemingEngineClass {
     GdkPixbuf *(*render_icon_pixbuf) (GtkThemingEngine * engine,
 				      const GtkIconSource * source,
 				      GtkIconSize size);
-    void (*render_icon) (GtkThemingEngine * engine, cairo_t * cr, pixbuf,
-			 gdouble x, gdouble y);
+    void (*render_icon) (GtkThemingEngine * engine, cairo_t * cr,
+			 GdkPixbuf * pixbuf, gdouble x, gdouble y);
     gpointer padding;
 } GtkThemingEngineClass;
 typedef gboolean(*GtkFontFilterFunc) (const PangoFontFamily * family,
@@ -9785,6 +9786,12 @@ typedef enum {
     GTK_JUSTIFY_CENTER,
     GTK_JUSTIFY_FILL
 } GtkJustification;
+typedef enum {
+    GTK_MENU_DIR_PARENT,
+    GTK_MENU_DIR_CHILD,
+    GTK_MENU_DIR_NEXT,
+    GTK_MENU_DIR_PREV
+} GtkMenuDirectionType;
 typedef enum {
     GTK_MESSAGE_INFO,
     GTK_MESSAGE_WARNING,
