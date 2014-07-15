@@ -5416,68 +5416,70 @@ see <xref linkend="localization-regex">.
 
 </REFENTRY>
 
-<REFENTRY ID="baselib-sendmail-1"> <REFMETA>
-<REFENTRYTITLE>sendmail</REFENTRYTITLE>
-<REFMISCINFO>Commands</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>sendmail
-</REFNAME>
-<REFPURPOSE>an electronic mail transport agent
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<CMDSYNOPSIS>
-<command>/usr/sbin/sendmail</COMMAND> 
-<ARG>options</ARG> <ARG rep=repeat>address</ARG>
-</CMDSYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>27 February 2000</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-To deliver electronic mail (email), applications shall support
-the interface provided by <command>sendmail</command> (described here).
-This interface shall be the default delivery method for applications.
-</PARA>
-<PARA>
+<refentry id="baselib-sendmail-1"> 
+<refmeta>
+<refentrytitle>sendmail</refentrytitle>
+<refmiscinfo>Commands</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>sendmail</refname>
+<refpurpose>an electronic mail transport agent</refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+<cmdsynopsis>
+<command>/usr/sbin/sendmail</command> 
+<arg>options</arg> <arg rep=repeat>address</ARG>
+</cmdsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<refsect1info>
+<date>27 February 2000</date>
+</refsect1info>
+
+<title>Description</title>
+<para>
+To deliver electronic mail (email), implementations shall provide
+the interface described here as a command named <command>sendmail</command>.
+This interface shall be the default delivery method for applications
+needing to transmit an email message.
+</para>
+<para>
 This program sends an email message to one or more recipients,
 routing the message as necessary.  This program is not intended
 as a user interface routine.
-</PARA>
-<PARA>
-With no options, <COMMAND>sendmail</COMMAND> reads its standard input up to an
+</para>
+<para>
+With no options, <command>sendmail</command> reads its standard input up to an
 end-of-file or a line consisting only of a single dot and sends a
 copy of the message found there to all of the addresses listed.
 It determines the network(s) to use based on the syntax and
 contents of the addresses.
-</PARA>
-<PARA>
-If an address is preceded by a backslash, <literal>'\'</literal>,
-it is unspecified if the
-address is subject to local alias expansion.
-</PARA>
-<PARA>
-The format of messages shall be as defined in 
-<XREF LINKEND="STD.RFC2822">.
-<NOTE>
+</para>
 <para>
-The name <command>sendmail</command> was chosen for historical
+If an address is preceded by a backslash, <literal>'\'</literal>,
+it is unspecified whether the
+address is subject to local alias expansion.
+</para>
+<para>
+The format of messages shall be as defined in 
+<xref linkend="std.rfc2822">.
+<note>
+<para>
+The required name <command>sendmail</command> was chosen for historical
 reasons, but 
-the <command>sendmail</command> command specified here
-is intended to reflect functionality provided by 
+the behaviors specified here are intended to reflect functionality 
+which can be provided by a number of other implementations such as
 <command>smail</command>, 
 <command>exim</command>
-and other implementations, not just the <COMMAND>sendmail</COMMAND> 
-implementation.
+and others. This specification does not require that the 
+specific <command>sendmail</command> program be the implementation
+chosen to provide this functionality.
 </para>
-</NOTE>
-</PARA>
-</REFSECT1>
-<REFSECT1>
+</note>
+</para>
+</refsect1>
+
+<refsect1>
 <title>Options</title>
 <variablelist>
 <varlistentry>
@@ -5541,7 +5543,7 @@ in the
 <literal>From:</literal> header will also be set.
 </para>
 <para>
-If the user running <COMMAND>sendmail</COMMAND> is not sufficiently trusted,
+If the user running <command>sendmail</command> is not sufficiently trusted,
 then the actual sender shall be indicated in the message.
 </para>
 </listitem>
@@ -5642,87 +5644,95 @@ This option may be ignored when not in <parameter>-bm</parameter> mode
 </listitem>
 </varlistentry>
 </variablelist>
-<NOTE>
-<PARA>
+<note>
+<para>
 It is recommended that applications use as few options as
 necessary, none if possible.
-</PARA>
-</NOTE>
-</REFSECT1>
+</para>
+</note>
+</refsect1>
 
-<REFSECT1>
+<refsect1>
 <title>Exit status</title>
+<para>
+The <command>sendmail</command> command returns an exit status
+indicating the results of the operation. The exit codes are
+as defined in <filename>&lt;sysexits.h&gt;</filename>.
+</para>
 <variablelist>
 <varlistentry>
-<term>0</term>
+<term><errorname>EX_OK</errorname></term>
 <listitem>
 <para>
-successful completion on all addresses.  This does not
-indicate successful delivery.
+successful completion on all addresses.  Note this does not
+necessarily indicate successful delivery.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry>
-<term>&gt;0</term>
+<term><errorname>EX_NOUSER</errorname></term>
 <listitem>
 <para>
-there was an error.
+The user specified did not exist.
 </para>
-<!-- XXX for LSB 5.0, add sysexits values. Here are the comments
-         from the upstream header as a starting point:
-
- *      EX_USAGE : The command was used incorrectly, e.g., with
- *              the wrong number of arguments, a bad flag, a bad
- *              syntax in a parameter, or whatever.
- *      EX_DATAERR : The input data was incorrect in some way.
- *              This should only be used for user's data & not
- *              system files.
- *      EX_NOINPUT : An input file (not a system file) did not
- *              exist or was not readable.  This could also include
- *              errors like "No message" to a mailer (if it cared
- *              to catch it).
- *      EX_NOUSER : The user specified did not exist.  This might
- *              be used for mail addresses or remote logins.
- *      EX_NOHOST : The host specified did not exist.  This is used
- *              in mail addresses or network requests.
- *      EX_UNAVAILABLE : A service is unavailable.  This can occur
- *              if a support program or file does not exist.  This
- *              can also be used as a catchall message when something
- *              you wanted to do doesn't work, but you don't know
- *              why.
- *      EX_SOFTWARE : An internal software error has been detected.
- *              This should be limited to non-operating system related
- *              errors as possible.
- *      EX_OSERR : An operating system error has been detected.
- *              This is intended to be used for such things as "cannot
- *              fork", "cannot create pipe", or the like.  It includes
- *              things like getuid returning a user that does not
- *              exist in the passwd file.
- *      EX_OSFILE : Some system file (e.g., /etc/passwd, /etc/utmp,
- *              etc.) does not exist, cannot be opened, or has some
- *              sort of error (e.g., syntax error).
- *      EX_CANTCREAT : A (user specified) output file cannot be
- *              created.
- *      EX_IOERR : An error occurred while doing I/O on some file.
- *      EX_TEMPFAIL : temporary failure, indicating something that
- *              is not really an error.  In sendmail, this means
- *              that a mailer (e.g.) could not create a connection,
- *              and the request should be reattempted later.
- *      EX_PROTOCOL : the remote system returned something that
- *              was "not possible" during a protocol exchange.
- *      EX_NOPERM : You did not have sufficient permission to
- *              perform the operation.  This is not intended for
- *              file system problems, which should use NOINPUT or
- *              CANTCREAT, but rather for higher level permissions.
- */
-#define EX_OK           0       /* successful termination */
--->
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><errorname>EX_UNAVAILABLE</errorname></term>
+<listitem>
+<para>
+A required service or resource was unavailable.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><errorname>EX_USAGE</errorname></term>
+<listitem>
+<para>
+Command was invoked incorrectly, such as wrong number of
+arguments, syntax error in arguments, bad flags.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><errorname>EX_SOFTWARE</errorname></term>
+<listitem>
+<para>
+An internal sofware error was detected.   Includes bad arguments.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><errorname>EX_OSERROR</errorname></term>
+<listitem>
+<para>
+An operating system error was detected.  Includes failure to
+execute <function>fork</function> or <function>pipe</function>.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><errorname>EX_NOHOST</errorname></term>
+<listitem>
+<para>
+The host specified did not exist.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><errorname>EX_TEMPFAIL</errorname></term>
+<listitem>
+<para>
+Temporary failure. Used to indicate the message could
+not be sent immediately, perhaps because a connection
+could not be created, but the request can be retried.
+</para>
 </listitem>
 </varlistentry>
 </variablelist>
-</REFSECT1>
+</refsect1>
 
-</REFENTRY> <!-- end of sendmail manpage -->
+</refentry> <!-- end of sendmail manpage -->
 
 <REFENTRY id="seq">
 <REFMETA><REFENTRYTITLE>seq</REFENTRYTITLE></REFMETA>
