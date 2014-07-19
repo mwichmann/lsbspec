@@ -3843,12 +3843,11 @@ extern void envz_strip(char **envz, size_t * envz_len);
 </PARA>
 <SCREEN>
 
-extern void err(int __status, const char *__format, ...);
-extern void error(int, int, const char *, ...);
-extern void errx(int __status, const char *__format, ...);
-extern void verrx(int, const char *, va_list);
-extern void warn(const char *__format, ...);
-extern void warnx(const char *__format, ...);
+extern void err(int eval, const char *fmt, ...);
+extern void errx(int eval, const char *fmt, ...);
+extern void verrx(int eval, const char *fmt, va_list args);
+extern void warn(const char *fmt, ...);
+extern void warnx(const char *fmt, ...);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -3984,6 +3983,15 @@ extern void warnx(const char *__format, ...);
 #define ENOTSUP	EOPNOTSUPP
 
 extern int *__errno_location(void);
+</SCREEN>
+</SECT2>
+<SECT2>
+<TITLE>error.h</TITLE>
+<PARA>
+</PARA>
+<SCREEN>
+
+extern void error(int status, int errnum, const char *format, ...);
 </SCREEN>
 </SECT2>
 <SECT2>
@@ -19826,253 +19834,259 @@ or by filling it with zeroes.
 </refentry>
 
 
-<REFENTRY ID="baselib-err-3"> <REFMETA>
-<REFENTRYTITLE>err</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>err
-</REFNAME>
-<REFPURPOSE>display formatted error messages
-</REFPURPOSE>
-</REFNAMEDIV>
+<refentry id="baselib-err-3">
+<refmeta>
+<refentrytitle>err</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>err</refname>
+<refpurpose>display formatted error messages</refpurpose>
+</refnamediv>
 
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>4 March 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
+<refsynopsisdiv>
+<refsynopsisdivinfo>
+<date>4 March 2001</date>
+</refsynopsisdivinfo>
+<funcsynopsis>
+<funcsynopsisinfo>
 #include &lt;err.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>void 
-  <FUNCTION>err</FUNCTION></FUNCDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>eval</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char *
-  <PARAMETER><REPLACEABLE>fmt</REPLACEABLE></PARAMETER></PARAMDEF>
-  <VARARGS>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
+</funcsynopsisinfo>
+<funcprototype>
+ <funcdef>void 
+  <function>err</function>
+ </funcdef>
+ <paramdef>int 
+  <parameter><replaceable>eval</replaceable></parameter>
+ </paramdef>
+ <paramdef>const char *
+  <parameter><replaceable>fmt</replaceable></parameter>
+ </paramdef>
+ <varargs>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
 
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>2 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-The <FUNCTION>err</FUNCTION> function
-shall display a formatted error message on the standard
-error stream.
+<refsect1>
+<refsect1info>
+<date>2 April 2001</date>
+</refsect1info>
+<title>Description</title>
+<para>
+The <function>err</function> function
+shall display a formatted error message on the standard error stream.
 First, <function>err</function> shall write
 the last component of the program name, a colon
-character, and a space character. If <PARAMETER>fmt</PARAMETER> is non-NULL, it shall be used as a
-format string for the <FUNCTION>printf</FUNCTION>
+character, and a space character.
+If <parameter>fmt</parameter> is non-NULL, it shall be used as a
+format string for the <function>printf</function>
 family of functions, and <function>err</function> shall
-write the formatted message, a
-colon character, and a space.
+write the formatted message, a colon character, and a space.
 Finally,  the error message
 string affiliated with the current value of the global variable 
-<VarName>errno</VarName> shall be
+<varname>errno</varname> shall be
 written, followed by a newline character.
-</PARA>
-<PARA>
-The <FUNCTION>err</FUNCTION> function shall not return, 
-the program shall terminate with the exit value of <PARAMETER>eval</PARAMETER>.
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>See Also</TITLE>
-<PARA>
-<FUNCTION>error</FUNCTION>, <FUNCTION>errx</FUNCTION>
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
+</para>
+<para>
+The <function>err</function> function shall not return, 
+the program shall terminate with the exit value of <parameter>eval</parameter>.
+</para>
+</refsect1>
+<refsect1>
+<title>See Also</title>
+<para>
+<function>error</function>, <function>errx</function>
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
+</para>
+</refsect1>
 
-<REFSECT1>
-<TITLE>Errors</TITLE>
-<PARA>
+<refsect1>
+<title>Errors</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
+</para>
+</refsect1>
 <!--      4th Berkeley Distribution        June 9, 1993           -->
 <!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
 <!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
 <!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
-</REFENTRY>
+</refentry>
 
 
-<REFENTRY ID="baselib-error-n"> <REFMETA>
-<REFENTRYTITLE>error</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>error</REFNAME>
-<REFPURPOSE>
+<refentry id="baselib-error-n">
+<refmeta>
+<refentrytitle>error</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>error</refname>
+<refpurpose>
 print error message
-</REFPURPOSE>
-</REFNAMEDIV>
-<REFSYNOPSISDIV>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
-#include &lt;err.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>void 
-  <FUNCTION>error</FUNCTION></FUNCDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>exitstatus</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>errnum</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char *
-  <PARAMETER><REPLACEABLE>format</REPLACEABLE></PARAMETER></PARAMDEF>
-  <VARARGS>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
-<REFSECT1>
-<TITLE>Description
-</TITLE>
-<PARA>
-<FUNCTION>error</FUNCTION> shall print a message to standard error.
-</PARA>
-<PARA>
-<FUNCTION>error</FUNCTION> shall build the message from the following 
+</refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &lt;error.h&gt;
+</funcsynopsisinfo>
+<funcprototype>
+ <funcdef>void 
+  <function>error</function>
+ </funcdef>
+ <paramdef>int 
+  <parameter><replaceable>exitstatus</replaceable></parameter>
+ </paramdef>
+ <paramdef>int 
+  <parameter><replaceable>errnum</replaceable></parameter>
+ </paramdef>
+ <paramdef>const char *
+  <parameter><replaceable>format</replaceable></parameter>
+ </paramdef>
+ <varargs>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+<title>Description</title>
+<para>
+<function>error</function> shall print a message to standard error.
+</para>
+<para>
+<function>error</function> shall build the message from the following 
 elements in their specified order:
-<ORDEREDLIST NUMERATION="ARABIC">
-<LISTITEM>
-<PARA>
+<orderedlist numeration="arabic">
+<listitem>
+<para>
 the program name. If the application has provided a function named 
-<FUNCTION>error_print_progname</FUNCTION>, <FUNCTION>error</FUNCTION> 
+<function>error_print_progname</function>, <function>error</function> 
 shall call this to supply the program name; 
-otherwise, <FUNCTION>error</FUNCTION> 
-uses the content of the global variable <VARNAME>program_name</VARNAME>.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
+otherwise, <function>error</function> 
+uses the content of the global variable <varname>program_name</varname>.
+</para>
+</listitem>
+<listitem>
+<para>
 the colon and space characters, then 
-the result of using the printf-style <PARAMETER>format</PARAMETER> 
+the result of using the printf-style <parameter>format</parameter> 
 and the optional arguments.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-if <PARAMETER>errnum</PARAMETER> is nonzero, 
-<FUNCTION>error</FUNCTION> shall add the colon and 
+</para>
+</listitem>
+<listitem>
+<para>
+if <parameter>errnum</parameter> is nonzero, 
+<function>error</function> shall add the colon and 
 space characters, then the result of 
-<LITERAL>strerror(<VARNAME>errnum</VARNAME>)</LITERAL>.
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
+<literal>strerror(<varname>errnum</varname>)</literal>.
+</para>
+</listitem>
+<listitem>
+<para>
 a newline.
-</PARA>
-</LISTITEM>
-</ORDEREDLIST>
-</PARA>
-<PARA>
-If <PARAMETER>exitstatus</PARAMETER> is nonzero, 
-<FUNCTION>error</FUNCTION> shall call
-<LITERAL>exit(<VARNAME>exitstatus</VARNAME>)</LITERAL>.
-</PARA>
+</para>
+</listitem>
+</orderedlist>
+</para>
+<para>
+If <parameter>exitstatus</parameter> is nonzero, 
+<function>error</function> shall call
+<literal>exit(<varname>exitstatus</varname>)</literal>.
+</para>
 <!-- There's an interaction with wide characters(?): this call makes
 stderr narrow-oriented. Should put that in once we figure out what it
 means and whether it would be bad in an Asian locale -->
-</REFSECT1>
-<REFSECT1>
-<TITLE>See Also</TITLE>
-<PARA>
-<FUNCTION>err</FUNCTION>, <FUNCTION>errx</FUNCTION>
-</PARA>
-</REFSECT1>
-</REFENTRY>
+</refsect1>
+<refsect1>
+<title>See Also</title>
+<para>
+<function>err</function>, <function>errx</function>
+</para>
+</refsect1>
+</refentry>
 
 
-<REFENTRY ID="baselib-errx-3"> <REFMETA>
-<REFENTRYTITLE>errx</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>errx
-</REFNAME>
-<REFPURPOSE>display formatted error message and exit
-</REFPURPOSE>
-</REFNAMEDIV>
+<refentry id="baselib-errx-3"> 
+<refmeta>
+<refentrytitle>errx</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>errx</refname>
+<refpurpose>display formatted error message and exit</refpurpose>
+</refnamediv>
 
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>4 March 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
+<refsynopsisdiv>
+<refsynopsisdivinfo>
+<date>4 March 2001</date>
+</refsynopsisdivinfo>
+<funcsynopsis>
+<funcsynopsisinfo>
 #include &lt;err.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>void 
-  <FUNCTION>errx</FUNCTION></FUNCDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>eval</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char *
-  <PARAMETER><REPLACEABLE>fmt</REPLACEABLE></PARAMETER></PARAMDEF>
-  <VARARGS>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
+</funcsynopsisinfo>
+<funcprototype>
+ <funcdef>void 
+  <function>errx</function>
+ </funcdef>
+ <paramdef>int 
+  <parameter><replaceable>eval</replaceable></parameter>
+ </paramdef>
+ <paramdef>const char *
+  <parameter><replaceable>fmt</replaceable></parameter>
+ </paramdef>
+ <varargs>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
 
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>2 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-The <FUNCTION>errx</FUNCTION> function shall display a formatted error message on the 
-standard error stream. The last component of the program name, a colon 
-character, and a space shall be output. If <PARAMETER>fmt</PARAMETER> is 
-non-<LITERAL>NULL</LITERAL>, it shall be used as the format string
-for the <FUNCTION>printf</FUNCTION> family of functions, and
+<refsect1>
+<refsect1info>
+<date>2 April 2001</date>
+</refsect1info>
+<title>Description</title>
+<para>
+The <function>errx</function> function shall display a 
+formatted error message on the standard error stream.
+The last component of the program name, a colon 
+character, and a space shall be output. If <parameter>fmt</parameter> is 
+non-<literal>NULL</literal>, it shall be used as the format string
+for the <function>printf</function> family of functions, and
 the formatted error message, a colon 
 character, and a space shall be output. The output shall be followed by a 
 newline character.
-</PARA>
-<PARA>
-<FUNCTION>errx</FUNCTION> does not return, but shall exit with the value of 
-<PARAMETER>eval</PARAMETER>.
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
+</para>
+<para>
+<function>errx</function> does not return, but shall exit with the value of 
+<parameter>eval</parameter>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
+</para>
+</refsect1>
 
-<REFSECT1>
-<TITLE>Errors</TITLE>
-<PARA>
+<refsect1>
+<title>Errors</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>See Also</TITLE>
-<PARA>
-<FUNCTION>error</FUNCTION>, <FUNCTION>err</FUNCTION>
-</PARA>
-</REFSECT1>
+</para>
+</refsect1>
+<refsect1>
+<title>See Also</title>
+<para>
+<function>error</function>, <function>err</function>
+</para>
+</refsect1>
 <!--      4th Berkeley Distribution        June 9, 1993           -->
 <!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
 <!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
 <!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
-</REFENTRY>
+</refentry>
 
 
 <REFENTRY ID="baselib-fcntl-3"> <REFMETA>
@@ -31539,68 +31553,70 @@ Refer to <FUNCTION>fprintf</FUNCTION>.
 </REFENTRY>
 
 
-<REFENTRY ID="baselib-verrx-3"> <REFMETA>
-<REFENTRYTITLE>verrx</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>verrx
-</REFNAME>
-<REFPURPOSE>display formatted error message and exit
-</REFPURPOSE>
-</REFNAMEDIV>
+<refentry id="baselib-verrx-3">
+<refmeta>
+<refentrytitle>verrx</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>verrx</refname>
+<refpurpose>display formatted error message and exit</refpurpose>
+</refnamediv>
 
-<REFSYNOPSISDIV>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
 #include &lt;stdarg.h&gt;
 #include &lt;err.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>void 
-  <FUNCTION>verrx</FUNCTION></FUNCDEF>
- <PARAMDEF>int 
-  <PARAMETER><REPLACEABLE>eval</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>const char *
-  <PARAMETER><REPLACEABLE>fmt</REPLACEABLE></PARAMETER></PARAMDEF>
- <PARAMDEF>va_list 
-  <PARAMETER><REPLACEABLE>args</REPLACEABLE></PARAMETER></PARAMDEF>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
+</funcsynopsisinfo>
+<funcprototype>
+ <funcdef>void 
+  <function>verrx</function>
+ </funcdef>
+ <paramdef>int 
+  <parameter><replaceable>eval</replaceable></parameter>
+ </paramdef>
+ <paramdef>const char *
+  <parameter><replaceable>fmt</replaceable></parameter>
+ </paramdef>
+ <paramdef>va_list 
+  <parameter><replaceable>args</replaceable></parameter>
+ </paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
 
-<REFSECT1>
-<TITLE>Description
-</TITLE>
-<PARA>
-The <FUNCTION>verrx</FUNCTION> shall behave as <FUNCTION>errx</FUNCTION>
+<refsect1>
+<title>Description</title>
+<para>
+The <function>verrx</function> shall behave as <function>errx</function>
 except that instead of being called with a variable number
 of arguments, it is called with an argument list as defined by
-<FILENAME>&lt;stdarg.h&gt;</FILENAME>.
-</PARA>
-<PARA>
-<FUNCTION>verrx</FUNCTION> does not return, but exits with the value 
-of <PARAMETER>eval</PARAMETER>.
-</PARA>
-</REFSECT1>
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
+<filename>&lt;stdarg.h&gt;</filename>.
+</para>
+<para>
+<function>verrx</function> does not return, but exits with the value 
+of <parameter>eval</parameter>.
+</para>
+</refsect1>
+<refsect1>
+<title>Return Value</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
+</para>
+</refsect1>
 
-<REFSECT1>
-<TITLE>Errors</TITLE>
-<PARA>
+<refsect1>
+<title>Errors</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
+</para>
+</refsect1>
 <!--      4th Berkeley Distribution        June 9, 1993           -->
 <!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
 <!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
 <!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
-</REFENTRY>
+</refentry>
 
 
 <REFENTRY ID="baselib-vfscanf"> <REFMETA>
@@ -32247,137 +32263,134 @@ the system call. The library interface is not allowed to return
 </REFENTRY>
 
 
-<REFENTRY ID="baselib-warn-3"> <REFMETA>
-<REFENTRYTITLE>warn</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>warn
-</REFNAME>
-<REFPURPOSE>
-formatted error messages
-</REFPURPOSE>
-</REFNAMEDIV>
+<refentry id="baselib-warn-3">
+<refmeta>
+<refentrytitle>warn</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>warn</refname>
+<refpurpose>formatted error messages</refpurpose>
+</refnamediv>
 
-<REFSYNOPSISDIV>
-<REFSYNOPSISDIVINFO>
-<DATE>24 April 2001</DATE>
-</REFSYNOPSISDIVINFO>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
+<refsynopsisdiv>
+<refsynopsisdivinfo>
+<date>24 April 2001</date>
+</refsynopsisdivinfo>
+<funcsynopsis>
+<funcsynopsisinfo>
 #include &lt;err.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>void 
-  <FUNCTION>warn</FUNCTION></FUNCDEF>
- <PARAMDEF>const char *
-  <PARAMETER><REPLACEABLE>fmt</REPLACEABLE></PARAMETER></PARAMDEF>
-  <VARARGS>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
+</funcsynopsisinfo>
+<funcprototype>
+ <funcdef>void 
+  <function>warn</function>
+ </funcdef>
+ <paramdef>const char *
+  <parameter><replaceable>fmt</replaceable></parameter>
+ </paramdef>
+ <varargs>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
 
-<REFSECT1>
-<REFSECT1INFO>
-<DATE>24 April 2001</DATE>
-</REFSECT1INFO>
-<TITLE>Description
-</TITLE>
-<PARA>
-The <FUNCTION>warn</FUNCTION> function
-shall display a formatted error message on the standard
-error stream.
+<refsect1>
+<refsect1info>
+<date>24 April 2001</date>
+</refsect1info>
+<title>Description</title>
+<para>
+The <function>warn</function> function
+shall display a formatted error message on the standard error stream.
 The output shall consist of the last component of the program name, a colon
-character, and a space character. If <PARAMETER>fmt</PARAMETER> is non-NULL, it shall be used as a
-format string for the <FUNCTION>printf</FUNCTION>
+character, and a space character. If <parameter>fmt</parameter> is non-NULL,
+it shall be used as a format string for the <function>printf</function>
 family of functions, and the formatted message, a
-colon character, and a space are written to <VarName>stderr</VarName>.
-Finally,  the error message
+colon character, and a space are written to <varname>stderr</varname>.
+Finally, the error message
 string affiliated with the current value of the global variable 
-<VarName>errno</VarName> shall be
-written to <VarName>stderr</VarName>, followed by a newline character.
-</PARA>
-</REFSECT1>
+<varname>errno</varname> shall be
+written to <varname>stderr</varname>, followed by a newline character.
+</para>
+</refsect1>
 
 <!-- 4th Berkeley Distribution        June 9, 1993  -->
 <!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
 <!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
 <!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
+<refsect1>
+<title>Return Value</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
+</para>
+</refsect1>
 
-<REFSECT1>
-<TITLE>Errors</TITLE>
-<PARA>
+<refsect1>
+<title>Errors</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
-</REFENTRY>
+</para>
+</refsect1>
+</refentry>
 
 
-<REFENTRY ID="baselib-warnx-3"> <REFMETA>
-<REFENTRYTITLE>warnx</REFENTRYTITLE>
-<REFMISCINFO>Base Libraries</REFMISCINFO>
-</REFMETA>
-<REFNAMEDIV>
-<REFNAME>warnx
-</REFNAME>
-<REFPURPOSE>
-formatted error messages
-</REFPURPOSE>
-</REFNAMEDIV>
+<refentry id="baselib-warnx-3">
+<refmeta>
+<refentrytitle>warnx</refentrytitle>
+<refmiscinfo>Base Libraries</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>warnx</refname>
+<refpurpose>formatted error messages</refpurpose>
+</refnamediv>
 
-<REFSYNOPSISDIV>
-<FUNCSYNOPSIS>
-<FUNCSYNOPSISINFO>
+<refsynopsisdiv>
+<funcsynopsis>
+<funcsynopsisinfo>
 #include &lt;err.h&gt;
-</FUNCSYNOPSISINFO>
-<FUNCPROTOTYPE>
- <FUNCDEF>void 
-  <FUNCTION>warnx</FUNCTION></FUNCDEF>
- <PARAMDEF>const char *
-  <PARAMETER><REPLACEABLE>fmt</REPLACEABLE></PARAMETER></PARAMDEF>
-  <VARARGS>
-</FUNCPROTOTYPE>
-</FUNCSYNOPSIS>
-</REFSYNOPSISDIV>
+</funcsynopsisinfo>
+<funcprototype>
+ <funcdef>void 
+  <function>warnx</function>
+ </funcdef>
+ <paramdef>const char *
+  <parameter><replaceable>fmt</replaceable></parameter>
+  </paramdef>
+  <varargs>
+</funcprototype>
+</funcsynopsis>
+</refsynopsisdiv>
 
-<REFSECT1>
-<TITLE>Description
-</TITLE>
-<PARA>
-The <FUNCTION>warnx</FUNCTION> function shall display a formatted error message on the 
-standard error stream. The last component of the program name, a colon 
-character, and a space shall be output. If <PARAMETER>fmt</PARAMETER> is 
-non-<LITERAL>NULL</LITERAL>, it shall be used as the format string
-for the <FUNCTION>printf</FUNCTION> family of functions, and
-the formatted error message, a colon 
-character, and a space shall be output. The output shall be followed by a 
-newline character.
-</PARA>
-</REFSECT1>
+<refsect1>
+<title>Description</title>
+<para>
+The <function>warnx</function> function shall display a 
+formatted error message on the standard error stream. 
+The last component of the program name, a colon 
+character, and a space shall be output. If <parameter>fmt</parameter> is 
+non-<literal>NULL</literal>, it shall be used as the format string
+for the <function>printf</function> family of functions, and
+the formatted error message, a colon character, and a space shall be output.
+The output shall be followed by a newline character.
+</para>
+</refsect1>
 <!--        4th Berkeley Distribution        June 9, 1993    -->
 <!-- This data is part of a licensed program from BERKELEY SOFTWARE DESIGN, INC. -->
 <!-- Portions are copyrighted by BSDI, The Regents of the University of California, -->
 <!-- Massachusetts Institute of Technology, Free Software Foundation, and others.  -->
-<REFSECT1>
-<TITLE>Return Value</TITLE>
-<PARA>
+<refsect1>
+<title>Return Value</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
+</para>
+</refsect1>
 
-<REFSECT1>
-<TITLE>Errors</TITLE>
-<PARA>
+<refsect1>
+<title>Errors</title>
+<para>
 None.
-</PARA>
-</REFSECT1>
-</REFENTRY>
+</para>
+</refsect1>
+</refentry>
 
 
 <REFENTRY ID="baselib-wcstoq"> <REFMETA>
