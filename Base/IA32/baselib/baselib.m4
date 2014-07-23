@@ -1,28 +1,29 @@
-<PART ID=tocbaselib>
-<TITLE>Base Libraries</TITLE>
+<part id=tocbaselib>
+<title>Base Libraries</title>
 
-<CHAPTER id=baselib>
-<TITLE>Libraries</TITLE>
+<chapter id=baselib>
+<title>Libraries</title>
 
-<PARA>
-An LSB-conforming implementation shall support some base libraries which
+<para>
+An LSB-conforming implementation shall support base libraries which
 provide interfaces for accessing the operating system, processor and other
 hardware in the system.
-</PARA>
+</para>
 
-<PARA>
-Interfaces that are unique to the IA32 platform are defined here. This
-section should be used in conjunction with the corresponding section in
-the Linux Standard Base Specification.
-</PARA>
+<para>
+Only interfaces and interface details which are unique to the 
+&specarchitecture; platform are defined here. 
+This section should be used in conjunction with the 
+corresponding section of &ISOSTD-1;.
+</para>
 
-<SECT1 ID=proginterp>
-<TITLE>Program Interpreter/Dynamic Linker</TITLE>
-<PARA>
+<sect1 id=proginterp>
+<title>Program Interpreter/Dynamic Linker</title>
+<para>
 The Program Interpreter shall be
-<application><XREF LINKEND="lib.proginterp"></application>.
-</PARA>
-</SECT1>
+<application><xref linkend="lib.proginterp"></application>.
+</para>
+</sect1>
 
 m4_include(libc.sgml)
 
@@ -36,6 +37,5 @@ m4_include(libdl.sgml)
 
 m4_include(libcrypt.sgml)
 
-</CHAPTER>
-
-</PART>
+</chapter>
+</part>

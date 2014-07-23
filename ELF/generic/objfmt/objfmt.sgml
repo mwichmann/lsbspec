@@ -1,35 +1,42 @@
-<CHAPTER ID="tocobjformat">
-<TITLE>Object Format</TITLE>
+<chapter id="tocobjformat">
+<title>Object Format</title>
 
-<SECT1 ID=objfmt>
-<TITLE>Object Files</TITLE>
-<PARA>
-LSB-conforming implementations shall support the object file Executable and Linking Format (ELF), which is defined by the following documents:
-<ITEMIZEDLIST MARK=BULLET>
-<LISTITEM>
-<PARA>
-<XREF LINKEND="std.gABI41">
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
-<XREF LINKEND="std.ABIupdate">
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
+<sect1 id=objfmt>
+<title>Object Files</title>
+<para>
+LSB-conforming implementations shall support the 
+Executable and Linking Format (ELF) object file format as 
+defined by the following documents:
+<itemizedlist mark=bullet>
+<listitem>
+<para>
+<xref linkend="std.gABI41">
+</para>
+</listitem>
+<listitem>
+<para>
+<xref linkend="std.ABIupdate">
+</para>
+</listitem>
+<listitem>
+<para>
+the relevant architecture specific ABI supplement.
+</para>
+</listitem>
+<listitem>
+<para>
 this specification
-</PARA>
-</LISTITEM>
-<LISTITEM>
-<PARA>
+</para>
+</listitem>
+<listitem>
+<para>
 the relevant architecture specific part of &ISOSTD;
-</PARA>
-</LISTITEM>
-</ITEMIZEDLIST>
+</para>
+</listitem>
+</itemizedlist>
 Conforming implementations may also support other unspecified object file formats.
-</PARA>
-</SECT1>
+</para>
+</sect1>
 
 <SECT1 ID=Sections>
 <TITLE>Sections</TITLE>

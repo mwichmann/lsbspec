@@ -1,17 +1,41 @@
 <CHAPTER ID="tocobjformat">
-<TITLE>Object Format</TITLE>
-<SECT1>
-<TITLE>Introduction</TITLE>
-<PARA>
+<title>Object Format</title>
+
+<sect1 id=objfmt>
+<title>Introduction</title>
+<para>
 LSB-conforming implementations shall support the
-Executable and Linking Format (ELF) object file format, 
-as defined by the
-<XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
-<XREF LINKEND="std.x86.64.ABI"> and as supplemented by the
-generic LSB specification and
-<XREF LINKEND="std.LSB">.
-</PARA>
-</SECT1>
+Executable and Linking Format (ELF) object file format,
+as defined by the following documents:
+<itemizedlist mark=bullet>
+<listitem>
+<para>
+<xref linkend="std.gABI41">
+</para>
+</listitem>
+<listitem>
+<para>
+<xref linkend="std.ABIupdate">
+</para>
+</listitem>
+<listitem>
+<para>
+<xref linkend="std.x86.64.ABI">
+</para>
+</listitem>
+<listitem>
+<para>
+<xref linkend="std.LSB"> 
+</para>
+</listitem>
+<listitem>
+<para>
+this document
+</para>
+</listitem>
+</itemizedlist>
+</para>
+</sect1>
 
 <SECT1 ID=elfheader>
 <TITLE>ELF Header</TITLE>

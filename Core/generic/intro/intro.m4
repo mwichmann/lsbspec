@@ -331,6 +331,15 @@ foundation, and other specifications build on the interfaces defined
 here. However, beyond those specifications listed as Normative References,
 this specification has no dependencies on other LF projects.
 </para>
+<![%lfstd;[
+<para>
+&xISOSTD; corresponds to an earlier edition of this specification
+(version 3.1), published
+as an ISO/IEC standard in 2006 after submission by the Linux Foundation.
+The ISO edition is also the subject of the technical report 
+ISO/IEC TR 24715 referenced in the previous chapter.
+</para>
+]]>
 </chapter>
 ')
 </part>
