@@ -11,7 +11,7 @@ TABLES=standards.sgml libraries.sgml pslibs.sgml
 all: $(FILES) $(TABLES)
 
 gensrc:
-	$(TOP)/mkstandardsgmltable -a All -v `cat $(LSB)/target_version` >standards.sgml
+	$(TOP)/mkstandardsgmltable -a All -v `cat $(TOP)/target_version` >standards.sgml
 	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -f >libraries.sgml
 	$(TOP)/mklibsgmltable -a None -v `cat $(TOP)/target_version` >pslibs.sgml
 
