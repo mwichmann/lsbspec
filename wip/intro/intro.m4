@@ -82,7 +82,7 @@ only the explicitly referenced portion of the specification applies.
 <TABLE>
 <TITLE>Related Standards</TITLE>
 <TGROUP COLS=2>
-include(standards.sgml)
+m4_include(standards.sgml)
 </TGROUP>
 </TABLE>
 </SECT1>
