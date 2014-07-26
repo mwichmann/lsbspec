@@ -19,18 +19,14 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES) intro.m4 modscope.sgml
+	rm -f $(TABLES) intro.m4
 
 # change this if the book needs something other than the common intro.m4
-intro.m4:: modscope.sgml
+intro.m4::
 	cp ../../generic/intro/$@ .
 
 cxxintro.m4::
 	cp ../../generic/intro/$@ .
 
-# change this if the book needs something other than the common scope file
-modscope.sgml: ../../generic/intro/archmodscope.sgml
-	cp $< $@
-
-intro.sgml: standards.sgml libraries.sgml
+intro.sgml: ../../generic/intro/genscope.sgml ../../generic/intro/modscope.sgml $(TABLES)
 cxxintro.sgml: cxxstandards.sgml cxxlibraries.sgml

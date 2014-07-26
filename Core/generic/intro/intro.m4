@@ -5,7 +5,7 @@
 <chapter id="scope">
 <title>Scope</title>
 m4_include(`../../generic/intro/genscope.sgml')
-m4_include(`modscope.sgml')
+m4_include(`../../generic/intro/modscope.sgml')
 </chapter>
 
 <chapter id="normativerefs">
