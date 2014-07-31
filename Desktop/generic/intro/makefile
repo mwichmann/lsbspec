@@ -1,4 +1,4 @@
-TOP=../..
+TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
@@ -6,7 +6,7 @@ FILES=intro.sgml
 TABLES=standards.sgml references.sgml libraries.sgml
 
 .m4.sgml:
-	m4 -P -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=All $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 

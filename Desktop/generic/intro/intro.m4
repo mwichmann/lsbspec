@@ -1,21 +1,19 @@
 &preface;
 
-<PART ID="TOCINTRO">
-<TITLE>Introductory Elements</TITLE>
-<CHAPTER ID="scope">
-<TITLE>Scope</TITLE>
-<PARA>
-The LSB Desktop module defines components found on an LSB
-conforming system.
-</PARA>
-</CHAPTER>
+<part id="TocIntro">
+<title>Introductory Elements</title>
+<chapter id="scope">
+<title>Scope</title>
+m4_include(`../../generic/intro/genscope.sgml')
+m4_include(`../../generic/intro/modscope.sgml')
+</chapter>
 
-<CHAPTER ID="normativerefs">
-<TITLE>References</TITLE>
-<SECT1 ID="normativerefssect">
-<TITLE>Normative References</TITLE>
+<chapter id="normativerefs">
+<title>References</title>
+<sect1 id="normativerefssect">
+<title>Normative References</title>
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
-<PARA ID=STD.LSB XREFLABEL="This Specification">
+<para id=std.lsb xreflabel="This Specification">
 The specifications listed below are referenced in whole or in part by
 the LSB Desktop specification.  Such references may be normative or
 informative; a reference to specification shall only be considered
@@ -24,61 +22,61 @@ may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
 the specification is to be considered normative.
-</PARA>
-<TABLE>
-<TITLE>Normative References</TITLE>
-<TGROUP COLS=2>
+</para>
+<table>
+<title>Normative References</title>
+<tgroup cols=2>
 m4_include(standards.sgml)
-</TGROUP>
-</TABLE>
-</SECT1>
-<SECT1 ID="informativerefs">
-<TITLE>Informative References/Bibliography</TITLE>
-<PARA>
+</tgroup>
+</table>
+</sect1>
+<sect1 id="informativerefs">
+<title>Informative References/Bibliography</title>
+<para>
 In addition, the specifications listed below provide essential background information
 to implementors of this specification. These references are included for information
 only.
-</PARA>
-<TABLE>
-<TITLE>Other References</TITLE>
-<TGROUP COLS=3>
+</para>
+<table>
+<title>Other References</title>
+<tgroup cols=3>
 m4_include(`references.sgml')
-</TGROUP>
-</TABLE>
-</SECT1>
-</CHAPTER>
+</tgroup>
+</table>
+</sect1>
+</chapter>
 
-<CHAPTER ID="REQUIREMENTS">
-<TITLE>Requirements</TITLE>
-<SECT1 ID="rlibraries">
-<TITLE>Relevant Libraries</TITLE>
-<PARA>
-The libraries listed in <XREF LINKEND='tbl-desktop-stdlib'> shall
+<chapter id="requirements">
+<title>Requirements</title>
+<sect1 id="rlibraries">
+<title>Relevant Libraries</title>
+<para>
+The libraries listed in <xref linkend='tbl-desktop-stdlib'> shall
 be available on a Linux Standard Base - Desktop system, with the specified
 runtime names.  This list may be supplemented or amended by the
 architecture-specific specification.
-</PARA>
-<TABLE ID=tbl-desktop-stdlib>
-<TITLE>Standard Library Names</TITLE>
-<TGROUP COLS=2>
-<THEAD>
-<ROW>
-<ENTRY>Library</ENTRY>
-<ENTRY>Runtime Name</ENTRY>
-</ROW>
-</THEAD>
+</para>
+<table id=tbl-desktop-stdlib>
+<title>Standard Library Names</title>
+<tgroup cols=2>
+<thead>
+<row>
+<entry>Library</entry>
+<entry>Runtime Name</entry>
+</row>
+</thead>
 m4_include(libraries.sgml)
-</TGROUP>
-</TABLE>
-<PARA>
+</tgroup>
+</table>
+<para>
 These libraries will be in an implementation-defined directory which
 the dynamic linker shall search by default.
-</PARA>
-</SECT1>
+</para>
+</sect1>
 
-</CHAPTER>
+</chapter>
 
 <!-- boilerplate terms and definitions -->
 &definitions
 
-</PART>
+</part>
