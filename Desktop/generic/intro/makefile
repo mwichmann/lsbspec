@@ -22,4 +22,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-intro.sgml: $(TABLES)
+intro.sgml: genscope.sgml modscope.sgml $(TABLES)
