@@ -3,7 +3,8 @@ TOP=../../..
 .SUFFIXES: .sgml .m4
 
 FILES=intro.sgml #cxxintro.sgml
-TABLES= standards.sgml references.sgml glibraries.sgml pslibs.sgml
+TABLES=standards.sgml references.sgml glibraries.sgml pslibs.sgml
+SCOPES=genscope.sgml modscope.sgml
 
 # A trick with the generic spec - we don't want LSB Core Generic to reference itself, but we want to add reference to CXXABI
 EXCLSPECS="'LSB'"
@@ -27,6 +28,6 @@ spotless: clean
 	rm -f $(TABLES)
 
 libraries.sgml: glibraries.sgml pslibs.sgml
-intro.sgml: genscope.sgml modscope.sgml $(TABLES)
+intro.sgml: $(SCOPES) $(TABLES)
 cxxintro.sgml: genscope.sgml cxxscope.sgml cxxstandards.sgml cxxlibraries.sgml
 
