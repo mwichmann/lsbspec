@@ -4,9 +4,10 @@ TOP=../../..
 
 FILES=liblist.sgml
 TABLES=gtklist.sgml qtlist.sgml #qt3list.sgml
+LIBLIST=../../generic/appendix/liblist.m4
 
 .m4.sgml:
-	m4 -P $*.m4 >$@
+	m4 -P -DARCH=PPC32 $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 
@@ -20,3 +21,7 @@ clean:
 
 spotless: clean
 	rm -f $(TABLES)
+
+# change this if the book needs something other than the common liblist.m4
+liblist.sgml: $(TABLES) $(LIBLIST)
+	m4 -P -DARCH=PPC32 $(LIBLIST) > $@
