@@ -44,7 +44,7 @@ runtime names.
 <ENTRY>Runtime Name</ENTRY>
 </ROW>
 </THEAD>
-m4_include(cxxlibraries.sgml)
+m4_include(`cxxlibraries.sgml')
 </TGROUP>
 </TABLE>
 <PARA>

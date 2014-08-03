@@ -5,6 +5,9 @@ TOP=../../..
 FILES=intro.sgml #cxxintro.sgml
 TABLES= standards.sgml references.sgml libraries.sgml
 #CXXTABLES= cxxstandards.sgml cxxlibraries.sgml
+SCOPES=../../generic/intro/genscope.sgml ../../generic/intro/modscope.sgml
+#CXXSCOPES=../../generic/intro/genscope.sgml ../../generic/intro/cxxscope.sgml
+INTRO=../../generic/intro/intro.m4
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat -DARCH=IA64 $*.m4 >$@
@@ -20,15 +23,15 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES) intro.m4
+	rm -f $(TABLES)
 	#rm -f $(CXXTABLES) cxxintro.m4
 
-# change this if all the books stop sharing the same m4 file
-intro.m4::
-	cp ../../generic/intro/$@ .
+# change this if the book needs something other than the common intro.m4
+intro.sgml: $(SCOPES) $(TABLES) $(INTRO)
+	m4 -P -Uindex -Uformat -DARCH=IA64 $(INTRO) > $@
 
+# archaic
 #cxxintro.m4::
 #	cp ../../generic/intro/$@ .
 
-intro.sgml: ../../generic/intro/genscope.sgml modscope.sgml $(TABLES)
-#cxxintro.sgml: ../../generic/intro/genscope.sgml ../../generic/intro/cxxscope.sgml $(CXXTABLES)
+#cxxintro.sgml: $(CXXSCOPES) $(CXXTABLES)

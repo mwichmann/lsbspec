@@ -4,9 +4,10 @@ TOP=../../..
 
 FILES=liblist.sgml
 TABLES=baselist.sgml
+LIBLIST=../../generic/appendix/liblist.m4
 
 .m4.sgml:
-	m4 -P $*.m4 >$@
+	m4 -P -DARCH=PPC64 $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 
@@ -17,8 +18,8 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES) liblist.m4
+	rm -f $(TABLES)
 
-# change this if all the books stop sharing the same m4 file
-liblist.m4::
-	cp ../../generic/appendix/$@ .
+# change this if the book needs something other than the common liblist.m4
+liblist.sgml: $(TABLES) $(LIBLIST)
+	m4 -P -DARCH=PPC64 $(LIBLIST) > $@

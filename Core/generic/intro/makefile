@@ -2,7 +2,7 @@ TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
-FILES=intro.sgml #cxxintro.sgml
+FILES=intro.sgml libraries.sgml #cxxintro.sgml
 TABLES=standards.sgml references.sgml glibraries.sgml pslibs.sgml
 SCOPES=genscope.sgml modscope.sgml
 
@@ -28,6 +28,6 @@ spotless: clean
 	rm -f $(TABLES)
 
 libraries.sgml: glibraries.sgml pslibs.sgml
-intro.sgml: $(SCOPES) $(TABLES)
+intro.sgml: $(SCOPES) $(TABLES) libraries.sgml
 cxxintro.sgml: genscope.sgml cxxscope.sgml cxxstandards.sgml cxxlibraries.sgml
 

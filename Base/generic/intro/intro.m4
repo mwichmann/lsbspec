@@ -5,7 +5,7 @@
 <chapter id="scope">
 <title>Scope</title>
 m4_include(`../../generic/intro/genscope.sgml')
-m4_include(`modscope.sgml')
+m4_include(`../../generic/intro/modscope.sgml')
 </chapter>
 
 <chapter id="normativerefs">
@@ -69,21 +69,21 @@ m4_dnl the way it is supposed to for the different architectures
 m4_dnl since this file is copied from generic to each arch spec
 m4_dnl
 m4_ifelse(ARCH,`All', 
-	`m4_define(`TBLTARGET',`"tbl-glsb-stdlib"')', 
-	`m4_define(`TBLTARGET',`"tbl-archlsb-stdlib"')')
+	`m4_define(`TBLTARGET',`"tbl-gbase-stdlib"')', 
+	`m4_define(`TBLTARGET',`"tbl-archbase-stdlib"')')
 m4_ifelse(ARCH,`All',
 `
 The libraries listed in <Xref linkend='TBLTARGET`> shall
 be available on a Linux Standard Base system, with the specified
-runtime names. The libraries listed in <xref linkend="tbl-lsbgeneric-archlib">
+runtime names. The libraries listed in <xref linkend="tbl-basegeneric-archlib">
 are architecture specific, but shall be available on all LSB
 conforming systems. This list may be supplemented or amended by the relevant
-architecture specific part of &ISOSTD;.
+architecture specific part of the Base submodule specification.
 ',`
 The libraries listed in <xref linkend='TBLTARGET`> shall
 be available on 'ARCH` Linux Standard Base systems, with the specified
 runtime names. These names override or supplement the names specified
-in the generic LSB (&ISOSTD-1;) specification. The specified program 
+in the generic Base submodule specification. The specified program 
 interpreter, referred to as proginterp in this table,
 shall be used to load the shared libraries specified by
 <constant>DT_NEEDED</constant> entries at run time.

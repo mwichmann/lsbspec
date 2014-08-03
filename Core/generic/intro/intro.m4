@@ -28,7 +28,7 @@ Such URL might at any given time resolve to a more recent copy of the
 specification, or be out of date (not resolve). 
 Reference copies of specifications at the revision level indicated 
 may be found at the Linux Foundation's 
-<ULINK URL='http://refspecs.linuxbase.org'>Reference Specifications</ULINK> site.
+<ulink url='http://refspecs.linuxbase.org'>Reference Specifications</ulink> site.
 </para>
 </note>
 <!-- the ID below is a placeholder for any standards that have Istandard=0 in the database -->
@@ -73,7 +73,7 @@ m4_ifelse(ARCH,`All',
 	`m4_define(`TBLTARGET',`"tbl-archlsb-stdlib"')')
 m4_ifelse(ARCH,`All',
 `
-The libraries listed in <Xref linkend='TBLTARGET`> shall
+The libraries listed in <xref linkend='TBLTARGET`> shall
 be available on a Linux Standard Base system, with the specified
 runtime names. The libraries listed in <xref linkend="tbl-lsbgeneric-archlib">
 are architecture specific, but shall be available on all LSB
@@ -98,7 +98,7 @@ shall be used to load the shared libraries specified by
 <entry>Runtime Name</entry>
 </row>
 </thead>
-m4_include(libraries.sgml)
+m4_include(`libraries.sgml')
 </tgroup>
 </table>
 <para>
