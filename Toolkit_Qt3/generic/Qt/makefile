@@ -6,7 +6,7 @@ FILES=Qt3.sgml
 TABLES= libqt_mt.sgml 
 
 .m4.sgml:
-	m4 -P -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=All $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 

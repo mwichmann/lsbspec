@@ -6,7 +6,7 @@ FILES=Qt.sgml
 TABLES= libQtCore.sgml libQtGui.sgml libQtSql.sgml libQtOpenGL.sgml libQtXml.sgml libQtSvg.sgml libQtNetwork.sgml
 
 .m4.sgml:
-	m4 -P -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=All $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 

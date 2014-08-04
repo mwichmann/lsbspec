@@ -4,10 +4,11 @@ TOP=../../..
 
 MANPAGES=
 FILES=GTK.sgml
+INTRO=../../generic/GTK/GTK.m4
 TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk_x11.sgml libGtk_x11.sgml libPangoCairo.sgml libGdk_3.sgml libGtk_3.sgml
 
 .m4.sgml:
-	m4 -P -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=IA64 $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
@@ -33,10 +34,8 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES) GTK.m4
+	rm -f $(TABLES)
 
-# change this if all the books stop sharing the same m4 file
-GTK.m4::
-	cp ../../generic/GTK/$@ .
-
-GTK.sgml: $(TABLES) $(MANPAGES)
+# change this if the book needs something other than the common GTK.m4
+GTK.sgml: $(TABLES) $(MANPAGES) $(INTRO)
+	m4 -P -Uindex -Uformat -DARCH=IA64 $(INTRO) > $@

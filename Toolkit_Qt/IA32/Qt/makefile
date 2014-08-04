@@ -3,10 +3,11 @@ TOP=../../..
 .SUFFIXES: .sgml .m4
 
 FILES=Qt.sgml
+INTRO=../../generic/Qt/Qt.m4
 TABLES= libQtCore.sgml libQtGui.sgml libQtSql.sgml libQtOpenGL.sgml libQtXml.sgml libQtSvg.sgml libQtNetwork.sgml
 
 .m4.sgml:
-	m4 -P -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=IA32 $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
@@ -23,11 +24,8 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES) Qt.m4
+	rm -f $(TABLES)
 
-# change this if all the books stop sharing the same m4 file
-Qt.m4::
-	cp ../../generic/Qt/$@ .
-
-Qt.sgml: $(TABLES)
-
+# change this if the book needs something other than the common Qt.m4
+Qt.sgml: $(TABLES) $(MANPAGES) $(INTRO)
+	m4 -P -Uindex -Uformat -DARCH=IA32 $(INTRO) > $@

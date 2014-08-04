@@ -11,7 +11,7 @@ FILES=GTK.sgml
 TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk_x11.sgml libGtk_x11.sgml libPangoCairo.sgml libGdk_3.sgml libGtk_3.sgml
 
 .m4.sgml:
-	m4 -P -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=All $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 

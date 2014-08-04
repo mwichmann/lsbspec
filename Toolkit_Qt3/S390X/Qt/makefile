@@ -3,10 +3,11 @@ TOP=../../..
 .SUFFIXES: .sgml .m4
 
 FILES=Qt3.sgml
+INTRO=../../generic/Qt3/Qt3.m4
 TABLES= libqt_mt.sgml 
 
 .m4.sgml:
-	m4 -P -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=S390X $*.m4 >$@
 
 all: $(FILES) $(TABLES)
 
@@ -17,11 +18,8 @@ clean:
 	rm -f $(FILES)
 
 spotless: clean
-	rm -f $(TABLES) Qt3.m4
+	rm -f $(TABLES)
 
-# change this if all the books stop sharing the same m4 file
-Qt3.m4::
-	cp ../../generic/Qt/$@ .
-
-Qt3.sgml: $(TABLES)
-
+# change this if the book needs something other than the common Qt3.m4
+Qt3.sgml: $(TABLES) $(MANPAGES) $(INTRO)
+	m4 -P -Uindex -Uformat -DARCH=S390X $(INTRO) > $@
