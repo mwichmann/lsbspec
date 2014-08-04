@@ -4,9 +4,10 @@ TOP=../../..
 
 FILES=intro.sgml
 TABLES=standards.sgml
+INTRO=../../generic/intro/intro.m4
 
 .m4.sgml:
-	m4 -P -Uindex -Uformat $*.m4 >$@
+	m4 -P -Uindex -Uformat -DARCH=x86_64 $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 
@@ -20,8 +21,6 @@ clean:
 spotless: clean
 	rm -f $(TABLES) intro.m4
 
-# change this if all the books stop sharing the same m4 file
-intro.m4::
-	cp ../../generic/intro/$@ .
-
-intro.sgml: $(TABLES)
+# change this if the book needs something other than the common intro.m4
+intro.sgml: $(TABLES) $(INTRO)
+	m4 -P -Uindex -Uformat -DARCH=x86-64 $(INTRO) > $@
