@@ -2,11 +2,11 @@ TOP=../../..
 
 .SUFFIXES: .sgml .m4
 
-FILES=intro.sgml #cxxintro.sgml
-TABLES= standards.sgml references.sgml glibraries.sgml pslibs.sgml
-#CXXTABLES= cxxstandards.sgml cxxlibraries.sgml
+FILES=intro.sgml libraries.sgml #cxxintro.sgml
+TABLES=standards.sgml references.sgml glibraries.sgml pslibs.sgml
 SCOPES=genscope.sgml modscope.sgml
-#CXXSCOPES=../../generic/intro/genscope.sgml ../../generic/intro/cxxscope.sgml
+#CXXTABLES= cxxstandards.sgml cxxlibraries.sgml
+#CXXSCOPES=genscope.sgml cxxscope.sgml
 
 # A trick with the generic spec - we don't want LSB Core Generic to reference itself, but we want to add reference to CXXABI
 EXCLSPECS="'LSB'"

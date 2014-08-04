@@ -6,7 +6,7 @@ FILES=liblist.sgml
 TABLES=qt3list.sgml
 
 .m4.sgml:
-	m4 -P $*.m4 >$@
+	m4 -P -DARCH=All $*.m4 >$@
 
 all source: $(FILES) $(TABLES)
 

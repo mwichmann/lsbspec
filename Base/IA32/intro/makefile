@@ -3,9 +3,9 @@ TOP=../../..
 .SUFFIXES: .sgml .m4
 
 FILES=intro.sgml #cxxintro.sgml
-TABLES= standards.sgml references.sgml libraries.sgml
-#CXXTABLES= cxxstandards.sgml cxxlibraries.sgml
+TABLES=standards.sgml references.sgml libraries.sgml
 SCOPES=../../generic/intro/genscope.sgml ../../generic/intro/modscope.sgml
+#CXXTABLES= cxxstandards.sgml cxxlibraries.sgml
 #CXXSCOPES=../../generic/intro/genscope.sgml ../../generic/intro/cxxscope.sgml
 INTRO=../../generic/intro/intro.m4
 
@@ -33,5 +33,5 @@ intro.sgml: $(SCOPES) $(TABLES) $(INTRO)
 # archaic
 #cxxintro.m4::
 #	cp ../../generic/intro/$@ .
-
+#
 #cxxintro.sgml: $(CXXSCOPES) $(CXXTABLES)

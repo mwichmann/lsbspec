@@ -4,6 +4,7 @@ TOP=../../..
 
 FILES=intro.sgml
 TABLES=standards.sgml references.sgml libraries.sgml
+SCOPES=genscope.sgml modscope.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat -DARCH=All $*.m4 >$@
@@ -22,4 +23,4 @@ spotless: clean
 	rm -f $(TABLES)
 
 
-intro.sgml: genscope.sgml modscope.sgml $(TABLES)
+intro.sgml: $(SCOPES) $(TABLES)

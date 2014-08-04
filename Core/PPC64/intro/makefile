@@ -3,8 +3,10 @@ TOP=../../..
 .SUFFIXES: .sgml .m4
 
 FILES=intro.sgml #cxxintro.sgml
-TABLES= standards.sgml references.sgml libraries.sgml 
+TABLES=standards.sgml references.sgml libraries.sgml 
 SCOPES=../../generic/intro/genscope.sgml ../../generic/intro/modscope.sgml
+#CXXTABLES= cxxstandards.sgml cxxlibraries.sgml
+#CXXSCOPES=../../generic/intro/genscope.sgml ../../generic/intro/cxxscope.sgml
 INTRO=../../generic/intro/intro.m4
 
 .m4.sgml:
@@ -23,12 +25,12 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-# archaic
-cxxintro.m4::
-	cp ../../generic/intro/$@ .
-
 # change this if the book needs something other than the common intro.m4
 intro.sgml: $(SCOPES) $(TABLES) $(INTRO)
 	m4 -P -Uindex -Uformat -DARCH=PPC64 $(INTRO) > $@
 
-cxxintro.sgml: cxxstandards.sgml cxxlibraries.sgml
+# archaic
+#cxxintro.m4::
+#	cp ../../generic/intro/$@ .
+#
+#cxxintro.sgml: $(CXXSCOPES) $(CXXTABLES)
