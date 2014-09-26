@@ -20,8 +20,8 @@ all source: $(FILES) $(TABLES)
 gensrc:
 	$(TOP)/mkstandardsgmltable -a All -t Standard -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Base,LSB_Security -v `cat $(TOP)/target_version` >standards.sgml
 	$(TOP)/mkstandardsgmltable -a All -t Reference -x $(EXCLSPECS) -s $(INCLSPECS) -m LSB_Base,LSB_Security -v `cat $(TOP)/target_version` >references.sgml
-	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m "LSB_Base" >glibraries.sgml
-	$(TOP)/mklibsgmltable -a None -v `cat $(TOP)/target_version` -m "LSB_Base" >pslibs.sgml
+	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Base,LSB_Security >glibraries.sgml
+	$(TOP)/mklibsgmltable -a None -v `cat $(TOP)/target_version` -m LSB_Base,LSB_Security >pslibs.sgml
 
 clean:
 	rm -f $(FILES)
