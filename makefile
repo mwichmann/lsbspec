@@ -1,5 +1,5 @@
 
-DOCDIRS=Base ELF Packaging Security Core \
+DOCDIRS=Common Base ELF Packaging Security Core \
 	Graphics Toolkit_Gtk Toolkit_Qt Toolkit_Independent Multimedia Desktop \
 	Perl Python XML Languages \
 	Print Scan Imaging \
