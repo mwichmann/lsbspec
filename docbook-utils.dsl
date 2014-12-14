@@ -1146,6 +1146,7 @@ This stylesheet also contains my modifications for LDOC. Dennis Grace
 (define (book-titlepage-recto-elements)
   (list (normalize "title")
 	(normalize "subtitle")
+	(normalize "edition")
 	(normalize "corpauthor")
 	(normalize "authorgroup")
 	(normalize "author")
