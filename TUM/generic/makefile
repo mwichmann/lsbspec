@@ -1,5 +1,5 @@
 
-SUBDIRS= appendix
+SUBDIRS= libpng15 appendix
 
 all:
 	for dir in $(SUBDIRS);do (cd $$dir && $(MAKE) all);done

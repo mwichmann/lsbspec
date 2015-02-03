@@ -1,0 +1,152 @@
+TOP=../../..
+
+.SUFFIXES: .sgml .m4
+
+FILES=libpng15.sgml
+TABLES= png15.sgml 
+MANPAGES= png_access_version_number.sgml \
+png_convert_from_struct_tm.sgml \
+png_convert_from_time_t.sgml \
+png_create_info_struct.sgml \
+png_create_read_struct_2.sgml \
+png_create_read_struct.sgml \
+png_create_write_struct_2.sgml \
+png_create_write_struct.sgml \
+png_data_freer.sgml \
+png_destroy_info_struct.sgml \
+png_destroy_read_struct.sgml \
+png_destroy_write_struct.sgml \
+png_error.sgml \
+png_free_data.sgml \
+png_free.sgml \
+png_get_bit_depth.sgml \
+png_get_bKGD.sgml \
+png_get_channels.sgml \
+png_get_cHRM.sgml \
+png_get_color_type.sgml \
+png_get_error_ptr.sgml \
+png_get_gAMA.sgml \
+png_get_header_ver.sgml \
+png_get_hIST.sgml \
+png_get_iCCP.sgml \
+png_get_IHDR.sgml \
+png_get_image_height.sgml \
+png_get_image_width.sgml \
+png_get_interlace_type.sgml \
+png_get_io_ptr.sgml \
+png_get_libpng_ver.sgml \
+png_get_oFFs.sgml \
+png_get_pHYs.sgml \
+png_get_PLTE.sgml \
+png_get_progressive_ptr.sgml \
+png_get_rowbytes.sgml \
+png_get_rows.sgml \
+png_get_sBIT.sgml \
+png_get_sRGB.sgml \
+png_get_text.sgml \
+png_get_tIME.sgml \
+png_get_tRNS.sgml \
+png_get_unknown_chunks.sgml \
+png_get_user_chunk_ptr.sgml \
+png_get_valid.sgml \
+png_get_x_offset_pixels.sgml \
+png_get_x_pixels_per_meter.sgml \
+png_get_y_offset_pixels.sgml \
+png_get_y_pixels_per_meter.sgml \
+png_info_init_3.sgml \
+png_init_io.sgml \
+png_malloc.sgml \
+png_permit_mng_features.sgml \
+png_process_data.sgml \
+png_progressive_combine_row.sgml \
+png_read_end.sgml \
+png_read_image.sgml \
+png_read_info.sgml \
+png_read_png.sgml \
+png_read_row.sgml \
+png_read_rows.sgml \
+png_read_update_info.sgml \
+png_set_background.sgml \
+png_set_bgr.sgml \
+png_set_bKGD.sgml \
+png_set_cHRM.sgml \
+png_set_compression_buffer_size.sgml \
+png_set_compression_level.sgml \
+png_set_compression_mem_level.sgml \
+png_set_compression_method.sgml \
+png_set_compression_strategy.sgml \
+png_set_compression_window_bits.sgml \
+png_set_error_fn.sgml \
+png_set_expand.sgml \
+png_set_filler.sgml \
+png_set_filter.sgml \
+png_set_gAMA.sgml \
+png_set_gamma.sgml \
+png_set_gray_to_rgb.sgml \
+png_set_hIST.sgml \
+png_set_iCCP.sgml \
+png_set_IHDR.sgml \
+png_set_interlace_handling.sgml \
+png_set_invert_alpha.sgml \
+png_set_invert_mono.sgml \
+png_set_keep_unknown_chunks.sgml \
+png_set_mem_fn.sgml \
+png_set_oFFs.sgml \
+png_set_packing.sgml \
+png_set_packswap.sgml \
+png_set_palette_to_rgb.sgml \
+png_set_pHYs.sgml \
+png_set_PLTE.sgml \
+png_set_progressive_read_fn.sgml \
+png_set_read_fn.sgml \
+png_set_read_user_chunk_fn.sgml \
+png_set_read_user_transform_fn.sgml \
+png_set_rgb_to_gray.sgml \
+png_set_rows.sgml \
+png_set_sBIT.sgml \
+png_set_shift.sgml \
+png_set_sig_bytes.sgml \
+png_set_sRGB_gAMA_and_cHRM.sgml \
+png_set_sRGB.sgml \
+png_set_strip_16.sgml \
+png_set_strip_alpha.sgml \
+png_set_swap_alpha.sgml \
+png_set_swap.sgml \
+png_set_text.sgml \
+png_set_tIME.sgml \
+png_set_tRNS.sgml \
+png_set_tRNS_to_alpha.sgml \
+png_set_unknown_chunk_location.sgml \
+png_set_unknown_chunks.sgml \
+png_set_write_fn.sgml \
+png_set_write_status_fn.sgml \
+png_set_write_user_transform_fn.sgml \
+png_sig_cmp.sgml \
+png_start_read_image.sgml \
+png_warning.sgml \
+png_write_chunk.sgml \
+png_write_end.sgml \
+png_write_flush.sgml \
+png_write_image.sgml \
+png_write_info_before_PLTE.sgml \
+png_write_info.sgml \
+png_write_png.sgml \
+png_write_row.sgml \
+png_write_rows.sgml
+
+.m4.sgml:
+	m4 -P -Uindex -Uformat $*.m4 >$@
+
+all: $(FILES) $(TABLES)
+
+gensrc:
+	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 3 -l libpng15 >png15.sgml
+
+clean:
+	rm -f $(FILES)
+
+spotless: clean
+	rm -f $(TABLES)
+
+libpng15.sgml: png15.sgml
+libpng15.sgml: $(MANPAGES)
