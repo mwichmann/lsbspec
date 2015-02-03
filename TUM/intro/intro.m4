@@ -67,6 +67,7 @@ the specification is to be considered normative.
 <TITLE>Informative References</TITLE>
 <TGROUP COLS=2>
 XXX Include table here when it exists (see intro.m4.saved)
+XXX Docbook throws an error if the generated table is empty
 </TGROUP>
 </TABLE-->
 </CHAPTER>
