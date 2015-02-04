@@ -67,26 +67,26 @@ print STDERR $select, "\n" if $trace;
 $sth = $dbh->prepare($select);
 $sth->execute;
 
-printf("<PARA>\n");
+printf("<para>\n");
 printf("An LSB conforming implementation shall provide the\n");
-printf("%s as described in <XREF LINKEND=\"%s\">\n", $title, $tbl );
+printf("%s as described in <xref linkend=\"%s\">\n", $title, $tbl );
 printf("with at least the behavior described as mandatory\n");
 printf("in the referenced underlying specification.\n");
 printf("Some %s may be marked as deprecated, and applications\n", $title);
 printf("should avoid using these as they may be withdrawn\n");
 printf("in future releases of this specification.\n");
 
-printf("</PARA>\n");
+printf("</para>\n");
 
 if ( $sth->rows < 1 ) {
-    printf("<PARA>No $language modules found!</PARA>\n");
+    printf("<para>No $language modules found!</para>\n");
 } else {
 
-    printf("<TABLE id=\"$tbl\">\n");
-    printf("<TITLE>$MainTitle</TITLE>\n");
-    printf("<TGROUP COLS=5>\n");
-    printf("<TBODY>\n");
-    printf("<ROW>\n");
+    printf("<table id=\"$tbl\">\n");
+    printf("<title>$MainTitle</title>\n");
+    printf("<tgroup cols=5>\n");
+    printf("<tbody>\n");
+    printf("<row>\n");
 
     my $col       = 0;                               #column count
     my $row       = 0;
@@ -101,7 +101,7 @@ if ( $sth->rows < 1 ) {
 	#
 	if ( $col == 5 ) {
 	    last if ( ++$row >= $totalrows );
-	    printf("</ROW><ROW>\n");
+	    printf("</row><row>\n");
 	    $col = 0;
 	}
 	my $idx = ( $row + ( $col++ * $totalrows ) );
@@ -117,7 +117,7 @@ if ( $sth->rows < 1 ) {
 	#$ftid = sprintf("std-fn-%s-%s",
 	#	$field[1], $permutation{$field[1]});
 
-	printf( "<ENTRY>%s\n", $field->{'ILMname'} );
+	printf( "<entry>%s\n", $field->{'ILMname'} );
 	#
 	# figure out a reference
 	# each table is followed by a list of references
@@ -140,7 +140,7 @@ if ( $sth->rows < 1 ) {
 		push( @ref, $refstr );
 		$refno = $#ref;
 	    }
-	    printf( "<LINK LINKEND=\"%s\"> [%d]</LINK>\n",
+	    printf( "<link linkend=\"%s\"> [%d]</link>\n",
 		$refstr, $refno + 1 );
 	}
 	#
@@ -150,32 +150,32 @@ if ( $sth->rows < 1 ) {
 	if ( $field->{'ILMdeprecatedsince'} ) {
 	    if ( $field->{'ILMdeprecatedsince'} <= $lsbversion ) {
 	        if ( $hasDeprecated == 0 ) {
-		    printf("<FOOTNOTE ID=%s><PARA>Deprecated module</PARA></FOOTNOTE>\n", $footnote);
+		    printf("<footnote id=%s><para>Deprecated module</para></footnote>\n", $footnote);
 
 		    $hasDeprecated = 1;
 		} else {
-		    printf("<FOOTNOTEREF LINKEND=%s>\n", $footnote);
+		    printf("<footnoteref linkend=%s>\n", $footnote);
 		}
 	    }
 	}
-	printf("</ENTRY>\n");
+	printf("</entry>\n");
     }
 
-    printf("</ROW>\n");
-    printf("</TBODY>\n");
-    printf("</TGROUP>\n");
-    printf("</TABLE>\n");
+    printf("</row>\n");
+    printf("</tbody>\n");
+    printf("</tgroup>\n");
+    printf("</table>\n");
 
     #
     # now print out the referenced standards list
     #
     if ( $#ref >= 0 ) {
 	print
-	  "<PARA><EMPHASIS>Referenced Specification(s)</EMPHASIS></PARA>\n";
+	  "<para><emphasis>Referenced Specification(s)</emphasis></para>\n";
 	for $r ( 0 .. $#ref ) {
 	    $refstr = $ref[$r];
 	    printf
-"<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para><XREF LINKEND=std.%s></para></FORMALPARA>\n",
+"<formalpara><title id=\"%s\">[%d]</title><para><xref linkend=std.%s></para></formalpara>\n",
 	      $refstr, $r + 1, $references{$refstr};
 	}
     }

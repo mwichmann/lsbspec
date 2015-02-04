@@ -116,15 +116,15 @@ $safeLname = $Lname;
 $safeLname =~ s/_/-/g;
 # $safeLname = $Lname =~ tr/_/-/r;  # another version, also works
 
-print "<SECT1 ID=app-", $safeLname, ">\n";
-print "<TITLE>", $Lname, "</TITLE>\n";
-print "<PARA>\n";
-print "</PARA>\n";
+print "<sect1 id=app-", $safeLname, ">\n";
+print "<title>", $Lname, "</title>\n";
+print "<para>\n";
+print "</para>\n";
 
 #
 # 6) Get a list of the Standards that are used by this library
 #
-print "<PARA>\n";
+print "<para>\n";
 $select = "SELECT DISTINCT Sname,Sid,Stag FROM Standard,LibGroup,LGInt,Interface ";
 $select.= "LEFT JOIN ArchInt ON Iid=AIint ";
 $select.= "LEFT JOIN IntStd ON Iid=ISiid ";
@@ -142,27 +142,27 @@ local @refname;
 if( $lsh->rows) {
 	print "The behavior of the interfaces in this library is specified ";
 	print "by the following Standards.";
-	print "<SIMPLELIST COLUMNS=1>\n";
+	print "<simplelist columns=1>\n";
 	for(1..$lsh->rows) {
 		local(*entry);
 		$entry=$lsh->fetchrow_hashref;
 		$refname[$_] = $entry->{'Sname'};
-		print "<MEMBER>\n";
-		printf "<XREF LINKEND=\"STD.%s\"> [%s]\n",
+		print "<member>\n";
+		printf "<xref linkend=\"std.%s\"> [%s]\n",
 		$entry->{'Stag'}, $entry->{'Sname'};
-		print "</MEMBER>\n";
+		print "</member>\n";
 	}
-	print "</SIMPLELIST>\n";
+	print "</simplelist>\n";
 }
 $lsh->finish;
 
 
 
-print "</PARA>\n";
-print "<TABLE>\n";
-print "<TITLE>$Lname Function Interfaces</TITLE>\n";
-print "<TGROUP COLS=3>\n";
-print "<TBODY>\n";
+print "</para>\n";
+print "<table>\n";
+print "<title>$Lname Function Interfaces</title>\n";
+print "<tgroup cols=3>\n";
+print "<tbody>\n";
 
 #
 # 7) Get a list of the interfaces in the library
@@ -209,39 +209,39 @@ print "<TBODY>\n";
 	# inc is the last row number ...
 	$inc=int(($inh->rows+2)/3);
 	for(1..$inc) {
-		print "<ROW>";
-		printf "<ENTRY>%s", $entry[$_];
+		print "<row>";
+		printf "<entry>%s", $entry[$_];
 		if( $symver[$_] ) {
 			printf "(%s)", $symver[$_];
 		}
 		if( $std[$_] ) {
-			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_], $refs[$_];
+			printf "<link linkend=\"%s\">%s</link>", $xrefs[$_], $refs[$_];
 		}
-		printf "</ENTRY>";
-		printf "<ENTRY>%s", $entry[$_+$inc];
+		printf "</entry>";
+		printf "<entry>%s", $entry[$_+$inc];
 		if( $symver[$_+$inc] ) {
 			printf "(%s)", $symver[$_+$inc];
 		}
 		if( $std[$_+$inc] ) {
-			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+$inc], $refs[$_+$inc];
+			printf "<link linkend=\"%s\">%s</link>", $xrefs[$_+$inc], $refs[$_+$inc];
 		}
-		printf "</ENTRY>";
-		printf "<ENTRY>%s", $entry[$_+(2*$inc)];
+		printf "</entry>";
+		printf "<entry>%s", $entry[$_+(2*$inc)];
 		if( $symver[$_+(2*$inc)] ) {
 			printf "(%s)", $symver[$_+(2*$inc)];
 		}
 		if( $std[$_+(2*$inc)] ) {
-			printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+(2*$inc)], $refs[$_+(2*$inc)];
+			printf "<link linkend=\"%s\">%s</link>", $xrefs[$_+(2*$inc)], $refs[$_+(2*$inc)];
 		}
-		printf "</ENTRY>";
-		print "</ROW>\n";
+		printf "</entry>";
+		print "</row>\n";
 	}
 }
 $inh->finish;
 
-print "</TBODY>\n";
-print "</TGROUP>\n";
-print "</TABLE>\n";
+print "</tbody>\n";
+print "</tgroup>\n";
+print "</table>\n";
 #
 # 8) Make a table of data interfaces
 #
@@ -280,37 +280,37 @@ print "</TABLE>\n";
 			$refs[$_]=sprintf "[%s]", $datasym->{'Sname'};
 			$symver[$_]=$datasym->{'Vname'};
 		}
-		print "<TABLE>\n";
-		print "<TITLE>$Lname Data Interfaces</TITLE>\n";
-		print "<TGROUP COLS=3>\n";
-		print "<TBODY>\n";
+		print "<table>\n";
+		print "<title>$Lname Data Interfaces</title>\n";
+		print "<tgroup cols=3>\n";
+		print "<tbody>\n";
 		$inc=($sth->rows+2)/3;
 		for(1..$inc) {
-			print "<ROW>";
-			printf "<ENTRY>%s",$datasym[$_];
+			print "<row>";
+			printf "<entry>%s",$datasym[$_];
 			if( $datasym[$_] && $std[$_] ) {
-				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_], $refs[$_];
+				printf "<link linkend=\"%s\">%s</link>", $xrefs[$_], $refs[$_];
 			}
-			printf "</ENTRY>";
-			printf "<ENTRY>%s",$datasym[$_+$inc];
+			printf "</entry>";
+			printf "<entry>%s",$datasym[$_+$inc];
 			if( $datasym[$_+$inc] && $std[$_+$inc] ) {
-				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+$inc], $refs[$_+$inc];
+				printf "<link linkend=\"%s\">%s</link>", $xrefs[$_+$inc], $refs[$_+$inc];
 			}
-			printf "</ENTRY>";
-			printf "<ENTRY>%s",$datasym[$_+(2*$inc)];
+			printf "</entry>";
+			printf "<entry>%s",$datasym[$_+(2*$inc)];
 			if( $datasym[$_+(2*$inc)] && $std[$_+(2*$inc)] ) {
-				printf "<LINK LINKEND=\"%s\">%s</LINK>", $xrefs[$_+(2*$inc)], $refs[$_+(2*$inc)];
+				printf "<link linkend=\"%s\">%s</link>", $xrefs[$_+(2*$inc)], $refs[$_+(2*$inc)];
 			}
-			printf "</ENTRY>";
-			print "</ROW>\n";
+			printf "</entry>";
+			print "</row>\n";
 		}
-		print "</TBODY>\n";
-		print "</TGROUP>\n";
-		print "</TABLE>\n";
+		print "</tbody>\n";
+		print "</tgroup>\n";
+		print "</table>\n";
 	}
 	$sth->finish;
 }
-print "</SECT1>\n";
+print "</sect1>\n";
 }
 $lth->finish;
 $dbh->disconnect;
