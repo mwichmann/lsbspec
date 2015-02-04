@@ -11,7 +11,7 @@ TABLES=baselist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	$(TOP)/mklibapnd -a All -m LSB_Base -v `cat $(TOP)/target_version` | sed -e 's/ID=app-libgcc_s/ID=app-libgcc-s/' >baselist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Base -v `cat $(TOP)/target_version` >baselist.sgml
 
 clean:
 	rm -f $(FILES)

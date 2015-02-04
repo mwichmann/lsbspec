@@ -22,7 +22,7 @@ gensrc: $(MANPAGES)
 	$(TOP)/mklibspec -a PPC64 -l libpthread -v `cat $(TOP)/target_version` >libpthread.sgml
 	$(TOP)/mklibspec -a PPC64 -l libdl -v `cat $(TOP)/target_version` >libdl.sgml
 	$(TOP)/mklibspec -a PPC64 -l libcrypt -v `cat $(TOP)/target_version` >libcrypt.sgml
-	$(TOP)/mklibspec -a PPC64 -l libgcc_s -v `cat $(TOP)/target_version` | sed -e 's/ID=libgcc_s/ID=libgcc-s/' >libgcc_s.sgml
+	$(TOP)/mklibspec -a PPC64 -l libgcc_s -v `cat $(TOP)/target_version` >libgcc_s.sgml
 	$(TOP)/mklibspec -a PPC64 -c 1 -l libstdcxx -d -v `cat $(TOP)/target_version` | $(TOP)/fixc++spec >libstdcxx.sgml
 
 clean:
