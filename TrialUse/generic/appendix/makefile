@@ -8,7 +8,7 @@ TOP=../../..
 .SUFFIXES: .sgml .m4
 
 FILES=liblist.sgml
-TABLES=#mmlistlist.sgml securitylist.sgml 
+TABLES= tumlist.sgml gtk3list.sgml
 
 .m4.sgml:
 	m4 -P $*.m4 >$@
@@ -16,8 +16,8 @@ TABLES=#mmlistlist.sgml securitylist.sgml
 all source: $(FILES) $(TABLES)
 
 gensrc:
-	#$(TOP)/mklibapnd -a All -m LSB_Multimedia -v `cat $(TOP)/target_version` >mmlistlist.sgml
-	#$(TOP)/mklibapnd -a All -m LSB_Security -v `cat $(TOP)/target_version` >securitylist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_TUM -v `cat $(TOP)/target_version` >tumlist.sgml
+	$(TOP)/mklibapnd -a All -m LSB_Toolkit_Gtk3 -v `cat $(TOP)/target_version` >gtk3list.sgml
 
 clean:
 	rm -f $(FILES)
@@ -25,3 +25,4 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
+liblist.sgml: $(TABLES)

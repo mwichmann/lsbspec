@@ -1,10 +1,8 @@
-<PREFACE id="OVERVIEW">
+<preface id="overview">
 <title>Foreword</title>
 <para>
-This is version &specversion; of the Trial Use Specification.
-This version is a preliminary version for review only. Conclusion of work on
-this version will result in version &targetversion; of the Trial Use Specification.
-This specification augments the series of volumes released under 
+This is version &specversion; of the &spectitle;.
+This specification complements the series of volumes released under 
 the collective title <citetitle>Linux Standard Base</citetitle>:
 </para>
 <itemizedlist>
@@ -17,31 +15,43 @@ the collective title <citetitle>Linux Standard Base</citetitle>:
 Note that the Core and Desktop volumes consist of a generic volume 
 augmented by an architecture-specific volume.
 </para>
-<PARA>
+<para>
 This document describes components which have Trial Use Specification
 status, and as such there is no formal compliance process for
 this specification. Implementations may claim to provide these components
 in a manner that agrees with this specification, but such a claim is not
 part of a conformance statement for the LSB version in which this module
 appears.
-</PARA>
-<PARA>
+</para>
+<para>
 Applications may not assume that the components of this specification
 are present or operate as described in this specification on any
 given implementation. 
-</PARA>
+</para>
 </preface>
+
 <preface id="status">
 <title>Status of this Document</title>
 <para>
-This document is a complement to the released specification. Other documents may
-supersede or augment this document. A list of current
-Linux Standard Base (LSB) specifications is available at 
+<![%lsbdraft;[
+This version is a preliminary version for review only. Conclusion of work on
+this document will result in version &targetversion; to complement the
+released LSB Specification of the same version.
+]]>
+<![%lsbrelease;[
+This is a released specification, version &targetversion;,
+published to complement the released LSB SPecification of the same version.
+Other documents may supersede or augment this specification. 
+]]>
+</para>
+<para>
+A list of current released
+Linux Standard Base (LSB) specifications is available at
 <ulink url="http://refspecs.linuxbase.org/">http://refspecs.linuxbase.org</ulink>.
 </para>
 <para>If you wish to make comments regarding this document
 in a manner that is tracked by the LSB project, please submit them
-using our public bug database at 
+using our public bug database at
 <ulink url="http://bugs.linuxbase.org">http://bugs.linuxbase.org</ulink>.
 Please enter your feedback, carefully indicating the title of the
 section for which you are submitting feedback, and the volume and
@@ -50,50 +60,51 @@ the incorrect text if appropriate. If you are suggesting a new feature,
 please indicate what the problem you are trying to solve is. That is
 more important than the solution, in fact.  </para>
 <para>
-If you do not have or wish to create a bug database account then you 
+If you do not have or wish to create a bug database account then you
 can also e-mail feedback to
 <email>lsb-discuss@lists.linuxfoundation.org</email> (<ulink
-url="http://lists.linux-foundation.org/mailman/listinfo/lsb-discuss">
+url="http://lists.linuxfoundation.org/mailman/listinfo/lsb-discuss">
 subscribe</ulink>, <ulink
-url="http://lists.linux-foundation.org/pipermail/lsb-discuss/">
+url="http://lists.linuxfoundation.org/pipermail/lsb-discuss/">
 archives</ulink>), and arrangements will be made to transpose the
 comments to our public bug database.  </para>
 </preface>
 
-<PREFACE ID="INTRO"><TITLE>Introduction</TITLE>
-<PARA>
+<preface id="intro">
+<title>Introduction</title>
+<para>
 The Trial Use Specification describes components which may or
 may not be present on an otherwise conforming system. The
 purpose is to indicate that these components are on a Standards
 Track, that is, they are intended to become part of the LSB
 Specification in a future edition.
-</PARA>
+</para>
 
-<PARA>
+<para>
 This document should be used in conjunction with the documents it references.
 Information referenced in this way is as much a part of this document as is
 the information explicitly included here.
-</PARA>
-</PREFACE>
+</para>
+</preface>
 
-<PART ID="TOCINTRO">
-<TITLE>Introductory Elements</TITLE>
-<CHAPTER ID="scope">
-<TITLE>Scope</TITLE>
-<PARA>
+<part id="tocintro">
+<title>Introductory Elements</title>
+<chapter id="scope">
+<title>Scope</title>
+<para>
 The Trial Use Specification defines components which are not
 required parts of the LSB Specification.
-</PARA>
-<!-- XXX -->
-<PARA>
+</para>
+<!-- uncomment if there are no contents for this LSB version
+<para>
 As of version &specversion; there are no specified elements in &spectitle;.
-</PARA>
-</CHAPTER>
+</para-->
+</chapter>
 
-<CHAPTER ID="normativerefs">
-<TITLE>Normative References</TITLE>
+<chapter id="normativerefs">
+<title>Normative References</title>
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
-<PARA ID=STD.LSB XREFLABEL="This Specification">
+<para id=std.lsb xreflabel="This Specification">
 The specifications listed below are referenced in whole or in part by
 the Trial Use Specification.  Such references may be normative or
 informative; a reference to specification shall only be considered
@@ -102,81 +113,78 @@ Specification may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
 the specification is to be considered normative.
-</PARA>
-<!-- no references in 4.1
-<TABLE>
-<TITLE>Informative References</TITLE>
-<TGROUP COLS=2>
-m4_dnl m4_include(references.sgml)
-</TGROUP>
-</TABLE>
--->
-</CHAPTER>
+</para>
+<!-- comment out table if no references -->
+<table>
+<title>Informative References</title>
+<tgroup cols=2>
+m4_include(references.sgml)
+</tgroup>
+</table>
+</chapter>
 
-<CHAPTER ID="REQUIREMENTS">
-<TITLE>Requirements</TITLE>
+<chapter id="requirements">
+<title>Requirements</title>
 
-<PARA>None as of this version.</PARA>
+<!--para>None as of this version.</para-->
 
-<!-- promoted to full standard
-<SECT1 ID="alsalibraries">
-<TITLE>Multimedia Libraries</TITLE>
-<PARA>
-The multimedia libraries listed in <XREF LINKEND='tbl-alsa-stdlib'> shall
-be available on a Linux Standard Base system, with the specified
-runtime names.  This list may be supplemented or amended by the
+<sect1 id="tumlibraries">
+<title>TUM Libraries</title>
+<para>
+The libraries listed in <xref linkend='tbl-toolkit-tum-stdlib'> shall
+be available on a Linux Standard Base system which implements the
+Trial Use TUM module, with the specified runtime names.  
+This list may be supplemented or amended by the 
 architecture-specific specification.
-</PARA>
-<TABLE ID=tbl-alsa-stdlib>
-<TITLE>Standard Library Names</TITLE>
-<TGROUP COLS=2>
-<THEAD>
-<ROW>
-<ENTRY>Library</ENTRY>
-<ENTRY>Runtime Name</ENTRY>
-</ROW>
-</THEAD>
-#m4_include(libraries.sgml)
-</TGROUP>
-</TABLE>
-<PARA>
+</para>
+<table id=tbl-toolkit-tum-stdlib>
+<title>Standard Library Names</title>
+<tgroup cols=2>
+<thead>
+<row>
+<entry>Library</entry>
+<entry>Runtime Name</entry>
+</row>
+</thead>
+m4_include(tumlibraries.sgml)
+</tgroup>
+</table>
+<para>
 These libraries will be in an implementation-defined directory which
 the dynamic linker shall search by default.
-</PARA>
-</SECT1>
--->
+</para>
+</sect1>
 
-<!-- promoted to full standard
-<SECT1 ID="nsslibraries">
-<TITLE>Security Libraries</TITLE>
-<PARA>
-The security libraries listed in <XREF LINKEND='tbl-nss-stdlib'> shall
-be available on a Linux Standard Base system, with the specified
+<sect1 id="gtk3libraries">
+<title>Gtk3 Libraries</title>
+<para>
+The libraries listed in <xref linkend='tbl-toolkit-gtk3-stdlib'> shall
+be available on a Linux Standard Base system which implements the
+Trial Use Toolkit_Gtk3 module, with the specified
 runtime names.  This list may be supplemented or amended by the
 architecture-specific specification.
-</PARA>
-<TABLE ID=tbl-nss-stdlib>
-<TITLE>Standard Library Names</TITLE>
-<TGROUP COLS=2>
-<THEAD>
-<ROW>
-<ENTRY>Library</ENTRY>
-<ENTRY>Runtime Name</ENTRY>
-</ROW>
-</THEAD>
-#m4_include(slibraries.sgml)
-</TGROUP>
-</TABLE>
-<PARA>
+</para>
+<table id=tbl-toolkit-gtk3-stdlib>
+<title>Standard Library Names</title>
+<tgroup cols=2>
+<thead>
+<row>
+<entry>Library</entry>
+<entry>Runtime Name</entry>
+</row>
+</thead>
+m4_include(gtk3libraries.sgml)
+</tgroup>
+</table>
+<para>
 These libraries will be in an implementation-defined directory which
 the dynamic linker shall search by default.
-</PARA>
-</SECT1>
--->
+</para>
+</sect1>
 
-</CHAPTER>
+</chapter>
 
 <!-- boilerplate terms and definitions -->
 &definitions;
 
-</PART>
+</part>

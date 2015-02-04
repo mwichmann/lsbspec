@@ -3,17 +3,17 @@ TOP=../..
 .SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
-TABLES=references.sgml #libraries.sgml slibraries.sgml
+TABLES=references.sgml tumlibraries.sgml gtk3libraries.sgml
+INCLSPECS="'ISOC99'"
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat $*.m4 >$@
 
 all: $(FILES) #$(TABLES)
-	#$(TOP)/mkstandardsgmltable -a All -s "'xdg-utils','ALSA','ISOC99','NSS SSL','NSPR'" -v `cat $(TOP)/target_version >references.sgml
 gensrc:
-	$(TOP)/mkstandardsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_TUM >references.sgml
-	#$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Multimedia >libraries.sgml
-	#$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Security >slibraries.sgml
+	$(TOP)/mkstandardsgmltable -a All -s $(INCLSPECS) -m LSB_TUM,LSB_Toolkit_Gtk3 -v `cat $(TOP)/target_version` >references.sgml
+	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_TUM >tumlibraries.sgml
+	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` -m LSB_Toolkit_Gtk3 >gtk3libraries.sgml
 
 clean:
 	rm -f $(FILES)
