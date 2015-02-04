@@ -6,9 +6,10 @@ FILES=intro.sgml
 TABLES= corelibs.sgml pscorelibs.sgml desklibs.sgml imaglibs.sgml langlibs.sgml
 SCOPES=scope.sgml
 CORESUBMOD="LSB_Base,LSB_Security"
-# notice LSB_Toolkit_Independent has no current libs - leave out while so
-DESKSUBMOD="LSB_Graphics,LSB_Toolkit_Gtk,LSB_Toolkit_Gtk,LSB_Toolkit_Qt,LSB_Multimedia"
+# LSB_Toolkit_Independent has no libraries currently
+DESKSUBMOD="LSB_Graphics,LSB_Toolkit_Gtk,LSB_Toolkit_Qt,LSB_Multimedia"
 IMAGSUBMOD="LSB_Scan,LSB_Print"
+# perl, python have no libraries currently
 LANGSUBMOD="LSB_XML"
 
 

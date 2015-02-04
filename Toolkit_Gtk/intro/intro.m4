@@ -34,7 +34,7 @@ the information explicitly included here.
 <CHAPTER ID="scope">
 <TITLE>Scope</TITLE>
 <PARA>
-The LSB Toolkit-Gtk defines the GTK+ toolkit and related libraries
+The LSB Toolkit-Gtk module defines the GTK+ toolkit and related libraries
 interface found on an LSB conforming system.
 </PARA>
 </CHAPTER>

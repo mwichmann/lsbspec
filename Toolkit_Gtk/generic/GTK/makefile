@@ -8,7 +8,11 @@ MANPAGES=gtk_button_set_image.sgml gtk_button_get_image.sgml \
 	gtk_toolbar_get_tooltips.sgml gtk_toolbar_set_tooltips.sgml
 
 FILES=GTK.sgml
-TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk_x11.sgml libGtk_x11.sgml libPangoCairo.sgml libGdk_3.sgml libGtk_3.sgml
+TABLES= libGlib.sgml libGobject.sgml libGmodule.sgml libGthread.sgml \
+	libAtk.sgml libPango.sgml libPangoxft.sgml libPangoft2.sgml \
+	libGdk_pixbuf.sgml libGdk_pixbuf_xlib.sgml libGdk_x11.sgml \
+	libGtk_x11.sgml libPangoCairo.sgml libGio.sgml
+	# moved out: libGdk_3.sgml libGtk_3.sgml
 
 .m4.sgml:
 	m4 -P -Uindex -Uformat -DARCH=All $*.m4 >$@
@@ -30,8 +34,8 @@ gensrc:
 	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgdk_pixbuf_xlib-2.0 >libGdk_pixbuf_xlib.sgml
 	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgdk-x11-2.0 >libGdk_x11.sgml
 	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgtk-x11-2.0 >libGtk_x11.sgml
-	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgdk-3 >libGdk_3.sgml
-	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgtk-3 >libGtk_3.sgml
+#	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgdk-3 >libGdk_3.sgml
+#	$(TOP)/mklibspec -a All -v `cat $(TOP)/target_version` -c 2 -l libgtk-3 >libGtk_3.sgml
 
 clean:
 	rm -f $(FILES)

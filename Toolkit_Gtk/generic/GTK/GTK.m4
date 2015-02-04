@@ -1,3 +1,6 @@
+<!-- with the late decision to move gtk3/gdk3 to trial use,
+     they're in a separate submodule and were just commented out here -->
+
 <part id="tocgtk">
 <title>GTK+ Stack Libraries</title>
 
@@ -65,20 +68,18 @@ in combination with GtkImage to display images.</para>
 <listitem>
 <para>GDK is the abstraction layer that allows GTK+ to support multiple
 windowing systems. GDK provides drawing and window system facilities on
-X11, Windows, and the Linux framebuffer device. GDK is provided in two
-versions in this edition.  </para>
+X11, Windows, and the Linux framebuffer device.</para>
 <para>libgdk-x11-2.0</para>
-<para>libgdk-3</para>
+<!--para>libgdk-3</para-->
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>GTK+</term>
 <listitem>
 <para>The GTK+ library contains widgets, that is, GUI components such
-as GtkButton or GtkTextView. GTK+ is provided in two versions in this
-edition.</para>
+as GtkButton or GtkTextView.</para>
 <para>libgtk-x11-2.0</para>
-<para>libgtk-3</para>
+<!--para>libgtk-3</para-->
 </listitem>
 </varlistentry>
 </variablelist>
@@ -135,9 +136,9 @@ m4_include(libPangoft2.sgml)
 m4_include(libGdk_pixbuf.sgml)
 m4_include(libGdk_pixbuf_xlib.sgml)
 m4_include(libGdk_x11.sgml)
-m4_include(libGdk_3.sgml)
+m4_dnl m4_include(libGdk_3.sgml)
 m4_include(libGtk_x11.sgml)
-m4_include(libGtk_3.sgml)
+m4_dnl m4_include(libGtk_3.sgml)
 
 </chapter>
 </part>

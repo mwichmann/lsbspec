@@ -3,7 +3,7 @@ DOCDIRS=Common Base ELF Packaging Security Core \
 	Graphics Toolkit_Gtk Toolkit_Qt Toolkit_Independent Multimedia Desktop \
 	Perl Python XML Languages \
 	Print Scan Imaging \
-	TUM TrialUse 
+	Toolkit_Gtk3 TUM TrialUse 
 
 SUBDIRS= $(DOCDIRS)
 
