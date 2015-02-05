@@ -11,8 +11,9 @@ TABLES=
 all source: $(FILES) $(TABLES)
 
 #XXX mkcmdtable was built for generic/LSB Commands only, so it does not 
-#XXX generate unique IDs.  Desktop also has fontconfig commands, 
-#XXX so for the moment just hack ids here to be unique
+#XXX generate unique IDs.  The Desktop module pulls commands from
+#XXX fontconfig also (Graphics submodule) so for the moment just 
+#XXX hack ids here to be unique
 gensrc:
 	$(TOP)/mkcmdtable -m LSB_Toolkit_Independent \
 	-v `cat $(TOP)/target_version` | \
