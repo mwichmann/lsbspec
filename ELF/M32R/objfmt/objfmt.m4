@@ -47,14 +47,14 @@ must not rely on tags related functionality.
 <TITLE>ELF Header</TITLE>
 <PARA>
 LSB-conforming applications shall use the ELF header as defined in
-<XREF LINKEND="std.M32R.ABI">, Chapter 4.
+<xref linkend="std.M32R.ABI">, Chapter 4.
 </PARA>
 </CHAPTER>
 
 <CHAPTER ID=specialsections>
 <TITLE>Special Sections</TITLE>
 <PARA>
-The following sections are defined in the <XREF LINKEND="std.M32R.ABI">.
+The following sections are defined in the <xref linkend="std.M32R.ABI">.
 m4_include(elfsect.sgml)
 </PARA>
 </CHAPTER>
@@ -64,7 +64,7 @@ m4_include(elfsect.sgml)
 
 <PARA>
 LSB-conforming applications shall use the Symbol Table as defined in
-Chapter 4 of the <XREF LINKEND="std.M32R.ABI">.
+Chapter 4 of the <xref linkend="std.M32R.ABI">.
 
 </PARA>
 
@@ -81,7 +81,7 @@ Chapter 4 of the <XREF LINKEND="std.M32R.ABI">.
 
 <PARA>
 LSB-conforming applications shall use Relocations as defined in
-Chapter 4 of the <XREF LINKEND="std.M32R.ABI">.
+Chapter 4 of the <xref linkend="std.M32R.ABI">.
 </PARA>
 
 <SECT1 ID="relocationtypes">

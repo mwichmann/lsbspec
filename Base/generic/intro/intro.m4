@@ -14,7 +14,7 @@ m4_include(`../../generic/intro/modscope.sgml')
 <title>Normative References</titlE>
 m4_ifelse(ARCH,`All', `
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
-<para id=STD.LSB xreflabel="This Specification">',`<para>')
+<para id="std.LSB" xreflabel="This Specification">',`<para>')
 The following specifications are incorporated by reference into
 this specification. For dated references, only the edition cited
 applies. For undated references, the latest edition of the referenced
@@ -73,14 +73,14 @@ m4_ifelse(ARCH,`All',
 	`m4_define(`TBLTARGET',`"tbl-archbase-stdlib"')')
 m4_ifelse(ARCH,`All',
 `
-The libraries listed in <Xref linkend='TBLTARGET`> shall
+The libraries listed in <xref linkend=TBLTARGET> shall
 be available on a Linux Standard Base system, with the specified
 runtime names. The libraries listed in <xref linkend="tbl-basegeneric-archlib">
 are architecture specific, but shall be available on all LSB
 conforming systems. This list may be supplemented or amended by the relevant
 architecture specific part of the Base submodule specification.
 ',`
-The libraries listed in <xref linkend='TBLTARGET`> shall
+The libraries listed in <xref linkend=TBLTARGET> shall
 be available on 'ARCH` Linux Standard Base systems, with the specified
 runtime names. These names override or supplement the names specified
 in the generic Base submodule specification. The specified program 

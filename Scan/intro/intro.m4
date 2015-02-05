@@ -42,7 +42,7 @@ m4_include(references.sgml)
 <SECT1 ID="xlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed in <XREF LINKEND='tbl-scan-stdlib'> shall
+The libraries listed in <xref linkend="tbl-scan-stdlib"> shall
 be available on a Linux Standard Base system, with the specified
 runtime names.  This list may be supplemented or amended by the
 architecture-specific specification.

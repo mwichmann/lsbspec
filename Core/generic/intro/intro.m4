@@ -73,14 +73,14 @@ m4_ifelse(ARCH,`All',
 	`m4_define(`TBLTARGET',`"tbl-archlsb-stdlib"')')
 m4_ifelse(ARCH,`All',
 `
-The libraries listed in <xref linkend='TBLTARGET`> shall
+The libraries listed in <xref linkend=TBLTARGET> shall
 be available on a Linux Standard Base system, with the specified
 runtime names. The libraries listed in <xref linkend="tbl-lsbgeneric-archlib">
 are architecture specific, but shall be available on all LSB
 conforming systems. This list may be supplemented or amended by the relevant
 architecture specific part of &ISOSTD;.
 ',`
-The libraries listed in <xref linkend='TBLTARGET`> shall
+The libraries listed in <xref linkend=TBLTARGET> shall
 be available on 'ARCH` Linux Standard Base systems, with the specified
 runtime names. These names override or supplement the names specified
 in the generic LSB (&ISOSTD-1;) specification. The specified program 

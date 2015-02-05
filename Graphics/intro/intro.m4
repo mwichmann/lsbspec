@@ -42,7 +42,7 @@ system.
 <CHAPTER ID="normativerefs">
 <TITLE>Normative References</TITLE>
 <!-- the ID below is for auto generated xrefs to the LSB itself -->
-<PARA ID=STD.LSB XREFLABEL="This Specification">
+<para id="std.LSB" xreflabel="This Specification">
 The specifications listed below are referenced in whole or in part by
 the LSB-Graphics Module Standard.  Such references may be normative or
 informative; a reference to specification shall only be considered
@@ -51,7 +51,7 @@ may make normative references to a portion of these
 specifications (that is, to define a specific function or group of
 functions); in such cases, only the explicitly referenced portion of
 the specification is to be considered normative.
-</PARA>
+</para>
 <TABLE>
 <TITLE>Normative References</TITLE>
 <TGROUP COLS=2>
@@ -65,7 +65,7 @@ m4_include(standards.sgml)
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed in <XREF LINKEND='tbl-graphics-stdlib'> shall
+The libraries listed in <xref linkend="tbl-graphics-stdlib"> shall
 be available on a Linux Standard Base system, with the specified
 runtime names.  This list may be supplemented or amended by the
 architecture-specific specification.

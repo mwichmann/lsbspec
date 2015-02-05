@@ -7,9 +7,9 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the
-<XREF LINKEND="std.gABI41">
+<xref linkend="std.gABI41">
 and
-<XREF LINKEND="std.ABIUpdate">
+<xref linkend="std.ABIUpdate">
 and as further required by this specification and the relevant architecture specific part of &ISOSTD;.
 </PARA>
 
@@ -24,9 +24,9 @@ satisfy the symbols on the shared library.
 
 <PARA>
 In addition to the Segment Types defined in the
-<XREF LINKEND="std.gABI41">
+<xref linkend="std.gABI41">
 and
-<XREF LINKEND="std.ABIUpdate">
+<xref linkend="std.ABIUpdate">
 the following Segment Types shall also be supported.
 </PARA>
 
@@ -88,7 +88,7 @@ may be made read-only after relocations have been processed.
 <TITLE>Dynamic Entries</TITLE>
 <SECT2><TITLE>Introduction</TITLE>
 <PARA>
-As described in <XREF LINKEND="STD.gABI41">, if an object file
+As described in <xref linkend="STD.gABI41">, if an object file
 participates in dynamic linking, its program header table shall have
 an element of type <SYMBOL>PT_DYNAMIC</SYMBOL>.  This ``segment''
 contains the <SYMBOL>.dynamic</SYMBOL> section. A special symbol,
@@ -132,9 +132,9 @@ controls the interpretation of <STRUCTFIELD>d_un</STRUCTFIELD>.
 <TITLE>ELF Dynamic Entries</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
-<XREF LINKEND="std.gABI41">
+<xref linkend="std.gABI41">
 and
-<XREF LINKEND="std.ABIUpdate">.
+<xref linkend="std.ABIUpdate">.
 m4_include(dyntag.sgml)
 </PARA>
 </SECT3>

@@ -42,7 +42,7 @@ Conforming implementations may also support other unspecified object file format
 <TITLE>Sections</TITLE>
 <SECT2><TITLE>Introduction</TITLE>
 <PARA>
-As described in <XREF LINKEND="std.gABI41">,
+As described in <xref linkend="std.gABI41">,
 an ELF object file contains a number of <emphasis>sections</emphasis>.
 </PARA>
 </SECT2>
@@ -52,10 +52,10 @@ an ELF object file contains a number of <emphasis>sections</emphasis>.
 The section header table is an array of 
 <STRUCTNAME>Elf32_Shdr</STRUCTNAME> or 
 <STRUCTNAME>Elf64_Shdr</STRUCTNAME> structures as 
-described in <XREF LINKEND=STD.gABI41>. The 
+described in <xref linkend="std.gABI41">. The 
 <STRUCTFIELD>sh_type</STRUCTFIELD> member shall be either a value from
-<XREF LINKEND=tbl.ABIUpdate>, drawn from the System V 
-ABI, or one of the additional values specified in <XREF LINKEND=tbl.LSB>.
+<xref linkend="tbl.ABIUpdate">, drawn from the System V 
+ABI, or one of the additional values specified in <xref linkend="tbl.LSB">.
 </PARA>
 <PARA>
 A section header's <STRUCTFIELD>sh_type</STRUCTFIELD> member specifies the sections's semantics.
@@ -64,9 +64,9 @@ A section header's <STRUCTFIELD>sh_type</STRUCTFIELD> member specifies the secti
 <TITLE>ELF Section Types</TITLE>
 <PARA>
 The following section types are defined in the 
-<XREF LINKEND="std.gABI41">
+<xref linkend="std.gABI41">
 and the
-<XREF LINKEND="std.ABIupdate">.
+<xref linkend="std.ABIupdate">.
 m4_include(elfsecttypes.sgml)
 </PARA>
 </SECT3>
@@ -92,9 +92,9 @@ Various sections hold program and control information. Sections in the lists bel
 <TITLE>ELF Special Sections</TITLE>
 <PARA>
 The following sections are defined in the
-<XREF LINKEND="std.gABI41">
+<xref linkend="std.gABI41">
 and the
-<XREF LINKEND="std.ABIupdate">.
+<xref linkend="std.ABIupdate">.
 m4_include(elfsect.sgml)
 </PARA>
 </SECT3>
@@ -130,7 +130,7 @@ External C symbols shall be unchanged in an object file's symbol table.
 <PARA>
 The LSB does not specify debugging information, however, some additional
 sections contain information which is encoded using the the encoding as
-specified by <XREF LINKEND="std.DWARF4"> with extensions defined here.
+specified by <xref linkend="std.DWARF4"> with extensions defined here.
 
 </PARA>
 
@@ -153,7 +153,7 @@ This information is contained in the special sections
 <PARA>
 The format of the <COMPUTEROUTPUT>.eh_frame</COMPUTEROUTPUT> section is similar
 in format and purpose to the <COMPUTEROUTPUT>.debug_frame</COMPUTEROUTPUT>
-section which is specified in <XREF LINKEND="std.DWARF4">.
+section which is specified in <xref linkend="std.DWARF4">.
 Readers are advised that there are some subtle difference,
 and care should be taken when comparing the two sections.
 </PARA>

@@ -65,7 +65,7 @@ m4_include(references.sgml)
 <SECT1 ID="nsslibraries">
 <TITLE>Security Libraries</TITLE>
 <PARA>
-The security libraries listed in <XREF LINKEND='tbl-nss-stdlib'> shall
+The security libraries listed in <xref linkend="tbl-nss-stdlib"> shall
 be available on a Linux Standard Base system, with the specified
 runtime names.  This list may be supplemented or amended by the
 architecture-specific specification.

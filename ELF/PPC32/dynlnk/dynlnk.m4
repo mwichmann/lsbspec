@@ -4,8 +4,8 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
-<XREF LINKEND="std.gABI41">,
-<XREF LINKEND="std.PPC32.ABI"> Chapter 5
+<xref linkend="std.gABI41">,
+<xref linkend="std.PPC32.ABI"> Chapter 5
 and as supplemented by the generic Linux
 Standard Base Specification and this document.
 </PARA>
@@ -15,7 +15,7 @@ Standard Base Specification and this document.
 <TITLE>Program Header</TITLE>
 <PARA>
 LSB-conforming applications shall support the program header as defined in the 
-<XREF LINKEND="std.PPC32.ABI"> Chapter 5, Section "Program Loading".
+<xref linkend="std.PPC32.ABI"> Chapter 5, Section "Program Loading".
 </PARA>
 
 </SECT1>
@@ -26,7 +26,7 @@ LSB-conforming applications shall support the program header as defined in the
 LSB-conforming implementations shall map file pages
 to virtual memory pages as described in Section "Program Loading"
 of the
-<XREF LINKEND="std.PPC32.ABI">, Chapter 5.
+<xref linkend="std.PPC32.ABI">, Chapter 5.
 </PARA>
 
 </SECT1>
@@ -35,14 +35,14 @@ of the
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
 LSB-conforming implementations shall provide dynamic linking as
-specified in Section "Dynamic Linking" of the <XREF LINKEND="std.PPC32.ABI">, Chapter 5.
+specified in Section "Dynamic Linking" of the <xref linkend="std.PPC32.ABI">, Chapter 5.
 </PARA>
 
 <SECT2 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
-<XREF LINKEND="std.PPC32.ABI">, Chapter 5, Section "Dynamic Linking".
+<xref linkend="std.PPC32.ABI">, Chapter 5, Section "Dynamic Linking".
 m4_include(dyntag.sgml)
 </PARA>
 
@@ -59,7 +59,7 @@ m4_include(linuxtag.sgml)
 <PARA>
 LSB-conforming implementations shall support a 
 Global Offset Table as described in Chapter 5, Section "Dynamic Linking"
-of the <XREF LINKEND="std.PPC32.ABI">.
+of the <xref linkend="std.PPC32.ABI">.
 </PARA>
 </SECT2>
 
@@ -68,7 +68,7 @@ of the <XREF LINKEND="std.PPC32.ABI">.
 <PARA>
 Function addresses shall behave as described in
 Chapter 5, Section "Dynamic Linking", Subsection "Function Addresses" of the
-<XREF LINKEND="std.PPC32.ABI">.
+<xref linkend="std.PPC32.ABI">.
 </PARA>
 </SECT2>
 
@@ -77,7 +77,7 @@ Chapter 5, Section "Dynamic Linking", Subsection "Function Addresses" of the
 <PARA>
 LSB-conforming implementations shall support a 
 Procedure Linkage Table as described in Chapter 5, Section "Dynamic Linking",
-Subsection "Procedure Linkage Table" of the <XREF LINKEND="std.PPC32.ABI">.
+Subsection "Procedure Linkage Table" of the <xref linkend="std.PPC32.ABI">.
 </PARA>
 </SECT2>
 

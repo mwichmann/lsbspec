@@ -44,7 +44,7 @@ this document
 <PARA>
 LSB-conforming applications shall identify the Machine Information as defined in
 Section 4.1.1 of the 
-<XREF LINKEND="std.x86.64.ABI">.
+<xref linkend="std.x86.64.ABI">.
 </PARA>
 </SECT2>
 </SECT1>
@@ -57,7 +57,7 @@ Section 4.1.1 of the
 In addition to the requirements for ELF sections described in the
 generic LSB Core specification, conforming implementations shall
 support architecture specific sections as described below.
-<NOTE><PARA>The <XREF LINKEND="std.x86.64.ABI"> specifies some architecture specific section
+<NOTE><PARA>The <xref linkend="std.x86.64.ABI"> specifies some architecture specific section
 flags and section types that are not required by LSB-conforming systems.
 </PARA></NOTE>
 </PARA>
@@ -66,16 +66,16 @@ flags and section types that are not required by LSB-conforming systems.
 <TITLE>Special Sections</TITLE>
 <PARA>
 The following architecture-specific sections are defined in the 
-<XREF LINKEND="std.x86.64.ABI">.
+<xref linkend="std.x86.64.ABI">.
 m4_include(elfsect.sgml)
 <NOTE><PARA>
 Since LSB-conforming implementations are not required to support the
 large code model, it is not necessary for them to provide support for the
 additional special sections for the large code model described in the 
-<XREF LINKEND="std.x86.64.ABI">.
+<xref linkend="std.x86.64.ABI">.
 </PARA><PARA>
 Also, the 
-<XREF LINKEND="std.x86.64.ABI"> specifies a section <literal>.eh_frame</literal>,
+<xref linkend="std.x86.64.ABI"> specifies a section <literal>.eh_frame</literal>,
 with a type of <literal>SHT_AMD64_UNWIND</literal>.
 This section is described in the generic LSB-Core specification, but with type
 <literal>SHT_PROGBITS</literal>. This specification does not require support
@@ -98,7 +98,7 @@ m4_include(linuxsect.sgml)
 
 <PARA>
 LSB-conforming applications shall use Symbol Tables as defined in
-Section 4.3 of the <XREF LINKEND="std.x86.64.ABI">.
+Section 4.3 of the <xref linkend="std.x86.64.ABI">.
 </PARA>
 
 </SECT1>
@@ -109,12 +109,12 @@ Section 4.3 of the <XREF LINKEND="std.x86.64.ABI">.
 <PARA>
 LSB-conforming implementation shall support the required relocation types
 defined in
-Section 4.4.1 of the <XREF LINKEND="std.x86.64.ABI">.
+Section 4.4.1 of the <xref linkend="std.x86.64.ABI">.
 <NOTE><PARA>
 Since LSB-conforming implementations are not required to support the
 large code model, it is not necessary for them to provide support for the
 additional relocation types for the large code model described in the 
-<XREF LINKEND="std.x86.64.ABI">.
+<xref linkend="std.x86.64.ABI">.
 </PARA></NOTE>
 </PARA>
 

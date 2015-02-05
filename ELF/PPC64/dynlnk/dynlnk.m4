@@ -4,8 +4,8 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
-<XREF LINKEND="std.gABI41">,
-<XREF LINKEND="std.PPC64.ABI">
+<xref linkend="std.gABI41">,
+<xref linkend="std.PPC64.ABI">
 and as supplemented by the Linux
 Standard Base Specification and this document.
 </PARA>
@@ -16,7 +16,7 @@ Standard Base Specification and this document.
 <TITLE>Program Loading</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.PPC64.ABI">, Chapter 5.1.
+<xref linkend="std.PPC64.ABI">, Chapter 5.1.
 </PARA>
 
 </SECT1>
@@ -25,14 +25,14 @@ See
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.
+<xref linkend="std.PPC64.ABI">, Chapter 5.2.
 </PARA>
 
 <SECT2 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
-<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.
+<xref linkend="std.PPC64.ABI">, Chapter 5.2.
 m4_include(dyntag.sgml)
 </PARA>
 
@@ -48,7 +48,7 @@ m4_include(linuxtag.sgml)
 <TITLE>Global Offset Table</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.2.
+<xref linkend="std.PPC64.ABI">, Chapter 5.2.2.
 </PARA>
 </SECT2>
 
@@ -56,7 +56,7 @@ See
 <TITLE>Function Addresses</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.3.
+<xref linkend="std.PPC64.ABI">, Chapter 5.2.3.
 </PARA>
 </SECT2>
 
@@ -64,7 +64,7 @@ See
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.PPC64.ABI">, Chapter 5.2.4.
+<xref linkend="std.PPC64.ABI">, Chapter 5.2.4.
 </PARA>
 </SECT2>
 

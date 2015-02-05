@@ -4,8 +4,8 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
-<XREF LINKEND="std.gABI41">,
-<XREF LINKEND="std.IA64.ABI">
+<xref linkend="std.gABI41">,
+<xref linkend="std.IA64.ABI">
 and as supplemented by the Linux
 Standard Base Specification and this document.
 </PARA>
@@ -15,14 +15,14 @@ Standard Base Specification and this document.
 <TITLE>Program Header</TITLE>
 <PARA>
 The program header shall be as defined in the 
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.
+<xref linkend="std.IA64.ABI">, Chapter 5.
 </PARA>
 
 <SECT2 ID=progheadtypes>
 <TITLE>Types</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.1.
+<xref linkend="std.IA64.ABI">, Chapter 5.1.
 </PARA>
 </SECT2>
 
@@ -30,7 +30,7 @@ See
 <TITLE>Flags</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.1.
+<xref linkend="std.IA64.ABI">, Chapter 5.1.
 </PARA>
 </SECT2>
 
@@ -40,7 +40,7 @@ See
 <TITLE>Program Loading</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.2.
+<xref linkend="std.IA64.ABI">, Chapter 5.2.
 </PARA>
 
 </SECT1>
@@ -49,7 +49,7 @@ See
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.3.
+<xref linkend="std.IA64.ABI">, Chapter 5.3.
 </PARA>
 
 <SECT2 ID=dynsection>
@@ -58,7 +58,7 @@ See
 <TITLE>ELF Dynamic Entries</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.3.2.
+<xref linkend="std.IA64.ABI">, Chapter 5.3.2.
 m4_include(dyntag.sgml)
 </PARA>
 </SECT3>
@@ -75,7 +75,7 @@ m4_include(linuxtag.sgml)
 <TITLE>Global Offset Table</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.3.4.
+<xref linkend="std.IA64.ABI">, Chapter 5.3.4.
 </PARA>
 </SECT2>
 
@@ -83,7 +83,7 @@ See
 <TITLE>Shared Object Dependencies</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.3.3.
+<xref linkend="std.IA64.ABI">, Chapter 5.3.3.
 </PARA>
 </SECT2>
 
@@ -91,7 +91,7 @@ See
 <TITLE>Function Addresses</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.3.5.
+<xref linkend="std.IA64.ABI">, Chapter 5.3.5.
 </PARA>
 </SECT2>
 
@@ -99,7 +99,7 @@ See
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.3.6.
+<xref linkend="std.IA64.ABI">, Chapter 5.3.6.
 </PARA>
 </SECT2>
 
@@ -107,7 +107,7 @@ See
 <TITLE>Initialization and Termination Functions</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.IA64.ABI">, Chapter 5.3.7.
+<xref linkend="std.IA64.ABI">, Chapter 5.3.7.
 </PARA>
 </SECT2>
 

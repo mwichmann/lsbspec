@@ -31,7 +31,7 @@ m4_include(`cxxstandards.sgml')
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed in <XREF LINKEND=tbl-gcxx-stdlib> shall
+The libraries listed in <xref linkend="tbl-gcxx-stdlib"> shall
 be available on a Linux Standard Base system, with the specified
 runtime names. 
 </PARA>

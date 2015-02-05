@@ -44,7 +44,7 @@ this document
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
 Chapter 2 of the
-<XREF LINKEND="std.S390X.ABI">.
+<xref linkend="std.S390X.ABI">.
 </PARA>
 </SECT2>
 </SECT1>
@@ -52,13 +52,13 @@ Chapter 2 of the
 <SECT1 ID=sections>
 <TITLE>Sections</TITLE>
 <PARA>
-See chapter 2 of the <XREF LINKEND="std.S390X.ABI">.
+See chapter 2 of the <xref linkend="std.S390X.ABI">.
 </PARA>
 
 <SECT2 ID="elfspecial">
 <TITLE>Special Sections</TITLE>
 <PARA>
-The following sections are defined in the <XREF LINKEND="std.S390X.ABI">.
+The following sections are defined in the <xref linkend="std.S390X.ABI">.
 m4_include(elfsect.sgml)
 </PARA>
 </SECT2>
@@ -79,7 +79,7 @@ m4_include(linuxsect.sgml)
 
 <PARA>
 LSB-conforming applications shall use the Symbol Table as defined in
-Chapter 2 of the <XREF LINKEND="std.S390X.ABI">.
+Chapter 2 of the <xref linkend="std.S390X.ABI">.
 </PARA>
 
 </SECT1>
@@ -89,13 +89,13 @@ Chapter 2 of the <XREF LINKEND="std.S390X.ABI">.
 
 <PARA>
 LSB-conforming applications shall use Relocations as defined in
-Chapter 2 of the <XREF LINKEND="std.S390X.ABI">.
+Chapter 2 of the <xref linkend="std.S390X.ABI">.
 </PARA>
 
 <SECT2 ID="relocationtypes">
 <TITLE>Relocation Types</TITLE>
 <PARA>
-See chapter 2 of the <XREF LINKEND="std.S390X.ABI">.
+See chapter 2 of the <xref linkend="std.S390X.ABI">.
 </PARA>
 </SECT2>
 

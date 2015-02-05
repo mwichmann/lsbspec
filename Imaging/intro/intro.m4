@@ -34,7 +34,7 @@ m4_include(standards.sgml)
 <sect1 id="xlibraries">
 <title>Relevant Libraries</title>
 <para>
-The libraries listed in <xref linkend='tbl-img-stdlib'> shall
+The libraries listed in <xref linkend="tbl-img-stdlib"> shall
 be available on a Linux Standard Base system, with the specified
 runtime names.  This list may be supplemented or amended by an
 architecture-specific specification.

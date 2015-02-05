@@ -43,30 +43,30 @@ sub lsbCloseDB {
 
 sub builtinexcepts {
 	print << "END_BIEXCEPT_TEXT";
-<ORDEREDLIST>
-<LISTITEM><PARA>
+<orderedlist>
+<listitem><para>
 The built in commands and utilities shall be provided by the
 <command>sh</command> utility itself, and need not 
 be implemented in a manner so that they can be accessed via the 
-exec family of functions as defined in <XREF LINKEND="STD.SUSv4">
+exec family of functions as defined in <xref linkend="std.SUSv4">
 and should not be invoked directly by those standard utilities 
 that execute other utilities (
-<SIMPLELIST type=inline>
-<MEMBER><COMMAND>env</COMMAND></MEMBER>
-<MEMBER><COMMAND>find</COMMAND></MEMBER>
-<MEMBER><COMMAND>nice</COMMAND></MEMBER>
-<MEMBER><COMMAND>nohup</COMMAND></MEMBER>
-<MEMBER><COMMAND>time</COMMAND></MEMBER>
-<MEMBER><COMMAND>xargs</COMMAND></MEMBER>
-</SIMPLELIST>).
-<NOTE>
-<TITLE>Rationale (Informative)</TITLE>
-<PARA>
+<simplelist type=inline>
+<member><command>env</command></member>
+<member><command>find</command></member>
+<member><command>nice</command></member>
+<member><command>nohup</command></member>
+<member><command>time</command></member>
+<member><command>xargs</command></member>
+</simplelist>).
+<note>
+<title>Rationale (Informative)</title>
+<para>
 Since the built in utilities must affect the environment of the calling
 process, they have no effect when executed as a file.
-</PARA></NOTE>
-</PARA></LISTITEM>
-</ORDEREDLIST>
+</para></note>
+</para></listitem>
+</orderedlist>
 END_BIEXCEPT_TEXT
 }
 
@@ -76,16 +76,16 @@ END_BIEXCEPT_TEXT
 
 sub cmdexcepts {
 	print << "END_EXCEPT_TEXT";
-<ORDEREDLIST>
-<LISTITEM><PARA>
+<orderedlist>
+<listitem><para>
 If any operand (except one which follows <option>--</option>) starts with a
 hyphen, the behavior is unspecified.
-<NOTE><TITLE>Rationale (Informative)</TITLE>
+<note><title>Rationale (Informative)</title>
 <para>Applications should place options before operands, or use
 <option>--</option>, as needed.  This text is needed because,
 by default, GNU option parsing
 differs from POSIX, unless the environment variable 
-<ENVAR>POSIXLY_CORRECT</ENVAR>
+<envar>POSIXLY_CORRECT</envar>
 is set.  For example, <command>ls . -a</command> in GNU
 <command>ls</command> means to list the current directory, showing all
 files (that is, <option>"."</option> is an operand and <option>-a</option> is an
@@ -96,9 +96,9 @@ setting of the <envar>POSIXLY_CORRECT</envar> environment variable,
 or try to set it, seems worse than just asking the applications to invoke
 commands in ways which work with either the POSIX or GNU behaviors.</para>
 
-</NOTE>
-</PARA></LISTITEM>
-</ORDEREDLIST>
+</note>
+</para></listitem>
+</orderedlist>
 END_EXCEPT_TEXT
 }
 ################################################################################
@@ -140,15 +140,15 @@ sub lsbCommands {
 
 	$sth->finish;
 	printf("<!-- Start of text generated from database -->\n");
-	printf("<PARA>\n");
+	printf("<para>\n");
 	printf("An LSB conforming implementation shall provide the\n");
-	printf("%s as described in <XREF LINKEND=\"%s\">, with at least the behavior\n",
+	printf("%s as described in <xref linkend=\"%s\">, with at least the behavior\n",
 		$title, $tbl);
 	printf("described as mandatory in the referenced underlying\n");
 	printf("specification, with the following exceptions:\n");
 	$builtins ? builtinexcepts : cmdexcepts;
 
-	printf("</PARA>\n");
+	printf("</para>\n");
 
 	$sth = $dbh->prepare("SELECT Cname, CSsid, Sfull, Sid, Sname, Stag FROM Command
                             LEFT JOIN SModCmd ON Command.Cid=SModCmd.SMCcid
@@ -166,16 +166,16 @@ sub lsbCommands {
 	$sth->execute;
 
 	if ($sth->rows < 1) {
-		printf("<PARA>No Commands or Utilities found!</PARA>\n");
+		printf("<para>No Commands or Utilities found!</para>\n");
 		$sth->finish;
 		return;
 	} 
 
-	printf("<TABLE id=\"$tbl\">\n");
-	printf("<TITLE>$MainTitle</TITLE>\n");
-	printf("<TGROUP COLS=5>\n");
-	printf("<TBODY>\n");
-	printf("<ROW>\n");
+	printf("<table id=\"$tbl\">\n");
+	printf("<title>$MainTitle</title>\n");
+	printf("<tgroup cols=5>\n");
+	printf("<tbody>\n");
+	printf("<row>\n");
 
 	my $col = 0; #column count
 	my $row = 0;
@@ -190,7 +190,7 @@ sub lsbCommands {
 		#
 		if ($col == 5) {
 			last if(++$row >= $totalrows);
-			printf("</ROW><ROW>\n");
+			printf("</row><row>\n");
 			$col = 0;
 		}
 		my $idx = ($row + ($col++ * $totalrows));
@@ -207,7 +207,7 @@ sub lsbCommands {
 		#$ftid = sprintf("std-fn-%s-%s",  
 		#	$field[1], $permutation{$field[1]});
 
-		printf("<ENTRY>%s\n", $field->{'Cname'});
+		printf("<entry>%s\n", $field->{'Cname'});
 		# figure out a reference
 		# each table is followed by a list of references
 		#
@@ -231,25 +231,25 @@ sub lsbCommands {
 				$refno = $#ref;
 			}
 			
-			printf("<LINK LINKEND=\"%s\"> [%d]</LINK>\n", 
+			printf("<link linkend=\"%s\"> [%d]</link>\n", 
 				$refstr, $refno+1 );
 		}
-		printf("</ENTRY>\n");
+		printf("</entry>\n");
 
 	}
 
-	printf("</ROW>\n");
-	printf("</TBODY>\n");
-	printf("</TGROUP>\n");
-	printf("</TABLE>\n");
+	printf("</row>\n");
+	printf("</tbody>\n");
+	printf("</tgroup>\n");
+	printf("</table>\n");
 	#
 	# now print out the referenced standards list
 	#
 	if ($#ref >= 0) {
-		print "<PARA><EMPHASIS>Referenced Specification(s)</EMPHASIS></PARA>\n";
+		print "<para><emphasis>Referenced Specification(s)</emphasis></para>\n";
 		for $r (0..$#ref) {
 			$refstr = $ref[$r];
-			printf "<FORMALPARA><TITLE id=\"%s\">[%d]</TITLE><para><XREF LINKEND=std.%s></para></FORMALPARA>\n",
+			printf "<formalpara><title id=\"%s\">[%d]</title><para><xref linkend=\"std.%s\"></para></formalpara>\n",
 				$refstr, $r+1, $references{$refstr};
 			}
 		}

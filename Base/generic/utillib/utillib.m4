@@ -20,7 +20,7 @@ and device names.
 </PARA>
 <PARA>
 The structure of the definitions for these libraries follows the
-same model as used for <XREF LINKEND=baselib>.
+same model as used for <xref linkend="baselib">.
 </PARA>
 </SECT1>
 m4_include(libz.sgml)

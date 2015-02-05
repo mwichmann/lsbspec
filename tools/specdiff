@@ -1,47 +1,60 @@
 #!/bin/sh
-#
+# specdiff:
 # Generate a document marked for errata generation, or just to 
 # highlight/check changes.
 #
 # There's not a great way to do this.  generated html is messy and
-# produces no interesing diff, so the "best" (most readable) approach is to
-# compares two versions of the txtspec (e.g. LSB-Core-generic.txt).
+# produces no interesing diff with conventional tools - I'd love a 
+# good html diffing tool that itself produces a pretty display the way
+# good code reviewing tools can do for programming languages.  Maybe 
+# such exists. For now, the "best" (i.e. most readable) approach is to
+# compare two versions of the txtspec (e.g. LSB-Core-generic.txt).
+#
 # This falls down badly in two areas:
 # - because of the way entries are sorted, an insertion/deletion or other
 #   change to tables will often show as lots more changes than expected
-# - if section is inserted/deleted, following numbering at the same level
+# - if a section is inserted/deleted, following numbering at the same level
 #   will change, and we can't tell diff to "ignore all but the first
 #   section number change"
 #
 # We have tried using diffmarking tools which purport to work with Docbook
 # with little profit, though that is really a separare problem anyway
 #
-# Workflow expected:
+# General spec munging workflow, which this tool is expecting:
 #
-# 1. update all external matters - specdb, build_env/headers .defs file
-# 2. in lsbspec, do "make gensrc" then "make"
-#    Note: it may help to do just the "make gensrc" first, then run "bzr diff"
-#    to make sure you're getting the changes you expect, before proceeding.
-# 3. identify the book that is affected, and build in it (or rebuild them all)
-#    remember production books that are /combinations/ of modules/submodules
-#    are built in booksets/, while single-source ones are in books/
-#    all production volumes begin with lsb-
-# 4. run 'specdiff'.  If you're in LSB-foo, this will diff LSB-foo.txt
-#    and leave a file LSB-foo.DIFF, marked with #ifdef ERRATA
-#    these changes should be sufficient to examine changes without
-#    getting too confused; and together with the appropriate bug
-#    can help toto generate an errata document
+# 0. Everything is maintained in bzr. Change the script if you
+#    convert the LSB branches to git!!!
+# 1. Update all external matters affected by the work - specdb, 
+#    build_env/headers .defs files, etc.
+# 2. If database-related changes happened, do "make gensrc" in lsbspec.
+#    You may want to stop here and run "bzr modified" and look at the 
+#    resulting files to see what you're getting - if you go on to the next
+#    step and there were generated changes, you get doubles of everything,
+#    and it's that much harder to identify what's going on.
+# 3. In lsbspec, do "make"
+# 4. Identify the book that is affected, and build in it (or rebuild them all)
+#    Remember official spec targets (some may be /combinations/ of submodules)
+#    are built in booksets/ while single-submodule ones are in books/
+# 5. Run 'specdiff'.  If you're in LSB-foo, this will diff LSB-foo.txt
+#    and leave a file LSB-foo.DIFF if there were changes, by default marked 
+#    with #ifdef ERRATA. These changes should be sufficient to examine 
+#    changes without getting too confused; and together with the appropriate
+#    bug can help toto generate an errata document.
+# 6. The booksets makefile now has targets "specdiff" and "erratadiff"
 #
-# Variants: in the basic mode, depends on being in a working bzr tree
-# for either books or booksets, and compares the current file in the
-# working tree with the one in version control.  With the -l flag,
-# compares the current file with one two revisions old - that is, it
-# expects to compare a revision that was already checked in with the
-# previous one - so just like the default (also available as -c), just
-# difference between pre-checkin and post-checkin.  The third way, -e,
-# tries to compare with a released ("refspecs") version.  The problem
-# here is not having a canonical path to that version, so fiddle with
-# Tunables just below, or use the -r flag to specify another path
+# Variants: in the default mode (aka -c), depends on being in a working 
+# bzr tree for either books or booksets, and compares the current file 
+# in the working tree with the one in version control.
+# With the -l flag, compares the current file with one two revisions old. 
+# It's actually expecting the use case "I just checked in a rev, compare 
+# to the previous rev" but bzr doesn't actually care whether the working 
+# copy is modified or not.
+# With the -e flag, tries to compare with a released ("refspecs") version. 
+# The problem here is knowing the canonical path to that version, fiddle 
+# with the Tunables just below, or use the -r flag to specify another path.
+# We don't yet know how to get this over the internet, but that should
+# actually be possible (refspecs.linuxbase.org or the bzr trees at
+# bzr.linuxfoundation.org/refspec)
 
 # Tunables:
 # if comparing to a refspec, either set this or override with cmdline option
@@ -56,8 +69,6 @@ REFVER=LSB_4.1.0
 # -B ignore changes whose lines are all blank
 DOPT="-dbwB"
 # (the three previous together are overkill, but have seen some odd behavior)
-# --ifdef ERRATA output merged file marked "#ifdef ERRATA"
-DTYPE="--ifdef ERRATA"
 
 
 function usage() {
@@ -100,7 +111,11 @@ then
     exit 1
 fi
 
+# the default mode:
 mode='c'
+
+# merged file marked with #ifdef NEWVER
+DTYPE="--ifdef NEWVER"
 
 TEMP=`getopt -o helcdv:r: -- "$@"`
 if [ $? != 0 ] ; then usage ; exit 1 ; fi
@@ -112,6 +127,7 @@ while true ; do
     case "$1" in
 	-h) usage ; exit 0 ;;
 	-e) mode='e'		# errata to released spec
+	    DTYPE="--ifdef ERRATA"
 	    shift ;;
 	-l) mode='l'		# diff current with bzr
 	    shift ;;

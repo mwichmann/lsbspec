@@ -4,9 +4,9 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the
-<XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
-<XREF LINKEND="std.IA32.ABI.4"> and as supplemented by 
-<XREF LINKEND="std.LSB">
+<xref linkend="std.gABI41"> , <xref linkend="std.ABIUpdate"> ,
+<xref linkend="std.IA32.ABI.4"> and as supplemented by 
+<xref linkend="std.LSB">
 and the generic LSB specification.
 </PARA>
 </SECT1>
@@ -16,7 +16,7 @@ and the generic LSB specification.
 <SECT2 ID="programheader-intro">
 <TITLE>Introduction</TITLE>
 <PARA>
-As described in <XREF LINKEND="std.ABIUpdate">, the program header is an array
+As described in <xref linkend="std.ABIUpdate">, the program header is an array
 of structures, each describing a segment or other information the system
 needs to prepare the program for execution.
 </PARA>
@@ -44,7 +44,7 @@ beyond those required in the generic LSB Core specification.
 <TITLE>Program Loading</TITLE>
 <PARA>
 LSB-conforming systems shall support program loading as defined in 
-Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
+Chapter 5 of the <xref linkend="std.IA32.ABI.4">.
 </PARA>
 
 </SECT1>
@@ -53,14 +53,14 @@ Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
 LSB-conforming systems shall support dynamic linking as defined in 
-Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
+Chapter 5 of the <xref linkend="std.IA32.ABI.4">.
 </PARA>
 
 <SECT2 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the
-<XREF LINKEND="std.IA32.ABI.4">.
+<xref linkend="std.IA32.ABI.4">.
 m4_include(dyntag.sgml)
 </PARA>
 </SECT2>
@@ -70,7 +70,7 @@ m4_include(dyntag.sgml)
 <PARA>
 LSB-conforming implementations shall support use of the
 global offset table as described in
-Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
+Chapter 5 of the <xref linkend="std.IA32.ABI.4">.
 </PARA>
 </SECT2>
 
@@ -86,7 +86,7 @@ see the generic LSB-Core specification.
 <TITLE>Function Addresses</TITLE>
 <PARA>
 Function addresses shall behave as specified in 
-Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
+Chapter 5 of the <xref linkend="std.IA32.ABI.4">.
 </PARA>
 </SECT2>
 
@@ -94,7 +94,7 @@ Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
 <TITLE>Procedure Linkage Table</TITLE>
 <PARA>
 LSB-conforming implementations shall support a Procedure Linkage Table as described in
-Chapter 5 of the <XREF LINKEND="std.IA32.ABI.4">.
+Chapter 5 of the <xref linkend="std.IA32.ABI.4">.
 </PARA>
 </SECT2>
 

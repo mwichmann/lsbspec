@@ -5,10 +5,10 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the
-<XREF LINKEND="std.gABI41"> , <XREF LINKEND="std.ABIUpdate"> ,
-<XREF LINKEND="std.x86.64.ABI"> and as supplemented by the
+<xref linkend="std.gABI41"> , <xref linkend="std.ABIUpdate"> ,
+<xref linkend="std.x86.64.ABI"> and as supplemented by the
 generic LSB specification and
-<XREF LINKEND="std.LSB">.
+<xref linkend="std.LSB">.
 </PARA>
 </SECT1>
 
@@ -17,9 +17,9 @@ generic LSB specification and
 <PARA>
 LSB-conforming implementations are not required to support the additional
 types and flags for this architecture as defined in Section 5.1 of the
-<XREF LINKEND="std.x86.64.ABI">.
+<xref linkend="std.x86.64.ABI">.
 <NOTE><PARA>
-The <XREF LINKEND="STD.X86.64.ABI"> specification is itself layered on top of
+The <xref linkend="std.X86.64.ABI"> specification is itself layered on top of
 the System V Application Binary Interface - Intel386&trade; Architecture Processor Supplement.
 As such, the requirements of that specification are still requirements of this specification.
 </PARA></NOTE>
@@ -33,7 +33,7 @@ As such, the requirements of that specification are still requirements of this s
 LSB-conforming implementations shall map file pages
 to virtual memory pages as described in Section 5.1
 of the
-<XREF LINKEND="std.x86.64.ABI">.
+<xref linkend="std.x86.64.ABI">.
 </PARA>
 
 </SECT1>
@@ -44,7 +44,7 @@ of the
 <TITLE>Introduction</TITLE>
 <PARA>
 LSB-conforming implementations shall provide dynamic linking as
-specified in Section 5.2 of the <XREF LINKEND="STD.X86.64.ABI">,
+specified in Section 5.2 of the <xref linkend="std.X86.64.ABI">,
 except as described in the following sections.
 <NOTE><PARA>
 Since LSB-conforming implementations are not required to support the
@@ -67,7 +67,7 @@ m4_include(dyntag.sgml)
 <PARA>
 LSB-conforming implementations shall support a 
 Global Offset Table as described in Section 5.2 of the
-<XREF LINKEND="std.x86.64.ABI">.
+<xref linkend="std.x86.64.ABI">.
 </PARA>
 </SECT2>
 
@@ -76,7 +76,7 @@ Global Offset Table as described in Section 5.2 of the
 <PARA>
 Function addresses shall behave as described in
 Section 5.2 of the
-<XREF LINKEND="std.X86.64.ABI">.
+<xref linkend="std.X86.64.ABI">.
 </PARA>
 </SECT2>
 
@@ -85,7 +85,7 @@ Section 5.2 of the
 <PARA>
 LSB-conforming implementations shall support a 
 Procedure Linkage Table as described in Section 5.2 of the
-<XREF LINKEND="std.X86.64.ABI">.
+<xref linkend="std.X86.64.ABI">.
 </PARA>
 </SECT2>
 
@@ -94,7 +94,7 @@ Procedure Linkage Table as described in Section 5.2 of the
 <PARA>
 LSB-conforming implementations shall support initialization
 and termination functions as specified in
-Section 5.2.2 of the <XREF LINKEND="std.X86.64.ABI">.
+Section 5.2.2 of the <xref linkend="std.X86.64.ABI">.
 </PARA>
 </SECT2>
 

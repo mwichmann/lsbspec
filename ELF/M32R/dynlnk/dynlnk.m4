@@ -4,9 +4,9 @@
 <PARA>
 LSB-conforming implementations shall support the object file information and
 system actions that create running programs as specified in the 
-<XREF LINKEND="std.gABI41">, <XREF LINKEND="std.ABIUpdate">,
-<XREF LINKEND="std.M32R.ABI"> and as supplemented by the
-<XREF LINKEND="std.LSB">
+<xref linkend="std.gABI41">, <xref linkend="std.ABIUpdate">,
+<xref linkend="std.M32R.ABI"> and as supplemented by the
+<xref linkend="std.LSB">
 and this document.
 </PARA>
 </PARTINTRO>
@@ -16,14 +16,14 @@ and this document.
 <TITLE>Dynamic Linking</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.M32R.ABI">, Chapter 5.2.
+<xref linkend="std.M32R.ABI">, Chapter 5.2.
 </PARA>
 
 <SECT1 ID=dynsection>
 <TITLE>Dynamic Section</TITLE>
 <PARA>
 The following dynamic entries are defined in the 
-<XREF LINKEND="std.M32R.ABI">, Chapter 5.2.
+<xref linkend="std.M32R.ABI">, Chapter 5.2.
 m4_include(dyntag.sgml)
 </PARA>
 
@@ -39,7 +39,7 @@ m4_include(linuxtag.sgml)
 <TITLE>Global Offset Table</TITLE>
 <PARA>
 See
-<XREF LINKEND="std.M32R.ABI">, Chapter 5.2.
+<xref linkend="std.M32R.ABI">, Chapter 5.2.
 </PARA>
 </SECT1>
 

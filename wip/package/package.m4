@@ -426,7 +426,7 @@ m4_include(rpmdepsattr.sgml)
 <TITLE>Payload Section</TITLE>
 <PARA>
 The Payload section contains a compressed cpio archive. The format of this
-section is defined by <XREF LINKEND="std.RFC1952">.
+section is defined by <xref linkend="std.RFC1952">.
 </PARA>
 <PARA>
 When uncompressed, the cpio archive contains a sequence of records for each

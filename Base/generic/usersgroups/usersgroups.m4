@@ -15,10 +15,10 @@ be made using the provided commands.
 <SECT1 ID="usernames">
 <TITLE>User & Group Names</TITLE>
 <PARA>
-<xref linkend="tbl-requiredusers"> describes required mnemonic user and group names.   This 
-specification makes no attempt to numerically assign user or group identity numbers,
-with the exception that both the User ID and Group ID for the user <literal>root</literal>
-shall be equal to 0.
+<xref linkend="tbl-requiredusers"> describes required mnemonic user 
+and group names.   This specification makes no attempt to numerically 
+assign user or group identity numbers, with the exception that both the 
+User ID and Group ID for the user <literal>root</literal> shall be equal to 0.
 </PARA>
 <TABLE ID="tbl-requiredusers">
 <TITLE>Required User & Group Names</TITLE>

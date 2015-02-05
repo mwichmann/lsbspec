@@ -67,7 +67,7 @@ m4_include(standards.sgml)
 <SECT1 ID="rlibraries">
 <TITLE>Relevant Libraries</TITLE>
 <PARA>
-The libraries listed in <XREF LINKEND='tbl-toolkit-gtk3-stdlib'> shall
+The libraries listed in <xref linkend="tbl-toolkit-gtk3-stdlib"> shall
 be available on a Linux Standard Base system, with the specified
 runtime names.  This list may be supplemented or amended by the
 architecture-specific specification.

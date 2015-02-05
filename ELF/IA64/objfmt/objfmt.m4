@@ -43,7 +43,7 @@ this document
 <TITLE>Machine Information</TITLE>
 <PARA>
 LSB-conforming applications shall use the Machine Information as defined in
-<XREF LINKEND="std.IA64.ABI">,
+<xref linkend="std.IA64.ABI">,
 Chapter 4.
 Implementations shall support the LP64 model. It is unspecified whether or
 not the ILP32 model shall also be supported.
@@ -89,7 +89,7 @@ shall contain the value
 <PARA>
 The flags field <literal>e_flags</literal> shall be
 as described in
-<XREF LINKEND="std.IA64.ABI">,
+<xref linkend="std.IA64.ABI">,
 Chapter 4.1.1.6.
 </PARA>
 <PARA>
@@ -130,14 +130,14 @@ is not set, code can not be executed from the stack or heap.</PARA>
 <PARA>
 The &itanium; architecture defines two processor-specific
 section types, as described in
-<XREF LINKEND="std.IA64.ABI">,
+<xref linkend="std.IA64.ABI">,
 Chapter 4.
 </PARA>
 <SECT2 ID="specialsections">
 <TITLE>Special Sections</TITLE>
 <PARA>
 The following sections are defined in the 
-<XREF LINKEND="std.IA64.ABI">.
+<xref linkend="std.IA64.ABI">.
 m4_include(elfsect.sgml)
 </PARA>
 </SECT2>
@@ -153,7 +153,7 @@ m4_include(linuxsect.sgml)
 <TITLE>Section Types</TITLE>
 <PARA>
 Section Types are described in the 
-<XREF LINKEND="std.IA64.ABI">,
+<xref linkend="std.IA64.ABI">,
 Chapter 4.2.
 LSB conforming implementations are not
 required to use any sections in the range from
@@ -173,7 +173,7 @@ in the object file created by the static linker.
 <PARA>
 LSB-conforming implementations shall support the section attribute flags
 specified in
-<XREF LINKEND="std.IA64.ABI">,
+<xref linkend="std.IA64.ABI">,
 Chapter 4.2.2.
 </PARA>
 </SECT2>
@@ -183,7 +183,7 @@ Chapter 4.2.2.
 <PARA>
 The special section types <constant>SHT_IA64_EXT</constant> and
 <constant>SHT_IA64_UNWIND</constant> are defined in
-<XREF LINKEND="std.IA64.ABI">,
+<xref linkend="std.IA64.ABI">,
 Chapter 4.2.1.
 </PARA>
 </SECT2>
@@ -220,7 +220,7 @@ the dynamic linker in resolving references to the address of the function.
 <TITLE>Relocation Types</TITLE>
 <PARA>
 LSB-conforming systems shall support the relocation types described in
-<XREF LINKEND="std.IA64.ABI">,
+<xref linkend="std.IA64.ABI">,
 Chapter 4.3.
 </PARA>
 </SECT2>
