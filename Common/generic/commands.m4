@@ -12,3 +12,12 @@ m4_include(`corecmds.sgml')
 </tgroup>
 </table>
 </para>
+
+<para>
+<table id=tbl-langcmd>
+<title>LSB Languages Module Command Names</title>
+<tgroup cols=5>
+m4_include(`langcmds.sgml')
+</tgroup>
+</table>
+</para>

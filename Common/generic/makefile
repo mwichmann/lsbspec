@@ -5,7 +5,7 @@ TOP=../..
 FILES=intro.sgml
 LIBTABLES= corelibs.sgml pscorelibs.sgml desklibs.sgml imaglibs.sgml \
            langlibs.sgml
-CMDTABLES= corecmds.sgml
+CMDTABLES= corecmds.sgml langcmds.sgml
 SCOPES=scope.sgml
 CORESUBMOD="LSB_Base,LSB_Security"
 # LSB_Toolkit_Independent has no libraries currently
@@ -33,6 +33,8 @@ gensrc:
 	-m $(LANGSUBMOD) >langlibs.sgml
 	$(TOP)/mkcmdtable -q -v `cat $(TOP)/target_version` \
 	-m LSB_Base >corecmds.sgml
+	$(TOP)/mkcmdtable -q -v `cat $(TOP)/target_version` \
+	-m LSB_Perl,LSB_Python >langcmds.sgml
 
 clean:
 	rm -f $(FILES)
