@@ -3,6 +3,7 @@
 # mkcmdtable: build a table of commands
 #       This script was built for Core, and so has boilerplate text
 #       to go with the table - one set for builtins, one for regular cmds.
+#       Disable the boilerplate with -q.
 #
 # issues:
 #       1. It has only limited knowledge of submodules - it takes a -m
@@ -34,6 +35,8 @@
 #
 # Originally by:
 #	Linux Standard Base, http://www.linuxbase.org/
+#       Part of the Linux Foundation, https://www.linuxfoundation.org/
+#       Jeff Licquia, licquia@linuxfoundation.org, 2015
 #	George Kraft IV, gk4@us.ibm.com, 03/09/2000
 #	Nick Stoughton, nick@usenix.org, 2004 - 2005
 #
@@ -50,7 +53,7 @@ my $builtins = 0;
 
 sub usage()
 {
-        print STDERR "mkcmdtable -v <lsbversion> [-b] [-m <submodule>]\n Default module is LSB_Base.\n";
+        print STDERR "mkcmdtable -v <lsbversion> [-b] [-q] [-m <submodule>]\n Default module is LSB_Base.\n";
         die;
 }
 ################################################################################
@@ -173,15 +176,17 @@ sub lsbCommands {
 
 	$sth->finish;
 	printf("<!-- Start of text generated from database -->\n");
-	printf("<para>\n");
-	printf("An LSB conforming implementation shall provide the\n");
-	printf("%s as described in <xref linkend=\"%s\">, with at least the behavior\n",
-		$title, $tbl);
-	printf("described as mandatory in the referenced underlying\n");
-	printf("specification, with the following exceptions:\n");
-	$builtins ? builtinexcepts : cmdexcepts;
+	if (!$noboiler) {
+		printf("<para>\n");
+		printf("An LSB conforming implementation shall provide the\n");
+		printf("%s as described in <xref linkend=\"%s\">, with at least the behavior\n",
+			$title, $tbl);
+		printf("described as mandatory in the referenced underlying\n");
+		printf("specification, with the following exceptions:\n");
+		$builtins ? builtinexcepts : cmdexcepts;
 
-	printf("</para>\n");
+		printf("</para>\n");
+	}
 
 	$sth = $dbh->prepare("SELECT Cname, CSsid, Sfull, Sid, Sname, Stag FROM Command
                             LEFT JOIN SModCmd ON Command.Cid=SModCmd.SMCcid
@@ -298,6 +303,7 @@ sub lsbCommands {
 
 # We can get module id from Module Table. Commands list will be generated as per modules.
 GetOptions("b" => \$builtins,
+           "q" => \$noboiler,
            "m=s" => \$module,
 	   "v=s" => \$lsbversion);
 
