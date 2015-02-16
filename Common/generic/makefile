@@ -3,7 +3,9 @@ TOP=../..
 .SUFFIXES: .sgml .m4
 
 FILES=intro.sgml
-TABLES= corelibs.sgml pscorelibs.sgml desklibs.sgml imaglibs.sgml langlibs.sgml
+LIBTABLES= corelibs.sgml pscorelibs.sgml desklibs.sgml imaglibs.sgml \
+           langlibs.sgml
+CMDTABLES= corecmds.sgml
 SCOPES=scope.sgml
 CORESUBMOD="LSB_Base,LSB_Security"
 # LSB_Toolkit_Independent has no libraries currently
@@ -16,7 +18,7 @@ LANGSUBMOD="LSB_XML"
 .m4.sgml:
 	m4 -P -Uindex -Uformat -DARCH=All -DCORE=1 $*.m4 >$@
 
-all source: $(FILES) $(TABLES)
+all source: $(FILES) $(LIBTABLES) $(CMDTABLES)
 
 gensrc:
 	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` \
@@ -29,6 +31,8 @@ gensrc:
 	-m $(IMAGSUBMOD) >imaglibs.sgml
 	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` \
 	-m $(LANGSUBMOD) >langlibs.sgml
+	$(TOP)/mkcmdtable -q -v `cat $(TOP)/target_version` \
+	-m LSB_Base >corecmds.sgml
 
 clean:
 	rm -f $(FILES)
@@ -36,5 +40,6 @@ clean:
 spotless: clean
 	rm -f $(TABLES)
 
-libraries.sgml: $(TABLES)
-intro.sgml: $(SCOPES) libraries.sgml
+libraries.sgml: $(LIBTABLES)
+commands.sgml: $(CMDTABLES)
+intro.sgml: $(SCOPES) libraries.sgml commands.sgml

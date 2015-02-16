@@ -13,6 +13,10 @@ m4_include(`scope.sgml')
 <title>Relevant Libraries</title>
 m4_include(`libraries.sgml')
 </sect1>
+<sect1 id="rcommands">
+<title>Relevant Commands</title>
+m4_include(`commands.sgml')
+</sect1>
 
 <sect1 id="Implementation">
 <title>LSB Implementation Conformance </title>

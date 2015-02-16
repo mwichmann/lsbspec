@@ -209,9 +209,11 @@ sub lsbCommands {
 		return;
 	} 
 
-	printf("<table id=\"$tbl\">\n");
-	printf("<title>$MainTitle</title>\n");
-	printf("<tgroup cols=5>\n");
+	if (!$noboiler) {
+		printf("<table id=\"$tbl\">\n");
+		printf("<title>$MainTitle</title>\n");
+		printf("<tgroup cols=5>\n");
+	}
 	printf("<tbody>\n");
 	printf("<row>\n");
 
@@ -254,7 +256,7 @@ sub lsbCommands {
 		#   with values being the names of the standards
 		# @ref is an array; each element is a key in %ref
 		# $refno is the current index into that array
-		if( $field->{'Sid'} ) {
+		if( !$noboiler && $field->{'Sid'} ) {
 
 			my $refstr = sprintf "std-cmd%s-%d",
 				$builtins ? "bi":"" ,$field->{'Sid'};
@@ -278,17 +280,19 @@ sub lsbCommands {
 
 	printf("</row>\n");
 	printf("</tbody>\n");
-	printf("</tgroup>\n");
-	printf("</table>\n");
-	#
-	# now print out the referenced standards list
-	#
-	if ($#ref >= 0) {
-		print "<para><emphasis>Referenced Specification(s)</emphasis></para>\n";
-		for $r (0..$#ref) {
-			$refstr = $ref[$r];
-			printf "<formalpara><title id=\"%s\">[%d]</title><para><xref linkend=\"std.%s\"></para></formalpara>\n",
-				$refstr, $r+1, $references{$refstr};
+	if (!$noboiler) {
+		printf("</tgroup>\n");
+		printf("</table>\n");
+		#
+		# now print out the referenced standards list
+		#
+		if ($#ref >= 0) {
+			print "<para><emphasis>Referenced Specification(s)</emphasis></para>\n";
+			for $r (0..$#ref) {
+				$refstr = $ref[$r];
+				printf "<formalpara><title id=\"%s\">[%d]</title><para><xref linkend=\"std.%s\"></para></formalpara>\n",
+					$refstr, $r+1, $references{$refstr};
+				}
 			}
 		}
 	}
