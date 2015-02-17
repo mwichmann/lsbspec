@@ -7,16 +7,41 @@ use Env qw(LSBUSER LSBDBPASSWD LSBDB LSBDBHOST);
 
 sub usage()
 {
-print STDERR "mklibsgmltable -a <archname> -v <lsbversion> [-f] [-m modname ] [[-l incllibs] | [-x excllibs ]]\n";
-die;
+    print STDERR <<"EOM"
+mklibsgmltable -a <archname> -v <lsbversion> [-f] [-m modname ] [[-l incllibs] | [-x excllibs ]]
+
+Generate SGML table of libraries. only table data is generated,
+where the generated file is included in needs to be wrapped in <table> tags
+
+-a      Architecture.
+-v      LSB Version.
+-f      Include candidiates ("future")
+
+The following options take a single name or a comma-separated list:
+
+-m      SubModule name(s). If specified, the query will be limited
+        to the submodules given.
+               
+-l      Libraries that should be included in the table, 
+        even if they would not be selected in other ways
+
+-x      Libraries that should not be included in the table, 
+        even if they would be selected in other ways.
+
+EOM
+   ; die;
 }
 
+# make sure a string (including a list) is quoted properly for mysql
 sub quotify($)
 {
-	my ($str) = @_;
-	$str =~ s/,/','/g;
-	$str = "'" . $str . "'";
-	return $str;
+    my ($type) = @_;
+    return $type if ($type =~ /^'.*'$/);
+    my @tlist = split(/,/, $type);
+    foreach $t (@tlist) {
+        $t = "'$t'" if ($t !~ /^'.*'$/);
+    }
+    return join(',', @tlist);
 }
 
 # Uncomment to trace SQL statments
@@ -36,6 +61,7 @@ GetOptions("a=s" => \$archname,
 
 if( !$archname ) { usage(); }
 if( !$lsbversion ) { usage(); }
+# these are noted as exclusive, but is there a reason for that?
 if( $inclib && $excllib ) { usage(); }
 
 #
@@ -92,10 +118,10 @@ if( $module ) {
 	$select.= "AND (SMLwithdrawnin IS NULL OR SMLwithdrawnin > '$lsbversion') ) ";
 }
 if( $inclib ) {
-	$select.= "AND Lname IN (".$inclib.") ";
+	$select.= "AND Lname IN (".quotify($inclib).") ";
 }
 if( $excllib ) {
-	$select.= "AND Lname NOT IN (".$excllib.") ";
+	$select.= "AND Lname NOT IN (".quotify($excllib).") ";
 }
 $select.= "AND ALaid=$Aid";
 $select .=" ORDER BY Lname ";
