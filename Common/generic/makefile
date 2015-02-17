@@ -8,11 +8,10 @@ LIBTABLES= corelibs.sgml pscorelibs.sgml desklibs.sgml imaglibs.sgml \
 CMDTABLES= corecmds.sgml langcmds.sgml
 SCOPES=scope.sgml
 CORESUBMOD="LSB_Base,LSB_Security"
-# LSB_Toolkit_Independent has no libraries currently
-DESKSUBMOD="LSB_Graphics,LSB_Toolkit_Gtk,LSB_Toolkit_Qt,LSB_Multimedia"
+DESKSUBMOD="LSB_Graphics,LSB_Toolkit_Gtk,LSB_Toolkit_Qt,LSB_Toolkit_Independent,LSB_Multimedia"
 IMAGSUBMOD="LSB_Scan,LSB_Print"
 # perl, python have no libraries currently
-LANGSUBMOD="LSB_XML"
+LANGSUBMOD="LSB_Perl,LSB_Python,LSB_XML"
 
 
 .m4.sgml:
@@ -32,9 +31,13 @@ gensrc:
 	$(TOP)/mklibsgmltable -a All -v `cat $(TOP)/target_version` \
 	-m $(LANGSUBMOD) >langlibs.sgml
 	$(TOP)/mkcmdtable -q -v `cat $(TOP)/target_version` \
-	-m LSB_Base >corecmds.sgml
+	-m $(CORESUBMOD) >corecmds.sgml
 	$(TOP)/mkcmdtable -q -v `cat $(TOP)/target_version` \
-	-m LSB_Perl,LSB_Python >langcmds.sgml
+	-m $(DESKSUBMOD) >deskcmds.sgml
+	$(TOP)/mkcmdtable -q -v `cat $(TOP)/target_version` \
+	-m $(IMAGSUBMOD) >imagcmds.sgml
+	$(TOP)/mkcmdtable -q -v `cat $(TOP)/target_version` \
+	-m $(LANGSUBMOD) >langcmds.sgml
 
 clean:
 	rm -f $(FILES)

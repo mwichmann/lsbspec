@@ -14,6 +14,24 @@ m4_include(`corecmds.sgml')
 </para>
 
 <para>
+<table id=tbl-deskcmd>
+<title>LSB Desktop Module Command Names</title>
+<tgroup cols=5>
+m4_include(`deskcmds.sgml')
+</tgroup>
+</table>
+</para>
+
+<para>
+<table id=tbl-imagcmd>
+<title>LSB Imaging Module Command Names</title>
+<tgroup cols=5>
+m4_include(`imagcmds.sgml')
+</tgroup>
+</table>
+</para>
+
+<para>
 <table id=tbl-langcmd>
 <title>LSB Languages Module Command Names</title>
 <tgroup cols=5>
