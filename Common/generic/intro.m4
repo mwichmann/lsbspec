@@ -123,10 +123,23 @@ values outside the standard ranges, for standard named interfaces.
 </listitem>
 <listitem>
 <para>
-The implementation shall report its support for each of the modules
-constituting this specification, with the exception of the Trial Use module. 
-At minimum, this reporting shall be performed using the lsb_release command
-from the LSB Core Specification.
+The implementation shall report whether supports for each of the 
+modules constituting this specification is currently available,
+with the exception of the Trial Use module, which need not be reported.
+At a minimum, this reporting shall be performed using the
+<command>lsb_release</command> command
+described in the LSB Core module specification.
+<note>
+<title>Rationale</title>
+<para>
+An implementation must support all modules described as mandatory
+in this specification.  However, excepting
+the LSB Core module, which is always required,
+the support for a module may not be installed or enabled. 
+The intent of this clause is to indicate a run-time query 
+mechanism to determine the status of module support.
+</para>
+</note>
 </para>
 </listitem>
 </itemizedlist>

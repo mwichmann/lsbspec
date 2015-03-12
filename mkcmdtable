@@ -162,7 +162,7 @@ sub lsbCommands {
 	$sth = $dbh->prepare("SELECT DISTINCT Sfull, Sid, Sname FROM Standard,Command
                           LEFT JOIN SModCmd ON Command.Cid=SModCmd.SMCcid
                           LEFT JOIN CmdStd ON CScid=Cid
-                          WHERE SModCmd.SMCsmid IN ($moduleid)
+                          WHERE SModCmd.SMCsmid IN ($SMid)
                           AND Standard.Sid=CSsid
                           AND SMCappearedin > '' AND SMCappearedin<='$lsbversion'
                           AND (SMCwithdrawnin IS NULL OR SMCwithdrawnin>'$lsbversion')
@@ -201,7 +201,7 @@ sub lsbCommands {
 			    AND CSappearedin > '' AND CSappearedin<='$lsbversion'
 			    AND (CSwithdrawnin IS NULL OR CSwithdrawnin>'$lsbversion')
                             AND $builtinCheck
-                            AND SModCmd.SMCsmid IN ($moduleid)
+                            AND SModCmd.SMCsmid IN ($SMid)
                             ORDER BY Command.Cname");
 	$sth->execute;
 
@@ -310,22 +310,22 @@ sub lsbCommands {
 # We can get module id from Module Table. Commands list will be generated as per modules.
 GetOptions("b" => \$builtins,
            "q" => \$noboiler,
-           "m=s" => \$module,
+           "m=s" => \$submodule,
 	   "v=s" => \$lsbversion);
 
 lsbOpenDB;
 
-if(!$module) { 
-    $module='LSB_Base';
+if(!$submodule) { 
+    $submodule='LSB_Base';
 }
-$moduleid = "";
-foreach $mod (split /,/, $module) {
+$SMid = "";
+foreach $mod (split /,/, $submodule) {
 	($modid) = $dbh->selectrow_array("SELECT SMid FROM SubModule WHERE SMname='$mod'");
 	die("Incorrect SubModule name: " . $mod) if not $modid;
-	if ($moduleid == "") {
-		$moduleid = $modid;
+	if ($SMid == "") {
+		$SMid = $modid;
 	} else {
-		$moduleid = $moduleid . "," . $modid;
+		$SMid = $SMid . "," . $modid;
 	}
 }
 
