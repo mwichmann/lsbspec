@@ -1,47 +1,43 @@
 <PART ID="packagefmt">
 <TITLE>Package Format and Installation</TITLE>
 
-<CHAPTER ID=swinstall>
-<TITLE>Software Installation</TITLE>
-<SECT1 ID=swinstall-intro>
-<TITLE>Introduction</TITLE>
-<PARA>
+<chapter id=swinstall>
+<title>Software Installation</title>
+<sect1 id=swinstall-intro>
+<title>Introduction</title>
+<para>
 Applications shall either be packaged in the RPM packaging format as
 defined in this specification, or supply an installer which is LSB
 conforming (for example, calls LSB commands and utilities).
-<note>
-<para>
+<note><para>
 Supplying an RPM format package is encouraged because it makes systems
 easier to manage.  
 This specification does not require the implementation to use
 RPM as the package manager; it only specifies the format of
-the package file.
+the package file and requires that implementations must have some method
+of installing conforming packages.
 </para>
 <para>
 Applications are also encouraged to uninstall cleanly.
+</para></note>
 </para>
-</note>
-</PARA>
-<PARA>
-A package in RPM format may include a dependency on the LSB Core and other
-LSB specifications, as described in <xref linkend="pkgdepend">. Packages that are not
-in RPM format may test for the presence of a conforming implementation by means of
+<para>
+A package in the RPM format may include a dependency on the LSB Core and other
+LSB specifications, as described in <xref linkend="pkgdepend">.
+Packages that are not in the RPM format may test for the presence of 
+a conforming implementation by means of
 the <command>lsb_release</command> utility.
-</PARA>
-<PARA>
+</para>
+<para>
 Implementations shall provide a mechanism for installing applications in
-this packaging format with some restrictions listed
-below.
-<NOTE ID="pkg-2">
-<PARA>
+the RPM packaging format with some restrictions listed below.
+<note id="pkg-2"><para>
 The implementation itself may use a different packaging format for its
-own packages, and of course it may use any available mechanism for 
-installing the LSB-conformant packages.
-</PARA>
-</NOTE>
-</PARA>
-</SECT1>
-
+own packages, and may use any available mechanism for 
+installing conforming packages, including translation into a different format.
+</para></note>
+</para>
+</sect1>
 
 <SECT1 ID=pkgformat>
 <TITLE>Package File Format</TITLE>
@@ -89,7 +85,7 @@ The payload section holds the files to be installed.
 <TITLE>Lead Section</TITLE>
 <PARA>
 </PARA>
-<SCREEN>
+<programlisting>
 struct rpmlead {
     unsigned char magic[4];
     unsigned char major, minor;
@@ -100,14 +96,14 @@ struct rpmlead {
     short signature_type;
     char reserved[16];
 } ;
-</SCREEN>
+</programlisting>
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM><STRUCTFIELD>magic</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
 Value identifying this file as an RPM format file. This value shall be
-"\355\253\356\333".
+<literal>"\355\253\356\333"</literal>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -215,14 +211,14 @@ records. A Header structure shall be aligned to an 8 byte boundary.
 <TITLE>Header Record</TITLE>
 <PARA>
 </PARA>
-<SCREEN>
+<programlisting>
 struct rpmheader {
     unsigned char magic[4];
     unsigned char reserved[4];
     int nindex;
     int hsize;
-    } ;
-</SCREEN>
+};
+</programlisting>
 
 <VARIABLELIST>
 <VARLISTENTRY>
@@ -269,14 +265,14 @@ Index Records.
 <TITLE>Index Record</TITLE>
 <PARA>
 </PARA>
-<SCREEN>
+<programlisting>
 struct rpmhdrindex {
     int tag;
     int type;
     int offset;
     int count;
-    } ;
-</SCREEN>
+};
+</programlisting>
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM><STRUCTFIELD>tag</STRUCTFIELD></TERM>
@@ -684,31 +680,31 @@ Header Section.
 The values in the CPIO Header shall match the values contained in the
 Header Section.
 </PARA>
-<SCREEN>
+<programlisting>
 struct {
-        char    c_magic[6];
-        char    c_ino[8];
-        char    c_mode[8];
-        char    c_uid[8];
-        char    c_gid[8];
-        char    c_nlink[8];
-        char    c_mtime[8];
-        char    c_filesize[8];
-        char    c_devmajor[8];
-        char    c_devminor[8];
-        char    c_rdevmajor[8];
-        char    c_rdevminor[8];
-        char    c_namesize[8];
-        char    c_checksum[8];
-        };
-</SCREEN>
+    char c_magic[6];
+    char c_ino[8];
+    char c_mode[8];
+    char c_uid[8];
+    char c_gid[8];
+    char c_nlink[8];
+    char c_mtime[8];
+    char c_filesize[8];
+    char c_devmajor[8];
+    char c_devminor[8];
+    char c_rdevmajor[8];
+    char c_rdevminor[8];
+    char c_namesize[8];
+    char c_checksum[8];
+};
+</programlisting>
 <PARA>
 <VARIABLELIST>
 <VARLISTENTRY>
 <TERM><STRUCTFIELD>c_magic</STRUCTFIELD></TERM>
 <LISTITEM>
 <PARA>
-Value identifying this cpio format. This value shall be "070701".
+Value identifying this cpio format. This value shall be <literal>"070701"</literal>.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
@@ -902,97 +898,107 @@ documentation for installing LSB packages.
 
 </SECT1>
 
-<SECT1 ID=pkgnameconv>
-<TITLE>Package Naming</TITLE>
-<PARA>
-Packages supplied by implementations and applications shall follow the
-following rules for the name field within the package.  These rules
-are not required for the filename of the package file itself.
-<note>
-<para>There are discrepancies among implementations
+<sect1 id=pkgnameconv>
+<title>Package Naming Conventions</title>
+<para>
+Packages supplied by distributions and applications should adhere to the
+following conventions for the name field within the package.  The rules
+are optional for the filename of the package file itself.
+<note><para>
+There are discrepancies among implementations
 concerning whether the name might be <literal>frobnicator-1.7-21-ppc32.rpm</literal> or
 <literal>frobnicator-1.7-21-powerpc32.rpm</literal>.  
 The architecture aside, recommended
 practice is for the filename of the package file to match the name
 within the package.
-</para></note>
-
-</PARA>
+</para>
+</note></para>
 
 <para>
-The following rules apply to the name field alone, not including any
-release or version.
-<note><para>If the name with the
-release and version is <literal>frobnicator-1.7-21</literal>, the name part is
-<literal>frobnicator</literal> and falls under the rules for a name with no
-hyphens.</para></note>
+The following conventions apply to the name portion of the field alone, 
+not including any release or version portion.
+<note><para>
+If the package name with the release and version is 
+<literal>frobnicator-1.7-21</literal>, the name part is
+<literal>frobnicator</literal> and falls under the conventions 
+for a name with no hyphens.
+</para></note>
 </para>
 
-<ITEMIZEDLIST MARK="bullet">
-<LISTITEM> <PARA>
-If the name begins with <literal>lsb-</literal> and contains no other hyphens, the name
-shall be assigned by the 
-<ULINK URL="http://www.lanana.org">Linux Assigned Names and 
-Numbers Authority</ULINK> (LANANA), which shall maintain a
+<itemizedlist mark="bullet">
+<listitem>
+<para>
+If the name begins with <literal>lsb-</literal> and contains no other hyphens,
+the name should be a package name registered with the 
+<ulink url="http://www.lanana.org">Linux Assigned Names and 
+Numbers Authority</ulink> (LANANA), which shall maintain a
 registry of LSB names.
 The name may be registered by either an implementation or an application.
-</PARA></LISTITEM>
+</para>
+</listitem>
 
-<LISTITEM><PARA>
-If the package name begins with <literal>lsb-</literal> and
-contains more than one hyphen (for example
-<literal>lsb-distro.example.com-database</literal> or 
-<literal>lsb-gnome-gnumeric</literal>), then 
-the portion of the package name between first and second hyphens shall 
-either be an LSB provider name assigned by the LANANA, or it may be 
-one of the owners' fully-qualified domain names in lower case (e.g., 
-<literal>debian.org</literal>, <literal>staroffice.sun.com</literal>). 
-The LSB provider name assigned 
-by LANANA shall only consist of the ASCII characters [a-z0-9].
-The provider name or domain name may be either that of an implementation
+<listitem>
+<para>
+If the name begins with <literal>lsb-</literal> and
+contains more than one hyphen the portion of the name between
+the first and second hyphens should be either an LSB provider 
+name registered with the LANANA
+(for example <literal>lsb-gnome-gnumeric</literal> 
+if <literal>gnome</literal> is registered), 
+or a domain name registered to the provider in the DNS system.
+(for example <literal>lsb-distro.example.com-database</literal>).
+The LSB provider name registered
+with the LANANA shall only consist of the ASCII characters <literal>[a-z0-9]</literal>.
+The domain name, in accordance with DNS rules, shall be lower case only.
+The provider name or domain name may be either that of a distribution
 or an application.
-</PARA></LISTITEM>
+</para>
+</listitem>
 
-<listitem><para>
+<listitem>
+<para>
 Package names containing no hyphens are reserved for use by
-implementations.  Applications shall not use such names.
-</para></listitem>
+distributions.  Applications shall not use such names.
+</para>
+</listitem>
 
-<listitem><para>
-
+<listitem>
+<para>
 Package names which do not start with <literal>lsb-</literal> and which contain a
-hyphen are open to both implementations and applications.  Implementations
+hyphen are open to both distributions and applications.  Distributions
 may name packages in any part of this namespace.  They are encouraged
 to use names from one of the other namespaces available to them, but
-this is not required due to the large amount of current practice to
+this is not mandatory due to the large amount of current practice to
 the contrary.
-<note><para>Widespread existing practice includes such names as
+<note><para>
+Widespread existing practice includes such names as
 <literal>ssh-common</literal>, <literal>ssh-client</literal>,
 <literal>kernel-pcmcia</literal>, and the like.  Possible alternative names include
 <literal>sshcommon</literal>, <literal>foolinux-ssh-common</literal>
 (where <literal>foolinux</literal> is registered to the
-implementation), or <literal>lsb-foolinux-ssh-common</literal>.
+distribution), or <literal>lsb-foolinux-ssh-common</literal>.
 </para></note>
 Applications may name their packages this way, but only if the portion
 of the name before the first hyphen is a provider name or registered
 domain name as described above.
-<note><para>If an
-application vendor has domain name such as <literal>visicalc.example.com</literal> and has
-registered <literal>visicalc</literal> as a provider name, they might name packages
-<literal>visicalc-base</literal>, <literal>visicalc.example.com-charting</literal>, and the
-like.</para>
+<note><para>
+If an application vendor has domain name such as <literal>visicalc.example.com</literal> and has
+registered <literal>visicalc</literal> as a provider name, 
+they could name packages either in the
+<literal>visicalc-base</literal> style or the
+<literal>visicalc.example.com-charting</literal> style.
+</para>
 <para>
 Package names in this namespace are
-available to both the implementation and an application.  Implementations
-and applications will need to consider this potential for conflicts
+available to both the distribution and an application.  Distributions
+and applications need to consider the potential for conflicts
 when deciding to use these names rather than the alternatives (such as
 names starting with <literal>lsb-</literal>).
+</para></note>
 </para>
-</note>
+</listitem>
 
-</para></listitem>
-
-</ITEMIZEDLIST>
+</itemizedlist>
 
 </SECT1>
 
@@ -1002,8 +1008,8 @@ m4_include(coredep.sgml)
 <TITLE>Package Architecture Considerations</TITLE>
 <PARA>
 Packages which do not contain any architecture specific files should specify an
-architecture of <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>. An LSB runtime
-environment shall accept values <COMPUTEROUTPUT>noarch</COMPUTEROUTPUT>, or
+architecture of <literal>noarch</literal>. An LSB runtime
+environment shall accept values <literal>noarch</literal>, or
 the value specified in the relevant architecture specific part of &ISOSTD;.
 </PARA>
 
