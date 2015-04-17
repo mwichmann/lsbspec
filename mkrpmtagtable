@@ -47,36 +47,36 @@ printf("<!-- Start of generated text - do not edit! -->\n");
 printf("<!-- generated from the LSB specification database by mkrpmtagtable -->\n");
 
 if($sth->rows) {
-	print "<TABLE>\n";
-	print "<TITLE>$title</TITLE>\n";
-	print "<TGROUP COLS=5>\n";
-	print "<THEAD>\n";
-	print "<ROW>\n";
-	print "<ENTRY ALIGN=center>Name</ENTRY>";
-	print "<ENTRY ALIGN=center>Tag Value</ENTRY>";
-	print "<ENTRY ALIGN=center>Type</ENTRY>";
-	print "<ENTRY ALIGN=center>Count</ENTRY>";
-	print "<ENTRY ALIGN=center>Status</ENTRY>";
-	print "</ROW>\n";
-	print "</THEAD>\n";
-	print "<TBODY>\n";
+	print "<table>\n";
+	print "<title>$title</title>\n";
+	print "<tgroup cols=5>\n";
+	print "<thead>\n";
+	print "<row>\n";
+	print "<entry align=center>Name</entry>\n";
+	print "<entry align=center>Tag Value</entry>\n";
+	print "<entry align=center>Type</entry>\n";
+	print "<entry align=center>Count</entry>\n";
+	print "<entry align=center>Status</entry>\n";
+	print "</row>\n";
+	print "</thead>\n";
+	print "<tbody>\n";
 	for(1..$sth->rows) {
-		print "<ROW>";
+		print "<row>\n";
 		$entry=$sth->fetchrow_hashref;
-		printf "<ENTRY><CONSTANT>%s</CONSTANT></ENTRY>",$entry->{'Rname'};
-		printf "<ENTRY>%s</ENTRY>",$entry->{'Rtag'};
-		printf "<ENTRY>%s</ENTRY>",$entry->{'Rtype'};
+		printf "<entry><constant>%s</constant></entry>\n",$entry->{'Rname'};
+		printf "<entry><literal>%s</literal></entry>\n",$entry->{'Rtag'};
+		printf "<entry><constant>%s</constant></entry>\n",$entry->{'Rtype'};
 		if( $entry->{'Rcount'} ) {
-			printf "<ENTRY>%s</ENTRY>",$entry->{'Rcount'};
+			printf "<entry><literal>%s</literal></entry>\n",$entry->{'Rcount'};
 		} else {
-			printf "<ENTRY></ENTRY>";
+			printf "<entry>&nbsp;</entry>\n";
 		}
-		printf "<ENTRY>%s</ENTRY>",$entry->{'Rstatus'};
-		print "</ROW>\n";
+		printf "<entry>%s</entry>\n",$entry->{'Rstatus'};
+		print "</row>\n";
 	}
-	print "</TBODY>\n";
-	print "</TGROUP>\n";
-	print "</TABLE>\n";
+	print "</tbody>\n";
+	print "</tgroup>\n";
+	print "</table>\n";
 }
 $sth->finish;
 
@@ -90,15 +90,15 @@ $sth = $dbh->prepare($select) or die "Couldn't prepare $select query: ".DBI->err
 $sth->execute or die "Couldn't execute $select query: ".DBI->errstr;
 
 if($sth->rows) {
-	print "<VARIABLELIST>\n";
+	print "<variablelist>\n";
 	for(1..$sth->rows) {
-		print "<VARLISTENTRY>";
+		print "<varlistentry>\n";
 		$entry=$sth->fetchrow_hashref;
-		printf "<TERM><CONSTANT>%s</CONSTANT></TERM>",$entry->{'Rname'};
-		printf "<LISTITEM><PARA>%s</PARA></LISTITEM>",$entry->{'Rdescription'};
-		print "</VARLISTENTRY>\n";
+		printf "<term><constant>%s</constant></term>\n",$entry->{'Rname'};
+		printf "<listitem><para>%s</para></listitem>\n",$entry->{'Rdescription'};
+		print "</varlistentry>\n";
 	}
-print "</VARIABLELIST>\n";
+print "</variablelist>\n";
 }
 $sth->finish;
 $dbh->disconnect;
