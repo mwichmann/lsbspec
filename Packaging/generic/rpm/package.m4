@@ -148,7 +148,7 @@ is specified in the relevant architecture specific part of &ISOSTD;.
 <LISTITEM>
 <PARA>
 A NUL terminated string that provides the package name. This name shall
-conform with the Package Naming section of this specification.
+conform with the Package Naming Conventions section of this specification.
 </PARA>
 </LISTITEM>
 </VARLISTENTRY>
